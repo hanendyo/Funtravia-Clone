@@ -4,7 +4,7 @@ import React, {
 	useRef,
 	MutableRefObject,
 	forwardRef,
-} from 'react';
+} from "react";
 import {
 	View,
 	StyleSheet,
@@ -16,17 +16,17 @@ import {
 	ScrollView,
 	Platform,
 	TouchableOpacity,
-} from 'react-native';
-import { AsyncStorage } from 'react-native';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import {  } from '../../const/PixelRatio';
 
-import { CustomText, CustomImage, Input } from '../../core-ui';
-import { gql } from 'apollo-boost';
-import { phone_vektor } from '../../const/Png';
-import { useMutation } from '@apollo/react-hooks';
-import Peringatan from '../Main/Components/Peringatan';
-import { Text, Button } from '../../Component';
-import { useTranslation } from 'react-i18next';
+import { CustomText, CustomImage, Input } from "../../core-ui";
+import { gql } from "apollo-boost";
+import { phone_vektor } from "../../const/Png";
+import { useMutation } from "@apollo/react-hooks";
+import Peringatan from "../Main/Components/Peringatan";
+import { Text, Button } from "../../Component";
+import { useTranslation } from "react-i18next";
 
 const OTP = gql`
 	mutation Otp($user_id: ID!, $otp_code: Int!) {
@@ -45,24 +45,24 @@ const OTP = gql`
 export default function OtpPhone(props) {
 	const { t, i18n } = useTranslation();
 
-	let [aler, showAlert] = useState({ show: false, judul: '', detail: '' });
+	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 	let [region, setRegion] = useState(
-		props.navigation.state.params ? props.navigation.state.params.region : null,
+		props.navigation.state.params ? props.navigation.state.params.region : null
 	);
 	let [number, setNumber] = useState(
-		props.navigation.state.params ? props.navigation.state.params.number : null,
+		props.navigation.state.params ? props.navigation.state.params.number : null
 	);
 
 	let [state, setState] = useState({
-		onebox: '',
-		twobox: '',
-		threebox: '',
-		fourbox: '',
-		fivebox: '',
-		sixbox: '',
+		onebox: "",
+		twobox: "",
+		threebox: "",
+		fourbox: "",
+		fivebox: "",
+		sixbox: "",
 	});
 
-	let value = '';
+	let value = "";
 	// console.log('value', value);
 	Object.keys(state).map((val) => (value = value + val));
 
@@ -76,11 +76,11 @@ export default function OtpPhone(props) {
 	let refBox6 = useRef(null);
 
 	const onChange = (name, ref?: MutableRefObject<TextInput>) => (
-		text: string,
+		text: string
 	) => {
-		if (text.trim() !== '') {
+		if (text.trim() !== "") {
 			setState({ ...state, [name]: text });
-			console.log('name: ' + name.value);
+			console.log("name: " + name.value);
 			ref && ref.current && ref.current.focus();
 		} else {
 			return;
@@ -89,29 +89,29 @@ export default function OtpPhone(props) {
 
 	const signin = async () => {
 		try {
-			let pushTkn = await AsyncStorage.getItem('token');
+			let pushTkn = await AsyncStorage.getItem("token");
 			let response = await mutation({
 				variables: {
-					user_id: props.navigation.getParam('userId'),
+					user_id: props.navigation.getParam("userId"),
 					otp_code: value,
 					token: pushTkn,
 				},
 			});
 			if (response) {
 				try {
-					console.log('access_token=', response.data.verification.access_token);
+					console.log("access_token=", response.data.verification.access_token);
 					await AsyncStorage.setItem(
-						'access_token',
-						response.data.verification.access_token,
+						"access_token",
+						response.data.verification.access_token
 					);
-					props.navigation.navigate('Home');
+					props.navigation.navigate("Home");
 				} catch (error) {
 					// Alert.alert('failed to login');
 					showAlert({
 						...aler,
 						show: true,
-						judul: 'Failed  to login',
-						detail: '',
+						judul: "Failed  to login",
+						detail: "",
 					});
 				}
 			}
@@ -119,8 +119,8 @@ export default function OtpPhone(props) {
 			showAlert({
 				...aler,
 				show: true,
-				judul: 'Failed  to login',
-				detail: 'verification error',
+				judul: "Failed  to login",
+				detail: "verification error",
 			});
 			// Alert.alert('verification error');
 		}
@@ -131,13 +131,14 @@ export default function OtpPhone(props) {
 			style={{
 				flex: 1,
 			}}
-			behavior={Platform.OS === 'ios' ? 'padding' : null}
+			behavior={Platform.OS === "ios" ? "padding" : null}
 			// keyboardVerticalOffset={30}
-			enabled>
+			enabled
+		>
 			<Peringatan
 				aler={aler}
 				setClose={() =>
-					showAlert({ ...aler, show: false, judul: '', detail: '' })
+					showAlert({ ...aler, show: false, judul: "", detail: "" })
 				}
 			/>
 			<ScrollView
@@ -145,12 +146,13 @@ export default function OtpPhone(props) {
 					paddingTop: 40,
 				}}
 				showsVerticalScrollIndicator={false}
-				stickyHeaderIndices={[1]}>
+				stickyHeaderIndices={[1]}
+			>
 				<View style={styles.main}>
 					{/* <View> */}
 					<CustomImage
 						customStyle={{
-							alignSelf: 'center',
+							alignSelf: "center",
 							width: 150,
 							height: 150,
 						}}
@@ -158,40 +160,44 @@ export default function OtpPhone(props) {
 					/>
 					<View
 						style={{
-							alignItems: 'center',
-							justifyContent: 'space-evenly',
+							alignItems: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
-						<Text size='h5' type='bold'>
-							{t('enterVerificationCode')}
+						}}
+					>
+						<Text size="h5" type="bold">
+							{t("enterVerificationCode")}
 						</Text>
 					</View>
 					<View
 						style={{
-							alignContent: 'center',
-							justifyContent: 'space-evenly',
+							alignContent: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
+						}}
+					>
 						<Text
 							numberOfLines={2}
 							style={{
-								textAlign: 'center',
+								textAlign: "center",
 							}}
-							type='regular'
-							size='description'>
-							{t('weJustSend')}
+							type="regular"
+							size="description"
+						>
+							{t("weJustSend")}
 						</Text>
 
 						<View
 							style={{
-								flexDirection: 'row',
+								flexDirection: "row",
 								// marginBottom: (40),
 								marginTop: 20,
-							}}>
-							<Text size='h5' type='bold'>
+							}}
+						>
+							<Text size="h5" type="bold">
 								{`${region}  `}
 							</Text>
-							<Text size='h5' type='bold'>
+							<Text size="h5" type="bold">
 								{number}
 							</Text>
 						</View>
@@ -199,93 +205,94 @@ export default function OtpPhone(props) {
 
 					<View
 						style={{
-							flexDirection: 'row',
+							flexDirection: "row",
 							// paddingTop: 10,
-							justifyContent: 'space-evenly',
-							alignContent: 'center',
+							justifyContent: "space-evenly",
+							alignContent: "center",
 							marginVertical: 20,
-						}}>
+						}}
+					>
 						<Input
 							ref={refBox1}
-							onChangeText={onChange('onebox', refBox2)}
+							onChangeText={onChange("onebox", refBox2)}
 							customStyle={styles.numberInputView}
 							autoFocus={true}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) => {
-								if (e.nativeEvent.key === ' ') {
+								if (e.nativeEvent.key === " ") {
 									return false;
 								}
 							}}
 						/>
 						<Input
 							ref={refBox2}
-							onChangeText={onChange('twobox', refBox3)}
+							onChangeText={onChange("twobox", refBox3)}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) => {
-								if (e.nativeEvent.key === 'Backspace') {
+								if (e.nativeEvent.key === "Backspace") {
 									refBox1 && refBox1.current && refBox1.current.focus();
 								}
 							}}
 						/>
 						<Input
 							ref={refBox3}
-							onChangeText={onChange('threebox', refBox4)}
+							onChangeText={onChange("threebox", refBox4)}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) => {
-								if (e.nativeEvent.key === 'Backspace') {
+								if (e.nativeEvent.key === "Backspace") {
 									refBox2 && refBox2.current && refBox2.current.focus();
 								}
 							}}
 						/>
 						<Input
 							ref={refBox4}
-							onChangeText={onChange('fourbox', refBox5)}
+							onChangeText={onChange("fourbox", refBox5)}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) => {
-								if (e.nativeEvent.key === 'Backspace') {
+								if (e.nativeEvent.key === "Backspace") {
 									refBox3 && refBox3.current && refBox3.current.focus();
 								}
 							}}
 						/>
 						<Input
 							ref={refBox5}
-							onChangeText={onChange('fivebox', refBox6)}
+							onChangeText={onChange("fivebox", refBox6)}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) => {
-								if (e.nativeEvent.key === 'Backspace') {
+								if (e.nativeEvent.key === "Backspace") {
 									refBox4 && refBox4.current && refBox4.current.focus();
 								}
 							}}
 						/>
 						<Input
 							ref={refBox6}
-							onChangeText={onChange('sixbox')}
+							onChangeText={onChange("sixbox")}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) => {
-								if (e.nativeEvent.key === 'Backspace') {
+								if (e.nativeEvent.key === "Backspace") {
 									refBox5 && refBox5.current && refBox5.current.focus();
 								}
 							}}
@@ -294,31 +301,34 @@ export default function OtpPhone(props) {
 					<Button
 						onPress={signin}
 						style={{
-							alignSelf: 'center',
-							width: Dimensions.get('window').width / 1.2,
+							alignSelf: "center",
+							width: Dimensions.get("window").width / 1.2,
 						}}
-						text={t('verify')}
+						text={t("verify")}
 					/>
 					<View
 						style={{
 							marginTop: 20,
 							marginBottom: 60,
-							flexDirection: 'column',
-						}}>
+							flexDirection: "column",
+						}}
+					>
 						{/* <Text customTextStyle={styles.beforeSpecialText}>
 							Didn't receive OTP Number?
 						</Text> */}
 						<Text style={styles.specialTextButton} isTouchable={true}>
-							{t('resend')}
+							{t("resend")}
 						</Text>
 						<TouchableOpacity
-							onPress={() => props.navigation.navigate('login')}>
+							onPress={() => props.navigation.navigate("login")}
+						>
 							<Text
-								type='bold'
+								type="bold"
 								style={{
 									marginTop: 40,
-									color: '#27958B',
-								}}>
+									color: "#27958B",
+								}}
+							>
 								Try another way to sign in
 							</Text>
 						</TouchableOpacity>
@@ -335,34 +345,34 @@ const styles = StyleSheet.create({
 		// flex: 1,
 		marginHorizontal: 48,
 		marginVertical: 20,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	dividerText: {
 		fontSize: 16,
-		fontFamily: 'lato-reg',
-		alignSelf: 'flex-end',
+		fontFamily: "lato-reg",
+		alignSelf: "flex-end",
 	},
 	beforeSpecialText: {
 		fontSize: 12,
-		fontFamily: 'lato-reg',
-		alignSelf: 'center',
+		fontFamily: "lato-reg",
+		alignSelf: "center",
 	},
 	welcomeText: {
 		height: 50,
 		width: 500,
-		alignSelf: 'center',
+		alignSelf: "center",
 	},
 	specialTextButton: {
-		fontFamily: 'lato-bold',
+		fontFamily: "lato-bold",
 		fontSize: 14,
-		color: '#27958B',
-		alignSelf: 'center',
+		color: "#27958B",
+		alignSelf: "center",
 	},
 	logoView: {
 		height: 200,
 		width: 200,
-		alignSelf: 'flex-start',
+		alignSelf: "flex-start",
 	},
 	numberInputView: {
 		marginHorizontal: 10,
@@ -370,17 +380,17 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 5,
 		borderBottomLeftRadius: 5,
 		borderBottomRightRadius: 5,
-		width: (Dimensions.get('window').width - 100) / 6,
-		height: (Dimensions.get('window').width - 100) / 6,
-		backgroundColor: '#F2F2F2',
-		justifyContent: 'center',
-		alignContent: 'center',
+		width: (Dimensions.get("window").width - 100) / 6,
+		height: (Dimensions.get("window").width - 100) / 6,
+		backgroundColor: "#F2F2F2",
+		justifyContent: "center",
+		alignContent: "center",
 		// alignItems: 'center',
 	},
 	numberInputText: {
-		fontFamily: 'lato-bold',
-		alignContent: 'center',
-		justifyContent: 'center',
+		fontFamily: "lato-bold",
+		alignContent: "center",
+		justifyContent: "center",
 		borderBottomWidth: 0,
 		fontSize: 25,
 		paddingLeft: 15,

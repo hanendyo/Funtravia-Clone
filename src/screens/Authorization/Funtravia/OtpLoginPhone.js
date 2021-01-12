@@ -4,7 +4,7 @@ import React, {
 	useRef,
 	MutableRefObject,
 	forwardRef,
-} from 'react';
+} from "react";
 import {
 	View,
 	StyleSheet,
@@ -15,31 +15,31 @@ import {
 	Dimensions,
 	ScrollView,
 	Platform,
-} from 'react-native';
-import { AsyncStorage } from 'react-native';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import {  } from '../../const/PixelRatio';
 
-import { CustomText, CustomImage, Input } from '../../core-ui';
-import { gql } from 'apollo-boost';
-import { sms_otp, phone_vektor } from '../../const/Png';
-import { useMutation } from '@apollo/react-hooks';
-import Otpgql from '../../graphQL/Mutation/Login/VerificationLoginPhone';
-import Peringatan from '../Main/Components/Peringatan';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import RESEND from '../../graphQL/Mutation/Register/ResenOtpRegPhone';
-import { useTranslation } from 'react-i18next';
-import { Text, Button } from '../../Component';
+import { CustomText, CustomImage, Input } from "../../core-ui";
+import { gql } from "apollo-boost";
+import { sms_otp, phone_vektor } from "../../const/Png";
+import { useMutation } from "@apollo/react-hooks";
+import Otpgql from "../../graphQL/Mutation/Login/VerificationLoginPhone";
+import Peringatan from "../Main/Components/Peringatan";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import RESEND from "../../graphQL/Mutation/Register/ResenOtpRegPhone";
+import { useTranslation } from "react-i18next";
+import { Text, Button } from "../../Component";
 
 export default function OtpLoginPhone(props) {
 	const { t, i18n } = useTranslation();
 
 	const [resend] = useMutation(RESEND);
-	let [aler, showAlert] = useState({ show: false, judul: '', detail: '' });
+	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 	let [region, setRegion] = useState(
-		props.navigation.state.params ? props.navigation.state.params.region : null,
+		props.navigation.state.params ? props.navigation.state.params.region : null
 	);
 	let [number, setNumber] = useState(
-		props.navigation.state.params ? props.navigation.state.params.number : null,
+		props.navigation.state.params ? props.navigation.state.params.number : null
 	);
 
 	let [state, setState] = useState({
@@ -61,7 +61,7 @@ export default function OtpLoginPhone(props) {
 	let refBox6 = useRef(null);
 
 	const onHandleChange = (e, rName, pName, next = null, prev = null) => {
-		if (e.nativeEvent.key === 'Backspace') {
+		if (e.nativeEvent.key === "Backspace") {
 			if (state[rName] === null) {
 				prev ? prev.current.focus() : null;
 				setState({ ...state, [pName]: null });
@@ -93,17 +93,17 @@ export default function OtpLoginPhone(props) {
 				try {
 					// console.log('access_token=', response.data.verification.access_token);
 					await AsyncStorage.setItem(
-						'access_token',
-						response.data.login_phone_verification.access_token,
+						"access_token",
+						response.data.login_phone_verification.access_token
 					);
-					props.navigation.navigate('Home');
+					props.navigation.navigate("Home");
 				} catch (error) {
 					// Alert.alert('failed to login');
 					showAlert({
 						...aler,
 						show: true,
-						judul: 'Failed to login',
-						detail: '',
+						judul: "Failed to login",
+						detail: "",
 					});
 				}
 			}
@@ -111,8 +111,8 @@ export default function OtpLoginPhone(props) {
 			showAlert({
 				...aler,
 				show: true,
-				judul: 'Failed to login',
-				detail: 'verification error',
+				judul: "Failed to login",
+				detail: "verification error",
 			});
 			// Alert.alert('verification error');
 		}
@@ -121,7 +121,7 @@ export default function OtpLoginPhone(props) {
 	let [Timer, setTimer] = useState(0);
 	const hitungMundur = () => {
 		var timeleft = 30;
-		var downloadTimer = setInterval(function() {
+		var downloadTimer = setInterval(function () {
 			timeleft -= 1;
 			setTimer(timeleft);
 			if (timeleft === 0) {
@@ -140,7 +140,7 @@ export default function OtpLoginPhone(props) {
 		// // hold sebelum graph
 
 		let phoneNumber =
-			props.navigation.getParam('region') + props.navigation.getParam('number');
+			props.navigation.getParam("region") + props.navigation.getParam("number");
 		try {
 			let response = await resend({
 				variables: {
@@ -153,8 +153,8 @@ export default function OtpLoginPhone(props) {
 			showAlert({
 				...aler,
 				show: true,
-				judul: 'Failed Send OTP',
-				detail: '',
+				judul: "Failed Send OTP",
+				detail: "",
 			});
 			// Alert.alert('Failed Send OTP');
 		}
@@ -165,13 +165,14 @@ export default function OtpLoginPhone(props) {
 			style={{
 				flex: 1,
 			}}
-			behavior={Platform.OS === 'ios' ? 'padding' : null}
+			behavior={Platform.OS === "ios" ? "padding" : null}
 			// keyboardVerticalOffset={30}
-			enabled>
+			enabled
+		>
 			<Peringatan
 				aler={aler}
 				setClose={() =>
-					showAlert({ ...aler, show: false, judul: '', detail: '' })
+					showAlert({ ...aler, show: false, judul: "", detail: "" })
 				}
 			/>
 			<ScrollView
@@ -179,12 +180,13 @@ export default function OtpLoginPhone(props) {
 					paddingTop: 40,
 				}}
 				showsVerticalScrollIndicator={false}
-				stickyHeaderIndices={[1]}>
+				stickyHeaderIndices={[1]}
+			>
 				<View style={styles.main}>
 					{/* <View> */}
 					<CustomImage
 						customStyle={{
-							alignSelf: 'center',
+							alignSelf: "center",
 							width: 150,
 							height: 150,
 						}}
@@ -192,135 +194,143 @@ export default function OtpLoginPhone(props) {
 					/>
 					<View
 						style={{
-							alignItems: 'center',
-							justifyContent: 'space-evenly',
+							alignItems: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
-						<Text size='h5' type='bold'>
+						}}
+					>
+						<Text size="h5" type="bold">
 							Please verify your account
 						</Text>
 					</View>
 					<View
 						style={{
-							alignContent: 'center',
-							justifyContent: 'space-evenly',
+							alignContent: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
+						}}
+					>
 						<Text
 							numberOfLines={2}
 							style={{
-								textAlign: 'center',
+								textAlign: "center",
 							}}
-							type='regular'
-							size='description'>
-							{t('sentToYour')}
+							type="regular"
+							size="description"
+						>
+							{t("sentToYour")}
 						</Text>
 					</View>
 					<View
 						style={{
-							alignContent: 'center',
-							justifyContent: 'space-evenly',
+							alignContent: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 5,
-						}}>
+						}}
+					>
 						<Text
 							numberOfLines={2}
 							style={{
-								textAlign: 'center',
+								textAlign: "center",
 							}}
-							type='regular'
-							size='description'>
+							type="regular"
+							size="description"
+						>
 							{region + number}
 						</Text>
 					</View>
 
 					<View
 						style={{
-							flexDirection: 'row',
+							flexDirection: "row",
 							paddingTop: 10,
-							justifyContent: 'space-evenly',
-							alignContent: 'center',
+							justifyContent: "space-evenly",
+							alignContent: "center",
 							marginVertical: 25,
-						}}>
+						}}
+					>
 						<Input
 							ref={refBox1}
 							customStyle={styles.numberInputView}
 							autoFocus={true}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
-							onKeyPress={(e) => onHandleChange(e, 'onebox', null, refBox2)}
+							onKeyPress={(e) => onHandleChange(e, "onebox", null, refBox2)}
 						/>
 						<Input
 							ref={refBox2}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'twobox', 'onebox', refBox3, refBox1)
+								onHandleChange(e, "twobox", "onebox", refBox3, refBox1)
 							}
 						/>
 						<Input
 							ref={refBox3}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'threebox', 'twobox', refBox4, refBox2)
+								onHandleChange(e, "threebox", "twobox", refBox4, refBox2)
 							}
 						/>
 						<Input
 							ref={refBox4}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'fourbox', 'threebox', refBox5, refBox3)
+								onHandleChange(e, "fourbox", "threebox", refBox5, refBox3)
 							}
 						/>
 						<Input
 							ref={refBox5}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'fivebox', 'fourbox', refBox6, refBox4)
+								onHandleChange(e, "fivebox", "fourbox", refBox6, refBox4)
 							}
 						/>
 						<Input
 							ref={refBox6}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'sixbox', 'fivebox', null, refBox5)
+								onHandleChange(e, "sixbox", "fivebox", null, refBox5)
 							}
 						/>
 					</View>
-					<Button onPress={signin} text={t('verify')} />
+					<Button onPress={signin} text={t("verify")} />
 					<View
 						style={{
 							marginTop: 20,
 							marginBottom: 30,
-							flexDirection: 'column',
-						}}>
-						<Text style={styles.beforeSpecialText}>{t('didntReceive')}</Text>
+							flexDirection: "column",
+						}}
+					>
+						<Text style={styles.beforeSpecialText}>{t("didntReceive")}</Text>
 
 						<TouchableOpacity
 							onPress={() => resendOTP()}
-							disabled={Timer === 0 ? false : true}>
+							disabled={Timer === 0 ? false : true}
+						>
 							<Text style={styles.specialTextButton}>
-								{`${t('resend')} ${Timer > 0 ? Timer : ''}`}
+								{`${t("resend")} ${Timer > 0 ? Timer : ""}`}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -336,34 +346,34 @@ const styles = StyleSheet.create({
 		// flex: 1,
 		marginHorizontal: 48,
 		marginVertical: 20,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	dividerText: {
 		fontSize: 16,
-		fontFamily: 'lato-reg',
-		alignSelf: 'flex-end',
+		fontFamily: "lato-reg",
+		alignSelf: "flex-end",
 	},
 	beforeSpecialText: {
 		fontSize: 12,
-		fontFamily: 'lato-reg',
-		alignSelf: 'center',
+		fontFamily: "lato-reg",
+		alignSelf: "center",
 	},
 	welcomeText: {
 		height: 50,
 		width: 500,
-		alignSelf: 'center',
+		alignSelf: "center",
 	},
 	specialTextButton: {
-		fontFamily: 'lato-bold',
+		fontFamily: "lato-bold",
 		fontSize: 16,
-		color: '#27958B',
-		alignSelf: 'center',
+		color: "#27958B",
+		alignSelf: "center",
 	},
 	logoView: {
 		height: 200,
 		width: 200,
-		alignSelf: 'flex-start',
+		alignSelf: "flex-start",
 	},
 	numberInputView: {
 		marginHorizontal: 10,
@@ -371,17 +381,17 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 5,
 		borderBottomLeftRadius: 5,
 		borderBottomRightRadius: 5,
-		width: (Dimensions.get('window').width - 100) / 6,
-		height: (Dimensions.get('window').width - 100) / 6,
-		backgroundColor: '#F2F2F2',
-		justifyContent: 'center',
-		alignContent: 'center',
+		width: (Dimensions.get("window").width - 100) / 6,
+		height: (Dimensions.get("window").width - 100) / 6,
+		backgroundColor: "#F2F2F2",
+		justifyContent: "center",
+		alignContent: "center",
 		// alignItems: 'center',
 	},
 	numberInputText: {
-		fontFamily: 'lato-bold',
-		alignContent: 'center',
-		justifyContent: 'center',
+		fontFamily: "lato-bold",
+		alignContent: "center",
+		justifyContent: "center",
 		borderBottomWidth: 0,
 		fontSize: 25,
 		paddingLeft: 15,

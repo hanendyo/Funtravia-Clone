@@ -4,7 +4,7 @@ import React, {
 	useRef,
 	MutableRefObject,
 	forwardRef,
-} from 'react';
+} from "react";
 import {
 	View,
 	StyleSheet,
@@ -15,33 +15,33 @@ import {
 	Dimensions,
 	ScrollView,
 	Platform,
-} from 'react-native';
-import { AsyncStorage } from 'react-native';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import {  } from '../../const/PixelRatio';
 
-import { CustomText, CustomImage, Input } from '../../core-ui';
-import { gql } from 'apollo-boost';
-import { sms_otp } from '../../const/Png';
-import { useMutation, useLazyQuery } from '@apollo/react-hooks';
-import Otpgql from '../../graphQL/Mutation/Register/OtpAuth';
-import RESEND from '../../graphQL/Mutation/Register/ResendOtpRegEmail';
-import Peringatan from '../Main/Components/Peringatan';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useTranslation } from 'react-i18next';
-import { Text, Button } from '../../Component';
-import CreateSetting from '../../graphQL/Mutation/Setting/CreateSetting';
+import { CustomText, CustomImage, Input } from "../../core-ui";
+import { gql } from "apollo-boost";
+import { sms_otp } from "../../const/Png";
+import { useMutation, useLazyQuery } from "@apollo/react-hooks";
+import Otpgql from "../../graphQL/Mutation/Register/OtpAuth";
+import RESEND from "../../graphQL/Mutation/Register/ResendOtpRegEmail";
+import Peringatan from "../Main/Components/Peringatan";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useTranslation } from "react-i18next";
+import { Text, Button } from "../../Component";
+import CreateSetting from "../../graphQL/Mutation/Setting/CreateSetting";
 import {
 	DEFAULT_COUNTRY_SETTING,
 	DEFAULT_CURRENCY_SETTING,
-} from '../../config/config';
-import GetSetting from '../../graphQL/Query/Settings/GetSetting';
+} from "../../config/config";
+import GetSetting from "../../graphQL/Query/Settings/GetSetting";
 
 export default function OtpAuth(props) {
 	const { t, i18n } = useTranslation();
-	let [token, setToken] = useState('');
+	let [token, setToken] = useState("");
 	const [resend] = useMutation(RESEND);
-	let [aler, showAlert] = useState({ show: false, judul: '', detail: '' });
-	let email = props.navigation.getParam('email');
+	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
+	let email = props.navigation.getParam("email");
 	let [state, setState] = useState({
 		onebox: null,
 		twobox: null,
@@ -57,10 +57,10 @@ export default function OtpAuth(props) {
 		GetDataSetting,
 		{ data: datas, loading: loadings, error: errors },
 	] = useLazyQuery(GetSetting, {
-		fetchPolicy: 'network-only',
+		fetchPolicy: "network-only",
 		context: {
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
 		},
@@ -74,7 +74,7 @@ export default function OtpAuth(props) {
 	let refBox6 = useRef(null);
 
 	const onHandleChange = (e, rName, pName, next = null, prev = null) => {
-		if (e.nativeEvent.key === 'Backspace') {
+		if (e.nativeEvent.key === "Backspace") {
 			if (state[rName] === null) {
 				prev ? prev.current.focus() : null;
 				setState({ ...state, [pName]: null });
@@ -91,7 +91,7 @@ export default function OtpAuth(props) {
 		GetDataSetting();
 		await GetDataSetting();
 		if (datas && datas.setting_data) {
-			await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
+			await AsyncStorage.setItem("setting", JSON.stringify(datas.setting_data));
 		}
 	};
 
@@ -99,7 +99,7 @@ export default function OtpAuth(props) {
 		try {
 			let response = await mutation({
 				variables: {
-					user_id: props.navigation.getParam('userId'),
+					user_id: props.navigation.getParam("userId"),
 					otp_code:
 						state.onebox +
 						state.twobox +
@@ -115,14 +115,14 @@ export default function OtpAuth(props) {
 					console.log(response.data.verification.data_setting);
 					setToken(response.data.verification.access_token);
 					await AsyncStorage.setItem(
-						'access_token',
-						response.data.verification.access_token,
+						"access_token",
+						response.data.verification.access_token
 					);
 					await AsyncStorage.setItem(
-						'setting',
-						JSON.stringify(response.data.verification.data_setting),
+						"setting",
+						JSON.stringify(response.data.verification.data_setting)
 					);
-					props.navigation.navigate('Home');
+					props.navigation.navigate("Home");
 
 					// settingcreate();
 				} catch (error) {
@@ -130,7 +130,7 @@ export default function OtpAuth(props) {
 					showAlert({
 						...aler,
 						show: true,
-						judul: 'Sorry..',
+						judul: "Sorry..",
 						detail: response.data.verification.message,
 					});
 				}
@@ -138,7 +138,7 @@ export default function OtpAuth(props) {
 				showAlert({
 					...aler,
 					show: true,
-					judul: 'Sorry..',
+					judul: "Sorry..",
 					detail: response.data.verification.message,
 				});
 			}
@@ -146,8 +146,8 @@ export default function OtpAuth(props) {
 			showAlert({
 				...aler,
 				show: true,
-				judul: 'Verification Failed',
-				detail: '',
+				judul: "Verification Failed",
+				detail: "",
 			});
 			// Alert.alert('verification error');
 		}
@@ -156,7 +156,7 @@ export default function OtpAuth(props) {
 	let [Timer, setTimer] = useState(0);
 	const hitungMundur = () => {
 		var timeleft = 30;
-		var downloadTimer = setInterval(function() {
+		var downloadTimer = setInterval(function () {
 			timeleft -= 1;
 			setTimer(timeleft);
 			if (timeleft === 0) {
@@ -172,11 +172,11 @@ export default function OtpAuth(props) {
 
 	const resendOTP = async () => {
 		try {
-			console.log('response');
+			console.log("response");
 			let response = await resend({
 				variables: {
-					user_id: props.navigation.getParam('userId'),
-					email: props.navigation.getParam('email'),
+					user_id: props.navigation.getParam("userId"),
+					email: props.navigation.getParam("email"),
 				},
 			});
 			console.log(response);
@@ -186,8 +186,8 @@ export default function OtpAuth(props) {
 			showAlert({
 				...aler,
 				show: true,
-				judul: 'Failed Send OTP',
-				detail: '',
+				judul: "Failed Send OTP",
+				detail: "",
 			});
 			// Alert.alert('Failed Send OTP');
 		}
@@ -198,13 +198,14 @@ export default function OtpAuth(props) {
 			style={{
 				flex: 1,
 			}}
-			behavior={Platform.OS === 'ios' ? 'padding' : null}
+			behavior={Platform.OS === "ios" ? "padding" : null}
 			// keyboardVerticalOffset={30}
-			enabled>
+			enabled
+		>
 			<Peringatan
 				aler={aler}
 				setClose={() =>
-					showAlert({ ...aler, show: false, judul: '', detail: '' })
+					showAlert({ ...aler, show: false, judul: "", detail: "" })
 				}
 			/>
 			<ScrollView
@@ -212,12 +213,13 @@ export default function OtpAuth(props) {
 					paddingTop: 40,
 				}}
 				showsVerticalScrollIndicator={false}
-				stickyHeaderIndices={[1]}>
+				stickyHeaderIndices={[1]}
+			>
 				<View style={styles.main}>
 					{/* <View> */}
 					<CustomImage
 						customStyle={{
-							alignSelf: 'center',
+							alignSelf: "center",
 							width: 150,
 							height: 150,
 						}}
@@ -225,134 +227,142 @@ export default function OtpAuth(props) {
 					/>
 					<View
 						style={{
-							alignItems: 'center',
-							justifyContent: 'space-evenly',
+							alignItems: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
-						<Text size='h5' type='bold'>
-							{t('enterVerificationCode')}
+						}}
+					>
+						<Text size="h5" type="bold">
+							{t("enterVerificationCode")}
 						</Text>
 					</View>
 					<View
 						style={{
-							alignContent: 'center',
-							justifyContent: 'space-evenly',
+							alignContent: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
+						}}
+					>
 						<Text
 							numberOfLines={2}
 							style={{
-								textAlign: 'center',
+								textAlign: "center",
 							}}
-							type='regular'
-							size='description'>
-							{t('weJustSend')}
+							type="regular"
+							size="description"
+						>
+							{t("weJustSend")}
 						</Text>
 					</View>
 					<View
 						style={{
-							alignContent: 'center',
-							justifyContent: 'space-evenly',
+							alignContent: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 5,
-						}}>
+						}}
+					>
 						<Text
 							numberOfLines={2}
 							style={{
-								textAlign: 'center',
+								textAlign: "center",
 							}}
-							type='regular'
-							size='description'>
+							type="regular"
+							size="description"
+						>
 							{email}
 						</Text>
 					</View>
 
 					<View
 						style={{
-							flexDirection: 'row',
+							flexDirection: "row",
 							paddingTop: 10,
-							justifyContent: 'space-evenly',
-							alignContent: 'center',
+							justifyContent: "space-evenly",
+							alignContent: "center",
 							marginVertical: 25,
-						}}>
+						}}
+					>
 						<Input
 							ref={refBox1}
 							customStyle={styles.numberInputView}
 							autoFocus={true}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
-							onKeyPress={(e) => onHandleChange(e, 'onebox', null, refBox2)}
+							onKeyPress={(e) => onHandleChange(e, "onebox", null, refBox2)}
 						/>
 						<Input
 							ref={refBox2}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'twobox', 'onebox', refBox3, refBox1)
+								onHandleChange(e, "twobox", "onebox", refBox3, refBox1)
 							}
 						/>
 						<Input
 							ref={refBox3}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'threebox', 'twobox', refBox4, refBox2)
+								onHandleChange(e, "threebox", "twobox", refBox4, refBox2)
 							}
 						/>
 						<Input
 							ref={refBox4}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'fourbox', 'threebox', refBox5, refBox3)
+								onHandleChange(e, "fourbox", "threebox", refBox5, refBox3)
 							}
 						/>
 						<Input
 							ref={refBox5}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'fivebox', 'fourbox', refBox6, refBox4)
+								onHandleChange(e, "fivebox", "fourbox", refBox6, refBox4)
 							}
 						/>
 						<Input
 							ref={refBox6}
 							customStyle={styles.numberInputView}
 							customTextStyle={styles.numberInputText}
-							keyboardType='number-pad'
+							keyboardType="number-pad"
 							maxLength={1}
 							blurOnSubmit={false}
 							onKeyPress={(e) =>
-								onHandleChange(e, 'sixbox', 'fivebox', null, refBox5)
+								onHandleChange(e, "sixbox", "fivebox", null, refBox5)
 							}
 						/>
 					</View>
-					<Button onPress={signin} text={t('verify')} />
+					<Button onPress={signin} text={t("verify")} />
 					<View
 						style={{
 							marginTop: 20,
 							marginBottom: 30,
-							flexDirection: 'column',
-						}}>
+							flexDirection: "column",
+						}}
+					>
 						<Text style={styles.beforeSpecialText}>{t('"didntReceive"')}</Text>
 						<TouchableOpacity
 							onPress={() => resendOTP()}
-							disabled={Timer === 0 ? false : true}>
+							disabled={Timer === 0 ? false : true}
+						>
 							<Text style={styles.specialTextButton}>
-								{`${t('resend')} ${Timer > 0 ? Timer : ''}`}
+								{`${t("resend")} ${Timer > 0 ? Timer : ""}`}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -368,34 +378,34 @@ const styles = StyleSheet.create({
 		// flex: 1,
 		marginHorizontal: 48,
 		marginVertical: 20,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	dividerText: {
 		fontSize: 16,
-		fontFamily: 'lato-reg',
-		alignSelf: 'flex-end',
+		fontFamily: "lato-reg",
+		alignSelf: "flex-end",
 	},
 	beforeSpecialText: {
 		fontSize: 12,
-		fontFamily: 'lato-reg',
-		alignSelf: 'center',
+		fontFamily: "lato-reg",
+		alignSelf: "center",
 	},
 	welcomeText: {
 		height: 50,
 		width: 500,
-		alignSelf: 'center',
+		alignSelf: "center",
 	},
 	specialTextButton: {
-		fontFamily: 'lato-bold',
+		fontFamily: "lato-bold",
 		fontSize: 14,
-		color: '#27958B',
-		alignSelf: 'center',
+		color: "#27958B",
+		alignSelf: "center",
 	},
 	logoView: {
 		height: 200,
 		width: 200,
-		alignSelf: 'flex-start',
+		alignSelf: "flex-start",
 	},
 	numberInputView: {
 		marginHorizontal: 10,
@@ -403,17 +413,17 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 5,
 		borderBottomLeftRadius: 5,
 		borderBottomRightRadius: 5,
-		width: (Dimensions.get('window').width - 100) / 6,
-		height: (Dimensions.get('window').width - 100) / 6,
-		backgroundColor: '#F2F2F2',
-		justifyContent: 'center',
-		alignContent: 'center',
+		width: (Dimensions.get("window").width - 100) / 6,
+		height: (Dimensions.get("window").width - 100) / 6,
+		backgroundColor: "#F2F2F2",
+		justifyContent: "center",
+		alignContent: "center",
 		// alignItems: 'center',
 	},
 	numberInputText: {
-		fontFamily: 'lato-bold',
-		alignContent: 'center',
-		justifyContent: 'center',
+		fontFamily: "lato-bold",
+		alignContent: "center",
+		justifyContent: "center",
 		borderBottomWidth: 0,
 		fontSize: 25,
 		paddingLeft: 15,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 import {
 	StyleSheet,
@@ -9,35 +9,35 @@ import {
 	KeyboardAvoidingView,
 	Alert,
 	Image,
-} from 'react-native';
-import { AsyncStorage } from 'react-native';
-import { CustomText, CustomImage } from '../../core-ui';
-import { google_vektor } from '../../const/Png';
-import { useMutation } from '@apollo/react-hooks';
-import GoogleGraph from '../../graphQL/Mutation/Login/Google';
-import Peringatan from '../Main/Components/Peringatan';
-import { useTranslation } from 'react-i18next';
-import { Text, Button } from '../../Component';
-import { loading_intertwine } from '../../const/Gif';
-import { GoogleSignin } from '@react-native-community/google-signin';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CustomText, CustomImage } from "../../core-ui";
+import { google_vektor } from "../../const/Png";
+import { useMutation } from "@apollo/react-hooks";
+import GoogleGraph from "../../graphQL/Mutation/Login/Google";
+import Peringatan from "../Main/Components/Peringatan";
+import { useTranslation } from "react-i18next";
+import { Text, Button } from "../../Component";
+import { loading_intertwine } from "../../const/Gif";
+import { GoogleSignin } from "@react-native-community/google-signin";
 
 GoogleSignin.configure({
 	iosClientId:
-		'com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne',
+		"com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne",
 	offlineAccess: false,
 });
 export default function LoginGoogle(props) {
 	const { t, i18n } = useTranslation();
 
 	const [mutation, { loading, data, error }] = useMutation(GoogleGraph);
-	let [aler, showAlert] = useState({ show: false, judul: '', detail: '' });
+	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 
 	const signInWithGoogle = async () => {
 		await GoogleSignin.hasPlayServices();
 		await GoogleSignin.signIn();
 		const result = await GoogleSignin.getTokens();
 		let response;
-		let pushTkn = await AsyncStorage.getItem('token');
+		let pushTkn = await AsyncStorage.getItem("token");
 		if (result) {
 			response = await mutation({
 				variables: {
@@ -48,30 +48,30 @@ export default function LoginGoogle(props) {
 		}
 		if (
 			response.data.login_google.code === 200 ||
-			response.data.login_google.code === '200'
+			response.data.login_google.code === "200"
 		) {
 			await AsyncStorage.setItem(
-				'access_token',
-				response.data.login_google.access_token,
+				"access_token",
+				response.data.login_google.access_token
 			);
 			await AsyncStorage.setItem(
-				'user',
-				JSON.stringify(response.data.login_google.user),
+				"user",
+				JSON.stringify(response.data.login_google.user)
 			);
 			await AsyncStorage.setItem(
-				'setting',
-				JSON.stringify(response.data.login_google.data_setting),
+				"setting",
+				JSON.stringify(response.data.login_google.data_setting)
 			);
-			props.navigation.navigate('Home');
+			props.navigation.navigate("Home");
 		} else if (
 			response.data.login_google.code === 400 ||
-			response.data.login_google.code === '400'
+			response.data.login_google.code === "400"
 		) {
-			Alert.alert('Failed', response.data.login_google.message);
-			props.navigation.navigate('login');
+			Alert.alert("Failed", response.data.login_google.message);
+			props.navigation.navigate("login");
 		} else {
-			Alert.alert('Failed', 'Failed Login With Google');
-			props.navigation.navigate('login');
+			Alert.alert("Failed", "Failed Login With Google");
+			props.navigation.navigate("login");
 		}
 	};
 	useEffect(() => {
@@ -82,28 +82,31 @@ export default function LoginGoogle(props) {
 			style={{
 				flex: 1,
 			}}
-			behavior={Platform.OS === 'ios' ? 'padding' : null}
-			enabled>
+			behavior={Platform.OS === "ios" ? "padding" : null}
+			enabled
+		>
 			<ScrollView
 				style={{
 					paddingTop: 80,
 				}}
 				showsVerticalScrollIndicator={false}
-				stickyHeaderIndices={[1]}>
+				stickyHeaderIndices={[1]}
+			>
 				<Peringatan
 					aler={aler}
 					setClose={() =>
-						showAlert({ ...aler, show: false, judul: '', detail: '' })
+						showAlert({ ...aler, show: false, judul: "", detail: "" })
 					}
 				/>
 				<View
 					style={{
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}>
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
 					<CustomImage
 						customStyle={{
-							alignSelf: 'center',
+							alignSelf: "center",
 							width: 200,
 							height: 175,
 						}}
@@ -111,36 +114,40 @@ export default function LoginGoogle(props) {
 					/>
 					<View
 						style={{
-							alignItems: 'center',
-							justifyContent: 'space-evenly',
+							alignItems: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
+						}}
+					>
 						<Text
-							style={{ fontSize: 25, fontFamily: 'lato-bold' }}
-							type='bold'
-							size='h5'>
-							{t('loginUsingGoogle')}
+							style={{ fontSize: 25, fontFamily: "lato-bold" }}
+							type="bold"
+							size="h5"
+						>
+							{t("loginUsingGoogle")}
 						</Text>
 					</View>
 					<View
 						style={{
-							alignContent: 'center',
-							justifyContent: 'space-evenly',
+							alignContent: "center",
+							justifyContent: "space-evenly",
 							marginVertical: 10,
-						}}>
+						}}
+					>
 						<Text
 							numberOfLines={2}
 							style={{
-								textAlign: 'center',
+								textAlign: "center",
 							}}
-							type='regular'
-							size='description'>
-							{t('pleaseWait')}
+							type="regular"
+							size="description"
+						>
+							{t("pleaseWait")}
 						</Text>
 
 						<Image
 							source={loading_intertwine}
-							style={{ alignSelf: 'center', width: 100, height: 100 }}
+							style={{ alignSelf: "center", width: 100, height: 100 }}
 						/>
 
 						{/* <Text
@@ -157,9 +164,10 @@ export default function LoginGoogle(props) {
 						style={{
 							// marginTop: 40,
 							marginBottom: 80,
-							alignItems: 'center',
-						}}>
-						<Text>{`${t('loading')}...`}</Text>
+							alignItems: "center",
+						}}
+					>
+						<Text>{`${t("loading")}...`}</Text>
 					</View>
 				</View>
 			</ScrollView>
@@ -171,25 +179,25 @@ const styles = StyleSheet.create({
 	main: {
 		flex: 1,
 		margin: 50,
-		alignItems: 'center',
+		alignItems: "center",
 	},
 	inputTextStyle: {
-		width: Dimensions.get('window').width / 1.2,
+		width: Dimensions.get("window").width / 1.2,
 		fontSize: 14,
 	},
 	centeredView: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		marginTop: 22,
 	},
 	modalView: {
 		margin: 20,
-		backgroundColor: 'white',
+		backgroundColor: "white",
 		borderRadius: 20,
 		padding: 35,
-		alignItems: 'center',
-		shadowColor: '#000',
+		alignItems: "center",
+		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
 			height: 2,
@@ -199,18 +207,18 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	openButton: {
-		backgroundColor: '#D75995',
+		backgroundColor: "#D75995",
 		borderRadius: 20,
 		padding: 15,
 		elevation: 2,
 	},
 	textStyle: {
-		color: 'white',
-		fontWeight: 'bold',
-		textAlign: 'center',
+		color: "white",
+		fontWeight: "bold",
+		textAlign: "center",
 	},
 	modalText: {
 		marginBottom: 15,
-		textAlign: 'center',
+		textAlign: "center",
 	},
 });
