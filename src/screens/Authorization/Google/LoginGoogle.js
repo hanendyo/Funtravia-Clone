@@ -11,14 +11,12 @@ import {
 	Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CustomText, CustomImage } from "../../core-ui";
-import { google_vektor } from "../../const/Png";
+import { google_vektor } from "../../../assets/png";
+import { loading_intertwine } from "../../../assets/gif";
 import { useMutation } from "@apollo/react-hooks";
-import GoogleGraph from "../../graphQL/Mutation/Login/Google";
-import Peringatan from "../Main/Components/Peringatan";
+import GoogleGraph from "../../../graphQL/Mutation/Login/Google";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../Component";
-import { loading_intertwine } from "../../const/Gif";
+import { Text, CustomImage, Peringatan } from "../../../component";
 import { GoogleSignin } from "@react-native-community/google-signin";
 
 GoogleSignin.configure({
@@ -26,12 +24,11 @@ GoogleSignin.configure({
 		"com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne",
 	offlineAccess: false,
 });
-export default function LoginGoogle(props) {
+export default function LoginGoogle({ navigation }) {
 	const { t, i18n } = useTranslation();
 
 	const [mutation, { loading, data, error }] = useMutation(GoogleGraph);
 	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
-
 	const signInWithGoogle = async () => {
 		await GoogleSignin.hasPlayServices();
 		await GoogleSignin.signIn();
@@ -62,16 +59,16 @@ export default function LoginGoogle(props) {
 				"setting",
 				JSON.stringify(response.data.login_google.data_setting)
 			);
-			props.navigation.navigate("Home");
+			navigation.navigate("HomeScreen");
 		} else if (
 			response.data.login_google.code === 400 ||
 			response.data.login_google.code === "400"
 		) {
 			Alert.alert("Failed", response.data.login_google.message);
-			props.navigation.navigate("login");
+			navigation.navigate("LoginScreen");
 		} else {
 			Alert.alert("Failed", "Failed Login With Google");
-			props.navigation.navigate("login");
+			navigation.navigate("LoginScreen");
 		}
 	};
 	useEffect(() => {
@@ -149,20 +146,9 @@ export default function LoginGoogle(props) {
 							source={loading_intertwine}
 							style={{ alignSelf: "center", width: 100, height: 100 }}
 						/>
-
-						{/* <Text
-							numberOfLines={2}
-							style={{
-								textAlign: 'center',
-							}}
-							type='regular'
-							size='description'>
-							{}
-						</Text>*/}
 					</View>
 					<View
 						style={{
-							// marginTop: 40,
 							marginBottom: 80,
 							alignItems: "center",
 						}}

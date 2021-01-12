@@ -37,7 +37,6 @@ export default function Message({ navigation }) {
 			backgroundColor: "#209FAE",
 			elevation: 0,
 			borderBottomWidth: 0,
-			fontSize: 50,
 		},
 		headerTitleStyle: {
 			fontFamily: "lato-reg",

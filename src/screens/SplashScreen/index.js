@@ -25,7 +25,7 @@ export default function SplashScreen(props) {
 	const checkAuthentication = async () => {
 		let auth = await AsyncStorage.getItem("access_token");
 		if (auth) {
-			props.navigation.navigate("Home");
+			props.navigation.navigate("HomeScreen");
 		}
 	};
 

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import SplashScreen from "../screens/SplashScreen";
 import ListNavigationItems from "./ListNavigationItems";
 import BottomNavigationItems from "./BottomNavigationItems";
 

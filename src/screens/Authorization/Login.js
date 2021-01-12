@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import {
 	View,
@@ -28,7 +28,7 @@ import {
 	Peringatan,
 } from "../../component";
 
-export default function Login(props) {
+export default function Login({ navigation }) {
 	const { t } = useTranslation();
 	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 	let [email, setEmail] = useState("");
@@ -56,7 +56,7 @@ export default function Login(props) {
 						"setting",
 						JSON.stringify(response.data.login.data_setting)
 					);
-					props.navigation.navigate("Home");
+					navigation.navigate("HomeScreen");
 				} catch (error) {
 					showAlert({
 						...aler,
@@ -77,20 +77,31 @@ export default function Login(props) {
 	};
 
 	const signUp = () => {
-		props.navigation.navigate("register");
+		navigation.navigate("RegisterScreen");
 	};
 
 	const forgotPwd = () => {
-		props.navigation.navigate("forgotpwd");
+		navigation.navigate("forgotpwd");
 	};
 
 	const externalLogIn = (index) => {
-		props.navigation.navigate(index);
+		navigation.navigate(index);
 	};
 
 	const togglePassword = () => {
 		setHidePasswd(!hidePasswd);
 	};
+
+	const NavigationComponent = {
+		title: "",
+		headerShown: true,
+		headerMode: "screen",
+		headerTransparent: true,
+	};
+
+	useEffect(() => {
+		navigation.setOptions(NavigationComponent);
+	}, []);
 
 	return (
 		<KeyboardAvoidingView
@@ -210,7 +221,7 @@ export default function Login(props) {
 						<CustomImage
 							source={logo_google}
 							isTouchable
-							onPress={() => externalLogIn("LoginGoogle")}
+							onPress={() => externalLogIn("LoginGoogleScreen")}
 							customStyle={{
 								marginHorizontal: 15,
 								width: 50,
@@ -220,7 +231,7 @@ export default function Login(props) {
 						<CustomImage
 							source={logo_facebook}
 							isTouchable
-							onPress={() => externalLogIn("LoginFacebook")}
+							onPress={() => externalLogIn("LoginFacebookScreen")}
 							customStyle={{
 								marginHorizontal: 15,
 								width: 50,

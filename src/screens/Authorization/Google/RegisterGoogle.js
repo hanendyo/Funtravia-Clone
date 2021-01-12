@@ -10,12 +10,10 @@ import {
 	Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CustomText, CustomImage } from "../../core-ui";
-import { google_vektor } from "../../const/Png";
+import { google_vektor } from "../../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
-import Googlegql from "../../graphQL/Mutation/Register/Google";
-import { NavigationEvents } from "react-navigation";
-import { Text, Button } from "../../Component";
+import Googlegql from "../../../graphQL/Mutation/Register/Google";
+import { Text, CustomImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { GoogleSignin } from "@react-native-community/google-signin";
 
@@ -24,7 +22,7 @@ GoogleSignin.configure({
 		"com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne",
 	offlineAccess: false,
 });
-export default function RegisterGoogle(props) {
+export default function RegisterGoogle({ navigation }) {
 	const { t, i18n } = useTranslation();
 
 	const [mutation, { loading, data, error }] = useMutation(Googlegql);
@@ -55,19 +53,33 @@ export default function RegisterGoogle(props) {
 				"setting",
 				JSON.stringify(response.data.register_google.data_setting)
 			);
-			props.navigation.navigate("Home");
+			navigation.navigate("HomeScreen");
 		} else if (
 			(response.data.register_google.code === "400" ||
 				response.data.register_google.code === 400) &&
 			response.data.register_google.message === "Account Already Registered"
 		) {
 			Alert.alert("Failed", "Account Already Registered");
-			props.navigation.navigate("login");
+			navigation.navigate("LoginScreen");
 		} else {
 			Alert.alert("Failed", "Failed to Registrasi With Google");
-			props.navigation.navigate("register");
+			navigation.navigate("RegisterScreen");
 		}
 	};
+
+	const NavigationComponent = {
+		title: "",
+		headerShown: true,
+		headerMode: "screen",
+		headerTransparent: true,
+	};
+
+	useEffect(() => {
+		navigation.setOptions(NavigationComponent);
+		navigation.addListener("focus", () => {
+			signInWithGoogle();
+		});
+	}, [navigation]);
 
 	return (
 		<KeyboardAvoidingView
@@ -78,7 +90,6 @@ export default function RegisterGoogle(props) {
 			// keyboardVerticalOffset={30}
 			enabled
 		>
-			<NavigationEvents onDidFocus={() => signInWithGoogle()} />
 			<ScrollView
 				style={{
 					paddingTop: 80,

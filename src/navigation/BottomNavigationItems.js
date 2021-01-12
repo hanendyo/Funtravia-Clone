@@ -138,7 +138,7 @@ export default function BottomNavigationItems() {
 				name="ChatMain"
 				component={ChatMain}
 				options={{
-					tabBarBadge: 5,
+					tabBarBadge: 0,
 					tabBarLabel: "Message",
 					tabBarIcon: ({ focused }) =>
 						focused ? (

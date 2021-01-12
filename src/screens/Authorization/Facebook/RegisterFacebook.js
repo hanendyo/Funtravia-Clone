@@ -10,32 +10,28 @@ import {
 	KeyboardAvoidingView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CustomText, CustomImage } from "../../core-ui";
-import { facebook_vektor } from "../../const/Png";
+import { facebook_vektor } from "../../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
-import * as Facebook from "expo-facebook";
-import { FB_CLIENT_ID } from "../../config/config";
-import Facebookgql from "../../graphQL/Mutation/Register/Facebook";
-import { NavigationEvents } from "react-navigation";
-import { Text, Button } from "../../Component";
+import Facebookgql from "../../../graphQL/Mutation/Register/Facebook";
+import { Text, CustomImage } from "../../../component";
 import { useTranslation } from "react-i18next";
-import CreateSetting from "../../graphQL/Mutation/Setting/CreateSetting";
+import { LoginManager, AccessToken } from "react-native-fbsdk";
 
-export default function RegisterFacebook(props) {
-	const { t, i18n } = useTranslation();
-
+export default function RegisterFacebook({ navigation }) {
+	const { t } = useTranslation();
 	const [mutation, { loading, data, error }] = useMutation(Facebookgql);
 	const facebookLogIn = async () => {
-		let pushTkn = await AsyncStorage.getItem("token");
-		await Facebook.initializeAsync({ appId: FB_CLIENT_ID });
-		const { type, token } = await Facebook.logInWithReadPermissionsAsync({
-			permissions: ["public_profile", "email"],
-		});
+		let FB = await LoginManager.logInWithPermissions(["public_profile"]);
 
+		let FB_Data = false;
+		if (!FB.isCancelled) {
+			FB_Data = await AccessToken.getCurrentAccessToken();
+		}
+		let pushTkn = await AsyncStorage.getItem("token");
 		let response;
-		if (type === "success") {
+		if (FB_Data) {
 			response = await mutation({
-				variables: { fbtoken: token.toString(), notify: pushTkn },
+				variables: { fbtoken: FB_Data.accessToken, notify: pushTkn },
 			});
 		}
 
@@ -51,19 +47,32 @@ export default function RegisterFacebook(props) {
 				"setting",
 				JSON.stringify(response.data.register_facebook.data_setting)
 			);
-			props.navigation.navigate("Home");
+			navigation.navigate("HomeScreen");
 		} else if (
 			(response.data.register_facebook.code === "400" ||
 				response.data.register_facebook.code === 400) &&
 			response.data.register_facebook.message === "Account Already Registered"
 		) {
 			Alert.alert("Failed", "Account Already Registered");
-			props.navigation.navigate("login");
+			navigation.navigate("LoginScreen");
 		} else {
 			Alert.alert("Failed", "Failed to Registrasi With Facebook");
-			props.navigation.navigate("register");
+			navigation.navigate("RegisterScreen");
 		}
 	};
+
+	const NavigationComponent = {
+		title: "",
+		headerShown: true,
+		headerMode: "screen",
+		headerTransparent: true,
+	};
+	useEffect(() => {
+		navigation.setOptions(NavigationComponent);
+		navigation.addListener("focus", () => {
+			facebookLogIn();
+		});
+	}, [navigation]);
 
 	return (
 		<KeyboardAvoidingView
@@ -74,8 +83,6 @@ export default function RegisterFacebook(props) {
 			// keyboardVerticalOffset={30}
 			enabled
 		>
-			<NavigationEvents onDidFocus={() => facebookLogIn()} />
-
 			<ScrollView
 				style={{
 					paddingTop: 80,
