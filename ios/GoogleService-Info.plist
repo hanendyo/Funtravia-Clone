@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>292367084833-nqvd6cp3ov30s15hkju0re00gp9l0h79.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBZrPMRo2w6yb0NH9_-JnxTy_kTeRK2yEI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>292367084833</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.funtravia.apps</string>
+	<key>PROJECT_ID</key>
+	<string>funtravia-project</string>
+	<key>STORAGE_BUCKET</key>
+	<string>funtravia-project.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:292367084833:ios:5ac2cac935dadaa0372260</string>
+	<key>DATABASE_URL</key>
+	<string>https://funtravia-project.firebaseio.com</string>
+</dict>
+</plist>

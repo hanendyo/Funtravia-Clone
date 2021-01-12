@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "292367084833",
+    "firebase_url": "https://funtravia-project.firebaseio.com",
+    "project_id": "funtravia-project",
+    "storage_bucket": "funtravia-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292367084833:android:4a8ab95a8095124f372260",
+        "android_client_info": {
+          "package_name": "com.funtravia.apps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292367084833-nqvd6cp3ov30s15hkju0re00gp9l0h79.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.funtravia.apps",
+            "certificate_hash": "603fc984d44d40bbbfabc0a4b50510afe7b4f0ec"
+          }
+        },
+        {
+          "client_id": "292367084833-oi9rq4ejffssoupumofu8067a3457391.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHFEuZjOe7h6bti4OHfnKahsxp68jbKsc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292367084833-oi9rq4ejffssoupumofu8067a3457391.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.funtravia.apps"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
