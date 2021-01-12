@@ -7,6 +7,7 @@ import LoginGoogleScreen from "../screens/Authorization/Google/LoginGoogle";
 import RegisterGoogleScreen from "../screens/Authorization/Google/RegisterGoogle";
 import LoginFacebookScreen from "../screens/Authorization/Facebook/LoginFacebook";
 import RegisterFacebookScreen from "../screens/Authorization/Facebook/RegisterFacebook";
+import Postscreen from "../screens/Feed/Post";
 
 const SplashNavigation = createStackNavigator();
 export default function ListNavigationItems() {
@@ -33,6 +34,10 @@ export default function ListNavigationItems() {
 			<SplashNavigation.Screen
 				name="RegisterScreen"
 				component={RegisterScreen}
+			/>
+			<SplashNavigation.Screen
+				name="Post"
+				component={Postscreen}
 			/>
 		</SplashNavigation.Navigator>
 	);

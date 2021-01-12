@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/Home";
 import ChatScreen from "../screens/Chat";
+import FeedScreen from "../screens/Feed";
 import {
 	FeedOn,
 	FeedOff,
@@ -33,8 +34,8 @@ function HomeMain() {
 const FeedNavigation = createStackNavigator();
 function FeedMain() {
 	return (
-		<FeedNavigation.Navigator headerMode="none">
-			<FeedNavigation.Screen name="FeedScreen" component={HomeScreen} />
+		<FeedNavigation.Navigator headerMode="screen">
+			<FeedNavigation.Screen name="FeedScreen" component={FeedScreen} />
 			<FeedNavigation.Screen
 				name="ListScreen"
 				component={ListNavigationItems}

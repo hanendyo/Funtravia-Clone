@@ -7,6 +7,7 @@ import DurationSelector from "./src/DurationSelector";
 import FunIcon from "./src/FunIcon";
 import PhoneCodeSelector from "./src/PhoneCodeSelector";
 import Truncate from "./src/Truncate";
+import Loading from "./src/Loading";
 
 export {
 	Text,
@@ -18,4 +19,5 @@ export {
 	FunIcon,
 	PhoneCodeSelector,
 	Truncate,
+	Loading,
 };
