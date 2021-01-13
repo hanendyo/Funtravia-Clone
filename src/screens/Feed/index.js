@@ -107,7 +107,7 @@ export default function Feed(props) {
       loadAsync();
     });
     return unsubscribe;
-  }, [props.navigation]);
+    }, [props.navigation]);
 
   const [LoadFeed, { data, loading, error }] = useLazyQuery(GetFeedPost, {
     fetchPolicy: "network-only",

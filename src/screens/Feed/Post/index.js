@@ -10,7 +10,8 @@ import {
 	ImageBackground,
 	ScrollView,
 	Pressable,
-	Alert,
+  Alert,
+  PermissionsAndroid,
 } from "react-native";
 import { CustomImage } from "../../../component";
 import { back_arrow_white } from "../../../assets/png";
@@ -31,6 +32,7 @@ import {
 // import * as Permissions from "re-permissions";
 // import * as ImageManipulators from "expo-image-manipulator";
 import AutoHeightImage from "react-native-auto-height-image";
+import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
@@ -170,8 +172,8 @@ export default function Post(props) {
 	});
 
 	const getsize = (file) => {
-		setLoading(true);
-		Image.getSize(file.uri, (width, height) => {
+		// setLoading(true);
+		Image.getSize(file.node.image.uri, (width, height) => {
 			SetOrisize({
 				width: width,
 				height: height,
@@ -211,12 +213,22 @@ export default function Post(props) {
 		props.navigation.setParams({ file: tmpFile });
 	};
 
+<<<<<<< Updated upstream
 	useEffect(() => {
 		props.navigation.setOptions(HeaderComponent);
 		(async () => {
 			await getAlbumRoll();
+			await requestCameraPermission();
 			await getImageFromRoll(null);
 		})();
+=======
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    (async () => {
+      await getAlbumRoll();
+      await getImageFromRoll(null);
+    })();
+>>>>>>> Stashed changes
 
 		// (async () => {
 		// 	let { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -241,19 +253,54 @@ export default function Post(props) {
 	});
 	const [allAlbums, setAllalbum] = useState([]);
 	// console.log('albumsReponse=', allAlbums);
-
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can use the write");
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 	const getAlbumRoll = async () => {
-		console.log("getalbumrol");
-		let albumsReponse = await MediaLibrary.getAlbumsAsync();
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('getalbum')
+        CameraRoll.getAlbums({
+          assetType: 'Photos',
+        })
+        .then(r => {
+		      r.sort(compare);
+          console.log(r);
+		      setAllalbum(r);
+        })
+        .catch((err) => {
+           //Error Loading Images
+        });
+        console.log("You can use the camera");
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
 
-		albumsReponse.sort(compare);
-		console.log(albumsReponse);
-		setAllalbum(albumsReponse);
-		// setSelectedAlbum(albumsReponse[0]);
-		props.navigation.setParams({ selectedAlbum: selectedAlbum });
-		props.navigation.setParams({
-			setside: () => setIsVisible(true),
-		});
+		// console.log(albumsReponse);
+		// // setSelectedAlbum(albumsReponse[0]);
+		// props.navigation.setParams({ selectedAlbum: selectedAlbum });
+		// props.navigation.setParams({
+		// 	setside: () => setIsVisible(true),
+		// });
 	};
 	const compare = (a, b) => {
 		if (a.title < b.title) {
@@ -265,26 +312,63 @@ export default function Post(props) {
 		return 0;
 	};
 
-	const getImageFromRoll = async (id) => {
-		console.log("getimgrol");
+	const getImageFromRoll = async (data) => {
+
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('getalbum')
+        CameraRoll.getPhotos({
+          first: 20,
+          assetType: 'Photos',
+          groupTypes: 'Album',
+          groupName: 'Camera',
+          include: ['location','filename','imageSize'],
+        })
+        .then(r => {
+		      // r.sort(compare);
+          // console.log(r.edges);
+          console.log(r.edges[0]);
+          // setAllalbum(r);
+          let data_foto = r.edges;
+          let camera = {
+          	id: "0",
+          	mediaType: "camera",
+          };
+          data_foto.splice(0, 0, camera);
+          setImageRoll(data_foto);
+        })
+        .catch((err) => {
+           //Error Loading Images
+        });
+        console.log("You can use the camera");
+      } else {
+        console.log("Camera permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+		// console.log("getimgrol");
 		// MediaLibrary.getPermissionsAsync();
 		// if (permission.granted) {
-		const stuff = await MediaLibrary.getAssetsAsync({
-			first: 40,
-			album: id,
-			sortBy: ["modificationTime"],
-			mediaType: ["photo"],
-		});
-		// console.log(stuff);
-		let data_foto = stuff.assets;
-		let camera = {
-			id: "0",
-			mediaType: "camera",
-		};
-		data_foto.splice(0, 0, camera);
-		setImageRoll(data_foto);
-		setRecent({ uri: data_foto[1]?.uri });
-		getsize(data_foto[1]);
+		// const stuff = await MediaLibrary.getAssetsAsync({
+		// 	first: 40,
+		// 	album: id,
+		// 	sortBy: ["modificationTime"],
+		// 	mediaType: ["photo"],
+		// });
+		// // console.log(stuff);
+		// let data_foto = stuff.assets;
+		// let camera = {
+		// 	id: "0",
+		// 	mediaType: "camera",
+		// };
+		// data_foto.splice(0, 0, camera);
+		// setImageRoll(data_foto);
+		// setRecent({ uri: data_foto[1]?.uri });
+		// getsize(data_foto[1]);
 		// }
 		// });
 	};
@@ -439,11 +523,11 @@ export default function Post(props) {
       /> */}
 
 			<_modalGalery />
-			<Button onPress={() => launchCamera()} text="Launch Camera" />
+			{/* <Button onPress={() => launchCamera()} text="Launch Camera" />
 			<Button
 				onPress={() => launchImageLibrary()}
 				text="Launch Image Library"
-			/>
+			/> */}
 			<View>
 				{/* <ImageCrop
 					ref={cropper}
@@ -468,6 +552,7 @@ export default function Post(props) {
 				data={imageRoll && imageRoll.length ? imageRoll : null}
 				renderItem={({ item, index }) =>
 					item.mediaType !== "camera" ? (
+            console.log(item.node.image.uri),
 						<TouchableOpacity
 							style={{
 								// flex: 1,
@@ -478,15 +563,17 @@ export default function Post(props) {
 								backgroundColor: "white",
 								alignItems: "center",
 								paddingVertical: 1,
-								paddingHorizontal: 1,
+                paddingHorizontal: 1,
+                borderWidth:1,
 							}}
 							onPress={() => getsize(item)}
 						>
 							<Image
-								source={{ uri: item.uri }}
+								source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
+								// source={require(item.node.image.uri) }
 								style={{
-									height: Dimensions.get("screen").width / 4 - 1,
-									width: Dimensions.get("screen").width / 4 - 1,
+									height: Dimensions.get('screen').width / 4 - 1,
+									width: Dimensions.get('screen').width / 4 - 1,
 									resizeMode: "cover",
 								}}
 							/>
@@ -512,7 +599,7 @@ export default function Post(props) {
 					)
 				}
 				numColumns={4}
-				keyExtractor={(item) => item.id}
+				// keyExtractor={(item) => item.node.timestamp}
 				ListHeaderComponent={
 					<View>
 						{/* <View
@@ -529,7 +616,8 @@ export default function Post(props) {
 							source={{
 								uri: recent.base64
 									? "data:image/gif;base64," + recent.base64
-									: recent.uri,
+                  : recent.uri,
+                // uri :  'file:///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'
 							}}
 						/>
 						{/* </View> */}
