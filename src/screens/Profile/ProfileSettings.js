@@ -21,6 +21,43 @@ import { Akunsaya } from "../../assets/png";
 import ImagePicker from "react-native-image-crop-picker";
 
 export default function ProfileSettings(props) {
+  const HeaderComponent = {
+    title: "",
+    headerTransparent: true,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          backgroundColor: "rgba(0,0,0,0.3)",
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
   const { t, i18n } = useTranslation();
   const [data, setdata] = useState(props.route.params.data);
   const [dataerror, setdataerror] = useState({
@@ -34,44 +71,18 @@ export default function ProfileSettings(props) {
   const [modals, setmodal] = useState(false);
 
   useEffect(() => {
-    // (async () => {
-    //   let { status } = await Permissions.askAsync(Permissions.CAMERA);
-    //   if (status !== "granted") {
-    //     Alert.alert(t("permissioncamera"));
-    //   }
-    // }
-    // )();
-    // (async () => {
-    // 	let { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    // 	if (status !== 'granted') {
-    // 		Alert.alert(t('permissioncamera'));
-    // 	}
-    // })();
-    // (async () => {
-    // 	let { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-    // 	if (status !== 'granted') {
-    // 		Alert.alert(
-    // 			t('permissioncamera')
-    // 		);
-    // 	}
-    // })();
+    props.navigation.setOptions(HeaderComponent);
   }, []);
 
   const upload = async (data) => {
     setmodal(false);
     setLoading(true);
-    // console.log(data);
-    const manipulate = await ImageManipulators.manipulateAsync(data, [], {
-      compress: 0.5,
-      base64: true,
-    });
-    let tmpFile = Object.assign(data, { base64: manipulate.base64 });
-    if (tmpFile.base64) {
+    if (data) {
       // console.log(tmpFile.base64);
       try {
         let response = await mutationUpload({
           variables: {
-            picture: "data:image/jpeg;base64," + tmpFile.base64,
+            picture: "data:image/jpeg;base64," + data,
           },
         });
         if (errorupload) {
@@ -102,29 +113,19 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       includeBase64: true,
     }).then((image) => {
-      seturi(image.path);
-      //do something with the image
+      upload(image.data);
     });
-
-    // let result = await launchCamera({
-    //   allowsEditing: true,
-    //   aspect: [4, 4],
-    //   quality: 1,
-    // },);
-    // if (!result.cancelled) {
-    //   upload(result.uri);
-    // }
   };
   const pickGallery = async () => {
-    let result = await launchImageLibrary({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
+    ImagePicker.openPicker({
+      width: 500,
+      height: 500,
+      cropping: true,
+      cropperCircleOverlay: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
     });
-    if (!result.cancelled) {
-      upload(result.uri);
-    }
   };
 
   const validation = (name, value) => {
@@ -242,7 +243,7 @@ export default function ProfileSettings(props) {
   return (
     <ScrollView contentContainerStyle={{}} showsVerticalScrollIndicator={false}>
       <ImageBackground
-        source={{ uri: uri }}
+        source={Akunsaya}
         imageStyle={{
           width: Dimensions.get("screen").width,
           height: 200,
@@ -614,44 +615,3 @@ export default function ProfileSettings(props) {
     </ScrollView>
   );
 }
-
-// ProfileSettings.navigationOptions = ({ navigation }) => ({
-//   headerTransparent: true,
-//   headerTitle: "",
-//   headerMode: "screen",
-//   headerStyle: {
-//     zIndex: 20,
-//     // backgroundColor: '#209FAE',
-//     elevation: 0,
-//     borderBottomWidth: 0,
-//     fontSize: 50,
-//     // justifyContent: 'center',
-//     // flex:1,
-//   },
-//   headerTitleStyle: {
-//     fontFamily: "Lato-Regular",
-//     fontSize: 14,
-//     color: "white",
-//     alignSelf: "center",
-//   },
-//   headerLeft: (
-//     <Button
-//       text={""}
-//       size="medium"
-//       type="circle"
-//       variant="transparent"
-//       onPress={() => navigation.goBack()}
-//       style={{
-//         backgroundColor: "rgba(0,0,0,0.3)",
-//       }}
-//     >
-//       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-//     </Button>
-//   ),
-//   headerLeftContainerStyle: {
-//     marginLeft: 10,
-//   },
-
-//   headerRight: null,
-//   headerRightStyle: {},
-// });

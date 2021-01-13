@@ -10,6 +10,7 @@ import { Arrowbackwhite } from "../../assets/svg";
 
 export default function Follower(props) {
   const HeaderComponent = {
+    headerTransparent: false,
     title: "Follower",
     headerTintColor: "white",
     headerTitle: "Follower",

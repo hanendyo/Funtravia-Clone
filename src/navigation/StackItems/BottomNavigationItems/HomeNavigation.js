@@ -8,19 +8,93 @@ import otherprofile from "../../../screens/Profile/OtherProfile";
 import otherFollower from "../../../screens/Profile/otherFollower";
 import otherFollowing from "../../../screens/Profile/otherFollowing";
 import profilesetting from "../../../screens/Profile/ProfileSettings";
+import myfeed from "../../../screens/Profile/Feed";
+import Comments from "../../../screens/Profile/Comments";
 
 const HomeStack = createStackNavigator();
 export default function HomeNavigation() {
-	return (
-		<HomeStack.Navigator initialRouteName="HomeScreen" headerMode="none">
-			<HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-			<HomeStack.Screen name="profilesetting" component={profilesetting} />
-			<HomeStack.Screen name="ProfileTab" component={MyProfile} />
-			<HomeStack.Screen name="FollowerPage" component={FollowerPage} />
-			<HomeStack.Screen name="FollowingPage" component={FollowingPage} />
-			<HomeStack.Screen name="otherprofile" component={otherprofile} />
-			<HomeStack.Screen name="otherFollower" component={otherFollower} />
-			<HomeStack.Screen name="otherFollowing" component={otherFollowing} />
-		</HomeStack.Navigator>
-	);
+  return (
+    <HomeStack.Navigator initialRouteName="HomeScreen" headerMode="screen">
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="profilesetting"
+        component={profilesetting}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="ProfileTab"
+        component={MyProfile}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="FollowerPage"
+        component={FollowerPage}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="FollowingPage"
+        component={FollowingPage}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="otherprofile"
+        component={otherprofile}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="otherFollower"
+        component={otherFollower}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="otherFollowing"
+        component={otherFollowing}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="myfeed"
+        component={myfeed}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="Comments"
+        component={Comments}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+    </HomeStack.Navigator>
+  );
 }

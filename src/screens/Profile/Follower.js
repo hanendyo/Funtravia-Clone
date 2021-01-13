@@ -11,6 +11,7 @@ import { Loading } from "../../component";
 
 export default function Follower(props) {
   const HeaderComponent = {
+    headerTransparent: false,
     title: "Follower",
     headerTintColor: "white",
     headerTitle: "Follower",
@@ -238,7 +239,6 @@ export default function Follower(props) {
       </View>
     );
   };
-
 
   return (
     <View>

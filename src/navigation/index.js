@@ -6,17 +6,17 @@ import BottomStack from "./StackItems/BottomNavigation";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
-	return (
-		<NavigationContainer>
-			<Tab.Navigator
-				initialRouteName={
-					authorizeToken ? "BottomStackNavigation" : "AuthStackNavigation"
-				}
-				headerMode="none"
-			>
-				<Tab.Screen name="AuthStackNavigation" component={AuthStack} />
-				<Tab.Screen name="BottomStackNavigation" component={BottomStack} />
-			</Tab.Navigator>
-		</NavigationContainer>
-	);
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName={
+          authorizeToken ? "BottomStackNavigation" : "AuthStackNavigation"
+        }
+        headerMode="none"
+      >
+        <Tab.Screen name="AuthStackNavigation" component={AuthStack} />
+        <Tab.Screen name="BottomStackNavigation" component={BottomStack} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }

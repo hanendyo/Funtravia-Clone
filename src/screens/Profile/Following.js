@@ -15,6 +15,7 @@ export default function Following(props) {
     headerTintColor: "white",
     headerTitle: "Following",
     headerMode: "screen",
+    headerTransparent: false,
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,

@@ -7,23 +7,60 @@ import {
   LikeEmpty,
   ShareBlack,
   Comment,
-} from "../../../const/Svg";
+} from "../../assets/svg";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useMutation } from "@apollo/react-hooks";
-import { Button, Text } from "../../../Component";
-import Truncate from "../../../utils/Truncate";
+import { Button, Text } from "../../component";
+import { Truncate } from "../../component";
 import AutoHeightImage from "react-native-auto-height-image";
 import { useTranslation } from "react-i18next";
-import likepost from "../../../graphQL/Mutation/Post/likepost";
-import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
-import { default_image } from "../../../const/Png";
+import likepost from "../../graphQL/Mutation/Post/likepost";
+import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
+import { default_image } from "../../assets/png";
 
 export default function myfeed(props) {
+  const HeaderComponent = {
+    headerTransparent: false,
+    title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
+    headerTintColor: "white",
+    headerTitle: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+    headerLeftContainerStyle: {
+      paddingLeft: 10,
+    },
+    headerRight: () => <View style={{ flexDirection: "row" }}></View>,
+    headerRightStyle: {},
+  };
+
   const { t, i18n } = useTranslation();
-  let token = props.navigation.getParam("token");
-  let datauser = props.navigation.getParam("datauser");
-  let [data, setdata] = useState(props.navigation.getParam("data"));
-  let index = props.navigation.getParam("index");
+  let token = props.route.params.token;
+  let [datauser] = useState(props.route.params.datauser);
+  let [data, setdata] = useState(props.route.params.data);
+  let index = props.route.params.index;
 
   let [users, setuser] = useState(null);
 
@@ -34,6 +71,8 @@ export default function myfeed(props) {
   };
 
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+
     loadasync();
   }, []);
 
@@ -197,7 +236,7 @@ export default function myfeed(props) {
   };
 
   const viewcomment = (datas) => {
-    props.navigation.navigate("komentar", {
+    props.navigation.navigate("Comments", {
       datauser: datauser,
       data: datas,
       token: token,
@@ -479,44 +518,3 @@ export default function myfeed(props) {
     />
   );
 }
-
-myfeed.navigationOptions = (props) => ({
-  // headerTransparent: true,
-  headerTitle: "Post",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    // fontSize: 50,
-    // justifyContent: 'center',
-    // flex:1,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => props.navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-  headerRight: <View style={{ flexDirection: "row" }}></View>,
-  headerRightStyle: {
-    // paddingRight: 20,
-  },
-});

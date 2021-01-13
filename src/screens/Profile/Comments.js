@@ -14,16 +14,55 @@ import {
 } from "react-native";
 import { Text } from "native-base";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import CommentList from "../../../graphQL/Query/Feed/CommentList";
-import { NavigationEvents } from "react-navigation";
-import commentpost from "../../../graphQL/Mutation/Post/commentpost";
-import { Arrowbackwhite } from "../../../const/Svg";
+import CommentList from "../../graphQL/Query/Feed/CommentList";
+import commentpost from "../../graphQL/Mutation/Post/commentpost";
+import { Arrowbackwhite } from "../../assets/svg";
+import { Button } from "../../component";
+import { useTranslation } from "react-i18next";
 export default function Comments(props) {
+  const HeaderComponent = {
+    headerTransparent: false,
+    title: () => <Text style={{ color: "white" }}>{t("Comments")}</Text>,
+    headerTintColor: "white",
+    headerTitle: () => <Text style={{ color: "white" }}>{t("Comments")}</Text>,
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+    headerLeftContainerStyle: {
+      paddingLeft: 10,
+    },
+    headerRight: () => <View style={{ flexDirection: "row" }}></View>,
+    headerRightStyle: {},
+  };
+  const { t } = useTranslation();
+
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  let [datauser] = useState(props.navigation.getParam("datauser"));
-  let [dataPost, setDataPost] = useState(props.navigation.getParam("data"));
-  let [token, setToken] = useState(props.navigation.getParam("token"));
+  let [datauser] = useState(props.route.params.datauser);
+  let [dataPost, setDataPost] = useState(props.route.params.data);
+  let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [users, setuser] = useState(null);
 
@@ -43,13 +82,17 @@ export default function Comments(props) {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
 
-    setuser(user.user);
+    await setuser(user.user);
+    await GetCommentList();
   };
 
   useEffect(() => {
-    loadasync();
-  }, []);
-
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadasync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
   const comment = async (id, text) => {
     // console.log(id);
     // console.log(text);
@@ -112,7 +155,6 @@ export default function Comments(props) {
     });
   };
 
-  // console.log(props.navigation.getParam('post_id'));
   const [GetCommentList, { data, loading, error }] = useLazyQuery(CommentList, {
     fetchPolicy: "network-only",
     variables: { post_id: dataPost.id },
@@ -163,26 +205,19 @@ export default function Comments(props) {
   };
 
   const Item = ({ dataComment }) => {
-    console.log(dataComment);
     return (
       <View
         style={{
-          // width: Dimensions.get('window').width,
           backgroundColor: "#FFFFFF",
-          // flex: 1,
-          // borderBottomWidth: 1,
-          // borderBottomColor: '#EEEEEE',
+
           marginHorizontal: 15,
           marginVertical: 10,
         }}
       >
-        <NavigationEvents onDidFocus={() => loadasync()} />
-
         <View
           style={{
             width: "100%",
             flexDirection: "row",
-            // marginVertical: 10,
             alignContent: "center",
           }}
         >
@@ -219,7 +254,6 @@ export default function Comments(props) {
                 style={{
                   fontFamily: "Lato-Bold",
                   fontSize: 14,
-                  // marginTop: 7,
                 }}
               >
                 {dataComment.user?.first_name} {dataComment.user?.last_name}
@@ -229,7 +263,6 @@ export default function Comments(props) {
                 style={{
                   fontFamily: "Lato-Regular",
                   fontSize: 10,
-                  // marginTop: 7,
                 }}
               >
                 {duration(dataComment.created_at)}
@@ -241,7 +274,6 @@ export default function Comments(props) {
           style={{
             width: "100%",
             marginVertical: 5,
-            // marginLeft: 45,
           }}
         >
           <Text
@@ -263,13 +295,13 @@ export default function Comments(props) {
   return (
     <View
       style={{
+        backgroundColor: "#FFFFFF",
+
         flex: 1,
       }}
     >
-      <NavigationEvents onDidFocus={() => GetCommentList()} />
       <View
         style={{
-          // width: Dimensions.get('window').width,
           backgroundColor: "#FFFFFF",
           // flex: 1,
           borderBottomWidth: 1,
@@ -338,14 +370,6 @@ export default function Comments(props) {
               </Text>
             </View>
           </View>
-          {/* <TouchableOpacity
-						style={{
-							position: 'absolute',
-							right: 0,
-							alignSelf: 'center',
-						}}>
-						<OptionsVertBlack height={20} width={20} />
-					</TouchableOpacity> */}
         </TouchableOpacity>
         <View
           style={{
@@ -366,9 +390,7 @@ export default function Comments(props) {
           </Text>
         </View>
       </View>
-      {/* {console.log(data)} */}
 
-      {/* <View> */}
       <FlatList
         ref={slider}
         data={data ? data.comment : null}
@@ -378,26 +400,14 @@ export default function Comments(props) {
         keyExtractor={(item) => item.id}
         extraData={selected}
       />
-      {/* <View
-					style={{
-						flex: 1,
-						flexDirection: 'row',
-						height: 60,
-						width: Dimensions.get('screen').width,
-					}}
-				/> */}
-      {/* </View> */}
+
       <View
         style={{
           flexDirection: "row",
-          // marginTop: 25,
           backgroundColor: "#F0F0F0",
-          // height: 100,
           width: Dimensions.get("screen").width,
-          // position: 'absolute',
-          // bottom: 0,
+
           alignItems: "center",
-          // justifyContent: 'space-around',
         }}
       >
         <TextInput
@@ -412,22 +422,18 @@ export default function Comments(props) {
           style={{
             height: 60,
             width: (Dimensions.get("screen").width * 80) / 100,
-            // borderBottomColor: '#f0f0f0f0',
-            // borderWidth: 1,
+
             marginLeft: 20,
           }}
           onChangeText={(text) => setStatusText(text)}
           value={statusText}
         />
-        {/* {console.log(dataPost)}
-				{console.log(dataPost.id)} */}
+
         <Pressable
           onPress={() => comment(dataPost.id, statusText)}
           style={{
             flex: 1,
-            // borderWidth: 1,
             height: 60,
-            // alignSelf: 'center',
             alignItems: "center",
             justifyContent: "center",
             paddingRight: 10,
@@ -449,63 +455,3 @@ export default function Comments(props) {
     </View>
   );
 }
-
-Comments.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Comments",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-    // justifyContent: 'center',
-    // flex:1,
-    // zIndex: 30,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <TouchableOpacity
-      style={{
-        height: 40,
-        width: 40,
-        // borderWidth:1,
-        justifyContent: "center",
-        alignContent: "center",
-        alignItems: "center",
-        // backgroundColor:'white'
-      }}
-      onPress={() => navigation.goBack()}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </TouchableOpacity>
-  ),
-  headerLeftContainerStyle: {
-    // paddingLeft: 20,
-  },
-  headerRight: (
-    <View style={{ flexDirection: "row" }}>
-      {/* <TouchableOpacity
-				style={{ marginRight: 20 }}
-				onPress={() => Alert.alert('Coming soon')}>
-				<OptionsVertWhite height={20} width={20} />
-			</TouchableOpacity> */}
-    </View>
-  ),
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});
-
-const styles = StyleSheet.create({
-  main: {
-    justifyContent: "center",
-    alignItems: "center",
-    // backgroundColor: 'grey',
-  },
-  captionFont: { fontSize: 12 },
-});
