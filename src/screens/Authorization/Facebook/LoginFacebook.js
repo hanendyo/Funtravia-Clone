@@ -54,7 +54,7 @@ export default function LoginFacebook({ navigation }) {
 						"setting",
 						JSON.stringify(response.data.login_facebook.data_setting)
 					);
-					navigation.navigate("HomeScreen");
+					navigation.navigate("BottomStackNavigation");
 				} else if (
 					response.data.login_facebook.code === 400 ||
 					response.data.login_facebook.code === "400"

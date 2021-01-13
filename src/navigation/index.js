@@ -10,7 +10,7 @@ export default function MainStackNavigator({ authorizeToken }) {
 		<NavigationContainer>
 			<Tab.Navigator
 				initialRouteName={
-					authorizeToken ? "AuthStackNavigation" : "BottomStackNavigation"
+					authorizeToken ? "BottomStackNavigation" : "AuthStackNavigation"
 				}
 				headerMode="none"
 			>

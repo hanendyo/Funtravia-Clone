@@ -10,12 +10,9 @@ import {
 	ImageBackground,
 	ScrollView,
 	Pressable,
-  Alert,
-  PermissionsAndroid,
+	Alert,
+	PermissionsAndroid,
 } from "react-native";
-import { CustomImage } from "../../../component";
-import { back_arrow_white } from "../../../assets/png";
-// import * as MediaLibrary from "react-native-media-library";
 import {
 	launchCamera,
 	launchImageLibrary,
@@ -28,15 +25,11 @@ import {
 	Comboboxup,
 	Comboboxdown,
 } from "../../../assets/svg";
-// import CameraComponent from "../Components/CameraComponent";
-// import * as Permissions from "re-permissions";
-// import * as ImageManipulators from "expo-image-manipulator";
 import AutoHeightImage from "react-native-auto-height-image";
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
-// import ImageCrop from 'react-native-image-crop';
 const { width, height } = Dimensions.get("window");
 import { useTranslation } from "react-i18next";
 export default function Post(props) {
@@ -100,14 +93,6 @@ export default function Post(props) {
 				</View>
 			);
 		},
-		// CustomImage({
-		// 	customStyle: { width: 20, height: 20 },
-		// 	customImageStyle: { width: 20, height: 20, resizeMode: 'contain' },
-		// 	isTouchable: true,
-		// 	onPress: () => props.navigation.goBack(),
-		// 	source: back_arrow_white,
-		// }),
-
 		headerRight: () => {
 			return (
 				<View
@@ -244,47 +229,45 @@ export default function Post(props) {
 	});
 	const [allAlbums, setAllalbum] = useState([]);
 	// console.log('albumsReponse=', allAlbums);
-  const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can use the write");
-      } else {
-        console.log("Camera permission denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+	const requestCameraPermission = async () => {
+		try {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+			);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log("You can use the write");
+			} else {
+				console.log("Camera permission denied");
+			}
+		} catch (err) {
+			console.warn(err);
+		}
+	};
 	const getAlbumRoll = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('getalbum')
-        CameraRoll.getAlbums({
-          assetType: 'Photos',
-        })
-        .then(r => {
-		      r.sort(compare);
-          console.log(r);
-		      setAllalbum(r);
-        })
-        .catch((err) => {
-           //Error Loading Images
-        });
-        console.log("You can use the camera");
-      } else {
-        console.log("Camera permission denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
+		try {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+			);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log("getalbum");
+				CameraRoll.getAlbums({
+					assetType: "Photos",
+				})
+					.then((r) => {
+						r.sort(compare);
+						console.log(r);
+						setAllalbum(r);
+					})
+					.catch((err) => {
+						//Error Loading Images
+					});
+				console.log("You can use the camera");
+			} else {
+				console.log("Camera permission denied");
+			}
+		} catch (err) {
+			console.warn(err);
+		}
 
 		// console.log(albumsReponse);
 		// // setSelectedAlbum(albumsReponse[0]);
@@ -304,43 +287,42 @@ export default function Post(props) {
 	};
 
 	const getImageFromRoll = async (data) => {
-
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('getalbum')
-        CameraRoll.getPhotos({
-          first: 20,
-          assetType: 'Photos',
-          groupTypes: 'Album',
-          groupName: 'Camera',
-          include: ['location','filename','imageSize'],
-        })
-        .then(r => {
-		      // r.sort(compare);
-          // console.log(r.edges);
-          console.log(r.edges[0]);
-          // setAllalbum(r);
-          let data_foto = r.edges;
-          let camera = {
-          	id: "0",
-          	mediaType: "camera",
-          };
-          data_foto.splice(0, 0, camera);
-          setImageRoll(data_foto);
-        })
-        .catch((err) => {
-           //Error Loading Images
-        });
-        console.log("You can use the camera");
-      } else {
-        console.log("Camera permission denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
+		try {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+			);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log("getalbum");
+				CameraRoll.getPhotos({
+					first: 20,
+					assetType: "Photos",
+					groupTypes: "Album",
+					groupName: "Camera",
+					include: ["location", "filename", "imageSize"],
+				})
+					.then((r) => {
+						// r.sort(compare);
+						// console.log(r.edges);
+						console.log(r.edges[0]);
+						// setAllalbum(r);
+						let data_foto = r.edges;
+						let camera = {
+							id: "0",
+							mediaType: "camera",
+						};
+						data_foto.splice(0, 0, camera);
+						setImageRoll(data_foto);
+					})
+					.catch((err) => {
+						//Error Loading Images
+					});
+				console.log("You can use the camera");
+			} else {
+				console.log("Camera permission denied");
+			}
+		} catch (err) {
+			console.warn(err);
+		}
 		// console.log("getimgrol");
 		// MediaLibrary.getPermissionsAsync();
 		// if (permission.granted) {
@@ -543,32 +525,34 @@ export default function Post(props) {
 				data={imageRoll && imageRoll.length ? imageRoll : null}
 				renderItem={({ item, index }) =>
 					item.mediaType !== "camera" ? (
-            console.log(item.node.image),
-						<TouchableOpacity
-							style={{
-								// flex: 1,
-								// height: Dimensions.get('screen').width / 4 - 1,
-								// width: Dimensions.get('screen').width / 4 - 1,
-								alignContent: "center",
-								justifyContent: "center",
-								backgroundColor: "white",
-								alignItems: "center",
-								paddingVertical: 1,
-                paddingHorizontal: 1,
-                borderWidth:1,
-							}}
-							onPress={() => getsize(item)}
-						>
-							<Image
-								// source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
-								source={{uri:item.node.image.uri}}
+						(console.log(item.node.image),
+						(
+							<TouchableOpacity
 								style={{
-									height: Dimensions.get('screen').width / 4 - 1,
-									width: Dimensions.get('screen').width / 4 - 1,
-									resizeMode: "cover",
+									// flex: 1,
+									// height: Dimensions.get('screen').width / 4 - 1,
+									// width: Dimensions.get('screen').width / 4 - 1,
+									alignContent: "center",
+									justifyContent: "center",
+									backgroundColor: "white",
+									alignItems: "center",
+									paddingVertical: 1,
+									paddingHorizontal: 1,
+									borderWidth: 1,
 								}}
-							/>
-						</TouchableOpacity>
+								onPress={() => getsize(item)}
+							>
+								<Image
+									// source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
+									source={{ uri: item.node.image.uri }}
+									style={{
+										height: Dimensions.get("screen").width / 4 - 1,
+										width: Dimensions.get("screen").width / 4 - 1,
+										resizeMode: "cover",
+									}}
+								/>
+							</TouchableOpacity>
+						))
 					) : (
 						<TouchableOpacity
 							style={{
@@ -607,8 +591,8 @@ export default function Post(props) {
 							source={{
 								uri: recent.base64
 									? "data:image/gif;base64," + recent.base64
-                  : recent.uri,
-                // uri :  'file:///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'
+									: recent.uri,
+								// uri :  'file:///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'
 							}}
 						/>
 						{/* </View> */}

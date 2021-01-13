@@ -53,7 +53,7 @@ export default function RegisterGoogle({ navigation }) {
 				"setting",
 				JSON.stringify(response.data.register_google.data_setting)
 			);
-			navigation.navigate("HomeScreen");
+			navigation.navigate("BottomStackNavigation");
 		} else if (
 			(response.data.register_google.code === "400" ||
 				response.data.register_google.code === 400) &&
