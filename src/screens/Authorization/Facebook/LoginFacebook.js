@@ -28,13 +28,13 @@ export default function LoginFacebook({ navigation }) {
 		if (!FB.isCancelled) {
 			FB_Data = await AccessToken.getCurrentAccessToken();
 		}
-		let pushTkn = await AsyncStorage.getItem("token");
+		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 		let response;
 		if (FB_Data) {
 			response = await mutationFB({
 				variables: {
 					fbtoken: FB_Data.accessToken,
-					token: pushTkn,
+					token: FCM_TOKEN,
 				},
 			});
 			if (response) {

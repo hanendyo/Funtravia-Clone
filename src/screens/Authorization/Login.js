@@ -38,9 +38,9 @@ export default function Login({ navigation }) {
 
 	const login = async () => {
 		try {
-			let pushTkn = await AsyncStorage.getItem("token");
+			let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 			let response = await mutation({
-				variables: { username: email, password: password, token: pushTkn },
+				variables: { username: email, password: password, token: FCM_TOKEN },
 			});
 			if (response) {
 				try {

@@ -76,8 +76,7 @@ export default function Register({ navigation }) {
 
 	const register = async () => {
 		// console.log(state);
-		let pushTkn = await AsyncStorage.getItem("token");
-
+		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 		for (let i in state) {
 			// console.log(i, state[i]);
 			let check = validation(i, state[i]);
@@ -109,7 +108,7 @@ export default function Register({ navigation }) {
 					phone: region + state.phone,
 					password: state.password,
 					password_confirmation: state.password_confirmation,
-					token: pushTkn,
+					token: FCM_TOKEN,
 				},
 			});
 

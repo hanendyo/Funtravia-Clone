@@ -34,12 +34,13 @@ export default function LoginGoogle({ navigation }) {
 		await GoogleSignin.signIn();
 		const result = await GoogleSignin.getTokens();
 		let response;
-		let pushTkn = await AsyncStorage.getItem("token");
+		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
+
 		if (result) {
 			response = await mutation({
 				variables: {
 					token: result.accessToken,
-					pushtoken: pushTkn,
+					pushtoken: FCM_TOKEN,
 				},
 			});
 		}

@@ -27,7 +27,7 @@ export default function RegisterGoogle({ navigation }) {
 
 	const [mutation, { loading, data, error }] = useMutation(Googlegql);
 	const signInWithGoogle = async () => {
-		let pushTkn = await AsyncStorage.getItem("token");
+		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 		await GoogleSignin.hasPlayServices();
 		await GoogleSignin.signIn();
 		const result = await GoogleSignin.getTokens();
@@ -37,7 +37,7 @@ export default function RegisterGoogle({ navigation }) {
 			response = await mutation({
 				variables: {
 					token: result.accessToken,
-					notify: pushTkn,
+					notify: FCM_TOKEN,
 				},
 			});
 		}

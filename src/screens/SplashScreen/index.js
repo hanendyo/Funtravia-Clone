@@ -29,11 +29,42 @@ export default function SplashScreen(props) {
 		}
 	};
 
+	const checkPermission = async () => {
+		const enabled = await messaging().hasPermission();
+		if (enabled) {
+			getToken();
+		} else {
+			requestPermission();
+		}
+	};
+
+	const getToken = async () => {
+		let fcmToken = await AsyncStorage.getItem("FCM_TOKEN");
+		console.log(fcmToken);
+		if (!fcmToken) {
+			fcmToken = await messaging().getToken();
+			if (fcmToken) {
+				console.log(fcmToken);
+				await AsyncStorage.setItem("FCM_TOKEN", fcmToken);
+			}
+		}
+	};
+
+	const requestPermission = async () => {
+		try {
+			await messaging().requestPermission();
+			getToken();
+		} catch (error) {
+			console.log("permission rejected");
+		}
+	};
+
 	useEffect(() => {
 		props.navigation.setOptions({
 			headerShown: false,
 		});
-		checkAuthentication();
+		// checkAuthentication();
+		checkPermission();
 		// setInterval(function () {
 		//   scroll = scroll >= width * 3 ? 0 : scroll + width;
 		//   imageScroll.current.scrollTo({x: scroll});

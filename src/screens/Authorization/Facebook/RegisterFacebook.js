@@ -27,11 +27,11 @@ export default function RegisterFacebook({ navigation }) {
 		if (!FB.isCancelled) {
 			FB_Data = await AccessToken.getCurrentAccessToken();
 		}
-		let pushTkn = await AsyncStorage.getItem("token");
+		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 		let response;
 		if (FB_Data) {
 			response = await mutation({
-				variables: { fbtoken: FB_Data.accessToken, notify: pushTkn },
+				variables: { fbtoken: FB_Data.accessToken, notify: FCM_TOKEN },
 			});
 		}
 
