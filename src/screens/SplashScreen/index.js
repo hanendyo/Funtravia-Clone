@@ -22,13 +22,6 @@ export default function SplashScreen(props) {
 	const imageScroll = useRef();
 	let [scroll, setScroll] = useState(0);
 
-	const checkAuthentication = async () => {
-		let auth = await AsyncStorage.getItem("access_token");
-		if (auth) {
-			props.navigation.navigate("HomeScreen");
-		}
-	};
-
 	const checkPermission = async () => {
 		const enabled = await messaging().hasPermission();
 		if (enabled) {
@@ -63,7 +56,6 @@ export default function SplashScreen(props) {
 		props.navigation.setOptions({
 			headerShown: false,
 		});
-		// checkAuthentication();
 		checkPermission();
 		// setInterval(function () {
 		//   scroll = scroll >= width * 3 ? 0 : scroll + width;
@@ -100,7 +92,7 @@ export default function SplashScreen(props) {
 						variant="bordered"
 						color="tertiary"
 						style={{ width: 80, height: 28, flexDirection: "row" }}
-						onPress={() => props.navigation.navigate("HomeScreen")}
+						onPress={() => props.navigation.navigate("BottomStackNavigation")}
 					>
 						<Text style={{ color: "white", marginRight: 5 }}>{`${t(
 							"skip"

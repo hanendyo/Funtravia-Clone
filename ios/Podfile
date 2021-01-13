@@ -10,6 +10,8 @@ target 'funtravia' do
 
   pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'funtraviaTests' do
     inherit! :complete
     # Pods for testing

@@ -1,19 +1,30 @@
 import React, { useEffect, useState } from "react";
 import "react-native-gesture-handler";
-import MainStackNavigator from "./src/navigation/MainStackNavigator";
+import MainStackNavigator from "./src/navigation";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { default as ApolloClient } from "apollo-boost";
 import messaging from "@react-native-firebase/messaging";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import SplashScreen from "react-native-splash-screen";
 import { API } from "./src/config";
 import "./src/i18n";
 
 function App() {
 	const [loading, setLoading] = useState(true);
+	const [accessToken, setAccessToken] = useState(null);
 	const client = new ApolloClient({
 		uri: API,
 	});
 
+	const initializeFunction = async () => {
+		let token = await AsyncStorage.getItem("access_token");
+		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
+		console.log(FCM_TOKEN);
+		await setAccessToken(token);
+	};
+
 	useEffect(() => {
+		initializeFunction();
 		// Assume a message-notification contains a "type" property in the data payload of the screen to open
 		messaging().onNotificationOpenedApp((remoteMessage) => {
 			console.log(
@@ -36,10 +47,12 @@ function App() {
 				}
 				setLoading(false);
 			});
+		SplashScreen.hide();
 	}, []);
+
 	return (
 		<ApolloProvider client={client}>
-			<MainStackNavigator />
+			<MainStackNavigator authorizeToken={accessToken} />
 		</ApolloProvider>
 	);
 }
