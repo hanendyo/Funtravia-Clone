@@ -524,7 +524,7 @@ export default function Register({ navigation }) {
 const styles = StyleSheet.create({
 	dividerText: {
 		fontSize: 14,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		alignSelf: "flex-end",
 		marginVertical: 10,
 	},
@@ -535,15 +535,15 @@ const styles = StyleSheet.create({
 	halfTextInput: {
 		width: Dimensions.get("window").width / 2.7,
 		borderBottomWidth: StyleSheet.hairlineWidth,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 	},
 	beforeSpecialText: {
 		fontSize: 14,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		alignSelf: "center",
 	},
 	specialTextButton: {
-		fontFamily: "lato-bold",
+		fontFamily: "Lato-Bold",
 		marginTop: 5,
 		fontSize: 14,
 		color: "#27958B",

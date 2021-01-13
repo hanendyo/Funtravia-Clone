@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
 	},
 	dividerText: {
 		fontSize: 14,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		alignSelf: "flex-end",
 		marginVertical: 10,
 	},
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
 	},
 	beforeSpecialText: {
 		fontSize: 14,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		alignSelf: "center",
 	},
 	welcomeText: {
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 	},
 	specialTextButton: {
-		fontFamily: "lato-bold",
+		fontFamily: "Lato-Bold",
 		marginLeft: 2,
 		fontSize: 14,
 		color: "#27958B",

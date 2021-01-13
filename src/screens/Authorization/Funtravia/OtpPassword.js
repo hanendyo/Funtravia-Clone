@@ -292,11 +292,11 @@ const styles = StyleSheet.create({
 	},
 	beforeSpecialText: {
 		fontSize: 12,
-		fontFamily: 'lato-reg',
+		fontFamily: 'Lato-Regular',
 		alignSelf: 'center',
 	},
 	specialTextButton: {
-		fontFamily: 'lato-bold',
+		fontFamily: 'Lato-Bold',
 		fontSize: 14,
 		color: '#27958B',
 		alignSelf: 'center',
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
 		fontSize: 25,
 		width: 40,
 		height: 40,
-		fontFamily: 'lato-bold',
+		fontFamily: 'Lato-Bold',
 		backgroundColor: '#F2F2F2',
 	},
 
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
 	},
 
 	numberInputText: {
-		fontFamily: 'lato-bold',
+		fontFamily: 'Lato-Bold',
 		alignContent: 'center',
 		justifyContent: 'center',
 		borderBottomWidth: 0,

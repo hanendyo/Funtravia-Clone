@@ -374,12 +374,12 @@ const styles = StyleSheet.create({
 	},
 	dividerText: {
 		fontSize: 16,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		alignSelf: "flex-end",
 	},
 	beforeSpecialText: {
 		fontSize: 12,
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		alignSelf: "center",
 	},
 	welcomeText: {
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	specialTextButton: {
-		fontFamily: "lato-bold",
+		fontFamily: "Lato-Bold",
 		fontSize: 18,
 		color: "#27958B",
 		alignSelf: "center",
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
 		// alignItems: 'center',
 	},
 	numberInputText: {
-		fontFamily: "lato-bold",
+		fontFamily: "Lato-Bold",
 		alignContent: "center",
 		justifyContent: "center",
 		borderBottomWidth: 0,

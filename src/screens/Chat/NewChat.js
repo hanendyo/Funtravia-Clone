@@ -229,7 +229,7 @@ export default function NewChat(props) {
 							placeholder={t("search")}
 							style={{
 								width: "100%",
-								fontFamily: "lato-reg",
+								fontFamily: "Lato-Regular",
 								fontSize: 14,
 							}}
 							value={search}
@@ -257,7 +257,7 @@ NewChat.navigationOptions = ({ navigation }) => ({
 		fontSize: 50,
 	},
 	headerTitleStyle: {
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		fontSize: 14,
 		color: "white",
 	},

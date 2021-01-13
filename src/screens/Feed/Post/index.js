@@ -51,7 +51,7 @@ export default function Post(props) {
 			borderBottomWidth: 0,
 		},
 		headerTitleStyle: {
-			fontFamily: "lato-reg",
+			fontFamily: "Lato-Regular",
 			fontSize: 14,
 			color: "white",
 		},
@@ -130,7 +130,7 @@ export default function Post(props) {
 							style={{
 								color: "#FFF",
 								// fontWeight: 'bold',
-								fontFamily: "lato-bold",
+								fontFamily: "Lato-Bold",
 								fontSize: 14,
 								marginHorizontal: 5,
 								marginVertical: 10,
@@ -213,7 +213,6 @@ export default function Post(props) {
 		props.navigation.setParams({ file: tmpFile });
 	};
 
-<<<<<<< Updated upstream
 	useEffect(() => {
 		props.navigation.setOptions(HeaderComponent);
 		(async () => {
@@ -221,14 +220,6 @@ export default function Post(props) {
 			await requestCameraPermission();
 			await getImageFromRoll(null);
 		})();
-=======
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-    (async () => {
-      await getAlbumRoll();
-      await getImageFromRoll(null);
-    })();
->>>>>>> Stashed changes
 
 		// (async () => {
 		// 	let { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -552,7 +543,7 @@ export default function Post(props) {
 				data={imageRoll && imageRoll.length ? imageRoll : null}
 				renderItem={({ item, index }) =>
 					item.mediaType !== "camera" ? (
-            console.log(item.node.image.uri),
+            console.log(item.node.image),
 						<TouchableOpacity
 							style={{
 								// flex: 1,
@@ -569,8 +560,8 @@ export default function Post(props) {
 							onPress={() => getsize(item)}
 						>
 							<Image
-								source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
-								// source={require(item.node.image.uri) }
+								// source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
+								source={{uri:item.node.image.uri}}
 								style={{
 									height: Dimensions.get('screen').width / 4 - 1,
 									width: Dimensions.get('screen').width / 4 - 1,

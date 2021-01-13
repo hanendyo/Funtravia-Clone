@@ -8,6 +8,7 @@ import FunIcon from "./src/FunIcon";
 import PhoneCodeSelector from "./src/PhoneCodeSelector";
 import Truncate from "./src/Truncate";
 import Loading from "./src/Loading";
+import Sidebar from "./src/Sidebar";
 
 export {
 	Text,
@@ -20,4 +21,5 @@ export {
 	PhoneCodeSelector,
 	Truncate,
 	Loading,
+	Sidebar,
 };

@@ -39,7 +39,7 @@ export default function Message({ navigation }) {
 			borderBottomWidth: 0,
 		},
 		headerTitleStyle: {
-			fontFamily: "lato-reg",
+			fontFamily: "Lato-Regular",
 			fontSize: 14,
 			color: "white",
 		},

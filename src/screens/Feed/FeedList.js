@@ -366,7 +366,7 @@ export default function FeedList({
                   : props.navigation.push("ProfileTab");
               }}
               style={{
-                fontFamily: "lato-bold",
+                fontFamily: "Lato-Bold",
                 fontSize: 14,
                 // marginTop: 7,
               }}
@@ -382,7 +382,7 @@ export default function FeedList({
             >
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   // marginTop: 7,
                 }}
@@ -403,7 +403,7 @@ export default function FeedList({
               {dataRender.location_name ? (
                 <Text
                   style={{
-                    fontFamily: "lato-reg",
+                    fontFamily: "Lato-Regular",
                     fontSize: 10,
                     // marginTop: 7,
                   }}
@@ -446,7 +446,7 @@ export default function FeedList({
             {/* <Text
 							style={{
 								textAlign: 'left',
-								fontFamily: 'lato-bold',
+								fontFamily: 'Lato-Bold',
 								fontSize: 14,
 								color: '#616161',
 								marginRight: 5,
@@ -458,14 +458,14 @@ export default function FeedList({
               <Text
                 style={{
                   textAlign: "left",
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 14,
                   lineHeight: 20,
                 }}
               >
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     marginRight: 5,
                   }}
                 >

@@ -124,7 +124,7 @@ export default function LoginFacebook({ navigation }) {
 						}}
 					>
 						<Text
-							style={{ fontSize: 25, fontFamily: "lato-bold" }}
+							style={{ fontSize: 25, fontFamily: "Lato-Bold" }}
 							type="bold"
 							size="h5"
 						>

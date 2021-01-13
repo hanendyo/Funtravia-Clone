@@ -1,10 +1,8 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
-  ScrollView,
   StyleSheet,
   View,
   FlatList,
-  Button,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -14,61 +12,20 @@ import {
   Keyboard,
   AsyncStorage,
 } from "react-native";
-import { Input, CustomText, Calendar, CustomImage } from "../../../core-ui";
 import { Text } from "native-base";
-import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
-import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
-import { NavigationEvents, SafeAreaView } from "react-navigation";
+import { NavigationEvents } from "react-navigation";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
-import {
-  Comment,
-  LikeRed,
-  LikeEmpty,
-  PostButton,
-  OptionsVertBlack,
-  ShareBlack,
-  Kosong,
-  Arrowbackwhite,
-  OptionsVertWhite,
-} from "../../../const/Svg";
+import { Arrowbackwhite } from "../../../const/Svg";
 export default function Comments(props) {
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  // let [datafeed?.feed_post_byid?, setdatafeed?.feed_post_byid?] = useState(props.navigation.getParam('data'));
-  let [postid, setPostid] = useState(props.navigation.getParam("post_id"));
+  let [datauser] = useState(props.navigation.getParam("datauser"));
+  let [dataPost, setDataPost] = useState(props.navigation.getParam("data"));
   let [token, setToken] = useState(props.navigation.getParam("token"));
   let slider = useRef();
-  let [setting, setSetting] = useState();
-  // console.log(setting?.user?.first_name);
-  const onSelect = useCallback(
-    (id) => {
-      let newSelected = new Map(selected);
-      newSelected.set(id, !selected.get(id));
-      setLiked(!liked);
-      likeToggle(liked);
-      setSelected(newSelected);
-    },
-    [selected]
-  );
-
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    // console.log(tkn);
-    await GetFeed();
-    await GetCommentList();
-    // if (datas && datas.setting_data) {
-    // 	await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
-    // }
-
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
-
-  useEffect(() => {
-    loadAsync();
-  }, []);
+  let [users, setuser] = useState(null);
 
   const [
     MutationComment,
@@ -82,7 +39,20 @@ export default function Comments(props) {
     },
   });
 
+  const loadasync = async () => {
+    let user = await AsyncStorage.getItem("setting");
+    user = JSON.parse(user);
+
+    setuser(user.user);
+  };
+
+  useEffect(() => {
+    loadasync();
+  }, []);
+
   const comment = async (id, text) => {
+    // console.log(id);
+    // console.log(text);
     Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
       try {
@@ -118,7 +88,7 @@ export default function Comments(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Insert a Text");
+      Alert.alert("Please Login");
     }
   };
 
@@ -145,7 +115,7 @@ export default function Comments(props) {
   // console.log(props.navigation.getParam('post_id'));
   const [GetCommentList, { data, loading, error }] = useLazyQuery(CommentList, {
     fetchPolicy: "network-only",
-    variables: { post_id: postid },
+    variables: { post_id: dataPost.id },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -153,25 +123,6 @@ export default function Comments(props) {
       },
     },
   });
-  const [
-    GetFeed,
-    { data: datafeed, loading: loadingfeed, error: errorfeed },
-  ] = useLazyQuery(FeedByID, {
-    fetchPolicy: "network-only",
-    variables: { post_id: postid },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  console.log(datafeed);
-
-  if (data) {
-    // console.log(data.comment[0].text);
-  }
 
   let [liked, setLiked] = useState(false);
 
@@ -184,6 +135,7 @@ export default function Comments(props) {
   };
 
   const duration = (datetime) => {
+    // datetime = datetime.replace(' ', 'T');
     var date1 = new Date(datetime).getTime();
     var date2 = new Date().getTime();
     var msec = date2 - date1;
@@ -210,12 +162,8 @@ export default function Comments(props) {
     return days + " Days, " + hrs + " Hours, " + mins + " Minutes";
   };
 
-  // const likeChange = () => {
-  // 	onSelect('selected'), setLiked(!liked);
-  // 	likeToggle(liked);
-  // };
-
   const Item = ({ dataComment }) => {
+    console.log(dataComment);
     return (
       <View
         style={{
@@ -228,6 +176,8 @@ export default function Comments(props) {
           marginVertical: 10,
         }}
       >
+        <NavigationEvents onDidFocus={() => loadasync()} />
+
         <View
           style={{
             width: "100%",
@@ -236,27 +186,26 @@ export default function Comments(props) {
             alignContent: "center",
           }}
         >
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              dataComment.user.id !== users.id
+                ? props.navigation.push("otherprofile", {
+                    idUser: dataComment.user.id,
+                  })
+                : props.navigation.push("ProfileTab");
+            }}
             style={{
               flexDirection: "row",
             }}
           >
-            <CustomImage
-              isTouchable
-              onPress={() => {
-                dataComment.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
-                      idUser: dataComment.user.id,
-                    })
-                  : props.navigation.push("ProfileTab");
-              }}
-              customStyle={{
+            <Image
+              style={{
                 height: 35,
                 width: 35,
-                borderRadius: 15,
+                borderRadius: 17.5,
                 alignSelf: "center",
+                resizeMode: "cover",
               }}
-              customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
               source={{ uri: dataComment.user?.picture }}
             />
             <View
@@ -266,13 +215,6 @@ export default function Comments(props) {
               }}
             >
               <Text
-                onPress={() => {
-                  dataComment.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: dataComment.user.id,
-                      })
-                    : props.navigation.push("ProfileTab");
-                }}
                 allowFontScaling={false}
                 style={{
                   fontFamily: "Lato-Bold",
@@ -293,7 +235,7 @@ export default function Comments(props) {
                 {duration(dataComment.created_at)}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -324,7 +266,7 @@ export default function Comments(props) {
         flex: 1,
       }}
     >
-      <NavigationEvents onDidFocus={() => loadAsync()} />
+      <NavigationEvents onDidFocus={() => GetCommentList()} />
       <View
         style={{
           // width: Dimensions.get('window').width,
@@ -336,7 +278,14 @@ export default function Comments(props) {
           marginTop: 15,
         }}
       >
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            datauser.id !== users.id
+              ? props.navigation.push("otherprofile", {
+                  idUser: datauser.id,
+                })
+              : props.navigation.push("ProfileTab");
+          }}
           style={{
             width: "100%",
             flexDirection: "row",
@@ -349,23 +298,16 @@ export default function Comments(props) {
               flexDirection: "row",
             }}
           >
-            <CustomImage
-              isTouchable
-              onPress={() => {
-                datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
-                      idUser: datafeed?.feed_post_byid?.user.id,
-                    })
-                  : props.navigation.push("ProfileTab");
-              }}
-              customStyle={{
+            <Image
+              style={{
                 height: 35,
                 width: 35,
-                borderRadius: 15,
+
                 alignSelf: "center",
+                resizeMode: "cover",
+                borderRadius: 50,
               }}
-              customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
-              source={{ uri: datafeed?.feed_post_byid?.user.picture }}
+              source={{ uri: datauser.picture }}
             />
             <View
               style={{
@@ -374,13 +316,6 @@ export default function Comments(props) {
               }}
             >
               <Text
-                onPress={() => {
-                  datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: datafeed?.feed_post_byid?.user.id,
-                      })
-                    : props.navigation.push("ProfileTab");
-                }}
                 allowFontScaling={false}
                 style={{
                   fontFamily: "Lato-Bold",
@@ -388,10 +323,8 @@ export default function Comments(props) {
                   // marginTop: 7,
                 }}
               >
-                {datafeed?.feed_post_byid?.user.first_name}{" "}
-                {datafeed?.feed_post_byid?.user.first_name
-                  ? datafeed?.feed_post_byid?.user.last_name
-                  : null}
+                {datauser.first_name} {""}{" "}
+                {datauser.first_name ? datauser.last_name : null}
               </Text>
               <Text
                 allowFontScaling={false}
@@ -401,20 +334,19 @@ export default function Comments(props) {
                   // marginTop: 7,
                 }}
               >
-                {duration(datafeed?.feed_post_byid?.created_at)}
+                {duration(dataPost.created_at)}
               </Text>
             </View>
           </View>
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              right: 0,
-              alignSelf: "center",
-            }}
-          >
-            <OptionsVertBlack height={20} width={20} />
-          </TouchableOpacity>
-        </View>
+          {/* <TouchableOpacity
+						style={{
+							position: 'absolute',
+							right: 0,
+							alignSelf: 'center',
+						}}>
+						<OptionsVertBlack height={20} width={20} />
+					</TouchableOpacity> */}
+        </TouchableOpacity>
         <View
           style={{
             width: "100%",
@@ -430,10 +362,11 @@ export default function Comments(props) {
               color: "#616161",
             }}
           >
-            {datafeed?.feed_post_byid?.caption}
+            {dataPost.caption}
           </Text>
         </View>
       </View>
+      {/* {console.log(data)} */}
 
       {/* <View> */}
       <FlatList
@@ -470,7 +403,11 @@ export default function Comments(props) {
         <TextInput
           allowFontScaling={false}
           multiline
-          placeholder={"Comment as " + setting?.user?.first_name + "..."}
+          placeholder={
+            "Comment as " +
+            (users && users.first_name ? users.first_name : "") +
+            "..."
+          }
           maxLength={255}
           style={{
             height: 60,
@@ -482,8 +419,10 @@ export default function Comments(props) {
           onChangeText={(text) => setStatusText(text)}
           value={statusText}
         />
+        {/* {console.log(dataPost)}
+				{console.log(dataPost.id)} */}
         <Pressable
-          onPress={() => comment(datafeed?.feed_post_byid?.id, statusText)}
+          onPress={() => comment(dataPost.id, statusText)}
           style={{
             flex: 1,
             // borderWidth: 1,

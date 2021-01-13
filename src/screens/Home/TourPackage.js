@@ -116,7 +116,7 @@ export default function TourPackage({props}) {
                   }}>
                   <Text
                     style={{
-                      fontFamily: 'lato-bold',
+                      fontFamily: 'Lato-Bold',
                       color: 'white',
                     }}>
                     {data &&
@@ -127,7 +127,7 @@ export default function TourPackage({props}) {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'lato-bold',
+                      fontFamily: 'Lato-Bold',
                       color: 'white',
                     }}>
                     {data &&
@@ -186,7 +186,7 @@ export default function TourPackage({props}) {
                   }}>
                   <Text
                     style={{
-                      fontFamily: 'lato-bold',
+                      fontFamily: 'Lato-Bold',
                       color: 'white',
                     }}>
                     {data &&
@@ -197,7 +197,7 @@ export default function TourPackage({props}) {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'lato-bold',
+                      fontFamily: 'Lato-Bold',
                       color: 'white',
                     }}>
                     {data &&
@@ -257,7 +257,7 @@ export default function TourPackage({props}) {
                   }}>
                   <Text
                     style={{
-                      fontFamily: 'lato-bold',
+                      fontFamily: 'Lato-Bold',
                       color: 'white',
                     }}>
                     {data &&
@@ -268,7 +268,7 @@ export default function TourPackage({props}) {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'lato-bold',
+                      fontFamily: 'Lato-Bold',
                       color: 'white',
                     }}>
                     {data &&

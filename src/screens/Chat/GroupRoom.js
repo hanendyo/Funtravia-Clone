@@ -316,7 +316,7 @@ Room.navigationOptions = ({ navigation }) => ({
 			</TouchableOpacity>
 			<Text
 				style={{
-					fontFamily: "lato-reg",
+					fontFamily: "Lato-Regular",
 					fontSize: 14,
 					color: "white",
 					alignSelf: "center",

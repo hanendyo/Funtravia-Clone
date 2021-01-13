@@ -8,6 +8,13 @@ import RegisterGoogleScreen from "../screens/Authorization/Google/RegisterGoogle
 import LoginFacebookScreen from "../screens/Authorization/Facebook/LoginFacebook";
 import RegisterFacebookScreen from "../screens/Authorization/Facebook/RegisterFacebook";
 import Postscreen from "../screens/Feed/Post";
+import MyProfile from "../screens/Profile/MyProfile";
+import FollowerPage from "../screens/Profile/Follower";
+import FollowingPage from "../screens/Profile/Following";
+import otherprofile from "../screens/Profile/OtherProfile";
+import otherFollower from "../screens/Profile/otherFollower";
+import otherFollowing from "../screens/Profile/otherFollowing";
+import profilesetting from "../screens/Profile/ProfileSettings";
 
 const SplashNavigation = createStackNavigator();
 export default function ListNavigationItems() {
@@ -38,6 +45,34 @@ export default function ListNavigationItems() {
 			<SplashNavigation.Screen
 				name="Post"
 				component={Postscreen}
+			/>
+			<SplashNavigation.Screen
+				name="ProfileTab"
+				component={MyProfile}
+			/>
+			<SplashNavigation.Screen
+				name="FollowerPage"
+				component={FollowerPage}
+			/>
+			<SplashNavigation.Screen
+				name="FollowingPage"
+				component={FollowingPage}
+			/>
+			<SplashNavigation.Screen
+				name="otherprofile"
+				component={otherprofile}
+			/>
+			<SplashNavigation.Screen
+				name="otherFollower"
+				component={otherFollower}
+			/>
+			<SplashNavigation.Screen
+				name="otherFollowing"
+				component={otherFollowing}
+			/>
+			<SplashNavigation.Screen
+				name="profilesetting"
+				component={profilesetting}
 			/>
 		</SplashNavigation.Navigator>
 	);

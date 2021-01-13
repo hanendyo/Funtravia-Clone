@@ -425,7 +425,7 @@ Home.navigationOptions = (props) => ({
 	// 	borderBottomWidth: 0,
 	// },
 	// headerTitleStyle: {
-	// 	fontFamily: 'lato-reg',
+	// 	fontFamily: 'Lato-Regular',
 	// 	fontSize: 14,
 	// 	color: 'white',
 	// 	alignSelf: 'center',
@@ -473,7 +473,7 @@ Home.navigationOptions = (props) => ({
 	// 					}}>
 	// 					<Text
 	// 						style={{
-	// 							fontFamily: 'lato-bold',
+	// 							fontFamily: 'Lato-Bold',
 	// 							fontSize: 9,
 	// 							color: 'white',
 	// 							alignSelf: 'center',

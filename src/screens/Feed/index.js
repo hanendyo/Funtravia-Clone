@@ -38,7 +38,7 @@ export default function Feed(props) {
 			borderBottomWidth: 0,
 		},
 		headerTitleStyle: {
-			fontFamily: "lato-reg",
+			fontFamily: "Lato-Regular",
 			fontSize: 14,
 			color: "white",
 		},
@@ -204,17 +204,17 @@ export default function Feed(props) {
         }}
       >
         <Text
-          style={{ fontSize: 20, fontFamily: "lato-bold", color: "#646464" }}
+          style={{ fontSize: 20, fontFamily: "Lato-Bold", color: "#646464" }}
         >
           Oopss...
         </Text>
         <Text
-          style={{ fontSize: 20, fontFamily: "lato-reg", color: "#646464" }}
+          style={{ fontSize: 20, fontFamily: "Lato-Regular", color: "#646464" }}
         >
           No Posts Here
         </Text>
         <Text
-          style={{ fontSize: 20, fontFamily: "lato-reg", color: "#646464" }}
+          style={{ fontSize: 20, fontFamily: "Lato-Regular", color: "#646464" }}
         >
           Add a Post!
         </Text>
@@ -328,7 +328,7 @@ export default function Feed(props) {
           >
             <Text
               style={{
-                fontFamily: "lato-bold",
+                fontFamily: "Lato-Bold",
                 fontSize: 14,
                 // marginTop: 7,
               }}
@@ -338,7 +338,7 @@ export default function Feed(props) {
             </Text>
             <Text
               style={{
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 fontSize: 10,
                 // marginTop: 7,
               }}
@@ -347,7 +347,7 @@ export default function Feed(props) {
             </Text>
             <Text
               style={{
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 fontSize: 10,
                 // marginTop: 7,
               }}
@@ -383,7 +383,7 @@ export default function Feed(props) {
             <Text
               style={{
                 textAlign: "left",
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 fontSize: 14,
                 color: "#616161",
               }}

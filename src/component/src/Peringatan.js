@@ -58,7 +58,7 @@ export default function ImageSlide({aler, setClose}) {
             <Text style={{fontFamily: 'lato-black', fontSize: 22}}>
               {aler.judul}
             </Text>
-            <Text style={{fontFamily: 'lato-reg', fontSize: 16}}>
+            <Text style={{fontFamily: 'Lato-Regular', fontSize: 16}}>
               {aler.detail}
             </Text>
           </View>

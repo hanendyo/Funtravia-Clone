@@ -14,7 +14,7 @@ export default function FloatingInput({
 
 	const labelStyle = {
 		position: "absolute",
-		fontFamily: "lato-reg",
+		fontFamily: "Lato-Regular",
 		left: 0,
 		top: animatedFocus.interpolate({
 			inputRange: [0, 0],
