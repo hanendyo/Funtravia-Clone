@@ -8,6 +8,7 @@ import {
 	FlatList,
 	ScrollView,
 	PermissionsAndroid,
+	Permission,
 } from "react-native";
 import {
 	CameraIcon,
@@ -16,7 +17,6 @@ import {
 	Comboboxup,
 	Comboboxdown,
 } from "../../../assets/svg";
-import AutoHeightImage from "react-native-auto-height-image";
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
@@ -95,7 +95,7 @@ export default function Post(props) {
 					}}
 				>
 					<TouchableOpacity
-						onPress={() => console.log("TEST")}
+						onPress={() => nextFunction()}
 						style={{
 							paddingRight: 10,
 						}}
@@ -104,7 +104,6 @@ export default function Post(props) {
 							allowFontScaling={false}
 							style={{
 								color: "#FFF",
-								// fontWeight: 'bold',
 								fontFamily: "Lato-Bold",
 								fontSize: 14,
 								marginHorizontal: 5,
@@ -125,22 +124,31 @@ export default function Post(props) {
 	const [imageRoll, setImageRoll] = useState([]);
 	const [isVisible, setIsVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [ratio, setRatio] = useState({ width: 1, height: 1, index: 0 });
+	const [recent, setRecent] = useState({
+		image: {
+			uri:
+				"https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909",
+		},
+		location: {},
+	});
+	let [cameraModal, setCameraModal] = useState(false);
+
+	const RatioIndex = {
+		0: { width: 1, height: 1, index: 0 },
+		1: { width: 5, height: 4, index: 1 },
+		2: { width: 3, height: 2, index: 2 },
+	};
 	let slider = useRef(null);
 	let scroll = useRef(null);
 	let cropRef = useRef(null);
-	const [recent, setRecent] = useState({
-		uri:
-			"https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909",
-	});
-	let [cameraModal, setCameraModal] = useState(false);
-	const [oriSize, SetOrisize] = useState({
-		width: 0,
-		height: 0,
-	});
-
 	const selectImg = async (file) => {
-		await setRecent(file.node.image);
+		await setRecent({ image: file.node.image, location: file.node.location });
 		await setLoading(false);
+	};
+
+	const nextFunction = async () => {
+		cropRef.current.saveImage();
 	};
 
 	useEffect(() => {
@@ -151,6 +159,7 @@ export default function Post(props) {
 			await getImageFromRoll(null);
 		})();
 	}, []);
+
 	const [selectedAlbum, setSelectedAlbum] = useState({
 		id: null,
 		title: "All Photos",
@@ -206,43 +215,21 @@ export default function Post(props) {
 		return 0;
 	};
 
-	const getImageFromRoll = async (data) => {
-		try {
-			const granted = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-			);
-			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-				console.log("getalbum");
-				CameraRoll.getPhotos({
-					first: 20,
-					assetType: "Photos",
-					groupTypes: "Album",
-					groupName: "Camera",
-					include: ["location", "filename", "imageSize"],
-				})
-					.then((r) => {
-						// r.sort(compare);
-						// console.log(r.edges);
-						console.log(r.edges[0]);
-						// setAllalbum(r);
-						let data_foto = r.edges;
-						let camera = {
-							id: "0",
-							mediaType: "camera",
-						};
-						data_foto.splice(0, 0, camera);
-						setImageRoll(data_foto);
-					})
-					.catch((err) => {
-						//Error Loading Images
-					});
-				console.log("You can use the camera");
-			} else {
-				console.log("Camera permission denied");
-			}
-		} catch (err) {
-			console.warn(err);
-		}
+	const getImageFromRoll = async () => {
+		let dataCamera = await CameraRoll.getPhotos({
+			first: 20,
+			assetType: "Photos",
+			groupTypes: "Album",
+			groupName: "Camera",
+			include: ["location", "filename", "imageSize"],
+		});
+		let data_foto = dataCamera.edges;
+		let camera = {
+			id: "0",
+			mediaType: "camera",
+		};
+		data_foto.splice(0, 0, camera);
+		setImageRoll(data_foto);
 	};
 
 	const selectAlbum = async (item) => {
@@ -371,29 +358,26 @@ export default function Post(props) {
 				data={imageRoll && imageRoll.length ? imageRoll : null}
 				renderItem={({ item, index }) =>
 					item.mediaType !== "camera" ? (
-						(console.log(item.node.image),
-						(
-							<TouchableOpacity
+						<TouchableOpacity
+							style={{
+								alignContent: "center",
+								justifyContent: "center",
+								backgroundColor: "white",
+								alignItems: "center",
+								paddingVertical: 1,
+								paddingHorizontal: 1,
+							}}
+							onPress={() => selectImg(item)}
+						>
+							<Image
+								source={{ uri: item.node.image.uri }}
 								style={{
-									alignContent: "center",
-									justifyContent: "center",
-									backgroundColor: "white",
-									alignItems: "center",
-									paddingVertical: 1,
-									paddingHorizontal: 1,
+									height: Dimensions.get("screen").width / 4 - 1,
+									width: Dimensions.get("screen").width / 4 - 1,
+									resizeMode: "cover",
 								}}
-								onPress={() => selectImg(item)}
-							>
-								<Image
-									source={{ uri: item.node.image.uri }}
-									style={{
-										height: Dimensions.get("screen").width / 4 - 1,
-										width: Dimensions.get("screen").width / 4 - 1,
-										resizeMode: "cover",
-									}}
-								/>
-							</TouchableOpacity>
-						))
+							/>
+						</TouchableOpacity>
 					) : (
 						<TouchableOpacity
 							style={{
@@ -414,13 +398,48 @@ export default function Post(props) {
 				ListHeaderComponent={
 					<View>
 						<CropView
-							sourceUrl={recent.uri}
-							style={{ width: width, height: height / 2 }}
+							sourceUrl={recent.image.uri}
+							style={{ width: width, height: width }}
 							ref={cropRef}
-							onImageCrop={(res) => console.warn(res)}
+							onImageCrop={(result) =>
+								props.navigation.navigate("CreatePostScreen", {
+									location: recent.location,
+									image: result,
+								})
+							}
 							keepAspectRatio
-							aspectRatio={{ width: 16, height: 9 }}
+							aspectRatio={{ width: ratio.width, height: ratio.height }}
 						/>
+						<TouchableOpacity
+							onPress={() =>
+								setRatio(
+									ratio.index == 2 ? RatioIndex[0] : RatioIndex[ratio.index + 1]
+								)
+							}
+							style={{
+								paddingVertical: 10,
+								paddingHorizontal: 15,
+								backgroundColor: "#464646",
+								position: "absolute",
+								bottom: 0,
+								borderRadius: 5,
+								margin: 5,
+							}}
+						>
+							<Text
+								style={{
+									color: "#fff",
+									fontFamily: "Lato-Bold",
+									fontWeight: "bold",
+								}}
+							>
+								{ratio.index == 2
+									? `${RatioIndex[0].width} : ${RatioIndex[0].height}`
+									: `${RatioIndex[ratio.index + 1].width} : ${
+											RatioIndex[ratio.index + 1].height
+									  }`}
+							</Text>
+						</TouchableOpacity>
 					</View>
 				}
 			/>
