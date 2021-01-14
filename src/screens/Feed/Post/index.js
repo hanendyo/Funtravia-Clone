@@ -32,6 +32,8 @@ import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
 const { width, height } = Dimensions.get("window");
 import { useTranslation } from "react-i18next";
+import ImgToBase64 from 'react-native-image-base64';
+import {ImageCrop} from 'react-native-image-cropper'
 export default function Post(props) {
 	const HeaderComponent = {
 		title: "",
@@ -156,43 +158,9 @@ export default function Post(props) {
 		height: 0,
 	});
 
-	const getsize = (file) => {
-		// setLoading(true);
-		Image.getSize(file.node.image.uri, (width, height) => {
-			SetOrisize({
-				width: width,
-				height: height,
-			});
-			// console.log(width, height);
-			setSelected(file, width, height);
-			// window.scrollTo({ top: 0, behavior: 'smooth' });
-		});
-	};
-
-	const setSelected = async (file, width, height) => {
-		scroll.current.scrollTo({ y: 0, animated: true });
-		// slider.current.scrollToIndex({ animated: true, index: 0 });
-		const manipulate = await ImageManipulators.manipulateAsync(
-			file.uri,
-			[
-				{
-					// resize: {
-					// 	width: (width > 2048 ? width / 2: width),
-					// 	height: (height > 2048 ? height / 2:height),
-					// },
-					crop: {
-						originX: 0,
-						originY: 0,
-						width: width,
-						height: width,
-					},
-				},
-			],
-			{ compress: 0.5, base64: true }
-		);
-		let tmpFile = Object.assign(file, { base64: manipulate.base64 });
+	const selectImg = async (file) => {
 		// console.log(tmpFile);
-		await setRecent(tmpFile);
+		await setRecent(file.node.image);
 		await setLoading(false);
 		// setIsVisible(true);
 		props.navigation.setParams({ file: tmpFile });
@@ -341,7 +309,7 @@ export default function Post(props) {
 		// data_foto.splice(0, 0, camera);
 		// setImageRoll(data_foto);
 		// setRecent({ uri: data_foto[1]?.uri });
-		// getsize(data_foto[1]);
+		// selectImg(data_foto[1]);
 		// }
 		// });
 	};
@@ -492,7 +460,7 @@ export default function Post(props) {
 			{/* <CameraComponent
         open={cameraModal}
         setOpen={(e) => setCameraModal(e)}
-        setSelected={(e) => getsize(e)}
+        setSelected={(e) => selectImg(e)}
       /> */}
 
 			<_modalGalery />
@@ -538,9 +506,9 @@ export default function Post(props) {
 									alignItems: "center",
 									paddingVertical: 1,
 									paddingHorizontal: 1,
-									borderWidth: 1,
+									// borderWidth: 1,
 								}}
-								onPress={() => getsize(item)}
+								onPress={() => selectImg(item)}
 							>
 								<Image
 									// source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
@@ -586,6 +554,16 @@ export default function Post(props) {
 								backgroundColor: 'white',
 								justifyContent: 'center',
 							}}> */}
+						<ImageCrop 
+							ref={'cropper'}
+							image={recent.uri}
+							cropHeight={800}
+							cropWidth={800}
+							maxZoom={80}
+							minZoom={20}
+							panToMove={true}
+							pinchToZoom={true}
+							/>
 						<AutoHeightImage
 							width={Dimensions.get("window").width}
 							source={{

@@ -6,7 +6,7 @@ import Postscreen from "../../../screens/Feed/Post";
 const FeedStack = createStackNavigator();
 export default function FeedNavigation() {
 	return (
-		<FeedStack.Navigator initialRouteName="FeedScreen" headerMode="none">
+		<FeedStack.Navigator initialRouteName="FeedScreen" headerMode="screen">
 			<FeedStack.Screen name="FeedScreen" component={FeedScreen} />
 			<FeedStack.Screen name="Post" component={Postscreen} />
 		</FeedStack.Navigator>

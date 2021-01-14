@@ -209,6 +209,7 @@ dependencies {
         implementation jscFlavor
     }
     implementation project(':react-native-fbsdk')
+    implementation project(':RNGL')
 }
 
 // Run this once to be able to run the application with BUCK
