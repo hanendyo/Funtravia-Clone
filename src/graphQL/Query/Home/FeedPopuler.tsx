@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 const FeedPopuler = gql`
-	query {
-		feed_post_populer(limit: null) {
+	query($limit: Int) {
+		feed_post_populer(limit: $limit) {
 			id
 			caption
 			longitude

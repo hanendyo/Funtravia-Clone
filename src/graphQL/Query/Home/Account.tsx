@@ -18,6 +18,7 @@ const Account = gql`
 			phone
 			count_wishlist
 			count_itinerary_favorit
+			count_my_itinerary
 		}
 	}
 `;

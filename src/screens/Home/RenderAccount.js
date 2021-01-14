@@ -6,19 +6,19 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 
-export default function RenderAccount({ navigation, data, token, props }) {
+export default function RenderAccount({ data, token, props }) {
 	const { t } = useTranslation();
 
 	const login = () => {
-		navigation.navigate("login");
+		props.navigation.navigate("login");
 	};
 
 	const signUp = () => {
-		navigation.navigate("register");
+		props.navigation.navigate("register");
 	};
 
 	const goToProfile = (target) => {
-		navigation.navigate("ProfileTab");
+		props.navigation.navigate("ProfileTab");
 	};
 	return (
 		<View
@@ -166,7 +166,7 @@ export default function RenderAccount({ navigation, data, token, props }) {
 								onPress={() => props.navigation.navigate("TripPlaning")}
 							>
 								<Text size="description" type="bold" style={styles.statNumber}>
-									{data ? data.user_profile.count_review : 0}
+									{data ? data.user_profile.count_my_itinerary : 0}
 								</Text>
 								<Text size="small" type="regular" style={styles.statLabel}>
 									{t("trip")}

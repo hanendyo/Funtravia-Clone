@@ -15,7 +15,8 @@ import {CommentWhite, LikeWhite} from '../../assets/svg';
 import {useLazyQuery} from '@apollo/react-hooks';
 import FeedPopuler from '../../graphQL/Query/Home/FeedPopuler';
 import {Text, Button} from '../../component';
-// import {LinearGradient} from 'expo-linear-gradient';
+import {Truncate} from '../../component';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function SearchFeed({props}) {
   let placeholderFunFeed = [
@@ -41,12 +42,19 @@ export default function SearchFeed({props}) {
       created_at: '2020-12-17 16:37:38',
     },
   ];
+	let [token, setToken] = useState("");
+
   const [
     querySearchPost,
     {loading: loadingPost, data: dataPost, error: errorPost},
-  ] = useLazyQuery(FeedPopuler, {});
+  ] = useLazyQuery(FeedPopuler, {
+    variables: {
+      limit : 5
+    },
+    fetchPolicy: "network-only",
+  });
+  console.log('loading_post',dataPost);
   if (dataPost) {
-    // console.log(dataPost.search_feed_post[0]);
   }
   if (loadingPost) {
     console.log('Loading Data Post' + loadingPost);
@@ -204,7 +212,7 @@ export default function SearchFeed({props}) {
               </Text>
             </View>
           </TouchableOpacity>
-          {/* <LinearGradient
+          <LinearGradient
             colors={['black', 'transparent']}
             style={{
               height: '33%',
@@ -215,8 +223,7 @@ export default function SearchFeed({props}) {
             }}
             start={{x: 0, y: 1}}
             end={{x: 0, y: 0}}>
-            {caption && caption.length >= 20 ? (
-              <Text
+            <Text
                 size="description"
                 ellipsizeMode="clip"
                 numberOfLines={2}
@@ -228,8 +235,12 @@ export default function SearchFeed({props}) {
                   alignSelf: 'baseline',
                   justifyContent: 'space-around',
                 }}>
-                {caption}
-              </Text>
+                  {caption ? 
+                <Truncate text={caption} length={50} />
+              :null}
+            </Text>
+            {/* {caption && caption.length >= 20 ? (
+
             ) : (
               <Text
                 size="description"
@@ -245,7 +256,7 @@ export default function SearchFeed({props}) {
                 }}>
                 {caption}
               </Text>
-            )}
+            )} */}
             <View
               style={{
                 flexDirection: 'row',
@@ -303,7 +314,7 @@ export default function SearchFeed({props}) {
                 </Text>
               </Button>
             </View>
-          </LinearGradient> */}
+          </LinearGradient>
         </ImageBackground>
       </TouchableOpacity>
     );

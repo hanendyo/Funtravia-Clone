@@ -21,7 +21,7 @@ import MenuNew from "./MenuNew";
 import DiscoverCard from "./DiscoverCard";
 import FunFeed from "./FunFeed";
 
-export default function Home(props, { navigation }) {
+export default function Home(props) {
 	const { t } = useTranslation();
 	let [token, setToken] = useState("");
 	let [searchBg, setSearchBg] = useState("transparent");
@@ -54,7 +54,7 @@ export default function Home(props, { navigation }) {
 	};
 
 	const searchpage = () => {
-		navigation.navigate("SearchPage");
+		props.navigation.navigate("SearchPage");
 	};
 
 	useEffect(() => {
@@ -110,7 +110,7 @@ export default function Home(props, { navigation }) {
 						</View>
 						{seeAll ? (
 							<Text
-								onPress={() => navigation.navigate("AllDestination")}
+								onPress={() => props.navigation.navigate("AllDestination")}
 								type="bold"
 								size="small"
 								style={{ color: "#209FAE", alignSelf: "baseline" }}
@@ -151,7 +151,7 @@ export default function Home(props, { navigation }) {
 						}}
 					>
 						<RenderAccount
-							navigation={navigation}
+							props={props}
 							data={data ? data : null}
 							token={token}
 						/>
@@ -169,7 +169,7 @@ export default function Home(props, { navigation }) {
 						backgroundColor: `${searchBg}`,
 						height: 75,
 						borderColor: "white",
-						shadowColor: "#00000",
+						shadowColor: "#6F7273",
 						shadowOffset: { width: 0, height: 2 },
 						shadowOpacity: 5,
 						shadowRadius: 3,
@@ -186,12 +186,13 @@ export default function Home(props, { navigation }) {
 							flexDirection: "row",
 							alignItems: "center",
 							justifyContent: "center",
+							
 						}}
 					>
 						<View
 							style={{
 								alignItems: "center",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 								height: 45,
 								flexDirection: "row",
 								backgroundColor: "white",
@@ -199,12 +200,18 @@ export default function Home(props, { navigation }) {
 								borderWidth: 1,
 								borderColor: "#6F7273",
 								alignSelf: "center",
+								paddingHorizontal: 20,
 								width: Dimensions.get("screen").width * 0.9,
+								shadowColor: "#6F7273",
+								shadowOffset: { width: 0, height: 2 },
+								shadowOpacity: 5,
+								shadowRadius: 3,
+								elevation: 4,
 							}}
 						>
 							<View
 								style={{
-									marginRight: 8,
+									marginRight: 10,
 								}}
 							>
 								<CustomImage
@@ -250,7 +257,7 @@ export default function Home(props, { navigation }) {
 					label={"Collect Moments from Your Trip"}
 					seeAll={false}
 				/>
-				<FunFeed navigation={navigation} props={props} />
+				<FunFeed props={props} />
 			</Animated.ScrollView>
 		</SafeAreaView>
 	);

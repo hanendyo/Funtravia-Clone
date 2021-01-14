@@ -23,6 +23,7 @@ export default function HomeNavigation() {
         options={{
           headerTitle: "",
           headerTransparent: true,
+          headerShown: false,
         }}
       />
       <HomeStack.Screen
