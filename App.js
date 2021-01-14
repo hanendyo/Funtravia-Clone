@@ -4,7 +4,6 @@ import MainStackNavigator from "./src/navigation";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { default as ApolloClient } from "apollo-boost";
 import messaging from "@react-native-firebase/messaging";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SplashScreen from "react-native-splash-screen";
 import { API } from "./src/config";
 import "./src/i18n";
@@ -17,42 +16,30 @@ function App() {
 	});
 
 	const initializeFunction = async () => {
-		let token = await AsyncStorage.getItem("access_token");
-		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
-		console.log(FCM_TOKEN);
-		await setAccessToken(token);
+		await messaging().onNotificationOpenedApp((remoteMessage) => {
+			console.log("Background", remoteMessage.notification);
+			navigation.navigate(remoteMessage.data.type);
+		});
+
+		await messaging()
+			.getInitialNotification()
+			.then((remoteMessage) => {
+				if (remoteMessage) {
+					console.log("Open", remoteMessage.notification);
+					setInitialRoute(remoteMessage.data.type);
+				}
+			});
+		await setLoading(false);
+		await SplashScreen.hide();
 	};
 
 	useEffect(() => {
 		initializeFunction();
-		// Assume a message-notification contains a "type" property in the data payload of the screen to open
-		messaging().onNotificationOpenedApp((remoteMessage) => {
-			console.log(
-				"Notification caused app to open from background state:",
-				remoteMessage.notification
-			);
-			navigation.navigate(remoteMessage.data.type);
-		});
-
-		// Check whether an initial notification is available
-		messaging()
-			.getInitialNotification()
-			.then((remoteMessage) => {
-				if (remoteMessage) {
-					console.log(
-						"Notification caused app to open from quit state:",
-						remoteMessage.notification
-					);
-					setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-				}
-				setLoading(false);
-			});
-		SplashScreen.hide();
 	}, []);
 
 	return (
 		<ApolloProvider client={client}>
-			<MainStackNavigator authorizeToken={accessToken} />
+			<MainStackNavigator />
 		</ApolloProvider>
 	);
 }

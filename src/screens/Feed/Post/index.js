@@ -32,8 +32,7 @@ import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
 const { width, height } = Dimensions.get("window");
 import { useTranslation } from "react-i18next";
-import ImgToBase64 from 'react-native-image-base64';
-import {ImageCrop} from 'react-native-image-cropper'
+import ImgToBase64 from "react-native-image-base64";
 export default function Post(props) {
 	const HeaderComponent = {
 		title: "",
@@ -554,8 +553,8 @@ export default function Post(props) {
 								backgroundColor: 'white',
 								justifyContent: 'center',
 							}}> */}
-						<ImageCrop 
-							ref={'cropper'}
+						<ImageCrop
+							ref={"cropper"}
 							image={recent.uri}
 							cropHeight={800}
 							cropWidth={800}
@@ -563,7 +562,7 @@ export default function Post(props) {
 							minZoom={20}
 							panToMove={true}
 							pinchToZoom={true}
-							/>
+						/>
 						<AutoHeightImage
 							width={Dimensions.get("window").width}
 							source={{

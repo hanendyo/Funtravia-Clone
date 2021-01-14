@@ -22,6 +22,7 @@
 		4DB65A5B25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */; };
 		4DB65B5725AF0889006C9144 /* libFBSDKCoreKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65B5625AF0889006C9144 /* libFBSDKCoreKit.a */; };
 		4DB65B5925AF08A3006C9144 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65B5825AF08A3006C9144 /* libRNGoogleSignin.a */; };
+		4DD86ECB25AFE542002FF436 /* libreact-native-splash-screen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD86ECA25AFE542002FF436 /* libreact-native-splash-screen.a */; };
 		4DE243E525A8CA6000AC598D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */; };
 		6F0A5E3029BE4C5EABE2535F /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A23EFCA81E6547B2B0BB3F72 /* Lato-Light.ttf */; };
 		8199F39B07C94C45BEFA0831 /* Lato-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D20461D6B2E14AA8894EB244 /* Lato-Black.ttf */; };
@@ -72,6 +73,7 @@
 		4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftUniformTypeIdentifiers.tbd; path = usr/lib/swift/libswiftUniformTypeIdentifiers.tbd; sourceTree = SDKROOT; };
 		4DB65B5625AF0889006C9144 /* libFBSDKCoreKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKCoreKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DB65B5825AF08A3006C9144 /* libRNGoogleSignin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNGoogleSignin.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DD86ECA25AFE542002FF436 /* libreact-native-splash-screen.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-splash-screen.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		572621F01E0E42ED895A5D90 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../src/assets/fonts/Lato/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		62333709037551ABCAAEC36E /* libPods-funtravia.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-funtravia.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,6 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DD86ECB25AFE542002FF436 /* libreact-native-splash-screen.a in Frameworks */,
 				4DB65B5925AF08A3006C9144 /* libRNGoogleSignin.a in Frameworks */,
 				4DB65B5725AF0889006C9144 /* libFBSDKCoreKit.a in Frameworks */,
 				4DB65A5B25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd in Frameworks */,
@@ -184,6 +187,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4DD86ECA25AFE542002FF436 /* libreact-native-splash-screen.a */,
 				4DB65B5825AF08A3006C9144 /* libRNGoogleSignin.a */,
 				4DB65B5625AF0889006C9144 /* libFBSDKCoreKit.a */,
 				4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */,

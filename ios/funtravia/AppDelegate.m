@@ -12,7 +12,7 @@
 #import <Firebase.h>
 #import <RNGoogleSignin/RNGoogleSignin.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import "SplashScreen.h"
+#import <react-native-splash-screen/RNSplashScreen.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -52,7 +52,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [SplashScreen show];
+  [RNSplashScreen show];
   return YES;
 }
 
