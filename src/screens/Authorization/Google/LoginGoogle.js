@@ -19,17 +19,17 @@ import { useTranslation } from "react-i18next";
 import { Text, CustomImage, Peringatan } from "../../../component";
 import { GoogleSignin } from "@react-native-community/google-signin";
 
-GoogleSignin.configure({
-	iosClientId:
-		"com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne",
-	offlineAccess: false,
-});
 export default function LoginGoogle({ navigation }) {
 	const { t, i18n } = useTranslation();
 
 	const [mutation, { loading, data, error }] = useMutation(GoogleGraph);
 	let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 	const signInWithGoogle = async () => {
+		await GoogleSignin.configure({
+			iosClientId:
+				"292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne.apps.googleusercontent.com",
+			offlineAccess: false,
+		});
 		await GoogleSignin.hasPlayServices();
 		await GoogleSignin.signIn();
 		const result = await GoogleSignin.getTokens();

@@ -1,3 +1,3 @@
 module.exports = {
-  assets: ['./src/assets/fonts/Lato'],
+	assets: ["./src/assets/fonts/Lato"],
 };

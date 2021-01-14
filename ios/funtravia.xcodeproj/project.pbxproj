@@ -17,6 +17,11 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* funtraviaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* funtraviaTests.m */; };
 		4AFAFF3CA13962CBF58B20F8 /* libPods-funtravia-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF167F354BF2AFFFF79D063 /* libPods-funtravia-tvOSTests.a */; };
+		4DB65A4F25AEFE35006C9144 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65A4E25AEFE35006C9144 /* libswiftWebKit.tbd */; };
+		4DB65A5525AEFE6A006C9144 /* libswiftCoreMIDI.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65A5425AEFE6A006C9144 /* libswiftCoreMIDI.tbd */; };
+		4DB65A5B25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */; };
+		4DB65B5725AF0889006C9144 /* libFBSDKCoreKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65B5625AF0889006C9144 /* libFBSDKCoreKit.a */; };
+		4DB65B5925AF08A3006C9144 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB65B5825AF08A3006C9144 /* libRNGoogleSignin.a */; };
 		4DE243E525A8CA6000AC598D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */; };
 		6F0A5E3029BE4C5EABE2535F /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A23EFCA81E6547B2B0BB3F72 /* Lato-Light.ttf */; };
 		8199F39B07C94C45BEFA0831 /* Lato-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D20461D6B2E14AA8894EB244 /* Lato-Black.ttf */; };
@@ -62,6 +67,11 @@
 		2D02E4901E0B4A5D006451C7 /* funtravia-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "funtravia-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E9256D85BE38A940BF85BE6 /* Pods-funtravia-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-funtravia-tvOSTests/Pods-funtravia-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		3C9204ACD4473F93515B69CC /* Pods-funtravia-funtraviaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia-funtraviaTests.debug.xcconfig"; path = "Target Support Files/Pods-funtravia-funtraviaTests/Pods-funtravia-funtraviaTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4DB65A4E25AEFE35006C9144 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
+		4DB65A5425AEFE6A006C9144 /* libswiftCoreMIDI.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreMIDI.tbd; path = usr/lib/swift/libswiftCoreMIDI.tbd; sourceTree = SDKROOT; };
+		4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftUniformTypeIdentifiers.tbd; path = usr/lib/swift/libswiftUniformTypeIdentifiers.tbd; sourceTree = SDKROOT; };
+		4DB65B5625AF0889006C9144 /* libFBSDKCoreKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKCoreKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DB65B5825AF08A3006C9144 /* libRNGoogleSignin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNGoogleSignin.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		572621F01E0E42ED895A5D90 /* Lato-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Bold.ttf"; path = "../src/assets/fonts/Lato/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		62333709037551ABCAAEC36E /* libPods-funtravia.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-funtravia.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +106,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DB65B5925AF08A3006C9144 /* libRNGoogleSignin.a in Frameworks */,
+				4DB65B5725AF0889006C9144 /* libFBSDKCoreKit.a in Frameworks */,
+				4DB65A5B25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd in Frameworks */,
+				4DB65A5525AEFE6A006C9144 /* libswiftCoreMIDI.tbd in Frameworks */,
+				4DB65A4F25AEFE35006C9144 /* libswiftWebKit.tbd in Frameworks */,
 				04C4949E7971A0D4D0BE99E7 /* libPods-funtravia.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,6 +169,7 @@
 		13B07FAE1A68108700A75B9A /* funtravia */ = {
 			isa = PBXGroup;
 			children = (
+				4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -168,6 +184,11 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4DB65B5825AF08A3006C9144 /* libRNGoogleSignin.a */,
+				4DB65B5625AF0889006C9144 /* libFBSDKCoreKit.a */,
+				4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */,
+				4DB65A5425AEFE6A006C9144 /* libswiftCoreMIDI.tbd */,
+				4DB65A4E25AEFE35006C9144 /* libswiftWebKit.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				62333709037551ABCAAEC36E /* libPods-funtravia.a */,
@@ -188,7 +209,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* funtravia */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* funtraviaTests */,
@@ -323,6 +343,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = X88279Q7H6;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -411,7 +432,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		17EE83F8CA1F5C8D45569EF2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -480,13 +501,17 @@
 				"${PODS_ROOT}/Target Support Files/Pods-funtravia-funtraviaTests/Pods-funtravia-funtraviaTests-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -556,13 +581,17 @@
 				"${PODS_ROOT}/Target Support Files/Pods-funtravia/Pods-funtravia-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -710,9 +739,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X88279Q7H6;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = funtravia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -733,8 +767,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = X88279Q7H6;
 				INFOPLIST_FILE = funtravia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

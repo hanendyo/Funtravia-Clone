@@ -17,17 +17,17 @@ import { Text, CustomImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { GoogleSignin } from "@react-native-community/google-signin";
 
-GoogleSignin.configure({
-	iosClientId:
-		"com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne",
-	offlineAccess: false,
-});
 export default function RegisterGoogle({ navigation }) {
 	const { t, i18n } = useTranslation();
 
 	const [mutation, { loading, data, error }] = useMutation(Googlegql);
 	const signInWithGoogle = async () => {
 		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
+		await GoogleSignin.configure({
+			iosClientId:
+				"292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne.apps.googleusercontent.com",
+			offlineAccess: false,
+		});
 		await GoogleSignin.hasPlayServices();
 		await GoogleSignin.signIn();
 		const result = await GoogleSignin.getTokens();

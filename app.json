@@ -1,4 +1,15 @@
 {
-  "name": "funtravia",
-  "displayName": "funtravia"
+	"name": "funtravia",
+	"displayName": "funtravia",
+	"ios": {
+		"supportsTablet": true,
+		"bundleIdentifier": "com.funtravia.apps",
+		"buildNumber": "1.0.5.13",
+		"config": {
+			"googleSignIn": {
+				"reservedClientId": "com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne"
+			}
+		},
+		"googleServicesFile": "./GoogleService-Info.plist"
+	}
 }

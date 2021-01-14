@@ -10,6 +10,9 @@
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
 #import <Firebase.h>
+#import <RNGoogleSignin/RNGoogleSignin.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import "SplashScreen.h"
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -24,6 +27,10 @@ static void InitializeFlipper(UIApplication *application) {
 
 @implementation AppDelegate
 
+- (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options] || [RNGoogleSignin application:application openURL:url options:options];
+}
+    
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   if ([FIRApp defaultApp] == nil) {
@@ -45,6 +52,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [SplashScreen show];
   return YES;
 }
 
