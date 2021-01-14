@@ -9,33 +9,59 @@ import {
   TouchableOpacity,
   Alert,
   RefreshControl,
-  // Modal,
 } from "react-native";
 import Modal from "react-native-modal";
-import { AsyncStorage } from "react-native";
-import {} from "../../../const/PixelRatio";
-//data_bg nanti itu Profile Picture, data_pic itu avatar
-import { default_image, Emptys } from "../../../const/Png";
-import { Sharegreen, Arrowbackwhite, Pluswhite } from "../../../const/Svg";
-// import {  } from 'react-native-gesture-handler';
-import Ripple from "react-native-material-ripple";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
-import { Button, Text } from "../../../Component";
-import { NavigationEvents } from "react-navigation";
-import album from "../../../graphQL/Query/Profile/album";
-import Uploadfoto from "../../../graphQL/Mutation/Profile/Uploadfotoalbum";
-import * as ImageManipulators from "expo-image-manipulator";
-import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
-
-import Loading from "../Loading";
+import { Emptys } from "../../assets/png";
+import { Sharegreen, Arrowbackwhite, Pluswhite } from "../../assets/svg";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { Button, Text, Loading } from "../../component";
+import album from "../../graphQL/Query/Profile/album";
+import Uploadfoto from "../../graphQL/Mutation/Profile/Uploadfotoalbum";
+import ImagePicker from "react-native-image-crop-picker";
 import { useTranslation } from "react-i18next";
 
 export default function tripalbum(props) {
+  const HeaderComponent = {
+    title: "Trip Album",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Trip Album",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
   const { t, i18n } = useTranslation();
-  let iditinerary = props.navigation.getParam("iditinerary");
-  let token = props.navigation.getParam("token");
-  let position = props.navigation.getParam("position");
+  let iditinerary = props.route.params.iditinerary;
+  let token = props.route.params.token;
+  let position = props.route.params.position;
   let [loading, setLoading] = useState(false);
   let [day_id, setday_id] = useState();
   let [modals, setmodal] = useState(false);
@@ -80,43 +106,13 @@ export default function tripalbum(props) {
   const onRefresh = () => {
     getdataalbum();
     wait(1000).then(() => setRefreshing(false));
-
-    (async () => {
-      let { status } = await Permissions.askAsync(Permissions.CAMERA);
-      if (status !== "granted") {
-        Alert.alert(t("permissioncamera"));
-      }
-    })();
-
-    (async () => {
-      let { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-      if (status !== "granted") {
-        Alert.alert(t("permissioncamera"));
-      }
-    })();
-
-    // (async () => {
-    // 	let { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-
-    // 	if (status !== 'granted') {
-    // 		Alert.alert(
-    // 			t('permissioncamera')
-    // 		);
-    // 	}
-    // })();
   };
 
   const upload = async (data) => {
     setmodal(false);
     setLoading(true);
-    // console.log(data);
-    const manipulate = await ImageManipulators.manipulateAsync(data, [], {
-      compress: 0.5,
-      base64: true,
-    });
-    let tmpFile = Object.assign(data, { base64: manipulate.base64 });
-    if (tmpFile.base64) {
+
+    if (data) {
       // console.log(tmpFile.base64);
       try {
         let response = await mutationUpload({
@@ -124,7 +120,7 @@ export default function tripalbum(props) {
             itinerary_id: iditinerary,
             day_id: day_id,
             description: "0",
-            assets: "data:image/jpeg;base64," + tmpFile.base64,
+            assets: "data:image/jpeg;base64," + data,
           },
         });
         if (errorupload) {
@@ -147,27 +143,35 @@ export default function tripalbum(props) {
   };
 
   const pickcamera = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    ImagePicker.openCamera({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
     });
-    if (!result.cancelled) {
-      upload(result.uri);
-    }
   };
   const pickGallery = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    ImagePicker.openPicker({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
     });
-    if (!result.cancelled) {
-      upload(result.uri);
-    }
   };
-  // console.log(dataalbum);
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      onRefresh();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   return (
     <ScrollView
@@ -360,6 +364,11 @@ export default function tripalbum(props) {
                         }}
                       >
                         <Button
+                          onPress={() => {
+                            setmodal(true);
+                            setday_id(item.id);
+                            // props.navigation.push('tripalbumdetail')
+                          }}
                           type="circle"
                           style={{ borderRadius: 5, height: 60, width: 60 }}
                           color="tertiary"
@@ -534,7 +543,7 @@ export default function tripalbum(props) {
           })
         : null}
       <Loading show={loading} />
-      <NavigationEvents onDidFocus={() => onRefresh()} />
+      {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}
 
       <Modal
         onBackdropPress={() => {
@@ -584,44 +593,3 @@ export default function tripalbum(props) {
     </ScrollView>
   );
 }
-
-tripalbum.navigationOptions = (props) => ({
-  // headerTransparent: true,
-  headerTitle: "Trip Album",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    // fontSize: 50,
-    // justifyContent: 'center',
-    // flex:1,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => props.navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-  headerRight: <View style={{ flexDirection: "row" }}></View>,
-  headerRightStyle: {
-    // paddingRight: 20,
-  },
-});

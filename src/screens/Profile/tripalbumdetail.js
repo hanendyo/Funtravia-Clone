@@ -3,38 +3,66 @@ import {
   View,
   Dimensions,
   Image,
-  SafeAreaView,
-  Platform,
   TouchableOpacity,
   Alert,
   RefreshControl,
+  FlatList,
 } from "react-native";
-import { AsyncStorage, FlatList, ScrollView } from "react-native";
-import {} from "../../../const/PixelRatio";
-//data_bg nanti itu Profile Picture, data_pic itu avatar
-import { Sharegreen, Arrowbackwhite } from "../../../const/Svg";
+import { Sharegreen, Arrowbackwhite } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { Button, Text } from "../../../Component";
+import { Button, Text, Loading } from "../../component";
 import { useTranslation } from "react-i18next";
-import { default_image } from "../../../const/Png";
-import Uploadfoto from "../../../graphQL/Mutation/Profile/Uploadfotoalbum";
-import * as ImageManipulators from "expo-image-manipulator";
-import * as ImagePicker from "expo-image-picker";
-import Loading from "../Loading";
+import { default_image } from "../../assets/png";
+import Uploadfoto from "../../graphQL/Mutation/Profile/Uploadfotoalbum";
 import Modal from "react-native-modal";
-import * as Permissions from "expo-permissions";
-import { NavigationEvents } from "react-navigation";
-import album from "../../../graphQL/Query/Profile/albumdetail";
-import ImageSlide from "../ImageSlide/sliderwithoutlist";
+import album from "../../graphQL/Query/Profile/albumdetail";
+import ImageSlide from "../../component/src/ImageSlide/sliderwithoutlist";
+import ImagePicker from "react-native-image-crop-picker";
 
 export default function tripalbumdetail(props) {
+  const HeaderComponent = {
+    title: "Trip Album",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Trip Album",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
   const { t, i18n } = useTranslation();
-  // let data = props.navigation.getParam('data');
-  let iditinerary = props.navigation.getParam("iditinerary");
-  let token = props.navigation.getParam("token");
-  let day_id = props.navigation.getParam("day_id");
-  let judul = props.navigation.getParam("judul");
-  let position = props.navigation.getParam("position");
+  let iditinerary = props.route.params.iditinerary;
+  let token = props.route.params.token;
+  let day_id = props.route.params.day_id;
+  let judul = props.route.params.judul;
+  let position = props.route.params.position;
   let [modals, setmodal] = useState(false);
   let [loading, setLoading] = useState(false);
 
@@ -79,43 +107,13 @@ export default function tripalbumdetail(props) {
   const onRefresh = () => {
     getdataalbum();
     wait(1000).then(() => setRefreshing(false));
-
-    (async () => {
-      let { status } = await Permissions.askAsync(Permissions.CAMERA);
-      if (status !== "granted") {
-        Alert.alert(t("permissioncamera"));
-      }
-    })();
-
-    (async () => {
-      let { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-      if (status !== "granted") {
-        Alert.alert(t("permissioncamera"));
-      }
-    })();
-
-    // (async () => {
-    // 	let { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-
-    // 	if (status !== 'granted') {
-    // 		Alert.alert(
-    // 			t('permissioncamera')
-    // 		);
-    // 	}
-    // })();
   };
 
   const upload = async (data) => {
     setmodal(false);
     setLoading(true);
-    // console.log(data);
-    const manipulate = await ImageManipulators.manipulateAsync(data, [], {
-      compress: 0.5,
-      base64: true,
-    });
-    let tmpFile = Object.assign(data, { base64: manipulate.base64 });
-    if (tmpFile.base64) {
+
+    if (data) {
       // console.log(tmpFile.base64);
       try {
         let response = await mutationUpload({
@@ -123,7 +121,7 @@ export default function tripalbumdetail(props) {
             itinerary_id: iditinerary,
             day_id: day_id,
             description: "0",
-            assets: "data:image/jpeg;base64," + tmpFile.base64,
+            assets: "data:image/jpeg;base64," + data,
           },
         });
         if (errorupload) {
@@ -146,35 +144,35 @@ export default function tripalbumdetail(props) {
   };
 
   const pickcamera = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    ImagePicker.openCamera({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
     });
-    if (!result.cancelled) {
-      upload(result.uri);
-    }
   };
-
   const pickGallery = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+    ImagePicker.openPicker({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
     });
-    if (!result.cancelled) {
-      upload(result.uri);
-    }
   };
 
-  // {
-  // 	dataalbum &&
-  // 	dataalbum.itinerary_album_list &&
-  // 	dataalbum.itinerary_album_list.day_album.length > 0
-  // 		? console.log('coming soon')
-  // 		: null;
-  // }
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      onRefresh();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   let [index, setIndex] = useState(0);
   let [dataImage, setImage] = useState([]);
@@ -182,10 +180,10 @@ export default function tripalbumdetail(props) {
 
   const setdataimage = async (data, inde) => {
     setIndex(inde);
-    // console.log(data);
     var tempdatas = [];
     var x = 0;
     for (var i in data.album) {
+      // console.log(data.album[i].photoby.first_name);
       tempdatas.push({
         key: i,
         selected: i === inde ? true : false,
@@ -195,7 +193,7 @@ export default function tripalbumdetail(props) {
         props: {
           source: data.album[i].assets ? data.album[i].assets : "",
         },
-        by: data.album[i].created_by,
+        by: data.album[i].photoby.first_name,
       });
       x++;
     }
@@ -206,7 +204,7 @@ export default function tripalbumdetail(props) {
   return (
     <View style={{ flex: 1 }}>
       <Loading show={loading} />
-      <NavigationEvents onDidFocus={() => onRefresh()} />
+      {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}
 
       <Modal
         onBackdropPress={() => {

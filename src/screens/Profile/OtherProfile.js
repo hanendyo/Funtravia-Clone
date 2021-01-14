@@ -369,7 +369,8 @@ export default function OtherProfile(props) {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}
+      <Loading show={loading} />
+
       <ImageBackground
         source={Akunsaya}
         imageStyle={{
@@ -382,124 +383,131 @@ export default function OtherProfile(props) {
           height: 200,
         }}
       ></ImageBackground>
-      <View
-        style={{
-          width: Dimensions.get("screen").width,
-          justifyContent: "space-between",
-          flexDirection: "row",
-          // position: 'absolute',
-          marginTop: -30,
-          paddingHorizontal: 20,
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            shadowOpacity: 0.5,
-            shadowColor: "#d3d3d3",
-            elevation: 4,
-            alignSelf: "center",
-            borderColor: "white",
-            borderRadius: 60,
-            borderWidth: 3,
-            backgroundColor: "#B8E0E5",
-            height: 101,
-            width: 101,
-
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={image_profile}
+      {data && data.user_profilebyid ? (
+        <>
+          <View
             style={{
-              borderRadius: 60,
-              resizeMode: "cover",
-              height: "100%",
-              width: "100%",
+              width: Dimensions.get("screen").width,
+              justifyContent: "space-between",
+              flexDirection: "row",
+              // position: 'absolute',
+              marginTop: -30,
+              paddingHorizontal: 20,
+              alignItems: "center",
             }}
-          />
-        </View>
+          >
+            <View
+              style={{
+                shadowOpacity: 0.5,
+                shadowColor: "#d3d3d3",
+                elevation: 4,
+                alignSelf: "center",
+                borderColor: "white",
+                borderRadius: 60,
+                borderWidth: 3,
+                backgroundColor: "#B8E0E5",
+                height: 101,
+                width: 101,
 
-        <View
-          style={{
-            marginTop: 20,
-            width: "65%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            alignItems: "center",
-            // borderWidth: 1,
-          }}
-        >
-          {data &&
-          data.user_profilebyid &&
-          data.user_profilebyid.status_following === true ? (
-            <Button
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={image_profile}
+                style={{
+                  borderRadius: 60,
+                  resizeMode: "cover",
+                  height: "100%",
+                  width: "100%",
+                }}
+              />
+            </View>
+
+            <View
               style={{
-                width: "49%",
+                marginTop: 20,
+                width: "65%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignContent: "center",
+                alignItems: "center",
+                // borderWidth: 1,
               }}
-              size="small"
-              color={"primary"}
-              variant={"bordered"}
-              text={t("unfollow")}
-              onPress={() => _unfollow(data.user_profilebyid.id)}
-            />
-          ) : (
-            <Button
-              style={{
-                width: "49%",
-              }}
-              size="small"
-              color={"secondary"}
-              variant={"normal"}
-              text={t("follow")}
-              onPress={() => {
-                _follow(data.user_profilebyid.id);
-              }}
-            />
-          )}
-          {data && data.user_profilebyid.id ? (
-            <Button
-              onPress={() => _handlemessage(data.user_profilebyid.id, token)}
-              style={{
-                width: "49%",
-              }}
-              size="small"
-              color="black"
-              variant="bordered"
-              text={t("Message")}
-            />
-          ) : null}
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          width: Dimensions.get("screen").width,
-          justifyContent: "space-between",
-          paddingHorizontal: 20,
-          alignItems: "center",
-          alignContent: "center",
-          marginTop: 5,
-          // borderWidth: 1,
-        }}
-      >
-        {/* <Pressable style={styles.pointButtonView}>
+            >
+              {data &&
+              data.user_profilebyid &&
+              data.user_profilebyid.status_following === true ? (
+                <Button
+                  style={{
+                    width: "49%",
+                  }}
+                  size="small"
+                  color={"primary"}
+                  variant={"bordered"}
+                  text={t("unfollow")}
+                  onPress={() => _unfollow(data.user_profilebyid.id)}
+                />
+              ) : (
+                <Button
+                  style={{
+                    width: "49%",
+                  }}
+                  size="small"
+                  color={"secondary"}
+                  variant={"normal"}
+                  text={t("follow")}
+                  onPress={() => {
+                    _follow(data.user_profilebyid.id);
+                  }}
+                />
+              )}
+              {data && data.user_profilebyid.id ? (
+                <Button
+                  onPress={() =>
+                    _handlemessage(data.user_profilebyid.id, token)
+                  }
+                  style={{
+                    width: "49%",
+                  }}
+                  size="small"
+                  color="black"
+                  variant="bordered"
+                  text={t("Message")}
+                />
+              ) : null}
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              width: Dimensions.get("screen").width,
+              justifyContent: "space-between",
+              paddingHorizontal: 20,
+              alignItems: "center",
+              alignContent: "center",
+              marginTop: 5,
+              // borderWidth: 1,
+            }}
+          >
+            {/* <Pressable style={styles.pointButtonView}>
 					<PointIcon2 height={17} width={17} />
 					<Text type='bold' size='label' style={{}}>
 						{count_points} {t('point')}
 					</Text>
 					<PointGo height={10} width={10} style={{ marginRight: 5 }} />
 				</Pressable> */}
-        <View style={{ width: "50%" }}>
-          <Text type="bold" size="label" style={{ marginRight: 10 }}>
-            {`${initfirstname} ` + `${initlastname}`}
-          </Text>
-          <Text type="regular" size="description">{`@${initusername} `}</Text>
-        </View>
+            <View style={{ width: "50%" }}>
+              <Text type="bold" size="label" style={{ marginRight: 10 }}>
+                {`${initfirstname} ` + `${initlastname}`}
+              </Text>
+              <Text
+                type="regular"
+                size="description"
+              >{`@${initusername} `}</Text>
+            </View>
 
-        {/* <View style={styles.calendarView}>
+            {/* <View style={styles.calendarView}>
 					<CalendarIcon height='100%' width='20%'></CalendarIcon>
 					<Text type='regular' size='small' style={{}}>
 						{t('Joined')}{' '}
@@ -507,142 +515,143 @@ export default function OtherProfile(props) {
 					</Text>
 				</View> */}
 
-        <View
-          style={{
-            width: "50%",
-            // marginTop: 10,
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            alignItems: "baseline",
-            // width: Dimensions.get('window').width,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              alignItems: "center",
-              alignContent: "center",
-            }}
-            onPress={() =>
-              props.navigation.push("otherFollower", {
-                idUser: idUser,
-              })
-            }
-          >
-            <Text type="black" size="label">
-              {`${data ? data.user_profilebyid.count_follower : 0} `}
-            </Text>
-            <Text
-              type="regular"
-              size="description"
-              // style={{ color: '#B0B0B0' }}
-            >
-              {t("followers")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              alignItems: "center",
-              alignContent: "center",
-            }}
-            onPress={() =>
-              props.navigation.push("otherFollowing", {
-                idUser: idUser,
-              })
-            }
-          >
-            <Text type="black" size="label">
-              {`${data ? data.user_profilebyid.count_following : 0} `}
-            </Text>
-            <Text
-              type="regular"
-              size="description"
-              // style={{ color: '#B0B0B0' }}
-            >
-              {t("following")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View
-        style={{
-          marginTop: 15,
-          width: Dimensions.get("screen").width,
-          paddingHorizontal: 20,
-        }}
-      >
-        <Text
-          type="regular"
-          size="description"
-          style={{ textAlign: "justify" }}
-        >
-          {initbio ? initbio : "-"}
-        </Text>
-      </View>
-
-      <View style={styles.tabView}>
-        <Tabs
-          style={{ backgroundColor: "white" }}
-          //Start of native-base library use
-          renderTabBar={() => (
-            <ScrollableTab
-              tabStyle={{ backgroundColor: "white" }}
-              tabsContainerStyle={{ backgroundColor: "white" }}
-              underlineStyle={{
-                borderColor: "#209FAE",
-                backgroundColor: "#209FAE",
+            <View
+              style={{
+                width: "50%",
+                // marginTop: 10,
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                alignItems: "baseline",
+                // width: Dimensions.get('window').width,
               }}
-            />
-          )}
-        >
-          <Tab
-            heading={t("posts")}
-            tabStyle={{ backgroundColor: "transparent" }}
-            activeTabStyle={{ backgroundColor: "transparent" }}
-            textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
-            activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
+            >
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+                onPress={() =>
+                  props.navigation.push("otherFollower", {
+                    idUser: idUser,
+                  })
+                }
+              >
+                <Text type="black" size="label">
+                  {`${data ? data.user_profilebyid.count_follower : 0} `}
+                </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  // style={{ color: '#B0B0B0' }}
+                >
+                  {t("followers")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+                onPress={() =>
+                  props.navigation.push("otherFollowing", {
+                    idUser: idUser,
+                  })
+                }
+              >
+                <Text type="black" size="label">
+                  {`${data ? data.user_profilebyid.count_following : 0} `}
+                </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  // style={{ color: '#B0B0B0' }}
+                >
+                  {t("following")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 15,
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 20,
+            }}
           >
-            {datapost && data ? (
-              <Post
-                props={props}
-                token={token}
-                data={datapost.user_postbyid}
-                datauser={data.user_profilebyid}
-              />
-            ) : null}
-          </Tab>
-          <Tab
-            heading={t("reviews")}
-            tabStyle={{ backgroundColor: "transparent" }}
-            activeTabStyle={{ backgroundColor: "transparent" }}
-            textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
-            activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
-          >
-            {datareview ? (
-              <Review
-                props={props}
-                token={token}
-                data={datareview.user_reviewbyid}
-              />
-            ) : null}
-          </Tab>
-          <Tab
-            heading={t("trip")}
-            tabStyle={{ backgroundColor: "transparent" }}
-            activeTabStyle={{ backgroundColor: "transparent" }}
-            textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
-            activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
-          >
-            {datatrip ? (
-              <MyTrip
-                props={props}
-                token={token}
-                data={datatrip.user_tripbyid}
-                position={"other"}
-              />
-            ) : null}
-          </Tab>
-        </Tabs>
-      </View>
+            <Text
+              type="regular"
+              size="description"
+              style={{ textAlign: "justify" }}
+            >
+              {initbio ? initbio : "-"}
+            </Text>
+          </View>
+          <View style={styles.tabView}>
+            <Tabs
+              style={{ backgroundColor: "white" }}
+              //Start of native-base library use
+              renderTabBar={() => (
+                <ScrollableTab
+                  tabStyle={{ backgroundColor: "white" }}
+                  tabsContainerStyle={{ backgroundColor: "white" }}
+                  underlineStyle={{
+                    borderColor: "#209FAE",
+                    backgroundColor: "#209FAE",
+                  }}
+                />
+              )}
+            >
+              <Tab
+                heading={t("posts")}
+                tabStyle={{ backgroundColor: "transparent" }}
+                activeTabStyle={{ backgroundColor: "transparent" }}
+                textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
+              >
+                {datapost && data ? (
+                  <Post
+                    props={props}
+                    token={token}
+                    data={datapost.user_postbyid}
+                    datauser={data.user_profilebyid}
+                  />
+                ) : null}
+              </Tab>
+              <Tab
+                heading={t("reviews")}
+                tabStyle={{ backgroundColor: "transparent" }}
+                activeTabStyle={{ backgroundColor: "transparent" }}
+                textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
+              >
+                {datareview ? (
+                  <Review
+                    props={props}
+                    token={token}
+                    data={datareview.user_reviewbyid}
+                  />
+                ) : null}
+              </Tab>
+              <Tab
+                heading={t("trip")}
+                tabStyle={{ backgroundColor: "transparent" }}
+                activeTabStyle={{ backgroundColor: "transparent" }}
+                textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
+              >
+                {datatrip ? (
+                  <MyTrip
+                    props={props}
+                    token={token}
+                    data={datatrip.user_tripbyid}
+                    position={"other"}
+                  />
+                ) : null}
+              </Tab>
+            </Tabs>
+          </View>
+        </>
+      ) : null}
       <Sidebar
         props={props}
         show={showside}

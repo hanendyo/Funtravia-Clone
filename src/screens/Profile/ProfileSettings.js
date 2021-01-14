@@ -103,8 +103,6 @@ export default function ProfileSettings(props) {
     }
   };
 
-  let [uri, seturi] = useState("");
-
   const pickcamera = async () => {
     ImagePicker.openCamera({
       width: 500,

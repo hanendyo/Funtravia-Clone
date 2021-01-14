@@ -10,6 +10,8 @@ import otherFollowing from "../../../screens/Profile/otherFollowing";
 import profilesetting from "../../../screens/Profile/ProfileSettings";
 import myfeed from "../../../screens/Profile/Feed";
 import Comments from "../../../screens/Profile/Comments";
+import tripalbum from "../../../screens/Profile/tripalbum";
+import tripalbumdetail from "../../../screens/Profile/tripalbumdetail";
 
 const HomeStack = createStackNavigator();
 export default function HomeNavigation() {
@@ -90,6 +92,22 @@ export default function HomeNavigation() {
       <HomeStack.Screen
         name="Comments"
         component={Comments}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="tripalbum"
+        component={tripalbum}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <HomeStack.Screen
+        name="tripalbumdetail"
+        component={tripalbumdetail}
         options={{
           headerTitle: "",
           headerTransparent: true,
