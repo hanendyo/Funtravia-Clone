@@ -6,18 +6,9 @@ import {
 	Image,
 	TouchableOpacity,
 	FlatList,
-	NativeModules,
-	ImageBackground,
 	ScrollView,
-	Pressable,
-	Alert,
 	PermissionsAndroid,
 } from "react-native";
-import {
-	launchCamera,
-	launchImageLibrary,
-	showImagePicker,
-} from "react-native-image-picker";
 import {
 	CameraIcon,
 	Arrowbackblack,
@@ -34,8 +25,8 @@ import { useTranslation } from "react-i18next";
 import ImgToBase64 from "react-native-image-base64";
 import { CropView } from "react-native-image-crop-tools";
 
+const { width, height } = Dimensions.get("screen");
 export default function Post(props) {
-	const { width, height } = Dimensions.get("screen");
 	const HeaderComponent = {
 		title: "",
 		headerTintColor: "white",
@@ -104,11 +95,7 @@ export default function Post(props) {
 					}}
 				>
 					<TouchableOpacity
-						onPress={() =>
-							props.navigation.navigate("CreatePost", {
-								file: props.navigation.getParam("file"),
-							})
-						}
+						onPress={() => console.log("TEST")}
 						style={{
 							paddingRight: 10,
 						}}
@@ -134,19 +121,17 @@ export default function Post(props) {
 			marginRight: 20,
 		},
 	};
-
 	const { t } = useTranslation();
 	const [imageRoll, setImageRoll] = useState([]);
 	const [isVisible, setIsVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
 	let slider = useRef(null);
 	let scroll = useRef(null);
-	const [croppedImage, setCroppedImage] = useState(null);
+	let cropRef = useRef(null);
 	const [recent, setRecent] = useState({
 		uri:
 			"https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909",
 	});
-	// console.log(imageRoll);
 	let [cameraModal, setCameraModal] = useState(false);
 	const [oriSize, SetOrisize] = useState({
 		width: 0,
@@ -154,11 +139,8 @@ export default function Post(props) {
 	});
 
 	const selectImg = async (file) => {
-		// console.log(tmpFile);
 		await setRecent(file.node.image);
 		await setLoading(false);
-		// setIsVisible(true);
-		props.navigation.setParams({ file: tmpFile });
 	};
 
 	useEffect(() => {
@@ -168,30 +150,12 @@ export default function Post(props) {
 			await requestCameraPermission();
 			await getImageFromRoll(null);
 		})();
-
-		// (async () => {
-		// 	let { status } = await Permissions.askAsync(Permissions.CAMERA);
-		// 	console.log(status);
-		// 	if (status !== 'granted') {
-		// 		Alert.alert(t('permissioncamera'));
-		// 	}
-		// })();
-
-		// (async () => {
-		//   const { status } = await Permissions.askAsync(Permissions.CAMERA);
-		//   console.log("status", status);
-		//   if (status === "granted") {
-		//     await getAlbumRoll();
-		//     await getImageFromRoll(null);
-		//   }
-		// })();
 	}, []);
 	const [selectedAlbum, setSelectedAlbum] = useState({
 		id: null,
 		title: "All Photos",
 	});
 	const [allAlbums, setAllalbum] = useState([]);
-	// console.log('albumsReponse=', allAlbums);
 	const requestCameraPermission = async () => {
 		try {
 			const granted = await PermissionsAndroid.request(
@@ -231,13 +195,6 @@ export default function Post(props) {
 		} catch (err) {
 			console.warn(err);
 		}
-
-		// console.log(albumsReponse);
-		// // setSelectedAlbum(albumsReponse[0]);
-		// props.navigation.setParams({ selectedAlbum: selectedAlbum });
-		// props.navigation.setParams({
-		// 	setside: () => setIsVisible(true),
-		// });
 	};
 	const compare = (a, b) => {
 		if (a.title < b.title) {
@@ -286,27 +243,6 @@ export default function Post(props) {
 		} catch (err) {
 			console.warn(err);
 		}
-		// console.log("getimgrol");
-		// MediaLibrary.getPermissionsAsync();
-		// if (permission.granted) {
-		// const stuff = await MediaLibrary.getAssetsAsync({
-		// 	first: 40,
-		// 	album: id,
-		// 	sortBy: ["modificationTime"],
-		// 	mediaType: ["photo"],
-		// });
-		// // console.log(stuff);
-		// let data_foto = stuff.assets;
-		// let camera = {
-		// 	id: "0",
-		// 	mediaType: "camera",
-		// };
-		// data_foto.splice(0, 0, camera);
-		// setImageRoll(data_foto);
-		// setRecent({ uri: data_foto[1]?.uri });
-		// selectImg(data_foto[1]);
-		// }
-		// });
 	};
 
 	const selectAlbum = async (item) => {
@@ -350,20 +286,14 @@ export default function Post(props) {
 						height: Dimensions.get("screen").height,
 						width: Dimensions.get("screen").width * 0.6,
 						backgroundColor: "white",
-						// alignContent: 'flex-start',
-						// alignItems: 'flex-start',
 						justifyContent: "space-between",
 						paddingHorizontal: 10,
 						paddingTop: 10,
 						paddingBottom: 10,
-						// borderColor: 'black',
-						// borderWidth: 1,
 					}}
 				>
 					<View
 						style={{
-							// borderBottomWidth: 1,
-							// borderBottomColor: '#d3d3d3',
 							width: "100%",
 						}}
 					>
@@ -390,20 +320,6 @@ export default function Post(props) {
 							</Text>
 							<Comboboxup height={10} width={10} />
 						</Button>
-						{/* <TouchableOpacity
-							style={{
-								alignSelf: 'flex-start',
-								flexDirection: 'row',
-								alignItems: 'center',
-								//  borderWidth: 1
-								padding: 10,
-							}}
-							onPress={() => setIsVisible(false)}>
-							<Arrowbackblack height={20} width={20}></Arrowbackblack>
-							<Text size='label' type='bold' style={{ marginLeft: 15 }}>
-								{selectedAlbum?.title}
-							</Text>
-						</TouchableOpacity> */}
 					</View>
 					<Button
 						type="icon"
@@ -441,42 +357,10 @@ export default function Post(props) {
 		);
 	};
 
-	let optionLaunch = {
-		mediaType: "photo",
-		quality: 1,
-		includeBase64: true,
-		saveToPhotos: true,
-	};
-
 	return (
 		<ScrollView ref={scroll}>
 			<Loading show={loading} />
-
-			{/* <CameraComponent
-        open={cameraModal}
-        setOpen={(e) => setCameraModal(e)}
-        setSelected={(e) => selectImg(e)}
-      /> */}
-
 			<_modalGalery />
-			{/* <Button onPress={() => launchCamera()} text="Launch Camera" />
-			<Button
-				onPress={() => launchImageLibrary()}
-				text="Launch Image Library"
-			/> */}
-			<View>
-				{/* <ImageCrop
-					ref={cropper}
-					cropWidth={500}
-					cropHeight={500}
-					source={{
-						uri: recent.uri,
-					}}
-					image={{
-						uri: recent.uri,
-					}}
-				/> */}
-			</View>
 			<FlatList
 				style={{
 					paddingStart: 0,
@@ -484,7 +368,6 @@ export default function Post(props) {
 					backgroundColor: "white",
 				}}
 				ref={slider}
-				// scrollEnabled={false}
 				data={imageRoll && imageRoll.length ? imageRoll : null}
 				renderItem={({ item, index }) =>
 					item.mediaType !== "camera" ? (
@@ -492,21 +375,16 @@ export default function Post(props) {
 						(
 							<TouchableOpacity
 								style={{
-									// flex: 1,
-									// height: Dimensions.get('screen').width / 4 - 1,
-									// width: Dimensions.get('screen').width / 4 - 1,
 									alignContent: "center",
 									justifyContent: "center",
 									backgroundColor: "white",
 									alignItems: "center",
 									paddingVertical: 1,
 									paddingHorizontal: 1,
-									// borderWidth: 1,
 								}}
 								onPress={() => selectImg(item)}
 							>
 								<Image
-									// source={'///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'}
 									source={{ uri: item.node.image.uri }}
 									style={{
 										height: Dimensions.get("screen").width / 4 - 1,
@@ -519,14 +397,10 @@ export default function Post(props) {
 					) : (
 						<TouchableOpacity
 							style={{
-								// flex: 1,
-								// padding: 50,
 								alignContent: "center",
 								justifyContent: "center",
 								backgroundColor: "#F0F0F0",
 								alignItems: "center",
-								// marginVertical: 1,
-								// marginHorizontal: 1,
 								height: Dimensions.get("screen").width / 4,
 								width: Dimensions.get("screen").width / 4,
 							}}
@@ -537,38 +411,16 @@ export default function Post(props) {
 					)
 				}
 				numColumns={4}
-				// keyExtractor={(item) => item.node.timestamp}
 				ListHeaderComponent={
 					<View>
-						{/* <View
-							style={{
-								// height: Dimensions.get('screen').width,
-								width: Dimensions.get('screen').width,
-								// Height: Dimensions.get('screen').width,
-								height: Dimensions.get('screen').width,
-								backgroundColor: 'white',
-								justifyContent: 'center',
-							}}> */}
-						<ImageCrop
-							ref={"cropper"}
-							image={recent.uri}
-							cropHeight={800}
-							cropWidth={800}
-							maxZoom={80}
-							minZoom={20}
-							panToMove={true}
-							pinchToZoom={true}
+						<CropView
+							sourceUrl={recent.uri}
+							style={{ width: width, height: height / 2 }}
+							ref={cropRef}
+							onImageCrop={(res) => console.warn(res)}
+							keepAspectRatio
+							aspectRatio={{ width: 16, height: 9 }}
 						/>
-						<AutoHeightImage
-							width={Dimensions.get("window").width}
-							source={{
-								uri: recent.base64
-									? "data:image/gif;base64," + recent.base64
-									: recent.uri,
-								// uri :  'file:///storage/emulated/0/DCIM/Camera/SAVE_20200823_063054.jpg'
-							}}
-						/>
-						{/* </View> */}
 					</View>
 				}
 			/>

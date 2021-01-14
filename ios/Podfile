@@ -9,7 +9,8 @@ target 'funtravia' do
   use_react_native!(:path => config["reactNativePath"])
 
   pod 'GoogleSignIn', '~> 5.0.2'
-
+  pod 'react-native-image-crop-tools', :path => '../node_modules/react-native-image-crop-tools'
+  
   target 'funtraviaTests' do
     inherit! :complete
     # Pods for testing
