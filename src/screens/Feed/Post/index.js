@@ -30,10 +30,12 @@ import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
-const { width, height } = Dimensions.get("window");
 import { useTranslation } from "react-i18next";
 import ImgToBase64 from "react-native-image-base64";
+import { CropView } from "react-native-image-crop-tools";
+
 export default function Post(props) {
+	const { width, height } = Dimensions.get("screen");
 	const HeaderComponent = {
 		title: "",
 		headerTintColor: "white",
@@ -139,12 +141,6 @@ export default function Post(props) {
 	const [loading, setLoading] = useState(false);
 	let slider = useRef(null);
 	let scroll = useRef(null);
-	let cropper = useRef();
-	let [imageDate, setImageData] = useState({
-		filepath: { data: "", uri: "" },
-		fileData: "",
-		fileUri: "",
-	});
 	const [croppedImage, setCroppedImage] = useState(null);
 	const [recent, setRecent] = useState({
 		uri:
