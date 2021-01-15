@@ -16,8 +16,8 @@ import Svg, { Path } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
-export default function Room({ navigation }) {
-	const [room, setRoom] = useState(navigation.getParam("room_id"));
+export default function Room({ navigation, route }) {
+	const [room, setRoom] = useState(route.params.room_id);
 	const [user, setUser] = useState({});
 	const [init, setInit] = useState(true);
 	const [button, setButton] = useState(true);
@@ -232,7 +232,13 @@ export default function Room({ navigation }) {
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
 				keyboardVerticalOffset={70}
-				contentContainerStyle={{ flex: 1 }}
+                style={{
+                    flexDirection: "row",
+					paddingHorizontal: 10,
+					alignContent: "center",
+					alignItems: "center",
+					marginVertical: 5,
+                }}
 			>
 				<View
 					style={{
@@ -310,7 +316,7 @@ Room.navigationOptions = ({ navigation }) => ({
 			</TouchableOpacity>
 			<TouchableOpacity>
 				<Image
-					source={{ uri: navigation.getParam("picture") }}
+					source={{ uri: route.params.picture }}
 					style={{ width: 40, height: 40, borderRadius: 20 }}
 				></Image>
 			</TouchableOpacity>
@@ -323,7 +329,7 @@ Room.navigationOptions = ({ navigation }) => ({
 					paddingHorizontal: 10,
 				}}
 			>
-				{navigation.getParam("name")}
+				{route.params.name.}
 			</Text>
 		</View>
 	),
@@ -339,7 +345,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#FFF",
 		justifyContent: "flex-end",
-		marginBottom: 15,
 	},
 	item: {
 		marginVertical: moderateScale(3, 2),

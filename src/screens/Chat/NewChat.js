@@ -7,17 +7,16 @@ import {
 	ScrollView,
 	SafeAreaView,
 } from "react-native";
-import { Button, Text, Truncate, CustomImage } from "../../component";
+import { Button, Text, Truncate, CustomImage, Loading } from "../../component";
 import { default_image, search_button } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { Arrowbackwhite, SendMessage } from "../../assets/svg";
 import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
-import Loading from "../../Main/Loading";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 
-export default function NewChat(props) {
+export default function NewChat({ navigation }) {
 	const { t, i18n } = useTranslation();
 	const [token, setToken] = useState(null);
 	let [search, setSearch] = useState(" ");
@@ -39,8 +38,48 @@ export default function NewChat(props) {
 		},
 	});
 
+	const ChatOptions = {
+		headerShown: true,
+		headerTitle: "Send New Message",
+		headerMode: "screen",
+		headerStyle: {
+			backgroundColor: "#209FAE",
+			elevation: 0,
+			borderBottomWidth: 0,
+			fontSize: 50,
+		},
+		headerTitleStyle: {
+			fontFamily: "Lato-Regular",
+			fontSize: 14,
+			color: "white",
+		},
+		headerLeft: () => (
+			<Button
+				text={""}
+				size="medium"
+				type="circle"
+				variant="transparent"
+				onPress={() => navigation.goBack()}
+				style={{
+					height: 55,
+				}}
+			>
+				<Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+			</Button>
+		),
+		headerRight: () => (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: "row",
+				}}
+			></View>
+		),
+	};
+
 	useEffect(() => {
 		getUserAndToken();
+		navigation.setOptions(ChatOptions);
 	}, []);
 
 	const getUserAndToken = async () => {
@@ -83,7 +122,7 @@ export default function NewChat(props) {
 					responseJson.sender.id == user.id
 						? responseJson.receiver
 						: responseJson.sender;
-				props.navigation.push("RoomChat", {
+				navigation.push("RoomChat", {
 					room_id: responseJson.id,
 					receiver: change.id,
 					name:
@@ -246,43 +285,3 @@ export default function NewChat(props) {
 		</SafeAreaView>
 	);
 }
-
-NewChat.navigationOptions = ({ navigation }) => ({
-	headerTitle: "Send Message",
-	headerMode: "screen",
-	headerStyle: {
-		backgroundColor: "#209FAE",
-		elevation: 0,
-		borderBottomWidth: 0,
-		fontSize: 50,
-	},
-	headerTitleStyle: {
-		fontFamily: "Lato-Regular",
-		fontSize: 14,
-		color: "white",
-	},
-	headerLeft: (
-		<Button
-			text={""}
-			size="medium"
-			type="circle"
-			variant="transparent"
-			onPress={() => navigation.goBack()}
-			style={{
-				height: 55,
-			}}
-		>
-			<Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-		</Button>
-	),
-	headerLeftContainerStyle: null,
-	headerRight: (
-		<View
-			style={{
-				flex: 1,
-				flexDirection: "row",
-			}}
-		></View>
-	),
-	headerRightStyle: null,
-});

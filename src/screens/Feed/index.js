@@ -27,9 +27,8 @@ import FeedList from "./FeedList";
 
 export default function Feed(props) {
 	const HeaderComponent = {
-		title: "Fun Feed",
 		tabBarVisble: false,
-		tabBarLabel: "HELLO",
+		tabBarLabel: "Feed",
 		headerTintColor: "white",
 		headerTitle: "Fun Feed",
 		headerMode: "screen",
@@ -56,7 +55,6 @@ export default function Feed(props) {
 				</TouchableOpacity>
 			</View>
 		),
-		tabBarBadge: 9,
 	};
 
 	const GetFeedPost = gql`

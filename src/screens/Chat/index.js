@@ -9,8 +9,8 @@ import {
 	Image,
 	_ScrollView,
 } from "react-native";
-import { Arrowbackwhite, Delete, Magnifying, NewChat } from "../../assets/svg";
-import { Text } from "../../component";
+import { Delete, Magnifying, NewChat } from "../../assets/svg";
+import { Text, Button } from "../../component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import Swipeout from "react-native-swipeout";
@@ -29,38 +29,38 @@ export default function Message({ navigation }) {
 	const [active, setActive] = useState("personal");
 
 	const HeaderComponent = {
-		title: "Messages",
-		headerTintColor: "white",
-		headerTitle: "Message",
-		headerMode: "screen",
-		headerStyle: {
-			backgroundColor: "#209FAE",
-			elevation: 0,
-			borderBottomWidth: 0,
-		},
-		headerTitleStyle: {
-			fontFamily: "Lato-Regular",
-			fontSize: 14,
-			color: "white",
-		},
-		headerLeftContainerStyle: {
-			background: "#FFF",
-		},
-		headerRight: () => (
-			<TouchableOpacity
-				style={{
-					height: 40,
-					width: 40,
-					justifyContent: "center",
-					alignContent: "center",
-					alignItems: "center",
-				}}
-				onPress={() => navigation.navigate("NewChat")}
-			>
-				<NewChat height={20} width={20} />
-			</TouchableOpacity>
-		),
-		tabBarBadge: 9,
+		// headerShown: true,
+		// headerTintColor: "white",
+		// headerTitle: "Message",
+		// headerMode: "screen",
+		// headerStyle: {
+		// 	backgroundColor: "#209FAE",
+		// 	elevation: 0,
+		// 	borderBottomWidth: 0,
+		// },
+		// headerTitleStyle: {
+		// 	fontFamily: "Lato-Regular",
+		// 	fontSize: 14,
+		// 	color: "white",
+		// },
+		// headerLeftContainerStyle: {
+		// 	background: "#FFF",
+		// },
+		// headerRight: () => (
+		// 	<TouchableOpacity
+		// 		style={{
+		// 			height: 40,
+		// 			width: 40,
+		// 			justifyContent: "center",
+		// 			alignContent: "center",
+		// 			alignItems: "center",
+		// 		}}
+		// 		onPress={() => navigation.navigate("NewChat")}
+		// 	>
+		// 		<NewChat height={20} width={20} />
+		// 	</TouchableOpacity>
+		// ),
+		tabBarBadge: 8,
 	};
 
 	useEffect(() => {
@@ -274,12 +274,11 @@ export default function Message({ navigation }) {
 				keyExtractor={(item) => item.id}
 				stickyHeaderIndices={[0]}
 				ListHeaderComponent={
-					<View style={{ backgroundColor: "#fff" }}>
+					<View style={{ backgroundColor: "#209FAE" }}>
 						<View
 							style={{
-								marginHorizontal: 15,
-								marginTop: 15,
-								backgroundColor: "#E2ECF8",
+								margin: 15,
+								backgroundColor: "#FFFFFF",
 								flexDirection: "row",
 								borderRadius: 3,
 								alignContent: "center",
@@ -314,6 +313,7 @@ export default function Message({ navigation }) {
 									borderBottomColor:
 										active == "personal" ? "#209FAE" : "#EEEEEE",
 									paddingVertical: 15,
+									backgroundColor: "#FFFFFF",
 								}}
 							>
 								<Text
@@ -337,6 +337,7 @@ export default function Message({ navigation }) {
 									borderBottomWidth: active == "group" ? 3 : 1,
 									borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
 									paddingVertical: 15,
+									backgroundColor: "#FFFFFF",
 								}}
 							>
 								<Text
@@ -353,6 +354,14 @@ export default function Message({ navigation }) {
 					</View>
 				}
 			/>
+			<Button
+				onPress={() => navigation.navigate("NewChat")}
+				type="circle"
+				size="medium"
+				style={{ position: "absolute", bottom: 10, right: 10, elevation: 5 }}
+			>
+				<NewChat width="20" height="20" />
+			</Button>
 		</SafeAreaView>
 	);
 }

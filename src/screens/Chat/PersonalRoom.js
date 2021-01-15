@@ -3,9 +3,8 @@ import {
 	View,
 	TextInput,
 	StyleSheet,
-	Dimensions,
 	TouchableOpacity,
-	ScrollView,
+	SafeAreaView,
 	KeyboardAvoidingView,
 	Platform,
 	Image,
@@ -18,9 +17,9 @@ import Svg, { Path } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
-export default function Room({ navigation }) {
-	const [room, setRoom] = useState(navigation.getParam("room_id"));
-	const [receiver, setReceiver] = useState(navigation.getParam("receiver"));
+export default function Room({ navigation, route }) {
+	const [room, setRoom] = useState(route.params.room_id);
+	const [receiver, setReceiver] = useState(route.params.receiver);
 	const [user, setUser] = useState({});
 	const [init, setInit] = useState(true);
 	const [button, setButton] = useState(true);
@@ -187,7 +186,7 @@ export default function Room({ navigation }) {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<FlatList
 				ref={flatListRef}
 				data={message}
@@ -197,7 +196,13 @@ export default function Room({ navigation }) {
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
 				keyboardVerticalOffset={70}
-				style={{ flexDirection: "row", paddingHorizontal: 10 }}
+				style={{
+					flexDirection: "row",
+					paddingHorizontal: 10,
+					alignContent: "center",
+					alignItems: "center",
+					marginVertical: 5,
+				}}
 			>
 				<View
 					style={{
@@ -205,8 +210,7 @@ export default function Room({ navigation }) {
 						borderWidth: 1,
 						width: "90%",
 						borderRadius: 25,
-						paddingVertical: 10,
-						paddingHorizontal: 20,
+						paddingHorizontal: 10,
 						alignSelf: "center",
 					}}
 				>
@@ -229,7 +233,7 @@ export default function Room({ navigation }) {
 					<Send height={28} width={28} />
 				</Button>
 			</KeyboardAvoidingView>
-		</View>
+		</SafeAreaView>
 	);
 }
 
@@ -267,7 +271,7 @@ Room.navigationOptions = ({ navigation }) => ({
 			</TouchableOpacity>
 			<TouchableOpacity>
 				<Image
-					source={{ uri: navigation.getParam("picture") }}
+					source={{ uri: route.params.picture }}
 					style={{ width: 40, height: 40, borderRadius: 20 }}
 				></Image>
 			</TouchableOpacity>
@@ -280,7 +284,7 @@ Room.navigationOptions = ({ navigation }) => ({
 					paddingHorizontal: 10,
 				}}
 			>
-				{navigation.getParam("name")}
+				{route.params.name}
 			</Text>
 		</View>
 	),
@@ -296,7 +300,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#FFF",
 		justifyContent: "flex-end",
-		marginBottom: 15,
 	},
 	item: {
 		marginVertical: moderateScale(3, 2),

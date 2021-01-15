@@ -1,10 +1,9 @@
-import * as React from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import AccountNavigation from "./BottomNavigationItems/AccountNavigation";
-import ChatNavigation from "./BottomNavigationItems/ChatNavigation";
-import FeedNavigation from "./BottomNavigationItems/FeedNavigation";
-import HomeNavigation from "./BottomNavigationItems/HomeNavigation";
-import ItineraryNavigation from "./BottomNavigationItems/ItineraryNavigation";
+import { createStackNavigator } from "@react-navigation/stack";
+import ChatScreen from "../../screens/Chat";
+import FeedScreen from "../../screens/Feed";
+import HomeScreen from "../../screens/Home";
 import {
 	FeedOn,
 	FeedOff,
@@ -18,6 +17,22 @@ import {
 	ChatOff,
 } from "../../assets/svg";
 
+const Home = createStackNavigator();
+function HomeStack() {
+	return (
+		<Home.Navigator initialRouteName={"HomeScreen"}>
+			<Home.Screen
+				name="HomeScreen"
+				component={HomeScreen}
+				options={{
+					headerShown: false,
+					headerTransparent: true,
+				}}
+			/>
+		</Home.Navigator>
+	);
+}
+
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems() {
 	return (
@@ -29,8 +44,8 @@ export default function BottomNavigationItems() {
 			}}
 		>
 			<MainNavigator.Screen
-				name="HomeMain"
-				component={HomeNavigation}
+				name="HomeScreen"
+				component={HomeStack}
 				options={{
 					tabBarLabel: "Home",
 					tabBarIcon: ({ focused }) =>
@@ -42,9 +57,10 @@ export default function BottomNavigationItems() {
 				}}
 			/>
 			<MainNavigator.Screen
-				name="FeedMain"
-				component={FeedNavigation}
+				name="FeedScreen"
+				component={FeedScreen}
 				options={{
+					headerShown: true,
 					tabBarLabel: "Feed",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
@@ -55,8 +71,8 @@ export default function BottomNavigationItems() {
 				}}
 			/>
 			<MainNavigator.Screen
-				name="ItineraryMain"
-				component={ItineraryNavigation}
+				name="ItineraryScreen"
+				component={HomeScreen}
 				options={{
 					tabBarLabel: "Trip Planer",
 					tabBarIcon: ({ focused }) =>
@@ -68,10 +84,9 @@ export default function BottomNavigationItems() {
 				}}
 			/>
 			<MainNavigator.Screen
-				name="ChatMain"
-				component={ChatNavigation}
+				name="ChatScreen"
+				component={ChatScreen}
 				options={{
-					tabBarBadge: 0,
 					tabBarLabel: "Message",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
@@ -82,8 +97,8 @@ export default function BottomNavigationItems() {
 				}}
 			/>
 			<MainNavigator.Screen
-				name="AccountMain"
-				component={AccountNavigation}
+				name="AccountScreen"
+				component={HomeScreen}
 				options={{
 					tabBarLabel: "Account",
 					tabBarIcon: ({ focused }) =>
