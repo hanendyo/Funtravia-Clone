@@ -11,7 +11,7 @@ import RegisterFacebookScreen from "../../screens/Authorization/Facebook/Registe
 const AuthNav = createStackNavigator();
 export default function AuthStackNavigation() {
 	return (
-		<AuthNav.Navigator initialRouteName="SplashScreen" headerMode="none">
+		<AuthNav.Navigator initialRouteName="SplashScreen">
 			<AuthNav.Screen name="SplashScreen" component={SplashScreen} />
 			<AuthNav.Screen name="LoginScreen" component={LoginScreen} />
 			<AuthNav.Screen name="RegisterScreen" component={RegisterScreen} />

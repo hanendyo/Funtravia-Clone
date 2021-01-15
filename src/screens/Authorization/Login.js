@@ -56,7 +56,7 @@ export default function Login({ navigation }) {
 						"setting",
 						JSON.stringify(response.data.login.data_setting)
 					);
-					navigation.navigate("BottomStackNavigation");
+					navigation.navigate("BottomStack");
 				} catch (error) {
 					showAlert({
 						...aler,

@@ -92,7 +92,7 @@ export default function SplashScreen(props) {
 						variant="bordered"
 						color="tertiary"
 						style={{ width: 80, height: 28, flexDirection: "row" }}
-						onPress={() => props.navigation.navigate("BottomStackNavigation")}
+						onPress={() => props.navigation.navigate("BottomStack")}
 					>
 						<Text style={{ color: "white", marginRight: 5 }}>{`${t(
 							"skip"

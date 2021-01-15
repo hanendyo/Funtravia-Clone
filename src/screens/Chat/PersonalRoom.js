@@ -9,6 +9,7 @@ import {
 	Platform,
 	Image,
 	FlatList,
+	StatusBar,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send } from "../../assets/svg";
@@ -17,6 +18,7 @@ import Svg, { Path } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+
 export default function Room({ navigation, route }) {
 	const [room, setRoom] = useState(route.params.room_id);
 	const [receiver, setReceiver] = useState(route.params.receiver);
@@ -29,7 +31,61 @@ export default function Room({ navigation, route }) {
 	let [message, setMessage] = useState([]);
 	let flatListRef = useRef();
 
+	const navigationOptions = {
+		headerShown: true,
+		headerTitle: null,
+		headerMode: "screen",
+		headerStyle: {
+			backgroundColor: "#209FAE",
+		},
+		headerLeft: () => (
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: "center",
+					alignContent: "center",
+					alignItems: "center",
+					marginVertical: 10,
+				}}
+			>
+				<TouchableOpacity
+					style={{
+						height: 40,
+						width: 40,
+						justifyContent: "center",
+						alignContent: "center",
+						alignItems: "center",
+					}}
+					onPress={() => navigation.goBack()}
+				>
+					<Arrowbackwhite height={20} width={20} />
+				</TouchableOpacity>
+				<TouchableOpacity>
+					<Image
+						source={{ uri: route.params.picture }}
+						style={{ width: 40, height: 40, borderRadius: 20 }}
+					></Image>
+				</TouchableOpacity>
+				<Text
+					style={{
+						fontFamily: "Lato-Bold",
+						fontSize: 14,
+						color: "white",
+						alignSelf: "center",
+						paddingHorizontal: 10,
+					}}
+				>
+					{route.params.name}
+				</Text>
+			</View>
+		),
+		headerRightStyle: {
+			paddingRight: 20,
+		},
+	};
+
 	useEffect(() => {
+		navigation.setOptions(navigationOptions);
 		if (init) {
 			getUserToken();
 			setConnection();
@@ -187,113 +243,70 @@ export default function Room({ navigation, route }) {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<StatusBar backgroundColor="#14646E" barStyle="light-content" />
 			<FlatList
 				ref={flatListRef}
 				data={message}
 				renderItem={RenderChat}
 				keyExtractor={(item, index) => `render_${index}`}
+				showsVerticalScrollIndicator={false}
+				showsHorizontalScrollIndicator={false}
 			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
 				keyboardVerticalOffset={70}
-				style={{
-					flexDirection: "row",
-					paddingHorizontal: 10,
-					alignContent: "center",
-					alignItems: "center",
-					marginVertical: 5,
-				}}
 			>
 				<View
 					style={{
-						borderColor: "#D1D1D1",
-						borderWidth: 1,
-						width: "90%",
-						borderRadius: 25,
-						paddingHorizontal: 10,
-						alignSelf: "center",
+						flexDirection: "row",
+						paddingHorizontal: 5,
+						alignContent: "center",
+						alignItems: "center",
+						paddingVertical: 5,
 					}}
 				>
-					<TextInput
-						value={chat}
-						multiline
-						placeholder="Type a message"
-						onChangeText={(text) => setChat(text)}
-						style={{ maxHeight: 100 }}
-					/>
+					<View
+						style={{
+							borderColor: "#D1D1D1",
+							borderWidth: 1,
+							width: "90%",
+							borderRadius: 25,
+							paddingHorizontal: 10,
+							alignSelf: "center",
+						}}
+					>
+						<TextInput
+							value={chat}
+							multiline
+							placeholder="Type a message"
+							onChangeText={(text) => setChat(text)}
+							style={
+								Platform.OS == "ios"
+									? { maxHeight: 100, margin: 10 }
+									: {
+											maxHeight: 100,
+											marginVertical: 5,
+											marginHorizontal: 10,
+											padding: 0,
+									  }
+							}
+						/>
+					</View>
+					<Button
+						text=""
+						type="circle"
+						size="medium"
+						variant="transparent"
+						onPress={() => submitChatMessage()}
+						style={{ marginHorizontal: 5 }}
+					>
+						<Send height={28} width={28} />
+					</Button>
 				</View>
-				<Button
-					text=""
-					type="circle"
-					size="medium"
-					variant="transparent"
-					onPress={() => submitChatMessage()}
-					style={{ marginHorizontal: 5 }}
-				>
-					<Send height={28} width={28} />
-				</Button>
 			</KeyboardAvoidingView>
 		</SafeAreaView>
 	);
 }
-
-Room.navigationOptions = ({ navigation }) => ({
-	headerTitle: null,
-	headerMode: "screen",
-	headerStyle: {
-		backgroundColor: "#209FAE",
-		elevation: 0,
-		borderBottomWidth: 0,
-		fontSize: 50,
-	},
-	headerTitleStyle: null,
-	headerLeft: (
-		<View
-			style={{
-				flexDirection: "row",
-				justifyContent: "center",
-				alignContent: "center",
-				alignItems: "center",
-				marginVertical: 10,
-			}}
-		>
-			<TouchableOpacity
-				style={{
-					height: 40,
-					width: 40,
-					justifyContent: "center",
-					alignContent: "center",
-					alignItems: "center",
-				}}
-				onPress={() => navigation.goBack()}
-			>
-				<Arrowbackwhite height={20} width={20} />
-			</TouchableOpacity>
-			<TouchableOpacity>
-				<Image
-					source={{ uri: route.params.picture }}
-					style={{ width: 40, height: 40, borderRadius: 20 }}
-				></Image>
-			</TouchableOpacity>
-			<Text
-				style={{
-					fontFamily: "Lato-Regular",
-					fontSize: 14,
-					color: "white",
-					alignSelf: "center",
-					paddingHorizontal: 10,
-				}}
-			>
-				{route.params.name}
-			</Text>
-		</View>
-	),
-	headerLeftContainerStyle: null,
-	headerRight: null,
-	headerRightStyle: {
-		paddingRight: 20,
-	},
-});
 
 const styles = StyleSheet.create({
 	container: {

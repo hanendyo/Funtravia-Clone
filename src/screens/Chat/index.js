@@ -29,37 +29,6 @@ export default function Message({ navigation }) {
 	const [active, setActive] = useState("personal");
 
 	const HeaderComponent = {
-		// headerShown: true,
-		// headerTintColor: "white",
-		// headerTitle: "Message",
-		// headerMode: "screen",
-		// headerStyle: {
-		// 	backgroundColor: "#209FAE",
-		// 	elevation: 0,
-		// 	borderBottomWidth: 0,
-		// },
-		// headerTitleStyle: {
-		// 	fontFamily: "Lato-Regular",
-		// 	fontSize: 14,
-		// 	color: "white",
-		// },
-		// headerLeftContainerStyle: {
-		// 	background: "#FFF",
-		// },
-		// headerRight: () => (
-		// 	<TouchableOpacity
-		// 		style={{
-		// 			height: 40,
-		// 			width: 40,
-		// 			justifyContent: "center",
-		// 			alignContent: "center",
-		// 			alignItems: "center",
-		// 		}}
-		// 		onPress={() => navigation.navigate("NewChat")}
-		// 	>
-		// 		<NewChat height={20} width={20} />
-		// 	</TouchableOpacity>
-		// ),
 		tabBarBadge: 8,
 	};
 
@@ -160,7 +129,7 @@ export default function Message({ navigation }) {
 					}
 					style={{
 						backgroundColor: "white",
-						paddingVertical: 15,
+						paddingVertical: 10,
 						paddingHorizontal: 10,
 						flexDirection: "row",
 						borderBottomWidth: 1,
@@ -180,7 +149,11 @@ export default function Message({ navigation }) {
 						}}
 					/>
 					<View style={{ width: width - 160, paddingHorizontal: 10 }}>
-						<Text size="description" type="bold" style={{ paddingVertical: 5 }}>
+						<Text
+							size="description"
+							type="regular"
+							style={{ paddingVertical: 5 }}
+						>
 							{`${change.first_name} ${
 								change.last_name ? change.last_name : ""
 							}`}
@@ -212,7 +185,7 @@ export default function Message({ navigation }) {
 					}
 					style={{
 						backgroundColor: "white",
-						paddingVertical: 15,
+						paddingVertical: 10,
 						paddingHorizontal: 10,
 						flexDirection: "row",
 						borderBottomWidth: 1,
@@ -232,7 +205,11 @@ export default function Message({ navigation }) {
 						}}
 					/>
 					<View style={{ width: width - 160, paddingHorizontal: 10 }}>
-						<Text size="description" type="bold" style={{ paddingVertical: 5 }}>
+						<Text
+							size="description"
+							type="regular"
+							style={{ paddingVertical: 5 }}
+						>
 							{item.itinerary.name}
 						</Text>
 						{/* <Text size='small'>{item.recent_chat.text}</Text>
@@ -318,7 +295,7 @@ export default function Message({ navigation }) {
 							>
 								<Text
 									size="description"
-									type={active == "personal" ? "bold" : "regular"}
+									type={active == "personal" ? "bold" : "bold"}
 									style={{
 										color: active == "personal" ? "#209FAE" : "#464646",
 									}}
@@ -342,7 +319,7 @@ export default function Message({ navigation }) {
 							>
 								<Text
 									size="description"
-									type={active == "group" ? "bold" : "regular"}
+									type={active == "group" ? "bold" : "bold"}
 									style={{
 										color: active == "group" ? "#209FAE" : "#464646",
 									}}
@@ -358,7 +335,7 @@ export default function Message({ navigation }) {
 				onPress={() => navigation.navigate("NewChat")}
 				type="circle"
 				size="medium"
-				style={{ position: "absolute", bottom: 10, right: 10, elevation: 5 }}
+				style={{ position: "absolute", bottom: 20, right: 20, elevation: 5 }}
 			>
 				<NewChat width="20" height="20" />
 			</Button>

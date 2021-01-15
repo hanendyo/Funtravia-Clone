@@ -60,7 +60,7 @@ export default function LoginGoogle({ navigation }) {
 				"setting",
 				JSON.stringify(response.data.login_google.data_setting)
 			);
-			navigation.navigate("BottomStackNavigation");
+			navigation.navigate("BottomStack");
 		} else if (
 			response.data.login_google.code === 400 ||
 			response.data.login_google.code === "400"

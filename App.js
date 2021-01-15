@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { default as ApolloClient } from "apollo-boost";
 import messaging from "@react-native-firebase/messaging";
 import SplashScreen from "react-native-splash-screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API } from "./src/config";
 import "./src/i18n";
 
@@ -29,6 +30,8 @@ function App() {
 					setInitialRoute(remoteMessage.data.type);
 				}
 			});
+		let token = await AsyncStorage.getItem("access_token");
+		await setAccessToken(token);
 		await setLoading(false);
 		await SplashScreen.hide();
 	};

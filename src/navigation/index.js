@@ -6,6 +6,7 @@ import BottomStack from "./StackItems/BottomNavigation";
 import Postscreen from "../screens/Feed/Post";
 import CreatePostScreen from "../screens/Feed/Post/CreatePost";
 import NewChat from "../screens/Chat/NewChat";
+import GroupChat from "../screens/Chat/GroupRoom";
 import RoomChat from "../screens/Chat/PersonalRoom";
 import MyProfile from "../screens/Profile/MyProfile";
 import FollowerPage from "../screens/Profile/Follower";
@@ -20,11 +21,17 @@ import tripalbum from "../screens/Profile/tripalbum";
 import tripalbumdetail from "../screens/Profile/tripalbumdetail";
 
 const Tab = createStackNavigator();
-export default function MainStackNavigator() {
+export default function MainStackNavigator({ authorizeToken }) {
 	return (
 		<NavigationContainer>
-			<Tab.Navigator initialRouteName={"BottomStack"}>
-				<Tab.Screen name="AuthStack" component={AuthStack} />
+			<Tab.Navigator
+				initialRouteName={authorizeToken ? "BottomStack" : "AuthStack"}
+			>
+				<Tab.Screen
+					name="AuthStack"
+					component={AuthStack}
+					options={{ headerShown: false }}
+				/>
 				<Tab.Screen
 					name="BottomStack"
 					component={BottomStack}
@@ -35,6 +42,11 @@ export default function MainStackNavigator() {
 				<Tab.Screen
 					name="NewChat"
 					component={NewChat}
+					options={{ headerShown: false }}
+				/>
+				<Tab.Screen
+					name="GroupChat"
+					component={GroupChat}
 					options={{ headerShown: false }}
 				/>
 				<Tab.Screen

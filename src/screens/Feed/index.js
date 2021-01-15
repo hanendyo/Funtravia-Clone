@@ -327,7 +327,6 @@ export default function Feed(props) {
 							style={{
 								fontFamily: "Lato-Bold",
 								fontSize: 14,
-								// marginTop: 7,
 							}}
 						>
 							{dataRender.user.first_name}{" "}
@@ -337,7 +336,6 @@ export default function Feed(props) {
 							style={{
 								fontFamily: "Lato-Regular",
 								fontSize: 10,
-								// marginTop: 7,
 							}}
 						>
 							{duration(dataRender.created_at)}
@@ -346,7 +344,6 @@ export default function Feed(props) {
 							style={{
 								fontFamily: "Lato-Regular",
 								fontSize: 10,
-								// marginTop: 7,
 							}}
 						>
 							{dataRender.location_name}
