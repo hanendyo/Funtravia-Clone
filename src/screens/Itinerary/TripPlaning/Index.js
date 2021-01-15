@@ -69,7 +69,7 @@ export default function TripPlaning(props) {
     setToken(tkn);
     if (tkn === null) {
       Alert.alert("Silahkan Login terlebih dahulu");
-      props.navigation.navigate("Home");
+      props.navigation.navigate("HomeScreen");
     } else {
       console.log(tkn);
       await GetListitinplan();

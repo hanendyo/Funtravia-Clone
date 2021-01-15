@@ -30,6 +30,8 @@ import CreateCustom from "../screens/Itinerary/CustomItinerary/CreateCustom";
 import ChoosePosition from "../screens/Itinerary/CustomItinerary/ChoosePosition";
 import itindest from "../screens/Itinerary/ItineraryDestination/index";
 import ItineraryChooseday from "../screens/Itinerary/ItineraryChooseDay";
+import DestinationList from "../screens/Destination/DestinationList";
+import ItineraryPlaning from "../screens/Itinerary/ItineraryPlaning/index";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -197,6 +199,16 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="ItineraryChooseday"
           component={ItineraryChooseday}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="DestinationList"
+          component={DestinationList}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="ItineraryPlaning"
+          component={ItineraryPlaning}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

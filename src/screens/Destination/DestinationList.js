@@ -1,43 +1,33 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  // Text,
   StyleSheet,
-  ImageBackground,
   Dimensions,
   TouchableOpacity,
   Alert,
+  ScrollView,
   Image,
   FlatList,
 } from "react-native";
-import { CustomImage, FunIcon } from "../../../component";
-import {
-  Ticket,
-  star_yellow,
-  MapIconWhite,
-  comedi_putih,
-  default_image,
-} from "../../../assets/png";
-import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { AsyncStorage } from "react-native";
+import { Text, Button } from "../../component";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
   LikeRed,
-  LikeEmpty,
-  Arrowbackwhite,
-  OptionsVertWhite,
-  Star,
-  PinHijau,
   LikeEmptynew,
-} from "../../../assets/svg";
-import FilterItin from "./FillterItin";
-import Listdestination from "../../../graphQL/Query/Destination/ListDestination";
-import filterDestination from "../../../graphQL/Query/Destination/filterDestination";
-import Liked from "../../../graphQL/Mutation/Destination/Liked";
-import UnLiked from "../../../graphQL/Mutation/unliked";
+  Star,
+  Arrowbackwhite,
+  PinHijau,
+} from "../../assets/svg";
+import FilterItin from "./FillterDestination";
+import Listdestination from "../../graphQL/Query/Destination/ListDestinationV2";
+import filterDestination from "./../../graphQL/Query/Destination/filterDestination";
+import Liked from "../../graphQL/Mutation/Destination/Liked";
+import UnLiked from "../../graphQL/Mutation/unliked";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../../component";
-import LinearGradient from "react-native-linear-gradient";
+import { FunIcon } from "../../component";
 
-export default function ItineraryDestination(props) {
+export default function DestinationList(props) {
   const HeaderComponent = {
     headerShown: true,
     title: "Destination",
@@ -75,25 +65,53 @@ export default function ItineraryDestination(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
 
-  const {
-    data: datafilter,
-    loading: loadingfilter,
-    error: errorfilter,
-  } = useQuery(filterDestination);
-  let [token, setToken] = useState(props.route.params.token);
-  let [datadayaktif, setdatadayaktif] = useState(
-    props.route.params.datadayaktif
-  );
-  let [search, setSearch] = useState({ type: null, tag: null, keyword: null });
-  let [IdItinerary, setId] = useState(props.route.params.IdItinerary);
+  const { t, i18n } = useTranslation();
+  const [
+    GetFillter,
+    { data: datafilter, loading: loadingfilter, error: errorfilter },
+  ] = useLazyQuery(filterDestination, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  let [token, setToken] = useState();
+  let [search, setSearch] = useState({
+    type: null,
+    keyword: null,
+    countries: null,
+    cities: null,
+    goodfor: null,
+    facilities: null,
+  });
+
+  console.log("testing", {
+    keyword: search.keyword ? search.keyword : null,
+    type: search.type ? search.type : null,
+    countries: search.countries ? search.countries : null,
+    cities: search.cities ? search.cities : null,
+    goodfor: search.goodfor ? search.goodfor : null,
+    facilities: search.facilities ? search.facilities : null,
+  });
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
     Listdestination,
     {
       fetchPolicy: "network-only",
-      variables: { keyword: search.keyword, type: search.tag },
+      variables: {
+        keyword: search.keyword ? search.keyword : null,
+        type: search.type ? search.type : null,
+        countries: search.countries ? search.countries : null,
+        cities: search.cities ? search.cities : null,
+        goodfor: search.goodfor ? search.goodfor : null,
+        facilities: search.facilities ? search.facilities : null,
+        rating: search.rating ? search.rating : null,
+      },
       context: {
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +132,6 @@ export default function ItineraryDestination(props) {
       },
     },
   });
-  // console.log(token);-
 
   const [
     mutationUnliked,
@@ -179,7 +196,6 @@ export default function ItineraryDestination(props) {
           throw new Error("Error Input");
         }
 
-        // console.log(response);
         if (response.data) {
           if (
             response.data.unset_wishlist.code === 200 ||
@@ -230,6 +246,7 @@ export default function ItineraryDestination(props) {
           }}
         >
           <Image
+            // source={bali1}
             source={{ uri: data.images.image }}
             style={{
               height: 145,
@@ -249,6 +266,7 @@ export default function ItineraryDestination(props) {
           <View
             style={{
               flexDirection: "row",
+              // alignContent: 'center',
               justifyContent: "space-between",
             }}
           >
@@ -261,12 +279,17 @@ export default function ItineraryDestination(props) {
                 onPress={() => _liked(data.id)}
                 type="circle"
                 style={{
+                  // position: 'absolute',
+                  // bottom: 10,
+                  // right: 0,
                   width: 25,
                   borderRadius: 19,
+                  // borderWidth: 1,
                   height: 25,
                   justifyContent: "center",
                   alignContent: "center",
                   alignItems: "center",
+                  // flexDirection: 'row',
                   backgroundColor: "#EEEEEE",
                   zIndex: 999,
                   top: 3,
@@ -279,12 +302,17 @@ export default function ItineraryDestination(props) {
                 onPress={() => _unliked(data.id)}
                 type="circle"
                 style={{
+                  // position: 'absolute',
+                  // bottom: 10,
+                  // right: 17,
                   width: 25,
                   borderRadius: 17.5,
+                  // borderWidth: 1,
                   height: 25,
                   justifyContent: "center",
                   alignContent: "center",
                   alignItems: "center",
+                  // flexDirection: 'row',
                   backgroundColor: "#EEEEEE",
                   zIndex: 999,
                   top: 3,
@@ -297,6 +325,7 @@ export default function ItineraryDestination(props) {
           <View
             style={{
               flexDirection: "row",
+              // justifyContent: 'space-between',
               marginTop: 5,
               alignContent: "flex-start",
             }}
@@ -307,6 +336,7 @@ export default function ItineraryDestination(props) {
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "flex-start",
+                // backgroundColor: 'green',
               }}
             >
               <PinHijau width={15} height={15} />
@@ -322,6 +352,9 @@ export default function ItineraryDestination(props) {
             </View>
             <View
               style={{
+                // position: 'absolute',
+                // right: 15,
+                // top: 15,
                 marginLeft: 15,
                 flexDirection: "row",
                 justifyContent: "space-evenly",
@@ -436,12 +469,9 @@ export default function ItineraryDestination(props) {
               style={{}}
               color="primary"
               onPress={() => {
-                props.navigation.push("ItineraryChooseday", {
-                  Iditinerary: IdItinerary,
-                  Kiriman: data.id,
-                  token: token,
+                props.navigation.navigate("ItineraryPlaning", {
+                  idkiriman: data.id,
                   Position: "destination",
-                  datadayaktif: datadayaktif,
                 });
               }}
             />
@@ -451,10 +481,19 @@ export default function ItineraryDestination(props) {
     );
   };
 
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    setToken(tkn);
+    await GetFillter();
+
+    await GetListDestination();
+    // }
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      GetListDestination();
+      loadAsync();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -467,16 +506,24 @@ export default function ItineraryDestination(props) {
             alignContent: "center",
             alignItems: "center",
             justifyContent: "flex-start",
-            // paddingVertical: 10,
           }}
         >
           {datafilter && datafilter.destination_type.length ? (
             <FilterItin
-              style={{}}
               fillter={
                 datafilter && datafilter.destination_type.length
                   ? datafilter.destination_type
                   : []
+              }
+              filterawal={
+                props.route.params !== undefined
+                  ? props.route.params.idtype
+                  : null
+              }
+              idcity={
+                props.route.params !== undefined
+                  ? props.route.params.idcity
+                  : null
               }
               sendBack={(e) => setSearch(e)}
             />
@@ -489,8 +536,9 @@ export default function ItineraryDestination(props) {
               }
             }
           >
-            {data && data.destinationList.length ? (
+            {data && data.destinationList_v2.length ? (
               <FlatList
+                showsVerticalScrollIndicator={false}
                 style={{
                   paddingTop: 5,
                 }}
@@ -502,12 +550,11 @@ export default function ItineraryDestination(props) {
                   // paddingBottom: 250,
                 }}
                 horizontal={false}
-                data={data.destinationList}
+                data={data.destinationList_v2}
                 renderItem={({ item }) => <RenderDes data={item} />}
                 key={""}
                 keyExtractor={(item) => item.id}
                 showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
               />
             ) : null}
           </View>
@@ -516,3 +563,71 @@ export default function ItineraryDestination(props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  main: {
+    // flex: 1,
+    // marginTop: 20,
+    // paddingTop: (50),
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+  },
+  ImageView: {
+    // width: (110),
+    // height: (110),
+    // marginRight: (5),
+    borderRadius: 10,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    // opacity: 0.4,
+    // elevation: 1,
+  },
+  Image: {
+    resizeMode: "cover",
+    borderRadius: 10,
+  },
+});
+
+DestinationList.navigationOptions = (props) => ({
+  headerTitle: "Destination",
+  headerMode: "screen",
+  headerStyle: {
+    backgroundColor: "#209FAE",
+    elevation: 0,
+    borderBottomWidth: 0,
+    fontSize: 50,
+  },
+  headerTitleStyle: {
+    fontFamily: "lato-reg",
+    fontSize: 14,
+    color: "white",
+  },
+  headerLeft: (
+    <Button
+      text={""}
+      size="medium"
+      type="circle"
+      variant="transparent"
+      onPress={() => props.navigation.goBack()}
+      style={{
+        height: 55,
+      }}
+    >
+      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+    </Button>
+  ),
+  headerLeftContainerStyle: {
+    paddingLeft: 10,
+  },
+  headerRight: (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "row",
+      }}
+    ></View>
+  ),
+  headerRightStyle: {
+    // paddingRight: 20,
+  },
+});

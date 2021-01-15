@@ -9,25 +9,59 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from "react-native";
-import { CustomText, CustomImage } from "../../core-ui";
-import { default_image, imgPrivate } from "../../const/Png";
-import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import ItineraryDetails from "../../graphQL/Query/Itinerary/ItineraryDetails";
-import listitinerary from "../../graphQL/Query/Itinerary/listitinerary";
-import { dateFormats } from "../../const/dateformatter";
-import { LikeRed, LikeEmpty, Kosong } from "../../const/Svg";
-import { NavigationEvents } from "react-navigation";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CustomImage } from "../../../component";
+import { default_image, imgPrivate } from "../../../assets/png";
+import { useLazyQuery } from "@apollo/react-hooks";
+import listitinerary from "../../../graphQL/Query/Itinerary/listitinerary";
+import { dateFormats } from "../../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../Component";
-import Truncate from "../../utils/Truncate";
-export default function listItinPlaning({
-  token,
-  props,
-  jumlah,
-  idkiriman,
-  Position,
-}) {
+import { Text, Button, Truncate } from "../../../component";
+import { Arrowbackwhite } from "../../../assets/svg";
+export default function listItinPlaning(props) {
+  const HeaderComponent = {
+    headerShown: true,
+    title: "Your Trip",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Your Trip",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
+  let [token, setToken] = useState("");
+  let idkiriman = props.route.params.idkiriman;
+
   const { t, i18n } = useTranslation();
   const [
     GetListitinaktif,
@@ -146,14 +180,19 @@ export default function listItinPlaning({
   };
 
   const goChooseDay = (data) => {
-    props.navigation.navigate("ItineraryChooseday", {
-      itintitle: data.name,
-      Iditinerary: data.id,
-      dateitin: getdate(data.start_date, data.end_date),
-      token: token,
-      Kiriman: idkiriman,
-      Position: Position,
-    });
+    if (!token || token === null) {
+      Alert.alert("Silahkan Login terlebih dahulu");
+      props.navigation.navigate("HomeScreen");
+    } else {
+      props.navigation.push("ItineraryChooseday", {
+        itintitle: data.name,
+        Iditinerary: data.id,
+        dateitin: getdate(data.start_date, data.end_date),
+        token: token,
+        Kiriman: idkiriman,
+        Position: props.route.params.Position,
+      });
+    }
   };
   const RenderActive = ({ data }) => {
     return (
@@ -232,31 +271,7 @@ export default function listItinPlaning({
                     {t("private")}
                   </Text>
                 </View>
-              ) : // <TouchableOpacity
-              // 	onPress={() => handler_liked(data.id)}
-              // 	style={{
-              // 		flexDirection: 'row',
-              // 		position: 'absolute',
-              // 		right: 10,
-              // 		top: 10,
-              // 		zIndex: 999,
-              // 	}}>
-              // 	<Text
-              // 		style={{
-              // 			fontFamily: 'Lato-Regular',
-              // 			color: 'white',
-              // 		}}>
-              // 		{data.likers}{' '}
-              // 	</Text>
-              // 	<View>
-              // 		{data.liked == true ? (
-              // 			<LikeRed height={20} width={20} />
-              // 		) : (
-              // 			<LikeEmpty height={20} width={20} />
-              // 		)}
-              // 	</View>
-              // </TouchableOpacity>
-              null}
+              ) : null}
               <View>
                 <Text
                   size="label"
@@ -326,123 +341,78 @@ export default function listItinPlaning({
     });
   }, []);
 
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+    await _Refresh();
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   return (
-    <View style={{ flex: 1 }}>
-      <NavigationEvents onDidFocus={() => _Refresh()} />
-
-      <View style={{ flex: 1 }}>
-        {datalistaktif && datalistaktif.itinerary_list_bystatus.length > 0 ? (
-          (jumlah(datalistaktif.itinerary_list_bystatus.length),
-          (
-            <FlatList
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
-              }
-              contentContainerStyle={{
-                marginTop: 5,
-                justifyContent: "space-evenly",
-                paddingStart: 10,
-                paddingEnd: 10,
-                paddingBottom: 100,
-              }}
-              horizontal={false}
-              data={
-                datalistaktif && datalistaktif.itinerary_list_bystatus.length
-                  ? datalistaktif.itinerary_list_bystatus
-                  : null
-              }
-              renderItem={({ item }) => <RenderActive data={item} />}
-              // keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-              // extraData={selected}
-            />
-          ))
-        ) : (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignContent: "center",
-              height: "100%",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontFamily: "Lato-Bold",
-                color: "#646464",
-              }}
-            >
-              Opps ..
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                fontFamily: "Lato-Regular",
-                color: "#646464",
-              }}
-            >
-              Itinerary is still empty
-            </Text>
-            <Kosong
-              height={Dimensions.get("screen").width * 0.6}
-              width={Dimensions.get("screen").width}
-            />
-            <Button
-              color={"secondary"}
-              onPress={() => props.navigation.navigate("Trip")}
-              style={{
-                width: Dimensions.get("window").width - 60,
-              }}
-              text={t("createYourPlan")}
-            />
-          </View>
-        )}
-
-        <View
-          style={{
-            // zIndex: 999,
-            // position: 'absolute',
-            // left: 0,
-            // bottom: 0,
-            height: 60,
-            width: Dimensions.get("window").width,
-            backgroundColor: "white",
-            paddingVertical: 10,
-            borderTopWidth: 1,
-            borderColor: "#F0F0F0",
-            shadowColor: "#F0F0F0",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 3,
-            alignItems: "center",
-            justifyContent: "center",
+    <View style={{ flex: 1, justifyContent: "flex-end" }}>
+      {datalistaktif && datalistaktif.itinerary_list_bystatus.length > 0 ? (
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+          }
+          contentContainerStyle={{
+            marginTop: 5,
+            justifyContent: "space-evenly",
+            paddingStart: 10,
+            paddingEnd: 10,
+            paddingBottom: 100,
           }}
-        >
-          <Button
-            color={"secondary"}
-            onPress={() => props.navigation.navigate("Trip")}
-            style={{
-              width: Dimensions.get("window").width - 60,
-            }}
-            text={t("createYourPlan")}
-          />
-        </View>
+          horizontal={false}
+          data={
+            datalistaktif && datalistaktif.itinerary_list_bystatus.length
+              ? datalistaktif.itinerary_list_bystatus
+              : null
+          }
+          renderItem={({ item }) => <RenderActive data={item} />}
+          // keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          // extraData={selected}
+        />
+      ) : null}
+
+      <View
+        style={{
+          height: 60,
+          width: Dimensions.get("window").width,
+          backgroundColor: "white",
+          paddingVertical: 10,
+          borderTopWidth: 1,
+          borderColor: "#F0F0F0",
+          shadowColor: "#F0F0F0",
+          shadowOffset: { width: 2, height: 2 },
+          shadowOpacity: 1,
+          shadowRadius: 2,
+          elevation: 3,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          color={"secondary"}
+          onPress={() => props.navigation.push("Trip")}
+          style={{
+            width: Dimensions.get("window").width - 60,
+          }}
+          text={t("createYourPlan")}
+        />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  main: {
-    // flex: 1,
-    // marginTop: 20,
-    paddingTop: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-  },
   ImageView: {
     // width: (110),
     // height: (110),
