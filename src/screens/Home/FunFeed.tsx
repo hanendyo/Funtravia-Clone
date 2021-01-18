@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -8,63 +8,54 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {default_image} from '../../assets/png';
-import {CommentWhite, LikeWhite} from '../../assets/svg';
-import {useLazyQuery} from '@apollo/react-hooks';
-import FeedPopuler from '../../graphQL/Query/Home/FeedPopuler';
-import {Text, Button} from '../../component';
-import {Truncate} from '../../component';
-import LinearGradient from 'react-native-linear-gradient';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { default_image } from "../../assets/png";
+import { CommentWhite, LikeWhite } from "../../assets/svg";
+import { useLazyQuery } from "@apollo/react-hooks";
+import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
+import { Text, Button } from "../../component";
+import { Truncate } from "../../component";
+import LinearGradient from "react-native-linear-gradient";
 
-export default function SearchFeed({props}) {
+export default function SearchFeed({ props }) {
   let placeholderFunFeed = [
     {
       id: 1,
       uri:
-        'https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg',
-      username: 'user_one',
-      created_at: '2020-12-17 16:37:38',
+        "https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg",
+      username: "user_one",
+      created_at: "2020-12-17 16:37:38",
     },
     {
       id: 2,
       uri:
-        'https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg',
-      username: 'user_two',
-      created_at: '2020-12-17 16:37:38',
+        "https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg",
+      username: "user_two",
+      created_at: "2020-12-17 16:37:38",
     },
     {
       id: 3,
       uri:
-        'https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg',
-      username: 'user_three',
-      created_at: '2020-12-17 16:37:38',
+        "https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg",
+      username: "user_three",
+      created_at: "2020-12-17 16:37:38",
     },
   ];
-	let [token, setToken] = useState("");
+  let [token, setToken] = useState("");
 
   const [
     querySearchPost,
-    {loading: loadingPost, data: dataPost, error: errorPost},
+    { loading: loadingPost, data: dataPost, error: errorPost },
   ] = useLazyQuery(FeedPopuler, {
     variables: {
-      limit : 5
+      limit: 5,
     },
     fetchPolicy: "network-only",
   });
-  console.log('loading_post',dataPost);
-  if (dataPost) {
-  }
-  if (loadingPost) {
-    console.log('Loading Data Post' + loadingPost);
-  }
-  if (errorPost) {
-    console.log('error Post ' + errorPost);
-  }
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem('access_token');
+    let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
     querySearchPost();
   };
@@ -85,9 +76,8 @@ export default function SearchFeed({props}) {
 
       setSelected(newSelected);
       setSelectedUri(newUri);
-      console.log(uri);
     },
-    [selected],
+    [selected]
   );
 
   // const FeedModal = ({ uri }) => {
@@ -147,97 +137,99 @@ export default function SearchFeed({props}) {
     return (
       <TouchableOpacity
         style={styles.main}
-        onPress={
-          () =>
-            props.navigation.navigate('SinglePost', {
-              post_id: id,
-            })
-          // console.log(typeof data),
-          // console.log(data[index])
-        }>
+        onPress={() =>
+          props.navigation.navigate("SinglePost", {
+            post_id: id,
+          })
+        }
+      >
         <ImageBackground
-          source={uri ? {uri: uri} : default_image}
-          imageStyle={{resizeMode: 'cover', borderRadius: 5}}
-          style={{width: '100%'}}>
+          source={uri ? { uri: uri } : default_image}
+          imageStyle={{ resizeMode: "cover", borderRadius: 5 }}
+          style={{ width: "100%" }}
+        >
           <TouchableOpacity
             style={{
-              flexDirection: 'row',
+              flexDirection: "row",
               marginLeft: 10,
-              width: '100%',
+              width: "100%",
               marginTop: 10,
               // justifyContent: 'center',
-              alignContent: 'center',
+              alignContent: "center",
             }}
             onPress={() =>
-              props.navigation.push('otherprofile', {idUser: user_id})
-            }>
+              props.navigation.push("otherprofile", { idUser: user_id })
+            }
+          >
             <Image
-              source={profile_uri ? {uri: profile_uri} : default_image}
+              source={profile_uri ? { uri: profile_uri } : default_image}
               style={{
                 // marginTop: 10	,
-                resizeMode: 'cover',
+                resizeMode: "cover",
                 height: 27,
                 width: 27,
                 borderRadius: 15,
                 zIndex: 10000,
-                borderColor: 'white',
+                borderColor: "white",
                 borderWidth: 1,
               }}
             />
             <View
               style={{
-                justifyContent: 'center',
-                alignContent: 'center',
-                alignSelf: 'center',
+                justifyContent: "center",
+                alignContent: "center",
+                alignSelf: "center",
                 marginLeft: -10,
-                backgroundColor: 'rgba(0,0,0,0.4)',
+                backgroundColor: "rgba(0,0,0,0.4)",
                 paddingHorizontal: 3,
                 // paddingVertical: ,
                 borderRadius: 2,
                 height: 20,
-              }}>
+              }}
+            >
               <Text
                 size="small"
                 type="bold"
                 // numberOfLines={2}
                 style={{
-                  textAlign: 'center',
+                  textAlign: "center",
                   marginLeft: 10,
-                  color: 'rgba(255,255,255,1)',
-                  textShadowColor: 'rgba(0, 0, 0, 0.75)',
-                  textShadowOffset: {width: -1, height: 1},
+                  color: "rgba(255,255,255,1)",
+                  textShadowColor: "rgba(0, 0, 0, 0.75)",
+                  textShadowOffset: { width: -1, height: 1 },
                   textShadowRadius: 10,
-                }}>
+                }}
+              >
                 {username}
               </Text>
             </View>
           </TouchableOpacity>
           <LinearGradient
-            colors={['black', 'transparent']}
+            colors={["black", "transparent"]}
             style={{
-              height: '33%',
-              position: 'absolute',
+              height: "33%",
+              position: "absolute",
               bottom: 0,
-              width: '100%',
+              width: "100%",
               borderRadius: 5,
             }}
-            start={{x: 0, y: 1}}
-            end={{x: 0, y: 0}}>
+            start={{ x: 0, y: 1 }}
+            end={{ x: 0, y: 0 }}
+          >
             <Text
-                size="description"
-                ellipsizeMode="clip"
-                numberOfLines={2}
-                style={{
-                  // height: 30,
-                  marginLeft: 10,
-                  marginTop: 10,
-                  color: 'white',
-                  alignSelf: 'baseline',
-                  justifyContent: 'space-around',
-                }}>
-                  {caption ? 
-                <Truncate text={caption} length={50} />
-              :null}
+              size="description"
+              ellipsizeMode="clip"
+              numberOfLines={2}
+              style={{
+                // height: 30,
+                marginLeft: 10,
+                marginTop: 10,
+                color: "white",
+                alignSelf: "baseline",
+                justifyContent: "space-around",
+              }}
+            >
+              {caption ? <Truncate text={caption} length={50} /> : null}
             </Text>
             {/* {caption && caption.length >= 20 ? (
 
@@ -259,11 +251,12 @@ export default function SearchFeed({props}) {
             )} */}
             <View
               style={{
-                flexDirection: 'row',
-                position: 'absolute',
+                flexDirection: "row",
+                position: "absolute",
                 bottom: 5,
                 marginLeft: 10,
-              }}>
+              }}
+            >
               <Button
                 onPress={() => null}
                 type="icon"
@@ -273,17 +266,19 @@ export default function SearchFeed({props}) {
                 style={{
                   paddingHorizontal: 2,
                   marginRight: 10,
-                  color: 'white',
+                  color: "white",
                   // right: 10,
-                }}>
+                }}
+              >
                 <LikeWhite height={17} width={18} />
                 <Text
                   size="description"
                   style={{
-                    textAlign: 'center',
+                    textAlign: "center",
                     marginHorizontal: 3,
-                    color: 'white',
-                  }}>
+                    color: "white",
+                  }}
+                >
                   {liked}
                 </Text>
               </Button>
@@ -296,20 +291,22 @@ export default function SearchFeed({props}) {
                 style={{
                   paddingHorizontal: 1,
                   // right: 10,
-                }}>
+                }}
+              >
                 <CommentWhite
                   height={17}
                   width={18}
-                  fill={'#FFFFFF'}
-                  color={'white'}
+                  fill={"#FFFFFF"}
+                  color={"white"}
                 />
                 <Text
                   size="description"
                   style={{
-                    textAlign: 'center',
+                    textAlign: "center",
                     marginHorizontal: 3,
-                    color: 'white',
-                  }}>
+                    color: "white",
+                  }}
+                >
                   {comment}
                 </Text>
               </Button>
@@ -327,24 +324,25 @@ export default function SearchFeed({props}) {
         paddingHorizontal: 10,
         // width: '100%',
       }}
-      horizontal={true}>
+      horizontal={true}
+    >
       {dataPost &&
       dataPost.feed_post_populer.length !== 0 &&
       dataPost !== NaN ? (
         <FlatList
           contentContainerStyle={{
-            justifyContent: 'space-evenly',
-            alignContent: 'space-between',
+            justifyContent: "space-evenly",
+            alignContent: "space-between",
             // justifyContent: 'space-evenly',
-            alignItems: 'center',
-            alignSelf: 'center',
+            alignItems: "center",
+            alignSelf: "center",
             // borderWidth: 0.5,
             marginBottom: 35,
             paddingStart: 0,
-            flexDirection: 'row',
+            flexDirection: "row",
           }}
           data={dataPost ? dataPost.feed_post_populer : null}
-          renderItem={({item, index}) => (
+          renderItem={({ item, index }) => (
             <Item
               id={item.id}
               uri={item.assets[0].filepath}
@@ -371,18 +369,18 @@ export default function SearchFeed({props}) {
       ) : (
         <FlatList
           contentContainerStyle={{
-            justifyContent: 'space-evenly',
-            alignContent: 'space-between',
+            justifyContent: "space-evenly",
+            alignContent: "space-between",
             // justifyContent: 'space-evenly',
-            alignItems: 'center',
-            alignSelf: 'center',
+            alignItems: "center",
+            alignSelf: "center",
             // borderWidth: 0.5,
             marginBottom: 30,
             paddingStart: 0,
-            flexDirection: 'row',
+            flexDirection: "row",
           }}
           data={placeholderFunFeed}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <Item
               id={item.id}
               uri={item.uri}
@@ -393,7 +391,7 @@ export default function SearchFeed({props}) {
             />
           )}
           // numColumns={3}
-          key={'_'}
+          key={"_"}
           keyExtractor={(item) => item.id}
           extraData={selected}
           horizontal={true}
@@ -405,28 +403,28 @@ export default function SearchFeed({props}) {
 
 const styles = StyleSheet.create({
   main: {
-    height: (Dimensions.get('screen').width / 2 - 20) * 1.5,
-    width: Dimensions.get('screen').width / 2 - 20,
-    backgroundColor: 'white',
+    height: (Dimensions.get("screen").width / 2 - 20) * 1.5,
+    width: Dimensions.get("screen").width / 2 - 20,
+    backgroundColor: "white",
     borderRadius: 5,
     marginHorizontal: 4,
     // borderWidth: 0.2,
-    flexDirection: 'row',
-    shadowColor: '#6F7273',
-    shadowOffset: {width: 3, height: 3},
+    flexDirection: "row",
+    shadowColor: "#6F7273",
+    shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 3,
   },
   modalScroll: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'black',
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    flexDirection: "row",
+    alignItems: "center",
+    alignContent: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "black",
     //opacity: 1,
   },
 });

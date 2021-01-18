@@ -1,0 +1,99 @@
+import React from 'react';
+import { View, Image, SafeAreaView, Dimensions } from 'react-native';
+import { normalize } from '../../../../const/PixelRatio';
+import { LinearGradient } from 'expo-linear-gradient';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { Text } from '../../../../Component';
+import { useTranslation } from 'react-i18next';
+const imgSize = Dimensions.get('window').width / 3;
+const dimensions = Dimensions.get('window');
+const barWidth = dimensions.width - normalize(60);
+
+export default function OtherDestination({ tittle, data }) {
+	const { t, i18n } = useTranslation();
+
+	const destinationImage = [];
+	if (data && data.length) {
+		destinationImage.push(data[0]);
+	}
+	if (data && data.length >= 2) {
+		destinationImage.push(data[1]);
+	}
+	return (
+		<View style={{ paddingBottom: 20 }}>
+			<LinearGradient
+				colors={['rgba(032, 159, 174,0.8)', 'rgb(255, 255, 255)']}
+				start={{ x: 0, y: 1 }}
+				end={{ x: 1, y: 1 }}
+				style={{
+					width: barWidth,
+					marginLeft: normalize(5),
+					marginBottom: normalize(10),
+				}}>
+				<Text
+					size='title'
+					type='bold'
+					style={{
+						// fontSize: normalize(18),
+						marginVertical: normalize(10),
+						paddingLeft: normalize(20),
+						// fontFamily: 'lato-bold',
+						color: '#FFFFFF',
+					}}>
+					{tittle}
+				</Text>
+			</LinearGradient>
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					marginHorizontal: normalize(20),
+					marginBottom: 20,
+				}}>
+				{destinationImage && destinationImage.length
+					? destinationImage.map((i, index) => {
+							return (
+								<View>
+									<Image
+										key={index}
+										source={{ uri: i.image }}
+										style={{
+											width: imgSize,
+											height: imgSize,
+											borderRadius: 10,
+											marginBottom: 5,
+											marginRight: 10,
+											resizeMode: 'cover',
+										}}
+									/>
+									<Image
+										key={index}
+										source={{ uri: i.image }}
+										style={{
+											width: imgSize,
+											height: imgSize,
+											borderRadius: 10,
+											marginTop: 5,
+											marginRight: 10,
+											resizeMode: 'cover',
+										}}
+									/>
+								</View>
+							);
+					  })
+					: null}
+			</View>
+			<TouchableOpacity style={{ zIndex: 999 }}>
+				<Text
+					style={{
+						color: '#209FAE',
+						marginHorizontal: normalize(20),
+					}}
+					size='label'
+					type='bold'>
+					{`${t('seeMorePhotos')} >`}
+				</Text>
+			</TouchableOpacity>
+		</View>
+	);
+}
