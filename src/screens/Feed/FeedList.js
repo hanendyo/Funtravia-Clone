@@ -7,8 +7,8 @@ import {
   Dimensions,
   Alert,
   RefreshControl,
-  AsyncStorage,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
 import { CustomImage } from "../../component";
 import {
@@ -90,12 +90,12 @@ export default function FeedList({
 
   const _liked = async (id) => {
     // console.log(id);
-    if (token || token !== "") {
+    // SetDataFeed(tempData);
+    if (token) {
       var tempData = [...datafeed];
       var index = tempData.findIndex((k) => k["id"] === id);
       tempData[index].liked = true;
       tempData[index].response_count = tempData[index].response_count + 1;
-      SetDataFeed(tempData);
       try {
         let response = await MutationLike({
           variables: {
@@ -118,13 +118,13 @@ export default function FeedList({
             var index = tempData.findIndex((k) => k["id"] === id);
             tempData[index].liked = true;
             tempData[index].response_count = response.data.like_post.count_like;
-            SetDataFeed(tempData);
+            // SetDataFeed(tempData);
           } else {
             var tempData = [...datafeed];
             var index = tempData.findIndex((k) => k["id"] === id);
             tempData[index].liked = false;
             tempData[index].response_count = tempData[index].response_count - 1;
-            SetDataFeed(tempData);
+            // SetDataFeed(tempData);
             throw new Error(response.data.like_post.message);
           }
 
@@ -135,7 +135,7 @@ export default function FeedList({
         var index = tempData.findIndex((k) => k["id"] === id);
         tempData[index].liked = false;
         tempData[index].response_count = tempData[index].response_count - 1;
-        SetDataFeed(tempData);
+        // SetDataFeed(tempData);
         // console.log(error);
         Alert.alert("" + error);
       }
@@ -292,7 +292,7 @@ export default function FeedList({
   };
 
   const viewcomment = (data) => {
-    props.navigation.navigate("comment", {
+    props.navigation.navigate("CommentPost", {
       data: data,
       token: token,
     });
@@ -311,7 +311,6 @@ export default function FeedList({
   };
 
   function Item({ selected, dataRender }) {
-    // console.log(dataRender.id);
     return (
       <View
         style={{
@@ -617,6 +616,7 @@ export default function FeedList({
               paddingVertical: 10,
             }}
             onPress={() => {
+              setModalmenu(false),
               props.navigation.push("EditPost", {
                 datapost: selectedOption,
               });
@@ -631,6 +631,7 @@ export default function FeedList({
               paddingVertical: 10,
             }}
             onPress={() => {
+              setModalmenu(false),
               setModalhapus(true);
             }}
           >

@@ -154,6 +154,9 @@ import CommentChat from './files/comment_chat.svg';
 import LikeJournal from './files/like_journal.svg';
 import LikeWhite from './files/LikeWhite.svg';
 import CommentWhite from './files/CommentWhite.svg';
+import CameraBlue from './files/camera_blue.svg';
+import SizeOri from './files/size_ori.svg';
+import SizeStrace from './files/size_strace.svg';
 
 export {
   LikeWhite,
@@ -312,4 +315,7 @@ export {
   LikeJournal,
   Itinerary,
   ItineraryOn,
+  CameraBlue,
+  SizeOri,
+  SizeStrace,
 };

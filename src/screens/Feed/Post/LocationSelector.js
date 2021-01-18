@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Arrowbackwhite, Pointmapblack, Search } from "../../../assets/svg";
 import Modal from "react-native-modal";
-import Truncate from "../../../component";
+import {Truncate} from "../../../component";
 
 export default function LocationSelector({
 	modals,
@@ -147,8 +147,9 @@ export default function LocationSelector({
 						GooglePlacesSearchQuery={{ rankby: "distance" }}
 						enablePoweredByContainer={false}
 						renderRow={(data) => {
-							// console.log(data);
+							console.log(data);
 							var x = data?.description.split(",");
+							console.log(data?.description);
 							return (
 								<View
 									style={{
@@ -156,7 +157,6 @@ export default function LocationSelector({
 										// height: 100,
 										alignContent: "flex-start",
 										alignItems: "flex-start",
-										// paddingBottom:20,
 										// width: Dimensions.get('screen').width - 60,
 									}}
 								>
@@ -171,14 +171,17 @@ export default function LocationSelector({
 									<View
 										style={{
 											width: Dimensions.get("screen").width - 60,
-											paddingBottom: 10,
+											// paddingBottom: 10,
+											paddingRight:10,
+
 										}}
 									>
 										<Text style={{ fontFamily: "Lato-Bold", fontSize: 14 }}>
 											{x[0]}
 										</Text>
 										<Text style={{ fontFamily: "Lato-Regular", fontSize: 12 }}>
-											<Truncate text={data?.description} length={65} />
+											{data.description}
+											{/* <Truncate text={data.description} length={65} /> */}
 										</Text>
 									</View>
 								</View>
@@ -187,7 +190,7 @@ export default function LocationSelector({
 						styles={{
 							// container: { backgroundColor: 'red' },
 							textInputContainer: {
-								height: 40,
+								// height: 40,
 								backgroundColor: "#F4F4F4",
 								borderTopWidth: 0.5,
 								borderTopColor: "#FFFFFF",
@@ -217,7 +220,7 @@ export default function LocationSelector({
 								// height: 50,
 							},
 							row: {
-								height: 48,
+								// height: 48,
 							},
 						}}
 					/>
@@ -225,5 +228,6 @@ export default function LocationSelector({
 				{/* </View> */}
 			</KeyboardAvoidingView>
 		</Modal>
+	
 	);
 }

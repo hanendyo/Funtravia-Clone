@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
 	View,
 	Dimensions,
-	Image,
 	TextInput,
 	KeyboardAvoidingView,
 	Platform,
@@ -10,6 +9,8 @@ import {
 	Keyboard,
 	TouchableOpacity,
 	Alert,
+	Image,
+	PermissionsAndroid,
 } from "react-native";
 import { AsyncStorage } from "react-native";
 import { default_image, back_arrow_white } from "../../../assets/png";
@@ -23,6 +24,7 @@ import { PinHijau, Xgray } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Geolocation from "react-native-geolocation-service";
+import ImgToBase64 from 'react-native-image-base64';
 const PostMut = gql`
 	mutation(
 		$caption: String
@@ -49,15 +51,39 @@ const PostMut = gql`
 `;
 
 export default function CreatePost(props) {
+	const HeaderComponent = {
+		title: "New Post",
+		headerTintColor: "white",
+		headerTitle: "",
+		headerTransparent: true,
+		headerShown: true,
+		headerMode: "screen",
+		headerStyle: {
+			backgroundColor: "#209FAE",
+			elevation: 0,
+			borderBottomWidth: 0,
+		},
+		headerTitleStyle: {
+			fontFamily: "Lato-Regular",
+			fontSize: 14,
+			color: "white",
+		},
+	};
+	// const HeaderComponent = {
+	// 	tabBarBadge: 8,
+	// };
 	let [statusText, setStatusText] = useState("");
+	// console.log(statusText);
 	let [modellocation, setModellocation] = useState(false);
 	let [Location, setLocation] = useState({
 		address: "Add Location",
 		latitude: "",
 		longitude: "",
 	});
+	// console.log(Location);
 	let [loadingok, setLoading] = useState(false);
-	const chosenPicture = props.route.params.image;
+	let [chosenPicture, setChosenPicture] = useState(props.route.params.image);
+	let [chosenPictureBase64, setChosenPictureBase64] = useState(props.route.params.base64);
 	const [token, setToken] = useState(null);
 	const [datanearby, setDataNearby] = useState([]);
 	const [MutationCreate, { loading, data, error }] = useMutation(PostMut, {
@@ -91,49 +117,24 @@ export default function CreatePost(props) {
 	};
 	const _setStatusText = (data) => {
 		setStatusText(data);
-		props.navigation.setParams({
-			SubmitData: SubmitData,
-			location: Location,
-			text: data,
-		});
-		wait(1000).then(() => {
-			props.navigation.setParams({
-				SubmitData: SubmitData,
-				location: Location,
-				text: data,
-			});
-		});
 
-		// props.navigation.route.params('setText');
 	};
 	const _setLocation = (data) => {
-		props.navigation.setParams({
-			SubmitData: SubmitData,
-			text: statusText,
-			location: data,
-		});
 		setLocation(data);
-
-		wait(1000).then(() => {
-			props.navigation.setParams({
-				SubmitData: SubmitData,
-				text: statusText,
-				location: data,
-			});
-		});
 	};
 	// console.log(chosenPicture.base64);
-	const SubmitData = async (text, location) => {
+	const SubmitData = async () => {
 		// return false;
 		setLoading(true);
-		let caption = text ? text : "-";
-		let latitude = location.latitude !== "" ? location.latitude : "0";
-		let longitude = location.longitude !== "" ? location.longitude : "0";
+		let caption = statusText ? statusText : "-";
+		let latitude = Location.latitude !== "" ? Location.latitude : "0";
+		let longitude = Location.longitude !== "" ? Location.longitude : "0";
 		let location_name =
-			location.address == "" || location.address == "Add Location"
+		Location.address == "" || Location.address == "Add Location"
 				? "0"
-				: location.address;
-		// console.log(caption);
+				: Location.address;
+		// console.log('BASE64'+ chosenPictureBase64);
+		// console.log('BASE64');
 		try {
 			let response = await MutationCreate({
 				variables: {
@@ -141,14 +142,15 @@ export default function CreatePost(props) {
 					latitude: latitude,
 					longitude: longitude,
 					location_name: location_name,
-					assets: "data:image/png;base64," + chosenPicture.base64,
+					assets: "data:image/png;base64," + chosenPictureBase64,
 				},
 			});
+			console.log(response);
 			if (response.data) {
 				if (response.data.create_post.code === 200) {
 					// console.log('ok');
 					setLoading(false);
-					props.navigation.navigate("Feed");
+					props.navigation.navigate("FeedScreen");
 				} else {
 					// console.log('error');
 					setLoading(false);
@@ -160,16 +162,11 @@ export default function CreatePost(props) {
 				throw new Error("Error Input");
 			}
 		} catch (error) {
-			// console.log(error);
+			console.log(error);
 			setLoading(false);
 			Alert.alert("" + error);
 		}
 	};
-	// const submit = () => {
-	// 	SubmitData();
-	// 	// console.log('fungsi', props.navigation.route.params('SubmitData'));
-	// 	// props.navigation.route.params('SubmitData');
-	// };
 
 	const _selectLocation = (value) => {
 		console.log(value.latitude);
@@ -206,36 +203,45 @@ export default function CreatePost(props) {
 	};
 
 	useEffect(() => {
-		// (async () => {
-		// 	const { status } = await Permissions.askAsync(Permissions.LOCATION);
-		// 	if (status === "granted") {
-		// 		// console.log('status', status);
-		// 		await Geolocation.getCurrentPosition(
-		// 			(position) => _nearbyLocation(position),
-		// 			(err) => console.log(err),
-		// 			{ enableHighAccuracy: false, timeout: 8000, maximumAge: 10000 }
-		// 		);
-		// 	}
-		// })();
-		_nearbyLocation();
+		(async () => {
+			// const { status } = await Permissions.askAsync(Permissions.LOCATION);
+		// if (status === "granted") {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+			);
+			// console.log(granted);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				await Geolocation.getCurrentPosition(
+					(position) => _nearbyLocation(position),
+					(err) => console.log(err),
+					{ enableHighAccuracy: false, timeout: 8000, maximumAge: 10000 }
+				);
+			}
+			// }
+		})();
+		props.navigation.setOptions(HeaderComponent);
 		loadAsync();
-		props.navigation.setParams({
-			SubmitData: SubmitData,
-			location: Location,
-			text: statusText,
-		});
-	}, []);
 
+	}, []);
+	const convertBase64 = ()=>{
+		// console.log('aaa');
+		ImgToBase64.getBase64String(chosenPicture.uri)
+		.then(base64String => setChosenPictureBase64(base64String))
+		.catch(err => doSomethingWith(err));
+	}
 	const _requestLocation = async () => {};
 
 	const _nearbyLocation = async (position) => {
-		// console.log(position.coords.latitude);
+		let latitude = props.route.params.location && props.route.params.location.latitude ? props.route.params.location.latitude : position.coords.latitude;
+		let longitude = props.route.params.location && props.route.params.location.longitude ? props.route.params.location.longitude : position.coords.longitude;
+		// console.log(latitude, longitude);
+		
 		try {
 			let response = await fetch(
 				"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-					props.route.params.location.latitude +
+					latitude +
 					"," +
-					props.route.params.location.longitude +
+					longitude +
 					"&radius=500&key=AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
 				{
 					method: "GET",
@@ -277,8 +283,45 @@ export default function CreatePost(props) {
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === "ios" ? "padding" : null}
-			style={{ flex: 1 }}
+			style={{ flex: 1, backgroundColor: '#FFFFFF'}}
 		>
+		<View style={{ backgroundColor: "#209FAE", height: 55, }}>
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: 'flex-end',
+					alignItems: 'center',
+					alignContent: 'center',
+					height: 55,
+				}}
+			>
+				<TouchableOpacity
+					onPress={() => SubmitData()}
+					style={{
+						paddingRight: 10,
+						paddingLeft: 20,
+						height: 55,
+						// borderWidth: 1,
+						alignItems: 'center',
+						alignContent: 'center',
+						justifyContent: 'center'
+					}}
+				>
+					<Text
+						allowFontScaling={false}
+						style={{
+							alignSelf: 'center',
+							color: "#FFF",
+							fontFamily: "Lato-Bold",
+							fontSize: 14,
+							marginHorizontal: 5,
+						}}
+					>
+						Post
+					</Text>
+				</TouchableOpacity>
+			</View>
+		</View>
 			<ScrollView style={{}}>
 				<Loading show={loadingok} />
 				{/* <NavigationEvents
@@ -313,9 +356,7 @@ export default function CreatePost(props) {
 							source={
 								chosenPicture && chosenPicture.uri
 									? {
-											uri: chosenPicture.base64
-												? "data:image/gif;base64," + chosenPicture.base64
-												: chosenPicture.uri,
+											uri: chosenPicture.uri,
 									  }
 									: default_image
 							}
@@ -325,7 +366,7 @@ export default function CreatePost(props) {
 						<View
 							style={{
 								flexDirection: "row",
-								marginTop: 25,
+								// marginTop: 25,
 								backgroundColor: "#ffffff",
 								borderBottomColor: "#f0f0f0f0",
 								borderBottomWidth: 1,
@@ -467,66 +508,66 @@ export default function CreatePost(props) {
 	);
 }
 
-CreatePost.navigationOptions = ({ navigation }) => {
-	const { params } = navigation.state;
-	return {
-		headerTitle: "New Post",
-		headerMode: "screen",
-		headerStyle: {
-			zIndex: 20,
-			backgroundColor: "#209FAE",
-			elevation: 0,
-			borderBottomWidth: 0,
-			fontSize: 50,
-		},
-		headerTitleStyle: {
-			fontFamily: "Lato-Regular",
-			fontSize: 14,
-			color: "white",
-			alignSelf: "center",
-		},
-		headerLeft: () =>
-			CustomImage({
-				customStyle: { width: 20, height: 20 },
-				customImageStyle: { width: 20, height: 20, resizeMode: "contain" },
-				isTouchable: true,
-				onPress: () => navigation.goBack(),
-				source: back_arrow_white,
-			}),
-		headerLeftContainerStyle: {
-			paddingLeft: 20,
-		},
-		headerRight: () => {
-			return (
-				<TouchableOpacity
-					onPress={() => {
-						params.SubmitData(
-							navigation.getParam("text"),
-							navigation.getParam("location")
-						);
-					}}
-					style={{
-						paddingRight: 10,
-					}}
-				>
-					<Text
-						allowFontScaling={false}
-						style={{
-							color: "#FFF",
-							// fontWeight: 'bold',
-							fontFamily: "Lato-Bold",
-							fontSize: 14,
-							marginHorizontal: 5,
-							marginVertical: 10,
-						}}
-					>
-						Post
-					</Text>
-				</TouchableOpacity>
-			);
-		},
-		headerRightStyle: {
-			marginRight: 20,
-		},
-	};
-};
+// CreatePost.navigationOptions = ({ navigation }) => {
+// 	const { params } = navigation.state;
+// 	return {
+// 		headerTitle: "New Post",
+// 		headerMode: "screen",
+// 		headerStyle: {
+// 			zIndex: 20,
+// 			backgroundColor: "#209FAE",
+// 			elevation: 0,
+// 			borderBottomWidth: 0,
+// 			fontSize: 50,
+// 		},
+// 		headerTitleStyle: {
+// 			fontFamily: "Lato-Regular",
+// 			fontSize: 14,
+// 			color: "white",
+// 			alignSelf: "center",
+// 		},
+// 		headerLeft: () =>
+// 			CustomImage({
+// 				customStyle: { width: 20, height: 20 },
+// 				customImageStyle: { width: 20, height: 20, resizeMode: "contain" },
+// 				isTouchable: true,
+// 				onPress: () => navigation.goBack(),
+// 				source: back_arrow_white,
+// 			}),
+// 		headerLeftContainerStyle: {
+// 			paddingLeft: 20,
+// 		},
+// 		headerRight: () => {
+// 			return (
+// 				<TouchableOpacity
+// 					onPress={() => {
+// 						params.SubmitData(
+// 							navigation.getParam("text"),
+// 							navigation.getParam("location")
+// 						);
+// 					}}
+// 					style={{
+// 						paddingRight: 10,
+// 					}}
+// 				>
+// 					<Text
+// 						allowFontScaling={false}
+// 						style={{
+// 							color: "#FFF",
+// 							// fontWeight: 'bold',
+// 							fontFamily: "Lato-Bold",
+// 							fontSize: 14,
+// 							marginHorizontal: 5,
+// 							marginVertical: 10,
+// 						}}
+// 					>
+// 						Post
+// 					</Text>
+// 				</TouchableOpacity>
+// 			);
+// 		},
+// 		headerRightStyle: {
+// 			marginRight: 20,
+// 		},
+// 	};
+// };
