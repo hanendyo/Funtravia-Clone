@@ -214,4 +214,148 @@ export default function MainStackNavigator({ authorizeToken }) {
       </Tab.Navigator>
     </NavigationContainer>
   );
-}
+import { SearchPage,SearchTab } from "../screens/Search";
+
+const Tab = createStackNavigator();
+export default function MainStackNavigator({ authorizeToken }) {
+	return (
+		<NavigationContainer>
+			<Tab.Navigator
+				initialRouteName={authorizeToken ? "BottomStack" : "AuthStack"}
+			>
+				<Tab.Screen
+					name="AuthStack"
+					component={AuthStack}
+					options={{ headerShown: false }}
+				/>
+				<Tab.Screen
+					name="BottomStack"
+					component={BottomStack}
+					options={{ headerShown: false }}
+				/>
+				<Tab.Screen name="Post" component={Postscreen} />
+				<Tab.Screen name="CreatePostScreen" component={CreatePostScreen} />
+				<Tab.Screen
+					name="NewChat"
+					component={NewChat}
+					options={{ headerShown: false }}
+				/>
+				<Tab.Screen
+					name="GroupChat"
+					component={GroupChat}
+					options={{ headerShown: false }}
+				/>
+				<Tab.Screen
+					name="RoomChat"
+					component={RoomChat}
+					options={{ headerShown: false }}
+				/>
+				<Tab.Screen
+					name="profilesetting"
+					component={profilesetting}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="ProfileTab"
+					component={MyProfile}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="FollowerPage"
+					component={FollowerPage}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="FollowingPage"
+					component={FollowingPage}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="otherprofile"
+					component={otherprofile}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="otherFollower"
+					component={otherFollower}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="otherFollowing"
+					component={otherFollowing}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="myfeed"
+					component={myfeed}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="Comments"
+					component={Comments}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="tripalbum"
+					component={tripalbum}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="tripalbumdetail"
+					component={tripalbumdetail}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="SearchPage"
+					component={SearchPage}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+				<Tab.Screen
+					name="SearchTab"
+					component={SearchTab}
+					options={{
+						headerTitle: "",
+						headerTransparent: true,
+					}}
+				/>
+			
+			</Tab.Navigator>
+		</NavigationContainer>
+	);
+}}
