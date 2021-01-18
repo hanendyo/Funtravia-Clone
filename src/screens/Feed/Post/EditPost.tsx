@@ -14,36 +14,23 @@ import {
 	Pressable,
 	Alert,
 } from "react-native";
-import { AsyncStorage } from "react-native";
-import { default_image } from "../../../const/Png";
-import { CustomImage } from "../../../core-ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CustomImage, Text, Button, Loading, Truncate } from "../../../component";
+import { default_image, back_arrow_white } from "../../../assets/png";
+import { CheckWhite } from "../../../assets/svg";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
-import { back_arrow_white } from "../../../const/Png";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
-import { NavigationEvents } from "react-navigation";
-import * as Permissions from "expo-permissions";
+// import { NavigationEvents } from "react-navigation";
 
-import Loading from "../Loading";
 import {
-	Arrowbackwhite,
-	Xhitam,
-	Pointmapblack,
-	Pointmapgray,
-	Pointmaprecent,
-	OptionsVertWhite,
-	Search,
-	PinHijau,
 	OptionsVertBlack,
-	Xgray,
-	CheckWhite,
-} from "../../../const/Svg";
-import { Text, Button } from "../../../Component";
+
+} from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import Truncate from "../../../utils/Truncate";
 import { useTranslation } from "react-i18next";
 
 const PostEdit = gql`
@@ -59,7 +46,24 @@ const PostEdit = gql`
 
 export default function EditPost(props) {
 	const { t, i18n } = useTranslation();
-
+	const HeaderComponent = {
+		title: "New Post",
+		headerTintColor: "white",
+		headerTitle: "",
+		headerTransparent: true,
+		headerShown: true,
+		headerMode: "screen",
+		headerStyle: {
+			backgroundColor: "#209FAE",
+			elevation: 0,
+			borderBottomWidth: 0,
+		},
+		headerTitleStyle: {
+			fontFamily: "Lato-Regular",
+			fontSize: 14,
+			color: "white",
+		},
+	};
 	let [modellocation, setModellocation] = useState(false);
 	let [Location, setLocation] = useState({
 		address: "Add Location",
@@ -67,10 +71,10 @@ export default function EditPost(props) {
 		longitude: "",
 	});
 	let [loadingok, setLoading] = useState(false);
-	const chosenPicture = props.navigation.getParam("file");
+	const chosenPicture = props.route.params.file;
 	const [token, setToken] = useState(null);
 	const [datapost, setDatapost] = useState(
-		props.navigation.getParam("datapost")
+		props.route.params.datapost
 	);
 	// console.log(datapost);
 	let [statusText, setStatusText] = useState(datapost?.caption);
@@ -162,10 +166,10 @@ export default function EditPost(props) {
 		}
 	};
 	// console.log(chosenPicture.base64);
-	const SubmitData = async (text) => {
+	const SubmitData = async () => {
 		// return false;
 		setLoading(true);
-		let caption = text ? text : "-";
+		let caption = statusText ? statusText : "-";
 		// console.log(caption);
 		try {
 			let response = await MutationEdit({
@@ -178,7 +182,9 @@ export default function EditPost(props) {
 			if (response.data) {
 				if (response.data.edit_post.code === 200) {
 					setLoading(false);
-					props.navigation.navigate("Feed");
+					props.navigation.navigate("SinglePost", {
+						post_id: datapost.id
+					});
 				} else {
 					// console.log('error');
 					setLoading(false);
@@ -208,21 +214,56 @@ export default function EditPost(props) {
 	};
 
 	useEffect(() => {
+		props.navigation.setOptions(HeaderComponent);
 		loadAsync();
-		props.navigation.setParams({
-			SubmitData: SubmitData,
-			text: statusText,
-		});
 	}, []);
 
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === "ios" ? "padding" : null}
-			style={{ flex: 1 }}
+			style={{ flex: 1, backgroundColor: '#FFF' }}
 		>
+			<View style={{ backgroundColor: "#209FAE", height: 55, }}>
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: 'flex-end',
+					alignItems: 'center',
+					alignContent: 'center',
+					height: 55,
+				}}
+			>
+				<TouchableOpacity
+					onPress={() => {
+						SubmitData();
+					}}
+					style={{
+						paddingRight: 10,
+						flexDirection: "row",
+						alignContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Text
+						allowFontScaling={false}
+						style={{
+							color: "#FFF",
+							// fontWeight: 'bold',
+							fontFamily: "Lato-Bold",
+							fontSize: 14,
+							marginHorizontal: 10,
+							marginVertical: 10,
+						}}
+					>
+						SAVE
+					</Text>
+					<CheckWhite width={20} height={20} />
+				</TouchableOpacity>
+			</View>
+		</View>
 			<ScrollView style={{}}>
 				<Loading show={loadingok} />
-				<NavigationEvents
+				{/* <NavigationEvents
 					onDidFocus={() =>
 						props.navigation.setParams({
 							SubmitData: SubmitData,
@@ -230,7 +271,7 @@ export default function EditPost(props) {
 							text: statusText,
 						})
 					}
-				/>
+				/> */}
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<View
 						style={
@@ -249,17 +290,17 @@ export default function EditPost(props) {
 								alignContent: "center",
 							}}
 						>
-							<CustomImage
+							<Image
 								isTouchable
 								onPress={null}
-								customStyle={{
+								style={{
 									height: 35,
 									width: 35,
 									borderRadius: 15,
 									alignSelf: "center",
 									marginLeft: 15,
+									resizeMode: "cover",
 								}}
-								customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
 								source={{ uri: datapost.user.picture }}
 							/>
 							<View
@@ -376,67 +417,67 @@ export default function EditPost(props) {
 	);
 }
 
-EditPost.navigationOptions = ({ navigation }) => {
-	const { params } = navigation.state;
-	return {
-		headerTitle: "New Post",
-		headerMode: "screen",
-		headerStyle: {
-			zIndex: 20,
-			backgroundColor: "#209FAE",
-			elevation: 0,
-			borderBottomWidth: 0,
-			fontSize: 50,
-		},
-		headerTitleStyle: {
-			fontFamily: "Lato-Regular",
-			fontSize: 14,
-			color: "white",
-			alignSelf: "center",
-		},
-		headerLeft: () =>
-			CustomImage({
-				customStyle: { width: 20, height: 20 },
-				customImageStyle: { width: 20, height: 20, resizeMode: "contain" },
-				isTouchable: true,
-				onPress: () => navigation.goBack(),
-				source: back_arrow_white,
-			}),
-		headerLeftContainerStyle: {
-			paddingLeft: 20,
-		},
-		headerRight: () => {
-			return (
-				<TouchableOpacity
-					onPress={() => {
-						params.SubmitData(navigation.getParam("text"));
-					}}
-					style={{
-						paddingRight: 10,
-						flexDirection: "row",
-						alignContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<Text
-						allowFontScaling={false}
-						style={{
-							color: "#FFF",
-							// fontWeight: 'bold',
-							fontFamily: "Lato-Bold",
-							fontSize: 14,
-							marginHorizontal: 10,
-							marginVertical: 10,
-						}}
-					>
-						SAVE
-					</Text>
-					<CheckWhite width={20} height={20} />
-				</TouchableOpacity>
-			);
-		},
-		headerRightStyle: {
-			marginRight: 20,
-		},
-	};
-};
+// EditPost.navigationOptions = ({ navigation }) => {
+// 	const { params } = navigation.state;
+// 	return {
+// 		headerTitle: "New Post",
+// 		headerMode: "screen",
+// 		headerStyle: {
+// 			zIndex: 20,
+// 			backgroundColor: "#209FAE",
+// 			elevation: 0,
+// 			borderBottomWidth: 0,
+// 			fontSize: 50,
+// 		},
+// 		headerTitleStyle: {
+// 			fontFamily: "Lato-Regular",
+// 			fontSize: 14,
+// 			color: "white",
+// 			alignSelf: "center",
+// 		},
+// 		headerLeft: () =>
+// 			CustomImage({
+// 				customStyle: { width: 20, height: 20 },
+// 				customImageStyle: { width: 20, height: 20, resizeMode: "contain" },
+// 				isTouchable: true,
+// 				onPress: () => navigation.goBack(),
+// 				source: back_arrow_white,
+// 			}),
+// 		headerLeftContainerStyle: {
+// 			paddingLeft: 20,
+// 		},
+// 		headerRight: () => {
+// 			return (
+// 				<TouchableOpacity
+// 					onPress={() => {
+// 						params.SubmitData(route.params.text);
+// 					}}
+// 					style={{
+// 						paddingRight: 10,
+// 						flexDirection: "row",
+// 						alignContent: "center",
+// 						alignItems: "center",
+// 					}}
+// 				>
+// 					<Text
+// 						allowFontScaling={false}
+// 						style={{
+// 							color: "#FFF",
+// 							// fontWeight: 'bold',
+// 							fontFamily: "Lato-Bold",
+// 							fontSize: 14,
+// 							marginHorizontal: 10,
+// 							marginVertical: 10,
+// 						}}
+// 					>
+// 						SAVE
+// 					</Text>
+// 					<CheckWhite width={20} height={20} />
+// 				</TouchableOpacity>
+// 			);
+// 		},
+// 		headerRightStyle: {
+// 			marginRight: 20,
+// 		},
+// 	};
+// };

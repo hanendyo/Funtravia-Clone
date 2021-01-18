@@ -14,20 +14,17 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import { AsyncStorage } from "react-native";
-import { default_image } from "../../../const/Png";
-import { CustomImage } from "../../../core-ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
-import { back_arrow_white } from "../../../const/Png";
+import { back_arrow_white } from "../../../assets/png";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
-import { NavigationEvents } from "react-navigation";
-import * as Permissions from "expo-permissions";
-import { Text, Button } from "../../../Component";
+// import { NavigationEvents } from "react-navigation";
+// import * as Permissions from "expo-permissions";
+import { Text, Button, CustomImage, Loading, Truncate } from "../../../component";
 
-import Loading from "../Loading";
 import {
   Comment,
   LikeRed,
@@ -41,10 +38,8 @@ import {
   Search,
   CheckWhite,
   SearchWhite,
-} from "../../../const/Svg";
-import Ripple from "react-native-material-ripple";
+} from "../../../assets/svg";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import Truncate from "../../../utils/Truncate";
 import { useTranslation } from "react-i18next";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
@@ -101,7 +96,8 @@ const deletepost = gql`
 
 export default function SinglePost(props) {
   const { t, i18n } = useTranslation();
-  let [postid, SetPostID] = useState(props.navigation.getParam("post_id"));
+  let [postid, SetPostID] = useState(props.route.params.post_id);
+  console.log(postid);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
@@ -115,6 +111,8 @@ export default function SinglePost(props) {
     setSetting(JSON.parse(setsetting));
     await LoadFeed();
   };
+  console.log(token);
+
   const [LoadFeed, { data, loading, error }] = useLazyQuery(GetFeedPostSingle, {
     fetchPolicy: "network-only",
     variables: { post_id: postid },
@@ -125,7 +123,7 @@ export default function SinglePost(props) {
       },
     },
   });
-  console.log(data?.feed_post_byid.user.picture);
+  // console.log(data?.feed_post_byid.user.picture);
   const [
     MutationLike,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -409,7 +407,7 @@ export default function SinglePost(props) {
               paddingVertical: 10,
             }}
             onPress={() => {
-              console.log(data);
+              // console.log(data);
             }}
           >
             <Text size="description" type="regular" style={{}}>

@@ -51,6 +51,21 @@ function TripPlaningscreen() {
   );
 }
 
+const Feedstack = createStackNavigator();
+function Feedstackscreen() {
+  return (
+    <Feedstack.Navigator initialRouteName={"FeedScreen"}>
+      <Feedstack.Screen
+        name="FeedScreen"
+        component={FeedScreen}
+        options={{
+          headerShown: true,
+        }}
+      />
+    </Feedstack.Navigator>
+  );
+}
+
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems() {
   return (
@@ -76,9 +91,10 @@ export default function BottomNavigationItems() {
       />
       <MainNavigator.Screen
         name="FeedScreen"
-        component={FeedScreen}
+        component={Feedstackscreen}
         options={{
-          headerShown: true,
+          // headerShown: false,
+          // headerTransparent: true,
           tabBarLabel: "Feed",
           tabBarIcon: ({ focused }) =>
             focused ? (

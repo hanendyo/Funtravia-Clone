@@ -491,6 +491,7 @@ export default function ItinGoogle(props) {
           {/* </View> */}
         </KeyboardAvoidingView>
       </Modal>
+    
     </View>
   );
 }

@@ -27,6 +27,8 @@ import FeedList from "./FeedList";
 
 export default function Feed(props) {
 	const HeaderComponent = {
+		headerShown: true,
+		transparent: false,
 		tabBarVisble: false,
 		tabBarLabel: "Feed",
 		headerTintColor: "white",
@@ -471,7 +473,7 @@ export default function Feed(props) {
 	};
 
 	return (
-		<View style={{ flex: 1, marginBottom: 10 }}>
+		<View style={{ flex: 1 }}>
 			{/* <NavigationEvents
 				// onWillFocus={(payload) => console.log('will focus', payload)}
 				onDidFocus={(payload) => eventDidFocus(payload.action.type)}
@@ -504,7 +506,8 @@ export default function Feed(props) {
 				// 		<PostButton height={50} width={50} />
 				// 	</TouchableOpacity>
 				// </View>
-				<ErrorPost />
+				null
+				// <ErrorPost />
 			)}
 			<TouchableOpacity style={styles.fab} onPress={createPost}>
 				<PostButton height={50} width={50} />

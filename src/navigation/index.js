@@ -39,6 +39,9 @@ import listevent from "../screens/Event/ListEvent";
 import eventdetail from "../screens/Event/EventDetail";
 import Abouts from "../screens/CityDestination/about";
 import PracticalInformation from "../screens/CityDestination/PracticalInformation";
+import CommentPost from "../screens/Feed/Post/Comments";
+import EditPost from "../screens/Feed/Post/EditPost";
+import SinglePost from "../screens/Feed/Post/SinglePost";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -57,7 +60,10 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={BottomStack}
           options={{ headerShown: false }}
         />
-        <Tab.Screen name="Post" component={Postscreen} />
+        <Tab.Screen name="Post" component={Postscreen} options={{ headerShown: false }}/>
+        <Tab.Screen name="CommentPost" component={CommentPost} options={{ headerShown: false }}/>
+        <Tab.Screen name="EditPost" component={EditPost} options={{ headerShown: false }}/>
+        <Tab.Screen name="SinglePost" component={SinglePost} options={{ headerShown: false }}/>
         <Tab.Screen name="CreatePostScreen" component={CreatePostScreen} />
         <Tab.Screen
           name="NewChat"

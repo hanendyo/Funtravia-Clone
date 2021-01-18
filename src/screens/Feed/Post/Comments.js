@@ -12,13 +12,13 @@ import {
   TextInput,
   Pressable,
   Keyboard,
-  AsyncStorage,
 } from "react-native";
-import { Input, CustomText, Calendar, CustomImage } from "../../../core-ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { Text } from "native-base";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
-import { NavigationEvents, SafeAreaView } from "react-navigation";
+// import { NavigationEvents, SafeAreaView } from "react-navigation";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import {
   Comment,
@@ -30,15 +30,47 @@ import {
   Kosong,
   Arrowbackwhite,
   OptionsVertWhite,
-} from "../../../const/Svg";
+} from "../../../assets/svg";
 export default function Comments(props) {
+  const HeaderComponent = {
+		headerShown: true,
+		transparent: false,
+		headerTintColor: "white",
+		headerTitle: "Comment",
+		headerMode: "screen",
+		headerStyle: {
+			backgroundColor: "#209FAE",
+			elevation: 0,
+			borderBottomWidth: 0,
+		},
+		headerTitleStyle: {
+			fontFamily: "Lato-Regular",
+			fontSize: 14,
+			color: "white",
+		},
+		// headerLeftContainerStyle: {
+		// 	background: "#FFF",
+		// },
+		// headerRight: () => (
+		// 	<View style={{ flexDirection: "row" }}>
+		// 		<TouchableOpacity
+		// 			style={{ marginRight: 20 }}
+		// 			onPress={() => Alert.alert("Coming soon")}
+		// 		>
+		// 			<SearchWhite height={20} width={20} />
+		// 		</TouchableOpacity>
+		// 	</View>
+		// ),
+  };
+  
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  let [dataPost, setDataPost] = useState(props.navigation.getParam("data"));
-  let [token, setToken] = useState(props.navigation.getParam("token"));
+  let [dataPost, setDataPost] = useState(props.route.params.data);
+  let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
-  // console.log(setting?.user?.first_name);
+  console.log(setting);
+  // console.log(props.route.params.data);
   const onSelect = useCallback(
     (id) => {
       let newSelected = new Map(selected);
@@ -64,6 +96,11 @@ export default function Comments(props) {
   };
 
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+			GetCommentList();
+		});
+		return unsubscribe;
     loadAsync();
   }, []);
 
@@ -225,7 +262,7 @@ export default function Comments(props) {
               flexDirection: "row",
             }}
           >
-            <CustomImage
+            <Image
               isTouchable
               onPress={() => {
                 dataComment.user.id !== setting?.user?.id
@@ -234,13 +271,13 @@ export default function Comments(props) {
                     })
                   : props.navigation.push("ProfileTab");
               }}
-              customStyle={{
+              style={{
                 height: 35,
                 width: 35,
                 borderRadius: 15,
                 alignSelf: "center",
+                resizeMode: "cover", 
               }}
-              customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
               source={{ uri: dataComment.user?.picture }}
             />
             <View
@@ -306,9 +343,10 @@ export default function Comments(props) {
     <View
       style={{
         flex: 1,
+        backgroundColor: '#FFF'
       }}
     >
-      <NavigationEvents onDidFocus={() => GetCommentList()} />
+      {/* <NavigationEvents onDidFocus={() => GetCommentList()} /> */}
       <View
         style={{
           // width: Dimensions.get('window').width,
@@ -333,7 +371,7 @@ export default function Comments(props) {
               flexDirection: "row",
             }}
           >
-            <CustomImage
+            <Image
               isTouchable
               onPress={() => {
                 dataPost.user.id !== setting?.user?.id
@@ -342,13 +380,13 @@ export default function Comments(props) {
                     })
                   : props.navigation.push("ProfileTab");
               }}
-              customStyle={{
+              style={{
                 height: 35,
                 width: 35,
                 borderRadius: 15,
                 alignSelf: "center",
+                resizeMode: "cover",
               }}
-              customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
               source={{ uri: dataPost.user.picture }}
             />
             <View
@@ -493,56 +531,56 @@ export default function Comments(props) {
   );
 }
 
-Comments.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Comments",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-    // justifyContent: 'center',
-    // flex:1,
-    // zIndex: 30,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <TouchableOpacity
-      style={{
-        height: 40,
-        width: 40,
-        // borderWidth:1,
-        justifyContent: "center",
-        alignContent: "center",
-        alignItems: "center",
-        // backgroundColor:'white'
-      }}
-      onPress={() => navigation.goBack()}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </TouchableOpacity>
-  ),
-  headerLeftContainerStyle: {
-    // paddingLeft: 20,
-  },
-  headerRight: (
-    <View style={{ flexDirection: "row" }}>
-      {/* <TouchableOpacity
-				style={{ marginRight: 20 }}
-				onPress={() => Alert.alert('Coming soon')}>
-				<OptionsVertWhite height={20} width={20} />
-			</TouchableOpacity> */}
-    </View>
-  ),
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});
+// Comments.navigationOptions = ({ navigation }) => ({
+//   headerTitle: "Comments",
+//   headerMode: "screen",
+//   headerStyle: {
+//     backgroundColor: "#209FAE",
+//     elevation: 0,
+//     borderBottomWidth: 0,
+//     fontSize: 50,
+//     // justifyContent: 'center',
+//     // flex:1,
+//     // zIndex: 30,
+//   },
+//   headerTitleStyle: {
+//     fontFamily: "Lato-Regular",
+//     fontSize: 14,
+//     color: "white",
+//     alignSelf: "center",
+//   },
+//   headerLeft: (
+//     <TouchableOpacity
+//       style={{
+//         height: 40,
+//         width: 40,
+//         // borderWidth:1,
+//         justifyContent: "center",
+//         alignContent: "center",
+//         alignItems: "center",
+//         // backgroundColor:'white'
+//       }}
+//       onPress={() => navigation.goBack()}
+//     >
+//       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+//     </TouchableOpacity>
+//   ),
+//   headerLeftContainerStyle: {
+//     // paddingLeft: 20,
+//   },
+//   headerRight: (
+//     <View style={{ flexDirection: "row" }}>
+//       {/* <TouchableOpacity
+// 				style={{ marginRight: 20 }}
+// 				onPress={() => Alert.alert('Coming soon')}>
+// 				<OptionsVertWhite height={20} width={20} />
+// 			</TouchableOpacity> */}
+//     </View>
+//   ),
+//   headerRightStyle: {
+//     paddingRight: 20,
+//   },
+// });
 
 const styles = StyleSheet.create({
   main: {
