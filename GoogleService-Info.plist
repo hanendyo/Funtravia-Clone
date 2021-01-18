@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne.apps.googleusercontent.com</string>
+	<string>292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne</string>
+	<string>com.googleusercontent.apps.292367084833-1kfl44kqitftu0bo1apg8924o0tgakst</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>292367084833-nqvd6cp3ov30s15hkju0re00gp9l0h79.apps.googleusercontent.com</string>
+	<string>292367084833-2gnul36k5mg49lv5a7joaqbae7jtb6i1.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBZrPMRo2w6yb0NH9_-JnxTy_kTeRK2yEI</string>
 	<key>GCM_SENDER_ID</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:292367084833:ios:5ac2cac935dadaa0372260</string>
+	<string>1:292367084833:ios:92af3c479e98062d372260</string>
 	<key>DATABASE_URL</key>
 	<string>https://funtravia-project.firebaseio.com</string>
 </dict>

@@ -27,7 +27,7 @@ export default function LoginGoogle({ navigation }) {
 	const signInWithGoogle = async () => {
 		await GoogleSignin.configure({
 			iosClientId:
-				"292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne.apps.googleusercontent.com",
+				"292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com",
 			offlineAccess: false,
 		});
 		await GoogleSignin.hasPlayServices();
@@ -35,7 +35,7 @@ export default function LoginGoogle({ navigation }) {
 		const result = await GoogleSignin.getTokens();
 		let response;
 		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
-
+		console.log(FCM_TOKEN, result.accessToken);
 		if (result) {
 			response = await mutation({
 				variables: {

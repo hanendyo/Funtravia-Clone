@@ -25,7 +25,7 @@ export default function RegisterGoogle({ navigation }) {
 		let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 		await GoogleSignin.configure({
 			iosClientId:
-				"292367084833-rpaqs88l0pnu8lguhushrrnimpu0tnne.apps.googleusercontent.com",
+				"292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com",
 			offlineAccess: false,
 		});
 		await GoogleSignin.hasPlayServices();

@@ -2,4 +2,5 @@
     <color name="colorAccent">#C60C30</color>
     <color name="splashscreen_bg">#ffffff</color>
     <color name="app_bg">#ffffff</color>
+    <color name="notification">#209FAE</color>
 </resources>

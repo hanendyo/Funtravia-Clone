@@ -20,47 +20,11 @@ export default function SplashScreen(props) {
 	const { t } = useTranslation();
 	let width = Dimensions.get("screen").width;
 	const imageScroll = useRef();
-	let [scroll, setScroll] = useState(0);
-
-	const checkPermission = async () => {
-		const enabled = await messaging().hasPermission();
-		if (enabled) {
-			getToken();
-		} else {
-			requestPermission();
-		}
-	};
-
-	const getToken = async () => {
-		let fcmToken = await AsyncStorage.getItem("FCM_TOKEN");
-		console.log(fcmToken);
-		if (!fcmToken) {
-			fcmToken = await messaging().getToken();
-			if (fcmToken) {
-				console.log(fcmToken);
-				await AsyncStorage.setItem("FCM_TOKEN", fcmToken);
-			}
-		}
-	};
-
-	const requestPermission = async () => {
-		try {
-			await messaging().requestPermission();
-			getToken();
-		} catch (error) {
-			console.log("permission rejected");
-		}
-	};
 
 	useEffect(() => {
 		props.navigation.setOptions({
 			headerShown: false,
 		});
-		checkPermission();
-		// setInterval(function () {
-		//   scroll = scroll >= width * 3 ? 0 : scroll + width;
-		//   imageScroll.current.scrollTo({x: scroll});
-		// }, 2000);
 	}, []);
 
 	return (
