@@ -27,6 +27,44 @@ import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 
 export default function ItinGoogle(props) {
+  const HeaderComponent = {
+    headerShown: true,
+    title: "Destination",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Destination",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
   const { t, i18n } = useTranslation();
   let [datadayaktif, setdatadayaktif] = useState(
     props.route.params.datadayaktif
@@ -36,8 +74,8 @@ export default function ItinGoogle(props) {
   let [dataMap, setDataMap] = useState(null);
   let [detailMap, setDetailMap] = useState(null);
   let [modals, setModal] = useState(false);
-  let [lat, setlat] = useState(0);
-  let [long, setlong] = useState(0);
+  let [lat, setlat] = useState(-8.65);
+  let [long, setlong] = useState(115.216667);
 
   const GetKota = ({ data }) => {
     var filtered_array = data.address_components.filter(function (
@@ -50,9 +88,15 @@ export default function ItinGoogle(props) {
   };
 
   useEffect(() => {
+    console.log(props.route.params.lat);
+    console.log(props.route.params.lat);
+
+    props.navigation.setOptions(HeaderComponent);
     if (props.route.params.lat && props.route.params.lat) {
-      setlat(props.route.params.lat);
-      setlong(props.route.params.lat);
+      if (props.route.params.lat !== null && props.route.params.lat !== null) {
+        setlat(props.route.params.lat);
+        setlong(props.route.params.lat);
+      }
     } else {
       _requestLocation();
     }
@@ -126,8 +170,8 @@ export default function ItinGoogle(props) {
             width: Dimensions.get("screen").width - 20,
             borderWidth: 1,
             // height: 38,
-            backgroundColor: "#f4f4f4",
-            borderColor: "#eaeaea",
+            backgroundColor: "white",
+            borderColor: "#d3d3d3",
           }}
         ></Button>
 
@@ -358,7 +402,7 @@ export default function ItinGoogle(props) {
               currentLocationLabel="Nearby location"
               renderLeftButton={() => {
                 return (
-                  <View style={{ justifyContent: "center", paddingTop: 5 }}>
+                  <View style={{ justifyContent: "center" }}>
                     <Pointmapgray />
                   </View>
                 );
@@ -411,7 +455,7 @@ export default function ItinGoogle(props) {
               styles={{
                 // container: { backgroundColor: 'red' },
                 textInputContainer: {
-                  // height: 40,
+                  height: 40,
                   backgroundColor: "#f4f4f4",
                   borderWidth: 0.5,
                   borderColor: "#6c6c6c",
@@ -422,7 +466,7 @@ export default function ItinGoogle(props) {
                 textInput: {
                   marginLeft: 0,
                   marginRight: 0,
-                  // height: 38,
+                  height: 38,
                   color: "#5d5d5d",
                   fontSize: 14,
                   fontFamily: "Lato-Regular",
@@ -450,50 +494,6 @@ export default function ItinGoogle(props) {
     </View>
   );
 }
-
-ItinGoogle.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Destination",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-  headerRight: (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-      }}
-    ></View>
-  ),
-  headerRightStyle: {
-    // paddingRight: 20,
-  },
-});
 
 const styles = StyleSheet.create({
   main: {

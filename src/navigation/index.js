@@ -32,6 +32,13 @@ import itindest from "../screens/Itinerary/ItineraryDestination/index";
 import ItineraryChooseday from "../screens/Itinerary/ItineraryChooseDay";
 import DestinationList from "../screens/Destination/DestinationList";
 import ItineraryPlaning from "../screens/Itinerary/ItineraryPlaning/index";
+import AllDestination from "../screens/CityDestination/PopularDestination";
+import CityDetail from "../screens/CityDestination/City/index";
+import Country from "../screens/CityDestination/Country/index";
+import listevent from "../screens/Event/ListEvent";
+import eventdetail from "../screens/Event/EventDetail";
+import Abouts from "../screens/CityDestination/about";
+import PracticalInformation from "../screens/CityDestination/PracticalInformation";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -209,6 +216,41 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="ItineraryPlaning"
           component={ItineraryPlaning}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="AllDestination"
+          component={AllDestination}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="CityDetail"
+          component={CityDetail}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="Country"
+          component={Country}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="listevent"
+          component={listevent}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="eventdetail"
+          component={eventdetail}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="Abouts"
+          component={Abouts}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="PracticalInformation"
+          component={PracticalInformation}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

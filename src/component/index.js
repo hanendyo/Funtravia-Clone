@@ -9,17 +9,19 @@ import PhoneCodeSelector from "./src/PhoneCodeSelector";
 import Truncate from "./src/Truncate";
 import Loading from "./src/Loading";
 import Sidebar from "./src/Sidebar";
+import rupiah from "./src/Rupiah";
 
 export {
-	Text,
-	Button,
-	CustomImage,
-	FloatingInput,
-	Peringatan,
-	DurationSelector,
-	FunIcon,
-	PhoneCodeSelector,
-	Truncate,
-	Loading,
-	Sidebar,
+  Text,
+  Button,
+  CustomImage,
+  FloatingInput,
+  Peringatan,
+  DurationSelector,
+  FunIcon,
+  PhoneCodeSelector,
+  Truncate,
+  Loading,
+  Sidebar,
+  rupiah,
 };
