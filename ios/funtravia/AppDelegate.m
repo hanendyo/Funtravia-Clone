@@ -9,10 +9,6 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-#import <Firebase.h>
-#import <RNGoogleSignin/RNGoogleSignin.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <react-native-splash-screen/RNSplashScreen.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -24,6 +20,10 @@ static void InitializeFlipper(UIApplication *application) {
   [client start];
 }
 #endif
+#import <Firebase.h>
+#import <RNGoogleSignin/RNGoogleSignin.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <react-native-splash-screen/RNSplashScreen.h>
 
 @implementation AppDelegate
 
