@@ -23,10 +23,10 @@ import { Arrowbackwhite } from "../../../assets/svg";
 export default function listItinPlaning(props) {
   const HeaderComponent = {
     headerShown: true,
-    title: "Your Trip",
+    title: "Your Trip Plan",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Your Trip",
+    headerTitle: "Your Trip Plan",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

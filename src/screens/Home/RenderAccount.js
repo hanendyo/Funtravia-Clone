@@ -1,13 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../assets/png";
 import { NotificationBlue } from "../../assets/svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
+import User_Post from "../../graphQL/Query/Profile/post";
+import { useLazyQuery } from "@apollo/client";
 
 export default function RenderAccount({ data, token, props }) {
   const { t } = useTranslation();
+
+  const [
+    LoadPost,
+    { data: datapost, loading: loadingpost, error: errorpost },
+  ] = useLazyQuery(User_Post, {
+    fetchPolicy: "network-only",
+
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (token) {
+      LoadPost();
+    }
+  }, []);
 
   const login = () => {
     props.navigation.navigate("login");
@@ -152,7 +174,17 @@ export default function RenderAccount({ data, token, props }) {
             >
               <TouchableOpacity
                 style={styles.statView}
-                onPress={() => props.navigation.navigate("Post")}
+                onPress={() =>
+                  props.navigation.navigate("myfeed", {
+                    token: token,
+                    datauser:
+                      data && data.user_profile ? data.user_profile : null,
+                    data:
+                      datapost && datapost.user_post
+                        ? datapost.user_post
+                        : null,
+                  })
+                }
               >
                 <Text size="description" type="bold" style={styles.statNumber}>
                   {data ? data.user_profile.count_post : 0}
