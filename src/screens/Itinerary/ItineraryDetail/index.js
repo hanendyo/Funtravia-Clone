@@ -786,12 +786,24 @@ export default function ItineraryDetail(props) {
                     IdItinerary: itincountries,
                     token: token,
                     datadayaktif: datadayaktif,
+                    dataDes:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail
+                        : null,
+                    lat: datadetail.itinerary_detail.city.latitude,
+                    long: datadetail.itinerary_detail.city.longitude,
                   });
                 } else if (jam === 23 && menit === 0) {
                   props.navigation.push("itindest", {
                     IdItinerary: itincountries,
                     token: token,
                     datadayaktif: datadayaktif,
+                    dataDes:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail
+                        : null,
+                    lat: datadetail.itinerary_detail.city.latitude,
+                    long: datadetail.itinerary_detail.city.longitude,
                   });
                 } else {
                   Alert.alert(t("alertjam"));
@@ -1128,12 +1140,24 @@ export default function ItineraryDetail(props) {
                     IdItinerary: itincountries,
                     token: token,
                     datadayaktif: datadayaktif,
+                    dataDes:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail
+                        : null,
+                    lat: datadetail.itinerary_detail.city.latitude,
+                    long: datadetail.itinerary_detail.city.longitude,
                   });
                 } else if (jam === 23 && menit === 0) {
                   props.navigation.push("itindest", {
                     IdItinerary: itincountries,
                     token: token,
                     datadayaktif: datadayaktif,
+                    dataDes:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail
+                        : null,
+                    lat: datadetail.itinerary_detail.city.latitude,
+                    long: datadetail.itinerary_detail.city.longitude,
                   });
                 } else {
                   Alert.alert(t("alertjam"));

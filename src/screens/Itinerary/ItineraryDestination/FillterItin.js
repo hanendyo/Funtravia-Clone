@@ -15,7 +15,16 @@ import { Google } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text } from "../../../component";
 
-export default function FilterItin({ fillter, sendBack }) {
+export default function FilterItin({
+  fillter,
+  sendBack,
+  props,
+  token,
+  datadayaktif,
+  dataDes,
+  lat,
+  long,
+}) {
   const { t, i18n } = useTranslation();
 
   let [selected] = useState(new Map());
@@ -202,7 +211,15 @@ export default function FilterItin({ fillter, sendBack }) {
             }}
           >
             <TouchableOpacity
-              onPress={() => Alert.alert("Coming soon")}
+              onPress={() =>
+                props.navigation.push("ItinGoogle", {
+                  dataDes: dataDes,
+                  token: token,
+                  datadayaktif: datadayaktif,
+                  lat: lat,
+                  long: long,
+                })
+              }
               style={{
                 height: "100%",
                 width: "100%",

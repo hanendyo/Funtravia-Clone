@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CustomImage } from "../../component";
+import { Button, CustomImage } from "../../component";
 import { search_button, back_arrow_white } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { Tab, Tabs, ScrollableTab } from "native-base";
@@ -21,8 +21,46 @@ import Services from "../../graphQL/Query/Wishlist/Services";
 import Trans from "../../graphQL/Query/Wishlist/Transportation";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
+import { Arrowbackwhite } from "../../assets/svg";
 
 export default function Wishlist(props) {
+  const HeaderComponent = {
+    headerShown: true,
+    title: "Wishlist",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Wishlist",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
   let [texts, setText] = useState("");
@@ -187,10 +225,15 @@ export default function Wishlist(props) {
     );
   };
 
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    _Refresh();
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Loading show={loading} />
-      <NavigationEvents onDidFocus={() => _Refresh()} />
+      {/* <NavigationEvents onDidFocus={() => _Refresh()} /> */}
       <View>
         <View
           style={{
@@ -198,6 +241,7 @@ export default function Wishlist(props) {
             alignItems: "center",
             justifyContent: "center",
             paddingVertical: 10,
+            backgroundColor: "white",
           }}
         >
           <View

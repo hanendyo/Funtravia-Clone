@@ -88,8 +88,8 @@ export default function ItinGoogle(props) {
   };
 
   useEffect(() => {
-    console.log(props.route.params.lat);
-    console.log(props.route.params.lat);
+    // console.log(props.route.params.lat);
+    // console.log(props.route.params.lat);
 
     props.navigation.setOptions(HeaderComponent);
     if (props.route.params.lat && props.route.params.lat) {
@@ -491,7 +491,6 @@ export default function ItinGoogle(props) {
           {/* </View> */}
         </KeyboardAvoidingView>
       </Modal>
-    
     </View>
   );
 }
