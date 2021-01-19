@@ -42,6 +42,12 @@ import PracticalInformation from "../screens/CityDestination/PracticalInformatio
 import CommentPost from "../screens/Feed/Post/Comments";
 import EditPost from "../screens/Feed/Post/EditPost";
 import SinglePost from "../screens/Feed/Post/SinglePost";
+import { SearchPage, SearchTab } from "../screens/Search";
+import Wishlist from "../screens/Wishlist/Index";
+import Journal from "../screens/Journal/index";
+import DetailJournal from "../screens/Journal/DetailJournal";
+import ItineraryPopuler from "../screens/Itinerary/ItineraryPopular/ItineraryPopuler";
+import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -60,10 +66,26 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={BottomStack}
           options={{ headerShown: false }}
         />
-        <Tab.Screen name="Post" component={Postscreen} options={{ headerShown: false }}/>
-        <Tab.Screen name="CommentPost" component={CommentPost} options={{ headerShown: false }}/>
-        <Tab.Screen name="EditPost" component={EditPost} options={{ headerShown: false }}/>
-        <Tab.Screen name="SinglePost" component={SinglePost} options={{ headerShown: false }}/>
+        <Tab.Screen
+          name="Post"
+          component={Postscreen}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="CommentPost"
+          component={CommentPost}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="EditPost"
+          component={EditPost}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="SinglePost"
+          component={SinglePost}
+          options={{ headerShown: false }}
+        />
         <Tab.Screen name="CreatePostScreen" component={CreatePostScreen} />
         <Tab.Screen
           name="NewChat"
@@ -259,151 +281,63 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={PracticalInformation}
           options={{ headerShown: false }}
         />
+        <Tab.Screen
+          name="SearchPage"
+          component={SearchPage}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
+        <Tab.Screen
+          name="SearchTab"
+          component={SearchTab}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
+        <Tab.Screen
+          name="Wishlist"
+          component={Wishlist}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
+        <Tab.Screen
+          name="Journal"
+          component={Journal}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
+        <Tab.Screen
+          name="DetailJournal"
+          component={DetailJournal}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
+        <Tab.Screen
+          name="ItineraryPopuler"
+          component={ItineraryPopuler}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
+        <Tab.Screen
+          name="ItineraryFavorite"
+          component={ItineraryFavorite}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
-import { SearchPage,SearchTab } from "../screens/Search";
-
-const Tab = createStackNavigator();
-export default function MainStackNavigator({ authorizeToken }) {
-	return (
-		<NavigationContainer>
-			<Tab.Navigator
-				initialRouteName={authorizeToken ? "BottomStack" : "AuthStack"}
-			>
-				<Tab.Screen
-					name="AuthStack"
-					component={AuthStack}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="BottomStack"
-					component={BottomStack}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen name="Post" component={Postscreen} />
-				<Tab.Screen name="CreatePostScreen" component={CreatePostScreen} />
-				<Tab.Screen
-					name="NewChat"
-					component={NewChat}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="GroupChat"
-					component={GroupChat}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="RoomChat"
-					component={RoomChat}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="profilesetting"
-					component={profilesetting}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="ProfileTab"
-					component={MyProfile}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="FollowerPage"
-					component={FollowerPage}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="FollowingPage"
-					component={FollowingPage}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="otherprofile"
-					component={otherprofile}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="otherFollower"
-					component={otherFollower}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="otherFollowing"
-					component={otherFollowing}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="myfeed"
-					component={myfeed}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="Comments"
-					component={Comments}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="tripalbum"
-					component={tripalbum}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="tripalbumdetail"
-					component={tripalbumdetail}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="SearchPage"
-					component={SearchPage}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-				<Tab.Screen
-					name="SearchTab"
-					component={SearchTab}
-					options={{
-						headerTitle: "",
-						headerTransparent: true,
-					}}
-				/>
-			
-			</Tab.Navigator>
-		</NavigationContainer>
-	);
-}}
+}

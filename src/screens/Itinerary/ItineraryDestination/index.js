@@ -11,13 +11,6 @@ import {
   FlatList,
 } from "react-native";
 import { CustomImage, FunIcon } from "../../../component";
-import {
-  Ticket,
-  star_yellow,
-  MapIconWhite,
-  comedi_putih,
-  default_image,
-} from "../../../assets/png";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
   LikeRed,
@@ -83,11 +76,14 @@ export default function ItineraryDestination(props) {
     error: errorfilter,
   } = useQuery(filterDestination);
   let [token, setToken] = useState(props.route.params.token);
-  let [datadayaktif, setdatadayaktif] = useState(
-    props.route.params.datadayaktif
-  );
+  let [datadayaktif] = useState(props.route.params.datadayaktif);
+  let [dataDes] = useState(props.route.params.dataDes);
+  let [lat] = useState(props.route.params.lat);
+  let [long] = useState(props.route.params.long);
   let [search, setSearch] = useState({ type: null, tag: null, keyword: null });
   let [IdItinerary, setId] = useState(props.route.params.IdItinerary);
+
+  console.log(datadayaktif, dataDes, lat, long);
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
     Listdestination,
@@ -479,6 +475,12 @@ export default function ItineraryDestination(props) {
                   : []
               }
               sendBack={(e) => setSearch(e)}
+              props={props}
+              token={token}
+              datadayaktif={datadayaktif}
+              dataDes={dataDes}
+              lat={lat}
+              long={long}
             />
           ) : null}
 

@@ -93,11 +93,8 @@ export default function Destination({
     return (
       <View
         style={{
-          // width: (110),
-          // height: (120),
           width: Dimensions.get("window").width - 20,
           marginTop: 10,
-          // marginBottom: (10),
           paddingVertical: 10,
           flex: 1,
           flexDirection: "row",
@@ -113,7 +110,7 @@ export default function Destination({
             });
           }}
           style={{
-            width: Dimensions.get("screen").width * 0.3,
+            width: "30%",
             height: "100%",
             alignItems: "center",
             justifyContent: "center",
@@ -152,26 +149,20 @@ export default function Destination({
         </TouchableOpacity>
         <View
           style={{
-            // zIndex: 99,
-            width: Dimensions.get("window").width * 0.6,
+            width: "70%",
             height: "100%",
-            // paddingLeft: 10,
-            // height: (100),
           }}
         >
           <View
             style={{
               flexDirection: "row",
-              // flex: 1,
-              marginBottom: 10,
-              // borderWidth: 1,
-              // borderColor: 'red',
-              // width: (250),
-              // height: (25),
+              width: "100%",
+              padding: 10,
             }}
           >
             <View
               style={{
+                width: "100%",
                 justifyContent: "space-between",
               }}
             >
@@ -238,7 +229,6 @@ export default function Destination({
                   <TouchableOpacity
                     onPress={() => _unliked(data.id)}
                     style={{
-                      // alignSelf: 'flex-end',
                       height: 30,
                       width: 30,
                       borderRadius: 15,
@@ -259,22 +249,22 @@ export default function Destination({
 
               <View
                 style={{
-                  flex: 1,
+                  width: "100%",
                   flexDirection: "row",
                   marginTop: 5,
-                  // position: 'absolute',
-                  // left: (1),
-                  // bottom: 0,
+                  justifyContent: "space-between",
                 }}
               >
-                <Button
-                  size="small"
-                  type="icon"
-                  color="tertiary"
-                  text={t("findTicket")}
+                <TouchableOpacity
                   style={{
-                    width: 120,
-                    marginRight: 5,
+                    backgroundColor: "#E2ECF8",
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    borderRadius: 5,
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <CustomImage
@@ -287,20 +277,33 @@ export default function Destination({
                       height: 17,
                       resizeMode: "contain",
                     }}
-                    // isTouchable={true}
-                    // onPress={() => props.navigation.navigate('Home')}
                     source={Ticket}
                   />
-                </Button>
-                <Button
+                  <Text size="small" type="bold" style={{ marginLeft: 5 }}>
+                    {t("findTicket")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#209fae",
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    borderRadius: 5,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text size="small" type="bold" style={{ color: "white" }}>
+                    {t("addToPlan")}
+                  </Text>
+                </TouchableOpacity>
+                {/* <Button
                   size="small"
                   text={t("addToPlan")}
                   style={
                     {
-                      // width: 150,
                     }
                   }
-                ></Button>
+                ></Button> */}
               </View>
             </View>
           </View>
