@@ -15,7 +15,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -52,6 +52,32 @@ export default function SearchPage(props, { navigation, route }) {
   const viewWidth = Dimensions.get("window").width * 0.9;
   let [searchCache, setSearchCache] = useState();
   let [input, setInput] = useState("");
+
+  const HeaderComponent = {
+    headerTitle: "Search",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => props.navigation.goBack()}>
+        <Image
+          style={{ width: 20, height: 20 }}
+          imageStyle={{ width: 20, height: 20, resizeMode: "contain" }}
+          source={back_arrow_white}
+        />
+      </TouchableOpacity>
+    ),
+    headerLeftContainerStyle: {
+      paddingLeft: 20,
+    },
+    headerRight: null,
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+  }, []);
 
   const onSelectDestination = (item) => {
     props.navigation.navigate("CityDetail", { data: item, exParam: true });
@@ -466,22 +492,7 @@ export default function SearchPage(props, { navigation, route }) {
     </KeyboardAvoidingView>
   );
 }
-SearchPage.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Search",
 
-  headerLeft: () =>
-    Image({
-      style: { width: 20, height: 20 },
-      imageStyle: { width: 20, height: 20, resizeMode: "contain" },
-      isTouchable: true,
-      onPress: () => navigation.goBack(),
-      source: back_arrow_white,
-    }),
-  headerLeftContainerStyle: {
-    paddingLeft: 20,
-  },
-  headerRight: null,
-});
 const styles = StyleSheet.create({
   main: {
     flex: 1,

@@ -40,7 +40,8 @@ import { gql } from "apollo-boost";
 import SearchAccommodationQuery from "../../../graphQL/Query/Search/SearchAccommodation";
 
 import ListRenderAccom from "./ListRenderAccom";
-import AsyncStorage from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 import NotFound from "../../../component/src/notFound";

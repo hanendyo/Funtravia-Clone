@@ -11,16 +11,12 @@ import {
 import Modal from "react-native-modal";
 
 import { search_button } from "../../assets/png";
-
-import { empty } from "apollo-boost";
-import { Item, Label } from "native-base";
 import SearchTab from "./SearchTab";
 import { useLazyQuery } from "@apollo/react-hooks";
 import SearchDestinationQuery from "../../graphQL/Query/Search/SearchDestination";
 import SearchAccommodationQuery from "../../graphQL/Query/Search/SearchAccommodation";
 import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
 import SearchPostQuery from "../../graphQL/Query/Search/SearchPost";
-import { Xgray } from "../../assets/svg";
 import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -93,7 +89,7 @@ export default function SearchBar({
       await AsyncStorage.setItem("searchCache", JSON.stringify(search));
       // keepCache(searchCache);
     }
-    await navigation.navigate("SearchTab", {
+    await props.navigation.navigate("SearchTab", {
       initTab: number,
       searchInput: sentSearch,
     });

@@ -5,7 +5,7 @@ import ChatScreen from "../../screens/Chat";
 import FeedScreen from "../../screens/Feed";
 import HomeScreen from "../../screens/Home";
 import TripPlaning from "../../screens/Itinerary/TripPlaning/Index";
-
+import { MyAccount } from "../../screens/MyAccount";
 import {
   FeedOn,
   FeedOff,
@@ -133,8 +133,10 @@ export default function BottomNavigationItems() {
       />
       <MainNavigator.Screen
         name="AccountScreen"
-        component={HomeScreen}
+        component={MyAccount}
         options={{
+          headerShown: true,
+          headerTransparent: false,
           tabBarLabel: "Account",
           tabBarIcon: ({ focused }) =>
             focused ? (
