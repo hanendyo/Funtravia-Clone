@@ -1,6 +1,6 @@
 import { View } from "native-base";
-import { Dimensions, Alert, AsyncStorage, Keyboard } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import { Dimensions, Alert, Keyboard } from "react-native";
+import React, { useState } from "react";
 import { LikeJournal, Shareout, CommentChat, LikeRed } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Loading } from "../../component";
@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import Liked from "../../graphQL/Mutation/Journal/likedJournal";
 import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
 import AddCommentJournal from "../../graphQL/Mutation/Journal/AddCommentJournal";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 
 export default function AddCommentLike({
   data,

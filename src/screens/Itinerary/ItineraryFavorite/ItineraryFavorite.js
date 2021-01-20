@@ -1,13 +1,7 @@
 import { Thumbnail, View } from "native-base";
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  AsyncStorage,
-  Dimensions,
-  FlatList,
-  Image,
-  Platform,
-} from "react-native";
+import { Alert, Dimensions, FlatList, Image, Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   ScrollView,
   TextInput,
