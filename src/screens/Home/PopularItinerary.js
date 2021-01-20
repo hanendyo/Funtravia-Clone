@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, { useState, useCallback } from "react";
 import {
   View,
   ImageBackground,
@@ -7,111 +7,116 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-} from 'react-native';
-import {bali1, bali2, bali3, bali4} from '../../../const/photo';
-import {Text, Button} from '../../component';
-import {useTranslation} from 'react-i18next';
+} from "react-native";
+import { bali1, bali2, bali3, bali4 } from "../../../const/photo";
+import { Text, Button } from "../../component";
+import { useTranslation } from "react-i18next";
 
 const refImages = [
   {
-    id: '1',
-    name: 'Vacation To Bali Island',
-    desc: 'Funtravia',
+    id: "1",
+    name: "Vacation To Bali Island",
+    desc: "Funtravia",
     image: bali1,
   },
   {
-    id: '2',
-    name: 'Komodo Island Is Fun',
-    desc: 'Funtravia',
+    id: "2",
+    name: "Komodo Island Is Fun",
+    desc: "Funtravia",
     image: bali2,
   },
   {
-    id: '3',
-    name: 'Raja Ampat The Best View',
-    desc: 'Funtravia',
+    id: "3",
+    name: "Raja Ampat The Best View",
+    desc: "Funtravia",
     image: bali3,
   },
   {
-    id: '4',
-    name: 'Lembang Culinary',
-    desc: 'Funtravia',
+    id: "4",
+    name: "Lembang Culinary",
+    desc: "Funtravia",
     image: bali4,
   },
 ];
-export default function PopularItinerary({props}) {
-  const {t, i18n} = useTranslation();
+export default function PopularItinerary({ props }) {
+  const { t, i18n } = useTranslation();
 
   let [selected] = useState(new Map());
   const onSelect = useCallback(
     (id, name) => {
-      props.navigation.navigate('detailStack', {
+      props.navigation.navigate("detailStack", {
         id: id,
         name: name,
       });
     },
-    [selected],
+    [selected]
   );
-  const RenderRefImg = ({id, desc, name, image, onSelect, selected}) => {
+  const RenderRefImg = ({ id, desc, name, image, onSelect, selected }) => {
     return (
       <TouchableOpacity
         style={{
           // width: (110),
-          height: (Dimensions.get('window').width - 40) / 2,
-          width: Dimensions.get('window').width - 40,
+          height: (Dimensions.get("window").width - 40) / 2,
+          width: Dimensions.get("window").width - 40,
           marginLeft: 10,
         }}
-        onPress={() => props.navigation.navigate('ItineraryPlaning')}>
+        onPress={() => props.navigation.navigate("ItineraryPlaning")}
+      >
         <ImageBackground
           key={id}
           source={image}
           style={[
             styles.destinationImageView,
             {
-              width: Dimensions.get('window').width - 40,
-              height: (Dimensions.get('window').width - 40) / 2,
+              width: Dimensions.get("window").width - 40,
+              height: (Dimensions.get("window").width - 40) / 2,
             },
           ]}
           imageStyle={[
             styles.destinationImage,
             {
-              width: Dimensions.get('window').width - 40,
-              height: (Dimensions.get('window').width - 40) / 2,
+              width: Dimensions.get("window").width - 40,
+              height: (Dimensions.get("window").width - 40) / 2,
             },
-          ]}>
+          ]}
+        >
           <View
             style={[
               styles.destinationImageView,
               {
                 zIndex: 99,
-                width: Dimensions.get('window').width - 40,
-                height: (Dimensions.get('window').width - 40) / 2,
-                flexDirection: 'row',
-                alignItems: 'center',
-                alignContent: 'center',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
+                width: Dimensions.get("window").width - 40,
+                height: (Dimensions.get("window").width - 40) / 2,
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
               },
-            ]}>
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            ]}
+          >
+            <View style={{ alignItems: "center", justifyContent: "center" }}>
               <Text
                 size="title"
                 type="black"
                 style={{
-                  color: '#ffff',
+                  color: "#ffff",
                   letterSpacing: 0.5,
                   marginVertical: 5,
-                }}>
+                }}
+              >
                 {name}
               </Text>
               <Text
                 size="label"
                 type="bold"
                 style={{
-                  color: '#ffff',
+                  color: "#ffff",
                   letterSpacing: 0.5,
                   fontSize: 13,
                   marginVertical: 5,
-                }}>
+                }}
+              >
                 {desc}
               </Text>
             </View>
@@ -125,41 +130,46 @@ export default function PopularItinerary({props}) {
       <View
         style={{
           flex: 1,
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          alignItems: "center",
+          justifyContent: "space-between",
           paddingHorizontal: 20,
           marginTop: 20,
-          flexDirection: 'row',
-        }}>
+          flexDirection: "row",
+        }}
+      >
         <Text
           size="label"
           type="bold"
           style={{
-            alignSelf: 'flex-start',
-          }}>
-          {t('popularItinerarySuggestion')}
+            alignSelf: "flex-start",
+          }}
+        >
+          {t("popularItinerarySuggestion")}
         </Text>
       </View>
       <View
         style={{
           flex: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
           paddingHorizontal: 20,
-        }}>
-        <Text style={{color: '#AAAAAA'}}>{t('hereAre')}</Text>
+        }}
+      >
+        <Text style={{ color: "#AAAAAA" }}>{t("hereAre")}</Text>
       </View>
       <FlatList
         contentContainerStyle={{
           marginTop: 20,
-          justifyContent: 'space-evenly',
+          justifyContent: "space-evenly",
           paddingStart: 10,
           paddingEnd: 20,
         }}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         horizontal={true}
         data={refImages}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <RenderRefImg
             id={item.id}
             name={item.name}
@@ -176,20 +186,21 @@ export default function PopularItinerary({props}) {
       <View
         style={{
           margin: 20,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-        }}>
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <Button
           onPress={() =>
             // props.navigation.navigate('')
 
-            Alert.alert(t('comingSoon'))
+            Alert.alert(t("comingSoon"))
           }
-          text={t('exploreMore')}
+          text={t("exploreMore")}
           style={{
-            width: Dimensions.get('window').width / 1.12,
+            width: Dimensions.get("window").width / 1.12,
           }}
         />
       </View>
@@ -199,9 +210,9 @@ export default function PopularItinerary({props}) {
 
 const styles = StyleSheet.create({
   destinationMainImage: {
-    resizeMode: 'cover',
+    resizeMode: "cover",
     borderRadius: 10,
-    backgroundColor: 'black',
+    backgroundColor: "black",
   },
 
   destinationImageView: {
@@ -209,10 +220,10 @@ const styles = StyleSheet.create({
     height: 110,
     marginRight: 5,
     borderRadius: 10,
-    backgroundColor: 'rgba(20,20,20,0.4)',
+    backgroundColor: "rgba(20,20,20,0.4)",
   },
   destinationImage: {
-    resizeMode: 'cover',
+    resizeMode: "cover",
     borderRadius: 10,
   },
 });

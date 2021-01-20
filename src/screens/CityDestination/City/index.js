@@ -42,7 +42,7 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import Sidebar from "../../../component/src/Sidebar";
 
 let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
-let HEADER_MIN_HEIGHT = 70;
+let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function CityDetail(props) {
@@ -1320,7 +1320,7 @@ export default function CityDetail(props) {
     <View style={styles.main}>
       <Loading show={loadings} />
       {/* <NavigationEvents onDidFocus={() => refresh()} /> */}
-      <View style={{ height: 70 }}></View>
+      <View style={{ height: 55 }}></View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -1334,7 +1334,7 @@ export default function CityDetail(props) {
       >
         <View
           style={{
-            height: HEADER_MAX_HEIGHT - 70,
+            height: HEADER_MAX_HEIGHT - 55,
             backgroundColor: "#209fae",
           }}
         ></View>
@@ -1514,13 +1514,13 @@ export default function CityDetail(props) {
         <Animated.View
           style={{
             position: "absolute",
-            top: 20,
+            // top: 20,
             zIndex: 9999,
             flexDirection: "row",
             justifyContent: "space-between",
             alignContent: "center",
             alignItems: "center",
-            height: 50,
+            height: 55,
             width: Dimensions.get("screen").width,
           }}
         >

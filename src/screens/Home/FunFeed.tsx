@@ -341,6 +341,8 @@ export default function SearchFeed({ props }) {
             paddingStart: 0,
             flexDirection: "row",
           }}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           data={dataPost ? dataPost.feed_post_populer : null}
           renderItem={({ item, index }) => (
             <Item
@@ -379,6 +381,8 @@ export default function SearchFeed({ props }) {
             paddingStart: 0,
             flexDirection: "row",
           }}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           data={placeholderFunFeed}
           renderItem={({ item }) => (
             <Item

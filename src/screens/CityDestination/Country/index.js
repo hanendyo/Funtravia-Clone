@@ -39,7 +39,7 @@ import { useTranslation } from "react-i18next";
 
 const screenHeight = Dimensions.get("window").height;
 let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
-let HEADER_MIN_HEIGHT = 70;
+let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function Country(props) {
@@ -974,7 +974,7 @@ export default function Country(props) {
   return (
     <View style={styles.main}>
       <Loading show={loadings} />
-      <View style={{ height: 70 }}></View>
+      <View style={{ height: 55 }}></View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -988,7 +988,7 @@ export default function Country(props) {
       >
         <View
           style={{
-            height: HEADER_MAX_HEIGHT - 70,
+            height: HEADER_MAX_HEIGHT - 55,
             backgroundColor: "#209fae",
           }}
         ></View>
@@ -1157,13 +1157,13 @@ export default function Country(props) {
         <Animated.View
           style={{
             position: "absolute",
-            top: 20,
+            // top: 20,
             zIndex: 9999,
             flexDirection: "row",
             justifyContent: "space-between",
             alignContent: "center",
             alignItems: "center",
-            height: 50,
+            height: 55,
             width: Dimensions.get("screen").width,
           }}
         >
