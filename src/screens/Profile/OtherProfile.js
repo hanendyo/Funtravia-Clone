@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image, Akunsaya } from "../../assets/png";
@@ -46,25 +47,7 @@ export default function OtherProfile(props) {
       fontSize: 14,
       color: "white",
     },
-    headerLeftContainerStyle: {
-      background: "#FFF",
 
-      marginLeft: 10,
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          backgroundColor: "rgba(0,0,0,0.3)",
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
-    ),
     headerRight: () => (
       <Button
         text={""}
@@ -73,11 +56,11 @@ export default function OtherProfile(props) {
         variant="transparent"
         onPress={() => setshowside(true)}
         style={{
-          backgroundColor: "rgba(0,0,0,0.3)",
+          // backgroundColor: "rgba(0,0,0,0.3)",
           marginRight: 10,
         }}
       >
-        <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+        <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
       </Button>
     ),
     // tabBarBadge: 9,
@@ -359,32 +342,87 @@ export default function OtherProfile(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  return (
-    <ScrollView
-      contentContainerStyle={{}}
-      showsVerticalScrollIndicator={false}
-      stickyHeaderIndices={[4]}
-      nestedScrollEnabled
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <Loading show={loading} />
+  let [scrollY, setscrollY] = useState(new Animated.Value(0));
+  let HEADER_MAX_HEIGHT = 200;
+  let HEADER_MIN_HEIGHT = 55;
+  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-      <ImageBackground
-        source={Akunsaya}
-        imageStyle={{
-          width: Dimensions.get("screen").width,
-          height: 200,
-          resizeMode: "cover",
-        }}
-        style={{
-          width: Dimensions.get("screen").width,
-          height: 200,
-        }}
-      ></ImageBackground>
-      {data && data.user_profilebyid ? (
-        <>
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0.5, 0],
+    extrapolate: "clamp",
+  });
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -50],
+    extrapolate: "clamp",
+  });
+  const positionImage = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT - 30, 7],
+    extrapolate: "clamp",
+  });
+
+  const borderImage = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [3, 1],
+    extrapolate: "clamp",
+  });
+
+  const positionLeftImage = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [20, 50],
+    extrapolate: "clamp",
+  });
+  const heightImage = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [100, 40],
+    extrapolate: "clamp",
+  });
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
+
+  const opacityto1 = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
+  const opacityfrom1 = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  return (
+    <>
+      <ScrollView
+        contentContainerStyle={{}}
+        showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[5]}
+        nestedScrollEnabled
+        style={{ marginTop: 55 }}
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
+        onScroll={Animated.event([
+          {
+            nativeEvent: { contentOffset: { y: scrollY } },
+          },
+        ])}
+      >
+        <Loading show={loading} />
+
+        <View
+          style={{
+            height: 150,
+          }}
+        ></View>
+        {data && data.user_profilebyid ? (
           <View
             style={{
               width: Dimensions.get("screen").width,
@@ -398,31 +436,21 @@ export default function OtherProfile(props) {
           >
             <View
               style={{
-                shadowOpacity: 0.5,
-                shadowColor: "#d3d3d3",
-                elevation: 4,
-                alignSelf: "center",
-                borderColor: "white",
-                borderRadius: 60,
-                borderWidth: 3,
-                backgroundColor: "#B8E0E5",
+                // shadowOpacity: 0.5,
+                // shadowColor: "#d3d3d3",
+                // elevation: 4,
+                // alignSelf: "center",
+                // borderColor: "white",
+                // borderRadius: 60,
+                // borderWidth: 3,
+                // backgroundColor: "#B8E0E5",
                 height: 101,
                 width: 101,
 
                 justifyContent: "center",
                 alignItems: "center",
               }}
-            >
-              <Image
-                source={image_profile}
-                style={{
-                  borderRadius: 60,
-                  resizeMode: "cover",
-                  height: "100%",
-                  width: "100%",
-                }}
-              />
-            </View>
+            ></View>
 
             <View
               style={{
@@ -478,6 +506,8 @@ export default function OtherProfile(props) {
               ) : null}
             </View>
           </View>
+        ) : null}
+        {data && data.user_profilebyid ? (
           <View
             style={{
               flexDirection: "row",
@@ -497,7 +527,7 @@ export default function OtherProfile(props) {
 					</Text>
 					<PointGo height={10} width={10} style={{ marginRight: 5 }} />
 				</Pressable> */}
-            <View style={{ width: "50%" }}>
+            <Animated.View style={{ width: "50%", opacity: opacityfrom1 }}>
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
                 {`${initfirstname} ` + `${initlastname}`}
               </Text>
@@ -505,7 +535,7 @@ export default function OtherProfile(props) {
                 type="regular"
                 size="description"
               >{`@${initusername} `}</Text>
-            </View>
+            </Animated.View>
 
             {/* <View style={styles.calendarView}>
 					<CalendarIcon height='100%' width='20%'></CalendarIcon>
@@ -571,6 +601,8 @@ export default function OtherProfile(props) {
               </TouchableOpacity>
             </View>
           </View>
+        ) : null}
+        {data && data.user_profilebyid ? (
           <View
             style={{
               marginTop: 15,
@@ -586,6 +618,8 @@ export default function OtherProfile(props) {
               {initbio ? initbio : "-"}
             </Text>
           </View>
+        ) : null}
+        {data && data.user_profilebyid ? (
           <View style={styles.tabView}>
             <Tabs
               style={{ backgroundColor: "white" }}
@@ -650,49 +684,133 @@ export default function OtherProfile(props) {
               </Tab>
             </Tabs>
           </View>
-        </>
-      ) : null}
-      <Sidebar
-        props={props}
-        show={showside}
-        Data={() => {
-          return (
-            <View
-              style={{
-                padding: 10,
-                width: "100%",
-                justifyContent: "flex-start",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => Alert.alert("coming soon")}
+        ) : null}
+        <Sidebar
+          props={props}
+          show={showside}
+          Data={() => {
+            return (
+              <View
                 style={{
-                  marginVertical: 5,
-                  flexDirection: "row",
+                  padding: 10,
                   width: "100%",
-                  paddingVertical: 2,
-                  alignItems: "center",
+                  justifyContent: "flex-start",
                 }}
               >
-                <Sharegreen height={15} width={15} />
-
-                <Text
-                  size="label"
-                  type="regular"
+                <TouchableOpacity
+                  onPress={() => Alert.alert("coming soon")}
                   style={{
-                    marginLeft: 10,
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 2,
+                    alignItems: "center",
                   }}
                 >
-                  {t("share")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          );
+                  <Sharegreen height={15} width={15} />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 10,
+                    }}
+                  >
+                    {t("share")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
+          setClose={(e) => setshowside(false)}
+        />
+        <Loading show={loadings} />
+      </ScrollView>
+      <Animated.View
+        style={{
+          height: headerHeight,
+          width: Dimensions.get("screen").width,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "#209fae",
+          overflow: "hidden",
         }}
-        setClose={(e) => setshowside(false)}
-      />
-      <Loading show={loadings} />
-    </ScrollView>
+      >
+        {data && data.user_profilebyid ? (
+          <Animated.View
+            style={{
+              position: "absolute",
+              left: 110,
+              top: 15,
+              opacity: opacityto1,
+            }}
+          >
+            <Text type="bold" size="label" style={{ color: "white" }}>
+              {`${initfirstname} ` + `${initlastname}`}
+            </Text>
+          </Animated.View>
+        ) : null}
+        <Animated.Image
+          style={{
+            // position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            width: null,
+            height: HEADER_MAX_HEIGHT + 55,
+            resizeMode: "cover",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
+          }}
+          source={Akunsaya}
+        />
+      </Animated.View>
+      {data && data.user_profilebyid ? (
+        <Animated.View
+          style={{
+            width: Dimensions.get("screen").width,
+            justifyContent: "space-between",
+            flexDirection: "row",
+            position: "absolute",
+            top: positionImage,
+            left: positionLeftImage,
+            // marginTop: -30,
+            // paddingHorizontal: 20,
+            alignItems: "center",
+          }}
+        >
+          <Animated.View
+            style={{
+              shadowOpacity: 0.5,
+              shadowColor: "#d3d3d3",
+              elevation: 4,
+              alignSelf: "center",
+              borderColor: "white",
+              borderRadius: 60,
+              borderWidth: borderImage,
+              backgroundColor: "#B8E0E5",
+              height: heightImage,
+              width: heightImage,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={image_profile}
+              style={{
+                borderRadius: 60,
+                resizeMode: "cover",
+                height: "100%",
+                width: "100%",
+              }}
+            />
+          </Animated.View>
+        </Animated.View>
+      ) : null}
+    </>
   );
 }
 

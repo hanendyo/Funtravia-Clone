@@ -34,6 +34,43 @@ import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import { Loading } from "../../../component";
 export default function ItineraryFavorite(props) {
+  const HeaderComponent = {
+    headerShown: true,
+    title: "Itinerary Favorite",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Itinerary Favorite",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
   const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState();
@@ -188,6 +225,7 @@ export default function ItineraryFavorite(props) {
   };
 
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
     loadAsync();
   }, []);
 
@@ -334,9 +372,11 @@ export default function ItineraryFavorite(props) {
         </View>
         <View
           style={{
-            marginTop: 10,
-            height: "15%",
+            paddingTop: 5,
+            height: "20%",
             flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
             backgroundColor: "#FFFFFF",
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15,
@@ -442,40 +482,3 @@ export default function ItineraryFavorite(props) {
     </View>
   );
 }
-
-ItineraryFavorite.navigationOptions = (props) => ({
-  headerTitle: "Itinerary Favorite",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-  },
-  headerTitleStyle: {
-    fontFamily: "lato-reg",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => props.navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    // paddingLeft: 20,
-  },
-  headerRight: <View style={{ flexDirection: "row" }}></View>,
-  headerRightStyle: {
-    // paddingRight: 20,
-  },
-});
