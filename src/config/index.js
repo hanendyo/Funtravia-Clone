@@ -1,4 +1,5 @@
 export const API = "https://dev-gql.funtravia.com/graphql";
+// export const API = "http://20.1.32.20:8000/graphql";
 export const ICONSERVER = "https://fa12.funtravia.com/";
 export const ANDROID_CLIENT_ID =
 	"292367084833-gnfvcvfo8sss84b2856k6ubtlssgujt8.apps.googleusercontent.com";

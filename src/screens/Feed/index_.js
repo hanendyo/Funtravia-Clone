@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CustomImage } from "../../component";
-import { NetworkStatus } from '@apollo/client'
 import {
 	Comment,
 	LikeRed,
@@ -21,12 +20,11 @@ import {
 	SearchWhite,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import AutoHeightImage from "react-native-auto-height-image";
 import likepost from "../../graphQL/Mutation/Post/likepost";
-import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
-
+import { NetworkStatus } from '@apollo/client';
 export default function Feed(props) {
 	const HeaderComponent = {
 		headerShown: true,
@@ -53,7 +51,7 @@ export default function Feed(props) {
 			<View style={{ flexDirection: "row" }}>
 				<TouchableOpacity
 					style={{ marginRight: 20 }}
-					onPress={() => refetch()}
+					onPress={() => Alert.alert("Coming soon")}
 				>
 					<SearchWhite height={20} width={20} />
 				</TouchableOpacity>
@@ -61,35 +59,35 @@ export default function Feed(props) {
 		),
 	};
 
-	// const GetFeedPost = gql`
-	// 	query($offset: Int) {
-	// 		feed_post(limit: 5, offset:$offset) {
-	// 			id
-	// 			caption
-	// 			longitude
-	// 			latitude
-	// 			location_name
-	// 			liked
-	// 			comment_count
-	// 			response_count
-	// 			created_at
-	// 			updated_at
-	// 			assets {
-	// 				id
-	// 				type
-	// 				filepath
-	// 			}
-	// 			user {
-	// 				id
-	// 				username
-	// 				first_name
-	// 				last_name
-	// 				picture
-	// 				ismyfeed
-	// 			}
-	// 		}
-	// 	}
-	// `;
+	const GetFeedPost = gql`
+		query {
+			feed_post {
+				id
+				caption
+				longitude
+				latitude
+				location_name
+				liked
+				comment_count
+				response_count
+				created_at
+				updated_at
+				assets {
+					id
+					type
+					filepath
+				}
+				user {
+					id
+					username
+					first_name
+					last_name
+					picture
+					ismyfeed
+				}
+			}
+		}
+	`;
 
 	const [token, setToken] = useState();
 	// console.log(token);
@@ -100,7 +98,7 @@ export default function Feed(props) {
 			Alert.alert("Silahkan Login terlebih dahulu");
 			props.navigation.navigate("Home");
 		}
-		LoadFeed();
+		// LoadFeed();
 	};
 
 	useEffect(() => {
@@ -118,31 +116,12 @@ export default function Feed(props) {
 	// 	}
 	// };
 
+	const { data, loading, error} = useQuery(FeedPopuler);
 
-	const [LoadFeed, { data, loading, error, fetchMore, refetch, networkStatus }] = useLazyQuery(FeedPost, {
-		fetchPolicy: "network-only",
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-		variables: {
-			offset : 0,
-		},
-		notifyOnNetworkStatusChange: true,
-	});
-
-	if (networkStatus === NetworkStatus.refetch) {
-		return console.log('Refetching')
-	}
-	const ambil_lagi = ()=>{
-		fetchMore({
-			variables: {
-			  offset: 10,
-			},
-		  });
-	}
+	let datafeed = [];
+	console.log('datafeed',error);
+	if (data && data.feed_post)
+		datafeed = data.feed_post;
 
 	const [
 		MutationLike,
@@ -255,15 +234,74 @@ export default function Feed(props) {
 	};
 	// console.log(token);
 	if (error) {
-		console.log(error);
-
-		// Alert.alert('please Login/Sign Up to view Profile');
+		return (
+			<View
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					alignContent: "center",
+					height: "100%",
+				}}
+			>
+				<Text
+					style={{ fontSize: 20, fontFamily: "Lato-Bold", color: "#646464" }}
+				>
+					Oopss...
+				</Text>
+				<Text
+					style={{ fontSize: 20, fontFamily: "Lato-Regular", color: "#646464" }}
+				>
+					No Posts Here
+				</Text>
+				<Text
+					style={{ fontSize: 20, fontFamily: "Lato-Regular", color: "#646464" }}
+				>
+					Add a Post!
+				</Text>
+				<Kosong
+					height={Dimensions.get("screen").width * 0.6}
+					width={Dimensions.get("screen").width}
+				/>
+				<TouchableOpacity style={styles.fab} onPress={createPost}>
+					<PostButton height={50} width={50} />
+				</TouchableOpacity>
+			</View>
+		);	// Alert.alert('please Login/Sign Up to view Profile');
 	}
 	if (loading) {
-		console.log("is Loading Feed" + loading);
-	}
-	if (data) {
-		console.log(data ? data.feed_post.id : "oops");
+		return (
+			<View
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					alignContent: "center",
+					height: "100%",
+				}}
+			>
+				<Text
+					style={{ fontSize: 20, fontFamily: "Lato-Bold", color: "#646464" }}
+				>
+					Oopss...
+				</Text>
+				<Text
+					style={{ fontSize: 20, fontFamily: "Lato-Regular", color: "#646464" }}
+				>
+					No Posts Here
+				</Text>
+				<Text
+					style={{ fontSize: 20, fontFamily: "Lato-Regular", color: "#646464" }}
+				>
+					Add a Post!
+				</Text>
+				<Kosong
+					height={Dimensions.get("screen").width * 0.6}
+					width={Dimensions.get("screen").width}
+				/>
+				<TouchableOpacity style={styles.fab} onPress={createPost}>
+					<PostButton height={50} width={50} />
+				</TouchableOpacity>
+			</View>
+		);
 	}
 
 	let [liked, setLiked] = useState(false);
@@ -498,13 +536,25 @@ export default function Feed(props) {
 		}
 	};
 
+	const handleOnEndReached = () => {
+		console.log(data);
+		if (data.feed_post.repositories.pageInfo.hasNextPage)
+		  return fetchMore({
+			variables: {
+			  after: data.feed_post.repositories.pageInfo.endCursor,
+			  first: 15,
+			},
+			updateQuery: onUpdate,
+		  });
+	};
+
 	return (
 		<View style={{ flex: 1 }}>
 			{/* <NavigationEvents
 				// onWillFocus={(payload) => console.log('will focus', payload)}
 				onDidFocus={(payload) => eventDidFocus(payload.action.type)}
 			/> */}
-			{data && data.feed_post.length ? (
+			{/* {data && data.feed_post.length ? (
 				<FeedList
 					props={props}
 					dataRender={data.feed_post}
@@ -512,29 +562,29 @@ export default function Feed(props) {
 					refreshing={refreshing}
 					token={token}
 				/>
-			) : (
-				// <View>
-				// 	<FlatList
-				// 		data={data ? data.feed_post : null}
-				// 		renderItem={({ item }) => (
-				// 			<Item dataRender={item} selected={selected} />
-				// 		)}
-				// 		keyExtractor={(item) => item.id_post}
-				// 		extraData={liked}
-				// 		refreshControl={
-				// 			<RefreshControl
-				// 				refreshing={refreshing}
-				// 				onRefresh={() => _Refresh()}
-				// 			/>
-				// 		}
-				// 	/>
-				// 	<TouchableOpacity style={styles.fab} onPress={createPost}>
-				// 		<PostButton height={50} width={50} />
-				// 	</TouchableOpacity>
-				// </View>
-				null
-				// <ErrorPost />
-			)}
+			) : ( */}
+			<View>
+				<FlatList
+					data={datafeed}
+					renderItem={({ item }) => (
+						<Item dataRender={item} selected={selected} />
+					)}
+					keyExtractor={(item) => item.id_post}
+					extraData={liked}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={() => _Refresh()}
+						/>
+					}
+					onEndReachedThreshold={1}
+       				onEndReached={handleOnEndReached}
+				/>
+				<TouchableOpacity style={styles.fab} onPress={createPost}>
+					<PostButton height={50} width={50} />
+				</TouchableOpacity>
+			</View>
+
 			<TouchableOpacity style={styles.fab} onPress={createPost}>
 				<PostButton height={50} width={50} />
 			</TouchableOpacity>

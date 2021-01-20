@@ -51,6 +51,8 @@ import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryF
 import { SearchPage, SearchTab } from "../screens/Search";
 import { MyAccount } from "../screens/MyAccount";
 // import { MyAccount } from "../../screens/MyAccount";
+import { SearchPage,SearchTab } from "../screens/Search";
+import Notification from "../screens/Notification";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -286,7 +288,7 @@ export default function MainStackNavigator({ authorizeToken }) {
 					component={PracticalInformation}
 					options={{ headerShown: false }}
 				/>
-				<Tab.Screen
+        <Tab.Screen
 					name="SearchPage"
 					component={SearchPage}
 					options={{
@@ -347,7 +349,12 @@ export default function MainStackNavigator({ authorizeToken }) {
 					component={GroupChat}
 					options={{ headerShown: false }}
 				/>
-			</Tab.Navigator>
-		</NavigationContainer>
-	);
+        <Tab.Screen
+          name="Notification"
+          component={Notification}
+          options={{ headerShown: false }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }
