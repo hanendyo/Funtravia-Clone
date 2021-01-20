@@ -438,6 +438,9 @@ export default function MyAccount(props) {
             </View>
           </Ripple>
           <Ripple
+            onPress={() => {
+              props.navigation.navigate("ItineraryFavorite");
+            }}
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
