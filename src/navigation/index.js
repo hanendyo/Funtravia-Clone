@@ -49,6 +49,7 @@ import DetailJournal from "../screens/Journal/DetailJournal";
 import ItineraryPopuler from "../screens/Itinerary/ItineraryPopular/ItineraryPopuler";
 import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
 import { MyAccount } from "../screens/MyAccount";
+import detailStack from "../screens/Destination/DetailDestination/Index";
 
 import Notification from "../screens/Notification";
 
@@ -350,6 +351,11 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="Notification"
           component={Notification}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="detailStack"
+          component={detailStack}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

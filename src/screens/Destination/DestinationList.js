@@ -9,7 +9,8 @@ import {
   Image,
   FlatList,
 } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { Text, Button } from "../../component";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {

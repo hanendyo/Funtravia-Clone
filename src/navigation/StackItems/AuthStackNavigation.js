@@ -10,24 +10,57 @@ import RegisterFacebookScreen from "../../screens/Authorization/Facebook/Registe
 
 const AuthNav = createStackNavigator();
 export default function AuthStackNavigation() {
-	return (
-		<AuthNav.Navigator initialRouteName="SplashScreen">
-			<AuthNav.Screen name="SplashScreen" component={SplashScreen} />
-			<AuthNav.Screen name="LoginScreen" component={LoginScreen} />
-			<AuthNav.Screen name="RegisterScreen" component={RegisterScreen} />
-			<AuthNav.Screen name="LoginGoogleScreen" component={LoginGoogleScreen} />
-			<AuthNav.Screen
-				name="RegisterGoogleScreen"
-				component={RegisterGoogleScreen}
-			/>
-			<AuthNav.Screen
-				name="LoginFacebookScreen"
-				component={LoginFacebookScreen}
-			/>
-			<AuthNav.Screen
-				name="RegisterFacebookScreen"
-				component={RegisterFacebookScreen}
-			/>
-		</AuthNav.Navigator>
-	);
+  return (
+    <AuthNav.Navigator initialRouteName="SplashScreen">
+      <AuthNav.Screen
+        name="SplashScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={SplashScreen}
+      />
+      <AuthNav.Screen
+        name="LoginScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={LoginScreen}
+      />
+      <AuthNav.Screen
+        name="RegisterScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={RegisterScreen}
+      />
+      <AuthNav.Screen
+        name="LoginGoogleScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={LoginGoogleScreen}
+      />
+      <AuthNav.Screen
+        name="RegisterGoogleScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={RegisterGoogleScreen}
+      />
+      <AuthNav.Screen
+        name="LoginFacebookScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={LoginFacebookScreen}
+      />
+      <AuthNav.Screen
+        name="RegisterFacebookScreen"
+        options={{
+          headerShown: false,
+        }}
+        component={RegisterFacebookScreen}
+      />
+    </AuthNav.Navigator>
+  );
 }
