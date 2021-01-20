@@ -57,14 +57,13 @@ export default function MyAccount(props) {
 
   const HeaderComponent = {
     headerTransparent: true,
-    headerTitle: "Akun Saya",
-    headerMode: "screen",
+    headerTitle: t("profileSetting"),
+    // headerMode: ,
     headerStyle: {
-      zIndex: 20,
-      // backgroundColor: '#209FAE',
+      // zIndex: 20,
+      backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      fontSize: 50,
       // justifyContent: 'center',
       // flex:1,
     },
@@ -78,12 +77,13 @@ export default function MyAccount(props) {
     headerLeftContainerStyle: {
       marginLeft: 10,
     },
-
-    headerRight: (
+    headerRight: () => (
       <View
         style={{
           flex: 1,
           flexDirection: "row",
+          alignSelf: "center",
+          justifyContent: "center",
         }}
       >
         <Image
