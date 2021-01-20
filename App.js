@@ -27,7 +27,7 @@ function App() {
 
 	const getToken = async () => {
 		let fcmToken = await AsyncStorage.getItem("FCM_TOKEN");
-		console.log(fcmToken);
+		console.log("FCM_TOKEN", fcmToken);
 		if (!fcmToken) {
 			await messaging().registerDeviceForRemoteMessages();
 			fcmToken = await messaging().getToken();
@@ -57,8 +57,16 @@ function App() {
 	};
 
 	const initializeFunction = async () => {
+		await messaging().onMessage((remoteMessage) => {
+			console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
+		});
+
+		await messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+			console.log("Message handled in the background!", remoteMessage);
+		});
+
 		await messaging().onNotificationOpenedApp((remoteMessage) => {
-			console.log("Background", remoteMessage.notification);
+			console.log("Background", remoteMessage);
 			navigation.navigate(remoteMessage.data.type);
 		});
 
@@ -67,7 +75,7 @@ function App() {
 			.then((remoteMessage) => {
 				if (remoteMessage) {
 					console.log("Open", remoteMessage.notification);
-					setInitialRoute(remoteMessage.data.type);
+					// setInitialRoute(remoteMessage.data.type);
 				}
 			});
 		let token = await AsyncStorage.getItem("access_token");
