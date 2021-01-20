@@ -150,7 +150,7 @@ export default function CreatePost(props) {
 				if (response.data.create_post.code === 200) {
 					// console.log('ok');
 					setLoading(false);
-					props.navigation.navigate("FeedScreen");
+					props.navigation.navigate("FeedScreen",{isposting : true});
 				} else {
 					// console.log('error');
 					setLoading(false);

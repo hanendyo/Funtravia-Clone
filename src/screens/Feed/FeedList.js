@@ -42,7 +42,7 @@ export default function FeedList({
   dataRender,
   Refresh,
   refreshing,
-  token,
+  token
 }) {
   let [datafeed, SetDataFeed] = useState(dataRender);
   let [selectedOption, SetOption] = useState({});
@@ -88,6 +88,7 @@ export default function FeedList({
     },
   });
 
+
   const _liked = async (id) => {
     // console.log(id);
     // SetDataFeed(tempData);
@@ -108,6 +109,7 @@ export default function FeedList({
         if (errorLike) {
           throw new Error("Error Input");
         }
+
         if (response.data) {
           if (
             response.data.like_post.code === 200 ||
@@ -136,8 +138,8 @@ export default function FeedList({
         tempData[index].liked = false;
         tempData[index].response_count = tempData[index].response_count - 1;
         // SetDataFeed(tempData);
-        // console.log(error);
-        Alert.alert("" + error);
+        console.log(error);
+        // Alert.alert("" + error);
       }
     } else {
       Alert.alert("Please Login");
@@ -791,6 +793,7 @@ export default function FeedList({
         )}
         keyExtractor={(item) => item.id_post}
         extraData={liked}
+        refreshing={refreshing} 
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }

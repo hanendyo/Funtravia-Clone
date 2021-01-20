@@ -32,11 +32,11 @@ export default function RenderAccount({ data, token, props }) {
   }, []);
 
   const login = () => {
-    props.navigation.navigate("login");
+    props.navigation.navigate("LoginScreen");
   };
 
   const signUp = () => {
-    props.navigation.navigate("register");
+    props.navigation.navigate("RegisterScreen");
   };
 
   const goToProfile = (target) => {
@@ -146,7 +146,7 @@ export default function RenderAccount({ data, token, props }) {
               </Text>
 
               <Pressable
-                onPress={() => props.navigation.navigate("Inbox")}
+                onPress={() => props.navigation.navigate("Notification")}
                 style={{
                   flexDirection: "row",
                   position: "absolute",
@@ -259,7 +259,7 @@ export default function RenderAccount({ data, token, props }) {
                 size="small"
                 type="box"
                 color="primary"
-                onPress={signUp}
+                onPress={()=>signUp()}
                 text={t("signUp")}
                 style={{
                   marginRight: 5,
@@ -269,7 +269,7 @@ export default function RenderAccount({ data, token, props }) {
                 size="small"
                 type="box"
                 color="secondary"
-                onPress={login}
+                onPress={()=>login()}
                 text={t("signIn")}
                 style={{ marginLeft: 5 }}
               />

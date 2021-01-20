@@ -99,9 +99,9 @@ export default function Comments(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
 			GetCommentList();
+      loadAsync();
 		});
 		return unsubscribe;
-    loadAsync();
   }, []);
 
   const [
@@ -366,7 +366,14 @@ export default function Comments(props) {
             alignContent: "center",
           }}
         >
-          <View
+          <Pressable
+          onPress={() => {
+            dataPost.user.id !== setting?.user?.id
+              ? props.navigation.push("otherprofile", {
+                  idUser: dataPost.user.id,
+                })
+              : props.navigation.push("ProfileTab");
+          }} u
             style={{
               flexDirection: "row",
             }}
@@ -375,7 +382,7 @@ export default function Comments(props) {
               isTouchable
               onPress={() => {
                 dataPost.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
+                  ? props.navigation.push("otherprofile", {  
                       idUser: dataPost.user.id,
                     })
                   : props.navigation.push("ProfileTab");
@@ -424,7 +431,7 @@ export default function Comments(props) {
                 {duration(dataPost.created_at)}
               </Text>
             </View>
-          </View>
+          </Pressable>
           <TouchableOpacity
             style={{
               position: "absolute",
