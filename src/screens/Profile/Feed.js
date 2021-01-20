@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Dimensions, Image, ImageBackground, Alert } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
   LikeRed,
@@ -72,6 +72,10 @@ export default function myfeed(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    if (props.route.params && props.route.params.data) {
+    } else {
+      console.log("data");
+    }
 
     loadasync();
   }, []);

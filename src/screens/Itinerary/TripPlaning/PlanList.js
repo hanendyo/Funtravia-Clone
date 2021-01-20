@@ -411,18 +411,13 @@ export default function PlanList({
             width={Dimensions.get("screen").width}
           />
           <Button
+            color="secondary"
             onPress={() => props.navigation.push("Trip")}
-            customStyle={{
-              width: Dimensions.get("window").width - 60,
+            style={{
+              width: Dimensions.get("screen").width - 40,
               height: 40,
-              // marginVertical: (5),
-              // borderWidth: 1,
             }}
-            customTextStyle={{
-              fontSize: 13,
-            }}
-            // onPress={login}
-            text={t("createYourPlan")}
+            text={t("CreateNewPlan")}
           />
         </View>
       )}

@@ -15,9 +15,7 @@ import { useTranslation } from "react-i18next";
 
 export default function Post({ props, token, data, datauser }) {
   const { t, i18n } = useTranslation();
-  const createPost = () => {
-    props.navigation.navigate("Post");
-  };
+
   return (
     <View
       style={{
