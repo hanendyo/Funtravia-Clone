@@ -9,12 +9,12 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from "react-native";
-import { CustomText, CustomImage, FloatingInput } from "../../core-ui";
-import { lupass_satu, phone_vektor } from "../../const/Png";
-import Peringatan from "../Main/Components/Peringatan";
-import { Text, Button } from "../../Component";
+import { CustomImage, FloatingInput } from "../../../component";
+import { phone_vektor } from "../../../assets/png";
+import { Peringatan } from "../../../component";
+import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
-import PhoneCodeSelector from "../../utils/PhoneCodeSelector";
+import { PhoneCodeSelector } from "../../../component";
 
 export default function RegisterPhone(props) {
   const { t, i18n } = useTranslation();
