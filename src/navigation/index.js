@@ -48,10 +48,6 @@ import Journal from "../screens/Journal/index";
 import DetailJournal from "../screens/Journal/DetailJournal";
 import ItineraryPopuler from "../screens/Itinerary/ItineraryPopular/ItineraryPopuler";
 import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
-import { SearchPage, SearchTab } from "../screens/Search";
-import { MyAccount } from "../screens/MyAccount";
-// import { MyAccount } from "../../screens/MyAccount";
-import { SearchPage,SearchTab } from "../screens/Search";
 import Notification from "../screens/Notification";
 
 const Tab = createStackNavigator();

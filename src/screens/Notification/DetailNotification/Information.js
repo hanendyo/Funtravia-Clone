@@ -7,59 +7,12 @@ import {
 	TextInput,
 	FlatList,
 } from 'react-native';
-import { CustomText, CustomImage } from '../../../core-ui';
-// import {  } from '../../../const/PixelRatio';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import {
-	bali1,
-	bali2,
-	bali3,
-	bali4,
-	avanza,
-	xenia,
-	motor,
-} from '../../../const/photo';
-import {
-	Group,
-	card_travel,
-	search_button,
-	filter_blue2,
-	arrowRight,
-	Love,
-	Ticket,
-	MapIconGrey,
-	MapIconWhite,
-	Foto,
-	star_yellow,
-	star_grey,
-	love_merah,
-	foto_putih,
-	comedi_putih,
-	default_image,
-	setting_icon,
-	profile_hijau,
-	back_arrow_white,
-	CalenderGrey,
-	Filterabu,
-	Menuputih,
-	next_arrow_black,
-	menu,
-} from '../../../const/Png';
-import { rupiah } from '../../../const/Rupiah';
-import { dateFormatBetween } from '../../../const/dateformatter';
-import { gql } from 'apollo-boost';
-import { useQuery } from '@apollo/react-hooks';
-import { Right } from 'native-base';
-import {
-	MapSVG,
-	Star,
-	LikeRed,
-	LikeEmpty,
+
 	Option_blue,
-} from '../../../const/Svg';
-import FillterModal from '../FillterModal';
+} from '../../../assets/svg';
 import { useTranslation } from 'react-i18next';
-import { Text, Button } from '../../../Component';
+import { Text, Button } from '../../../component';
 
 const DataInformasi = [
 	// {

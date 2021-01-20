@@ -11,7 +11,6 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Text, Button, CustomImage } from "../../component";
-import { back_arrow_white } from '../../const/Png';
 
 import { gql } from 'apollo-boost';
 import { useQuery, useLazyQuery } from '@apollo/react-hooks';
