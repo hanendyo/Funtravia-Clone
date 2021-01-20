@@ -32,6 +32,7 @@ import itindest from "../screens/Itinerary/ItineraryDestination/index";
 import ItineraryChooseday from "../screens/Itinerary/ItineraryChooseDay";
 import DestinationList from "../screens/Destination/DestinationList";
 import ItineraryPlaning from "../screens/Itinerary/ItineraryPlaning/index";
+<<<<<<< Updated upstream
 import AllDestination from "../screens/CityDestination/PopularDestination";
 import CityDetail from "../screens/CityDestination/City/index";
 import Country from "../screens/CityDestination/Country/index";
@@ -48,6 +49,11 @@ import Journal from "../screens/Journal/index";
 import DetailJournal from "../screens/Journal/DetailJournal";
 import ItineraryPopuler from "../screens/Itinerary/ItineraryPopular/ItineraryPopuler";
 import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
+=======
+import { SearchPage, SearchTab } from "../screens/Search";
+import { MyAccount } from "../screens/MyAccount";
+// import { MyAccount } from "../../screens/MyAccount";
+>>>>>>> Stashed changes
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -64,7 +70,9 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="BottomStack"
           component={BottomStack}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: false,
+          }}
         />
         <Tab.Screen
           name="Post"

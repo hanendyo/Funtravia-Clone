@@ -5,8 +5,8 @@ import {
   Dimensions,
   ScrollView,
   KeyboardAvoidingView,
-  AsyncStorage,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { back_arrow_white } from "../../assets/png";
 import { PointIcon, CalendarIcon } from "../../assets/svg";

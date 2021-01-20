@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  AsyncStorage,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //data_bg nanti itu Profile Picture, data_pic itu avatar
 import { MapIconBlue, CalenderGrey } from "../../../assets/png";

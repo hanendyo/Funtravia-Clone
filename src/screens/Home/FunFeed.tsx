@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width / 2 - 20,
     backgroundColor: "white",
     borderRadius: 5,
-    marginHorizontal: 4,
+    marginLeft: 10,
     // borderWidth: 0.2,
     flexDirection: "row",
     shadowColor: "#6F7273",

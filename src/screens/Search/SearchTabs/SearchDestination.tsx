@@ -12,7 +12,8 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { Source } from "graphql";

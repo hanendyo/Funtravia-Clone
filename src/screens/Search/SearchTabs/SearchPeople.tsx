@@ -11,7 +11,8 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { PointIcon, CalendarIcon, Kosong } from "../../../assets/svg";
 import {
   Container,
