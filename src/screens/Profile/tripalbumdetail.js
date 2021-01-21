@@ -32,7 +32,7 @@ export default function tripalbumdetail(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -374,44 +374,3 @@ export default function tripalbumdetail(props) {
     </View>
   );
 }
-
-tripalbumdetail.navigationOptions = (props) => ({
-  // headerTransparent: true,
-  headerTitle: "Trip Album",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    // fontSize: 50,
-    // justifyContent: 'center',
-    // flex:1,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => props.navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-  headerRight: <View style={{ flexDirection: "row" }}></View>,
-  headerRightStyle: {
-    // paddingRight: 20,
-  },
-});

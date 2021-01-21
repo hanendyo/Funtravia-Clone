@@ -321,7 +321,7 @@ export default function SearchPage(props, { navigation, route }) {
                     // size='description'
                     type="regular"
                     style={{
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       textAlign: "left",
                     }}
                   >
@@ -332,7 +332,7 @@ export default function SearchPage(props, { navigation, route }) {
                       type="bold"
                       size="small"
                       style={{
-                        // fontFamily: 'lato-bold',
+                        // fontFamily: "Lato-Bold",
                         textAlign: "right",
                         color: "#5092D0",
                         // fontSize: 11,
@@ -380,7 +380,7 @@ export default function SearchPage(props, { navigation, route }) {
                       // size='description'
                       type="regular"
                       style={{
-                        // fontFamily: 'lato-reg',
+                        // fontFamily: "Lato-Regular",
                         textAlign: "left",
                       }}
                     >
@@ -395,7 +395,7 @@ export default function SearchPage(props, { navigation, route }) {
                         type="bold"
                         size="small"
                         style={{
-                          // fontFamily: 'lato-bold',
+                          // fontFamily: "Lato-Bold",
                           textAlign: "right",
                           color: "#5092D0",
                         }}
@@ -444,7 +444,7 @@ export default function SearchPage(props, { navigation, route }) {
 							type='bold'
 							size='small'
 							style={{
-								// fontFamily: 'lato-bold',
+								// fontFamily: "Lato-Bold",
 								textAlign: 'right',
 								color: '#5092D0',
 								// fontSize: 11,
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
   },
   buttonTextStyle: {
     fontSize: 12,
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Regular",
     color: "grey",
   },
 });

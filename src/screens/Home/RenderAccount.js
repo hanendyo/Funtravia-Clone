@@ -43,13 +43,13 @@ export default function RenderAccount({ data, token, props }) {
     props.navigation.navigate("ProfileTab");
   };
 
-  const ukuran = Dimensions.get("window").height * 0.14;
+  const ukuran = 100;
 
   return (
     <View
       style={{
         width: Dimensions.get("window").width - 40,
-        height: Dimensions.get("window").height * 0.15,
+        height: ukuran,
         borderRadius: 5,
         borderColor: "#209FAE",
         borderWidth: 1.5,
@@ -260,7 +260,7 @@ export default function RenderAccount({ data, token, props }) {
             </Text>
             <View
               style={{
-                marginTop: 5,
+                marginTop: 10,
                 marginBottom: 20,
                 flexDirection: "row",
                 alignItems: "center",

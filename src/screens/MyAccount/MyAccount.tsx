@@ -68,7 +68,7 @@ export default function MyAccount(props) {
       // flex:1,
     },
     headerTitleStyle: {
-      fontFamily: "lato-reg",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
       // alignSelf: "center",
@@ -149,7 +149,7 @@ export default function MyAccount(props) {
             >
               <Text
                 style={{
-                  fontFamily: "lato-bold",
+                  fontFamily: "Lato-Bold",
                   fontSize: 9,
                   color: "white",
                   alignSelf: "center",

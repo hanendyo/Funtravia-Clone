@@ -123,7 +123,7 @@ export default function FilterModal({
             size="title"
             style={{
               // fontSize: 20,
-              // fontFamily: 'lato-bold',
+              // fontFamily: "Lato-Bold",
               color: "#464646",
             }}
           >
@@ -177,7 +177,7 @@ export default function FilterModal({
               size="title"
               style={{
                 // fontSize: 20,
-                // fontFamily: 'lato-bold',
+                // fontFamily: "Lato-Bold",
                 color: "#464646",
               }}
             >
@@ -229,7 +229,7 @@ export default function FilterModal({
                     size="label"
                     type="regular"
                     style={{
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       // fontSize: 16,
                       // alignContent:'center',
                       textAlign: "center",
@@ -254,7 +254,7 @@ export default function FilterModal({
               size="title"
               style={{
                 // fontSize: 20,
-                // fontFamily: 'lato-bold',
+                // fontFamily: "Lato-Bold",
                 color: "#464646",
               }}
             >
@@ -305,7 +305,7 @@ export default function FilterModal({
                     size="label"
                     type="regular"
                     style={{
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       // fontSize: 16,
                       // alignContent:'center',
                       textAlign: "center",

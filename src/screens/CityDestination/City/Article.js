@@ -23,7 +23,7 @@ export default function ArticleView({ props, data }) {
                       type="bold"
                       style={{
                         marginBottom: 5,
-                        // fontFamily: 'lato-bold',
+                        // fontFamily: "Lato-Bold",
                       }}
                     >
                       {i.title}
@@ -35,7 +35,7 @@ export default function ArticleView({ props, data }) {
                     style={{
                       textAlign: "justify",
                       lineHeight: 21,
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       // fontSize: 13,
                       color: "#464646",
                     }}
@@ -79,7 +79,7 @@ export default function ArticleView({ props, data }) {
                     style={{
                       lineHeight: 21,
                       textAlign: "justify",
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       // fontSize: 13,
                       color: "#464646",
                     }}
@@ -98,7 +98,7 @@ export default function ArticleView({ props, data }) {
             size="title"
             style={{
               textAlign: "justify",
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: 18,
               color: "#464646",
             }}

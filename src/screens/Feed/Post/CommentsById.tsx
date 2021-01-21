@@ -524,7 +524,7 @@ Comments.navigationOptions = ({ navigation }) => ({
     // zIndex: 30,
   },
   headerTitleStyle: {
-    fontFamily: "Lato-Regular",
+    fontFamily: "Lato-Bold",
     fontSize: 14,
     color: "white",
     alignSelf: "center",

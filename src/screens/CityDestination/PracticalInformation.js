@@ -20,7 +20,7 @@ export default function PracticalInformation(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -144,7 +144,7 @@ export default function PracticalInformation(props) {
                 type="regular"
                 style={{
                   width: "80%",
-                  // fontFamily: 'lato-reg',
+                  // fontFamily: "Lato-Regular",
                   // fontSize: 14,
                   textAlign: "justify",
                   color: "#6c6c6c",
@@ -185,7 +185,7 @@ export default function PracticalInformation(props) {
                   size="description"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#6c6c6c",
                   }}
@@ -205,7 +205,7 @@ export default function PracticalInformation(props) {
                   size="description"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#6c6c6c",
                   }}
@@ -230,7 +230,7 @@ export default function PracticalInformation(props) {
               size="description"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 14,
                 textAlign: "justify",
                 color: "#6c6c6c",
@@ -256,7 +256,7 @@ export default function PracticalInformation(props) {
               size="description"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 14,
                 textAlign: "justify",
                 color: "#6c6c6c",
@@ -282,7 +282,7 @@ export default function PracticalInformation(props) {
               size="description"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 14,
                 textAlign: "justify",
                 color: "#6c6c6c",
@@ -308,7 +308,7 @@ export default function PracticalInformation(props) {
               size="description"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 14,
                 textAlign: "justify",
                 color: "#6c6c6c",

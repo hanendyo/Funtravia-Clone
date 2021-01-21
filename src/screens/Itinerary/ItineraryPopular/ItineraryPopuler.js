@@ -36,7 +36,7 @@ export default function ItineraryPopuler(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -617,36 +617,3 @@ export default function ItineraryPopuler(props) {
     </View>
   );
 }
-
-ItineraryPopuler.navigationOptions = (props) => ({
-  headerTitle: "Popular Itinerary",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-  },
-  headerTitleStyle: {
-    fontFamily: "lato-reg",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => props.navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {},
-  headerRight: <View style={{ flexDirection: "row" }}></View>,
-  headerRightStyle: {},
-});

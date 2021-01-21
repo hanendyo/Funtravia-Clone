@@ -37,7 +37,7 @@ export default function Wishlist(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -314,8 +314,8 @@ export default function Wishlist(props) {
                 heading={t("destination")}
                 tabStyle={{ backgroundColor: "white" }}
                 activeTabStyle={{ backgroundColor: "white" }}
-                textStyle={{ fontFamily: "lato-bold", color: "#6C6C6C" }}
-                activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+                textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
               >
                 <GetDes />
               </Tab>
@@ -323,18 +323,18 @@ export default function Wishlist(props) {
 								heading={t('accommodation')}
 								tabStyle={{ backgroundColor: 'white' }}
 								activeTabStyle={{ backgroundColor: 'white' }}
-								textStyle={{ fontFamily: 'lato-bold', color: '#6C6C6C' }}
+								textStyle={{ fontFamily: "Lato-Bold", color: '#6C6C6C' }}
 								activeTextStyle={{
-									fontFamily: 'lato-bold',
+									fontFamily: "Lato-Bold",
 									color: '#209FAE',
 								}}></Tab> */}
               {/* <Tab
 								heading={t('transportation')}
 								tabStyle={{ backgroundColor: 'white' }}
 								activeTabStyle={{ backgroundColor: 'white' }}
-								textStyle={{ fontFamily: 'lato-bold', color: '#6C6C6C' }}
+								textStyle={{ fontFamily: "Lato-Bold", color: '#6C6C6C' }}
 								activeTextStyle={{
-									fontFamily: 'lato-bold',
+									fontFamily: "Lato-Bold",
 									color: '#209FAE',
 								}}>
 								<GetTrans />
@@ -343,9 +343,9 @@ export default function Wishlist(props) {
                 heading={t("events")}
                 tabStyle={{ backgroundColor: "white" }}
                 activeTabStyle={{ backgroundColor: "white" }}
-                textStyle={{ fontFamily: "lato-bold", color: "#6C6C6C" }}
+                textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
                 activeTextStyle={{
-                  fontFamily: "lato-bold",
+                  fontFamily: "Lato-Bold",
                   color: "#209FAE",
                 }}
               >
@@ -355,9 +355,9 @@ export default function Wishlist(props) {
 								heading={t('services')}
 								tabStyle={{ backgroundColor: 'white' }}
 								activeTabStyle={{ backgroundColor: 'white' }}
-								textStyle={{ fontFamily: 'lato-bold', color: '#6C6C6C' }}
+								textStyle={{ fontFamily: "Lato-Bold", color: '#6C6C6C' }}
 								activeTextStyle={{
-									fontFamily: 'lato-bold',
+									fontFamily: "Lato-Bold",
 									color: '#209FAE',
 								}}>
 								<GetService />
@@ -380,7 +380,7 @@ Wishlist.navigationOptions = ({ navigation }) => ({
     fontSize: 50,
   },
   headerTitleStyle: {
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Bold",
     fontSize: 14,
     color: "white",
   },

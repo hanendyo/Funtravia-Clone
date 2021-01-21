@@ -130,7 +130,7 @@ export default function FillterDestination({
         >
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               color: "white",
               marginVertical: 4,
               fontSize: 13,
@@ -160,7 +160,7 @@ export default function FillterDestination({
         >
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               color: "#0095A7",
               marginVertical: 4,
               fontSize: 13,
@@ -225,7 +225,7 @@ export default function FillterDestination({
               placeholder="Search"
               style={{
                 width: "100%",
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 fontSize: 13,
               }}
               onChangeText={(text) => _setSearch(text)}
@@ -276,7 +276,7 @@ export default function FillterDestination({
               />
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   color: "#0095A7",
                   fontSize: 13,
                   alignSelf: "center",
@@ -300,7 +300,7 @@ export default function FillterDestination({
                 >
                   <Text
                     style={{
-                      fontFamily: "lato-reg",
+                      fontFamily: "Lato-Regular",
                       color: "white",
                       fontSize: 13,
                       alignSelf: "center",

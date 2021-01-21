@@ -194,7 +194,7 @@ export default function Fillter({ fillter, sendBack }) {
             />
             <Text
               style={{
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 color: "#0095A7",
                 fontSize: 13,
                 alignSelf: "center",
@@ -218,7 +218,7 @@ export default function Fillter({ fillter, sendBack }) {
               >
                 <Text
                   style={{
-                    fontFamily: "lato-reg",
+                    fontFamily: "Lato-Regular",
                     color: "white",
                     fontSize: 13,
                     alignSelf: "center",

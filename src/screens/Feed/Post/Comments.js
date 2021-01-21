@@ -33,36 +33,36 @@ import {
 } from "../../../assets/svg";
 export default function Comments(props) {
   const HeaderComponent = {
-		headerShown: true,
-		transparent: false,
-		headerTintColor: "white",
-		headerTitle: "Comment",
-		headerMode: "screen",
-		headerStyle: {
-			backgroundColor: "#209FAE",
-			elevation: 0,
-			borderBottomWidth: 0,
-		},
-		headerTitleStyle: {
-			fontFamily: "Lato-Regular",
-			fontSize: 14,
-			color: "white",
-		},
-		// headerLeftContainerStyle: {
-		// 	background: "#FFF",
-		// },
-		// headerRight: () => (
-		// 	<View style={{ flexDirection: "row" }}>
-		// 		<TouchableOpacity
-		// 			style={{ marginRight: 20 }}
-		// 			onPress={() => Alert.alert("Coming soon")}
-		// 		>
-		// 			<SearchWhite height={20} width={20} />
-		// 		</TouchableOpacity>
-		// 	</View>
-		// ),
+    headerShown: true,
+    transparent: false,
+    headerTintColor: "white",
+    headerTitle: "Comment",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    // headerLeftContainerStyle: {
+    // 	background: "#FFF",
+    // },
+    // headerRight: () => (
+    // 	<View style={{ flexDirection: "row" }}>
+    // 		<TouchableOpacity
+    // 			style={{ marginRight: 20 }}
+    // 			onPress={() => Alert.alert("Coming soon")}
+    // 		>
+    // 			<SearchWhite height={20} width={20} />
+    // 		</TouchableOpacity>
+    // 	</View>
+    // ),
   };
-  
+
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
   let [dataPost, setDataPost] = useState(props.route.params.data);
@@ -98,10 +98,10 @@ export default function Comments(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-			GetCommentList();
+      GetCommentList();
       loadAsync();
-		});
-		return unsubscribe;
+    });
+    return unsubscribe;
   }, []);
 
   const [
@@ -276,7 +276,7 @@ export default function Comments(props) {
                 width: 35,
                 borderRadius: 15,
                 alignSelf: "center",
-                resizeMode: "cover", 
+                resizeMode: "cover",
               }}
               source={{ uri: dataComment.user?.picture }}
             />
@@ -343,7 +343,7 @@ export default function Comments(props) {
     <View
       style={{
         flex: 1,
-        backgroundColor: '#FFF'
+        backgroundColor: "#FFF",
       }}
     >
       {/* <NavigationEvents onDidFocus={() => GetCommentList()} /> */}
@@ -367,13 +367,14 @@ export default function Comments(props) {
           }}
         >
           <Pressable
-          onPress={() => {
-            dataPost.user.id !== setting?.user?.id
-              ? props.navigation.push("otherprofile", {
-                  idUser: dataPost.user.id,
-                })
-              : props.navigation.push("ProfileTab");
-          }} u
+            onPress={() => {
+              dataPost.user.id !== setting?.user?.id
+                ? props.navigation.push("otherprofile", {
+                    idUser: dataPost.user.id,
+                  })
+                : props.navigation.push("ProfileTab");
+            }}
+            u
             style={{
               flexDirection: "row",
             }}
@@ -382,7 +383,7 @@ export default function Comments(props) {
               isTouchable
               onPress={() => {
                 dataPost.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {  
+                  ? props.navigation.push("otherprofile", {
                       idUser: dataPost.user.id,
                     })
                   : props.navigation.push("ProfileTab");
@@ -537,57 +538,6 @@ export default function Comments(props) {
     </View>
   );
 }
-
-// Comments.navigationOptions = ({ navigation }) => ({
-//   headerTitle: "Comments",
-//   headerMode: "screen",
-//   headerStyle: {
-//     backgroundColor: "#209FAE",
-//     elevation: 0,
-//     borderBottomWidth: 0,
-//     fontSize: 50,
-//     // justifyContent: 'center',
-//     // flex:1,
-//     // zIndex: 30,
-//   },
-//   headerTitleStyle: {
-//     fontFamily: "Lato-Regular",
-//     fontSize: 14,
-//     color: "white",
-//     alignSelf: "center",
-//   },
-//   headerLeft: (
-//     <TouchableOpacity
-//       style={{
-//         height: 40,
-//         width: 40,
-//         // borderWidth:1,
-//         justifyContent: "center",
-//         alignContent: "center",
-//         alignItems: "center",
-//         // backgroundColor:'white'
-//       }}
-//       onPress={() => navigation.goBack()}
-//     >
-//       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-//     </TouchableOpacity>
-//   ),
-//   headerLeftContainerStyle: {
-//     // paddingLeft: 20,
-//   },
-//   headerRight: (
-//     <View style={{ flexDirection: "row" }}>
-//       {/* <TouchableOpacity
-// 				style={{ marginRight: 20 }}
-// 				onPress={() => Alert.alert('Coming soon')}>
-// 				<OptionsVertWhite height={20} width={20} />
-// 			</TouchableOpacity> */}
-//     </View>
-//   ),
-//   headerRightStyle: {
-//     paddingRight: 20,
-//   },
-// });
 
 const styles = StyleSheet.create({
   main: {

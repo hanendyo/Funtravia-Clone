@@ -108,7 +108,7 @@ export default function FilterModal({
           <Text
             style={{
               fontSize: 20,
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               color: "#464646",
             }}
           >
@@ -162,7 +162,7 @@ export default function FilterModal({
             <Text
               style={{
                 fontSize: 20,
-                fontFamily: "lato-bold",
+                fontFamily: "Lato-Bold",
                 color: "#464646",
               }}
             >
@@ -211,7 +211,7 @@ export default function FilterModal({
                   </View>
                   <Text
                     style={{
-                      fontFamily: "lato-reg",
+                      fontFamily: "Lato-Regular",
                       fontSize: 16,
                       marginLeft: 0,
                       color: "#464646",

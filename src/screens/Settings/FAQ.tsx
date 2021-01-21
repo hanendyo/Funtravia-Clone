@@ -26,7 +26,7 @@ FAQ.navigationOptions = ({ navigation }) => ({
     fontSize: 50,
   },
   headerTitleStyle: {
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Bold",
     fontSize: 14,
     color: "white",
   },

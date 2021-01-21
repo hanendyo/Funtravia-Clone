@@ -36,7 +36,7 @@ export default function PenilaianTempat({ tittle, data }) {
             // fontSize: (18),
             marginVertical: 10,
             paddingLeft: 20,
-            // fontFamily: 'lato-bold',
+            // fontFamily: "Lato-Bold",
             color: "#FFFFFF",
           }}
         >
@@ -81,7 +81,7 @@ export default function PenilaianTempat({ tittle, data }) {
                           fontSize: 12,
                           paddingHorizontal: 5,
                           color: "#464646",
-                          fontFamily: "lato-bold",
+                          fontFamily: "Lato-Bold",
                           position: "absolute",
                           margin: 10,
                           left: 0,
@@ -96,7 +96,7 @@ export default function PenilaianTempat({ tittle, data }) {
                           // fontSize: (12),
                           paddingHorizontal: 5,
                           color: "#209FAE",
-                          // fontFamily: 'lato-bold',
+                          // fontFamily: "Lato-Bold",
                           position: "absolute",
                           margin: 10,
                           right: 15,
@@ -112,7 +112,7 @@ export default function PenilaianTempat({ tittle, data }) {
                         // fontSize: (12),
                         paddingHorizontal: 5,
                         color: "#464646",
-                        // fontFamily: 'lato-reg',
+                        // fontFamily: "Lato-Regular",
                         textAlign: "justify",
                         position: "absolute",
                         margin: 10,
@@ -134,7 +134,7 @@ export default function PenilaianTempat({ tittle, data }) {
           style={{
             // fontSize: (18),
             marginVertical: 10,
-            // fontFamily: 'lato-bold',
+            // fontFamily: "Lato-Bold",
             color: "#209FAE",
             marginHorizontal: 20,
           }}

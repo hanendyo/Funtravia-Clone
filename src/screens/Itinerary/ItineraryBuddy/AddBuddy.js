@@ -32,7 +32,7 @@ export default function AddBuddy(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "#f0f0f0",
     },
@@ -251,7 +251,7 @@ export default function AddBuddy(props) {
                         type="bold"
                         style={{
                           // fontSize: 14,
-                          // fontFamily: 'Lato-Bold',
+                          // fontFamily: "Lato-Bold",
                           marginLeft: 20,
                         }}
                       >

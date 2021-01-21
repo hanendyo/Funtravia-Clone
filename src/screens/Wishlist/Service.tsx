@@ -175,7 +175,7 @@ export default function Service({
                   >
                     <Text
                       style={{
-                        fontFamily: "lato-bold",
+                        fontFamily: "Lato-Bold",
                         fontSize: 16,
                         // color: '#D7598F',
                         // marginLeft: (5),

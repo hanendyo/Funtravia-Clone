@@ -1703,27 +1703,3 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
 });
-
-ItineraryDetail.navigationOptions = ({ navigation }) => ({
-  headerTransparent: true,
-  headerTitle: "",
-  headerMode: "none",
-  headerStyle: {
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Regular",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: <View></View>,
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-  headerRight: "",
-  headerRightStyle: {
-    // paddingRight: 20,
-  },
-});

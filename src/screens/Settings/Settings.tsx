@@ -46,7 +46,7 @@ export default function Settings(props) {
       //   fontSize: 50,
     },
     headerTitleStyle: {
-      fontFamily: "lato-reg",
+      fontFamily: "Lato-Bold",
       fontSize: 16,
       color: "white",
     },

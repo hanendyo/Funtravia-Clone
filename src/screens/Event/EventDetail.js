@@ -57,7 +57,7 @@ export default function EventDetail(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -317,7 +317,7 @@ export default function EventDetail(props) {
                           ) : (
                             <Text
                               style={{
-                                fontFamily: "lato-reg",
+                                fontFamily: "Lato-Regular",
                                 color: "#6C6C6C",
                                 fontSize: 14,
                                 paddingRight: 5,
@@ -352,7 +352,7 @@ export default function EventDetail(props) {
                           />
                           <Text
                             style={{
-                              fontFamily: "lato-reg",
+                              fontFamily: "Lato-Regular",
                               color: "#6C6C6C",
                               fontSize: 14,
                               paddingRight: 5,
@@ -403,7 +403,7 @@ export default function EventDetail(props) {
             >
               <Text
                 style={{
-                  fontFamily: "lato-bold",
+                  fontFamily: "Lato-Bold",
                   fontSize: 16,
                 }}
               >
@@ -823,7 +823,7 @@ export default function EventDetail(props) {
             ) : (
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   color: "#6C6C6C",
                   fontSize: 14,
                   paddingRight: 10,
@@ -1008,73 +1008,3 @@ export default function EventDetail(props) {
     </View>
   );
 }
-
-EventDetail.navigationOptions = ({ navigation }) => ({
-  headerTransparent: true,
-  headerTitle: (
-    <Text size="label" style={{ color: "white" }}>
-      {navigation.getParam("name")}
-    </Text>
-  ),
-  headerMode: "screen",
-  headerStyle: {
-    zIndex: 20,
-    elevation: 0,
-    borderBottomWidth: 0,
-  },
-  headerTitleStyle: {
-    fontFamily: "lato-reg",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: () =>
-    CustomImage({
-      customStyle: { width: 20, height: 20 },
-      customImageStyle: { width: 20, height: 20, resizeMode: "contain" },
-      isTouchable: true,
-      onPress: () => navigation.goBack(),
-      source: back_arrow_white,
-    }),
-  headerLeftContainerStyle: {
-    paddingLeft: 20,
-  },
-
-  headerRight: (
-    <View style={{ flexDirection: "row" }}>
-      <TouchableOpacity
-        style={{ marginRight: 20 }}
-        onPress={() => Alert.alert("Coming soon")}
-      >
-        <OptionsVertWhite height={20} width={20} />
-      </TouchableOpacity>
-    </View>
-  ),
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});
-
-const styles = StyleSheet.create({
-  main: {
-    width: Dimensions.get("window").width,
-    zIndex: -1,
-  },
-  dayButton: {
-    height: 15,
-    width: 35,
-    backgroundColor: "#209FAE",
-  },
-  dayButtonFont: { fontSize: 12, fontFamily: "lato-reg" },
-
-  eventtype: {
-    position: "absolute",
-    height: 23,
-    paddingHorizontal: 10,
-    minWidth: 70,
-    bottom: 0,
-    borderRadius: 11,
-    justifyContent: "center",
-    backgroundColor: "rgba(226, 236, 248, 0.85)",
-  },
-});

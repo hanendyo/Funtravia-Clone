@@ -1562,7 +1562,7 @@ export default function CityDetail(props) {
                 height: 20,
                 padding: 0,
                 textAlign: "left",
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 fontSize: 14,
                 color: "white",
               }}
@@ -1605,7 +1605,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activeTextStyle: {
-    fontFamily: "lato-bold",
+    fontFamily: "Lato-Bold",
     color: "#209FAE",
   },
   container: {
@@ -1622,7 +1622,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     position: "absolute",
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Regular",
   },
   balanceContainer: {
     padding: 10,

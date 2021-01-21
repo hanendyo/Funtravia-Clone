@@ -97,7 +97,7 @@ export default function SearchTab(props) {
               tabStyle={{ backgroundColor: "transparent" }}
               activeTabStyle={{ backgroundColor: "transparent" }}
               textStyle={styles.tabFont}
-              activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+              activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
             >
               <SearchDestination
                 navigation={props.navigation}
@@ -114,7 +114,7 @@ export default function SearchTab(props) {
               tabStyle={{ backgroundColor: "transparent" }}
               activeTabStyle={{ backgroundColor: "transparent" }}
               textStyle={styles.tabFont}
-              activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+              activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
             >
               <SearchPeople
                 navigation={props.navigation}
@@ -130,7 +130,7 @@ export default function SearchTab(props) {
               tabStyle={{ backgroundColor: "transparent" }}
               activeTabStyle={{ backgroundColor: "transparent" }}
               textStyle={styles.tabFont}
-              activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+              activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
             >
               <SearchFeed
                 navigation={props.navigation}
@@ -146,7 +146,7 @@ export default function SearchTab(props) {
               tabStyle={{ backgroundColor: "transparent" }}
               activeTabStyle={{ backgroundColor: "transparent" }}
               textStyle={styles.tabFont}
-              activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+              activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
             >
               <SearchEvent
                 navigation={props.navigation}
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
   },
   tabFont: {
-    fontFamily: "lato-bold",
+    fontFamily: "Lato-Bold",
     color: "#6C6C6C",
     fontSize: 12,
   },

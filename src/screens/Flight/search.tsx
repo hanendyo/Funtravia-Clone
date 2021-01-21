@@ -103,7 +103,7 @@ export default function searchFlight(props) {
           <Pointmapgray height={15} width={15} />
           <Input
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               fontSize: 18,
               marginLeft: 5,
             }}
@@ -145,7 +145,7 @@ export default function searchFlight(props) {
               >
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 18,
                   }}
                 >
@@ -153,7 +153,7 @@ export default function searchFlight(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-reg",
+                    fontFamily: "Lato-Regular",
                     fontSize: 14,
                   }}
                 >
@@ -181,7 +181,7 @@ searchFlight.navigationOptions = (props) => ({
     // flex:1,
   },
   headerTitleStyle: {
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Bold",
     fontSize: 14,
     color: "white",
     alignSelf: "center",

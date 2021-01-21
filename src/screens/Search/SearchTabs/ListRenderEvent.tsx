@@ -220,7 +220,7 @@ export default function ListRenderEvent({ props, datanya }) {
           >
             <Text
               style={{
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 color: "#464646",
                 textAlign: "center",
                 fontSize: 12,
@@ -329,7 +329,7 @@ export default function ListRenderEvent({ props, datanya }) {
 						}}>
 						<Text
 							style={{
-								fontFamily: 'lato-bold',
+								fontFamily: "Lato-Bold",
 								color: 'white',
 								textAlign: 'right',
 								marginRight: 10,
@@ -358,7 +358,7 @@ export default function ListRenderEvent({ props, datanya }) {
           <Text
             onPress={() => eventdetail(item)}
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               color: "#464646",
               fontSize: 17,
               // marginBottom: (5),
@@ -402,7 +402,7 @@ export default function ListRenderEvent({ props, datanya }) {
               />
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   color: "#464646",
                   fontSize: 11,
                   paddingRight: 20,
@@ -475,7 +475,7 @@ export default function ListRenderEvent({ props, datanya }) {
         >
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               color: "white",
               marginVertical: 4,
               fontSize: 13,
@@ -508,7 +508,7 @@ export default function ListRenderEvent({ props, datanya }) {
         >
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               color: "#0095A7",
               marginVertical: 4,
               fontSize: 13,
