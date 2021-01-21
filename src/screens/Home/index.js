@@ -43,6 +43,8 @@ export default function Home(props) {
     await LoadUserProfile();
   };
 
+  console.log(token);
+
   const onScrollSearch = (e) => {
     if (e.nativeEvent.contentOffset.y <= 230) {
       setSearchBg("transparent");
