@@ -42,11 +42,14 @@ export default function RenderAccount({ data, token, props }) {
   const goToProfile = (target) => {
     props.navigation.navigate("ProfileTab");
   };
+
+  const ukuran = Dimensions.get("window").height * 0.14;
+
   return (
     <View
       style={{
-        width: Dimensions.get("window").width * 0.9,
-        height: Dimensions.get("window").height * 0.14,
+        width: Dimensions.get("window").width - 40,
+        height: Dimensions.get("window").height * 0.15,
         borderRadius: 5,
         borderColor: "#209FAE",
         borderWidth: 1.5,
@@ -60,20 +63,25 @@ export default function RenderAccount({ data, token, props }) {
         shadowOpacity: 1,
         shadowRadius: 2,
         elevation: 6,
+        padding: 5,
       }}
     >
       <View
         style={{
-          width: Dimensions.get("window").width * 0.85,
+          width: "100%",
+          height: "100%",
           justifyContent: "center",
           flexDirection: "row",
           flexWrap: "wrap",
+          // borderWidth: 1,
         }}
       >
         <View
           style={{
+            height: "100%",
             alignItems: "flex-start",
             justifyContent: "center",
+            // borderWidth: 1,
           }}
         >
           {token !== null && token !== "" ? (
@@ -85,12 +93,13 @@ export default function RenderAccount({ data, token, props }) {
                   shadowColor: "gray",
                   shadowOffset: { width: 2, height: 2 },
                   shadowOpacity: 1,
+                  elevation: 1,
                 }}
               >
                 <Image
                   style={{
-                    width: Dimensions.get("window").width / 5 + 10,
-                    height: Dimensions.get("window").width / 5 + 10,
+                    width: ukuran - 10,
+                    height: ukuran - 10,
                     borderRadius: 10,
 
                     borderWidth: 3,
@@ -108,8 +117,8 @@ export default function RenderAccount({ data, token, props }) {
           ) : (
             <Image
               style={{
-                width: Dimensions.get("window").width / 5 + 10,
-                height: Dimensions.get("window").width / 5 + 10,
+                width: ukuran - 10,
+                height: ukuran - 10,
                 borderRadius: 10,
                 shadowRadius: 20,
                 shadowColor: "gray",
@@ -118,6 +127,7 @@ export default function RenderAccount({ data, token, props }) {
                 borderColor: "white",
                 shadowOpacity: 1,
                 resizeMode: "cover",
+                elevation: 1,
               }}
               source={default_image}
             />
@@ -130,6 +140,8 @@ export default function RenderAccount({ data, token, props }) {
               justifyContent: "center",
               alignContent: "center",
               marginLeft: 10,
+              height: "100%",
+              width: "100%",
             }}
           >
             <View
@@ -235,7 +247,10 @@ export default function RenderAccount({ data, token, props }) {
               alignItems: "flex-start",
               justifyContent: "flex-start",
               paddingLeft: 12,
-              paddingTop: 15,
+              // paddingTop: 15,
+              height: "100%",
+              width: "100%",
+              // borderWidth: 1,
             }}
           >
             <Text size="description" type="bold">
@@ -246,33 +261,43 @@ export default function RenderAccount({ data, token, props }) {
             </Text>
             <View
               style={{
-                marginTop: 10,
+                marginTop: 5,
                 marginBottom: 20,
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                flexWrap: "wrap",
-                width: Dimensions.get("window").width / 1.4,
+                // flexWrap: "wrap",
+                // borderWidth: 1,
+                width: "100%",
               }}
             >
-              <Button
-                size="small"
-                type="box"
-                color="primary"
-                onPress={()=>signUp()}
-                text={t("signUp")}
+              <TouchableOpacity
+                onPress={() => signUp()}
                 style={{
-                  marginRight: 5,
+                  paddingVertical: 7,
+                  paddingHorizontal: 17,
+                  borderRadius: 5,
+                  backgroundColor: "#209fae",
                 }}
-              />
-              <Button
-                size="small"
-                type="box"
-                color="secondary"
-                onPress={()=>login()}
-                text={t("signIn")}
-                style={{ marginLeft: 5 }}
-              />
+              >
+                <Text type="bold" size="small" style={{ color: "white" }}>
+                  {t("signUp")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => login()}
+                style={{
+                  marginLeft: 10,
+                  paddingVertical: 7,
+                  paddingHorizontal: 17,
+                  borderRadius: 5,
+                  backgroundColor: "#D75995",
+                }}
+              >
+                <Text type="bold" size="small" style={{ color: "white" }}>
+                  {t("signIn")}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         )}

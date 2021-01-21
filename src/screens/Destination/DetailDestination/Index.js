@@ -11,23 +11,20 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { AsyncStorage } from "react-native";
-import DestinationById from "../../../../graphQL/Query/Destination/DestinationById";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import { Container, Tab, Tabs, ScrollableTab } from "native-base";
-// import {  } from '../../../../const/PixelRatio';
-import { useLazyQuery, useQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 import {
   default_image,
-  Love,
   Ticket,
   Foto,
   Family,
   Relax,
-  Backpack,
   backpack2,
-} from "../../../../const/Png";
+} from "../../../assets/png";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../../../Component";
+import { Text, Button } from "../../../component";
 import AboutInformation from "./AboutInformation";
 import GreatFor from "./GreatFor";
 import InformasiUmum from "./InformasiUmum";
@@ -42,8 +39,8 @@ import {
   LikeEmpty,
   LikeRed,
   OptionsVertWhite,
-} from "../../../../const/Svg";
-import Loading from "../../Loading";
+} from "../../../assets/svg";
+import { Loading } from "../../../component";
 import OtherDestination from "./OtherDestination";
 
 const btnWHalf = Dimensions.get("window").width / 2 - 20;
@@ -191,6 +188,44 @@ const Article = ({ data, onScroll }) => {
 };
 
 export default function DestinationDetail(props) {
+  const HeaderComponent = {
+    headerShown: true,
+    title: "" + props.route.params.name.toUpperCase(),
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "" + props.route.params.name.toUpperCase(),
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Regular",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
   const { t, i18n } = useTranslation();
 
   let detailId = props.route.params.id;
@@ -209,6 +244,8 @@ export default function DestinationDetail(props) {
   };
 
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+
     loadAsync();
   }, []);
 
@@ -235,19 +272,19 @@ export default function DestinationDetail(props) {
     // console.log('YAYAYAAYAYAY: ' + data.destinationById.cities.name);
   }
 
-  const scrollRef = useRef<ScrollView>();
+  // const scrollRef = useRef<ScrollView>();
 
   const onFabPress = () => {
-    scrollRef.current?.scrollTo({
-      y: screenHeight / 2,
-      animated: true,
-    });
+    // scrollRef.current?.scrollTo({
+    //   y: screenHeight / 2,
+    //   animated: true,
+    // });
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Loading show={loading} />
       <ScrollView
-        ref={scrollRef}
+        // ref={scrollRef}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         stickyHeaderIndices={[1]}
@@ -500,38 +537,3 @@ export default function DestinationDetail(props) {
     </SafeAreaView>
   );
 }
-
-DestinationDetail.navigationOptions = ({ navigation }) => ({
-  headerTitle: navigation.getParam("name").toUpperCase(),
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "lato-reg",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: (
-    <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </TouchableOpacity>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 20,
-  },
-
-  headerRight: (
-    <View style={{ flexDirection: "row" }}>
-      <TouchableOpacity style={{ marginRight: 20 }}>
-        <OptionsVertWhite height={20} width={20} />
-      </TouchableOpacity>
-    </View>
-  ),
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});
