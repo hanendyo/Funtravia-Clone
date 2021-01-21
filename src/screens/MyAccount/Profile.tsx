@@ -11,13 +11,13 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { share_biru, default_image } from "../../../const/Png";
+import { share_biru, default_image } from "../../assets/png";
 
 import { gql } from "apollo-boost";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { List, ListItem, Left, Right, Body } from "native-base";
 import Account from "../../graphQL/Query/Home/Account";
-import CountNotif from "../../../graphQL/Query/Notification/CountNotif";
+import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 // import {
 //   NavigationEvents,
 //   StackActions,

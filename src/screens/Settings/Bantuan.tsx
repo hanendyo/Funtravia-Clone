@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, FlatList, Modal, Dimensions } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import getParams from "../../graphQL/Query/Params/getParams";
+
 import { WebView } from "react-native-webview";
 
-import { Nextpremier, Arrowbackwhite } from "../../assets/svg";';
+import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
 import { Text, Button } from "../../component";
 export default function Bantuan(props) {
   // let [param, setParam] = useState(props.navigation.getParam('params'));
@@ -33,7 +33,7 @@ export default function Bantuan(props) {
 }
 const styles = StyleSheet.create({
   main: {
-    width: Dimensions.get("window").width -15,
+    width: Dimensions.get("window").width - 15,
     margin: 10,
     alignContent: "flex-start",
     alignItems: "flex-start",

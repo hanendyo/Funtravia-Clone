@@ -30,7 +30,7 @@ export default function NotificationSettings(props) {
   let [paymentReminderSwitch, setPaymentReminderSwitch] = useState(false);
   let [selected, setSelected] = useState();
   let [token, setToken] = useState("");
-  let [setting, setSetting] = useState(props.navigation.getParam("setting"));
+  let [setting, setSetting] = useState(props.route.params.setting);
   console.log(setting);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");

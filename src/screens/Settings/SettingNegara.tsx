@@ -32,7 +32,7 @@ import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
-import setCountry from "../../../graphQL/Mutation/Setting/setCountry";
+import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 
 export default function SettingNegara({
   modals,

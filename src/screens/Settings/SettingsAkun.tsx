@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 // import { NavigationEvents } from "react-navigation";
-import { dateFormat } from "src/component/src/dateformatter.js";
+import { dateFormat } from "../../component/src/dateformatter.js";
 export default function SettingsAkun(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
@@ -88,7 +88,7 @@ export default function SettingsAkun(props) {
         backgroundColor: "#F6F6F6",
       }}
     >
-      <NavigationEvents onDidFocus={() => loadAsync()} />
+      {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
       <View
         style={{
           flexDirection: "column",
