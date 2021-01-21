@@ -1,4 +1,3 @@
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -16,22 +15,12 @@ import {
   // CheckBox,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import {
-  Arrowbackwhite,
-  Xhitam,
-  Pointmapblack,
-  Pointmapgray,
-  Pointmaprecent,
-  OptionsVertWhite,
-  IdFlag,
-  Check,
-} from "../../assets/svg";
+import { Arrowbackwhite, Check } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
-import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import setCurrency from "../../graphQL/Mutation/Setting/setCurrency";
 
 export default function SettingCurrency({
@@ -42,9 +31,8 @@ export default function SettingCurrency({
   selected,
   token,
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   let [datacurrency, setdataCurrency] = useState(data);
-  let [datasetting, setdataSetting] = useState(selected);
   let slider = useRef();
   const pushselected = () => {
     if (selected?.currency) {
@@ -124,7 +112,6 @@ export default function SettingCurrency({
       animationOut="slideOutRight"
       isVisible={modals}
       style={{
-        // backgroundColor: 'rgba(0, 0, 0, 0.25)',
         justifyContent: "flex-end",
         alignItems: "center",
         alignSelf: "center",
@@ -144,11 +131,9 @@ export default function SettingCurrency({
             alignSelf: "flex-start",
             alignItems: "center",
             alignContent: "center",
-            // justifyContent: 'center'
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            // marginBottom: 20,
             marginTop: Platform.OS === "ios" ? 0 : -20,
           }}
         >
@@ -173,11 +158,8 @@ export default function SettingCurrency({
         <View
           style={{
             width: Dimensions.get("screen").width,
-            // height: '100%',
             height: Dimensions.get("screen").height,
             backgroundColor: "white",
-            // paddingTop: 20,
-            // paddingHorizontal: 20,
             paddingBottom: 20,
           }}
         >
@@ -186,7 +168,6 @@ export default function SettingCurrency({
             data={datacurrency}
             renderItem={({ item }) => {
               return (
-                // <Text>{item.id}</Text>
                 <Ripple
                   onPress={() => hasil(item, selected)}
                   style={{

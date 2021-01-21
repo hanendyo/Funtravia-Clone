@@ -369,6 +369,8 @@ export default function MainStackNavigator({ authorizeToken }) {
           name="detailStack"
           component={detailStack}
           options={{ headerShown: false }}
+        />
+        <Tab.Screen
           name="settings"
           component={Settings}
           options={{

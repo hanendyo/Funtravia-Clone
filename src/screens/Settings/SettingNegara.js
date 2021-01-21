@@ -1,38 +1,14 @@
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  ImageBackground,
-  Dimensions,
-  TextInput,
-  FlatList,
-  Alert,
-  Image,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  TouchableHighlight,
-  // CheckBox,
-} from "react-native";
+import { View, Dimensions, FlatList, Alert, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import {
-  Arrowbackwhite,
-  Xhitam,
-  Pointmapblack,
-  Pointmapgray,
-  Pointmaprecent,
-  OptionsVertWhite,
-  IdFlag,
-  Check,
-} from "../../assets/svg";
+import { Arrowbackwhite, IdFlag, Check } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
-import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import setCountry from "../../graphQL/Mutation/Setting/setCountry";
+import { FunIcon } from "../../component";
 
 export default function SettingNegara({
   modals,
@@ -42,9 +18,8 @@ export default function SettingNegara({
   selected,
   token,
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   let [datacountry, setdataCountry] = useState(data);
-  let [datasetting, setdataSetting] = useState(selected);
   let slider = useRef();
   const pushselected = () => {
     if (selected?.countries) {
@@ -70,6 +45,7 @@ export default function SettingNegara({
       },
     },
   });
+
   const hasil = async (detail, selected) => {
     if (token || token !== "") {
       try {
@@ -91,7 +67,6 @@ export default function SettingNegara({
             response.data.update_country_settings.code === 200 ||
             response.data.update_country_settings.code === "200"
           ) {
-            // _Refresh();
             selected.countries = detail;
             await AsyncStorage.setItem("setting", JSON.stringify(selected));
             var tempData = [...datacountry];
@@ -127,7 +102,6 @@ export default function SettingNegara({
       animationOut="slideOutRight"
       isVisible={modals}
       style={{
-        // backgroundColor: 'rgba(0, 0, 0, 0.25)',
         justifyContent: "flex-end",
         alignItems: "center",
         alignSelf: "center",
@@ -147,11 +121,9 @@ export default function SettingNegara({
             alignSelf: "flex-start",
             alignItems: "center",
             alignContent: "center",
-            // justifyContent: 'center'
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            // marginBottom: 20,
             marginTop: Platform.OS === "ios" ? 0 : -20,
           }}
         >
@@ -176,11 +148,8 @@ export default function SettingNegara({
         <View
           style={{
             width: Dimensions.get("screen").width,
-            // height: '100%',
             height: Dimensions.get("screen").height,
             backgroundColor: "white",
-            // paddingTop: 20,
-            // paddingHorizontal: 20,
             paddingBottom: 20,
           }}
         >
@@ -209,11 +178,16 @@ export default function SettingNegara({
                   >
                     <View
                       style={{
-                        borderWidth: 0.5,
                         marginRight: 15,
+                        elevation: 1,
                       }}
                     >
-                      <IdFlag width={30} height={20} />
+                      <FunIcon
+                        icon={item && item.flag ? item.flag : "w-fog"}
+                        height={30}
+                        width={42}
+                        style={{}}
+                      />
                     </View>
                     <Text size="description">{item.name}</Text>
                   </View>

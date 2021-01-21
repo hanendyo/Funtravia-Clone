@@ -23,17 +23,15 @@ import { Next, Help, Arrowbackwhite } from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
 import Count_Notification from "../../component/Count_Notification";
 import { useTranslation } from "react-i18next";
-import { Button, Text } from "../../component";
+import { Button, Text, Truncate } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 
-const { width, height } = Dimensions.get("screen");
-
 export default function MyAccount(props) {
-  const { t, i18n } = useTranslation();
+  const { width } = Dimensions.get("screen");
+  const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [count, setCount] = useState(1);
-  const screenWidth = Dimensions.get("window").width;
 
   const HeaderComponent = {
     headerTransparent: true,
@@ -51,6 +49,7 @@ export default function MyAccount(props) {
     headerLeftContainerStyle: {
       marginLeft: 10,
     },
+
     headerLeft: () => (
       <Button
         text={""}
@@ -65,6 +64,7 @@ export default function MyAccount(props) {
         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
       </Button>
     ),
+
     headerRight: () => (
       <View
         style={{
@@ -75,9 +75,7 @@ export default function MyAccount(props) {
         }}
       >
         <Pressable
-          onPress={() =>
-            props.navigation.navigate("profilesetting", { datauser: datauser })
-          }
+          onPress={() => props.navigation.navigate("settings")}
           style={{
             marginHorizontal: 10,
           }}
@@ -173,6 +171,7 @@ export default function MyAccount(props) {
       props.navigation.navigate("Home");
     }
   };
+
   const [
     LoadUserProfile,
     { data: datauser, loading: loadinguser, error: erroruser },
@@ -204,11 +203,11 @@ export default function MyAccount(props) {
       setCount(count + 1);
     }
   };
+
   useEffect(() => {
     loadAsync();
     LoadUserProfile();
     NotifCount();
-    // setParams();
   }, []);
 
   const arrayShadow = {
@@ -237,7 +236,7 @@ export default function MyAccount(props) {
           end={{ x: 1, y: 1 }}
           style={{
             height: 130,
-            width: screenWidth,
+            width: width,
           }}
         ></LinearGradient>
       </View>
@@ -365,9 +364,16 @@ export default function MyAccount(props) {
           >
             <Text>{t("emailAddress")}</Text>
             <Text>
-              {datauser && datauser.user_profile.email
-                ? datauser.user_profile.email
-                : null}
+              <Truncate
+                text={
+                  datauser &&
+                  datauser.user_profile &&
+                  datauser.user_profile.email
+                    ? datauser.user_profile.email
+                    : "Not Set"
+                }
+                length={30}
+              />
             </Text>
           </View>
           <View
