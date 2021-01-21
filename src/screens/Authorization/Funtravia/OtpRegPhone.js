@@ -79,8 +79,7 @@ export default function OtpRegPhone(props) {
   };
 
   const resendOTP = async () => {
-    let phoneNumber =
-      props.navigation.getParam("region") + props.navigation.getParam("number");
+    let phoneNumber = props.route.params.region + props.route.params.number;
     try {
       let response = await resend({
         variables: {
@@ -111,7 +110,7 @@ export default function OtpRegPhone(props) {
     try {
       let response = await mutation({
         variables: {
-          user_id: props.navigation.getParam("userId"),
+          user_id: props.route.params.userId,
           otp_code: OTP,
         },
       });

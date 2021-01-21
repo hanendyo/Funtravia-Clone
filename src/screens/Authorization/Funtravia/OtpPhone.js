@@ -99,7 +99,7 @@ export default function OtpPhone(props) {
       let pushTkn = await AsyncStorage.getItem("token");
       let response = await mutation({
         variables: {
-          user_id: props.navigation.getParam("userId"),
+          user_id: props.route.params.userId,
           otp_code: value,
           token: pushTkn,
         },

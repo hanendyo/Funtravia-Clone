@@ -135,8 +135,7 @@ export default function OtpLoginPhone(props) {
     // return false;
     // // hold sebelum graph
 
-    let phoneNumber =
-      props.navigation.getParam("region") + props.navigation.getParam("number");
+    let phoneNumber = props.route.params.region + props.route.params.number;
     try {
       let response = await resend({
         variables: {

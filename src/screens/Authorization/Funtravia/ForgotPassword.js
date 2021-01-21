@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     width: Dimensions.get("window").width / 1.2,
     fontSize: 14,
+    padding: 0,
   },
   centeredView: {
     flex: 1,

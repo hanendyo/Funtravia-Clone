@@ -119,6 +119,7 @@ export default function RegisterPhone(props) {
               customTextStyle={{
                 width: Dimensions.get("screen").width * 0.6,
                 fontSize: 18,
+                padding: 0,
               }}
               keyboardType="number-pad"
               label={t("phoneNumber")}
