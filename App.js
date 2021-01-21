@@ -57,27 +57,6 @@ function App() {
 	};
 
 	const initializeFunction = async () => {
-		await messaging().onMessage((remoteMessage) => {
-			console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
-		});
-
-		await messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-			console.log("Message handled in the background!", remoteMessage);
-		});
-
-		await messaging().onNotificationOpenedApp((remoteMessage) => {
-			console.log("Background", remoteMessage);
-			navigation.navigate(remoteMessage.data.type);
-		});
-
-		await messaging()
-			.getInitialNotification()
-			.then((remoteMessage) => {
-				if (remoteMessage) {
-					console.log("Open", remoteMessage.notification);
-					// setInitialRoute(remoteMessage.data.type);
-				}
-			});
 		let token = await AsyncStorage.getItem("access_token");
 		await setAccessToken(token);
 		await setLoading(false);
@@ -87,6 +66,13 @@ function App() {
 	useEffect(() => {
 		checkPermission();
 		initializeFunction();
+		messaging().onMessage((notification) => {
+			console.log("FG_NF", notification);
+		});
+
+		messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+			console.log("BG_NF", remoteMessage);
+		});
 	}, []);
 
 	return (
