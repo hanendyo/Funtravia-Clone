@@ -1,6 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  HeaderBackground,
+} from "@react-navigation/stack";
 import ChatScreen from "../../screens/Chat";
 import FeedScreen from "../../screens/Feed";
 import HomeScreen from "../../screens/Home";
@@ -60,6 +63,23 @@ function Feedstackscreen() {
         component={FeedScreen}
         options={{
           headerShown: true,
+        }}
+      />
+    </Feedstack.Navigator>
+  );
+}
+
+const MyAccountStack = createStackNavigator();
+function MyAccountStackScreen() {
+  return (
+    <Feedstack.Navigator initialRouteName={"AccountScreen"}>
+      <Feedstack.Screen
+        name="AccountScreen"
+        component={MyAccount}
+        options={{
+          // headerShown: tr  ue,
+          headerTransparent: false,
+          headerTitle: "",
         }}
       />
     </Feedstack.Navigator>
@@ -133,10 +153,8 @@ export default function BottomNavigationItems() {
       />
       <MainNavigator.Screen
         name="AccountScreen"
-        component={MyAccount}
+        component={MyAccountStackScreen}
         options={{
-          headerShown: true,
-          headerTransparent: false,
           tabBarLabel: "Account",
           tabBarIcon: ({ focused }) =>
             focused ? (
