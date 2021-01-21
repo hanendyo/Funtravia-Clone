@@ -551,7 +551,12 @@ export default function about(props) {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       <ScrollView
         nestedScrollEnabled={true}
         showsHorizontalScrollIndicator={false}

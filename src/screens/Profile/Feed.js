@@ -240,7 +240,7 @@ export default function myfeed(props) {
   };
 
   const viewcomment = (datas) => {
-    props.navigation.navigate("Comments", {
+    props.navigation.push("Comments", {
       datauser: datauser,
       data: datas,
       token: token,
@@ -250,7 +250,10 @@ export default function myfeed(props) {
 
   return (
     <FlatList
-      style={{ flex: 1 }}
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
       data={data}
       initialScrollIndex={index}
       // focusable

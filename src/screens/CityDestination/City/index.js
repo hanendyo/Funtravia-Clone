@@ -8,8 +8,10 @@ import {
   Animated,
   ScrollView,
   FlatList,
-  AsyncStorage,
+  Alert,
 } from "react-native";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
@@ -1317,7 +1319,12 @@ export default function CityDetail(props) {
   }, []);
 
   return (
-    <View style={styles.main}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       <Loading show={loadings} />
       {/* <NavigationEvents onDidFocus={() => refresh()} /> */}
       <View style={{ height: 55 }}></View>

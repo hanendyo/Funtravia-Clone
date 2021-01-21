@@ -8,8 +8,10 @@ import {
   Animated,
   ScrollView,
   FlatList,
-  AsyncStorage,
+  Alert,
 } from "react-native";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
@@ -753,7 +755,7 @@ export default function Country(props) {
                       width: "100%",
                       flexWrap: "wrap",
                       flexDirection: "row",
-                      justifyContent: "space-between",
+                      justifyContent: "flex-start",
                     }}
                   >
                     {render.city && render.city.length > 0
@@ -972,7 +974,12 @@ export default function Country(props) {
   };
 
   return (
-    <View style={styles.main}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       <Loading show={loadings} />
       <View style={{ height: 55 }}></View>
       <ScrollView

@@ -34,7 +34,7 @@ export default function Post({ props, token, data, datauser }) {
           renderItem={({ item, index }) => (
             <TouchableOpacity
               onPress={() =>
-                props.navigation.navigate("myfeed", {
+                props.navigation.push("myfeed", {
                   token: token,
                   data: data,
                   index: index,
