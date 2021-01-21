@@ -56,7 +56,7 @@ export default function MyAccount(props) {
   let [count, setCount] = useState(1);
 
   const HeaderComponent = {
-    headerTransparent: true,
+    // headerTransparent: true,
     headerTitle: t("profileSetting"),
     // headerMode: ,
     headerStyle: {
@@ -71,7 +71,7 @@ export default function MyAccount(props) {
       fontFamily: "lato-reg",
       fontSize: 14,
       color: "white",
-      alignSelf: "center",
+      // alignSelf: "center",
     },
 
     headerLeftContainerStyle: {
@@ -84,25 +84,32 @@ export default function MyAccount(props) {
           flexDirection: "row",
           alignSelf: "center",
           justifyContent: "center",
+          marginVertical: 15,
         }}
       >
-        <Image
+        <Pressable
+          onPress={() => props.navigation.navigate("settings")}
           style={{
-            width: 25,
-            height: 25,
+            // flexDirection: 'row',
             marginHorizontal: 10,
           }}
-          imageStyle={{
-            width: 25,
-            height: 25,
-            resizeMode: "contain",
-          }}
-          isTouchable={true}
-          onPress={() => props.navigation.navigate("settings")}
-          source={setting_icon}
-        />
+        >
+          <Image
+            style={{
+              width: 25,
+              height: 25,
+              marginHorizontal: 10,
+            }}
+            imageStyle={{
+              width: 25,
+              height: 25,
+              resizeMode: "contain",
+            }}
+            source={setting_icon}
+          />
+        </Pressable>
         <Pressable
-          onPress={() => props.navigation.navigate("Inbox")}
+          onPress={() => props.navigation.navigate("Notification")}
           style={{
             // flexDirection: 'row',
             marginHorizontal: 10,

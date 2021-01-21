@@ -32,7 +32,7 @@ import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
-import setCurrency from "../../../graphQL/Mutation/Setting/setCurrency";
+import setCurrency from "../../graphQL/Mutation/Setting/setCurrency";
 
 export default function SettingCurrency({
   modals,

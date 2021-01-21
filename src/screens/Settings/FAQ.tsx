@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, FlatList, Modal, Dimensions } from "react-native";
-import { CustomText, CustomImage } from "../../../core-ui";
-import { normalize } from "../../../const/PixelRatio";
+
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import getParams from "../../graphQL/Query/Params/getParams";
+
 import { WebView } from "react-native-webview";
 import { back_arrow_white } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
@@ -52,7 +51,7 @@ FAQ.navigationOptions = ({ navigation }) => ({
 
 const styles = StyleSheet.create({
   main: {
-    width: Dimensions.get("window").width - normalize(15),
+    width: Dimensions.get("window").width - 15,
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center",

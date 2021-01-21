@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, FlatList, Modal, Dimensions } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import getParams from "../../graphQL/Query/Params/getParams";
 import { WebView } from "react-native-webview";
 import { back_arrow_white } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";

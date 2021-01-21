@@ -31,7 +31,7 @@ export default function About(props) {
 }
 const styles = StyleSheet.create({
   main: {
-    width: Dimensions.get("window").width - normalize(15),
+    width: Dimensions.get("window").width - 15,
     margin: 10,
     alignContent: "flex-start",
     alignItems: "flex-start",

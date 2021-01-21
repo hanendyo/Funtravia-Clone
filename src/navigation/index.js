@@ -51,6 +51,15 @@ import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryF
 import { MyAccount } from "../screens/MyAccount";
 import detailStack from "../screens/Destination/DetailDestination/Index";
 import Notification from "../screens/Notification";
+import {
+  NotificationSettings,
+  FAQ,
+  About,
+  Privacy,
+  SettingsAkun,
+  Settings,
+  Bantuan,
+} from "../screens/Settings";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -251,6 +260,24 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={ItineraryPlaning}
           options={{ headerShown: false }}
         />
+
+        <Tab.Screen
+          name="PracticalInformation"
+          component={PracticalInformation}
+          options={{ headerShown: false }}
+        />
+
+        <Tab.Screen
+          name="GrouRoom"
+          component={GroupChat}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="Notification"
+          component={Notification}
+          options={{ headerShown: false }}
+        />
+
         <Tab.Screen
           name="AllDestination"
           component={AllDestination}
@@ -281,17 +308,13 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={Abouts}
           options={{ headerShown: false }}
         />
-        <Tab.Screen
-          name="PracticalInformation"
-          component={PracticalInformation}
-          options={{ headerShown: false }}
-        />
+
         <Tab.Screen
           name="SearchPage"
           component={SearchPage}
           options={{
             headerTitle: "",
-            headerTransparent: true,
+            headerTransparent: false,
           }}
         />
         <Tab.Screen
@@ -299,7 +322,7 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={SearchTab}
           options={{
             headerTitle: "",
-            headerTransparent: true,
+            headerTransparent: false,
           }}
         />
         <Tab.Screen
@@ -356,6 +379,60 @@ export default function MainStackNavigator({ authorizeToken }) {
           name="detailStack"
           component={detailStack}
           options={{ headerShown: false }}
+          name="settings"
+          component={Settings}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SettingsAkun"
+          component={SettingsAkun}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="bantuan"
+          component={Bantuan}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="FAQ"
+          component={FAQ}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="about"
+          component={About}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="privacy"
+          component={Privacy}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="notificationsettings"
+          component={NotificationSettings}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
         />
       </Tab.Navigator>
     </NavigationContainer>

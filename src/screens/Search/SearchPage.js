@@ -56,7 +56,6 @@ export default function SearchPage(props, { navigation, route }) {
   const HeaderComponent = {
     headerTitle: "Search",
     headerStyle: {
-      backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
