@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  StyleSheet,
   ImageBackground,
   Dimensions,
   Alert,
@@ -10,8 +9,8 @@ import {
   Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
+import LinearGradient from "react-native-linear-gradient";
 import {
   Akunsaya,
   default_image,
@@ -19,78 +18,67 @@ import {
   BelPutih,
 } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
-
-import { gql } from "apollo-boost";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
-
-import Profile from "./Profile";
-import FunProfile from "./FunProfile";
-import {
-  Arrowbackwhite,
-  Bottom,
-  OptionsVertWhite,
-  Sampul,
-  Next,
-  Help,
-} from "../../assets/svg";
+import { Next, Help, Arrowbackwhite } from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
-// import Loading from "../../component/index";
-// import {
-//   NavigationEvents,
-//   StackActions,
-//   NavigationActions,
-// } from "react-navigation";
 import Count_Notification from "../../component/Count_Notification";
 import { useTranslation } from "react-i18next";
 import { Button, Text } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
-import LinearGradient from "react-native-linear-gradient";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function MyAccount(props) {
   const { t, i18n } = useTranslation();
-  // console.log(i18n.language);
   let [token, setToken] = useState("");
   let [count, setCount] = useState(1);
+  const screenWidth = Dimensions.get("window").width;
 
   const HeaderComponent = {
-    // headerTransparent: true,
-    headerTitle: t("profileSetting"),
-    // headerMode: ,
+    headerTransparent: true,
+    headerTitle: t("myProfile"),
     headerStyle: {
-      // zIndex: 20,
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      // justifyContent: 'center',
-      // flex:1,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
-      // alignSelf: "center",
     },
-
     headerLeftContainerStyle: {
       marginLeft: 10,
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
     headerRight: () => (
       <View
         style={{
           flex: 1,
           flexDirection: "row",
-          alignSelf: "center",
+          alignItems: "center",
           justifyContent: "center",
-          marginVertical: 15,
         }}
       >
         <Pressable
-          onPress={() => props.navigation.navigate("settings")}
+          onPress={() =>
+            props.navigation.navigate("profilesetting", { datauser: datauser })
+          }
           style={{
-            // flexDirection: 'row',
             marginHorizontal: 10,
           }}
         >
@@ -109,9 +97,8 @@ export default function MyAccount(props) {
           />
         </Pressable>
         <Pressable
-          onPress={() => props.navigation.navigate("Notification")}
+          onPress={() => props.navigation.navigate("Inbox")}
           style={{
-            // flexDirection: 'row',
             marginHorizontal: 10,
           }}
         >
@@ -149,7 +136,7 @@ export default function MyAccount(props) {
             >
               <Text
                 style={{
-                  fontFamily: "Lato-Bold",
+                  fontFamily: "lato-bold",
                   fontSize: 9,
                   color: "white",
                   alignSelf: "center",
@@ -211,10 +198,7 @@ export default function MyAccount(props) {
     },
   });
 
-  // console.log(datanotif);
-  // let no = 1;
   const getcount = (e) => {
-    console.log(e);
     if (count < 2) {
       props.navigation.setParams({ count_notif: e });
       setCount(count + 1);
@@ -226,6 +210,7 @@ export default function MyAccount(props) {
     NotifCount();
     // setParams();
   }, []);
+
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
@@ -234,7 +219,7 @@ export default function MyAccount(props) {
   };
 
   return (
-    <View>
+    <View style={{ zIndex: -1 }}>
       <View
         style={{
           flexDirection: "row",
@@ -243,7 +228,7 @@ export default function MyAccount(props) {
           top: 0,
           justifyContent: "space-between",
           width: width,
-          zIndex: 10,
+          zIndex: 1,
         }}
       >
         <LinearGradient
@@ -252,7 +237,7 @@ export default function MyAccount(props) {
           end={{ x: 1, y: 1 }}
           style={{
             height: 130,
-            width: width,
+            width: screenWidth,
           }}
         ></LinearGradient>
       </View>
@@ -396,9 +381,9 @@ export default function MyAccount(props) {
           >
             <Text>{t("phoneNumber")}</Text>
             <Text>
-              {datauser && datauser.user_profile.phone
+              {datauser && datauser.user_profile && datauser.user_profile.phone
                 ? datauser.user_profile.phone
-                : "No Set"}
+                : "Not Set"}
             </Text>
           </View>
         </View>
@@ -436,10 +421,11 @@ export default function MyAccount(props) {
               }}
             >
               <Text type="bold" style={{ marginRight: 10 }}>
-                {datauser && datauser.user_profile.count_wishlist
-                  ? datauser.user_profile.count_wishlist
-                  : 0}
-                {" Wishlist"}
+                {datauser &&
+                datauser.user_profile &&
+                datauser.user_profile.count_wishlist
+                  ? datauser.user_profile.count_wishlist + " " + "Wishlist"
+                  : "No Wishlist"}
               </Text>
               <Next width={15} height={15} />
             </View>
@@ -465,16 +451,25 @@ export default function MyAccount(props) {
               }}
             >
               <Text type="bold" style={{ marginRight: 10 }}>
-                {datauser && datauser.user_profile.count_itinerary_favorit
-                  ? datauser.user_profile.count_itinerary_favorit
-                  : 0}
-                {" Itinerary"}
+                {datauser &&
+                datauser.user_profile &&
+                datauser.user_profile.count_itinerary_favorit
+                  ? datauser.user_profile.count_itinerary_favorit +
+                    " " +
+                    "Itinerary"
+                  : "No Itinerary"}
               </Text>
               <Next width={15} height={15} />
             </View>
           </Ripple>
         </View>
-        <View style={{ flexDirection: "row", margin: 10 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingVertical: 20,
+            paddingHorizontal: 20,
+          }}
+        >
           <Help />
           <Text type="bold" style={{ marginLeft: 5 }}>
             Help
@@ -490,10 +485,7 @@ export default function MyAccount(props) {
             variant="bordered"
             color="secondary"
             text={t("logout")}
-            // onPress={() => props.navigation.navigate('Login')}
             onPress={async () => {
-              // await AsyncStorage.setItem('access_token', '');
-              // props.navigation.navigate('splash');
               let pushTkn = await AsyncStorage.getItem("token");
               try {
                 let response = await mutationlogout({
@@ -506,10 +498,8 @@ export default function MyAccount(props) {
                   throw new Error("Error Input");
                 }
 
-                // console.log(response);
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
-                  // await AsyncStorage.clear();
                   props.navigation.navigate("SplashScreen");
                 }
               } catch (error) {
@@ -518,14 +508,12 @@ export default function MyAccount(props) {
                 props.navigation.navigate("SplashScreen");
               }
             }}
-            // text='Search'
             style={{
               width: Dimensions.get("window").width - 20,
               marginVertical: 10,
             }}
           ></Button>
         </View>
-        {/* <View style={{ height: 1000, backgroundColor: 'red' }}></View> */}
       </ScrollView>
     </View>
   );

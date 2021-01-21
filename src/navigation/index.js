@@ -366,16 +366,6 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
-          name="GrouRoom"
-          component={GroupChat}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
-          name="Notification"
-          component={Notification}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
           name="detailStack"
           component={detailStack}
           options={{ headerShown: false }}
