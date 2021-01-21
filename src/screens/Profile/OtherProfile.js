@@ -405,10 +405,10 @@ export default function OtherProfile(props) {
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[5]}
         nestedScrollEnabled
-        style={{ marginTop: 55 }}
-        // refreshControl={
-        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        // }
+        style={{ marginTop: 55, backgroundColor: "white" }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         onScroll={Animated.event([
           {
             nativeEvent: { contentOffset: { y: scrollY } },

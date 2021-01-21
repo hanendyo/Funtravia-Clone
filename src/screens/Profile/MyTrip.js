@@ -18,9 +18,6 @@ import { useTranslation } from "react-i18next";
 import { Text } from "../../component";
 export default function MyTrip({ props, token, data, position }) {
   const { t, i18n } = useTranslation();
-  const createPost = () => {
-    props.navigation.navigate("Post");
-  };
 
   const getdate = (start, end) => {
     start = start.split(" ");

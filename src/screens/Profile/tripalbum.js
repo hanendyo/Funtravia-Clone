@@ -178,6 +178,8 @@ export default function tripalbum(props) {
       style={{
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
+
+        backgroundColor: "white",
       }}
       contentContainerStyle={{ paddingBottom: 20 }}
       showsVerticalScrollIndicator={false}

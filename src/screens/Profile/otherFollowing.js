@@ -246,7 +246,12 @@ export default function Following(props) {
   };
 
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       <Loading show={loadin} />
       <FlatList
         contentContainerStyle={{

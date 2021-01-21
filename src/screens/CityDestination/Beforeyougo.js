@@ -282,31 +282,3 @@ export default function Beforeyougo(props) {
     </SafeAreaView>
   );
 }
-
-Beforeyougo.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Before You Go",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Bold",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: (
-    <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </TouchableOpacity>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 20,
-  },
-  headerRight: <View style={{ flexDirection: "row" }}></View>,
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});

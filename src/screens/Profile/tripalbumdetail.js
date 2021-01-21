@@ -202,7 +202,12 @@ export default function tripalbumdetail(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       <Loading show={loading} />
       {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}
 

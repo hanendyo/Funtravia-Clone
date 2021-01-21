@@ -295,9 +295,8 @@ export default function Comments(props) {
   return (
     <View
       style={{
-        backgroundColor: "#FFFFFF",
-
         flex: 1,
+        backgroundColor: "white",
       }}
     >
       <View

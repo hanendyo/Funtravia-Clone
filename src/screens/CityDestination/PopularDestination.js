@@ -206,13 +206,10 @@ export default function AllDestination(props) {
                             ? { uri: value.image.image }
                             : default_image
                         }
-                        style={[
-                          styles.ImageView,
-                          {
-                            width: (Dimensions.get("window").width - 20) / 2,
-                            height: Dimensions.get("window").width * 0.24,
-                          },
-                        ]}
+                        style={{
+                          width: (Dimensions.get("window").width - 20) / 2,
+                          height: Dimensions.get("window").width * 0.24,
+                        }}
                         imageStyle={[
                           styles.Image,
                           {
@@ -275,7 +272,12 @@ export default function AllDestination(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
       {dataFillter && dataFillter.continent_type.length ? (
         <Fillter
           fillter={dataFillter.continent_type}
@@ -297,3 +299,43 @@ export default function AllDestination(props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  ImageView: {
+    height: Dimensions.get("window").width * 0.47 - 16,
+
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    overflow: "hidden",
+
+    backgroundColor: "rgba(20,20,20,0.4)",
+  },
+  Image: {
+    resizeMode: "cover",
+    height: Dimensions.get("window").width * 0.47 - 16,
+
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    overflow: "hidden",
+  },
+  destinationMainImageContainer: {
+    width: "100%",
+    height: 150,
+    borderRadius: 10,
+  },
+  destinationMainImage: {
+    resizeMode: "cover",
+    borderRadius: 10,
+    backgroundColor: "black",
+  },
+  destinationImageView: {
+    width: (Dimensions.get("window").width - 37) / 3,
+    height: (Dimensions.get("window").width - 37) / 3,
+    marginRight: 5,
+    borderRadius: 10,
+  },
+  destinationImage: {
+    resizeMode: "cover",
+    borderRadius: 10,
+  },
+});

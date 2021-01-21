@@ -254,6 +254,7 @@ export default function MyProfile(props) {
       <ScrollView
         style={{
           marginTop: 50,
+          backgroundColor: "white",
         }}
         contentContainerStyle={{}}
         showsVerticalScrollIndicator={false}
