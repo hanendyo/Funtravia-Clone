@@ -73,7 +73,6 @@ export default function RenderAccount({ data, token, props }) {
           justifyContent: "center",
           flexDirection: "row",
           flexWrap: "wrap",
-          // borderWidth: 1,
         }}
       >
         <View
@@ -81,7 +80,6 @@ export default function RenderAccount({ data, token, props }) {
             height: "100%",
             alignItems: "flex-start",
             justifyContent: "center",
-            // borderWidth: 1,
           }}
         >
           {token !== null && token !== "" ? (
@@ -139,9 +137,10 @@ export default function RenderAccount({ data, token, props }) {
               flex: 1,
               justifyContent: "center",
               alignContent: "center",
-              marginLeft: 10,
+              // marginLeft: 10,
               height: "100%",
               width: "100%",
+              // borderWidth: 1,
             }}
           >
             <View

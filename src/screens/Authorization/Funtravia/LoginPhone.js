@@ -34,8 +34,8 @@ export default function LoginPhone(props) {
   let [number, setNumber] = useState("");
   let [selector, setSelector] = useState(false);
 
-  if (props.navigation.getParam("error")) {
-    Alert.alert("Failed", props.navigation.getParam("error"));
+  if (props.route.params.error) {
+    Alert.alert("Failed", props.route.params.error);
   }
 
   const requestNumber = () => {
@@ -130,6 +130,7 @@ export default function LoginPhone(props) {
               customTextStyle={{
                 width: Dimensions.get("screen").width * 0.6,
                 fontSize: 18,
+                padding: 0,
               }}
               keyboardType="number-pad"
               label={t("phoneNumber")}

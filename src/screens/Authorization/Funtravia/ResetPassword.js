@@ -199,5 +199,6 @@ const styles = StyleSheet.create({
   inputTextStyle: {
     width: Dimensions.get("window").width / 1.2,
     fontSize: 15,
+    padding: 0,
   },
 });

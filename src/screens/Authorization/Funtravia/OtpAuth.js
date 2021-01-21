@@ -24,7 +24,7 @@ export default function OtpAuth(props) {
   let [token, setToken] = useState("");
   const [resend] = useMutation(RESEND);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
-  let email = props.navigation.getParam("email");
+  let email = props.route.params.email;
   let [state, setState] = useState({
     onebox: null,
     twobox: null,
@@ -82,7 +82,7 @@ export default function OtpAuth(props) {
     try {
       let response = await mutation({
         variables: {
-          user_id: props.navigation.getParam("userId"),
+          user_id: props.route.params.userId,
           otp_code:
             state.onebox +
             state.twobox +
@@ -164,8 +164,8 @@ export default function OtpAuth(props) {
       console.log("response");
       let response = await resend({
         variables: {
-          user_id: props.navigation.getParam("userId"),
-          email: props.navigation.getParam("email"),
+          user_id: props.route.params.userId,
+          email: props.route.params.email,
         },
       });
       console.log(response);
