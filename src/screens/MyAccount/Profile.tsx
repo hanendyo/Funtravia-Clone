@@ -163,7 +163,7 @@ export default function Profile({ props, token, setCont }) {
         >
           <Text
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
           >
@@ -236,7 +236,7 @@ export default function Profile({ props, token, setCont }) {
         >
           <Text
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
           >
@@ -248,7 +248,7 @@ export default function Profile({ props, token, setCont }) {
           </Text>
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               // fontSize: (10),
               color: "#a7a7a7",
             }}
@@ -266,7 +266,7 @@ export default function Profile({ props, token, setCont }) {
         >
           <Text
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
           >
@@ -278,7 +278,7 @@ export default function Profile({ props, token, setCont }) {
           </Text>
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               // fontSize: (10),
               color: "#a7a7a7",
             }}
@@ -296,7 +296,7 @@ export default function Profile({ props, token, setCont }) {
         >
           <Text
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
           >
@@ -308,7 +308,7 @@ export default function Profile({ props, token, setCont }) {
           </Text>
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               // fontSize: (10),
               color: "#a7a7a7",
             }}
@@ -326,7 +326,7 @@ export default function Profile({ props, token, setCont }) {
         >
           <Text
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
           >
@@ -338,7 +338,7 @@ export default function Profile({ props, token, setCont }) {
           </Text>
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               // fontSize: (10),
               color: "#a7a7a7",
             }}
@@ -356,7 +356,7 @@ export default function Profile({ props, token, setCont }) {
         >
           <Text
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
           >
@@ -368,7 +368,7 @@ export default function Profile({ props, token, setCont }) {
           </Text>
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               // fontSize: (10),
               color: "#a7a7a7",
             }}

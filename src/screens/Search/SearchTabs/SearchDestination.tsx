@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   boldFont: {
-    fontFamily: "lato-bold",
+    fontFamily: "Lato-Bold",
     fontSize: 10,
   },
   languageButton: {

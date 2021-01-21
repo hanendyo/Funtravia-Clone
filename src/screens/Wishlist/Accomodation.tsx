@@ -169,7 +169,7 @@ export default function Accommodation({ dataPrev }) {
                       >
                         <Text
                           style={{
-                            fontFamily: "lato-bold",
+                            fontFamily: "Lato-Bold",
                             fontSize: 16,
                             // color: '#D7598F',
                             // marginLeft: (5),
@@ -203,7 +203,7 @@ export default function Accommodation({ dataPrev }) {
                         </View>
                         <Text
                           style={{
-                            fontFamily: "lato-bold",
+                            fontFamily: "Lato-Bold",
                             fontSize: 10,
                             color: "#209FAE",
                           }}
@@ -212,7 +212,7 @@ export default function Accommodation({ dataPrev }) {
                         </Text>
                         <Text
                           style={{
-                            fontFamily: "lato-reg",
+                            fontFamily: "Lato-Regular",
                             fontSize: 10,
                             // color: '#209FAE',
                           }}
@@ -272,7 +272,7 @@ export default function Accommodation({ dataPrev }) {
                     />
                     <Text
                       style={{
-                        fontFamily: "lato-reg",
+                        fontFamily: "Lato-Regular",
                         color: "#464646",
                         marginLeft: 3,
                       }}
@@ -296,7 +296,7 @@ export default function Accommodation({ dataPrev }) {
                     >
                       <Text
                         style={{
-                          fontFamily: "lato-bold",
+                          fontFamily: "Lato-Bold",
                           fontSize: 18,
                           color: "#209FAE",
                           // marginLeft: (5),
@@ -316,7 +316,7 @@ export default function Accommodation({ dataPrev }) {
                     >
                       <Text
                         style={{
-                          fontFamily: "lato-reg",
+                          fontFamily: "Lato-Regular",
                           fontSize: 10,
                           // color: '#D7598F',
                           // marginLeft: (5),
@@ -357,7 +357,7 @@ export default function Accommodation({ dataPrev }) {
             >
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   marginHorizontal: 3,
                   marginLeft: 20,
@@ -367,7 +367,7 @@ export default function Accommodation({ dataPrev }) {
               </Text>
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   marginHorizontal: 3,
                 }}
@@ -389,7 +389,7 @@ export default function Accommodation({ dataPrev }) {
             >
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   marginHorizontal: 3,
                 }}
@@ -398,7 +398,7 @@ export default function Accommodation({ dataPrev }) {
               </Text>
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   marginHorizontal: 3,
                   marginRight: 20,
@@ -421,7 +421,7 @@ export default function Accommodation({ dataPrev }) {
             >
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   marginHorizontal: 3,
                 }}
@@ -430,7 +430,7 @@ export default function Accommodation({ dataPrev }) {
               </Text>
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   fontSize: 10,
                   marginHorizontal: 3,
                   marginRight: 20,
@@ -551,7 +551,7 @@ export default function Accommodation({ dataPrev }) {
 												}}>
 												<Text
 													style={{
-														fontFamily: 'lato-bold',
+														fontFamily: "Lato-Bold",
 														fontSize: (20),
 														// color: '#D7598F',
 														// marginLeft: (5),
@@ -598,7 +598,7 @@ export default function Accommodation({ dataPrev }) {
 											/>
 											<Text
 												style={{
-													fontFamily: 'lato-reg',
+													fontFamily: "Lato-Regular",
 													// fontSize: (16),
 													// color: '#D7598F',
 													marginLeft: (3),
@@ -627,7 +627,7 @@ export default function Accommodation({ dataPrev }) {
 													}}>
 													<Text
 														style={{
-															fontFamily: 'lato-bold',
+															fontFamily: "Lato-Bold",
 															fontSize: (18),
 															color: '#209FAE',
 															// marginLeft: (5),
@@ -645,7 +645,7 @@ export default function Accommodation({ dataPrev }) {
 													}}>
 													<Text
 														style={{
-															fontFamily: 'lato-reg',
+															fontFamily: "Lato-Regular",
 															fontSize: (10),
 															// color: '#D7598F',
 															// marginLeft: (5),
@@ -666,7 +666,7 @@ export default function Accommodation({ dataPrev }) {
 												}}>
 												<Text
 													style={{
-														fontFamily: 'lato-bold',
+														fontFamily: "Lato-Bold",
 														fontSize: (10),
 														color: '#209FAE',
 													}}>
@@ -674,7 +674,7 @@ export default function Accommodation({ dataPrev }) {
 												</Text>
 												<Text
 													style={{
-														fontFamily: 'lato-reg',
+														fontFamily: "Lato-Regular",
 														fontSize: (10),
 														// color: '#209FAE',
 													}}>
@@ -711,7 +711,7 @@ export default function Accommodation({ dataPrev }) {
 								}}>
 								<Text
 									style={{
-										fontFamily: 'lato-reg',
+										fontFamily: "Lato-Regular",
 										fontSize: (10),
 										marginHorizontal: (3),
 										marginLeft: (20),
@@ -720,7 +720,7 @@ export default function Accommodation({ dataPrev }) {
 								</Text>
 								<Text
 									style={{
-										fontFamily: 'lato-reg',
+										fontFamily: "Lato-Regular",
 										fontSize: (10),
 										marginHorizontal: (3),
 									}}>
@@ -741,7 +741,7 @@ export default function Accommodation({ dataPrev }) {
 								}}>
 								<Text
 									style={{
-										fontFamily: 'lato-reg',
+										fontFamily: "Lato-Regular",
 										fontSize: (10),
 										marginHorizontal: (3),
 									}}>
@@ -749,7 +749,7 @@ export default function Accommodation({ dataPrev }) {
 								</Text>
 								<Text
 									style={{
-										fontFamily: 'lato-reg',
+										fontFamily: "Lato-Regular",
 										fontSize: (10),
 										marginHorizontal: (3),
 										marginRight: (20),
@@ -771,7 +771,7 @@ export default function Accommodation({ dataPrev }) {
 								}}>
 								<Text
 									style={{
-										fontFamily: 'lato-reg',
+										fontFamily: "Lato-Regular",
 										fontSize: (10),
 										marginHorizontal: (3),
 									}}>
@@ -779,7 +779,7 @@ export default function Accommodation({ dataPrev }) {
 								</Text>
 								<Text
 									style={{
-										fontFamily: 'lato-reg',
+										fontFamily: "Lato-Regular",
 										fontSize: (10),
 										marginHorizontal: (3),
 										marginRight: (20),

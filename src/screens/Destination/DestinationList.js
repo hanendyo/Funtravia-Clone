@@ -42,7 +42,7 @@ export default function DestinationList(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -586,49 +586,5 @@ const styles = StyleSheet.create({
   Image: {
     resizeMode: "cover",
     borderRadius: 10,
-  },
-});
-
-DestinationList.navigationOptions = (props) => ({
-  headerTitle: "Destination",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "lato-reg",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => props.navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-  headerRight: (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-      }}
-    ></View>
-  ),
-  headerRightStyle: {
-    // paddingRight: 20,
   },
 });

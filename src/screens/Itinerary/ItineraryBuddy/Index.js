@@ -47,7 +47,7 @@ export default function ItineraryBuddy(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -401,7 +401,7 @@ export default function ItineraryBuddy(props) {
                   {/* <Text
 										style={{
 											fontSize: 12,
-											fontFamily: 'Lato-Bold',
+											fontFamily: "Lato-Bold",
 											marginLeft: 20,
 											color: '#209fae',
 										}}>
@@ -441,7 +441,7 @@ export default function ItineraryBuddy(props) {
                       size="small"
                       type="bold"
                       style={{
-                        // fontFamily: 'Lato-Bold',
+                        // fontFamily: "Lato-Bold",
                         // fontSize: 12,
                         color: "#209fae",
                       }}
@@ -501,7 +501,7 @@ export default function ItineraryBuddy(props) {
                           type="bold"
                           style={{
                             // fontSize: 14,
-                            // fontFamily: 'Lato-Bold',
+                            // fontFamily: "Lato-Bold",
                             marginLeft: 20,
                             opacity: value.isconfrim !== true ? 0.3 : 1,
                           }}
@@ -514,7 +514,7 @@ export default function ItineraryBuddy(props) {
                             type="bold"
                             style={{
                               // fontSize: 12,
-                              // fontFamily: 'Lato-Bold',
+                              // fontFamily: "Lato-Bold",
                               marginHorizontal: 10,
                               color: "#D75995",
                             }}
@@ -527,7 +527,7 @@ export default function ItineraryBuddy(props) {
                             type="bold"
                             style={{
                               // fontSize: 12,
-                              // fontFamily: 'Lato-Bold',
+                              // fontFamily: "Lato-Bold",
                               marginHorizontal: 10,
                               color: "#D75995",
                             }}
@@ -601,7 +601,7 @@ export default function ItineraryBuddy(props) {
                     type="bold"
                     style={{
                       // fontSize: 14,
-                      // fontFamily: 'Lato-Bold',
+                      // fontFamily: "Lato-Bold",
                       marginLeft: 20,
                     }}
                   >
@@ -611,7 +611,7 @@ export default function ItineraryBuddy(props) {
                   {/* <Text
 										style={{
 											fontSize: 12,
-											fontFamily: 'Lato-Bold',
+											fontFamily: "Lato-Bold",
 											marginLeft: 20,
 											color: '#209fae',
 										}}>
@@ -637,7 +637,7 @@ export default function ItineraryBuddy(props) {
                     type="bold"
                     style={{
                       // fontSize: 14,
-                      // fontFamily: 'Lato-Bold',
+                      // fontFamily: "Lato-Bold",
                       // marginLeft: 20,
                       color: "#209fae",
                     }}
@@ -696,7 +696,7 @@ export default function ItineraryBuddy(props) {
                           type="bold"
                           style={{
                             // fontSize: 14,
-                            // fontFamily: 'Lato-Bold',
+                            // fontFamily: "Lato-Bold",
                             marginLeft: 20,
                             opacity: value.isconfrim !== true ? 0.3 : 1,
                           }}
@@ -707,7 +707,7 @@ export default function ItineraryBuddy(props) {
 													<Text
 														style={{
 															fontSize: 12,
-															fontFamily: 'Lato-Bold',
+															fontFamily: "Lato-Bold",
 															marginHorizontal: 10,
 															color: '#D75995',
 														}}>
@@ -737,7 +737,7 @@ export default function ItineraryBuddy(props) {
                         size="small"
                         type="bold"
                         style={{
-                          // fontFamily: 'Lato-Bold',
+                          // fontFamily: "Lato-Bold",
                           // fontSize: 12,
                           color: "#209fae",
                         }}
@@ -751,7 +751,7 @@ export default function ItineraryBuddy(props) {
                         size="small"
                         type="bold"
                         style={{
-                          // fontFamily: 'Lato-Bold',
+                          // fontFamily: "Lato-Bold",
                           // fontSize: 12,
                           color: "#209fae",
                         }}
@@ -804,7 +804,7 @@ export default function ItineraryBuddy(props) {
                     type="bold"
                     style={{
                       // fontSize: 14,
-                      // fontFamily: 'Lato-Bold',
+                      // fontFamily: "Lato-Bold",
                       marginLeft: 20,
                     }}
                   >
@@ -814,7 +814,7 @@ export default function ItineraryBuddy(props) {
                   {/* <Text
 										style={{
 											fontSize: 12,
-											fontFamily: 'Lato-Bold',
+											fontFamily: "Lato-Bold",
 											marginLeft: 20,
 											color: '#209fae',
 										}}>
@@ -842,7 +842,7 @@ export default function ItineraryBuddy(props) {
                       type="bold"
                       style={{
                         // fontSize: 14,
-                        // fontFamily: 'Lato-Bold',
+                        // fontFamily: "Lato-Bold",
                         // marginLeft: 20,
                         color: "#209fae",
                       }}
@@ -856,7 +856,7 @@ export default function ItineraryBuddy(props) {
                       size="small"
                       type="bold"
                       style={{
-                        // fontFamily: 'Lato-Bold',
+                        // fontFamily: "Lato-Bold",
                         // fontSize: 12,
                         color: "#209fae",
                       }}
@@ -941,7 +941,7 @@ export default function ItineraryBuddy(props) {
               type="bold"
               style={{
                 // fontSize: 14,
-                // fontFamily: 'Lato-Bold',
+                // fontFamily: "Lato-Bold",
                 marginLeft: 20,
               }}
             >

@@ -29,7 +29,7 @@ export default function AllDestination(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -149,7 +149,7 @@ export default function AllDestination(props) {
                       shadowColor: "#000",
                       elevation: 5,
                       opacity: 1,
-                      fontFamily: "lato-bold",
+                      fontFamily: "Lato-Bold",
                       fontSize: 21,
                     }}
                   >
@@ -235,7 +235,7 @@ export default function AllDestination(props) {
                         <Text
                           style={{
                             letterSpacing: 0.5,
-                            fontFamily: "lato-reg",
+                            fontFamily: "Lato-Regular",
                             fontSize: 20,
                             marginBottom: 2,
                             color: "#3E3E3E",
@@ -245,7 +245,7 @@ export default function AllDestination(props) {
                         </Text>
                         <Text
                           style={{
-                            fontFamily: "lato-reg",
+                            fontFamily: "Lato-Regular",
                             fontSize: 14,
                             marginBottom: 2,
                             color: "#3E3E3E",
@@ -255,7 +255,7 @@ export default function AllDestination(props) {
                         </Text>
                         <Text
                           style={{
-                            fontFamily: "lato-reg",
+                            fontFamily: "Lato-Regular",
                             color: "#3E3E3E",
                             marginBottom: 2,
                             fontSize: 14,
@@ -297,75 +297,3 @@ export default function AllDestination(props) {
     </View>
   );
 }
-
-AllDestination.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Popular Destination",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "lato-reg",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: (
-    <Button
-      text={""}
-      size="medium"
-      type="circle"
-      variant="transparent"
-      onPress={() => navigation.goBack()}
-      style={{
-        height: 55,
-      }}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-
-  headerRight: (
-    <View style={{ flexDirection: "row" }}>
-      <TouchableOpacity
-        style={{ marginRight: 20 }}
-        onPress={() => Alert.alert("coming soon")}
-      >
-        <OptionsVertWhite height={20} width={20} />
-      </TouchableOpacity>
-    </View>
-  ),
-});
-
-const styles = StyleSheet.create({
-  main: {
-    paddingTop: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-  },
-  ImageView: {
-    marginRight: 5,
-    borderRadius: 3,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-  },
-  Image: {
-    resizeMode: "cover",
-    borderRadius: 3,
-  },
-  destinationMainImageContainer: {
-    width: "100%",
-    borderRadius: 5,
-    backgroundColor: "rgba(20,20,20,0.4)",
-  },
-  destinationMainImage: {
-    resizeMode: "cover",
-    borderRadius: 5,
-    backgroundColor: "black",
-  },
-});

@@ -327,7 +327,7 @@ export default function ListRenderAccom({
                 size="small"
                 type="regular"
                 style={{
-                  // fontFamily: 'lato-reg',
+                  // fontFamily: "Lato-Regular",
                   color: "#A4A4A4",
                   marginLeft: 3,
                   // fontSize: 10,
@@ -354,7 +354,7 @@ export default function ListRenderAccom({
                   type="bold"
                   size="title"
                   style={{
-                    // fontFamily: 'lato-bold',
+                    // fontFamily: "Lato-Bold",
                     // fontSize: 18,
                     color: "#2763AA",
                     // marginLeft: (5),
@@ -392,7 +392,7 @@ export default function ListRenderAccom({
                   type="bold"
                   size="small"
                   style={{
-                    // fontFamily: 'lato-bold',
+                    // fontFamily: "Lato-Bold",
                     // fontSize: 10,
                     color: "#2763AA",
                   }}
@@ -403,7 +403,7 @@ export default function ListRenderAccom({
                   size="small"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 10,
                     color: "#209FAE",
                   }}
@@ -444,7 +444,7 @@ export default function ListRenderAccom({
               size="small"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 10,
                 marginHorizontal: 3,
                 marginLeft: 20,
@@ -456,7 +456,7 @@ export default function ListRenderAccom({
               size="small"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 10,
                 marginHorizontal: 3,
               }}
@@ -480,7 +480,7 @@ export default function ListRenderAccom({
               size="small"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 10,
                 marginHorizontal: 3,
               }}
@@ -491,7 +491,7 @@ export default function ListRenderAccom({
               size="small"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 10,
                 marginHorizontal: 3,
                 marginRight: 20,
@@ -516,7 +516,7 @@ export default function ListRenderAccom({
               size="small"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 10,
                 marginHorizontal: 3,
               }}
@@ -527,7 +527,7 @@ export default function ListRenderAccom({
               size="small"
               type="regular"
               style={{
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 10,
                 marginHorizontal: 3,
                 marginRight: 20,

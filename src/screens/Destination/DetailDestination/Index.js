@@ -201,7 +201,7 @@ export default function DestinationDetail(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -344,7 +344,7 @@ export default function DestinationDetail(props) {
                   // fontSize: 18,
                   color: "#FFFFFF",
                   // fontWeight: 'bold',
-                  // fontFamily: 'lato-reg',
+                  // fontFamily: "Lato-Regular",
                 }}
                 type="bold"
                 size="label"
@@ -413,8 +413,8 @@ export default function DestinationDetail(props) {
             heading="General Information"
             tabStyle={{ backgroundColor: "white" }}
             activeTabStyle={{ backgroundColor: "white" }}
-            textStyle={{ fontFamily: "lato-bold", color: "#6C6C6C" }}
-            activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+            textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
+            activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
           >
             <Info
               data={data && data.destinationById ? data.destinationById : null}
@@ -425,8 +425,8 @@ export default function DestinationDetail(props) {
             heading="Article"
             tabStyle={{ backgroundColor: "white" }}
             activeTabStyle={{ backgroundColor: "white" }}
-            textStyle={{ fontFamily: "lato-bold", color: "#6C6C6C" }}
-            activeTextStyle={{ fontFamily: "lato-bold", color: "#209FAE" }}
+            textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
+            activeTextStyle={{ fontFamily: "Lato-Bold", color: "#209FAE" }}
           >
             <Article
               data={data && data.destinationById ? data.destinationById : null}
@@ -478,7 +478,7 @@ export default function DestinationDetail(props) {
 						/>
 						<Text
 							style={{
-								fontFamily: 'lato-bold',
+								fontFamily: "Lato-Bold",
 								color: '#565656',
 								marginVertical: 10,
 								marginRight: 20,
@@ -524,7 +524,7 @@ export default function DestinationDetail(props) {
 						}}>
 						<Text
 							style={{
-								fontFamily: 'lato-bold',
+								fontFamily: "Lato-Bold",
 								color: '#FFFFFF',
 								marginVertical: 10,
 								marginHorizontal: 20,

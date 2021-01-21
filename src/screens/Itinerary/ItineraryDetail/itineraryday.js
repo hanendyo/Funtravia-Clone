@@ -603,7 +603,7 @@ export default function ItineraryDay({
             type="bold"
             style={
               {
-                // fontFamily: 'Lato-Bold',
+                // fontFamily: "Lato-Bold",
                 // fontSize: 16,
               }
             }

@@ -28,7 +28,7 @@ export default function about(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -123,7 +123,7 @@ export default function about(props) {
                 type="bold"
                 style={{
                   // fontSize: 24,
-                  // fontFamily: 'lato-bold',
+                  // fontFamily: "Lato-Bold",
                   color: "#464646",
                 }}
               >
@@ -135,7 +135,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 16,
                     color: "#464646",
                   }}
@@ -153,7 +153,7 @@ export default function about(props) {
               style={{
                 paddingHorizontal: 20,
                 marginTop: 20,
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 16,
                 textAlign: "justify",
                 color: "#464646",
@@ -187,7 +187,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#464646",
                   }}
@@ -196,7 +196,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -208,7 +208,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#464646",
                   }}
@@ -217,7 +217,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -238,7 +238,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#464646",
                   }}
@@ -247,7 +247,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -259,7 +259,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#464646",
                   }}
@@ -268,7 +268,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -300,7 +300,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#d1d1d1",
                     marginBottom: 10,
@@ -310,7 +310,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -331,7 +331,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#d1d1d1",
                     marginBottom: 10,
@@ -341,7 +341,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -362,7 +362,7 @@ export default function about(props) {
                   size="label"
                   type="regular"
                   style={{
-                    // fontFamily: 'lato-reg',
+                    // fontFamily: "Lato-Regular",
                     // fontSize: 14,
                     color: "#d1d1d1",
                     marginBottom: 5,
@@ -372,7 +372,7 @@ export default function about(props) {
                 </Text>
                 <Text
                   style={{
-                    fontFamily: "lato-bold",
+                    fontFamily: "Lato-Bold",
                     fontSize: 16,
                     marginBottom: 5,
                     color: "#464646",
@@ -391,7 +391,7 @@ export default function about(props) {
                 type="bold"
                 size="description"
                 style={{
-                  // fontFamily: 'lato-bold',
+                  // fontFamily: "Lato-Bold",
                   // fontSize: 14,
                   // color: '#d1d1d1',
                   marginTop: 15,
@@ -420,7 +420,7 @@ export default function about(props) {
                           type="bold"
                           size="description"
                           style={{
-                            // fontFamily: 'lato-bold',
+                            // fontFamily: "Lato-Bold",
                             // fontSize: 14,
                             color: "#464646",
                             // color: '#d1d1d1',
@@ -434,7 +434,7 @@ export default function about(props) {
                           type="regular"
                           size="description"
                           style={{
-                            // fontFamily: 'lato-reg',
+                            // fontFamily: "Lato-Regular",
                             // fontSize: 14,
                             color: "#464646",
                             // color: '#d1d1d1',
@@ -467,7 +467,7 @@ export default function about(props) {
                 type="bold"
                 size="description"
                 style={{
-                  // fontFamily: 'lato-bold',
+                  // fontFamily: "Lato-Bold",
                   // fontSize: 14,
                   // color: '#d1d1d1',
                   color: "#464646",
@@ -505,7 +505,7 @@ export default function about(props) {
                           type="bold"
                           size="small"
                           style={{
-                            fontFamily: "lato-bold",
+                            fontFamily: "Lato-Bold",
                             fontSize: 10,
                             width: "70%",
                             color: "#464646",
@@ -515,7 +515,7 @@ export default function about(props) {
                         </Text>
                         <Text
                           style={{
-                            fontFamily: "lato-reg",
+                            fontFamily: "Lato-Regular",
                             fontSize: 10,
                             color: "#464646",
                             width: "70%",

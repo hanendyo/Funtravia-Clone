@@ -3,10 +3,10 @@ import { View, Image, Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 type Props = {
-  tittle: String;
-  content: String;
-  maps: Image;
-  handleVisibility: () => void;
+  tittle: String,
+  content: String,
+  maps: Image,
+  handleVisibility: () => void,
 };
 const dimensions = Dimensions.get("window");
 const imageHeight = Math.round((dimensions.width * 9) / 16);
@@ -23,7 +23,7 @@ export default function AboutInformation({ tittle, content, maps }) {
           backgroundColor: "transparent",
           // fontSize: (18),
           marginVertical: 10,
-          fontFamily: "lato-bold",
+          fontFamily: "Lato-Bold",
           // color: '#464646',
         }}
       >
@@ -34,7 +34,7 @@ export default function AboutInformation({ tittle, content, maps }) {
         type="regular"
         style={{
           textAlign: "justify",
-          // fontFamily: 'lato-reg',
+          // fontFamily: "Lato-Regular",
           fontSize: 13,
           // color: '#464646',
         }}

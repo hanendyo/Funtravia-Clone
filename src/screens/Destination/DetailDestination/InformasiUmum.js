@@ -40,7 +40,7 @@ export default function InformasiUmum({ data, tittle }) {
             // fontSize: (18),
             marginVertical: 10,
             paddingLeft: 20,
-            // fontFamily: 'lato-bold',
+            // fontFamily: "Lato-Bold",
             color: "#FFFFFF",
           }}
         >
@@ -70,7 +70,7 @@ export default function InformasiUmum({ data, tittle }) {
               style={{
                 paddingHorizontal: 5,
                 color: "#464646",
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: (13),
               }}
             >
@@ -101,7 +101,7 @@ export default function InformasiUmum({ data, tittle }) {
               style={{
                 paddingHorizontal: 5,
                 color: "#464646",
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: (13),
               }}
             >
@@ -131,7 +131,7 @@ export default function InformasiUmum({ data, tittle }) {
               style={{
                 paddingHorizontal: 5,
                 color: "#464646",
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: (13),
               }}
             >
@@ -161,7 +161,7 @@ export default function InformasiUmum({ data, tittle }) {
               style={{
                 paddingHorizontal: 5,
                 color: "#464646",
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: (13),
               }}
             >
@@ -190,7 +190,7 @@ export default function InformasiUmum({ data, tittle }) {
             style={{
               paddingHorizontal: 5,
               color: "#464646",
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: (13),
             }}
           >

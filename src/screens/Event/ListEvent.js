@@ -43,7 +43,7 @@ export default function ListEvent(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
     },
@@ -285,7 +285,7 @@ export default function ListEvent(props) {
           >
             <Text
               style={{
-                fontFamily: "lato-reg",
+                fontFamily: "Lato-Regular",
                 color: "#464646",
                 textAlign: "center",
                 fontSize: 12,
@@ -387,7 +387,7 @@ export default function ListEvent(props) {
 						}}>
 						<Text
 							style={{
-								fontFamily: 'lato-bold',
+								fontFamily: "Lato-Bold",
 								color: 'white',
 								textAlign: 'right',
 								marginRight: 10,
@@ -416,7 +416,7 @@ export default function ListEvent(props) {
           <Text
             onPress={() => eventdetail(item)}
             style={{
-              fontFamily: "lato-bold",
+              fontFamily: "Lato-Bold",
               color: "#464646",
               fontSize: 17,
               // marginBottom: (5),
@@ -460,7 +460,7 @@ export default function ListEvent(props) {
               />
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   color: "#464646",
                   fontSize: 11,
                   paddingRight: 20,
@@ -497,7 +497,7 @@ export default function ListEvent(props) {
               />
               <Text
                 style={{
-                  fontFamily: "lato-reg",
+                  fontFamily: "Lato-Regular",
                   color: "#464646",
                   fontSize: 11,
                   width: "100%",
@@ -532,7 +532,7 @@ export default function ListEvent(props) {
         >
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               color: "white",
               marginVertical: 4,
               fontSize: 13,
@@ -565,7 +565,7 @@ export default function ListEvent(props) {
         >
           <Text
             style={{
-              fontFamily: "lato-reg",
+              fontFamily: "Lato-Regular",
               color: "#0095A7",
               marginVertical: 4,
               fontSize: 13,

@@ -46,7 +46,7 @@ export default function DetailLokasi({ tittle, data }) {
             // fontSize: (18),
             marginVertical: 10,
             paddingLeft: 20,
-            // fontFamily: 'lato-bold',
+            // fontFamily: "Lato-Bold",
             color: "#FFFFFF",
           }}
         >
@@ -75,7 +75,7 @@ export default function DetailLokasi({ tittle, data }) {
               // fontSize: (13),
               paddingHorizontal: 5,
               color: "#464646",
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
             }}
           >
             {data ? data.address : null}
@@ -104,7 +104,7 @@ export default function DetailLokasi({ tittle, data }) {
               // fontSize: (13),
               paddingHorizontal: 5,
               color: "#464646",
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
             }}
           >
             {t("viewMap")}

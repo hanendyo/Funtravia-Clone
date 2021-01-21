@@ -2,9 +2,9 @@ import React from "react";
 import { View, Image, Dimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 type Props = {
-  tittle: String;
-  content: String;
-  handleVisibility: () => void;
+  tittle: String,
+  content: String,
+  handleVisibility: () => void,
 };
 const dimensions = Dimensions.get("window");
 const barWidth = dimensions.width - 60;
@@ -32,7 +32,7 @@ export default function HargaTiketMasuk({ tittle, weekday, weekend }) {
             // fontSize: (18),
             marginVertical: 10,
             paddingLeft: 20,
-            // fontFamily: 'lato-bold',
+            // fontFamily: "Lato-Bold",
             color: "#FFFFFF",
           }}
         >
@@ -45,7 +45,7 @@ export default function HargaTiketMasuk({ tittle, weekday, weekend }) {
           size="description"
           style={{
             textAlign: "justify",
-            // fontFamily: 'lato-reg',
+            // fontFamily: "Lato-Regular",
             // fontSize: (13),
             color: "#464646",
             marginVertical: 5,
@@ -58,7 +58,7 @@ export default function HargaTiketMasuk({ tittle, weekday, weekend }) {
           size="description"
           style={{
             textAlign: "justify",
-            // fontFamily: 'lato-reg',
+            // fontFamily: "Lato-Regular",
             // fontSize: (13),
             color: "#464646",
             marginVertical: 5,

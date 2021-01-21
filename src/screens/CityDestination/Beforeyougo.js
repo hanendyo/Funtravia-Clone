@@ -103,7 +103,7 @@ export default function Beforeyougo(props) {
               type="regular"
               style={{
                 width: "80%",
-                // fontFamily: 'lato-reg',
+                // fontFamily: "Lato-Regular",
                 // fontSize: 14,
                 textAlign: "justify",
                 color: "#6c6c6c",
@@ -144,7 +144,7 @@ export default function Beforeyougo(props) {
                 size="description"
                 type="regular"
                 style={{
-                  // fontFamily: 'lato-reg',
+                  // fontFamily: "Lato-Regular",
                   // fontSize: 14,
                   color: "#6c6c6c",
                 }}
@@ -164,7 +164,7 @@ export default function Beforeyougo(props) {
                 size="description"
                 type="regular"
                 style={{
-                  // fontFamily: 'lato-reg',
+                  // fontFamily: "Lato-Regular",
                   // fontSize: 14,
                   color: "#6c6c6c",
                 }}
@@ -189,7 +189,7 @@ export default function Beforeyougo(props) {
             size="description"
             type="regular"
             style={{
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: 14,
               textAlign: "justify",
               color: "#6c6c6c",
@@ -215,7 +215,7 @@ export default function Beforeyougo(props) {
             size="description"
             type="regular"
             style={{
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: 14,
               textAlign: "justify",
               color: "#6c6c6c",
@@ -241,7 +241,7 @@ export default function Beforeyougo(props) {
             size="description"
             type="regular"
             style={{
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: 14,
               textAlign: "justify",
               color: "#6c6c6c",
@@ -267,7 +267,7 @@ export default function Beforeyougo(props) {
             size="description"
             type="regular"
             style={{
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: 14,
               textAlign: "justify",
               color: "#6c6c6c",
@@ -293,7 +293,7 @@ Beforeyougo.navigationOptions = ({ navigation }) => ({
     fontSize: 50,
   },
   headerTitleStyle: {
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Bold",
     fontSize: 14,
     color: "white",
   },

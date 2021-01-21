@@ -22,7 +22,7 @@ export default function ArticleView({ data }) {
                     style={{
                       // fontSize: (18),
                       marginVertical: 10,
-                      // fontFamily: 'lato-bold',
+                      // fontFamily: "Lato-Bold",
                       color: "#464646",
                     }}
                   >
@@ -33,7 +33,7 @@ export default function ArticleView({ data }) {
                     size="description"
                     style={{
                       textAlign: "justify",
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       // fontSize: (13),
                       color: "#464646",
                     }}
@@ -60,7 +60,7 @@ export default function ArticleView({ data }) {
                     style={{
                       // fontSize: (18),
                       marginVertical: 10,
-                      // fontFamily: 'lato-bold',
+                      // fontFamily: "Lato-Bold",
                       color: "#464646",
                     }}
                   >
@@ -71,7 +71,7 @@ export default function ArticleView({ data }) {
                     size="description"
                     style={{
                       textAlign: "justify",
-                      // fontFamily: 'lato-reg',
+                      // fontFamily: "Lato-Regular",
                       // fontSize: (13),
                       color: "#464646",
                     }}
@@ -90,7 +90,7 @@ export default function ArticleView({ data }) {
             size="title"
             style={{
               textAlign: "justify",
-              // fontFamily: 'lato-reg',
+              // fontFamily: "Lato-Regular",
               // fontSize: (13),
               color: "#464646",
             }}

@@ -42,7 +42,7 @@ export default function FeedList({
   dataRender,
   Refresh,
   refreshing,
-  token
+  token,
 }) {
   let [datafeed, SetDataFeed] = useState(dataRender);
   let [selectedOption, SetOption] = useState({});
@@ -87,7 +87,6 @@ export default function FeedList({
       },
     },
   });
-
 
   const _liked = async (id) => {
     // console.log(id);
@@ -447,7 +446,7 @@ export default function FeedList({
             {/* <Text
 							style={{
 								textAlign: 'left',
-								fontFamily: 'Lato-Bold',
+								fontFamily: "Lato-Bold",
 								fontSize: 14,
 								color: '#616161',
 								marginRight: 5,
@@ -619,9 +618,9 @@ export default function FeedList({
             }}
             onPress={() => {
               setModalmenu(false),
-              props.navigation.push("EditPost", {
-                datapost: selectedOption,
-              });
+                props.navigation.push("EditPost", {
+                  datapost: selectedOption,
+                });
             }}
           >
             <Text size="description" type="regular" style={{}}>
@@ -633,8 +632,7 @@ export default function FeedList({
               paddingVertical: 10,
             }}
             onPress={() => {
-              setModalmenu(false),
-              setModalhapus(true);
+              setModalmenu(false), setModalhapus(true);
             }}
           >
             <Text
@@ -793,7 +791,7 @@ export default function FeedList({
         )}
         keyExtractor={(item) => item.id_post}
         extraData={liked}
-        refreshing={refreshing} 
+        refreshing={refreshing}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }

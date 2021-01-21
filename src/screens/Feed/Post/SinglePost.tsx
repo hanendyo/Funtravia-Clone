@@ -23,7 +23,13 @@ import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
 // import { NavigationEvents } from "react-navigation";
 // import * as Permissions from "expo-permissions";
-import { Text, Button, CustomImage, Loading, Truncate } from "../../../component";
+import {
+  Text,
+  Button,
+  CustomImage,
+  Loading,
+  Truncate,
+} from "../../../component";
 
 import {
   Comment,
@@ -727,7 +733,7 @@ export default function SinglePost(props) {
             {/* <Text
 							style={{
 								textAlign: 'left',
-								fontFamily: 'Lato-Bold',
+								fontFamily: "Lato-Bold",
 								fontSize: 14,
 								color: '#616161',
 								marginRight: 5,
@@ -870,7 +876,7 @@ SinglePost.navigationOptions = ({ navigation }) => {
       fontSize: 50,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Regular",
+      fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
       alignSelf: "center",
@@ -904,7 +910,7 @@ SinglePost.navigationOptions = ({ navigation }) => {
 						style={{
 							color: '#FFF',
 							// fontWeight: 'bold',
-							fontFamily: 'Lato-Bold',
+							fontFamily: "Lato-Bold",
 							fontSize: 14,
 							marginHorizontal: 10,
 							marginVertical: 10,

@@ -32,7 +32,7 @@ export default function Fasilitas({ data, tittle }) {
             fontSize: 18,
             marginVertical: 10,
             paddingLeft: 20,
-            fontFamily: "lato-bold",
+            fontFamily: "Lato-Bold",
             color: "#FFFFFF",
           }}
         >

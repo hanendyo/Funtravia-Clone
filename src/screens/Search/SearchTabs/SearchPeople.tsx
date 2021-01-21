@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
   buttonTextStyle: {
     fontSize: 12,
-    fontFamily: "lato-reg",
+    fontFamily: "Lato-Regular",
     color: "grey",
   },
 });
