@@ -431,6 +431,7 @@ export default function ItineraryPopuler(props) {
       </View>
     );
   };
+
   {
     /* ======================================= Render All ====================================================*/
   }
@@ -438,7 +439,7 @@ export default function ItineraryPopuler(props) {
     <View style={{ flex: 1 }}>
       <Loading show={loadingPopuler} />
 
-      <ScrollView stickyHeaderIndices={[0]}>
+      <ScrollView stickyHeaderIndices={[0]} removeClippedSubviews={false}>
         <View
           style={{
             shadowColor: "gray",

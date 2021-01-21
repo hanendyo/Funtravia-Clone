@@ -1,5 +1,6 @@
 import { Thumbnail, View } from "native-base";
-import { Dimensions, Image, FlatList, AsyncStorage, Alert } from "react-native";
+import { Dimensions, Image, FlatList, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { default_image } from "../../assets/png";
 import React, { useEffect, useRef, useState } from "react";
