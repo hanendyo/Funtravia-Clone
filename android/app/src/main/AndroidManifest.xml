@@ -13,7 +13,7 @@
         android:allowBackup="false"
         android:theme="@style/AppTheme"
         android:requestLegacyExternalStorage="true">
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notify_two" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:drawable="@color/notification" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg"/>
@@ -33,10 +33,16 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" 
             android:exported="true">
+            <!--Universal Link-->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.catergory.BROWSABLE" />
+                <data android:scheme="http" android:host="link.funtravia.com" />
+                <data android:scheme="https" android:host="link.funtravia.com" />
+            </intent-filter>
+            <!--Universal Link End-->
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
-    <application>
-</application>
-
 </manifest>
