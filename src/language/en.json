@@ -433,5 +433,7 @@
   "like": "Like",
   "likeMany": "Likes",
   "NoComment": "No Comment",
-  "AddComment": "Add Comment"
+  "AddComment": "Add Comment",
+  "AddEmail": "Add Email",
+  "ChangeEmail": "Change Email"
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import { View, Dimensions, StyleSheet, Platform } from "react-native";
+import { View, Dimensions, StyleSheet, Platform, Alert } from "react-native";
+import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { OptionsVertBlack, Arrowbackwhite } from "../../assets/svg";
 import CountryList from "../../graphQL/Query/Countries/CountryList";
@@ -63,19 +64,13 @@ export default function SettingsAkun(props) {
       },
     },
   });
-  // console.log(datas);
+  console.log(datas);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-
+    await setToken(tkn);
     await GetDataSetting();
-    // if (datas && datas.setting_data) {
-    // 	await AsyncStorage.setItem(
-    // 		'setting_country',
-    // 		JSON.stringify(datas.setting_data.countries),
-    // 	);
-    // }
-
+    await GetCountryList();
+    await GetCurrencyList();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -92,23 +87,98 @@ export default function SettingsAkun(props) {
   };
 
   useEffect(() => {
-    loadAsync();
-    GetCountryList();
-    GetCurrencyList();
     props.navigation.setOptions(HeaderComponent);
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
+
+  const [modalEmail, setModalEmail] = useState(false);
+  const [modalPhone, setModalPhone] = useState(false);
+
   return (
     <ScrollView
       style={{
         backgroundColor: "#F6F6F6",
       }}
     >
+      {/*Modal Email */}
+      <View style={styles.centeredView}>
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalEmail}
+          onRequestClose={() => setModalEmail(false)}
+          onBackdropPress={() => {
+            setModalEmail(false);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text
+                style={{ color: "#D75995", marginBottom: 20 }}
+                size="label"
+                type="bold"
+              >
+                Delete Email
+              </Text>
+              <Text
+                type="bold"
+                size="label"
+                onPress={() => {
+                  setModalEmail(false),
+                    props.navigation.navigate("SettingEmail");
+                }}
+              >
+                Change Email
+              </Text>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
+      {/*Modal Phone */}
+      <View style={styles.centeredView}>
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalPhone}
+          onRequestClose={() => setModalPhone(false)}
+          onBackdropPress={() => {
+            setModalPhone(false);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text
+                style={{ color: "#D75995", marginBottom: 20 }}
+                size="label"
+                type="bold"
+              >
+                Delete Phone Number
+              </Text>
+              <Text
+                type="bold"
+                size="label"
+                onPress={() => {
+                  setModalPhone(!modalPhone);
+                }}
+              >
+                Change Phone Number
+              </Text>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
       {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
       <View
         style={{
@@ -309,7 +379,6 @@ export default function SettingsAkun(props) {
           marginVertical: 5,
           paddingHorizontal: 15,
           paddingVertical: 13,
-
           backgroundColor: "#FFFFFF",
           shadowColor: "gray",
           shadowOffset: { width: 0, height: 1 },
@@ -327,43 +396,63 @@ export default function SettingsAkun(props) {
         >
           {t("email")}
         </Text>
-        <Ripple
-          rippleCentered={true}
-          onPress={() => props.navigation.navigate("")}
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
+        {setting && setting.user && setting.user.email ? (
           <View
             style={{
+              justifyContent: "space-between",
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 50,
+              alignItems: "center",
             }}
           >
             <View
               style={{
-                alignContent: "flex-start",
-                justifyContent: "flex-start",
+                flexDirection: "row",
+                width: Dimensions.get("screen").width - 50,
               }}
             >
-              <Text
-                type="regular"
-                size="description"
+              <View
                 style={{
-                  alignSelf: "flex-start",
+                  alignContent: "flex-start",
+                  justifyContent: "flex-start",
                 }}
               >
-                {setting.user.email ? setting.user.email : "Not Set"}
-              </Text>
-              <Text type="regular" size="small">
-                {t("emailUsed")}
-              </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  {setting && setting.user && setting.user.email
+                    ? setting.user.email
+                    : "Not Set"}
+                </Text>
+                <Text type="regular" size="small">
+                  {t("emailUsed")}
+                </Text>
+              </View>
             </View>
+            <OptionsVertBlack
+              width={20}
+              height={20}
+              onPress={() => {
+                setModalEmail(true);
+              }}
+            />
           </View>
-          <OptionsVertBlack width={20} height={20} />
-        </Ripple>
+        ) : (
+          <Button
+            type="box"
+            size="medium"
+            color="tertiary"
+            text={t("AddEmail")}
+            onPress={() =>
+              props.navigation.navigate("SettingEmail", {
+                dataEMail: setting.user,
+              })
+            }
+          />
+        )}
       </View>
       <View
         style={{
@@ -371,7 +460,6 @@ export default function SettingsAkun(props) {
           marginVertical: 5,
           paddingHorizontal: 15,
           paddingVertical: 13,
-
           backgroundColor: "#FFFFFF",
           shadowColor: "gray",
           shadowOffset: { width: 0, height: 1 },
@@ -389,43 +477,57 @@ export default function SettingsAkun(props) {
         >
           {t("phoneNumber")}
         </Text>
-        <Ripple
-          rippleCentered={true}
-          onPress={() => props.navigation.navigate("")}
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
+        {setting && setting.user && setting.user.phone ? (
           <View
             style={{
+              justifyContent: "space-between",
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 50,
+              alignItems: "center",
             }}
           >
             <View
               style={{
-                alignContent: "flex-start",
-                justifyContent: "flex-start",
+                flexDirection: "row",
+                width: Dimensions.get("screen").width - 50,
               }}
             >
-              <Text
-                type="regular"
-                size="description"
+              <View
                 style={{
-                  alignSelf: "flex-start",
+                  alignContent: "flex-start",
+                  justifyContent: "flex-start",
                 }}
               >
-                {setting.user.phone ? setting.user.phone : "Not Set"}
-              </Text>
-              <Text type="regular" size="small">
-                {t("phoneUsed")}
-              </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  {setting.user.phone}
+                </Text>
+                <Text type="regular" size="small">
+                  {t("phoneUsed")}
+                </Text>
+              </View>
             </View>
+            <OptionsVertBlack
+              width={20}
+              height={20}
+              onPress={() => {
+                setModalPhone(true);
+              }}
+            />
           </View>
-          <OptionsVertBlack width={20} height={20} />
-        </Ripple>
+        ) : (
+          <Button
+            type="box"
+            size="medium"
+            color="tertiary"
+            text={t("addPhoneNumber")}
+            onPres={() => null}
+          />
+        )}
       </View>
     </ScrollView>
   );
@@ -478,5 +580,21 @@ const styles = StyleSheet.create({
   },
   langButtonFont: {
     fontSize: 16,
+  },
+
+  // testt modal
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 5,
+    width: Dimensions.get("screen").width * 0.7,
+    height: Dimensions.get("screen").width * 0.4,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

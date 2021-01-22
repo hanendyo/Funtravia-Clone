@@ -48,7 +48,6 @@ import Journal from "../screens/Journal/index";
 import DetailJournal from "../screens/Journal/DetailJournal";
 import ItineraryPopuler from "../screens/Itinerary/ItineraryPopular/ItineraryPopuler";
 import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
-import { MyAccount } from "../screens/MyAccount";
 import detailStack from "../screens/Destination/DetailDestination/Index";
 import Notification from "../screens/Notification";
 import {
@@ -59,6 +58,7 @@ import {
   SettingsAkun,
   Settings,
   Bantuan,
+  SettingEmail,
 } from "../screens/Settings";
 
 const Tab = createStackNavigator();
@@ -421,6 +421,14 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="notificationsettings"
           component={NotificationSettings}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SettingEmail"
+          component={SettingEmail}
           options={{
             headerTitle: "",
             headerTransparent: false,

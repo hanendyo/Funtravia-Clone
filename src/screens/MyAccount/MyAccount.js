@@ -11,27 +11,19 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
 import LinearGradient from "react-native-linear-gradient";
-import {
-  Akunsaya,
-  default_image,
-  setting_icon,
-  BelPutih,
-} from "../../assets/png";
+import { Akunsaya, default_image, SettingPutih } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { Next, Help, Arrowbackwhite } from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
-import Count_Notification from "../../component/Count_Notification";
 import { useTranslation } from "react-i18next";
 import { Button, Text, Truncate } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
-import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 
 export default function MyAccount(props) {
   const { width } = Dimensions.get("screen");
   const { t } = useTranslation();
   let [token, setToken] = useState("");
-  let [count, setCount] = useState(1);
 
   const HeaderComponent = {
     headerTransparent: true,
@@ -91,68 +83,13 @@ export default function MyAccount(props) {
               height: 25,
               resizeMode: "contain",
             }}
-            source={setting_icon}
+            source={SettingPutih}
           />
-        </Pressable>
-        <Pressable
-          onPress={() => props.navigation.navigate("Inbox")}
-          style={{
-            marginHorizontal: 10,
-          }}
-        >
-          <Image
-            style={{
-              width: 25,
-              height: 25,
-            }}
-            imageStyle={{
-              width: 25,
-              height: 25,
-              resizeMode: "contain",
-            }}
-            source={BelPutih}
-          />
-
-          {/* {props.route.params.count_notif &&
-          props.route.params.count_notif > 0 ? (
-            <View
-              style={{
-                position: "absolute",
-                top: 1,
-                right: 0,
-                backgroundColor: "#D75995",
-                borderColor: "#209FAE",
-                borderWidth: 1,
-                paddingHorizontal: 1,
-                minWidth: 15,
-                height: 15,
-                borderRadius: 8,
-                // alignItems: 'center',
-
-                // alignSelf: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "lato-bold",
-                  fontSize: 9,
-                  color: "white",
-                  alignSelf: "center",
-                }}
-              >
-                {props.route.params.count_notif}
-              </Text>
-            </View>
-          ) : null} */}
         </Pressable>
       </View>
     ),
     headerRightStyle: {},
   };
-
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-  }, []);
 
   const [mutationlogout, { loading, data, error }] = useMutation(Logout, {
     context: {
@@ -168,7 +105,9 @@ export default function MyAccount(props) {
     setToken(tkn);
     if (tkn === null) {
       Alert.alert("Silahkan Login terlebih dahulu");
-      props.navigation.navigate("Home");
+      props.navigation.navigate("HomeScreen");
+    } else {
+      await LoadUserProfile();
     }
   };
 
@@ -176,18 +115,6 @@ export default function MyAccount(props) {
     LoadUserProfile,
     { data: datauser, loading: loadinguser, error: erroruser },
   ] = useLazyQuery(Account, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    NotifCount,
-    { data: datanotif, loading: loadingnotif, error: errornotif },
-  ] = useLazyQuery(CountNotif, {
     fetchPolicy: "network-only",
     context: {
       headers: {
@@ -197,18 +124,13 @@ export default function MyAccount(props) {
     },
   });
 
-  const getcount = (e) => {
-    if (count < 2) {
-      props.navigation.setParams({ count_notif: e });
-      setCount(count + 1);
-    }
-  };
-
   useEffect(() => {
-    loadAsync();
-    LoadUserProfile();
-    NotifCount();
-  }, []);
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
@@ -241,15 +163,6 @@ export default function MyAccount(props) {
         ></LinearGradient>
       </View>
       <ScrollView style={{ backgroundColor: "#F6F6F7" }}>
-        {/* <NavigationEvents onDidFocus={() => setCount(0)} /> */}
-        {/* {datanotif && datanotif.count_notif
-					? setCount(datanotif.count_notif.count)
-				: null} */}
-        <Count_Notification
-          props={props}
-          token={token}
-          setCont={(e) => (e > 0 ? getcount(e) : null)}
-        />
         <View
           style={{
             justifyContent: "center",
@@ -506,11 +419,13 @@ export default function MyAccount(props) {
 
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
+                  await LoadUserProfile();
                   props.navigation.navigate("SplashScreen");
                 }
               } catch (error) {
                 Alert.alert("" + error);
                 await AsyncStorage.setItem("access_token", "");
+                await LoadUserProfile();
                 props.navigation.navigate("SplashScreen");
               }
             }}
