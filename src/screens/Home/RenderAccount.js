@@ -7,6 +7,7 @@ import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import User_Post from "../../graphQL/Query/Profile/post";
 import { useLazyQuery } from "@apollo/client";
+import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 
 export default function RenderAccount({ data, token, props }) {
   const { t } = useTranslation();
@@ -26,10 +27,29 @@ export default function RenderAccount({ data, token, props }) {
   });
 
   useEffect(() => {
-    if (token) {
-      LoadPost();
-    }
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", (data) => {
+      if (token) {
+        LoadPost();
+        NotifCount();
+      }
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
+  const [
+    NotifCount,
+    { data: datanotif, loading: loadingnotif, error: errornotif },
+  ] = useLazyQuery(CountNotif, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  // console.log(datanotif);
 
   const login = () => {
     props.navigation.navigate("LoginScreen");
@@ -147,6 +167,7 @@ export default function RenderAccount({ data, token, props }) {
               style={{
                 flexDirection: "row",
                 alignContent: "space-around",
+                justifyContent: "space-between",
                 width: "100%",
               }}
             >
@@ -159,19 +180,15 @@ export default function RenderAccount({ data, token, props }) {
               <Pressable
                 onPress={() => props.navigation.navigate("Notification")}
                 style={{
-                  flexDirection: "row",
-                  position: "absolute",
-                  right: 0,
+                  paddingRight: 5,
                 }}
               >
-                <View>
-                  <NotificationBlue
-                    height={20}
-                    width={20}
-                    color={"#1F99A7"}
-                    fill={"#1F99A7"}
-                  />
-                </View>
+                <NotificationBlue
+                  height={20}
+                  width={20}
+                  color={"#1F99A7"}
+                  fill={"#1F99A7"}
+                />
               </Pressable>
             </View>
 

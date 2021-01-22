@@ -1,25 +1,72 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Input,
   View,
   StyleSheet,
   KeyboardAvoidingView,
   Dimensions,
   ScrollView,
   Platform,
+  TouchableOpacity,
+  TextInput,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CustomImage } from "../../../component";
 import { sms_otp } from "../../../assets/png";
-import { useMutation, useLazyQuery } from "@apollo/react-hooks";
+import { useMutation, useLazyQuery, gql } from "@apollo/react-hooks";
 import Otpgql from "../../../graphQL/Mutation/Register/OtpAuth";
 import RESEND from "../../../graphQL/Mutation/Register/ResendOtpRegEmail";
+// import GetSetting from "../../../graphQL/Query/Settings/GetSetting";
 import { Peringatan } from "../../../component";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
+import { Input } from "native-base";
+// import GetSetting from "../../../graphQL/Query/Settings/GetSetting";
 
 export default function OtpAuth(props) {
+  const GetSetting = gql`
+    query {
+      setting_data {
+        user_id
+        countries {
+          id
+          name
+          code
+          description
+          map
+          flag
+          suggestion
+        }
+        currency {
+          id
+          name
+          code
+        }
+        aktivasi_akun
+        price_notif
+        status_order_and_payment
+        hotels_and_flight_info
+        funtravia_promo
+        review_response
+        payment_remender
+        user {
+          id
+          first_name
+          last_name
+          username
+          bio
+          email
+          phone
+          password
+          birth_date
+          gender
+          picture
+          created_at
+          updated_at
+        }
+      }
+    }
+  `;
+
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
   const [resend] = useMutation(RESEND);
@@ -56,18 +103,32 @@ export default function OtpAuth(props) {
   let refBox5 = useRef(null);
   let refBox6 = useRef(null);
 
-  const onHandleChange = (e, rName, pName, next = null, prev = null) => {
-    if (e.nativeEvent.key === "Backspace") {
-      if (state[rName] === null) {
-        prev ? prev.current.focus() : null;
-        setState({ ...state, [pName]: null });
-      } else {
-        setState({ ...state, [rName]: null });
-      }
+  const onHandleChange = async (
+    e,
+    rName,
+    pName,
+    next = null,
+    prev = null,
+    nName
+  ) => {
+    state[rName] = e;
+    if (state[rName] == "") {
+      state[rName] = null;
     } else {
       next ? next.current.focus() : null;
-      setState({ ...state, [rName]: e.nativeEvent.key });
     }
+
+    // if (e.nativeEvent.key === "Backspace") {
+    //   if (state[rName] === null) {
+    //     (await prev) ? prev.current.focus() : null;
+    //     await setState({ ...state, [pName]: null });
+    //   } else {
+    //     await setState({ ...state, [rName]: null });
+    //   }
+    // } else {
+    //   await setState({ ...state, [rName]: e.nativeEvent.key });
+    //   (await next) ? next.current.focus() : null;
+    // }
   };
 
   const settingcreate = async () => {
@@ -79,17 +140,20 @@ export default function OtpAuth(props) {
   };
 
   const signin = async () => {
+    let fcm = await AsyncStorage.getItem("FCM_TOKEN");
     try {
       let response = await mutation({
         variables: {
           user_id: props.route.params.userId,
-          otp_code:
+          otp_code: parseFloat(
             state.onebox +
-            state.twobox +
-            state.threebox +
-            state.fourbox +
-            state.fivebox +
-            state.sixbox,
+              state.twobox +
+              state.threebox +
+              state.fourbox +
+              state.fivebox +
+              state.sixbox
+          ),
+          token: fcm,
         },
       });
       // console.log(response);
@@ -105,7 +169,7 @@ export default function OtpAuth(props) {
             "setting",
             JSON.stringify(response.data.verification.data_setting)
           );
-          props.navigation.navigate("Home");
+          props.navigation.navigate("BottomStack");
 
           // settingcreate();
         } catch (error) {
@@ -186,6 +250,7 @@ export default function OtpAuth(props) {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        backgroundColor: "white",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
       // keyboardVerticalOffset={30}
@@ -200,6 +265,7 @@ export default function OtpAuth(props) {
       <ScrollView
         style={{
           paddingTop: 40,
+          backgroundColor: "white",
         }}
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[1]}
@@ -266,78 +332,224 @@ export default function OtpAuth(props) {
             style={{
               flexDirection: "row",
               paddingTop: 10,
+              width: "100%",
               justifyContent: "space-evenly",
               alignContent: "center",
               marginVertical: 25,
+              // borderWidth: 1,
             }}
           >
-            <Input
+            <TextInput
               ref={refBox1}
-              customStyle={styles.numberInputView}
+              // style={styles.numberInputView}
               autoFocus={true}
-              customTextStyle={styles.numberInputText}
+              // textStyle={styles.numberInputText}
+              style={{
+                backgroundColor: "#f3f3f3",
+                fontFamily: "Lato-Bold",
+                fontSize: 30,
+                // borderWidth: 1,
+                width: 50,
+                height: 50,
+                borderRadius: 5,
+                padding: 0,
+                textAlign: "center",
+              }}
+              text={state.onebox}
               keyboardType="number-pad"
               maxLength={1}
               blurOnSubmit={false}
-              onKeyPress={(e) => onHandleChange(e, "onebox", null, refBox2)}
+              onChangeText={(e) =>
+                onHandleChange(e, "onebox", null, refBox2, null, "twobox")
+              }
+              onKeyPress={(e) => {
+                if (e.nativeEvent.key === "Backspace") {
+                  refBox1 && refBox1.current && refBox1.current.focus();
+                }
+              }}
             />
-            <Input
+            <TextInput
               ref={refBox2}
-              customStyle={styles.numberInputView}
-              customTextStyle={styles.numberInputText}
+              style={{
+                backgroundColor: "#f3f3f3",
+                fontFamily: "Lato-Bold",
+                fontSize: 30,
+                // borderWidth: 1,
+                width: 50,
+                height: 50,
+                borderRadius: 5,
+                padding: 0,
+                textAlign: "center",
+              }}
+              text={state.twobox}
               keyboardType="number-pad"
               maxLength={1}
               blurOnSubmit={false}
-              onKeyPress={(e) =>
-                onHandleChange(e, "twobox", "onebox", refBox3, refBox1)
+              onChangeText={(e) =>
+                onHandleChange(
+                  e,
+                  "twobox",
+                  "onebox",
+                  refBox3,
+                  refBox1,
+                  "threebox"
+                )
               }
+              onKeyPress={(e) => {
+                if (
+                  e.nativeEvent.key === "Backspace" &&
+                  state["twobox"] === null
+                ) {
+                  refBox1 && refBox1.current && refBox1.current.focus();
+                }
+              }}
             />
-            <Input
+            <TextInput
               ref={refBox3}
-              customStyle={styles.numberInputView}
-              customTextStyle={styles.numberInputText}
+              style={{
+                backgroundColor: "#f3f3f3",
+                fontFamily: "Lato-Bold",
+                fontSize: 30,
+                // borderWidth: 1,
+                width: 50,
+                height: 50,
+                borderRadius: 5,
+                padding: 0,
+                textAlign: "center",
+              }}
+              text={state.threebox}
               keyboardType="number-pad"
               maxLength={1}
               blurOnSubmit={false}
-              onKeyPress={(e) =>
-                onHandleChange(e, "threebox", "twobox", refBox4, refBox2)
+              onChangeText={(e) =>
+                onHandleChange(
+                  e,
+                  "threebox",
+                  "twobox",
+                  refBox4,
+                  refBox2,
+                  "fourbox"
+                )
               }
+              onKeyPress={(e) => {
+                if (
+                  e.nativeEvent.key === "Backspace" &&
+                  state["threebox"] === null
+                ) {
+                  refBox2 && refBox2.current && refBox2.current.focus();
+                }
+              }}
             />
-            <Input
+            <TextInput
               ref={refBox4}
-              customStyle={styles.numberInputView}
-              customTextStyle={styles.numberInputText}
+              style={{
+                backgroundColor: "#f3f3f3",
+                fontFamily: "Lato-Bold",
+                fontSize: 30,
+                // borderWidth: 1,
+                width: 50,
+                height: 50,
+                borderRadius: 5,
+                padding: 0,
+                textAlign: "center",
+              }}
+              text={state.fourbox}
               keyboardType="number-pad"
               maxLength={1}
               blurOnSubmit={false}
-              onKeyPress={(e) =>
-                onHandleChange(e, "fourbox", "threebox", refBox5, refBox3)
+              onChangeText={(e) =>
+                onHandleChange(
+                  e,
+                  "fourbox",
+                  "threebox",
+                  refBox5,
+                  refBox3,
+                  "fivebox"
+                )
               }
+              onKeyPress={(e) => {
+                if (
+                  e.nativeEvent.key === "Backspace" &&
+                  state["fourbox"] === null
+                ) {
+                  refBox3 && refBox3.current && refBox3.current.focus();
+                }
+              }}
             />
-            <Input
+            <TextInput
               ref={refBox5}
-              customStyle={styles.numberInputView}
-              customTextStyle={styles.numberInputText}
+              style={{
+                backgroundColor: "#f3f3f3",
+                fontFamily: "Lato-Bold",
+                fontSize: 30,
+                // borderWidth: 1,
+                width: 50,
+                height: 50,
+                borderRadius: 5,
+                padding: 0,
+                textAlign: "center",
+              }}
+              text={state.fivebox}
               keyboardType="number-pad"
               maxLength={1}
               blurOnSubmit={false}
-              onKeyPress={(e) =>
-                onHandleChange(e, "fivebox", "fourbox", refBox6, refBox4)
+              onChangeText={(e) =>
+                onHandleChange(
+                  e,
+                  "fivebox",
+                  "fourbox",
+                  refBox6,
+                  refBox4,
+                  "sixbox"
+                )
               }
+              onKeyPress={(e) => {
+                if (
+                  e.nativeEvent.key === "Backspace" &&
+                  state["fivebox"] === null
+                ) {
+                  refBox4 && refBox4.current && refBox4.current.focus();
+                }
+              }}
             />
-            <Input
+            <TextInput
               ref={refBox6}
-              customStyle={styles.numberInputView}
-              customTextStyle={styles.numberInputText}
+              style={{
+                backgroundColor: "#f3f3f3",
+                fontFamily: "Lato-Bold",
+                fontSize: 30,
+                // borderWidth: 1,
+                width: 50,
+                height: 50,
+                borderRadius: 5,
+                padding: 0,
+                textAlign: "center",
+              }}
+              text={state.sixbox}
               keyboardType="number-pad"
               maxLength={1}
               blurOnSubmit={false}
-              onKeyPress={(e) =>
+              onChangeText={(e) =>
                 onHandleChange(e, "sixbox", "fivebox", null, refBox5)
               }
+              onKeyPress={(e) => {
+                if (
+                  e.nativeEvent.key === "Backspace" &&
+                  state["sixbox"] === null
+                ) {
+                  refBox5 && refBox5.current && refBox5.current.focus();
+                }
+              }}
             />
           </View>
-          <Button onPress={signin} text={t("verify")} />
+          <Button
+            color={"primary"}
+            onPress={() => signin()}
+            style={{
+              width: Dimensions.get("window").width - 55,
+            }}
+            text={t("verify")}
+          />
           <View
             style={{
               marginTop: 20,
@@ -364,8 +576,7 @@ export default function OtpAuth(props) {
 
 const styles = StyleSheet.create({
   main: {
-    // flex: 1,
-    marginHorizontal: 48,
+    marginHorizontal: 20,
     marginVertical: 20,
     justifyContent: "center",
     alignItems: "center",

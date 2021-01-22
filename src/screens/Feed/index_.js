@@ -96,7 +96,7 @@ export default function Feed(props) {
     setToken(tkn);
     if (tkn === null) {
       Alert.alert("Silahkan Login terlebih dahulu");
-      props.navigation.navigate("Home");
+      props.navigation.navigate("HomeScreen");
     }
     // LoadFeed();
   };

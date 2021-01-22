@@ -121,7 +121,7 @@ export default function OtpRegPhone(props) {
             "access_token",
             response.data.verification.access_token
           );
-          props.navigation.navigate("Home");
+          props.navigation.navigate("HomeScreen");
         } catch (error) {
           showAlert({
             ...aler,

@@ -42,9 +42,7 @@ export default function OtpPassword(props) {
   const { t, i18n } = useTranslation();
 
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
-  let email = props.navigation.state.params
-    ? props.navigation.state.params.email
-    : "none";
+  let email = props.route.params ? props.route.params.email : "none";
   let [state, setState] = useState({
     onebox: null,
     twobox: null,
@@ -63,7 +61,7 @@ export default function OtpPassword(props) {
   const [mutation] = useMutation(CONFIRM);
 
   const _handleResend = () => {
-    props.navigation.state.params.resend();
+    props.route.params.resend();
     showAlert({
       ...aler,
       show: true,
@@ -125,6 +123,7 @@ export default function OtpPassword(props) {
       <ScrollView
         style={{
           paddingTop: 20,
+          backgroundColor: "white",
         }}
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[1]}

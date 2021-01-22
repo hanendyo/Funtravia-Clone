@@ -85,7 +85,7 @@ export default function OtpLoginPhone(props) {
             "access_token",
             response.data.login_phone_verification.access_token
           );
-          props.navigation.navigate("Home");
+          props.navigation.navigate("HomeScreen");
         } catch (error) {
           // Alert.alert('failed to login');
           showAlert({
