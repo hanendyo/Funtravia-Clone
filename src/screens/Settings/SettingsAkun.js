@@ -1,35 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-
 import { View, Dimensions, StyleSheet, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import {
-  OptionsVertBlack,
-  Nextpremier,
-  Arrowbackwhite,
-} from "../../assets/svg";
-import SettingNegara from "./SettingNegara";
-import SettingCurrency from "./SettingCurrency";
+import { OptionsVertBlack, Arrowbackwhite } from "../../assets/svg";
 import CountryList from "../../graphQL/Query/Countries/CountryList";
 import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
 import GetSetting from "../../graphQL/Query/Settings/GetSetting";
-import Account from "../../graphQL/Query/Home/Account";
-import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
-// import { NavigationEvents } from "react-navigation";
 import { dateFormat } from "../../component/src/dateformatter.js";
+import { Truncate } from "../../component";
+
 export default function SettingsAkun(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
-  let [selected, setSelected] = useState(false);
-  let [language, setLanguage] = useState(i18n.language);
-  let [modsettingnegara, setModelSetNegara] = useState(false);
-  let [modsettingcurrency, setModelSetCurrency] = useState(false);
+  let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
-  // console.log(setting.user);
+
+  const HeaderComponent = {
+    headerTitle: t("accountInformation"),
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 16,
+      color: "white",
+    },
+    headerLeft: () => (
+      <Button
+        type="circle"
+        size="small"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+      >
+        <Arrowbackwhite height={20} width={20} />
+      </Button>
+    ),
+    headerLeftContainerStyle: {
+      paddingLeft: 10,
+    },
+
+    headerRight: () => {
+      return null;
+    },
+  };
 
   const [
     GetDataSetting,
@@ -75,6 +95,7 @@ export default function SettingsAkun(props) {
     loadAsync();
     GetCountryList();
     GetCurrencyList();
+    props.navigation.setOptions(HeaderComponent);
   }, []);
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
@@ -137,7 +158,14 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting.user.first_name ? setting.user.first_name : "Not Set"}
+                <Truncate
+                  text={
+                    setting.user.first_name
+                      ? setting.user.first_name
+                      : "Not Set"
+                  }
+                  length={30}
+                />
               </Text>
             </View>
           </View>
@@ -168,14 +196,20 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting.user.first_name ? setting.user.last_name : "Not Set"}
+                <Truncate
+                  text={
+                    setting && setting.user && setting.user.last_name
+                      ? setting.user.last_name
+                      : "Not Set"
+                  }
+                  length={30}
+                />
               </Text>
             </View>
           </View>
         </Ripple>
         <Ripple
           rippleCentered={true}
-          // onPress={() => setModelSetCurrency(true)}
           style={{
             paddingHorizontal: 15,
             paddingVertical: 13,
@@ -199,7 +233,9 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting.user.gender ? setting.user.gender : "Not Set"}
+                {setting && setting.user && setting.user.gender
+                  ? setting.user.gender
+                  : "Not Set"}
               </Text>
             </View>
           </View>
@@ -230,7 +266,7 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting.user.birth_date
+                {setting && setting.user && setting.user.birth_date
                   ? dateFormat(setting.user.birth_date)
                   : "Not Set"}
               </Text>
@@ -394,43 +430,6 @@ export default function SettingsAkun(props) {
     </ScrollView>
   );
 }
-
-SettingsAkun.navigationOptions = ({ navigation }) => ({
-  headerTitle: (
-    <Text size="label" style={{ color: "white" }}>
-      Account Information
-    </Text>
-  ),
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Bold",
-    fontSize: 16,
-    color: "white",
-  },
-  headerLeft: (
-    <Button
-      type="circle"
-      size="small"
-      variant="transparent"
-      onPress={() => navigation.goBack()}
-    >
-      <Arrowbackwhite height={20} width={20} />
-    </Button>
-  ),
-  headerLeftContainerStyle: {
-    paddingLeft: 10,
-  },
-
-  headerRight: () => {
-    return null;
-  },
-});
 
 const styles = StyleSheet.create({
   main: {

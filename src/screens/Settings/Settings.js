@@ -1,49 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  TouchableHighlight,
-  Platform,
-  Image,
-} from "react-native";
+import { View, Dimensions, StyleSheet, Platform, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { inbox_setting, notif_bell } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
-
 import SettingNegara from "./SettingNegara";
 import SettingCurrency from "./SettingCurrency";
 import CountryList from "../../graphQL/Query/Countries/CountryList";
 import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
 import GetSetting from "../../graphQL/Query/Settings/GetSetting";
-import Account from "../../graphQL/Query/Home/Account";
-import { gql } from "apollo-boost";
-import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
-// import { NavigationEvents } from "react-navigation";
+
 export default function Settings(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
-  let [selected, setSelected] = useState(false);
   let [language, setLanguage] = useState(i18n.language);
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
   let [setting, setSetting] = useState();
-  // console.log(setting);
 
   const HeaderComponent = {
-    headerTitle: `${t("setting")}`,
+    headerTitle: t("setting"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      //   fontSize: 50,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -69,10 +54,6 @@ export default function Settings(props) {
     },
   };
 
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-  }, []);
-
   const [
     GetDataSetting,
     { data: datas, loading: loadings, error: errors },
@@ -85,7 +66,7 @@ export default function Settings(props) {
       },
     },
   });
-  // console.log(datas);
+
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
@@ -100,6 +81,7 @@ export default function Settings(props) {
   };
 
   const [GetCountryList, { data, loading, error }] = useLazyQuery(CountryList);
+
   const [
     GetCurrencyList,
     { data: datacurrency, loading: loadingcurrency, error: errorcurrency },
@@ -114,6 +96,7 @@ export default function Settings(props) {
     loadAsync();
     GetCountryList();
     GetCurrencyList();
+    props.navigation.setOptions(HeaderComponent);
   }, []);
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
@@ -177,7 +160,12 @@ export default function Settings(props) {
                 size="small"
                 color={language == "en" ? "primary" : "tertiary"}
                 variant={"normal"}
-                onPress={() => languageToggle("en")}
+                onPress={() => {
+                  languageToggle("en"),
+                    props.navigation.setOptions({
+                      headerTitle: t("setting"),
+                    });
+                }}
                 text="Inggris"
                 style={{
                   width: 95,
@@ -188,7 +176,12 @@ export default function Settings(props) {
                 size="small"
                 color={language == "id" ? "primary" : "tertiary"}
                 variant="normal"
-                onPress={() => languageToggle("id")}
+                onPress={() => {
+                  languageToggle("id"),
+                    props.navigation.setOptions({
+                      headerTitle: t("setting"),
+                    });
+                }}
                 text="Indonesia"
                 style={{
                   width: 95,
@@ -314,7 +307,6 @@ export default function Settings(props) {
           </View>
         </Ripple>
       </View>
-
       <View
         style={{
           flexDirection: "column",
@@ -346,12 +338,10 @@ export default function Settings(props) {
           </Text>
           <Ripple
             rippleCentered={true}
-            onPress={
-              () =>
-                props.navigation.navigate("notificationsettings", {
-                  setting: setting,
-                })
-              // console.log(setting)
+            onPress={() =>
+              props.navigation.navigate("notificationsettings", {
+                setting: setting,
+              })
             }
             style={{
               justifyContent: "space-between",
