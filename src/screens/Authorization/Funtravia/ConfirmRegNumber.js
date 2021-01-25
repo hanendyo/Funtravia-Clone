@@ -146,7 +146,7 @@ export default function ConfirmRegNumber(props) {
               style={{ width: Dimensions.get("window").width / 1.2 }}
             />
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 style={{

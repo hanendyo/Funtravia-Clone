@@ -66,7 +66,7 @@ export default function ConfirmNumberLogin(props) {
         error: response.data.login_phone.message,
       });
     } else {
-      props.navigation.navigate("login", {
+      props.navigation.navigate("LoginScreen", {
         error: "Failed Login With Phone Number",
       });
     }
@@ -144,7 +144,7 @@ export default function ConfirmNumberLogin(props) {
               style={{ width: Dimensions.get("window").width / 1.2 }}
             />
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 style={{
@@ -158,7 +158,7 @@ export default function ConfirmNumberLogin(props) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 style={{

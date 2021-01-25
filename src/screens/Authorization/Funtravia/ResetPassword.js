@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -18,8 +18,19 @@ import { useTranslation } from "react-i18next";
 export default function ResetPassword(props) {
   const { t, i18n } = useTranslation();
 
+  const NavigationComponent = {
+    title: "",
+    headerShown: true,
+    headerMode: "screen",
+    headerTransparent: true,
+  };
+  useEffect(() => {
+    props.navigation.setOptions(NavigationComponent);
+  }, []);
+
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
-  const { email, otp } = props.navigation.state.params;
+  const [otp] = useState(props.route.params.otp);
+  const [email] = useState(props.route.params.email);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hidePasswd, setHidePasswd] = useState(true);
@@ -28,8 +39,15 @@ export default function ResetPassword(props) {
 
   const forgot = async () => {
     try {
-      if (password.length >= 8 && password !== confirmPassword)
+      if (!password) {
         throw "Password Not Match!";
+      }
+      if (!confirmPassword) {
+        throw "Password Not Match!";
+      }
+      if (password.length >= 8 && password !== confirmPassword) {
+        throw "Password Not Match!";
+      }
 
       await mutation({
         variables: {
@@ -42,7 +60,7 @@ export default function ResetPassword(props) {
 
       if (error) throw "Failed Forgot Password";
 
-      props.navigation.navigate("login");
+      props.navigation.navigate("LoginScreen");
     } catch (err) {
       // console.log(err);
       showAlert({
@@ -67,6 +85,7 @@ export default function ResetPassword(props) {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        backgroundColor: "#fff",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
       // keyboardVerticalOffset={30}
