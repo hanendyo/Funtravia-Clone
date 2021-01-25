@@ -67,6 +67,7 @@
 		2D02E4901E0B4A5D006451C7 /* funtravia-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "funtravia-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E9256D85BE38A940BF85BE6 /* Pods-funtravia-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-funtravia-tvOSTests/Pods-funtravia-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		3C9204ACD4473F93515B69CC /* Pods-funtravia-funtraviaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia-funtraviaTests.debug.xcconfig"; path = "Target Support Files/Pods-funtravia-funtraviaTests/Pods-funtravia-funtraviaTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4D3BBEFA25BA8B9900A42616 /* funtraviaRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = funtraviaRelease.entitlements; path = funtravia/funtraviaRelease.entitlements; sourceTree = "<group>"; };
 		4DB65A4E25AEFE35006C9144 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
 		4DB65A5425AEFE6A006C9144 /* libswiftCoreMIDI.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreMIDI.tbd; path = usr/lib/swift/libswiftCoreMIDI.tbd; sourceTree = SDKROOT; };
 		4DB65A5A25AEFE8A006C9144 /* libswiftUniformTypeIdentifiers.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftUniformTypeIdentifiers.tbd; path = usr/lib/swift/libswiftUniformTypeIdentifiers.tbd; sourceTree = SDKROOT; };
@@ -172,6 +173,7 @@
 		13B07FAE1A68108700A75B9A /* funtravia */ = {
 			isa = PBXGroup;
 			children = (
+				4D3BBEFA25BA8B9900A42616 /* funtraviaRelease.entitlements */,
 				4DFEFE8E25B16BC100C8449D /* funtravia.entitlements */,
 				4DE243E425A8CA6000AC598D /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -772,7 +774,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = funtravia/funtravia.entitlements;
+				CODE_SIGN_ENTITLEMENTS = funtravia/funtraviaRelease.entitlements;
 				CURRENT_PROJECT_VERSION = 1.0.5.14;
 				DEVELOPMENT_TEAM = X88279Q7H6;
 				INFOPLIST_FILE = funtravia/Info.plist;

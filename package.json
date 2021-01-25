@@ -12,7 +12,6 @@
 	"dependencies": {
 		"@apollo/client": "^3.3.6",
 		"@apollo/react-hooks": "^4.0.0",
-		"@pontusab/react-native-image-manipulator": "https://github.com/pontusab/react-native-image-manipulator",
 		"@react-native-async-storage/async-storage": "^1.13.2",
 		"@react-native-community/cameraroll": "^4.0.1",
 		"@react-native-community/google-signin": "^5.0.0",

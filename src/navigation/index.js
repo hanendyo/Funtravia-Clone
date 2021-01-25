@@ -63,8 +63,22 @@ import {
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
+  const config = {
+    screens: {
+      BottomStack: {
+        screens: {
+          ChatScreen: "chat/:id",
+        },
+      },
+      SinglePost: "feed/:post_id",
+    },
+  };
+  const linking = {
+    prefixes: ["http://link.funtravia.com", "https://link.funtravia.com"],
+    config,
+  };
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Tab.Navigator
         initialRouteName={authorizeToken ? "BottomStack" : "AuthStack"}
       >

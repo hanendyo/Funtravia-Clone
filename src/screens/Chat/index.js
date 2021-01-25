@@ -17,7 +17,8 @@ import Swipeout from "react-native-swipeout";
 import { useTranslation } from "react-i18next";
 import { CHATSERVER } from "../../config";
 
-export default function Message({ navigation }) {
+export default function Message({ navigation, route }) {
+	console.log(route);
 	const { width, height } = Dimensions.get("screen");
 	const { t } = useTranslation();
 	const [user, setUser] = useState({});
