@@ -27,7 +27,7 @@ export default function MyAccount(props) {
 
   const HeaderComponent = {
     headerTransparent: true,
-    headerTitle: t("myProfile"),
+    headerTitle: null,
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
@@ -141,7 +141,7 @@ export default function MyAccount(props) {
 
   return (
     <View style={{ zIndex: -1 }}>
-      <View
+      {/* <View
         style={{
           flexDirection: "row",
           height: 130,
@@ -161,7 +161,7 @@ export default function MyAccount(props) {
             width: width,
           }}
         ></LinearGradient>
-      </View>
+      </View> */}
       <ScrollView style={{ backgroundColor: "#F6F6F7" }}>
         <View
           style={{

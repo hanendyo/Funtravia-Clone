@@ -13,12 +13,19 @@ import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { dateFormat } from "../../component/src/dateformatter.js";
 import { Truncate } from "../../component";
+import DatePicker from "react-native-modern-datepicker";
 
 export default function SettingsAkun(props) {
   const { t, i18n } = useTranslation();
+  const [modalEmail, setModalEmail] = useState(false);
+  const [modalPhone, setModalPhone] = useState(false);
+  const [modalBirth, setModalBirth] = useState(false);
+  let [date, setDate] = useState();
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
+
+  console.log(date);
 
   const HeaderComponent = {
     headerTitle: t("accountInformation"),
@@ -64,7 +71,6 @@ export default function SettingsAkun(props) {
       },
     },
   });
-  console.log(datas);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
@@ -101,8 +107,9 @@ export default function SettingsAkun(props) {
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
 
-  const [modalEmail, setModalEmail] = useState(false);
-  const [modalPhone, setModalPhone] = useState(false);
+  const setstart = (x) => {
+    setDate(x);
+  };
 
   return (
     <ScrollView
@@ -120,22 +127,16 @@ export default function SettingsAkun(props) {
           onBackdropPress={() => {
             setModalEmail(false);
           }}
+          // style={{ height: Dimensions.get("screen").width * 0.2 }}
         >
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text
-                style={{ color: "#D75995", marginBottom: 20 }}
-                size="label"
-                type="bold"
-              >
-                Delete Email
-              </Text>
+            <View style={styles.modalViewEmail}>
               <Text
                 type="bold"
                 size="label"
                 onPress={() => {
                   setModalEmail(false),
-                    props.navigation.navigate("SettingEmail");
+                    props.navigation.navigate("SettingEmailChange");
                 }}
               >
                 Change Email
@@ -171,6 +172,10 @@ export default function SettingsAkun(props) {
                 onPress={() => {
                   setModalPhone(!modalPhone);
                 }}
+                onPress={() => {
+                  setModalPhone(false),
+                    props.navigation.navigate("SettingPhoneChange");
+                }}
               >
                 Change Phone Number
               </Text>
@@ -178,6 +183,50 @@ export default function SettingsAkun(props) {
           </View>
         </Modal>
       </View>
+
+      {/* Modal Birth Date */}
+
+      <Modal
+        onRequestClose={() => setModalBirth(false)}
+        onBackdropPress={() => setModalBirth(false)}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        isVisible={modalBirth}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+            width: Dimensions.get("screen").width - 40,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}
+        >
+          <DatePicker
+            options={{}}
+            // current={startDate ? startDate : getToday()}
+            // selected={startDate ? startDate : getToday()}
+            onDateChange={(x) => setstart(x)}
+            mode="calendar"
+            style={{ borderRadius: 10 }}
+          />
+        </View>
+      </Modal>
 
       {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
       <View
@@ -312,7 +361,7 @@ export default function SettingsAkun(props) {
         </Ripple>
         <Ripple
           rippleCentered={true}
-          // onPress={() => setModelSetCurrency(true)}
+          onPress={() => setModalBirth(true)}
           style={{
             paddingHorizontal: 15,
             paddingVertical: 13,
@@ -376,7 +425,7 @@ export default function SettingsAkun(props) {
       <View
         style={{
           flexDirection: "column",
-          marginVertical: 5,
+          marginTop: 4,
           paddingHorizontal: 15,
           paddingVertical: 13,
           backgroundColor: "#FFFFFF",
@@ -448,7 +497,7 @@ export default function SettingsAkun(props) {
             text={t("AddEmail")}
             onPress={() =>
               props.navigation.navigate("SettingEmail", {
-                dataEMail: setting.user,
+                dataEmail: setting.user,
               })
             }
           />
@@ -457,7 +506,7 @@ export default function SettingsAkun(props) {
       <View
         style={{
           flexDirection: "column",
-          marginVertical: 5,
+          marginTop: 4,
           paddingHorizontal: 15,
           paddingVertical: 13,
           backgroundColor: "#FFFFFF",
@@ -477,7 +526,7 @@ export default function SettingsAkun(props) {
         >
           {t("phoneNumber")}
         </Text>
-        {setting && setting.user && setting.user.phone ? (
+        {setting && setting.user && setting.user.email ? (
           <View
             style={{
               justifyContent: "space-between",
@@ -525,7 +574,7 @@ export default function SettingsAkun(props) {
             size="medium"
             color="tertiary"
             text={t("addPhoneNumber")}
-            onPres={() => null}
+            onPress={() => props.navigation.navigate("SettingPhone")}
           />
         )}
       </View>
@@ -594,6 +643,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: Dimensions.get("screen").width * 0.7,
     height: Dimensions.get("screen").width * 0.4,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalViewEmail: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 5,
+    width: Dimensions.get("screen").width * 0.7,
+    height: Dimensions.get("screen").width * 0.2,
     alignItems: "center",
     justifyContent: "center",
   },

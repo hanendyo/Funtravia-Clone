@@ -435,5 +435,9 @@
   "NoComment": "No Comment",
   "AddComment": "Add Comment",
   "AddEmail": "Add Email",
-  "ChangeEmail": "Change Email"
+  "ChangeEmail": "Change Email",
+  "CheckChangeEmail": "Send me Funtrivia exclusive discount and promo",
+  "CheckChangePhone": "Send me Funtrivia exclusive discount and promo",
+  "ChangePhoneNumber": "Change Phone Number",
+  "CountryCode": "Country Code"
 }
