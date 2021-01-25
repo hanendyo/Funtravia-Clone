@@ -70,6 +70,7 @@ export default function ForgotPassword(props) {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        backgroundColor: "#fff",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
       // keyboardVerticalOffset={30}
@@ -144,10 +145,13 @@ export default function ForgotPassword(props) {
               }}
             >
               <Button
-                // onPress={() => Forgot()}
-                onPress={() => {
-                  props.navigation.navigate("otppass", {});
-                }}
+                onPress={() => Forgot()}
+                // onPress={() => {
+                //   props.navigation.navigate("resetpwd", {
+                //     email: "ganjar@funtravia.com",
+                //     otp: 615685,
+                //   });
+                // }}
                 text={t("submit")}
                 color="secondary"
                 style={{

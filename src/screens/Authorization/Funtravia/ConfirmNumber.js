@@ -139,7 +139,7 @@ export default function ConfirmNumber(props) {
               style={{ width: Dimensions.get("window").width / 1.2 }}
             />
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 style={{
@@ -153,7 +153,7 @@ export default function ConfirmNumber(props) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 style={{

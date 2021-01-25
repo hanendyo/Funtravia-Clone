@@ -148,7 +148,7 @@ export default function LoginPhone(props) {
               style={{ width: Dimensions.get("window").width / 1.2 }}
             />
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 style={{
@@ -156,7 +156,7 @@ export default function LoginPhone(props) {
                   color: "#27958B",
                 }}
                 type="bold"
-                onPress={() => props.navigation.navigate("login")}
+                onPress={() => props.navigation.navigate("LoginScreen")}
               >
                 Try another way to sign in
               </Text>

@@ -327,7 +327,7 @@ export default function OtpPhone(props) {
               {t("resend")}
             </Text>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("login")}
+              onPress={() => props.navigation.navigate("LoginScreen")}
             >
               <Text
                 type="bold"
