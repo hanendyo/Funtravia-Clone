@@ -59,6 +59,9 @@ import {
   Settings,
   Bantuan,
   SettingEmail,
+  SettingPhone,
+  SettingPhoneChange,
+  SettingEmailChange,
 } from "../screens/Settings";
 
 const Tab = createStackNavigator();
@@ -443,6 +446,30 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="SettingEmail"
           component={SettingEmail}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SettingPhone"
+          component={SettingPhone}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SettingPhoneChange"
+          component={SettingPhoneChange}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SettingEmailChange"
+          component={SettingEmailChange}
           options={{
             headerTitle: "",
             headerTransparent: false,

@@ -6,6 +6,9 @@ import SettingsAkun from "./SettingsAkun";
 import Settings from "./Settings";
 import Bantuan from "./Bantuan";
 import SettingEmail from "./SettingEmail";
+import SettingEmailChange from "./SettingEmailChange";
+import SettingPhone from "./SettingPhone";
+import SettingPhoneChange from "./SettingPhoneChange";
 
 export {
   NotificationSettings,
@@ -15,5 +18,8 @@ export {
   SettingsAkun,
   Settings,
   Bantuan,
+  SettingEmailChange,
   SettingEmail,
+  SettingPhone,
+  SettingPhoneChange,
 };

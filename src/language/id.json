@@ -438,5 +438,9 @@
   "NoComment": "Tidak Ada Komentar",
   "AddComment": "Tambah Komentar",
   "AddEmail": "Tambah Email",
-  "ChangeEmail": "Ganti Email"
+  "ChangeEmail": "Ganti Email",
+  "CheckChangeEmail": "Kirimi saya diskon dan promo eksklusif Funtrivia",
+  "CheckChangePhone": "Kirimi saya diskon dan promo eksklusif Funtrivia",
+  "ChangePhoneNumber": "Ganti Nomor Telepon",
+  "CountryCode": "Kode Negara"
 }

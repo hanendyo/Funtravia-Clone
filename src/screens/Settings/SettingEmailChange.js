@@ -6,7 +6,7 @@ import { View, Dimensions, CheckBox } from "react-native";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function SettingEmail(props) {
+export default function SettingEmailChange(props) {
   let [token, setToken] = useState("");
   const { t, i18n } = useTranslation();
   let [setSetting] = useState();
