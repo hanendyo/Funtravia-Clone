@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 const FeedPost = gql`
     query($offset: Int) {
-        feed_post(limit: 5, offset:$offset) {
+        feed_post(limit: 40, offset:$offset) {
             id
             caption
             longitude
