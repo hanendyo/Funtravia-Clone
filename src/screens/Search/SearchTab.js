@@ -5,6 +5,8 @@ import {
   Dimensions,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -27,19 +29,44 @@ import { useTranslation } from "react-i18next";
 export default function SearchTab(props) {
   const { t, i18n } = useTranslation();
 
-  let searchResult = props.searchQueryFromMain;
+  // let searchResult = props.searchQueryFromMain;
   let sentInitTab = props.route.params.initTab ? props.route.params.initTab : 0;
   // console.log('poof', sentInitTab);
   // console.log(searchResult);
   let [preview, setPreview] = useState("list");
 
   let [token, setToken] = useState("");
-  let [searchQuery, setSearchQuery] = useState(props.route.params.searchInput);
 
-  // setSendToTab(searchQuery);
-  // console.log('OIIIIIIII     :::', searchQuery);
   let [initTab, setInitTab] = useState(sentInitTab);
-  const [input, setInput] = useState("");
+  let [input, setInput] = useState(props.route.params.searchInput);
+
+  console.log("INPUT DARI SEARCH PAGE: ", input);
+  const HeaderComponent = {
+    headerTitle: "Search",
+    headerStyle: {
+      elevation: 0,
+      borderBottomWidth: 0,
+      backgroundColor: "#209FAE",
+    },
+    headerTitleStyle: { color: "white" },
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => props.navigation.goBack()}>
+        <Image
+          style={{ width: 20, height: 20 }}
+          imageStyle={{ width: 20, height: 20, resizeMode: "contain" }}
+          source={back_arrow_white}
+        />
+      </TouchableOpacity>
+    ),
+    headerLeftContainerStyle: {
+      paddingLeft: 20,
+    },
+    headerRight: null,
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+  }, []);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -54,8 +81,9 @@ export default function SearchTab(props) {
     // setToken(tkn);
   };
   const queryFromSearch = (data) => {
-    console.log("kek:  ", data);
-    setSearchQuery(data);
+    console.log("dataInput:  ", data);
+    setInput(data);
+    console.log("input after Tab:", input);
   };
 
   return (
@@ -66,7 +94,7 @@ export default function SearchTab(props) {
     >
       <ScrollView nestedScrollEnabled={true}>
         <View style={{ alignSelf: "center" }}>
-          <SearchBar
+          {/* <SearchBar
             props
             navigation={props.navigation}
             suggestion={false}
@@ -74,6 +102,16 @@ export default function SearchTab(props) {
               queryFromSearch(dataSearchtoMainPage)
             }
             mainTheme={false}
+          /> */}
+          <SearchBar
+            // props={{ route }}
+            // route={route}
+            navigation={props.navigation}
+            mainTheme={false}
+            suggestion={false}
+            searchtoMainPage={(dataSearchtoMainPage) =>
+              queryFromSearch(dataSearchtoMainPage)
+            }
           />
         </View>
 
@@ -102,9 +140,7 @@ export default function SearchTab(props) {
               <SearchDestination
                 navigation={props.navigation}
                 searchQueryFromMain={
-                  searchQuery && searchQuery !== ("" || undefined || null)
-                    ? searchQuery
-                    : null
+                  input && input !== ("" || undefined || null) ? input : null
                 }
               />
             </Tab>
@@ -119,9 +155,7 @@ export default function SearchTab(props) {
               <SearchPeople
                 navigation={props.navigation}
                 searchQueryFromMain={
-                  searchQuery && searchQuery !== ("" || undefined || null)
-                    ? searchQuery
-                    : null
+                  input && input !== ("" || undefined || null) ? input : null
                 }
               />
             </Tab>
@@ -134,14 +168,12 @@ export default function SearchTab(props) {
             >
               <SearchFeed
                 navigation={props.navigation}
-                searchQueryFromMain={
-                  searchQuery && searchQuery !== ("" || undefined || null)
-                    ? searchQuery
-                    : null
+                earchQueryFromMain={
+                  input && input !== ("" || undefined || null) ? input : null
                 }
               />
             </Tab>
-            {/* <Tab
+            <Tab
               heading="Event"
               tabStyle={{ backgroundColor: "transparent" }}
               activeTabStyle={{ backgroundColor: "transparent" }}
@@ -150,14 +182,12 @@ export default function SearchTab(props) {
             >
               <SearchEvent
                 navigation={props.navigation}
-                searchQueryFromMain={
-                  searchQuery && searchQuery !== ("" || undefined || null)
-                    ? searchQuery
-                    : null
+                earchQueryFromMain={
+                  input && input !== ("" || undefined || null) ? input : null
                 }
                 // dataPrev={preview}
               />
-            </Tab> */}
+            </Tab>
           </Tabs>
         </View>
       </ScrollView>
@@ -187,12 +217,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     alignContent: "center",
     width: Dimensions.get("window").width * 0.9,
+    backgroundColor: "#F1F1F1",
   },
   tabView: {
     marginTop: 15,
     flex: 1,
     justifyContent: "center",
     width: Dimensions.get("window").width,
+    backgroundColor: "#F1F1F1",
   },
   tabFont: {
     fontFamily: "Lato-Bold",

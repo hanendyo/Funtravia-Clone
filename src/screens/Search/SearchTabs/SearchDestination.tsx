@@ -22,16 +22,16 @@ import SearchDestinationQuery from "../../../graphQL/Query/Search/SearchDestinat
 
 import NotFound from "../../../component/src/notFound";
 import { useTranslation } from "react-i18next";
-import { Text, Button, FunIcon } from "../../../component";
+import { Text, Button, FunIcon, Loading } from "../../../component";
 import ListRenderDestination from "../../../component/src/DestinationList";
 
-export default function SearchDestination(props) {
+export default function SearchDestination(props, searchQueryFromMain) {
   const { t, i18n } = useTranslation();
 
   let [token, setToken] = useState("");
   // let [searchDest, setSearchDest] = useState(props.searchQueryFromMain);
   let searchDest = props.searchQueryFromMain;
-  // console.log('oiiiiiiiiiiiiii:::    ', searchDest);
+  console.log("Search Query From Main Destination:::    ", searchDest);
   const [
     querySearchDestination,
     {
@@ -42,7 +42,7 @@ export default function SearchDestination(props) {
   ] = useLazyQuery(SearchDestinationQuery, {
     fetchPolicy: "network-only",
     variables: {
-      keyword: searchDest,
+      keyword: searchDest && searchDest != null ? searchDest : "null",
       type: [],
     },
     context: {
@@ -54,12 +54,6 @@ export default function SearchDestination(props) {
   });
 
   if (loadingDestination) {
-    // console.log('Loading Data Destination' + loadingDestination);
-    return (
-      <View>
-        <Loading show={true} />
-      </View>
-    );
   }
   if (errorDestination) {
     // console.log('error Destination ' + errorDestination);
@@ -98,8 +92,10 @@ export default function SearchDestination(props) {
         dataDestination.destinationSearch.length ? (
           <ListRenderDestination
             props={props}
+            route={props.route}
             datanya={dataDestination.destinationSearch}
             token={token}
+            itin={false}
           />
         ) : (
           <View

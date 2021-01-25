@@ -27,18 +27,20 @@ import { FunIcon, Text, Button } from "../../component";
 import Liked from "../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../graphQL/Mutation/unliked";
 
-export default function ListRenderDestination({ props, datanya, token, itin }) {
+export default function ListRenderDestination({
+  props,
+  route,
+  datanya,
+  token,
+  itin,
+}) {
   const { t, i18n } = useTranslation();
-  let [datadayaktif, setdatadayaktif] = useState(
-    props && props.route.params.datadayaktif
-      ? props.route.params.datadayaktif
-      : null
-  );
-  let [IdItinerary, setId] = useState(
-    props && props.route.params.IdItinerary
-      ? props.route.params.IdItinerary
-      : null
-  );
+  // let [datadayaktif, setdatadayaktif] = useState(
+  //   route.params && route.params.datadayaktif ? route.params.datadayaktif : null
+  // );
+  // let [IdItinerary, setId] = useState(
+  //   route.params && route.params.IdItinerary ? route.params.IdItinerary : null
+  // );
   // let [token, setToken] = useState('');
   let [selected] = useState(new Map());
   let [dataDestination, setDataDestination] = useState(datanya);

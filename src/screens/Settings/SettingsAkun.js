@@ -59,6 +59,45 @@ export default function SettingsAkun(props) {
     },
   };
 
+  const HeaderComponent = {
+    title: "",
+    // headerTransparent: true,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={
+          {
+            // backgroundColor: "rgba(0,0,0,0.3)",
+          }
+        }
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
   const [
     GetDataSetting,
     { data: datas, loading: loadings, error: errors },
@@ -100,6 +139,11 @@ export default function SettingsAkun(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  useEffect(() => {
+    loadAsync();
+    GetCountryList();
+    GetCurrencyList();
+  }, []);
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,

@@ -6,8 +6,8 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import { AsyncStorage } from "react-native";
-import CountNotif from "../graphQL/Query/Notification/CountNotif";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 // import {
 //   NavigationEvents,
 //   StackActions,
@@ -15,7 +15,7 @@ import CountNotif from "../graphQL/Query/Notification/CountNotif";
 // } from "react-navigation";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../component";
+import { Text, Button } from "..";
 
 export default function Count_Notification({ props, setCont }) {
   const { t, i18n } = useTranslation();
