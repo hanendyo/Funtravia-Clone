@@ -31,7 +31,7 @@ export default function ForgotPassword(props) {
   const { t, i18n } = useTranslation();
 
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
-  let [email, setEmail] = useState("developer@funtravia.com");
+  let [email, setEmail] = useState("");
   let [modalVisible, setModalVisible] = useState(false);
   let [sendForgot] = useMutation(FORGOT);
   const requestForgot = async () => {
@@ -144,7 +144,10 @@ export default function ForgotPassword(props) {
               }}
             >
               <Button
-                onPress={() => Forgot()}
+                // onPress={() => Forgot()}
+                onPress={() => {
+                  props.navigation.navigate("otppass", {});
+                }}
                 text={t("submit")}
                 color="secondary"
                 style={{

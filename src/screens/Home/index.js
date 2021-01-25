@@ -60,8 +60,11 @@ export default function Home(props) {
   };
 
   useEffect(() => {
-    loadAsync();
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", (data) => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   function HomeTitle({ title, label, seeAll }) {
     return (

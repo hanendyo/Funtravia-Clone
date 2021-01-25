@@ -323,6 +323,7 @@ export default function Register({ navigation }) {
                   customTextStyle={{
                     width: Dimensions.get("screen").width * 0.6,
                     fontSize: 12,
+                    padding: 0,
                   }}
                   keyboardType="number-pad"
                   label={t("phoneNumber")}
@@ -558,5 +559,6 @@ const styles = StyleSheet.create({
   welcomeText: { alignSelf: "flex-start", marginVertical: 10 },
   TextInput: {
     width: Dimensions.get("window").width / 1.2,
+    padding: 0,
   },
 });

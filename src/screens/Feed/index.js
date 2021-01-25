@@ -95,15 +95,16 @@ export default function Feed(props) {
     setToken(tkn);
     if (tkn === null) {
       Alert.alert("Silahkan Login terlebih dahulu");
-      props.navigation.navigate("Home");
+      props.navigation.navigate("HomeScreen");
     }
     LoadFeed();
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    loadAsync();
-    const unsubscribe = props.navigation.addListener("focus", (data) => {});
+    const unsubscribe = props.navigation.addListener("focus", (data) => {
+      loadAsync();
+    });
     return unsubscribe;
   }, [props.navigation]);
 
