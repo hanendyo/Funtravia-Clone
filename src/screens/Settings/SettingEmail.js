@@ -47,6 +47,8 @@ export default function SettingEmail(props) {
     setSetting(JSON.parse(setsetting));
   };
 
+  console.log(token);
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
