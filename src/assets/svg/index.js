@@ -160,6 +160,7 @@ import SizeStrace from "./files/size_strace.svg";
 import TravelAlbum from "./files/travel_album.svg";
 import TravelStories from "./files/travel_stories.svg";
 import User from "./files/user.svg";
+import SettingsPutih from "./files/settings_putih.svg";
 
 export {
   LikeWhite,
@@ -324,4 +325,5 @@ export {
   TravelAlbum,
   TravelStories,
   User,
+  SettingsPutih,
 };

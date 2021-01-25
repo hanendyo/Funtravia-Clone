@@ -69,18 +69,24 @@ export default function Settings(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-
-    // await GetDataSetting();
-    // if (datas && datas.setting_data) {
-    // 	await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
-    // }
+    await setToken(tkn);
+    await GetCountryList();
+    await GetCurrencyList();
 
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
 
-  const [GetCountryList, { data, loading, error }] = useLazyQuery(CountryList);
+  const [GetCountryList, { data, loading, error }] = useLazyQuery(CountryList, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  });
+
+  console.log(data);
 
   const [
     GetCurrencyList,
@@ -93,11 +99,13 @@ export default function Settings(props) {
   };
 
   useEffect(() => {
-    loadAsync();
-    GetCountryList();
-    GetCurrencyList();
     props.navigation.setOptions(HeaderComponent);
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,

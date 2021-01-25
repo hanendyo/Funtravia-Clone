@@ -8,7 +8,7 @@ import ChatScreen from "../../screens/Chat";
 import FeedScreen from "../../screens/Feed";
 import HomeScreen from "../../screens/Home";
 import TripPlaning from "../../screens/Itinerary/TripPlaning/Index";
-import { MyAccount } from "../../screens/MyAccount";
+import MyAccount from "../../screens/MyAccount/MyAccount";
 import {
   FeedOn,
   FeedOff,

@@ -60,7 +60,7 @@
   "firstName": "Nama Depan",
   "lastName": "Nama Belakang",
   "phoneNumber": "Nomor Telepon",
-  "addPhoneNumber": "Tambah Nomer Telepon",
+  "addPhoneNumber": "Tambah Nomor Telepon",
   "reEnterPassword": "Ulangi Kata Sandi",
   "alreadyHave": "Sudah Mempunyai Akun?",
   "registerUsingGoogle": "Daftar Menggunakan Google",
@@ -436,5 +436,7 @@
   "like": "Suka",
   "likeMany": "Suka",
   "NoComment": "Tidak Ada Komentar",
-  "AddComment": "Tambah Komentar"
+  "AddComment": "Tambah Komentar",
+  "AddEmail": "Tambah Email",
+  "ChangeEmail": "Ganti Email"
 }
