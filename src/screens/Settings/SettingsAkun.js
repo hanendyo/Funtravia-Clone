@@ -111,6 +111,11 @@ export default function SettingsAkun(props) {
     setDate(x);
   };
 
+  const birth = async () => {
+    // await mutationBirth(date);
+    await setModalBirth(false);
+  };
+
   return (
     <ScrollView
       style={{
@@ -207,24 +212,32 @@ export default function SettingsAkun(props) {
             alignSelf: "center",
             alignContent: "center",
             width: Dimensions.get("screen").width - 40,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
           }}
         >
-          <DatePicker
-            options={{}}
-            // current={startDate ? startDate : getToday()}
-            // selected={startDate ? startDate : getToday()}
-            onDateChange={(x) => setstart(x)}
-            mode="calendar"
-            style={{ borderRadius: 10 }}
-          />
+          <View
+            style={{
+              backgroundColor: "#fff",
+              width: Dimensions.get("screen").width - 20,
+              paddingVertical: 10,
+              alignItems: "center",
+              borderRadius: 5,
+            }}
+          >
+            <DatePicker
+              options={{}}
+              // current={startDate ? startDate : getToday()}
+              // selected={startDate ? startDate : getToday()}
+              onDateChange={(x) => setstart(x)}
+              mode="calendar"
+              style={{ borderRadius: 10 }}
+            />
+            <Button
+              size="large"
+              style={{ width: "50%" }}
+              text="Save"
+              onPress={() => birth()}
+            ></Button>
+          </View>
         </View>
       </Modal>
 
