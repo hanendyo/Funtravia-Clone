@@ -74,8 +74,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>For Suggest Destination And Set Post Position</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>For Suggest Destination And Set Post Position</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>For Make Feed And Change Profile Picture</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Black.ttf</string>
