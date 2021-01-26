@@ -8,10 +8,13 @@ import SplashScreen from "react-native-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API, END_POINT_NOTIFY } from "./src/config";
 import "./src/i18n";
+import { mascot_black } from "./src/assets/png";
+import { SafeAreaView, Image, Dimensions } from "react-native";
 
 function App() {
-	const [loading, setLoading] = useState(true);
-	const [accessToken, setAccessToken] = useState(null);
+	const { width } = Dimensions.get("screen");
+	let [accessToken, setAccessToken] = useState(null);
+	let [appLoading, setAppLoading] = useState(true);
 	const client = new ApolloClient({
 		uri: API,
 	});
@@ -57,10 +60,9 @@ function App() {
 	};
 
 	const initializeFunction = async () => {
-		let token = await AsyncStorage.getItem("access_token");
+		token = await AsyncStorage.getItem("access_token");
 		await setAccessToken(token);
-		await setLoading(false);
-		await SplashScreen.hide();
+		await setAppLoading(false);
 	};
 
 	useEffect(() => {
@@ -73,7 +75,30 @@ function App() {
 		messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 			console.log("BG_NF", remoteMessage);
 		});
+		SplashScreen.hide();
 	}, []);
+
+	if (appLoading) {
+		return (
+			<SafeAreaView
+				style={{
+					flex: 1,
+					backgroundColor: "#FFF",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				<Image
+					style={{
+						resizeMode: "contain",
+						width: width / 1.5,
+						height: width / 1.5,
+					}}
+					source={mascot_black}
+				/>
+			</SafeAreaView>
+		);
+	}
 
 	return (
 		<ApolloProvider client={client}>

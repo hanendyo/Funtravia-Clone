@@ -22,142 +22,144 @@ import OtpRegPhone from "../../screens/Authorization/Funtravia/OtpRegPhone";
 
 const AuthNav = createStackNavigator();
 export default function AuthStackNavigation() {
-  return (
-    <AuthNav.Navigator initialRouteName="SplashScreen">
-      <AuthNav.Screen
-        name="SplashScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={SplashScreen}
-      />
-      <AuthNav.Screen
-        name="LoginScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={LoginScreen}
-      />
-      <AuthNav.Screen
-        name="RegisterScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={RegisterScreen}
-      />
-      <AuthNav.Screen
-        name="LoginGoogleScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={LoginGoogleScreen}
-      />
-      <AuthNav.Screen
-        name="RegisterGoogleScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={RegisterGoogleScreen}
-      />
-      <AuthNav.Screen
-        name="LoginFacebookScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={LoginFacebookScreen}
-      />
-      <AuthNav.Screen
-        name="RegisterFacebookScreen"
-        options={{
-          headerShown: false,
-        }}
-        component={RegisterFacebookScreen}
-      />
+	return (
+		<AuthNav.Navigator initialRouteName="SplashScreen">
+			<AuthNav.Screen
+				name="SplashScreen"
+				options={{
+					headerShown: false,
+				}}
+				component={SplashScreen}
+			/>
+			<AuthNav.Screen
+				name="LoginScreen"
+				options={{
+					headerShown: false,
+					headerBackTitleVisible: false,
+				}}
+				component={LoginScreen}
+			/>
+			<AuthNav.Screen
+				name="RegisterScreen"
+				options={{
+					headerShown: false,
+					headerBackTitleVisible: false,
+				}}
+				component={RegisterScreen}
+			/>
+			<AuthNav.Screen
+				name="LoginGoogleScreen"
+				options={{
+					headerShown: false,
+				}}
+				component={LoginGoogleScreen}
+			/>
+			<AuthNav.Screen
+				name="RegisterGoogleScreen"
+				options={{
+					headerShown: false,
+				}}
+				component={RegisterGoogleScreen}
+			/>
+			<AuthNav.Screen
+				name="LoginFacebookScreen"
+				options={{
+					headerShown: false,
+				}}
+				component={LoginFacebookScreen}
+			/>
+			<AuthNav.Screen
+				name="RegisterFacebookScreen"
+				options={{
+					headerShown: false,
+				}}
+				component={RegisterFacebookScreen}
+			/>
 
-      <AuthNav.Screen
-        name="otp"
-        options={{
-          headerShown: false,
-        }}
-        component={otp}
-      />
-      <AuthNav.Screen
-        name="otppass"
-        options={{
-          headerShown: false,
-        }}
-        component={otppass}
-      />
-      <AuthNav.Screen
-        name="forgotpwd"
-        options={{
-          headerShown: false,
-        }}
-        component={forgotpwd}
-      />
-      <AuthNav.Screen
-        name="resetpwd"
-        options={{
-          headerShown: false,
-        }}
-        component={resetpwd}
-      />
-      <AuthNav.Screen
-        name="LoginPhone"
-        options={{
-          headerShown: false,
-        }}
-        component={LoginPhone}
-      />
-      <AuthNav.Screen
-        name="ConfirmNumber"
-        options={{
-          headerShown: false,
-        }}
-        component={ConfirmNumber}
-      />
-      <AuthNav.Screen
-        name="ConfirmNumberLogin"
-        options={{
-          headerShown: false,
-        }}
-        component={ConfirmNumberLogin}
-      />
-      <AuthNav.Screen
-        name="OtpPhone"
-        options={{
-          headerShown: false,
-        }}
-        component={OtpPhone}
-      />
-      <AuthNav.Screen
-        name="OtpLoginPhone"
-        options={{
-          headerShown: false,
-        }}
-        component={OtpLoginPhone}
-      />
-      <AuthNav.Screen
-        name="RegisterPhone"
-        options={{
-          headerShown: false,
-        }}
-        component={RegisterPhone}
-      />
-      <AuthNav.Screen
-        name="ConfirmRegNumber"
-        options={{
-          headerShown: false,
-        }}
-        component={ConfirmRegNumber}
-      />
-      <AuthNav.Screen
-        name="OtpRegPhone"
-        options={{
-          headerShown: false,
-        }}
-        component={OtpRegPhone}
-      />
-    </AuthNav.Navigator>
-  );
+			<AuthNav.Screen
+				name="otp"
+				options={{
+					headerShown: false,
+				}}
+				component={otp}
+			/>
+			<AuthNav.Screen
+				name="otppass"
+				options={{
+					headerShown: false,
+				}}
+				component={otppass}
+			/>
+			<AuthNav.Screen
+				name="forgotpwd"
+				options={{
+					headerShown: false,
+				}}
+				component={forgotpwd}
+			/>
+			<AuthNav.Screen
+				name="resetpwd"
+				options={{
+					headerShown: false,
+				}}
+				component={resetpwd}
+			/>
+			<AuthNav.Screen
+				name="LoginPhone"
+				options={{
+					headerShown: false,
+				}}
+				component={LoginPhone}
+			/>
+			<AuthNav.Screen
+				name="ConfirmNumber"
+				options={{
+					headerShown: false,
+				}}
+				component={ConfirmNumber}
+			/>
+			<AuthNav.Screen
+				name="ConfirmNumberLogin"
+				options={{
+					headerShown: false,
+				}}
+				component={ConfirmNumberLogin}
+			/>
+			<AuthNav.Screen
+				name="OtpPhone"
+				options={{
+					headerShown: false,
+				}}
+				component={OtpPhone}
+			/>
+			<AuthNav.Screen
+				name="OtpLoginPhone"
+				options={{
+					headerShown: false,
+				}}
+				component={OtpLoginPhone}
+			/>
+			<AuthNav.Screen
+				name="RegisterPhone"
+				options={{
+					headerShown: false,
+				}}
+				component={RegisterPhone}
+			/>
+			<AuthNav.Screen
+				name="ConfirmRegNumber"
+				options={{
+					headerShown: false,
+				}}
+				component={ConfirmRegNumber}
+			/>
+			<AuthNav.Screen
+				name="OtpRegPhone"
+				options={{
+					headerShown: false,
+				}}
+				component={OtpRegPhone}
+			/>
+		</AuthNav.Navigator>
+	);
 }
