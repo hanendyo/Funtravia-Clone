@@ -511,7 +511,12 @@ export default function EventDetail(props) {
     }
   };
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        zIndex: -1,
+      }}
+    >
       <View
         style={{
           flex: 2,
@@ -521,7 +526,7 @@ export default function EventDetail(props) {
           top: 0,
           justifyContent: "space-between",
           width: screenWidth,
-          zIndex: 0,
+          zIndex: 1,
         }}
       >
         <LinearGradient
@@ -1008,3 +1013,26 @@ export default function EventDetail(props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  main: {
+    width: Dimensions.get("window").width,
+  },
+  dayButton: {
+    height: 15,
+    width: 35,
+    backgroundColor: "#209FAE",
+  },
+  dayButtonFont: { fontSize: 12, fontFamily: "lato-reg" },
+
+  eventtype: {
+    position: "absolute",
+    height: 23,
+    paddingHorizontal: 10,
+    minWidth: 70,
+    bottom: 0,
+    borderRadius: 11,
+    justifyContent: "center",
+    backgroundColor: "rgba(226, 236, 248, 0.85)",
+  },
+});

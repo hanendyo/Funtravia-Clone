@@ -428,6 +428,9 @@ export default function MyProfile(props) {
               //Start of native-base library use
               renderTabBar={() => (
                 <ScrollableTab
+                  style={{
+                    backgroundColor: "transparent",
+                  }}
                   tabStyle={{ backgroundColor: "white" }}
                   tabsContainerStyle={{ backgroundColor: "white" }}
                   underlineStyle={{

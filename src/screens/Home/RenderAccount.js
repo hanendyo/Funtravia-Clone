@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../assets/png";
 import { NotificationBlue } from "../../assets/svg";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import User_Post from "../../graphQL/Query/Profile/post";
@@ -48,8 +48,6 @@ export default function RenderAccount({ data, token, props }) {
       },
     },
   });
-
-  // console.log(datanotif);
 
   const login = () => {
     props.navigation.navigate("LoginScreen");
@@ -176,20 +174,57 @@ export default function RenderAccount({ data, token, props }) {
                   ? `${data.user_profile.first_name}`
                   : "User Funtravia"}
               </Text>
-
-              <Pressable
-                onPress={() => props.navigation.navigate("Notification")}
-                style={{
-                  paddingRight: 5,
-                }}
-              >
-                <NotificationBlue
-                  height={20}
-                  width={20}
-                  color={"#1F99A7"}
-                  fill={"#1F99A7"}
-                />
-              </Pressable>
+              {datanotif && datanotif.count_notif ? (
+                <Pressable
+                  onPress={() => props.navigation.navigate("Notification")}
+                  style={{
+                    paddingRight: 10,
+                    // borderWidth: 1,
+                  }}
+                >
+                  <NotificationBlue
+                    height={25}
+                    width={25}
+                    color={"#1F99A7"}
+                    fill={"#1F99A7"}
+                  />
+                  {datanotif.count_notif.count ? (
+                    <View
+                      style={{
+                        position: "absolute",
+                        left: 12,
+                        top: 5,
+                        backgroundColor: "#D75995",
+                        padding: 2,
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        // width: 20,
+                        borderWidth: 1,
+                        borderColor: "white",
+                        height: 13,
+                        borderRadius: 10,
+                      }}
+                    >
+                      {datanotif.count_notif.count > 100 ? (
+                        <Text
+                          type="bold"
+                          style={{ fontSize: 10, color: "white" }}
+                        >
+                          99+
+                        </Text>
+                      ) : (
+                        <Text
+                          type="bold"
+                          style={{ fontSize: 10, color: "white" }}
+                        >
+                          {datanotif.count_notif.count}
+                        </Text>
+                      )}
+                    </View>
+                  ) : null}
+                </Pressable>
+              ) : null}
             </View>
 
             <View
