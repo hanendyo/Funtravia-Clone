@@ -475,6 +475,14 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
+        <Tab.Screen
+          name="Inbox"
+          component={Notification}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

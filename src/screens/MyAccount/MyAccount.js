@@ -16,6 +16,7 @@ import Ripple from "react-native-material-ripple";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { Next, Help, Arrowbackwhite } from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
+import Count_Notification from "../../component/src/Count_Notification";
 import { useTranslation } from "react-i18next";
 import { Button, Text, Truncate } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
@@ -67,7 +68,9 @@ export default function MyAccount(props) {
         }}
       >
         <Pressable
-          onPress={() => props.navigation.navigate("settings")}
+          onPress={() =>
+            props.navigation.navigate("settings", { datauser: datauser })
+          }
           style={{
             marginHorizontal: 10,
           }}

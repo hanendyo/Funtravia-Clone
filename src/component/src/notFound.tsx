@@ -11,7 +11,7 @@ import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import { Kosong } from "../../assets/svg";
 
-export default function NotFound({ props, navigation, wanted }) {
+export default function NotFound({ navigation, wanted }) {
   const { t, i18n } = useTranslation();
   return (
     <View

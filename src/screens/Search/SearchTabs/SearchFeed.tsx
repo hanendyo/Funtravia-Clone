@@ -54,7 +54,7 @@ export default function SearchFeed(props) {
     },
   });
   if (dataPost) {
-    console.log(dataPost.search_feed_post.keys(emptyArray));
+    console.log(dataPost.search_feed_post);
   }
   if (loadingPost) {
     console.log("Loading Data Post" + loadingPost);

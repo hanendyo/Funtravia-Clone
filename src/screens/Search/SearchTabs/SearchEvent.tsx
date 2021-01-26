@@ -59,7 +59,7 @@ export default function SearchDestination(props) {
     // console.log('error Event ' + errorEvent);
   }
   if (dataEvent) {
-    // console.log('DATA Event SEARCH: ', dataEvent);
+    console.log("DATA Event SEARCH: ", dataEvent);
   }
 
   useEffect(() => {

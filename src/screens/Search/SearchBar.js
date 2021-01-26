@@ -66,7 +66,7 @@ export default function SearchBar({
         // keepCache(searchCache);
       }
 
-      navigation.navigate("SearchTab", {
+      await navigation.navigate("SearchTab", {
         searchInput: sentSearch,
       });
 
@@ -75,24 +75,32 @@ export default function SearchBar({
   };
 
   const sendInitTab = async (number) => {
-    // console.log('The Query Is: ' + search);
-    const value = await AsyncStorage.getItem("searchCache");
-    // console.log('value: ' + value);
-    if (value) {
-      let parseArr = JSON.parse(value);
-      parseArr.push(search);
-      // console.log('parseArr: ' + parseArr);
-
-      await AsyncStorage.setItem("searchCache", JSON.stringify(parseArr));
+    if (!sentSearch.trim() || sentSearch.length == 0) {
+      console.log("empty searchbar");
+      Alert.alert("Please Fill The Search Bar");
     } else {
-      // console.log("it's empty");
-      await AsyncStorage.setItem("searchCache", JSON.stringify(search));
-      // keepCache(searchCache);
+      // console.log('The Query Is: ' + sentSearch);
+      const value = await AsyncStorage.getItem("searchCache");
+      console.log("value: " + value);
+      if (value && value != ("" || null || undefined)) {
+        let parseArr = JSON.parse(value);
+        parseArr.push(searchText);
+        // console.log('parseArr: ' + parseArr);
+
+        await AsyncStorage.setItem("searchCache", JSON.stringify(parseArr));
+      } else {
+        // console.log("it's empty");
+        await AsyncStorage.setItem("searchCache", JSON.stringify([search]));
+        // keepCache(searchCache);
+      }
+
+      await navigation.navigate("SearchTab", {
+        initTab: number,
+        searchInput: sentSearch,
+      });
+
+      // await sendInitTab(tabTarget);
     }
-    await props.navigation.navigate("SearchTab", {
-      initTab: number,
-      searchInput: sentSearch,
-    });
   };
 
   // START OF SEARCH FUNCTION
@@ -197,6 +205,7 @@ export default function SearchBar({
           style={{
             alignContent: "center",
             alignItems: "flex-end",
+            backgroundColor: "#F1F1F1",
           }}
         >
           <View
@@ -296,7 +305,8 @@ export default function SearchBar({
                 setInput(text);
                 setSearchQuery(text);
                 setSentSearch(text);
-                // setSearchText(text)
+                setSearchText(text);
+                searchtoMainPage(text);
               }}
               onSubmitEditing={goSearchTab}
               placeholder={t("searchHome")}
@@ -324,7 +334,9 @@ export default function SearchBar({
               width: "100%",
               padding: 10,
             }}
-            onPress={() => sendInitTab(0)}
+            onPress={() => {
+              setSearchText(input), setSentSearch(input), sendInitTab(0);
+            }}
           >
             <Text size="small" type="regular">
               {`Search ${input} at Destination`}
@@ -338,7 +350,9 @@ export default function SearchBar({
               width: "100%",
               padding: 10,
             }}
-            onPress={() => sendInitTab(1)}
+            onPress={() => {
+              setSearchText(input), setSentSearch(input), sendInitTab(1);
+            }}
           >
             <Text size="small" type="regular">
               {`Search ${input} at People`}
@@ -352,7 +366,9 @@ export default function SearchBar({
               width: "100%",
               padding: 10,
             }}
-            onPress={() => sendInitTab(2)}
+            onPress={() => {
+              setSearchText(input), setSentSearch(input), sendInitTab(2);
+            }}
           >
             <Text size="small" type="regular">
               {`Search ${input} at Feed`}
@@ -366,7 +382,9 @@ export default function SearchBar({
               width: "100%",
               padding: 10,
             }}
-            onPress={() => sendInitTab(3)}
+            onPress={() => {
+              setSearchText(input), setSentSearch(input), sendInitTab(3);
+            }}
           >
             <Text size="small" type="regular">
               {`Search ${input} at Event`}
@@ -403,15 +421,13 @@ export default function SearchBar({
                 onPress={() => {
                   // setResult(item.id, item.name),
                   console.log(item[index]);
-                  //goSearchTab(1);
                   setSearchQuery(item);
-
-                  // sendInitTab(0);
+                  sendInitTab(0);
                 }}
               >
                 <Text>dari search Destination </Text>
                 <Text size="small" type="regular">
-                  {item ? item[0].name : null}
+                  {item ? item[0].name : "test"}
                 </Text>
               </TouchableOpacity>
             )}

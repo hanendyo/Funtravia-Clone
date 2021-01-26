@@ -55,9 +55,11 @@ export default function SearchPage(props, { navigation, route }) {
 
   const HeaderComponent = {
     headerTitle: "Search",
+    headerTitleStyle: { color: "white" },
     headerStyle: {
       elevation: 0,
       borderBottomWidth: 0,
+      backgroundColor: "#209FAE",
     },
     headerLeft: () => (
       <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -96,12 +98,11 @@ export default function SearchPage(props, { navigation, route }) {
     let filterArr = parseArr.filter(function (fil) {
       return fil !== (" " || null || undefined);
     });
-    console.log(filterArr);
-    setSearchCache(filterArr.slice(-5));
-  };
-
-  const onSearch = (text) => {
-    setSearch(text);
+    limitArr = filterArr.slice(-6);
+    console.log("LIMIT ARR", limitArr);
+    reverseArr = limitArr.reverse();
+    console.log("REVERSE ARRAY", reverseArr);
+    setSearchCache(reverseArr);
   };
 
   const loadAsync = async () => {
@@ -296,7 +297,7 @@ export default function SearchPage(props, { navigation, route }) {
           <SearchBar
             // props={{ route }}
             route={route}
-            navigation={navigation}
+            navigation={props.navigation}
             suggestion={true}
             mainTheme={true}
             searchtoMainPage={(dataSearchtoMainPage) =>
@@ -354,7 +355,7 @@ export default function SearchPage(props, { navigation, route }) {
                     renderItem={({ item, index }) => (
                       <RenderSearchCacheResult item={item} index={index} />
                     )}
-                    inverted
+                    // inverted
                     keyExtractor={(item) => item.index}
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
@@ -501,7 +502,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width * 0.9,
     height: Dimensions.get("window").height,
     paddingHorizontal: 10,
-    marginTop: 1000,
+    // marginTop: 1000,
+    backgroundColor: "#FFFFFF",
   },
   rightText: {
     position: "absolute",
