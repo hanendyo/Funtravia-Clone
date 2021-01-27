@@ -443,7 +443,7 @@ export default function ItineraryDay({
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "center",
-                height: 70,
+                height: 50,
               }}
             >
               <View
@@ -462,8 +462,8 @@ export default function ItineraryDay({
                 >
                   <FunIcon
                     icon={icons[data.weather[0].icon]}
-                    height={50}
-                    width={50}
+                    height={35}
+                    width={35}
                     style={{
                       bottom: -3,
                     }}
@@ -474,7 +474,7 @@ export default function ItineraryDay({
                       flexDirection: "row",
                     }}
                   >
-                    <Text size="h5" type="bold" style={{}}>
+                    <Text size="title" type="bold" style={{}}>
                       {(data.main.temp / 10).toFixed(1)}
                     </Text>
                     <View
@@ -505,7 +505,7 @@ export default function ItineraryDay({
                 >
                   <FunIcon
                     icon={"w-hot"}
-                    height={50}
+                    height={35}
                     style={{
                       bottom: -3,
                     }}
@@ -640,7 +640,7 @@ export default function ItineraryDay({
           style={{
             marginHorizontal: 20,
             width: Dimensions.get("screen").width - 40,
-            height: 60,
+            height: 50,
 
             // height: Dimensions.get('screen').width * 0.2,
             // height: 500,
@@ -682,9 +682,9 @@ export default function ItineraryDay({
                 // borderColor: 'red',
               }}
             >
-              <Hotel width={30} height={30} />
+              <Hotel width={25} height={25} />
 
-              <Text size="description" type="regular" style={{}}>
+              <Text size="small" type="bold" style={{}}>
                 {t("hotel")}
               </Text>
             </TouchableOpacity>
@@ -711,9 +711,9 @@ export default function ItineraryDay({
                 alignItems: "center",
               }}
             >
-              <Car width={30} height={30} />
+              <Car width={25} height={25} />
 
-              <Text size="description" type="regular" style={{}}>
+              <Text size="small" type="bold" style={{}}>
                 {t("rent")}
               </Text>
             </TouchableOpacity>
@@ -740,8 +740,8 @@ export default function ItineraryDay({
                 alignItems: "center",
               }}
             >
-              <Service width={30} height={30} />
-              <Text size="description" type="regular" style={{}}>
+              <Service width={25} height={25} />
+              <Text size="small" type="bold" style={{}}>
                 {t("service")}
               </Text>
             </TouchableOpacity>
