@@ -16,7 +16,6 @@ import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { OptionsVertBlack, Arrowbackwhite, Xhitam } from "../../assets/svg";
 import { calendar_blue } from "../../assets/png";
-import CountryList from "../../graphQL/Query/Countries/CountryList";
 import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
 import GetSetting from "../../graphQL/Query/Settings/GetSetting";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -31,14 +30,17 @@ import { Input, Item, Label } from "native-base";
 import City from "../../graphQL/Query/Itinerary/City";
 
 export default function SettingsAkun(props) {
-  const { t, i18n } = useTranslation();
-  const [modalEmail, setModalEmail] = useState(false);
-  const [modalPhone, setModalPhone] = useState(false);
-  const [modalBirth, setModalBirth] = useState(false);
-  const [modalBirth1, setModalBirth1] = useState(false);
-  const [modalGender, setModalGender] = useState(false);
-  const [modalCity, setModalCity] = useState(false);
-  const [modalCity1, setModalCity1] = useState(false);
+  let { t, i18n } = useTranslation();
+  let [modalEmail, setModalEmail] = useState(false);
+  let [modalPhone, setModalPhone] = useState(false);
+  let [modalBirth, setModalBirth] = useState(false);
+  let [modalBirth1, setModalBirth1] = useState(false);
+  let [modalGender, setModalGender] = useState(false);
+  let [modalCity, setModalCity] = useState(false);
+  let [modalCity1, setModalCity1] = useState(false);
+  let [city, setCity] = useState("");
+  let [cityId, setCityId] = useState("");
+  let [cityName, setCityName] = useState("");
   let [date, setDate] = useState();
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
@@ -97,6 +99,17 @@ export default function SettingsAkun(props) {
       },
     },
   });
+  console.log("use :", setting.user);
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+    await GetDataSetting();
+    await querycity();
+    await GetCurrencyList();
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
+  };
 
   const [
     querycity,
@@ -104,33 +117,16 @@ export default function SettingsAkun(props) {
   ] = useLazyQuery(City, {
     variables: {
       fetchPolicy: "network-only",
-      keyword: "",
-      // keyword: citys,
-      // countries_id: idCountry,
+      keyword: city,
+      countries_id: setting.countries.id,
     },
-  });
-
-  console.log("city list:", datacity);
-
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    await GetDataSetting();
-    await GetCountryList();
-    await querycity();
-    await GetCurrencyList();
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
-
-  const [GetCountryList, { data, loading, error }] = useLazyQuery(CountryList, {
-    fetchPolicy: "network-only",
   });
 
   const [
     GetCurrencyList,
     { data: datacurrency, loading: loadingcurrency, error: errorcurrency },
   ] = useLazyQuery(CurrencyList);
+
   const languageToggle = async (value) => {
     setLanguage(value);
     i18n.changeLanguage(value);
@@ -157,8 +153,21 @@ export default function SettingsAkun(props) {
     closeBirth1();
   };
 
+  console.log("id city :", cityId);
+  console.log("name city :", cityName);
+
+  const searchcity = (text) => {
+    setCity(text);
+    querycity();
+  };
+
+  const cityOnPress = async (id, name) => {
+    await setCityId(id);
+    await setCityName(name);
+    await setModalCity1(false);
+  };
+
   const birth = async () => {
-    // await mutationBirth(date);
     await setModalBirth(false);
   };
 
@@ -270,7 +279,7 @@ export default function SettingsAkun(props) {
             }}
           >
             <Text size="description" type="bold">
-              Birthdate
+              {t("birthdate")}
             </Text>
             <Pressable
               style={{
@@ -411,7 +420,7 @@ export default function SettingsAkun(props) {
             }}
           >
             <Text size="description" type="bold">
-              Gender
+              {t("gender")}
             </Text>
             <View
               style={{
@@ -431,8 +440,8 @@ export default function SettingsAkun(props) {
                 // selectedValue={this.state.selected}
                 // onValueChange={this.onValueChange.bind(this)}
               >
-                <Picker.Item label="Laki laki" value="key1" />
-                <Picker.Item label="Wanita" value="key2" />
+                <Picker.Item label={t("Male")} value="M" />
+                <Picker.Item label={t("Female")} value="F" />
               </Picker>
             </View>
             <View
@@ -494,10 +503,12 @@ export default function SettingsAkun(props) {
             }}
           >
             <Text size="description" type="bold">
-              City of Residence
+              {t("cityOfRecidence")}
             </Text>
             <Pressable onPress={() => setModalCity1(true)}>
-              <Text style={{ borderBottomWidth: 1, marginTop: 20 }} />
+              <Text style={{ borderBottomWidth: 1, marginTop: 20 }}>
+                {cityName}
+              </Text>
             </Pressable>
             <View
               style={{
@@ -600,10 +611,9 @@ export default function SettingsAkun(props) {
               }}
               returnKeyType="search"
               autoCorrect={false}
-              // value={citys}
-              // onChangeText={(text) => {
-              //   Searchcity(text);
-              // }}
+              onChangeText={(x) => {
+                searchcity(x);
+              }}
               // onSubmitEditing={}
               keyboardType="default"
             />
@@ -622,18 +632,18 @@ export default function SettingsAkun(props) {
               keyExtractor={(item, index) => `${index}`}
               data={datacity.cities_search}
               renderItem={({ item }) => (
-                <TouchableOpacity
+                <Pressable
                   style={{
                     backgroundColor: "white",
                     width: "100%",
                     padding: 10,
                   }}
-                  onPress={() => setcity(item.id, item.name)}
+                  onPress={() => cityOnPress(item.id, item.name)}
                 >
                   <Text size="title" type="regular" style={{}}>
                     {item.name}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               )}
             />
           ) : null}
