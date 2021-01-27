@@ -7,12 +7,12 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, CustomImage, Text, Truncate } from "../../component";
-import { default_image } from "../../assets/png";
+import { Button, CustomImage, Text, Truncate } from "../../../component";
+import { default_image } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Loading } from "../../component";
+import { Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackwhite } from "../../../assets/svg";
 import { Image } from "react-native";
 import { ImageBackground } from "react-native";
 import { ScrollView } from "react-native";
