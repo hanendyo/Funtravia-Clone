@@ -370,47 +370,4 @@ export default function Wishlist(props) {
   );
 }
 
-Wishlist.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Wishlist",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Bold",
-    fontSize: 14,
-    color: "white",
-  },
-  headerLeft: () =>
-    CustomImage({
-      customStyle: { width: 20, height: 20 },
-      customImageStyle: {
-        width: 20,
-        height: 20,
-        resizeMode: "contain",
-      },
-      isTouchable: true,
-      // onPress: () => props.navigation.navigate('Home'),
-      onPress: () => navigation.goBack(),
-      source: back_arrow_white,
-    }),
-  headerLeftContainerStyle: {
-    paddingLeft: 20,
-  },
-  headerRight: (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-      }}
-    ></View>
-  ),
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});
-
 const styles = StyleSheet.create({});
