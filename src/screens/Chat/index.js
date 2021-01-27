@@ -9,9 +9,10 @@ import {
 	Image,
 	_ScrollView,
 	Alert,
+	StatusBar,
 } from "react-native";
 import { Delete, Magnifying, NewChat } from "../../assets/svg";
-import { Text, Button } from "../../component";
+import { Text, Button, Truncate } from "../../component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import Swipeout from "react-native-swipeout";
@@ -30,12 +31,16 @@ export default function Message({ navigation }) {
 	const [active, setActive] = useState("personal");
 
 	const HeaderComponent = {
-		tabBarBadge: 8,
+		tabBarBadge: null,
 	};
 
 	useEffect(() => {
 		navigation.setOptions(HeaderComponent);
 		getUserAndToken();
+		const unsubscribe = navigation.addListener("focus", () => {
+			getUserAndToken();
+		});
+		return unsubscribe;
 	}, []);
 
 	const getRoom = async (access_token) => {
@@ -48,6 +53,12 @@ export default function Message({ navigation }) {
 			},
 		});
 		let dataResponse = await response.json();
+		for (let i in dataResponse) {
+			let recent = JSON.parse(
+				await AsyncStorage.getItem("history_" + dataResponse[i].id)
+			);
+			dataResponse[i]["recent"] = recent ? recent[recent.length - 1] : null;
+		}
 		await setData(dataResponse);
 		await setDataRes(dataResponse);
 	};
@@ -62,6 +73,12 @@ export default function Message({ navigation }) {
 			},
 		});
 		let dataResponse = await response.json();
+		for (let i in dataResponse) {
+			let recent = JSON.parse(
+				await AsyncStorage.getItem("history_" + dataResponse[i].itinerary_id)
+			);
+			dataResponse[i]["recent"] = recent ? recent[recent.length - 1] : null;
+		}
 		await setDataGroup(dataResponse);
 		await setDataGroupRes(dataResponse);
 	};
@@ -80,7 +97,7 @@ export default function Message({ navigation }) {
 		}
 		let setting = JSON.parse(await AsyncStorage.getItem("setting"));
 		if (setting) {
-			await setUser(setting);
+			await setUser(setting.user);
 		}
 	};
 
@@ -118,7 +135,9 @@ export default function Message({ navigation }) {
 	};
 
 	const renderItem = ({ item }) => {
-		let change = item.sender.id == user.id ? item.receiver : item.sender;
+		let d = new Date();
+		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
+		let change = item.sender_id == user.id ? item.receiver : item.sender;
 		return (
 			<Swipeout right={swipeoutBtn(item.id)} key={`${item.id}_child`}>
 				<Ripple
@@ -155,35 +174,39 @@ export default function Message({ navigation }) {
 						}}
 					/>
 					<View style={{ width: width - 160, paddingHorizontal: 10 }}>
-						<Text
-							size="description"
-							type="regular"
-							style={{ paddingVertical: 5 }}
-						>
+						<Text size="description" type="bold" style={{ paddingVertical: 5 }}>
 							{`${change.first_name} ${
 								change.last_name ? change.last_name : ""
 							}`}
 						</Text>
-						{/* <Text size='small'>{item.recent_chat.text}</Text>
-						<Text size='small' type='bold'>
-							This Is Current Message
-						</Text> */}
+						{item.recent ? (
+							<Text size="small">
+								<Truncate text={item.recent.text} length={80} />
+							</Text>
+						) : null}
 					</View>
-					{/* <View
-						style={{ width: 100, alignItems: 'flex-end', paddingRight: 10 }}>
-						<Text size='small'>{duration(item.recent_chat.created_at)}</Text>
-					</View> */}
+					{item.recent ? (
+						<View
+							style={{ width: 100, alignItems: "flex-end", paddingRight: 10 }}
+						>
+							<Text size="small">
+								{item.recent.date == date ? item.recent.time : item.recent.date}
+							</Text>
+						</View>
+					) : null}
 				</Ripple>
 			</Swipeout>
 		);
 	};
 
 	const renderItemGroup = ({ item }) => {
+		let d = new Date();
+		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
 		return (
 			<Swipeout right={swipeoutBtn(item.id)} key={`${item.id}_child`}>
 				<Ripple
 					onPress={() =>
-						navigation.navigate("GroupChat", {
+						navigation.navigate("GroupRoom", {
 							room_id: item.itinerary.id,
 							name: item.itinerary.name,
 							picture: item.itinerary.cover,
@@ -211,22 +234,24 @@ export default function Message({ navigation }) {
 						}}
 					/>
 					<View style={{ width: width - 160, paddingHorizontal: 10 }}>
-						<Text
-							size="description"
-							type="regular"
-							style={{ paddingVertical: 5 }}
-						>
+						<Text size="description" type="bold" style={{ paddingVertical: 5 }}>
 							{item.itinerary.name}
 						</Text>
-						{/* <Text size='small'>{item.recent_chat.text}</Text>
-						<Text size='small' type='bold'>
-							This Is Current Message
-						</Text> */}
+						{item.recent ? (
+							<Text size="small">
+								<Truncate text={item.recent.text} length={80} />
+							</Text>
+						) : null}
 					</View>
-					{/* <View
-						style={{ width: 100, alignItems: 'flex-end', paddingRight: 10 }}>
-						<Text size='small'>{duration(item.recent_chat.created_at)}</Text>
-					</View> */}
+					{item.recent ? (
+						<View
+							style={{ width: 100, alignItems: "flex-end", paddingRight: 10 }}
+						>
+							<Text size="small">
+								{item.recent.date == date ? item.recent.time : item.recent.date}
+							</Text>
+						</View>
+					) : null}
 				</Ripple>
 			</Swipeout>
 		);
@@ -251,6 +276,7 @@ export default function Message({ navigation }) {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
+			<StatusBar barStyle="dark-content" />
 			<FlatList
 				data={active == "personal" ? dataRes : dataGroupRes}
 				renderItem={active == "personal" ? renderItem : renderItemGroup}
@@ -283,13 +309,20 @@ export default function Message({ navigation }) {
 								}}
 							/>
 						</View>
-						<View style={{ flexDirection: "row" }}>
+						<View
+							style={{
+								flexDirection: "row",
+								backgroundColor: "#fff",
+								borderWidth: 1,
+								borderColor: "#EEEEEE",
+							}}
+						>
 							<Ripple
 								onPress={() => {
 									setActive("personal");
 								}}
 								style={{
-									width: width / 2,
+									// width: width / 2,
 									alignContent: "center",
 									alignItems: "center",
 									borderBottomWidth: active == "personal" ? 3 : 1,
@@ -297,6 +330,7 @@ export default function Message({ navigation }) {
 										active == "personal" ? "#209FAE" : "#EEEEEE",
 									paddingVertical: 15,
 									backgroundColor: "#FFFFFF",
+									paddingHorizontal: 25,
 								}}
 							>
 								<Text
@@ -314,13 +348,14 @@ export default function Message({ navigation }) {
 									setActive("group");
 								}}
 								style={{
-									width: width / 2,
+									// width: width / 2,
 									alignContent: "center",
 									alignItems: "center",
 									borderBottomWidth: active == "group" ? 3 : 1,
 									borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
 									paddingVertical: 15,
 									backgroundColor: "#FFFFFF",
+									paddingHorizontal: 25,
 								}}
 							>
 								<Text
