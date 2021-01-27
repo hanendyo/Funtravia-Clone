@@ -150,6 +150,12 @@ export default function Room({ navigation, route }) {
 	};
 
 	const submitChatMessage = async () => {
+		let d = new Date();
+		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
+		let time = [
+			d.getHours(),
+			d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes(),
+		].join(":");
 		if (button) {
 			if (chat && chat !== "") {
 				await setButton(false);
@@ -157,25 +163,22 @@ export default function Room({ navigation, route }) {
 					room: room,
 					text: chat,
 					user_id: user.id,
-					first_name: user.first_name,
-					last_name: user.last_name,
+					date: date,
+					time: time,
 				};
-				let response = await fetch(`${CHATSERVER}/api/personal/send`, {
+				await fetch(`${CHATSERVER}/api/personal/send`, {
 					method: "POST",
 					headers: {
 						Authorization: `Bearer ${token}`,
 						"Content-Type": "application/x-www-form-urlencoded",
 					},
-					body: `room=${room}&text=${chat}&user_id=${user.id}`,
+					body: `room=${room}&text=${chat}&user_id=${user.id}&date=${date}&time=${time}`,
 				});
-				let dataResponse = await response.json();
-				if (dataResponse.status) {
-					await socket.emit("message", chatData);
-					await setChat("");
-					await setTimeout(function () {
-						flatListRef.current.scrollToEnd({ animated: true });
-					}, 250);
-				}
+				await socket.emit("message", chatData);
+				await setChat("");
+				await setTimeout(function () {
+					flatListRef.current.scrollToEnd({ animated: true });
+				}, 250);
 				await setButton(true);
 			}
 		}
@@ -194,15 +197,16 @@ export default function Room({ navigation, route }) {
 					style={[
 						styles.balloon,
 						{
-							backgroundColor: user.id == item.user_id ? "#209FAE" : "#E2ECF8",
+							backgroundColor: user.id == item.user_id ? "#14646E" : "#DAF0F2",
 						},
 					]}
 				>
 					<Text
-						size="small"
+						size="description"
 						style={{
 							padding: 2.5,
 							color: user.id == item.user_id ? "#FFFFFF" : "#464646",
+							lineHeight: 18,
 						}}
 					>
 						{item.text}
@@ -230,7 +234,7 @@ export default function Room({ navigation, route }) {
 										? "M48,35c-7-4-6-8.75-6-17.5C28,17.5,29,35,48,35z"
 										: "M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z"
 								}
-								fill={user.id == item.user_id ? "#209FAE" : "#E2ECF8"}
+								fill={user.id == item.user_id ? "#14646E" : "#DAF0F2"}
 								x="0"
 								y="0"
 							/>
@@ -319,6 +323,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 	},
 	itemIn: {
+		alignSelf: "flex-start",
 		marginLeft: 20,
 	},
 	itemOut: {
