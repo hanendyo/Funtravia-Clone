@@ -155,7 +155,7 @@ const DataInformasi = [
 
 export default function Invitation({ navigation, token, datas, GetListNotif }) {
   const { t, i18n } = useTranslation();
-
+console.log(datas);
   const [datanotif, SetDataNotif] = useState(datas.list_notification);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);

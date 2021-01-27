@@ -65,6 +65,36 @@ const deletepost = gql`
 `;
 
 export default function SinglePost(props) {
+	const HeaderComponent = {
+		headerShown: true,
+		transparent: false,
+		headerTintColor: "white",
+		headerTitle: "Comment",
+		headerMode: "screen",
+		headerStyle: {
+		  backgroundColor: "#209FAE",
+		  elevation: 0,
+		  borderBottomWidth: 0,
+		},
+		headerTitleStyle: {
+		  fontFamily: "Lato-Bold",
+		//   fontSize: 14,
+		  color: "white",
+		},
+		// headerLeftContainerStyle: {
+		// 	background: "#FFF",
+		// },
+		// headerRight: () => (
+		// 	<View style={{ flexDirection: "row" }}>
+		// 		<TouchableOpacity
+		// 			style={{ marginRight: 20 }}
+		// 			onPress={() => Alert.alert("Coming soon")}
+		// 		>
+		// 			<SearchWhite height={20} width={20} />
+		// 		</TouchableOpacity>
+		// 	</View>
+		// ),
+	  };
 	const { t } = useTranslation();
 	let [postid] = useState(props.route.params.post_id);
 	let [selectedOption, SetOption] = useState({});
@@ -213,7 +243,7 @@ export default function SinglePost(props) {
 						response.data.delete_post.code === 200 ||
 						response.data.delete_post.code === "200"
 					) {
-						props.navigation.push("Feed");
+						props.navigation.push("FeedScreen");
 					} else {
 						throw new Error(response.data.delete_post.message);
 					}
@@ -252,11 +282,12 @@ export default function SinglePost(props) {
 	};
 
 	useEffect(() => {
+		props.navigation.setOptions(HeaderComponent);
 		loadAsync();
 	}, []);
 
 	const viewcomment = (data) => {
-		props.navigation.navigate("comment", {
+		props.navigation.navigate("CommentPost", {
 			data: data.feed_post_byid,
 			token: token,
 		});
@@ -274,7 +305,10 @@ export default function SinglePost(props) {
 	};
 
 	return (
-		<ScrollView>
+		<ScrollView
+			style={{
+				backgroundColor: '#FFFFFF'
+			}}>
 			<Modal
 				onBackdropPress={() => {
 					setModalmenu(false);
@@ -739,51 +773,3 @@ export default function SinglePost(props) {
 		</ScrollView>
 	);
 }
-
-SinglePost.navigationOptions = ({ navigation }) => {
-	const { params } = navigation.state;
-	return {
-		headerTitle: "",
-		headerMode: "screen",
-		headerStyle: {
-			zIndex: 20,
-			backgroundColor: "#209FAE",
-			elevation: 0,
-			borderBottomWidth: 0,
-			fontSize: 50,
-		},
-		headerTitleStyle: {
-			fontFamily: "Lato-Bold",
-			fontSize: 14,
-			color: "white",
-			alignSelf: "center",
-		},
-		headerLeft: () =>
-			CustomImage({
-				customStyle: { width: 20, height: 20 },
-				customImageStyle: { width: 20, height: 20, resizeMode: "contain" },
-				isTouchable: true,
-				onPress: () => navigation.goBack(),
-				source: back_arrow_white,
-			}),
-		headerLeftContainerStyle: {
-			paddingLeft: 20,
-		},
-		headerRight: () => {
-			return (
-				<TouchableOpacity
-					onPress={() => {}}
-					style={{
-						paddingRight: 10,
-						flexDirection: "row",
-						alignContent: "center",
-						alignItems: "center",
-					}}
-				></TouchableOpacity>
-			);
-		},
-		headerRightStyle: {
-			marginRight: 20,
-		},
-	};
-};

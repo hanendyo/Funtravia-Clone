@@ -315,7 +315,7 @@ export default function Feed(props) {
       <View
         style={{
           width: Dimensions.get("window").width,
-          backgroundColor: "#FFFFFF",
+          // backgroundColor: "#FFFFFF",
           flex: 1,
           borderBottomWidth: 1,
           borderBottomColor: "#EEEEEE",
@@ -498,7 +498,7 @@ export default function Feed(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#F6F6F6'}}>
       {/* <NavigationEvents
 				// onWillFocus={(payload) => console.log('will focus', payload)}
 				onDidFocus={(payload) => eventDidFocus(payload.action.type)}

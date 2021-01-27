@@ -7,8 +7,10 @@ import {
   Dimensions,
   Alert,
   RefreshControl,
+  // Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Image from 'react-native-auto-scale-image';
 import Modal from "react-native-modal";
 import { CustomImage } from "../../component";
 import {
@@ -17,6 +19,10 @@ import {
   LikeEmpty,
   OptionsVertBlack,
   ShareBlack,
+  More,
+  LikeBlack,
+  CommentBlack
+
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
@@ -193,9 +199,19 @@ export default function FeedList({
       Alert.alert("Please Login");
     }
   };
-  // const _alertDelete = () =>{
 
-  // }
+  
+
+  const image_scaling = async (image) =>{
+    // console.log(data);
+    let screen_widht = Dimensions.get("screen").width - 50;
+    let screen_height = Dimensions.get("screen").width - 50;
+    await Image.getSize(image, (width, height) => {
+        screen_height = height * (screen_widht / width);
+    });
+    return screen_height;
+
+  }
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
@@ -315,12 +331,15 @@ export default function FeedList({
     return (
       <View
         style={{
-          width: Dimensions.get("window").width,
+          width: Dimensions.get("window").width - 20,
           backgroundColor: "#FFFFFF",
           flex: 1,
+          marginHorizontal: 10,
+          marginVertical:7,
+          borderRadius: 20,
           borderBottomWidth: 1,
           borderBottomColor: "#EEEEEE",
-          paddingBottom: 20,
+          paddingBottom: 25,
         }}
       >
         <View
@@ -342,8 +361,8 @@ export default function FeedList({
                 : props.navigation.push("ProfileTab");
             }}
             customStyle={{
-              height: 35,
-              width: 35,
+              height: 40,
+              width: 40,
               borderRadius: 15,
               alignSelf: "center",
               marginLeft: 15,
@@ -418,24 +437,139 @@ export default function FeedList({
             style={{
               position: "absolute",
               right: 15,
+              top: 2,
               alignSelf: "center",
             }}
           >
-            <OptionsVertBlack height={20} width={20} />
+            <More height={20} width={20} />
           </TouchableOpacity>
         </View>
-
-        <AutoHeightImage
-          width={Dimensions.get("window").width}
-          source={{ uri: dataRender.assets[0]?.filepath }}
-        />
+        <View
+          style={{
+            marginHorizontal: 10,
+            alignContent: 'center',
+            justifyContent: 'center',
+            alignItems:'center',
+            width : Dimensions.get("window").width - 40,
+            borderRadius: 15,
+          }}>
+          {dataRender && dataRender.assets && dataRender.assets[0].filepath ?
+            <Image
+              style={{
+                width: Dimensions.get("window").width -40,
+                borderRadius: 15,
+                alignSelf: "center",
+              }}
+              uri= {dataRender.assets[0].filepath }
+          />
+          :null
+          }
+          {/* <AutoHeightImage
+            width={Dimensions.get("window").width -40}
+            source={{ uri: dataRender.assets[0]?.filepath }}
+          /> */}
+        </View>
 
         <View
           style={{
             width: "100%",
             backgroundColor: "white",
-          }}
-        >
+            marginTop: 17,
+          }}>
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "white",
+              justifyContent: "space-between",
+              paddingHorizontal: 10,
+            }}>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "50%",
+                alignSelf: "flex-start",
+                alignContent: "space-between",
+                alignItems: "center",
+                // justifyContent: 'space-evenly',
+              }}
+            >
+              {dataRender.liked ? (
+                <Button
+                  onPress={() => _unliked(dataRender.id)}
+                  type="icon"
+                  // variant="transparent"
+                  position="left"
+                  size="small"
+                  style={{
+                    paddingHorizontal: 10,
+                    marginRight: 15,
+                    borderRadius:16,
+                    backgroundColor: '#F2DAE5'
+                    // minidth: 70,
+                    // right: 10,
+                  }}
+                >
+                  <LikeRed height={15} width={15} />
+                  <Text type='black' size='label'  style={{ marginHorizontal: 5, color: '#BE3737' }}>
+                    {dataRender.response_count}
+                  </Text>
+                </Button>
+              ) : (
+                <Button
+                  onPress={() => _liked(dataRender.id)}
+                  type="icon"
+                  position="left"
+                  size="small"
+                  color="tertiary"
+                  style={{
+                    paddingHorizontal: 10,
+                    marginRight: 15,
+                    borderRadius:16,
+                    // right: 10,
+                  }}
+                >
+                  <LikeBlack height={15} width={15} />
+                  <Text type='black' size='label' style={{ marginHorizontal: 7 }}>
+                    {dataRender.response_count}
+                  </Text>
+                </Button>
+              )}
+
+              <Button
+                onPress={() => viewcomment(dataRender)}
+                type="icon"
+                variant="transparent"
+                position="left"
+                size="small"
+                style={{
+                  paddingHorizontal: 2,
+
+                  // right: 10,
+                }}
+              >
+                <CommentBlack height={15} width={15} />
+                <Text type='black' size='label'  style={{ marginHorizontal: 7 }}>
+                  {dataRender.comment_count}
+                </Text>
+              </Button>
+            </View>
+
+            <Button
+              type="icon"
+              variant="transparent"
+              position="left"
+              size="small"
+              style={{
+                // right: 10,
+                paddingHorizontal: 2,
+              }}
+            >
+              <ShareBlack height={17} width={17} />
+              <Text size="small" style={{ marginLeft: 3 }}>
+                {t("share")}
+              </Text>
+            </Button>
+          </View>
           <View
             style={{
               width: "100%",
@@ -478,99 +612,8 @@ export default function FeedList({
               </Text>
             ) : null}
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "white",
-              justifyContent: "space-between",
-              paddingHorizontal: 10,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                width: "50%",
-                alignSelf: "flex-start",
-                alignContent: "space-between",
-                alignItems: "center",
-                // justifyContent: 'space-evenly',
-              }}
-            >
-              {dataRender.liked ? (
-                <Button
-                  onPress={() => _unliked(dataRender.id)}
-                  type="icon"
-                  variant="transparent"
-                  position="left"
-                  size="small"
-                  style={{
-                    paddingHorizontal: 2,
-                    marginRight: 10,
-
-                    // right: 10,
-                  }}
-                >
-                  <LikeRed height={20} width={20} />
-                  <Text style={{ marginHorizontal: 3 }}>
-                    {dataRender.response_count}
-                  </Text>
-                </Button>
-              ) : (
-                <Button
-                  onPress={() => _liked(dataRender.id)}
-                  type="icon"
-                  variant="transparent"
-                  position="left"
-                  size="small"
-                  style={{
-                    paddingHorizontal: 2,
-                    marginRight: 10,
-                    // right: 10,
-                  }}
-                >
-                  <LikeEmpty height={20} width={20} />
-                  <Text style={{ marginHorizontal: 3 }}>
-                    {dataRender.response_count}
-                  </Text>
-                </Button>
-              )}
-
-              <Button
-                onPress={() => viewcomment(dataRender)}
-                type="icon"
-                variant="transparent"
-                position="left"
-                size="small"
-                style={{
-                  paddingHorizontal: 2,
-
-                  // right: 10,
-                }}
-              >
-                <Comment height={20} width={20} />
-                <Text style={{ marginHorizontal: 3 }}>
-                  {dataRender.comment_count}
-                </Text>
-              </Button>
-            </View>
-
-            <Button
-              type="icon"
-              variant="transparent"
-              position="left"
-              size="small"
-              style={{
-                // right: 10,
-                paddingHorizontal: 2,
-              }}
-            >
-              <ShareBlack height={20} width={20} />
-              <Text size="small" style={{ marginLeft: 3 }}>
-                {t("share")}
-              </Text>
-            </Button>
-          </View>
         </View>
+      
       </View>
     );
   }
@@ -784,11 +827,15 @@ export default function FeedList({
           </View>
         </View>
       </Modal>
+      
       <FlatList
         data={datafeed}
         renderItem={({ item }) => (
           <Item dataRender={item} selected={selected} />
         )}
+        style={{
+          paddingVertical: 7,
+        }}
         keyExtractor={(item) => item.id_post}
         extraData={liked}
         refreshing={refreshing}

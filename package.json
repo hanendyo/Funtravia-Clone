@@ -29,6 +29,7 @@
 		"react-i18next": "^11.8.5",
 		"react-native": "0.63.4",
 		"react-native-auto-height-image": "^3.2.3",
+		"react-native-auto-scale-image": "^1.0.1",
 		"react-native-draggable-flatlist": "^2.5.1",
 		"react-native-fbsdk": "^3.0.0",
 		"react-native-geolocation-service": "^5.1.1",
