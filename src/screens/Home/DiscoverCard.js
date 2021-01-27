@@ -50,7 +50,10 @@ export default function DiscoverCard({ props }) {
           flexDirection: "row",
         }}
       >
-        <TouchableOpacity key={discoverCardsData[0].id} onPress={() => null}>
+        <TouchableOpacity
+          key={discoverCardsData[0].id}
+          onPress={() => props.navigation.navigate("TravelIdeas")}
+        >
           <ImageBackground
             source={discoverCardsData[0].background_image}
             style={{

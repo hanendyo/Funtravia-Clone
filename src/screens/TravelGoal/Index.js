@@ -19,7 +19,7 @@ import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import Ripple from "react-native-material-ripple";
 
-export default function Wishlist(props) {
+export default function TravelGoal(props) {
   const HeaderComponent = {
     headerShown: true,
     title: "Travel Goal",
