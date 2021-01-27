@@ -4,22 +4,30 @@ import {
   StyleSheet,
   View,
   FlatList,
-  Button,
   TouchableOpacity,
-  Image,
   Dimensions,
   Alert,
   TextInput,
   Pressable,
   Keyboard,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { Text } from "native-base";
+import { useTranslation } from "react-i18next";
+import Image from 'react-native-auto-scale-image';
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
 // import { NavigationEvents, SafeAreaView } from "react-navigation";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
+import {
+  Text,
+  Button,
+  FloatingInput,
+  Peringatan,
+  CustomImage,
+  Loading
+} from "../../../component";
+
 import {
   Comment,
   LikeRed,
@@ -30,7 +38,12 @@ import {
   Kosong,
   Arrowbackwhite,
   OptionsVertWhite,
+  More,
+  LikeBlack,
+  CommentBlack
 } from "../../../assets/svg";
+import likepost from "../../../graphQL/Mutation/Post/likepost";
+import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 export default function Comments(props) {
   const HeaderComponent = {
     headerShown: true,
@@ -45,7 +58,7 @@ export default function Comments(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      // fontSize: 14,
       color: "white",
     },
     // headerLeftContainerStyle: {
@@ -62,14 +75,16 @@ export default function Comments(props) {
     // 	</View>
     // ),
   };
-
+  const [loadings, setLoading] = useState(false);
+  const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
   let [dataPost, setDataPost] = useState(props.route.params.data);
   let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
-  console.log(setting);
+  
+  // console.log(setting);
   // console.log(props.route.params.data);
   const onSelect = useCallback(
     (id) => {
@@ -106,7 +121,7 @@ export default function Comments(props) {
 
   const [
     MutationComment,
-    { loading: loadingLike, data: dataLike, error: errorLike },
+    { loading: loadingcmnt, data: datacmnt, error: errorcmnt },
   ] = useMutation(commentpost, {
     context: {
       headers: {
@@ -116,9 +131,115 @@ export default function Comments(props) {
     },
   });
 
+
+
+  const [
+    MutationLike,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(likepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    MutationunLike,
+    { loading: loadingunLike, data: dataunLike, error: errorunLike },
+  ] = useMutation(unlikepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _liked = async (id) => {
+    // console.log(id);
+    // SetDataFeed(tempData);
+    if (token) {
+      dataPost.liked = true;
+      try {
+        let response = await MutationLike({
+          variables: {
+            post_id: id,
+          },
+        });
+        // if (loadingLike) {
+        //   Alert.alert("Loading!!");
+        // }
+        // if (errorLike) {
+        //   throw new Error("Error Input");
+        // }
+
+        if (response.data) {
+          if (
+            response.data.like_post.code === 200 ||
+            response.data.like_post.code === "200"
+          ) {
+            dataPost.liked = true;
+          } else {
+            dataPost.liked = false;
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        dataPost.liked = false;
+        console.log(error);
+        // Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _unliked = async (id) => {
+
+    if (token || token !== "") {
+      dataPost.liked = false;
+      try {
+        let response = await MutationunLike({
+          variables: {
+            post_id: id,
+          },
+        });
+        // if (loadingunLike) {
+        //   Alert.alert("Loading!!");
+        // }
+        // if (errorunLike) {
+        //   throw new Error("Error Input");
+        // }
+
+        if (response.data) {
+          if (
+            response.data.unlike_post.code === 200 ||
+            response.data.unlike_post.code === "200"
+          ) {
+            dataPost.liked = false;
+          } else {
+            dataPost.liked = true;
+            throw new Error(response.data.unlike_post.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+      }
+    } else {
+      dataPost.liked = false;
+      Alert.alert("Please Login");
+    }
+  };
+
   const comment = async (id, text) => {
     Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
+      setLoading(true);
       try {
         let response = await MutationComment({
           variables: {
@@ -126,10 +247,10 @@ export default function Comments(props) {
             text: text,
           },
         });
-        if (loadingLike) {
+        if (loadingcmnt) {
           Alert.alert("Loading!!");
         }
-        if (errorLike) {
+        if (errorcmnt) {
           throw new Error("Error Input");
         }
         if (response.data) {
@@ -137,17 +258,22 @@ export default function Comments(props) {
             response.data.comment_post.code === 200 ||
             response.data.comment_post.code === "200"
           ) {
+            setLoading(false);
+            
             setStatusText("");
-
+            dataPost.comment_count = dataPost.comment_count + 1;
             GetCommentList();
             scroll_to();
+            
           } else {
+            setLoading(false);
             throw new Error(response.data.comment_post.message);
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
+        setLoading(false);
         // console.log(error);
         Alert.alert("" + error);
       }
@@ -243,10 +369,11 @@ export default function Comments(props) {
           // width: Dimensions.get('window').width,
           backgroundColor: "#FFFFFF",
           // flex: 1,
-          // borderBottomWidth: 1,
-          // borderBottomColor: '#EEEEEE',
-          marginHorizontal: 15,
-          marginVertical: 10,
+          borderTopWidth: 1,
+          borderTopColor: '#EEEEEE',
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          borderRadius:20,
         }}
       >
         <View
@@ -274,7 +401,7 @@ export default function Comments(props) {
               style={{
                 height: 35,
                 width: 35,
-                borderRadius: 15,
+                borderRadius: 18,
                 alignSelf: "center",
                 resizeMode: "cover",
               }}
@@ -304,10 +431,10 @@ export default function Comments(props) {
                 {dataComment.user?.first_name} {dataComment.user?.last_name}
               </Text>
               <Text
-                allowFontScaling={false}
+                size={'small'}
                 style={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 10,
+                  // fontSize: 10,
                   // marginTop: 7,
                 }}
               >
@@ -324,12 +451,9 @@ export default function Comments(props) {
           }}
         >
           <Text
-            allowFontScaling={false}
+
             style={{
               textAlign: "left",
-              fontFamily: "Lato-Regular",
-              fontSize: 14,
-              color: "#616161",
             }}
           >
             {dataComment.text}
@@ -340,47 +464,48 @@ export default function Comments(props) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "#FFF",
-      }}
-    >
-      {/* <NavigationEvents onDidFocus={() => GetCommentList()} /> */}
-      <View
-        style={{
-          // width: Dimensions.get('window').width,
-          backgroundColor: "#FFFFFF",
-          // flex: 1,
-          borderBottomWidth: 1,
-          borderBottomColor: "#EEEEEE",
-          marginHorizontal: 15,
-          marginTop: 15,
+
+      }}>
+      <ScrollView
+        contentContainerStyle={{
+          // paddingBottom :100,
         }}
-      >
+        style={{
+          flex: 1,
+          
+          // backgroundColor: "#FFF",
+          // height: Dimensions.get('window').height - 100,
+          
+
+        }}>
+        <Loading show={loadings}/>
         <View
           style={{
-            width: "100%",
-            flexDirection: "row",
+            width: Dimensions.get('window').width-20,
+            backgroundColor: "#FFFFFF",
+            // flex: 1,
+            borderBottomWidth: 1,
+            borderBottomColor: "#EEEEEE",
+            marginHorizontal: 10,
             marginVertical: 10,
-            alignContent: "center",
-          }}
-        >
-          <Pressable
-            onPress={() => {
-              dataPost.user.id !== setting?.user?.id
-                ? props.navigation.push("otherprofile", {
-                    idUser: dataPost.user.id,
-                  })
-                : props.navigation.push("ProfileTab");
-            }}
-            u
+            // borderWidth:1,
+            borderRadius: 20,
+            paddingBottom:20,
+          }}>
+          <View
             style={{
+              // width: "100%",
+              width: Dimensions.get('window').width-40,
               flexDirection: "row",
+              marginVertical: 10,
+              paddingHorizontal: 10,
+              alignContent: "center",
             }}
           >
-            <Image
-              isTouchable
+            <Pressable
               onPress={() => {
                 dataPost.user.id !== setting?.user?.id
                   ? props.navigation.push("otherprofile", {
@@ -388,22 +513,13 @@ export default function Comments(props) {
                     })
                   : props.navigation.push("ProfileTab");
               }}
+              u
               style={{
-                height: 35,
-                width: 35,
-                borderRadius: 15,
-                alignSelf: "center",
-                resizeMode: "cover",
-              }}
-              source={{ uri: dataPost.user.picture }}
-            />
-            <View
-              style={{
-                justifyContent: "center",
-                marginHorizontal: 10,
+                flexDirection: "row",
               }}
             >
-              <Text
+              <Image
+                isTouchable
                 onPress={() => {
                   dataPost.user.id !== setting?.user?.id
                     ? props.navigation.push("otherprofile", {
@@ -411,86 +527,253 @@ export default function Comments(props) {
                       })
                     : props.navigation.push("ProfileTab");
                 }}
-                allowFontScaling={false}
                 style={{
+                  height: 35,
+                  width: 35,
+                  borderRadius: 18,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+                source={{ uri: dataPost.user.picture }}
+              />
+              <View
+                style={{
+                  justifyContent: "center",
+                  marginHorizontal: 10,
+                }}
+              >
+                <Text
+                  onPress={() => {
+                    dataPost.user.id !== setting?.user?.id
+                      ? props.navigation.push("otherprofile", {
+                          idUser: dataPost.user.id,
+                        })
+                      : props.navigation.push("ProfileTab");
+                  }}
+                  type={'bold'}
+                  style={{
+                  }}
+                >
+                  {dataPost.user.first_name}{" "}
+                  {dataPost.user.first_name ? dataPost.user.last_name : null}
+                </Text>
+                <Text
+                  size={'small'}
+                  style={{
+                  }}
+                >
+                  {duration(dataPost.created_at)}
+                </Text>
+              </View>
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                right: 0,
+                alignSelf: "center",
+              }}
+            >
+              <More height={20} width={20} />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              marginHorizontal: 10,
+              alignContent: 'center',
+              justifyContent: 'center',
+              alignItems:'center',
+              width : Dimensions.get("window").width - 40,
+              borderRadius: 15,
+            }}>
+            {dataPost && dataPost.assets && dataPost.assets[0].filepath ?
+              <Image
+                style={{
+                  width: Dimensions.get("window").width -40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                }}
+                uri= {dataPost.assets[0].filepath }
+            />
+            :null
+            }
+            {/* <AutoHeightImage
+              width={Dimensions.get("window").width -40}
+              source={{ uri: dataPost.assets[0]?.filepath }}
+            /> */}
+          </View>
+          <View
+            style={{
+              width: "100%",
+              backgroundColor: "white",
+              marginTop: 17,
+            }}>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "white",
+                justifyContent: "space-between",
+                paddingHorizontal: 10,
+              }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "50%",
+                  alignSelf: "flex-start",
+                  alignContent: "space-between",
+                  alignItems: "center",
+                  // justifyContent: 'space-evenly',
+                }}
+              >
+                {dataPost.liked ? (
+                  <Button
+                    onPress={() => _unliked(dataPost.id)}
+                    type="icon"
+                    // variant="transparent"
+                    position="left"
+                    size="small"
+                    style={{
+                      paddingHorizontal: 10,
+                      marginRight: 15,
+                      borderRadius:16,
+                      backgroundColor: '#F2DAE5'
+                      // minidth: 70,
+                      // right: 10,
+                    }}
+                  >
+                    <LikeRed height={15} width={15} />
+                    <Text type='black' size='label'  style={{ marginHorizontal: 5, color: '#BE3737' }}>
+                      {dataPost.response_count}
+                    </Text>
+                  </Button>
+                ) : (
+                  <Button
+                    onPress={() => _liked(dataPost.id)}
+                    type="icon"
+                    position="left"
+                    size="small"
+                    color="tertiary"
+                    style={{
+                      paddingHorizontal: 10,
+                      marginRight: 15,
+                      borderRadius:16,
+                      // right: 10,
+                    }}
+                  >
+                    <LikeBlack height={15} width={15} />
+                    <Text type='black' size='label' style={{ marginHorizontal: 7 }}>
+                      {dataPost.response_count}
+                    </Text>
+                  </Button>
+                )}
+
+                <Button
+                  onPress={() => console.log("dataPost")}
+                  type="icon"
+                  variant="transparent"
+                  position="left"
+                  size="small"
+                  style={{
+                    paddingHorizontal: 2,
+
+                    // right: 10,
+                  }}
+                >
+                  <CommentBlack height={15} width={15} />
+                  <Text type='black' size='label'  style={{ marginHorizontal: 7 }}>
+                    {dataPost.comment_count}
+                  </Text>
+                </Button>
+              </View>
+
+              <Button
+                type="icon"
+                variant="transparent"
+                position="left"
+                size="small"
+                style={{
+                  // right: 10,
+                  paddingHorizontal: 2,
+                }}
+              >
+                <ShareBlack height={17} width={17} />
+                <Text size="small" style={{ marginLeft: 3 }}>
+                  {t("share")}
+                </Text>
+              </Button>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                padding: 10,
+                flexDirection: "row",
+                borderRadius: 20,
+                // borderWidth:1,
+              }}
+            >
+              {/* <Text
+                style={{
+                  textAlign: 'left',
                   fontFamily: "Lato-Bold",
                   fontSize: 14,
-                  // marginTop: 7,
-                }}
-              >
-                {dataPost.user.first_name}{" "}
+                  color: '#616161',
+                  marginRight: 5,
+                }}>
+                {dataPost.user.first_name} {''}{' '}
                 {dataPost.user.first_name ? dataPost.user.last_name : null}
-              </Text>
-              <Text
-                allowFontScaling={false}
-                style={{
-                  fontFamily: "Lato-Regular",
-                  fontSize: 10,
-                  // marginTop: 7,
-                }}
-              >
-                {duration(dataPost.created_at)}
-              </Text>
+              </Text> */}
+              {dataPost.caption ? (
+                <Text
+                  style={{
+                    textAlign: "left",
+                    fontFamily: "Lato-Regular",
+                    fontSize: 14,
+                    lineHeight: 20,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Lato-Bold",
+                      marginRight: 5,
+                    }}
+                  >
+                    {dataPost.user.first_name}{" "}
+                    {dataPost.user.first_name
+                      ? dataPost.user.last_name
+                      : null}{" "}
+                  </Text>
+                  {dataPost.caption}
+                </Text>
+              ) : null}
             </View>
-          </Pressable>
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              right: 0,
-              alignSelf: "center",
-            }}
-          >
-            <OptionsVertBlack height={20} width={20} />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            marginVertical: 15,
+          </View>
+          
+          <FlatList
+          ref={slider}
+          data={data ? data.comment : null}
+          renderItem={({ item }) => {
+            return <Item dataComment={item} />;
           }}
-        >
-          <Text
-            allowFontScaling={false}
-            style={{
-              textAlign: "left",
-              fontFamily: "Lato-Regular",
-              fontSize: 14,
-              color: "#616161",
-            }}
-          >
-            {dataPost.caption}
-          </Text>
+          keyExtractor={(item) => item.id}
+          extraData={selected}
+        />
         </View>
-      </View>
+      
 
-      {/* <View> */}
-      <FlatList
-        ref={slider}
-        data={data ? data.comment : null}
-        renderItem={({ item }) => {
-          return <Item dataComment={item} />;
-        }}
-        keyExtractor={(item) => item.id}
-        extraData={selected}
-      />
-      {/* <View
-					style={{
-						flex: 1,
-						flexDirection: 'row',
-						height: 60,
-						width: Dimensions.get('screen').width,
-					}}
-				/> */}
-      {/* </View> */}
+      </ScrollView>
       <View
         style={{
           flexDirection: "row",
-          // marginTop: 25,
-          backgroundColor: "#F0F0F0",
-          // height: 100,
-          width: Dimensions.get("screen").width,
+          marginVertical : 5,
+          marginHorizontal : 10,
           // position: 'absolute',
           // bottom: 0,
+          borderRadius: 50,
+          backgroundColor: "#ffffff",
+          // height: 100,
+          width: Dimensions.get("screen").width - 20,
+          // position: 'absolute',
+          // bottom: 0,
+          // borderWidth:1,
           alignItems: "center",
           // justifyContent: 'space-around',
         }}
@@ -498,11 +781,11 @@ export default function Comments(props) {
         <TextInput
           allowFontScaling={false}
           multiline
-          placeholder={"Comment as " + setting?.user?.first_name + "..."}
+          placeholder={"Comment as " + setting?.user?.first_name + " " + setting?.user?.last_name + "..."}
           maxLength={255}
           style={{
             height: 60,
-            width: (Dimensions.get("screen").width * 80) / 100,
+            width: Dimensions.get("screen").width - 120,
             // borderBottomColor: '#f0f0f0f0',
             // borderWidth: 1,
             marginLeft: 20,
@@ -524,10 +807,10 @@ export default function Comments(props) {
         >
           <Text
             allowFontScaling={false}
+            size='label'
+            type='bold'
             style={{
               alignSelf: "center",
-              fontFamily: "Lato-Bold",
-              fontSize: 15,
               color: "#209fae",
             }}
           >
@@ -535,7 +818,8 @@ export default function Comments(props) {
           </Text>
         </Pressable>
       </View>
-    </View>
+      
+    </SafeAreaView>  
   );
 }
 

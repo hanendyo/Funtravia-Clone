@@ -21,77 +21,77 @@ import { Button, Text, Truncate } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
 
 export default function MyAccount(props) {
-  const { width } = Dimensions.get("screen");
-  const { t } = useTranslation();
-  let [token, setToken] = useState("");
+	const { width } = Dimensions.get("screen");
+	const { t } = useTranslation();
+	let [token, setToken] = useState("");
 
-  const HeaderComponent = {
-    headerTransparent: true,
-    headerTitle: null,
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
-    headerLeftContainerStyle: {
-      marginLeft: 10,
-    },
+	const HeaderComponent = {
+		headerTransparent: true,
+		headerTitle: null,
+		headerStyle: {
+			backgroundColor: "#209FAE",
+			elevation: 0,
+			borderBottomWidth: 0,
+		},
+		headerTitleStyle: {
+			fontFamily: "Lato-Bold",
+			fontSize: 14,
+			color: "white",
+		},
+		headerLeftContainerStyle: {
+			marginLeft: 10,
+		},
 
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
-    ),
+		headerLeft: () => (
+			<Button
+				text={""}
+				size="medium"
+				type="circle"
+				variant="transparent"
+				onPress={() => props.navigation.goBack()}
+				style={{
+					height: 55,
+				}}
+			>
+				<Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+			</Button>
+		),
 
-    headerRight: () => (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Pressable
-          onPress={() =>
-            props.navigation.navigate("settings", { datauser: datauser })
-          }
-          style={{
-            marginHorizontal: 10,
-          }}
-        >
-          <Image
-            style={{
-              width: 25,
-              height: 25,
-              marginHorizontal: 10,
-            }}
-            imageStyle={{
-              width: 25,
-              height: 25,
-              resizeMode: "contain",
-            }}
-            source={SettingPutih}
-          />
-        </Pressable>
-      </View>
-    ),
-    headerRightStyle: {},
-  };
+		headerRight: () => (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: "row",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				<Pressable
+					onPress={() =>
+						props.navigation.navigate("settings", { datauser: datauser })
+					}
+					style={{
+						marginHorizontal: 10,
+					}}
+				>
+					<Image
+						style={{
+							width: 25,
+							height: 25,
+							marginHorizontal: 10,
+						}}
+						imageStyle={{
+							width: 25,
+							height: 25,
+							resizeMode: "contain",
+						}}
+						source={SettingPutih}
+					/>
+				</Pressable>
+			</View>
+		),
+		headerRightStyle: {},
+	};
 
   const [mutationlogout, { loading, data, error }] = useMutation(Logout, {
     context: {

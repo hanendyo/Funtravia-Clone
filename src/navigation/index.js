@@ -50,6 +50,8 @@ import ItineraryPopuler from "../screens/Itinerary/ItineraryPopular/ItineraryPop
 import ItineraryFavorite from "../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
 import detailStack from "../screens/Destination/DetailDestination/Index";
 import Notification from "../screens/Notification";
+import CommentsById from "../screens/Feed/Post/CommentsById";
+
 import {
   NotificationSettings,
   FAQ,
@@ -416,7 +418,6 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
-<<<<<<< Updated upstream
           name="SettingEmail"
           component={SettingEmail}
           options={{
@@ -449,17 +450,15 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
-=======
->>>>>>> Stashed changes
           name="Inbox"
           component={Notification}
+          name="CommentsById"
+          component={CommentsById}
           options={{
             headerTitle: "",
             headerTransparent: false,
           }}
         />
-<<<<<<< Updated upstream
-
         <Tab.Screen
           name="AllDestination"
           component={AllDestination}
@@ -522,8 +521,6 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
-=======
->>>>>>> Stashed changes
       </Tab.Navigator>
     </NavigationContainer>
   );

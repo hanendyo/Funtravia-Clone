@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
   FlatList,
-  Button,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -12,14 +11,19 @@ import {
   TextInput,
   Pressable,
   Keyboard,
-  AsyncStorage,
 } from "react-native";
-import { Input, CustomText, Calendar, CustomImage } from "../../../core-ui";
-import { Text } from "native-base";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import {
+  Text,
+  Button,
+  FloatingInput,
+  Peringatan,
+  CustomImage,
+} from "../../../component";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
 import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
-import { NavigationEvents, SafeAreaView } from "react-navigation";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import {
   Comment,
@@ -31,16 +35,32 @@ import {
   Kosong,
   Arrowbackwhite,
   OptionsVertWhite,
-} from "../../../const/Svg";
-export default function Comments(props) {
+} from "../../../assets/svg";
+export default function CommentsById(props) {
+  const HeaderComponent = {
+    headerShown: true,
+    transparent: false,
+    headerTintColor: "white",
+    headerTitle: "Comment",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      // fontSize: 14,
+      color: "white",
+    },
+  };
+
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  // let [datafeed?.feed_post_byid?, setdatafeed?.feed_post_byid?] = useState(props.navigation.getParam('data'));
-  let [postid, setPostid] = useState(props.navigation.getParam("post_id"));
-  let [token, setToken] = useState(props.navigation.getParam("token"));
+  let [postid, setPostid] = useState(props.route.params.post_id);
+  let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
-  // console.log(setting?.user?.first_name);
   const onSelect = useCallback(
     (id) => {
       let newSelected = new Map(selected);
@@ -67,7 +87,11 @@ export default function Comments(props) {
   };
 
   useEffect(() => {
-    loadAsync();
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
   }, []);
 
   const [
@@ -167,7 +191,8 @@ export default function Comments(props) {
     },
   });
 
-  console.log(datafeed);
+  // console.log(postid);
+  // console.log(token);
 
   if (data) {
     // console.log(data.comment[0].text);
@@ -322,9 +347,10 @@ export default function Comments(props) {
     <View
       style={{
         flex: 1,
+        backgroundColor: "#FFFFFF",
+
       }}
     >
-      <NavigationEvents onDidFocus={() => loadAsync()} />
       <View
         style={{
           // width: Dimensions.get('window').width,
@@ -510,63 +536,3 @@ export default function Comments(props) {
     </View>
   );
 }
-
-Comments.navigationOptions = ({ navigation }) => ({
-  headerTitle: "Comments",
-  headerMode: "screen",
-  headerStyle: {
-    backgroundColor: "#209FAE",
-    elevation: 0,
-    borderBottomWidth: 0,
-    fontSize: 50,
-    // justifyContent: 'center',
-    // flex:1,
-    // zIndex: 30,
-  },
-  headerTitleStyle: {
-    fontFamily: "Lato-Bold",
-    fontSize: 14,
-    color: "white",
-    alignSelf: "center",
-  },
-  headerLeft: (
-    <TouchableOpacity
-      style={{
-        height: 40,
-        width: 40,
-        // borderWidth:1,
-        justifyContent: "center",
-        alignContent: "center",
-        alignItems: "center",
-        // backgroundColor:'white'
-      }}
-      onPress={() => navigation.goBack()}
-    >
-      <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    </TouchableOpacity>
-  ),
-  headerLeftContainerStyle: {
-    // paddingLeft: 20,
-  },
-  headerRight: (
-    <View style={{ flexDirection: "row" }}>
-      {/* <TouchableOpacity
-				style={{ marginRight: 20 }}
-				onPress={() => Alert.alert('Coming soon')}>
-				<OptionsVertWhite height={20} width={20} />
-			</TouchableOpacity> */}
-    </View>
-  ),
-  headerRightStyle: {
-    paddingRight: 20,
-  },
-});
-
-const styles = StyleSheet.create({
-  main: {
-    justifyContent: "center",
-    alignItems: "center",
-    // backgroundColor: 'grey',
-  },
-  captionFont: { fontSize: 12 },
-});
