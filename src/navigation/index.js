@@ -65,6 +65,8 @@ import {
 } from "../screens/Settings";
 import TravelGoal from "../screens/TravelGoal/Index";
 import TravelGoalDetail from "../screens/TravelGoal/TravelGoalDetail";
+import TravelIdeas from "../screens/TravelIdeas/Index";
+import Unesco from "../screens/TravelIdeas/Unesco/Index";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -286,9 +288,8 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={PracticalInformation}
           options={{ headerShown: false }}
         />
-
         <Tab.Screen
-          name="GrouRoom"
+          name="GroupRoom"
           component={GroupChat}
           options={{ headerShown: false }}
         />
@@ -415,6 +416,7 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
+<<<<<<< Updated upstream
           name="SettingEmail"
           component={SettingEmail}
           options={{
@@ -447,6 +449,8 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
+=======
+>>>>>>> Stashed changes
           name="Inbox"
           component={Notification}
           options={{
@@ -454,6 +458,7 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
+<<<<<<< Updated upstream
 
         <Tab.Screen
           name="AllDestination"
@@ -501,6 +506,24 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
+        <Tab.Screen
+          name="TravelIdeas"
+          component={TravelIdeas}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="Unesco"
+          component={Unesco}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+=======
+>>>>>>> Stashed changes
       </Tab.Navigator>
     </NavigationContainer>
   );

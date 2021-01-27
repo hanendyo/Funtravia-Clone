@@ -50,7 +50,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import LinearGradient from "react-native-linear-gradient";
 
 // let HEADER_MAX_HEIGHT = 200;
-let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
+let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.2;
 let HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 75 : 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 

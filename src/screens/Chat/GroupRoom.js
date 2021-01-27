@@ -14,7 +14,7 @@ import {
 import io from "socket.io-client";
 import { Arrowbackwhite, Send } from "../../assets/svg";
 import { Button, Text } from "../../component";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
@@ -36,7 +36,7 @@ export default function Room({ navigation, route }) {
 		headerMode: "screen",
 		headerStyle: {
 			backgroundColor: "#209FAE",
-			elevation: 0,
+			elevation: 1,
 			borderBottomWidth: 0,
 		},
 		headerTitleStyle: null,
@@ -71,7 +71,7 @@ export default function Room({ navigation, route }) {
 				<Text
 					style={{
 						fontFamily: "Lato-Bold",
-						fontSize: 14,
+						fontSize: 16,
 						color: "white",
 						alignSelf: "center",
 						paddingHorizontal: 10,
@@ -153,6 +153,12 @@ export default function Room({ navigation, route }) {
 	};
 
 	const submitChatMessage = async () => {
+		let d = new Date();
+		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
+		let time = [
+			d.getHours(),
+			d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes(),
+		].join(":");
 		if (button) {
 			if (chat && chat !== "") {
 				await setButton(false);
@@ -161,124 +167,182 @@ export default function Room({ navigation, route }) {
 					text: chat,
 					user_id: user.id,
 					name: `${user.first_name} ${user.last_name}`,
+					date: date,
+					time: time,
 				};
-				let response = await fetch(`${CHATSERVER}/api/group/send`, {
+				await fetch(`${CHATSERVER}/api/group/send`, {
 					method: "POST",
 					headers: {
 						Authorization: `Bearer ${token}`,
 						"Content-Type": "application/x-www-form-urlencoded",
 					},
-					body: `user_id=${user.id}&room=${room}&text=${chat}&name=${user.first_name} ${user.last_name}`,
+					body: `user_id=${user.id}&room=${room}&text=${chat}&date=${date}&time=${time}&name=${user.first_name} ${user.last_name}`,
 				});
-				let dataResponse = await response.json();
-				if (dataResponse.status) {
-					await socket.emit("message", chatData);
-					await setChat("");
-					await setTimeout(function () {
-						flatListRef.current.scrollToEnd({ animated: true });
-					}, 500);
-				}
+				await socket.emit("message", chatData);
+				await setChat("");
+				await setTimeout(function () {
+					flatListRef.current.scrollToEnd({ animated: true });
+				}, 500);
 				await setButton(true);
 			}
 		}
 	};
 
-	const randDarkColor = (id) => {
-		if (color[id]) {
-			return color[id];
-		} else {
-			var lum = -0.25;
-			var hex = String(
-				"#" + Math.random().toString(16).slice(2, 8).toUpperCase()
-			).replace(/[^0-9a-f]/gi, "");
-			if (hex.length < 6) {
-				hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-			}
-			var rgb = "#",
-				c,
-				i;
-			for (i = 0; i < 3; i++) {
-				c = parseInt(hex.substr(i * 2, 2), 16);
-				c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-				rgb += ("00" + c).substr(c.length);
-			}
-			let tmpColor = [...color];
-			tmpColor[id] = rgb;
-			setColor(tmpColor);
-			return rgb;
-		}
-	};
-
+	let tmpRChat = null;
 	const RenderChat = ({ item, index }) => {
-		return (
-			<View
-				key={`chat_${index}`}
-				style={[
-					styles.item,
-					user.id == item.user_id ? styles.itemOut : styles.itemIn,
-				]}
-			>
-				{user.id !== item.user_id ? (
-					<Text
-						size="description"
-						type="bold"
-						style={{
-							padding: 2,
-							color: randDarkColor(item.user_id),
-						}}
-					>
-						{item.name}
-					</Text>
-				) : null}
-				<View
-					style={[
-						styles.balloon,
-						{
-							backgroundColor: user.id == item.user_id ? "#209FAE" : "#E2ECF8",
-						},
-					]}
-				>
-					<Text
-						size="description"
-						style={{
-							padding: 2,
-							color: user.id == item.user_id ? "#FFFFFF" : "#464646",
-						}}
-					>
-						{item.text}
-					</Text>
+		if (item.user_id !== tmpRChat) {
+			tmpRChat = item.user_id;
+			return (
+				<View style={{ marginTop: 20 }}>
+					{user.id !== item.user_id ? (
+						<Text
+							size="description"
+							type="bold"
+							style={{
+								paddingBottom: 5,
+								paddingLeft: 20,
+								color: "#464646",
+							}}
+						>
+							{item.name}
+						</Text>
+					) : null}
 					<View
+						key={`chat_${index}`}
 						style={[
-							styles.arrowContainer,
-							user.id == item.user_id
-								? styles.arrowRightContainer
-								: styles.arrowLeftContainer,
+							styles.item,
+							user.id == item.user_id ? styles.itemOut : styles.itemIn,
 						]}
 					>
-						<Svg
-							style={
-								user.id == item.user_id ? styles.arrowRight : styles.arrowLeft
-							}
-							width={moderateScale(15.5, 0.6)}
-							height={moderateScale(17.5, 0.6)}
-							viewBox="32.484 17.5 15.515 17.5"
-							enable-background="new 32.485 17.5 15.515 17.5"
+						{user.id == item.user_id ? (
+							<Text size="small" style={{ marginRight: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
+						<View
+							style={[
+								styles.balloon,
+								user.id == item.user_id
+									? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
+									: { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
+							]}
 						>
-							<Path
-								d={
+							<Text
+								size="description"
+								style={{
+									color: "#464646",
+									lineHeight: 18,
+								}}
+							>
+								{item.text}
+							</Text>
+							<View
+								style={[
+									styles.arrowContainer,
 									user.id == item.user_id
-										? "M48,35c-7-4-6-8.75-6-17.5C28,17.5,29,35,48,35z"
-										: "M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z"
-								}
-								fill={user.id == item.user_id ? "#209FAE" : "#E2ECF8"}
-								x="0"
-								y="0"
-							/>
-						</Svg>
+										? styles.arrowRightContainer
+										: styles.arrowLeftContainer,
+								]}
+							>
+								<Svg
+									style={
+										user.id == item.user_id
+											? styles.arrowRight
+											: styles.arrowLeft
+									}
+									height="50"
+									width="50"
+								>
+									<Polygon
+										points={
+											user.id == item.user_id
+												? "0,01 15,01 5,12"
+												: "20,01 0,01 12,12"
+										}
+										fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+										stroke="#209FAE"
+										strokeWidth={0.7}
+									/>
+								</Svg>
+								<Svg
+									style={[
+										{ position: "absolute" },
+										user.id == item.user_id
+											? { right: moderateScale(-5, 0.5) }
+											: { left: moderateScale(-5, 0.5) },
+									]}
+									height="50"
+									width="50"
+								>
+									<Polygon
+										points={
+											user.id == item.user_id
+												? "0,1.3 15,1.1 5,12"
+												: "20,01 0,01 12,13"
+										}
+										fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+									/>
+								</Svg>
+							</View>
+						</View>
+						{user.id !== item.user_id ? (
+							<Text size="small" style={{ marginLeft: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
 					</View>
 				</View>
-			</View>
-		);
+			);
+		} else {
+			return (
+				<View>
+					<View
+						key={`chat_${index}`}
+						style={[
+							styles.item,
+							user.id == item.user_id ? styles.itemOut : styles.itemIn,
+						]}
+					>
+						{user.id == item.user_id ? (
+							<Text size="small" style={{ marginRight: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
+						<View
+							style={[
+								styles.balloon,
+								user.id == item.user_id
+									? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
+									: { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
+							]}
+						>
+							<Text
+								size="description"
+								style={{
+									color: "#464646",
+									lineHeight: 18,
+								}}
+							>
+								{item.text}
+							</Text>
+							<View
+								style={[
+									styles.arrowContainer,
+									user.id == item.user_id
+										? styles.arrowRightContainer
+										: styles.arrowLeftContainer,
+								]}
+							></View>
+						</View>
+						{user.id !== item.user_id ? (
+							<Text size="small" style={{ marginLeft: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
+					</View>
+				</View>
+			);
+		}
 	};
 
 	return (
@@ -316,7 +380,6 @@ export default function Room({ navigation, route }) {
 							borderWidth: 1,
 							width: "90%",
 							borderRadius: 25,
-							// paddingVertical: 10,
 							paddingHorizontal: 10,
 							alignSelf: "center",
 						}}
@@ -357,12 +420,13 @@ export default function Room({ navigation, route }) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FFF",
+		backgroundColor: "#fff",
 		justifyContent: "flex-end",
 	},
 	item: {
-		marginVertical: moderateScale(3, 2),
-		// flexDirection: 'row',
+		marginVertical: moderateScale(1, 1),
+		flexDirection: "row",
+		alignItems: "center",
 	},
 	itemIn: {
 		alignSelf: "flex-start",
@@ -378,24 +442,24 @@ const styles = StyleSheet.create({
 		paddingTop: moderateScale(5, 2),
 		paddingBottom: moderateScale(7, 2),
 		borderRadius: 8,
+		borderColor: "#209FAE",
+		borderWidth: 0.7,
 	},
 	arrowContainer: {
 		position: "absolute",
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
+		top: -1,
 		zIndex: -1,
-		flex: 1,
 	},
 	arrowLeftContainer: {
 		justifyContent: "flex-end",
 		alignItems: "flex-start",
+		left: -5,
 	},
 
 	arrowRightContainer: {
 		justifyContent: "flex-end",
 		alignItems: "flex-end",
+		right: -38.5,
 	},
 
 	arrowLeft: {

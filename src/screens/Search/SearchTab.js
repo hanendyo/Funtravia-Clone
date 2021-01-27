@@ -121,7 +121,7 @@ export default function SearchTab(props) {
             //Start of native-base library use for tabbing
             renderTabBar={() => (
               <ScrollableTab
-                tabStyle={{ backgroundColor: "transparent" }}
+                // tabStyle={{ backgroundColor: "transparent" }}
                 tabsContainerStyle={{ backgroundColor: "white" }}
                 underlineStyle={{
                   borderColor: "#209FAE",
@@ -168,7 +168,7 @@ export default function SearchTab(props) {
             >
               <SearchFeed
                 navigation={props.navigation}
-                earchQueryFromMain={
+                searchQueryFromMain={
                   input && input !== ("" || undefined || null) ? input : null
                 }
               />
@@ -182,7 +182,7 @@ export default function SearchTab(props) {
             >
               <SearchEvent
                 navigation={props.navigation}
-                earchQueryFromMain={
+                searchQueryFromMain={
                   input && input !== ("" || undefined || null) ? input : null
                 }
                 // dataPrev={preview}
