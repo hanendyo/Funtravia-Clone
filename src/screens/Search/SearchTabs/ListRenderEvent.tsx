@@ -21,20 +21,23 @@ import { LikeRed, LikeEmpty } from "../../../assets/svg";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
 
 import { useTranslation } from "react-i18next";
-import { Text, Button, FunIcon } from "../../../component";
+import { Text, Button, FunIcon, Truncate } from "../../../component";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../../graphQL/Mutation/unliked";
 // import { NavigationEvents } from "react-navigation";
-import Fillter from "../Components/Fillter";
+// import Fillter from "../../../component/src/Fillter";
 // import List from "../Event/List";
 import CategoryEvent from "../../../graphQL/Query/Event/CategoryEvent";
+import List from "../../../component/src/List";
+import Fillter from "../../Event/Fillter";
+import { dateFormatBetween } from "../../../component/src/dateformatter";
 
 export default function ListRenderEvent({ props, datanya }) {
   let [token, setToken] = useState("");
   let [selected] = useState(new Map());
   let [dataEvent, setDataEvent] = useState(datanya);
   let [search, setSearch] = useState({ type: null, tag: null, keyword: null });
-
+  console.log("dataKiriman: ", dataEvent);
   const [
     mutationliked,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -75,7 +78,8 @@ export default function ListRenderEvent({ props, datanya }) {
     // GetListEvent();
   }, []);
   const [refreshing, setRefreshing] = React.useState(
-    props.route.params.refresh ? props.route.params.refresh : false
+    // props.route.params.refresh ? props.route.params.refresh :
+    false
   );
 
   const _setSearch = (datasearch) => {
@@ -454,7 +458,7 @@ export default function ListRenderEvent({ props, datanya }) {
       </View>
     );
   };
-  console.log(dataEvent);
+  // console.log(dataEvent);
   const _renderFilter = ({ item, index }) => {
     if (item.checked == true && item.tampil == true) {
       return (
@@ -542,23 +546,24 @@ export default function ListRenderEvent({ props, datanya }) {
       {/* ======================= Bagian tengah (list) ================================ */}
 
       {dataEvent && dataEvent.length > 1 ? (
-        // <List
-        //   props={props}
-        //   datanya={dataEvent}
-        //   Refresh={(e) => _Refresh()}
-        //   refreshing={refreshing}
-        //   token={token}
-        // />
-        <View></View>
-      ) : dataEvent && dataEvent.length == 1 ? (
-        <View style={{ position: "absolute", right: 0 }}>
-          {/* <List
+        <View>
+          <List
             props={props}
             datanya={dataEvent}
             Refresh={(e) => _Refresh()}
             refreshing={refreshing}
             token={token}
-          /> */}
+          />
+        </View>
+      ) : dataEvent && dataEvent.length == 1 ? (
+        <View style={{ position: "absolute", right: 0 }}>
+          <List
+            props={props}
+            datanya={dataEvent}
+            Refresh={(e) => _Refresh()}
+            refreshing={refreshing}
+            token={token}
+          />
         </View>
       ) : null}
     </View>

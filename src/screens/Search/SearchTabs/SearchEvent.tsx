@@ -30,18 +30,19 @@ import { Text, Button, FunIcon } from "../../../component";
 import SearchEventQuery from "../../../graphQL/Query/Search/SearchEvent";
 import ListRenderEvent from "./ListRenderEvent";
 
-export default function SearchDestination(props) {
+export default function SearchDestination(props, searchQueryFromMain) {
   const { t, i18n } = useTranslation();
 
   let [token, setToken] = useState("");
-  let searchDest = props.searchQueryFromMain;
+  let searchEvent = props.searchQueryFromMain;
+  console.log("searchEvent: ", searchEvent);
   const [
     querySearchEvent,
     { loading: loadingEvent, data: dataEvent, error: errorEvent },
   ] = useLazyQuery(SearchEventQuery, {
     fetchPolicy: "network-only",
     variables: {
-      keyword: searchDest,
+      keyword: searchEvent && searchEvent != null ? searchEvent : "null",
       type: [],
     },
     context: {
@@ -59,7 +60,7 @@ export default function SearchDestination(props) {
     // console.log('error Event ' + errorEvent);
   }
   if (dataEvent) {
-    console.log("DATA Event SEARCH: ", dataEvent);
+    // console.log("DATA Event SEARCH: ", dataEvent);
   }
 
   useEffect(() => {
