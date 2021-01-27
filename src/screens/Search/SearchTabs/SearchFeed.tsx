@@ -38,23 +38,24 @@ import { Text, Button } from "../../../component";
 // 	{ id: 5, name: 'teagan' },
 // ];
 
-export default function SearchFeed(props) {
+export default function SearchFeed(props, searchQueryFromMain) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState(null);
   let emptyArray = Array;
   let [showModal, setShowModal] = useState(false);
 
   let searchPost = props.searchQueryFromMain;
+  console.log("isiSearchPost: ", searchPost);
   const [
     querySearchPost,
     { loading: loadingPost, data: dataPost, error: errorPost },
   ] = useLazyQuery(SearchPostQuery, {
     variables: {
-      keyword: searchPost,
+      keyword: searchPost && searchPost != null ? searchPost : "null",
     },
   });
   if (dataPost) {
-    console.log(dataPost.search_feed_post);
+    console.log("data hasil search post:   ", dataPost);
   }
   if (loadingPost) {
     console.log("Loading Data Post" + loadingPost);
@@ -133,30 +134,30 @@ export default function SearchFeed(props) {
       dataPost !== NaN ? (
         <FlatList
           style={{ paddingStart: 0, paddingEnd: 5 }}
-          data={dataPost ? dataPost.search_feed_post : null}
+          data={dataPost.search_feed_post}
           renderItem={({ item, index }) => (
-            <View style={{ position: "absolute", right: 0 }}>
-              <View
-                style={{
-                  flexDirection: "column",
-                  marginVertical: 1,
-                  marginHorizontal: 1,
-                  //marginRight: Dimensions.get('window').width / 36,
-                  //marginBottom: Dimensions.get('window').width / 36,
-                }}
-              >
-                <Item
-                  id={item.id}
-                  uri={item.assets[0].filepath}
-                  data={dataPost.search_feed_post}
-                  datauser={item.user}
-                  index={index}
-                  // locationz={null}
-                  // selected={!!selected.get(item.id)}
-                  // onSelect={onSelect}
-                />
-              </View>
+            // <View style={{ position: "absolute", right: 0 }}>
+            <View
+              style={{
+                flexDirection: "column",
+                marginVertical: 1,
+                marginHorizontal: 1,
+                //marginRight: Dimensions.get('window').width / 36,
+                //marginBottom: Dimensions.get('window').width / 36,
+              }}
+            >
+              <Item
+                id={item.id}
+                uri={item.assets[0].filepath}
+                data={dataPost.search_feed_post}
+                datauser={item.user}
+                index={index}
+                // locationz={null}
+                // selected={!!selected.get(item.id)}
+                // onSelect={onSelect}
+              />
             </View>
+            // </View>
           )}
           numColumns={3}
           keyExtractor={(item) => item.id}
@@ -180,6 +181,8 @@ export default function SearchFeed(props) {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
+    // borderColor: "green",
+    // borderWidth: 1,
   },
   modalScroll: {
     height: Dimensions.get("window").height,

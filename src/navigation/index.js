@@ -416,6 +416,7 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
+<<<<<<< Updated upstream
           name="SettingEmail"
           component={SettingEmail}
           options={{
@@ -448,6 +449,8 @@ export default function MainStackNavigator({ authorizeToken }) {
           }}
         />
         <Tab.Screen
+=======
+>>>>>>> Stashed changes
           name="Inbox"
           component={Notification}
           options={{
@@ -455,6 +458,7 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
+<<<<<<< Updated upstream
 
         <Tab.Screen
           name="AllDestination"
@@ -518,6 +522,8 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
+=======
+>>>>>>> Stashed changes
       </Tab.Navigator>
     </NavigationContainer>
   );
