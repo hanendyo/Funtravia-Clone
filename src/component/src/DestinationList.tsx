@@ -35,13 +35,19 @@ export default function ListRenderDestination({
   itin,
 }) {
   const { t, i18n } = useTranslation();
+
+  //ini kenapa props.route.paramsnya undefined dah aaaa
   // let [datadayaktif, setdatadayaktif] = useState(
-  //   route.params && route.params.datadayaktif ? route.params.datadayaktif : null
+  //   props.route.params && props.route.params.datadayaktif
+  //     ? props.route.params.datadayaktif
+  //     : null
   // );
   // let [IdItinerary, setId] = useState(
-  //   route.params && route.params.IdItinerary ? route.params.IdItinerary : null
+  //   props.route.params && props.route.params.IdItinerary
+  //     ? props.route.params.IdItinerary
+  //     : null
   // );
-  // let [token, setToken] = useState('');
+
   let [selected] = useState(new Map());
   let [dataDestination, setDataDestination] = useState(datanya);
   // console.log('DATANYA: ', datanya);
@@ -191,7 +197,12 @@ export default function ListRenderDestination({
             // marginBottom: normalize(5),
             // marginLeft: 5,
           }}
-          onPress={() => eventdetail(item)}
+          onPress={() => {
+            props.navigation.navigate("detailStack", {
+              id: item.id,
+              name: item.name,
+            });
+          }}
         >
           <Image
             // source={bali1}
@@ -453,7 +464,12 @@ export default function ListRenderDestination({
             // marginBottom: normalize(5),
             // marginLeft: 5,
           }}
-          onPress={() => eventdetail(item)}
+          onPress={() => {
+            props.navigation.navigate("detailStack", {
+              id: item.id,
+              name: item.name,
+            });
+          }}
         >
           <Image
             // source={bali1}
