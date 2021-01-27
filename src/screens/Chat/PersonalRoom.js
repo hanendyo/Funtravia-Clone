@@ -14,7 +14,7 @@ import {
 import io from "socket.io-client";
 import { Arrowbackwhite, Send } from "../../assets/svg";
 import { Button, Text } from "../../component";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
@@ -184,67 +184,162 @@ export default function Room({ navigation, route }) {
 		}
 	};
 
+	let tmpRChat = null;
 	const RenderChat = ({ item, index }) => {
-		return (
-			<View
-				key={`chat_${index}`}
-				style={[
-					styles.item,
-					user.id == item.user_id ? styles.itemOut : styles.itemIn,
-				]}
-			>
-				<View
-					style={[
-						styles.balloon,
-						{
-							backgroundColor: user.id == item.user_id ? "#14646E" : "#DAF0F2",
-						},
-					]}
-				>
-					<Text
-						size="description"
-						style={{
-							padding: 2.5,
-							color: user.id == item.user_id ? "#FFFFFF" : "#464646",
-							lineHeight: 18,
-						}}
-					>
-						{item.text}
-					</Text>
+		if (item.user_id !== tmpRChat) {
+			tmpRChat = item.user_id;
+			return (
+				<View style={{ marginTop: 20 }}>
+					{user.id !== item.user_id ? (
+						<Text
+							size="description"
+							type="bold"
+							style={{
+								paddingBottom: 5,
+								paddingLeft: 20,
+								color: "#464646",
+							}}
+						>
+							{item.name}
+						</Text>
+					) : null}
 					<View
+						key={`chat_${index}`}
 						style={[
-							styles.arrowContainer,
-							user.id == item.user_id
-								? styles.arrowRightContainer
-								: styles.arrowLeftContainer,
+							styles.item,
+							user.id == item.user_id ? styles.itemOut : styles.itemIn,
 						]}
 					>
-						<Svg
-							style={
-								user.id == item.user_id ? styles.arrowRight : styles.arrowLeft
-							}
-							width={moderateScale(15.5, 0.6)}
-							height={moderateScale(17.5, 0.6)}
-							viewBox="32.484 17.5 15.515 17.5"
-							enable-background="new 32.485 17.5 15.515 17.5"
+						{user.id == item.user_id ? (
+							<Text size="small" style={{ marginRight: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
+						<View
+							style={[
+								styles.balloon,
+								user.id == item.user_id
+									? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
+									: { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
+							]}
 						>
-							<Path
-								d={
+							<Text
+								size="description"
+								style={{
+									color: "#464646",
+									lineHeight: 18,
+								}}
+							>
+								{item.text}
+							</Text>
+							<View
+								style={[
+									styles.arrowContainer,
 									user.id == item.user_id
-										? "M48,35c-7-4-6-8.75-6-17.5C28,17.5,29,35,48,35z"
-										: "M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z"
-								}
-								fill={user.id == item.user_id ? "#14646E" : "#DAF0F2"}
-								x="0"
-								y="0"
-							/>
-						</Svg>
+										? styles.arrowRightContainer
+										: styles.arrowLeftContainer,
+								]}
+							>
+								<Svg
+									style={
+										user.id == item.user_id
+											? styles.arrowRight
+											: styles.arrowLeft
+									}
+									height="50"
+									width="50"
+								>
+									<Polygon
+										points={
+											user.id == item.user_id
+												? "0,01 15,01 5,12"
+												: "20,01 0,01 12,12"
+										}
+										fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+										stroke="#209FAE"
+										strokeWidth={0.7}
+									/>
+								</Svg>
+								<Svg
+									style={[
+										{ position: "absolute" },
+										user.id == item.user_id
+											? { right: moderateScale(-5, 0.5) }
+											: { left: moderateScale(-5, 0.5) },
+									]}
+									height="50"
+									width="50"
+								>
+									<Polygon
+										points={
+											user.id == item.user_id
+												? "0,1.3 15,1.1 5,12"
+												: "20,01 0,01 12,13"
+										}
+										fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+									/>
+								</Svg>
+							</View>
+						</View>
+						{user.id !== item.user_id ? (
+							<Text size="small" style={{ marginLeft: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
 					</View>
 				</View>
-			</View>
-		);
+			);
+		} else {
+			return (
+				<View>
+					<View
+						key={`chat_${index}`}
+						style={[
+							styles.item,
+							user.id == item.user_id ? styles.itemOut : styles.itemIn,
+						]}
+					>
+						{user.id == item.user_id ? (
+							<Text size="small" style={{ marginRight: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
+						<View
+							style={[
+								styles.balloon,
+								user.id == item.user_id
+									? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
+									: { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
+							]}
+						>
+							<Text
+								size="description"
+								style={{
+									color: "#464646",
+									lineHeight: 18,
+								}}
+							>
+								{item.text}
+							</Text>
+							<View
+								style={[
+									styles.arrowContainer,
+									user.id == item.user_id
+										? styles.arrowRightContainer
+										: styles.arrowLeftContainer,
+								]}
+							></View>
+						</View>
+						{user.id !== item.user_id ? (
+							<Text size="small" style={{ marginLeft: 5 }}>
+								{item.time}
+							</Text>
+						) : null}
+					</View>
+				</View>
+			);
+		}
 	};
-
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="#14646E" barStyle="light-content" />
@@ -315,12 +410,13 @@ export default function Room({ navigation, route }) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FFF",
+		backgroundColor: "#fff",
 		justifyContent: "flex-end",
 	},
 	item: {
-		marginVertical: moderateScale(3, 2),
+		marginVertical: moderateScale(1, 1),
 		flexDirection: "row",
+		alignItems: "center",
 	},
 	itemIn: {
 		alignSelf: "flex-start",
@@ -336,24 +432,24 @@ const styles = StyleSheet.create({
 		paddingTop: moderateScale(5, 2),
 		paddingBottom: moderateScale(7, 2),
 		borderRadius: 8,
+		borderColor: "#209FAE",
+		borderWidth: 0.7,
 	},
 	arrowContainer: {
 		position: "absolute",
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
+		top: -1,
 		zIndex: -1,
-		flex: 1,
 	},
 	arrowLeftContainer: {
 		justifyContent: "flex-end",
 		alignItems: "flex-start",
+		left: -5,
 	},
 
 	arrowRightContainer: {
 		justifyContent: "flex-end",
 		alignItems: "flex-end",
+		right: -38.5,
 	},
 
 	arrowLeft: {
