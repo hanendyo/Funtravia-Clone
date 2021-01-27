@@ -20,7 +20,7 @@ import { FlatList } from "react-native";
 import Ripple from "react-native-material-ripple";
 import LinearGradient from "react-native-linear-gradient";
 
-export default function Wishlist(props) {
+export default function TravelGoalDetail(props) {
   const HeaderComponent = {
     headerShown: true,
     title: "Travel Goal",
