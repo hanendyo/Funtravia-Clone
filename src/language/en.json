@@ -439,5 +439,8 @@
   "CheckChangeEmail": "Send me Funtrivia exclusive discount and promo",
   "CheckChangePhone": "Send me Funtrivia exclusive discount and promo",
   "ChangePhoneNumber": "Change Phone Number",
-  "CountryCode": "Country Code"
+  "CountryCode": "Country Code",
+  "PopularArticle": "Popular Article",
+  "NewArticle": "New Article",
+  "Seemore": "See more"
 }

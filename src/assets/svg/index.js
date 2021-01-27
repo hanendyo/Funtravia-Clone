@@ -161,6 +161,7 @@ import TravelAlbum from "./files/travel_album.svg";
 import TravelStories from "./files/travel_stories.svg";
 import User from "./files/user.svg";
 import SettingsPutih from "./files/settings_putih.svg";
+import SharePutih from "./files/SharePutih.svg";
 
 export {
   LikeWhite,
@@ -326,4 +327,5 @@ export {
   TravelStories,
   User,
   SettingsPutih,
+  SharePutih,
 };
