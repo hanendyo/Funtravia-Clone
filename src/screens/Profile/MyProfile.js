@@ -44,25 +44,27 @@ export default function MyProfile(props) {
       fontSize: 14,
       color: "white",
     },
-    // headerLeftContainerStyle: {
-    //   background: "#FFF",
+    headerLeftContainerStyle: {
+      background: "#FFF",
 
-    //   marginLeft: 10,
-    // },
-    // headerLeft: () => (
-    //   <Button
-    //     text={""}
-    //     size="medium"
-    //     type="circle"
-    //     variant="transparent"
-    //     onPress={() => props.navigation.goBack()}
-    //     style={{
-    //       backgroundColor: "rgba(0,0,0,0.3)",
-    //     }}
-    //   >
-    //     <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    //   </Button>
-    // ),
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={
+          {
+            // backgroundColor: "rgba(0,0,0,0.3)",
+          }
+        }
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
     headerRight: () => (
       <Button
         text={""}

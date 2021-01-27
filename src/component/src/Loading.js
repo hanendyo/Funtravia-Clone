@@ -7,7 +7,7 @@ import Modal from "react-native-modal";
 export default function Loading({ show }) {
   let [status, setStatus] = useState(false);
   return (
-    <Modal animationIn="fadeIn" animationOut="fadeOut" isVisible={show}>
+    <Modal animationOut="fadeOut" isVisible={show}>
       <View
         style={{
           flex: 1,

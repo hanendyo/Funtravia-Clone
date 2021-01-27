@@ -649,7 +649,9 @@ export default function Country(props) {
                                 alignContent: "center",
                               }}
                             >
-                              <Text>{item.text}</Text>
+                              <Text>
+                                <Truncate text={item.text} length={30} />
+                              </Text>
                               <Love height={15} width={15} />
                             </View>
                           </View>
@@ -982,138 +984,140 @@ export default function Country(props) {
     >
       <Loading show={loadings} />
       <View style={{ height: 55 }}></View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        stickyHeaderIndices={[2]}
-        nestedScrollEnabled={true}
-        onScroll={Animated.event([
-          {
-            nativeEvent: { contentOffset: { y: scrollY } },
-          },
-        ])}
-      >
-        <View
-          style={{
-            height: HEADER_MAX_HEIGHT - 55,
-            backgroundColor: "#209fae",
-          }}
-        ></View>
-        <View>
+      {data && data.country_detail ? (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          stickyHeaderIndices={[2]}
+          nestedScrollEnabled={true}
+          onScroll={Animated.event([
+            {
+              nativeEvent: { contentOffset: { y: scrollY } },
+            },
+          ])}
+        >
           <View
             style={{
-              height: 55,
-              width: Dimensions.get("screen").width,
+              height: HEADER_MAX_HEIGHT - 55,
               backgroundColor: "#209fae",
-              paddingHorizontal: 20,
-              paddingVertical: 5,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              alignContent: "center",
             }}
-          >
-            <View>
-              <Text size="title" type="black" style={{ color: "white" }}>
-                {data && data.country_detail ? (
-                  <Truncate
-                    text={data.country_detail.name}
-                    length={20}
-                  ></Truncate>
-                ) : null}
-              </Text>
-            </View>
+          ></View>
+          <View>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-              }}
-            ></View>
-          </View>
-        </View>
-        <View
-          style={{
-            backgroundColor: "white",
-            shadowColor: "#d3d3d3",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 3,
-          }}
-        >
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{
-              width: "100%",
-            }}
-          >
-            <Ripple
-              onPress={() => {
-                setActives("General");
-              }}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                borderBottomWidth: actives == "General" ? 3 : 1,
-                borderBottomColor: actives == "General" ? "#209FAE" : "#EEEEEE",
-                paddingVertical: 15,
+                height: 55,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "#209fae",
                 paddingHorizontal: 20,
+                paddingVertical: 5,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                alignContent: "center",
               }}
             >
-              <Text
-                size="description"
-                type={actives == "General" ? "bold" : "regular"}
+              <View>
+                <Text size="title" type="black" style={{ color: "white" }}>
+                  {data && data.country_detail ? (
+                    <Truncate
+                      text={data.country_detail.name}
+                      length={20}
+                    ></Truncate>
+                  ) : null}
+                </Text>
+              </View>
+              <View
                 style={{
-                  color: actives == "General" ? "#209FAE" : "#464646",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+              ></View>
+            </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: "white",
+              shadowColor: "#d3d3d3",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation: 3,
+            }}
+          >
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{
+                width: "100%",
+              }}
+            >
+              <Ripple
+                onPress={() => {
+                  setActives("General");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  borderBottomWidth: actives == "General" ? 3 : 1,
+                  borderBottomColor:
+                    actives == "General" ? "#209FAE" : "#EEEEEE",
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
                 }}
               >
-                {t("General")}
-              </Text>
-            </Ripple>
-            {data &&
-            data.country_detail &&
-            data.country_detail.article_header &&
-            data.country_detail.article_header.length > 0
-              ? data.country_detail.article_header.map((item, index) => {
-                  return (
-                    <Ripple
-                      onPress={() => {
-                        setActives(index);
-                      }}
-                      style={{
-                        // width: '33.333%',
-                        paddingHorizontal: 20,
-                        alignContent: "center",
-                        alignItems: "center",
-                        borderBottomWidth: actives == index ? 3 : 1,
-                        borderBottomColor:
-                          actives == index ? "#209FAE" : "#EEEEEE",
-                        paddingVertical: 15,
-                      }}
-                    >
-                      <Text
-                        size="description"
-                        type={actives == index ? "bold" : "regular"}
+                <Text
+                  size="description"
+                  type={actives == "General" ? "bold" : "regular"}
+                  style={{
+                    color: actives == "General" ? "#209FAE" : "#464646",
+                  }}
+                >
+                  {t("General")}
+                </Text>
+              </Ripple>
+              {data &&
+              data.country_detail &&
+              data.country_detail.article_header &&
+              data.country_detail.article_header.length > 0
+                ? data.country_detail.article_header.map((item, index) => {
+                    return (
+                      <Ripple
+                        onPress={() => {
+                          setActives(index);
+                        }}
                         style={{
-                          color: actives == index ? "#209FAE" : "#464646",
+                          // width: '33.333%',
+                          paddingHorizontal: 20,
+                          alignContent: "center",
+                          alignItems: "center",
+                          borderBottomWidth: actives == index ? 3 : 1,
+                          borderBottomColor:
+                            actives == index ? "#209FAE" : "#EEEEEE",
+                          paddingVertical: 15,
                         }}
                       >
-                        {item.title}
-                      </Text>
-                    </Ripple>
-                  );
-                })
-              : null}
-          </ScrollView>
-        </View>
-        <RenderUtama
-          aktif={actives}
-          render={data && data.country_detail ? data.country_detail : {}}
-        />
-      </ScrollView>
-
+                        <Text
+                          size="description"
+                          type={actives == index ? "bold" : "regular"}
+                          style={{
+                            color: actives == index ? "#209FAE" : "#464646",
+                          }}
+                        >
+                          {item.title}
+                        </Text>
+                      </Ripple>
+                    );
+                  })
+                : null}
+            </ScrollView>
+          </View>
+          <RenderUtama
+            aktif={actives}
+            render={data && data.country_detail ? data.country_detail : {}}
+          />
+        </ScrollView>
+      ) : null}
       <Sidebar
         props={props}
         show={showside}
@@ -1130,119 +1134,120 @@ export default function Country(props) {
         }}
         setClose={(e) => setshowside(false)}
       />
+      {data && data.country_detail ? (
+        <Animated.View style={[styles.header, { height: headerHeight }]}>
+          <Animated.Image
+            style={[
+              styles.backgroundImage,
+              {
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
+              },
+            ]}
+            source={
+              data && data.country_detail && data.country_detail.images.length
+                ? { uri: data.country_detail.images[0].image }
+                : default_image
+            }
+          />
+          <Animated.View style={[styles.overlay]}>
+            <Animated.View
+              style={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                zIndex: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.38)",
+                top: 0,
+                left: 0,
+                opacity: imageOpacity,
+              }}
+            ></Animated.View>
+          </Animated.View>
 
-      <Animated.View style={[styles.header, { height: headerHeight }]}>
-        <Animated.Image
-          style={[
-            styles.backgroundImage,
-            {
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
-            },
-          ]}
-          source={
-            data && data.country_detail && data.country_detail.images.length
-              ? { uri: data.country_detail.images[0].image }
-              : default_image
-          }
-        />
-        <Animated.View style={[styles.overlay]}>
           <Animated.View
             style={{
-              height: "100%",
-              width: "100%",
               position: "absolute",
-              zIndex: 1,
-              backgroundColor: "rgba(0, 0, 0, 0.38)",
-              top: 0,
-              left: 0,
-              opacity: imageOpacity,
-            }}
-          ></Animated.View>
-        </Animated.View>
-
-        <Animated.View
-          style={{
-            position: "absolute",
-            // top: 20,
-            zIndex: 9999,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            alignItems: "center",
-            height: 55,
-            width: Dimensions.get("screen").width,
-          }}
-        >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => props.navigation.goBack()}
-            style={{
-              height: 50,
-            }}
-          >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          </Button>
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 90,
-              backgroundColor: "rgba(0,0,0,0.2)",
+              // top: 20,
+              zIndex: 9999,
               flexDirection: "row",
-              // opacity: 0.4,
+              justifyContent: "space-between",
               alignContent: "center",
               alignItems: "center",
-              padding: 10,
+              height: 55,
+              width: Dimensions.get("screen").width,
             }}
           >
-            <Image
-              source={search_button}
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => props.navigation.goBack()}
               style={{
-                height: 20,
-                width: 20,
-                resizeMode: "contain",
-                marginHorizontal: 10,
+                height: 50,
               }}
-            ></Image>
-            <Input
-              value={search}
+            >
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            </Button>
+            <View
               style={{
-                height: 20,
-                padding: 0,
-                textAlign: "left",
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-                color: "white",
+                width: Dimensions.get("screen").width - 90,
+                backgroundColor: "rgba(0,0,0,0.2)",
+                flexDirection: "row",
+                // opacity: 0.4,
+                alignContent: "center",
+                alignItems: "center",
+                padding: 10,
               }}
-              placeholderTextColor={"white"}
-              underlineColorAndroid="transparent"
-              onChangeText={(x) => setTextc(x)}
-              placeholder={t("search")}
-              returnKeyType="search"
-              onSubmitEditing={(x) =>
-                props.navigation.navigate("SearchTab", {
-                  searchInput: search,
-                })
-              }
-            />
-          </View>
+            >
+              <Image
+                source={search_button}
+                style={{
+                  height: 20,
+                  width: 20,
+                  resizeMode: "contain",
+                  marginHorizontal: 10,
+                }}
+              ></Image>
+              <Input
+                value={search}
+                style={{
+                  height: 20,
+                  padding: 0,
+                  textAlign: "left",
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  color: "white",
+                }}
+                placeholderTextColor={"white"}
+                underlineColorAndroid="transparent"
+                onChangeText={(x) => setTextc(x)}
+                placeholder={t("search")}
+                returnKeyType="search"
+                onSubmitEditing={(x) =>
+                  props.navigation.navigate("SearchTab", {
+                    searchInput: search,
+                  })
+                }
+              />
+            </View>
 
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => setshowside(true)}
-            style={{
-              height: 50,
-            }}
-          >
-            <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-          </Button>
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => setshowside(true)}
+              style={{
+                height: 50,
+              }}
+            >
+              <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+            </Button>
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
+      ) : null}
     </View>
   );
 }

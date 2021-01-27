@@ -43,7 +43,7 @@ export default function ArticleView({ props, data }) {
                       color: "#464646",
                     }}
                   >
-                    {i.text ? i.text : "-"}
+                    {i.text ? i.text : ""}
                   </Text>
                   <View style={{ alignItems: "center" }}>
                     <Image
@@ -86,7 +86,7 @@ export default function ArticleView({ props, data }) {
                       color: "#464646",
                     }}
                   >
-                    {i.text ? i.text : "-"}
+                    {i.text ? i.text : ""}
                   </Text>
                 </View>
               )}
