@@ -63,6 +63,8 @@ export default function RenderAccount({ data, token, props }) {
 
   const ukuran = 100;
 
+  // console.log(datanotif);
+
   return (
     <View
       style={{
@@ -173,57 +175,57 @@ export default function RenderAccount({ data, token, props }) {
                   ? `${data.user_profile.first_name}`
                   : "User Funtravia"}
               </Text>
-              {datanotif && datanotif.count_notif ? (
-                <Pressable
-                  onPress={() => props.navigation.navigate("Notification")}
-                  style={{
-                    paddingRight: 10,
-                    // borderWidth: 1,
-                  }}
-                >
-                  <NotificationBlue
-                    height={25}
-                    width={25}
-                    color={"#1F99A7"}
-                    fill={"#1F99A7"}
-                  />
-                  {datanotif.count_notif.count ? (
-                    <View
-                      style={{
-                        position: "absolute",
-                        left: 12,
-                        top: 5,
-                        backgroundColor: "#D75995",
-                        padding: 2,
-                        alignContent: "center",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        // width: 20,
-                        borderWidth: 1,
-                        borderColor: "white",
-                        height: 13,
-                        borderRadius: 10,
-                      }}
-                    >
-                      {datanotif.count_notif.count > 100 ? (
-                        <Text
-                          type="bold"
-                          style={{ fontSize: 10, color: "white" }}
-                        >
-                          99+
-                        </Text>
-                      ) : (
-                        <Text
-                          type="bold"
-                          style={{ fontSize: 10, color: "white" }}
-                        >
-                          {datanotif.count_notif.count}
-                        </Text>
-                      )}
-                    </View>
-                  ) : null}
-                </Pressable>
-              ) : null}
+              {/* {datanotif && datanotif.count_notif ? ( */}
+              <Pressable
+                onPress={() => props.navigation.navigate("Notification")}
+                style={{
+                  paddingRight: 10,
+                  // borderWidth: 1,
+                }}
+              >
+                <NotificationBlue
+                  height={25}
+                  width={25}
+                  color={"#1F99A7"}
+                  fill={"#1F99A7"}
+                />
+                {datanotif && datanotif.count_notif.count > 0 ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      left: 12,
+                      top: 5,
+                      backgroundColor: "#D75995",
+                      padding: 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      // width: 20,
+                      borderWidth: 1,
+                      borderColor: "white",
+                      height: 13,
+                      borderRadius: 10,
+                    }}
+                  >
+                    {datanotif.count_notif.count > 100 ? (
+                      <Text
+                        type="bold"
+                        style={{ fontSize: 10, color: "white" }}
+                      >
+                        99+
+                      </Text>
+                    ) : (
+                      <Text
+                        type="bold"
+                        style={{ fontSize: 10, color: "white" }}
+                      >
+                        {datanotif.count_notif.count}
+                      </Text>
+                    )}
+                  </View>
+                ) : null}
+              </Pressable>
+              {/* ) : null} */}
             </View>
 
             <View
