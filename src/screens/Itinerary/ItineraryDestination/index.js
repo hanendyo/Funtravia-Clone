@@ -432,12 +432,15 @@ export default function ItineraryDestination(props) {
               style={{}}
               color="primary"
               onPress={() => {
-                props.navigation.push("ItineraryChooseday", {
-                  Iditinerary: IdItinerary,
-                  Kiriman: data.id,
-                  token: token,
-                  Position: "destination",
-                  datadayaktif: datadayaktif,
+                props.navigation.push("ItineraryStack", {
+                  screen: "ItineraryChooseday",
+                  params: {
+                    Iditinerary: IdItinerary,
+                    Kiriman: data.id,
+                    token: token,
+                    Position: "destination",
+                    datadayaktif: datadayaktif,
+                  },
                 });
               }}
             />

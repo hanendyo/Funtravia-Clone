@@ -158,7 +158,10 @@ export default function SearchFeed({ props }) {
               alignContent: "center",
             }}
             onPress={() =>
-              props.navigation.push("otherprofile", { idUser: user_id })
+              props.navigation.push("ProfileStack", {
+                screen: "otherprofile",
+                params: { idUser: user_id },
+              })
             }
           >
             <Image

@@ -184,7 +184,10 @@ export default function Following(props) {
       >
         <TouchableOpacity
           onPress={() =>
-            props.navigation.push("otherprofile", { idUser: idUser })
+            props.navigation.push("ProfileStack", {
+              screen: "otherprofile",
+              params: { idUser: idUser },
+            })
           }
           style={{ flexDirection: "row" }}
         >

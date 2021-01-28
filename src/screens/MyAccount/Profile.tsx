@@ -103,7 +103,11 @@ export default function Profile({ props, token, setCont }) {
             style={{
               width: (Dimensions.get("window").width - 20) / 3,
             }}
-            onPress={() => props.navigation.navigate("ProfileTab")}
+            onPress={() =>
+              props.navigation.navigate("ProfileStack", {
+                screen: "ProfileTab",
+              })
+            }
           >
             <Image
               style={{

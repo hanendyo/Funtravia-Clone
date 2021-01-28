@@ -224,10 +224,15 @@ export default function Comments(props) {
           <TouchableOpacity
             onPress={() => {
               dataComment.user.id !== users.id
-                ? props.navigation.push("otherprofile", {
-                    idUser: dataComment.user.id,
+                ? props.navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: dataComment.user.id,
+                    },
                   })
-                : props.navigation.push("ProfileTab");
+                : props.navigation.push("ProfileStack", {
+                    screen: "ProfileTab",
+                  });
             }}
             style={{
               flexDirection: "row",
@@ -312,10 +317,13 @@ export default function Comments(props) {
         <TouchableOpacity
           onPress={() => {
             datauser.id !== users.id
-              ? props.navigation.push("otherprofile", {
-                  idUser: datauser.id,
+              ? props.navigation.push("ProfileStack", {
+                  screen: "otherprofile",
+                  params: {
+                    idUser: datauser.id,
+                  },
                 })
-              : props.navigation.push("ProfileTab");
+              : props.navigation.push("ProfileStack", { screen: "ProfileTab" });
           }}
           style={{
             width: "100%",

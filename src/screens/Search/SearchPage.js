@@ -81,7 +81,7 @@ export default function SearchPage(props, { navigation, route }) {
   }, []);
 
   const onSelectDestination = (item) => {
-    // props.navigation.navigate("CityDetail", { data: item, exParam: true });
+    // props.navigation.navigate("CountryStack",{screen:"CityDetail", params:{ data: item, exParam: true }});
 
     props.navigation.navigate("detailStack", {
       id: item.id,
@@ -398,7 +398,9 @@ export default function SearchPage(props, { navigation, route }) {
                     </Text>
                     <TouchableOpacity
                       onPress={() =>
-                        props.navigation.navigate("AllDestination")
+                        props.navigation.navigate("CountryStack", {
+                          screen: "AllDestination",
+                        })
                       }
                     >
                       <Text

@@ -263,11 +263,14 @@ export default function ItineraryPopuler(props) {
         >
           <TouchableOpacity
             onPress={() =>
-              props.navigation.navigate("itindetail", {
-                itintitle: item.name,
-                country: item.id,
-                token: token,
-                status: "favorite",
+              props.navigation.navigate("ItineraryStack", {
+                screen: "itindetail",
+                params: {
+                  itintitle: item.name,
+                  country: item.id,
+                  token: token,
+                  status: "favorite",
+                },
               })
             }
           >

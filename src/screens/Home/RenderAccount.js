@@ -50,15 +50,15 @@ export default function RenderAccount({ data, token, props, datanotif }) {
   // });
 
   const login = () => {
-    props.navigation.navigate("AuthStack");
+    props.navigation.navigate("AuthStack", { screen: "LoginScreen" });
   };
 
   const signUp = () => {
-    props.navigation.navigate("AuthStack");
+    props.navigation.navigate("AuthStack", { screen: "RegisterScreen" });
   };
 
   const goToProfile = (target) => {
-    props.navigation.navigate("ProfileTab");
+    props.navigation.navigate("ProfileStack", { screen: "ProfileTab" });
   };
 
   const ukuran = 100;
@@ -270,7 +270,11 @@ export default function RenderAccount({ data, token, props, datanotif }) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.statView}
-                onPress={() => props.navigation.navigate("FollowerPage")}
+                onPress={() =>
+                  props.navigation.navigate("ProfileStack", {
+                    screen: "FollowerPage",
+                  })
+                }
               >
                 <Text size="description" type="bold" style={styles.statNumber}>
                   {data ? data.user_profile.count_follower : 0}
@@ -281,7 +285,11 @@ export default function RenderAccount({ data, token, props, datanotif }) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.statView}
-                onPress={() => props.navigation.navigate("FollowingPage")}
+                onPress={() =>
+                  props.navigation.navigate("ProfileStack", {
+                    screen: "FollowingPage",
+                  })
+                }
               >
                 <Text size="description" type="bold" style={styles.statNumber}>
                   {data ? data.user_profile.count_following : 0}

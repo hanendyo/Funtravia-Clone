@@ -277,12 +277,15 @@ export default function ItinGoogle(props) {
             <Button
               text={t("addToPlan")}
               onPress={() => {
-                props.navigation.push("ItineraryChooseday", {
-                  Iditinerary: dataDes.itinerary_detail.id,
-                  Kiriman: detailMap,
-                  token: token,
-                  Position: "google",
-                  datadayaktif: datadayaktif,
+                props.navigation.push("ItineraryStack", {
+                  screen: "ItineraryChooseday",
+                  params: {
+                    Iditinerary: dataDes.itinerary_detail.id,
+                    Kiriman: detailMap,
+                    token: token,
+                    Position: "google",
+                    datadayaktif: datadayaktif,
+                  },
                 });
               }}
               style={{

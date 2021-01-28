@@ -58,7 +58,8 @@ export default function Trip(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.navigate("HomeScreen")}
+        // onPress={() => props.navigation.navigate("HomeScreen")}
+        onPress={() => props.navigation.goBack()}
         style={{
           height: 55,
         }}
@@ -200,11 +201,14 @@ export default function Trip(props) {
           throw new Error(response.data.create_itinerary.message);
         }
         // console.log(response);
-        props.navigation.navigate("itindetail", {
-          itintitle: title,
-          country: response.data.create_itinerary.id,
-          dateitin: dateFormats(startDate) + " - " + dateFormats(endDate),
-          token: token,
+        props.navigation.navigate("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: title,
+            country: response.data.create_itinerary.id,
+            dateitin: dateFormats(startDate) + " - " + dateFormats(endDate),
+            token: token,
+          },
         });
       }
       setLoadingApp(false);

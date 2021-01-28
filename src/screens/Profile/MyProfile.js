@@ -373,7 +373,11 @@ export default function MyProfile(props) {
                   alignItems: "center",
                   alignContent: "center",
                 }}
-                onPress={() => props.navigation.push("FollowerPage")}
+                onPress={() =>
+                  props.navigation.push("ProfileStack", {
+                    screen: "FollowerPage",
+                  })
+                }
               >
                 <Text type="black" size="label">
                   {`${data ? data.user_profile.count_follower : 0} `}
@@ -387,7 +391,11 @@ export default function MyProfile(props) {
                   alignItems: "center",
                   alignContent: "center",
                 }}
-                onPress={() => props.navigation.push("FollowingPage")}
+                onPress={() =>
+                  props.navigation.push("ProfileStack", {
+                    screen: "FollowingPage",
+                  })
+                }
               >
                 <Text type="black" size="label">
                   {`${data ? data.user_profile.count_following : 0} `}

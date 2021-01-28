@@ -1,16 +1,22 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Dimensions, ImageBackground, Alert, Pressable } from "react-native";
+import {
+  View,
+  Dimensions,
+  ImageBackground,
+  Alert,
+  Pressable,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
-	Comment,
-	LikeRed,
-	LikeEmpty,
-	OptionsVertBlack,
-	ShareBlack,
-	More,
-	LikeBlack,
-	CommentBlack,
+  Comment,
+  LikeRed,
+  LikeEmpty,
+  OptionsVertBlack,
+  ShareBlack,
+  More,
+  LikeBlack,
+  CommentBlack,
 } from "../../assets/svg";
 import Modal from "react-native-modal";
 
@@ -27,14 +33,14 @@ import { default_image } from "../../assets/png";
 import { CustomImage } from "../../component";
 import { gql } from "apollo-boost";
 const deletepost = gql`
-	mutation($post_id: ID!) {
-		delete_post(post_id: $post_id) {
-			id
-			response_time
-			message
-			code
-		}
-	}
+  mutation($post_id: ID!) {
+    delete_post(post_id: $post_id) {
+      id
+      response_time
+      message
+      code
+    }
+  }
 `;
 export default function myfeed(props) {
   const HeaderComponent = {
@@ -128,7 +134,7 @@ export default function myfeed(props) {
           ) {
             // Refresh();
             var tempData = [...data];
-            var index = tempData.findIndex((k) => k['id'] === datas.id);
+            var index = tempData.findIndex((k) => k["id"] === datas.id);
             if (index > -1) {
               tempData.splice(index, 1);
             }
@@ -328,273 +334,282 @@ export default function myfeed(props) {
     // console.log(id_post);
   };
   function Item({ selected, dataRender }) {
-		return (
-			<View
-				style={{
-				width: Dimensions.get("window").width - 20,
-				backgroundColor: "#FFFFFF",
-				flex: 1,
-				marginHorizontal: 10,
-				marginVertical:7,
-				borderRadius: 20,
-				borderBottomWidth: 1,
-				borderBottomColor: "#EEEEEE",
-				paddingBottom: 25,
-				}}
-			>
-				<View
-				style={{
-					width: "100%",
-					flexDirection: "row",
-          marginVertical: 15,
-          paddingHorizontal: 10,
-					justifyContent: 'space-between',
-					// alignContent: "space-between",
-				}}
-				>
+    return (
+      <View
+        style={{
+          width: Dimensions.get("window").width - 20,
+          backgroundColor: "#FFFFFF",
+          flex: 1,
+          marginHorizontal: 10,
+          marginVertical: 7,
+          borderRadius: 20,
+          borderBottomWidth: 1,
+          borderBottomColor: "#EEEEEE",
+          paddingBottom: 25,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            marginVertical: 15,
+            paddingHorizontal: 10,
+            justifyContent: "space-between",
+            // alignContent: "space-between",
+          }}
+        >
           <View
-            style= {{
-				    	flexDirection: "row",
+            style={{
+              flexDirection: "row",
             }}
-            >
+          >
             <CustomImage
               isTouchable
               onPress={() => {
-              datauser.id !== users?.id
-                ? props.navigation.push("otherprofile", {
-                  idUser: datauser.id,
-                })
-                : props.navigation.push("ProfileTab");
+                datauser.id !== users?.id
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: datauser.id,
+                      },
+                    })
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                    });
               }}
               customStyle={{
-              height: 40,
-              width: 40,
-              borderRadius: 15,
-              alignSelf: "center",
-              // marginLeft: 15,
+                height: 40,
+                width: 40,
+                borderRadius: 15,
+                alignSelf: "center",
+                // marginLeft: 15,
               }}
               customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
               source={{ uri: datauser.picture }}
             />
             <View
               style={{
-              justifyContent: "center",
-              marginHorizontal: 10,
+                justifyContent: "center",
+                marginHorizontal: 10,
               }}
             >
               <Text
-              onPress={() => {
-                datauser.id !== users?.id
-                ? props.navigation.push("otherprofile", {
-                  idUser: datauser.id,
-                  })
-                : props.navigation.push("ProfileTab");
-              }}
-              style={{
-                fontFamily: "Lato-Bold",
-                fontSize: 14,
-                // marginTop: 7,
-              }}
-              >
-              {datauser.first_name}{" "}
-              {datauser.first_name ? datauser.last_name : null}
-              </Text>
-              <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              >
-              <Text
-                style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 10,
-                // marginTop: 7,
+                onPress={() => {
+                  datauser.id !== users?.id
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: datauser.id,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
                 }}
-              >
-                {duration(dataRender.created_at)}
-              </Text>
-              {dataRender.location_name ? (
-                <View
                 style={{
-                  marginHorizontal: 5,
-                  backgroundColor: "black",
-                  height: 4,
-                  width: 4,
-                  borderRadius: 2,
-                }}
-                ></View>
-              ) : null}
-              {dataRender.location_name ? (
-                <Text
-                style={{
-                  fontFamily: "Lato-Regular",
-                  fontSize: 10,
+                  fontFamily: "Lato-Bold",
+                  fontSize: 14,
                   // marginTop: 7,
                 }}
+              >
+                {datauser.first_name}{" "}
+                {datauser.first_name ? datauser.last_name : null}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    fontSize: 10,
+                    // marginTop: 7,
+                  }}
                 >
-                <Truncate text={dataRender.location_name} length={40} />
+                  {duration(dataRender.created_at)}
                 </Text>
-              ) : null}
+                {dataRender.location_name ? (
+                  <View
+                    style={{
+                      marginHorizontal: 5,
+                      backgroundColor: "black",
+                      height: 4,
+                      width: 4,
+                      borderRadius: 2,
+                    }}
+                  ></View>
+                ) : null}
+                {dataRender.location_name ? (
+                  <Text
+                    style={{
+                      fontFamily: "Lato-Regular",
+                      fontSize: 10,
+                      // marginTop: 7,
+                    }}
+                  >
+                    <Truncate text={dataRender.location_name} length={40} />
+                  </Text>
+                ) : null}
               </View>
             </View>
-            
           </View>
           <Pressable
             onPress={() => OptionOpen(dataRender)}
             style={{
-            // position: "absolute",
-            // right: 15,
-            // top: 2,
-            alignSelf: "center",
+              // position: "absolute",
+              // right: 15,
+              // top: 2,
+              alignSelf: "center",
             }}
           >
             <More height={20} width={20} />
           </Pressable>
-				</View>
-				<View
-				style={{
-					marginHorizontal: 10,
-					alignContent: 'center',
-					justifyContent: 'center',
-					alignItems:'center',
-					width : Dimensions.get("window").width - 40,
-					minHeight : Dimensions.get("window").width - 155,
-					borderWidth: 0.5,
-					borderColor: '#EEEEEE',
-					borderRadius: 15,
-				}}>
-					{dataRender && dataRender.assets && dataRender.assets[0].filepath ?
-						<Image
-							style={{
-								width: Dimensions.get("window").width - 40,
-								borderRadius: 15,
-								alignSelf: "center",
-							}}
-							
-							uri= {dataRender.assets[0].filepath }
-						/>
-					:null}
-				</View>
+        </View>
+        <View
+          style={{
+            marginHorizontal: 10,
+            alignContent: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            width: Dimensions.get("window").width - 40,
+            minHeight: Dimensions.get("window").width - 155,
+            borderWidth: 0.5,
+            borderColor: "#EEEEEE",
+            borderRadius: 15,
+          }}
+        >
+          {dataRender && dataRender.assets && dataRender.assets[0].filepath ? (
+            <Image
+              style={{
+                width: Dimensions.get("window").width - 40,
+                borderRadius: 15,
+                alignSelf: "center",
+              }}
+              uri={dataRender.assets[0].filepath}
+            />
+          ) : null}
+        </View>
 
-				<View
-					style={{
-						width: "100%",
-						backgroundColor: "white",
-						marginTop: 17,
-					}}
-				>
-					<View
-						style={{
-							flexDirection: "row",
-							backgroundColor: "white",
-							justifyContent: "space-between",
-							paddingHorizontal: 10,
-						}}
-					>
-						<View
-							style={{
-								flexDirection: "row",
-								width: "50%",
-								alignSelf: "flex-start",
-								alignContent: "space-between",
-								alignItems: "center",
-								// justifyContent: 'space-evenly',
-							}}
-						>
-							{dataRender.liked ? (
-								<Button
-									onPress={() => _unliked(dataRender.id)}
-									type="icon"
-									// variant="transparent"
-									position="left"
-									size="small"
-									style={{
-										paddingHorizontal: 10,
-										marginRight: 15,
-										borderRadius: 16,
-										backgroundColor: "#F2DAE5",
-										// minidth: 70,
-										// right: 10,
-									}}
-								>
-									<LikeRed height={15} width={15} />
-									<Text
-										type="black"
-										size="label"
-										style={{ marginHorizontal: 5, color: "#BE3737" }}
-									>
-										{dataRender.response_count}
-									</Text>
-								</Button>
-							) : (
-								<Button
-									onPress={() => _liked(dataRender.id)}
-									type="icon"
-									position="left"
-									size="small"
-									color="tertiary"
-									style={{
-										paddingHorizontal: 10,
-										marginRight: 15,
-										borderRadius: 16,
-										// right: 10,
-									}}
-								>
-									<LikeBlack height={15} width={15} />
-									<Text
-										type="black"
-										size="label"
-										style={{ marginHorizontal: 7 }}
-									>
-										{dataRender.response_count}
-									</Text>
-								</Button>
-							)}
+        <View
+          style={{
+            width: "100%",
+            backgroundColor: "white",
+            marginTop: 17,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: "white",
+              justifyContent: "space-between",
+              paddingHorizontal: 10,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                width: "50%",
+                alignSelf: "flex-start",
+                alignContent: "space-between",
+                alignItems: "center",
+                // justifyContent: 'space-evenly',
+              }}
+            >
+              {dataRender.liked ? (
+                <Button
+                  onPress={() => _unliked(dataRender.id)}
+                  type="icon"
+                  // variant="transparent"
+                  position="left"
+                  size="small"
+                  style={{
+                    paddingHorizontal: 10,
+                    marginRight: 15,
+                    borderRadius: 16,
+                    backgroundColor: "#F2DAE5",
+                    // minidth: 70,
+                    // right: 10,
+                  }}
+                >
+                  <LikeRed height={15} width={15} />
+                  <Text
+                    type="black"
+                    size="label"
+                    style={{ marginHorizontal: 5, color: "#BE3737" }}
+                  >
+                    {dataRender.response_count}
+                  </Text>
+                </Button>
+              ) : (
+                <Button
+                  onPress={() => _liked(dataRender.id)}
+                  type="icon"
+                  position="left"
+                  size="small"
+                  color="tertiary"
+                  style={{
+                    paddingHorizontal: 10,
+                    marginRight: 15,
+                    borderRadius: 16,
+                    // right: 10,
+                  }}
+                >
+                  <LikeBlack height={15} width={15} />
+                  <Text
+                    type="black"
+                    size="label"
+                    style={{ marginHorizontal: 7 }}
+                  >
+                    {dataRender.response_count}
+                  </Text>
+                </Button>
+              )}
 
-							<Button
-								onPress={() => viewcomment(dataRender)}
-								type="icon"
-								variant="transparent"
-								position="left"
-								size="small"
-								style={{
-									paddingHorizontal: 2,
+              <Button
+                onPress={() => viewcomment(dataRender)}
+                type="icon"
+                variant="transparent"
+                position="left"
+                size="small"
+                style={{
+                  paddingHorizontal: 2,
 
-									// right: 10,
-								}}
-							>
-								<CommentBlack height={15} width={15} />
-								<Text type="black" size="label" style={{ marginHorizontal: 7 }}>
-									{dataRender.comment_count}
-								</Text>
-							</Button>
-						</View>
+                  // right: 10,
+                }}
+              >
+                <CommentBlack height={15} width={15} />
+                <Text type="black" size="label" style={{ marginHorizontal: 7 }}>
+                  {dataRender.comment_count}
+                </Text>
+              </Button>
+            </View>
 
-						<Button
-							type="icon"
-							variant="transparent"
-							position="left"
-							size="small"
-							style={{
-								// right: 10,
-								paddingHorizontal: 2,
-							}}
-						>
-							<ShareBlack height={17} width={17} />
-							<Text size="small" style={{ marginLeft: 3 }}>
-								{t("share")}
-							</Text>
-						</Button>
-					</View>
-					<View
-						style={{
-							width: "100%",
-							padding: 10,
-							flexDirection: "row",
-						}}
-					>
-						{/* <Text
+            <Button
+              type="icon"
+              variant="transparent"
+              position="left"
+              size="small"
+              style={{
+                // right: 10,
+                paddingHorizontal: 2,
+              }}
+            >
+              <ShareBlack height={17} width={17} />
+              <Text size="small" style={{ marginLeft: 3 }}>
+                {t("share")}
+              </Text>
+            </Button>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              padding: 10,
+              flexDirection: "row",
+            }}
+          >
+            {/* <Text
 							style={{
 								textAlign: 'left',
 								fontFamily: "Lato-Bold",
@@ -605,33 +620,31 @@ export default function myfeed(props) {
 							{datauser.first_name} {''}{' '}
 							{datauser.first_name ? datauser.last_name : null}
 						</Text> */}
-						{dataRender.caption ? (
-							<Text
-								style={{
-									textAlign: "left",
-									fontFamily: "Lato-Regular",
-									fontSize: 14,
-									lineHeight: 20,
-								}}
-							>
-								<Text
-									style={{
-										fontFamily: "Lato-Bold",
-										marginRight: 5,
-									}}
-								>
-									{datauser.first_name}{" "}
-									{datauser.first_name
-										? datauser.last_name
-										: null}{" "}
-								</Text>
-								{dataRender.caption}
-							</Text>
-						) : null}
-					</View>
-				</View>
-			</View>
-		);
+            {dataRender.caption ? (
+              <Text
+                style={{
+                  textAlign: "left",
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  lineHeight: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Lato-Bold",
+                    marginRight: 5,
+                  }}
+                >
+                  {datauser.first_name}{" "}
+                  {datauser.first_name ? datauser.last_name : null}{" "}
+                </Text>
+                {dataRender.caption}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      </View>
+    );
   }
   const [selected, setSelected] = useState(new Map());
   const OptionOpen = (data) => {
@@ -647,10 +660,12 @@ export default function myfeed(props) {
   return (
     <View>
       <FlatList
-        style={{
-          // flex: 1,
-          // backgroundColor: "white",
-        }}
+        style={
+          {
+            // flex: 1,
+            // backgroundColor: "white",
+          }
+        }
         data={data}
         initialScrollIndex={index}
         // focusable
@@ -659,214 +674,213 @@ export default function myfeed(props) {
           <Item dataRender={item} selected={selected} />
         )}
       />
-			<Modal
-				onBackdropPress={() => {
-					setModalmenu(false);
-				}}
-				onRequestClose={() => setModalmenu(false)}
-				onDismiss={() => setModalmenu(false)}
-				animationIn="fadeIn"
-				animationOut="fadeOut"
-				isVisible={modalmenu}
-				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					alignSelf: "center",
-					alignContent: "center",
-				}}
-			>
-				<View
-					style={{
-						backgroundColor: "white",
-						width: Dimensions.get("screen").width - 80,
-						padding: 20,
-					}}
-				>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							console.log(data);
-						}}
-					>
-						<Text size="description" type="regular" style={{}}>
-							{t("shareTo")}...
-						</Text>
-					</Pressable>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							setModalmenu(false),
-								props.navigation.push("EditPost", {
-									datapost: selectedOption,
-								});
-						}}
-					>
-						<Text size="description" type="regular" style={{}}>
-							{t("edit")}
-						</Text>
-					</Pressable>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							setModalmenu(false), setModalhapus(true);
-						}}
-					>
-						<Text
-							size="description"
-							type="regular"
-							style={{ color: "#d75995" }}
-						>
-							{t("delete")}
-						</Text>
-					</Pressable>
-				</View>
-			</Modal>
+      <Modal
+        onBackdropPress={() => {
+          setModalmenu(false);
+        }}
+        onRequestClose={() => setModalmenu(false)}
+        onDismiss={() => setModalmenu(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalmenu}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 80,
+            padding: 20,
+          }}
+        >
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              console.log(data);
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("shareTo")}...
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenu(false),
+                props.navigation.push("EditPost", {
+                  datapost: selectedOption,
+                });
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("edit")}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenu(false), setModalhapus(true);
+            }}
+          >
+            <Text
+              size="description"
+              type="regular"
+              style={{ color: "#d75995" }}
+            >
+              {t("delete")}
+            </Text>
+          </Pressable>
+        </View>
+      </Modal>
 
-			<Modal
-				onBackdropPress={() => {
-					setModalmenuother(false);
-				}}
-				onRequestClose={() => setModalmenuother(false)}
-				onDismiss={() => setModalmenuother(false)}
-				animationIn="fadeIn"
-				animationOut="fadeOut"
-				isVisible={modalmenuother}
-				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					alignSelf: "center",
-					alignContent: "center",
-				}}
-			>
-				<View
-					style={{
-						backgroundColor: "white",
-						width: Dimensions.get("screen").width - 80,
-						padding: 20,
-					}}
-				>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							setModalmenuother(false);
-						}}
-					>
-						<Text
-							size="description"
-							type="regular"
-							style={{ color: "#d75995" }}
-						>
-							{t("reportThisPost")}
-						</Text>
-					</Pressable>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							setModalmenuother(false);
-						}}
-					>
-						<Text size="description" type="regular" style={{}}>
-							{t("blockUser")}
-						</Text>
-					</Pressable>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {}}
-					>
-						<Text size="description" type="regular" style={{}}>
-							{t("copyLink")}
-						</Text>
-					</Pressable>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							setModalmenuother(false);
-						}}
-					>
-						<Text size="description" type="regular" style={{}}>
-							{t("unfollow")}
-						</Text>
-					</Pressable>
-					<Pressable
-						style={{
-							paddingVertical: 10,
-						}}
-						onPress={() => {
-							setModalmenuother(false);
-						}}
-					>
-						<Text size="description" type="regular" style={{}}>
-							{t("hidePost")}
-						</Text>
-					</Pressable>
-				</View>
-			</Modal>
+      <Modal
+        onBackdropPress={() => {
+          setModalmenuother(false);
+        }}
+        onRequestClose={() => setModalmenuother(false)}
+        onDismiss={() => setModalmenuother(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalmenuother}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 80,
+            padding: 20,
+          }}
+        >
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenuother(false);
+            }}
+          >
+            <Text
+              size="description"
+              type="regular"
+              style={{ color: "#d75995" }}
+            >
+              {t("reportThisPost")}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenuother(false);
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("blockUser")}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {}}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("copyLink")}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenuother(false);
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("unfollow")}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenuother(false);
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("hidePost")}
+            </Text>
+          </Pressable>
+        </View>
+      </Modal>
 
-			<Modal
-				onBackdropPress={() => {
-					setModalhapus(false);
-				}}
-				onRequestClose={() => setModalhapus(false)}
-				onDismiss={() => setModalhapus(false)}
-				animationIn="fadeIn"
-				animationOut="fadeOut"
-				isVisible={modalhapus}
-				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					alignSelf: "center",
-					alignContent: "center",
-				}}
-			>
-				<View
-					style={{
-						backgroundColor: "white",
-						width: Dimensions.get("screen").width - 60,
-						padding: 20,
-					}}
-				>
-					<Text>{t("alertHapusPost")}</Text>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							paddingVertical: 20,
-							paddingHorizontal: 40,
-						}}
-					>
-						<Button
-							onPress={() => {
-								_deletepost(selectedOption);
-							}}
-							color="primary"
-							text={t("delete")}
-						></Button>
-						<Button
-							onPress={() => {
-								setModalhapus(false);
-							}}
-							color="secondary"
-							variant="bordered"
-							text={t("cancel")}
-						></Button>
-					</View>
-				</View>
-			</Modal>
-
+      <Modal
+        onBackdropPress={() => {
+          setModalhapus(false);
+        }}
+        onRequestClose={() => setModalhapus(false)}
+        onDismiss={() => setModalhapus(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalhapus}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 60,
+            padding: 20,
+          }}
+        >
+          <Text>{t("alertHapusPost")}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingVertical: 20,
+              paddingHorizontal: 40,
+            }}
+          >
+            <Button
+              onPress={() => {
+                _deletepost(selectedOption);
+              }}
+              color="primary"
+              text={t("delete")}
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalhapus(false);
+              }}
+              color="secondary"
+              variant="bordered"
+              text={t("cancel")}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

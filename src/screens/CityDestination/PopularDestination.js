@@ -109,9 +109,12 @@ export default function AllDestination(props) {
                 height: Dimensions.get("window").width * 0.29,
               }}
               onPress={() =>
-                props.navigation.navigate("Country", {
-                  data: item,
-                  exParam: true,
+                props.navigation.navigate("CountryStack", {
+                  screen: "Country",
+                  params: {
+                    data: item,
+                    exParam: true,
+                  },
                 })
               }
             >
@@ -173,14 +176,17 @@ export default function AllDestination(props) {
                 return (
                   <TouchableOpacity
                     onPress={() =>
-                      props.navigation.navigate("CityDetail", {
-                        data: {
-                          city_id: value.id,
-                          city_name: value.name,
-                          latitude: value.latitude,
-                          longitude: value.longitude,
+                      props.navigation.navigate("CountryStack", {
+                        screen: "CityDetail",
+                        params: {
+                          data: {
+                            city_id: value.id,
+                            city_name: value.name,
+                            latitude: value.latitude,
+                            longitude: value.longitude,
+                          },
+                          exParam: true,
                         },
-                        exParam: true,
                       })
                     }
                     style={{

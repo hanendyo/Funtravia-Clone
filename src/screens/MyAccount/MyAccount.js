@@ -68,7 +68,10 @@ export default function MyAccount(props) {
       >
         <Pressable
           onPress={() =>
-            props.navigation.navigate("settings", { datauser: datauser })
+            props.navigation.navigate("AccountStack", {
+              screen: "settings",
+              params: { datauser: datauser },
+            })
           }
           style={{
             marginHorizontal: 10,
@@ -353,7 +356,9 @@ export default function MyAccount(props) {
           </Ripple>
           <Ripple
             onPress={() => {
-              props.navigation.navigate("ItineraryFavorite");
+              props.navigation.navigate("ItineraryStack", {
+                screen: "ItineraryFavorite",
+              });
             }}
             style={{
               justifyContent: "space-between",
