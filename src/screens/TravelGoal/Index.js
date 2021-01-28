@@ -90,12 +90,12 @@ export default function TravelGoal(props) {
             shadowOpacity: 0.5,
             shadowColor: "#d3d3d3",
             elevation: 3,
-            height: Dimensions.get("screen").width * 0.33,
+            height: Dimensions.get("screen").width * 0.35,
             width: "100%",
             borderRadius: 5,
           }}
           imageStyle={{
-            height: Dimensions.get("screen").width * 0.33,
+            height: Dimensions.get("screen").width * 0.35,
             width: "100%",
             borderRadius: 5,
           }}
@@ -136,7 +136,7 @@ export default function TravelGoal(props) {
               <Truncate
                 text="we are going to show you how beautiful this world we are going to
               show you how beautiful this world show you how beautiful this world"
-                length={120}
+                length={100}
               />
             </Text>
             <View
@@ -248,7 +248,7 @@ export default function TravelGoal(props) {
                   <Truncate
                     text="we are going to show you how beautiful this world we are going to
               show you how beautiful this world"
-                    length={80}
+                    length={60}
                   />
                 </Text>
                 <Text size="small" type="light" style={{ fontStyle: "italic" }}>
@@ -339,7 +339,7 @@ export default function TravelGoal(props) {
                 island
               </Text>
               <Text type="bold" size="small">
-                <Truncate text="Sunset in Bali with friend" length={18} />
+                <Truncate text="Sunset in Bali with friend" length={15} />
               </Text>
               <Text
                 type="light"
