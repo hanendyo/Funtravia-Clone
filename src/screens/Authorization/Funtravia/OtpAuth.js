@@ -169,7 +169,7 @@ export default function OtpAuth(props) {
             "setting",
             JSON.stringify(response.data.verification.data_setting)
           );
-          props.navigation.navigate("BottomStack");
+          props.navigation.navigate("BottomStack", { screen: "HomeScreen" });
 
           // settingcreate();
         } catch (error) {

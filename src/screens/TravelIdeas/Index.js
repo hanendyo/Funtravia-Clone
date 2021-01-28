@@ -6,6 +6,7 @@ import {
   TextInput,
   SafeAreaView,
 } from "react-native";
+import { StackActions } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, CustomImage, Text, Truncate } from "../../component";
 import { default_image } from "../../assets/png";
@@ -86,6 +87,9 @@ export default function TravelIdeas(props) {
         }}
       >
         <Ripple
+          onPress={() => {
+            props.navigation.dispatch(StackActions.replace("Unesco"));
+          }}
           style={{
             padding: 30,
             backgroundColor: "#209fae",
