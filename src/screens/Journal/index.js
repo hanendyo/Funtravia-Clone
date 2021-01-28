@@ -162,7 +162,7 @@ export default function Journal(props) {
         </TouchableOpacity>
         <View
           style={{
-            margin: 20,
+            margin: 10,
             borderBottomColor: "#f6f6f6",
             borderBottomWidth: 0.9,
           }}
@@ -322,9 +322,9 @@ export default function Journal(props) {
         {dataList && dataList.journal_list.length > 0 ? (
           <View
             style={{
-              marginVertical: 20,
+              marginVertical: 10,
               width: Dimensions.get("window").width,
-              paddingHorizontal: 20,
+              paddingHorizontal: 10,
               alignContent: "center",
             }}
           >
@@ -349,28 +349,29 @@ export default function Journal(props) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
+    marginTop: 20,
+    marginHorizontal: 5,
     borderRadius: 15,
     backgroundColor: "#f6f6f6",
-    width: Dimensions.get("window").width * 0.9,
+    width: Dimensions.get("window").width * 0.95,
     alignSelf: "center",
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   imageTop: {
-    width: Dimensions.get("window").width * 0.9,
-    height: Dimensions.get("window").width * 0.6,
+    width: Dimensions.get("window").width * 0.95,
+    height: Dimensions.get("window").width * 0.5,
     borderRadius: 15,
   },
   title: {
-    marginVertical: 20,
+    marginVertical: 5,
   },
   editor: {
     flexDirection: "row",
     alignItems: "center",
   },
-  dataEditor: { marginHorizontal: 20 },
+  dataEditor: { marginHorizontal: 10 },
   topContributor: {
-    marginHorizontal: 20,
+    marginHorizontal: 10,
   },
   contributor: {
     justifyContent: "space-between",

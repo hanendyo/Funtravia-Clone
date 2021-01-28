@@ -377,9 +377,7 @@ export default function DetailJournal(props) {
                     <View key={index}>
                       <View style={{ marginTop: 20 }}>
                         <Image
-                          source={
-                            item.image ? { uri: item.image } : default_image
-                          }
+                          source={item.image ? { uri: item.image } : null}
                           style={{
                             width: Dimensions.get("window").width,
                             height: Dimensions.get("window").width * 0.7,

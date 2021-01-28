@@ -154,15 +154,15 @@ export default function MyAccount(props) {
           zIndex: 1,
         }}
       >
-        <LinearGradient
-          colors={["rgba(34, 34, 34, 1)", "rgba(34, 34, 34, 0)"]}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            height: 130,
-            width: width,
-          }}
-        ></LinearGradient>
+        {/* <LinearGradient
+					colors={["rgba(34, 34, 34, 1)", "rgba(34, 34, 34, 0)"]}
+					start={{ x: 1, y: 0 }}
+					end={{ x: 1, y: 1 }}
+					style={{
+						height: 130,
+						width: width,
+					}}
+				></LinearGradient> */}
       </View>
       <ScrollView style={{ backgroundColor: "#F6F6F7" }}>
         <View

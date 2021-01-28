@@ -47,7 +47,22 @@ export default function OtherProfile(props) {
       fontSize: 14,
       color: "white",
     },
-
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={
+          {
+            // backgroundColor: "rgba(0,0,0,0.3)",
+          }
+        }
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
     headerRight: () => (
       <Button
         text={""}

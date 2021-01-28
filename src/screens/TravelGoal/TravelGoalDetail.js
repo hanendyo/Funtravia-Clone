@@ -316,7 +316,7 @@ export default function TravelGoalDetail(props) {
                   <Truncate
                     text="we are going to show you how beautiful this world we are going to
               show you how beautiful this world"
-                    length={80}
+                    length={60}
                   />
                 </Text>
                 <Text size="small" type="light" style={{ fontStyle: "italic" }}>
