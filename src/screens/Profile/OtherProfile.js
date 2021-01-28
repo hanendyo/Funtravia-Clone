@@ -223,28 +223,34 @@ export default function OtherProfile(props) {
 
       if (responseJson) {
         if (responseJson.sender_id === idku) {
-          props.navigation.push("RoomChat", {
-            room_id: responseJson.id,
-            receiver: responseJson.receiver.id,
-            name:
-              responseJson.receiver.first_name +
-              " " +
-              (responseJson.receiver.last_name
-                ? responseJson.receiver.last_name
-                : ""),
-            picture: responseJson.receiver.picture,
+          props.navigation.push("ChatStack", {
+            screen: "RoomChat",
+            params: {
+              room_id: responseJson.id,
+              receiver: responseJson.receiver.id,
+              name:
+                responseJson.receiver.first_name +
+                " " +
+                (responseJson.receiver.last_name
+                  ? responseJson.receiver.last_name
+                  : ""),
+              picture: responseJson.receiver.picture,
+            },
           });
         } else {
-          props.navigation.push("RoomChat", {
-            room_id: responseJson.id,
-            receiver: responseJson.sender.id,
-            name:
-              responseJson.sender.first_name +
-              " " +
-              (responseJson.sender.last_name
-                ? responseJson.sender.last_name
-                : ""),
-            picture: responseJson.sender.picture,
+          props.navigation.push("ChatStack", {
+            screen: "RoomChat",
+            params: {
+              room_id: responseJson.id,
+              receiver: responseJson.sender.id,
+              name:
+                responseJson.sender.first_name +
+                " " +
+                (responseJson.sender.last_name
+                  ? responseJson.sender.last_name
+                  : ""),
+              picture: responseJson.sender.picture,
+            },
           });
         }
       }

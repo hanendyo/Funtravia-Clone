@@ -138,8 +138,11 @@ export default function SearchFeed({ props }) {
       <TouchableOpacity
         style={styles.main}
         onPress={() =>
-          props.navigation.navigate("SinglePost", {
-            post_id: id,
+          props.navigation.navigate("FeedStack", {
+            screen: "SinglePost",
+            params: {
+              post_id: id,
+            },
           })
         }
       >

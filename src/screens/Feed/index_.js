@@ -307,7 +307,9 @@ export default function Feed(props) {
   let data_id = data ? data.feed_post.id : "data_id";
 
   const createPost = () => {
-    props.navigation.navigate("Post");
+    props.navigation.navigate("FeedStack", {
+      screen: "Post",
+    });
   };
 
   const likeToggle = (value) => {

@@ -154,7 +154,7 @@ export default function SearchAccommodation(props) {
     // setToken(tkn);
   };
   const createPost = () => {
-    props.navigation.navigate("Post");
+    props.navigation.navigate("FeedStack", { screen: "Post" });
   };
   useEffect(() => {
     console.log("first: ", searchAccom);

@@ -1,0 +1,46 @@
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import Postscreen from "../../screens/Feed/Post";
+import CreatePostScreen from "../../screens/Feed/Post/CreatePost";
+import CommentPost from "../../screens/Feed/Post/Comments";
+import EditPost from "../../screens/Feed/Post/EditPost";
+import SinglePost from "../../screens/Feed/Post/SinglePost";
+import CommentsById from "../../screens/Feed/Post/CommentsById";
+
+const FeedStack = createStackNavigator();
+export default function FeedStackNavigation() {
+  return (
+    <FeedStack.Navigator>
+      <FeedStack.Screen
+        name="Post"
+        component={Postscreen}
+        options={{ headerShown: false }}
+      />
+      <FeedStack.Screen
+        name="CommentPost"
+        component={CommentPost}
+        options={{ headerShown: false }}
+      />
+      <FeedStack.Screen
+        name="EditPost"
+        component={EditPost}
+        options={{ headerShown: false }}
+      />
+      <FeedStack.Screen
+        name="SinglePost"
+        component={SinglePost}
+        options={{ headerShown: false }}
+      />
+      <FeedStack.Screen name="CreatePostScreen" component={CreatePostScreen} />
+
+      <FeedStack.Screen
+        name="CommentsById"
+        component={CommentsById}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+    </FeedStack.Navigator>
+  );
+}

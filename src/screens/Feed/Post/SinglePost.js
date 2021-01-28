@@ -287,9 +287,12 @@ export default function SinglePost(props) {
   }, []);
 
   const viewcomment = (data) => {
-    props.navigation.navigate("CommentPost", {
-      data: data.feed_post_byid,
-      token: token,
+    props.navigation.navigate("FeedStack", {
+      screen: "CommentPost",
+      params: {
+        data: data.feed_post_byid,
+        token: token,
+      },
     });
   };
 
@@ -349,8 +352,11 @@ export default function SinglePost(props) {
             }}
             onPress={() => {
               setModalmenu(false),
-                props.navigation.push("EditPost", {
-                  datapost: selectedOption,
+                props.navigation.push("FeedStack", {
+                  screen: "EditPost",
+                  params: {
+                    datapost: selectedOption,
+                  },
                 });
             }}
           >

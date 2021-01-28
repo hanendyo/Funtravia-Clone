@@ -998,9 +998,9 @@ export default function ItineraryDetail(props) {
               let menit = parseFloat(maxjam[1]);
               if (jam < 24) {
                 if (jam < 23) {
-                  props.navigation.push("Wishlist");
+                  props.navigation.push("AccountStack", { screen: "Wishlist" });
                 } else if (jam === 23 && menit === 0) {
-                  props.navigation.push("Wishlist");
+                  props.navigation.push("AccountStack", { screen: "Wishlist" });
                 } else {
                   Alert.alert(t("alertjam"));
                 }

@@ -328,7 +328,9 @@ export default function MyAccount(props) {
             {t("favourites")}
           </Text>
           <Ripple
-            onPress={() => props.navigation.navigate("Wishlist")}
+            onPress={() =>
+              props.navigation.navigate("AccountStack", { screen: "Wishlist" })
+            }
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
