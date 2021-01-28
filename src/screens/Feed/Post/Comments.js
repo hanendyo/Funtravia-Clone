@@ -44,6 +44,8 @@ import {
 } from "../../../assets/svg";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
+import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
+
 export default function Comments(props) {
   const HeaderComponent = {
     headerShown: true,
@@ -79,7 +81,8 @@ export default function Comments(props) {
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  let [dataPost, setDataPost] = useState(props.route.params.data);
+  let [dataPost, setDataPost] = useState(props.route.params?.data);
+  let [postid, setPostid] = useState(props.route.params?.post_id);
   let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
@@ -113,6 +116,7 @@ export default function Comments(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
+      GetFeed();
       GetCommentList();
       loadAsync();
     });
@@ -281,6 +285,20 @@ export default function Comments(props) {
       Alert.alert("Please Insert a Text");
     }
   };
+
+  const [
+    GetFeed,
+    { data: datafeed, loading: loadingfeed, error: errorfeed },
+  ] = useLazyQuery(FeedByID, {
+    fetchPolicy: "network-only",
+    variables: { post_id: postid },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
   const scroll_to = () => {
     // GetCommentList();

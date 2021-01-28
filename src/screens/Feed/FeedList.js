@@ -49,421 +49,430 @@ export default function FeedList({
 	refreshing,
 	token,
 }) {
-	let [datafeed, SetDataFeed] = useState(dataRender);
-	let [selectedOption, SetOption] = useState({});
-	let [modalmenu, setModalmenu] = useState(false);
-	let [modalmenuother, setModalmenuother] = useState(false);
-	let [modalhapus, setModalhapus] = useState(false);
-	let [setting, setSetting] = useState();
-	console.log(setting?.user?.id);
-	const { t, i18n } = useTranslation();
-	const [
-		MutationLike,
-		{ loading: loadingLike, data: dataLike, error: errorLike },
-	] = useMutation(likepost, {
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-	});
+  let [datafeed, SetDataFeed] =  useState(dataRender);
+  let [selectedOption, SetOption] = useState({});
+  let [modalmenu, setModalmenu] = useState(false);
+  let [modalmenuother, setModalmenuother] = useState(false);
+  let [modalhapus, setModalhapus] = useState(false);
+  let [setting, setSetting] = useState();
+  console.log(setting?.user?.id);
+  const { t, i18n } = useTranslation();
+  const [
+    MutationLike,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(likepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-	const [
-		MutationunLike,
-		{ loading: loadingunLike, data: dataunLike, error: errorunLike },
-	] = useMutation(unlikepost, {
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-	});
+  const [
+    MutationunLike,
+    { loading: loadingunLike, data: dataunLike, error: errorunLike },
+  ] = useMutation(unlikepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-	const [
-		Mutationdeletepost,
-		{ loading: loadingdelete, data: datadelete, error: errordelete },
-	] = useMutation(deletepost, {
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-	});
+  const [
+    Mutationdeletepost,
+    { loading: loadingdelete, data: datadelete, error: errordelete },
+  ] = useMutation(deletepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-	const _liked = async (id) => {
-		// console.log(id);
-		// SetDataFeed(tempData);
-		if (token) {
-			var tempData = [...datafeed];
-			var index = tempData.findIndex((k) => k["id"] === id);
-			tempData[index].liked = true;
-			tempData[index].response_count = tempData[index].response_count + 1;
-			try {
-				let response = await MutationLike({
-					variables: {
-						post_id: id,
-					},
-				});
-				if (loadingLike) {
-					Alert.alert("Loading!!");
-				}
-				if (errorLike) {
-					throw new Error("Error Input");
-				}
+  const _liked = async (id) => {
+    // console.log(id);
+    // SetDataFeed(tempData);
+    if (token) {
+      var tempData = [...datafeed];
+      var index = tempData.findIndex((k) => k["id"] === id);
+      tempData[index].liked = true;
+      tempData[index].response_count = tempData[index].response_count + 1;
+      try {
+        let response = await MutationLike({
+          variables: {
+            post_id: id,
+          },
+        });
+        if (loadingLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
 
-				if (response.data) {
-					if (
-						response.data.like_post.code === 200 ||
-						response.data.like_post.code === "200"
-					) {
-						// _Refresh();
-						var tempData = [...datafeed];
-						var index = tempData.findIndex((k) => k["id"] === id);
-						tempData[index].liked = true;
-						tempData[index].response_count = response.data.like_post.count_like;
-						// SetDataFeed(tempData);
-					} else {
-						var tempData = [...datafeed];
-						var index = tempData.findIndex((k) => k["id"] === id);
-						tempData[index].liked = false;
-						tempData[index].response_count = tempData[index].response_count - 1;
-						// SetDataFeed(tempData);
-						throw new Error(response.data.like_post.message);
-					}
+        if (response.data) {
+          if (
+            response.data.like_post.code === 200 ||
+            response.data.like_post.code === "200"
+          ) {
+            // _Refresh();
+            var tempData = [...datafeed];
+            var index = tempData.findIndex((k) => k["id"] === id);
+            tempData[index].liked = true;
+            tempData[index].response_count = response.data.like_post.count_like;
+            // SetDataFeed(tempData);
+          } else {
+            var tempData = [...datafeed];
+            var index = tempData.findIndex((k) => k["id"] === id);
+            tempData[index].liked = false;
+            tempData[index].response_count = tempData[index].response_count - 1;
+            // SetDataFeed(tempData);
+            throw new Error(response.data.like_post.message);
+          }
 
-					// Alert.alert('Succes');
-				}
-			} catch (error) {
-				var tempData = [...datafeed];
-				var index = tempData.findIndex((k) => k["id"] === id);
-				tempData[index].liked = false;
-				tempData[index].response_count = tempData[index].response_count - 1;
-				// SetDataFeed(tempData);
-				console.log(error);
-				// Alert.alert("" + error);
-			}
-		} else {
-			Alert.alert("Please Login");
-		}
-	};
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        var tempData = [...datafeed];
+        var index = tempData.findIndex((k) => k["id"] === id);
+        tempData[index].liked = false;
+        tempData[index].response_count = tempData[index].response_count - 1;
+        // SetDataFeed(tempData);
+        console.log(error);
+        // Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
 
-	const _unliked = async (id) => {
-		var tempData = [...datafeed];
-		var index = tempData.findIndex((k) => k["id"] === id);
-		tempData[index].liked = false;
-		tempData[index].response_count = tempData[index].response_count - 1;
-		SetDataFeed(tempData);
-		if (token || token !== "") {
-			try {
-				let response = await MutationunLike({
-					variables: {
-						post_id: id,
-					},
-				});
-				if (loadingunLike) {
-					Alert.alert("Loading!!");
-				}
-				if (errorunLike) {
-					throw new Error("Error Input");
-				}
+  const _unliked = async (id) => {
+    if (token || token !== "") {
+      var tempData = [...datafeed];
+      var index = tempData.findIndex((k) => k["id"] === id);
+      tempData[index].liked = false;
+      tempData[index].response_count = tempData[index].response_count - 1;
+    //   SetDataFeed(tempData);
+      try {
+        let response = await MutationunLike({
+          variables: {
+            post_id: id,
+          },
+        });
+        // if (loadingunLike) {
+        //   Alert.alert("Loading!!");
+        // }
+        // if (errorunLike) {
+        //   throw new Error("Error Input");
+        // }
 
-				if (response.data) {
-					if (
-						response.data.unlike_post.code === 200 ||
-						response.data.unlike_post.code === "200"
-					) {
-						// _Refresh();
-						var tempData = [...datafeed];
-						var index = tempData.findIndex((k) => k["id"] === id);
-						tempData[index].liked = false;
-						tempData[index].response_count =
-							response.data.unlike_post.count_like;
-						SetDataFeed(tempData);
-					} else {
-						throw new Error(response.data.unlike_post.message);
-					}
+        if (response.data) {
+          if (
+            response.data.unlike_post.code === 200 ||
+            response.data.unlike_post.code === "200"
+          ) {
+            // _Refresh();
+            var tempData = [...datafeed];
+            var index = tempData.findIndex((k) => k["id"] === id);
+            tempData[index].liked = false;
+            tempData[index].response_count = response.data.unlike_post.count_like;
+            // SetDataFeed(tempData);
+          } else {
+            var tempData = [...datafeed];
+            var index = tempData.findIndex((k) => k["id"] === id);
+            tempData[index].liked = false;
+            tempData[index].response_count = tempData[index].response_count +1;
+            // SetDataFeed(tempData);
+            throw new Error(response.data.unlike_post.message);
+          }
 
-					// Alert.alert('Succes');
-				}
-			} catch (error) {
-				Alert.alert("" + error);
-			}
-		} else {
-			tempData[index].liked = true;
-			tempData[index].response_count = tempData[index].response_count + 1;
-			SetDataFeed(tempData);
-			Alert.alert("Please Login");
-		}
-	};
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        var tempData = [...datafeed];
+            var index = tempData.findIndex((k) => k["id"] === id);
+            tempData[index].liked = false;
+            tempData[index].response_count = tempData[index].response_count +1;
+            // SetDataFeed(tempData);
+        // Alert.alert("" + error);
+          console.log(error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
 
-	const image_scaling = async (image) => {
-		// console.log(data);
-		let screen_widht = Dimensions.get("screen").width - 50;
-		let screen_height = Dimensions.get("screen").width - 50;
-		await Image.getSize(image, (width, height) => {
-			screen_height = height * (screen_widht / width);
-		});
-		return screen_height;
-	};
-	const _deletepost = async (data) => {
-		setModalhapus(false);
-		setModalmenu(false);
-		// var tempData = [...datafeed];
-		// var index = tempData.findIndex((k) => k['id'] === id);
+  
 
-		// SetDataFeed(tempData);
-		if (token || token !== "") {
-			try {
-				let response = await Mutationdeletepost({
-					variables: {
-						post_id: data.id,
-					},
-				});
-				if (loadingunLike) {
-					Alert.alert("Loading!!");
-				}
-				if (errorunLike) {
-					throw new Error("Error Input");
-				}
+  const image_scaling = async (image) =>{
+    // console.log(data);
+    let screen_widht = Dimensions.get("screen").width - 50;
+    let screen_height = Dimensions.get("screen").width - 50;
+    await Image.getSize(image, (width, height) => {
+        screen_height = height * (screen_widht / width);
+    });
+    return screen_height;
 
-				// console.log(response);
-				if (response.data) {
-					if (
-						response.data.delete_post.code === 200 ||
-						response.data.delete_post.code === "200"
-					) {
-						Refresh();
-						// var tempData = [...datafeed];
-						// var index = tempData.findIndex((k) => k['id'] === id);
-						// tempData[index].liked = false;
-						// tempData[index].response_count =
-						// 	response.data.delete_post.count_like;
-						// SetDataFeed(tempData);
-					} else {
-						throw new Error(response.data.delete_post.message);
-					}
+  }
+  const _deletepost = async (data) => {
+    setModalhapus(false);
+    setModalmenu(false);
+    // var tempData = [...datafeed];
+    // var index = tempData.findIndex((k) => k['id'] === id);
 
-					// Alert.alert('Succes');
-				}
-			} catch (error) {
-				Alert.alert("" + error);
-			}
-		} else {
-			// tempData[index].liked = true;
-			// tempData[index].response_count = tempData[index].response_count + 1;
-			// SetDataFeed(tempData);
-			Alert.alert("Please Login");
-		}
-	};
-	const duration = (datetime) => {
-		var date1 = new Date(datetime).getTime();
-		var date2 = new Date().getTime();
-		var msec = date2 - date1;
-		var mins = Math.floor(msec / 60000);
-		var hrs = Math.floor(mins / 60);
-		var days = Math.floor(hrs / 24);
-		var yrs = Math.floor(days / 365);
-		mins = mins % 60;
-		hrs = hrs % 24;
-		if (yrs > 0) {
-			return yrs + " " + t("yearsAgo");
-		}
-		if (days > 0) {
-			return days + " " + t("daysAgo");
-		}
-		if (hrs > 0) {
-			return hrs + " " + t("hoursAgo");
-		}
-		if (mins > 0) {
-			return mins + " " + t("minutesAgo");
-		} else {
-			return t("justNow");
-		}
-	};
+    // SetDataFeed(tempData);
+    if (token || token !== "") {
+      try {
+        let response = await Mutationdeletepost({
+          variables: {
+            post_id: data.id,
+          },
+        });
+        // if (loadingdelete) {
+        //   Alert.alert("Loading!!");
+        // }
+        // if (errordelete) {
+        //   throw new Error("Error Input");
+        // }
 
-	const loadAsync = async () => {
-		// await GetDataSetting();
-		// if (datas && datas.setting_data) {
-		// 	await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
-		// }
+        // console.log(response);
+        if (response.data) {
+          if (
+            response.data.delete_post.code === 200 ||
+            response.data.delete_post.code === "200"
+          ) {
+            Refresh();
+            // var tempData = [...datafeed];
+            // var index = tempData.findIndex((k) => k['id'] === id);
+            // tempData[index].liked = false;
+            // tempData[index].response_count =
+            // 	response.data.delete_post.count_like;
+            // SetDataFeed(tempData);
+          } else {
+            throw new Error(response.data.delete_post.message);
+          }
 
-		let setsetting = await AsyncStorage.getItem("setting");
-		setSetting(JSON.parse(setsetting));
-	};
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+      }
+    } else {
+      // tempData[index].liked = true;
+      // tempData[index].response_count = tempData[index].response_count + 1;
+      // SetDataFeed(tempData);
+      Alert.alert("Please Login");
+    }
+  };
+  const duration = (datetime) => {
+    var date1 = new Date(datetime).getTime();
+    var date2 = new Date().getTime();
+    var msec = date2 - date1;
+    var mins = Math.floor(msec / 60000);
+    var hrs = Math.floor(mins / 60);
+    var days = Math.floor(hrs / 24);
+    var yrs = Math.floor(days / 365);
+    mins = mins % 60;
+    hrs = hrs % 24;
+    if (yrs > 0) {
+      return yrs + " " + t("yearsAgo");
+    }
+    if (days > 0) {
+      return days + " " + t("daysAgo");
+    }
+    if (hrs > 0) {
+      return hrs + " " + t("hoursAgo");
+    }
+    if (mins > 0) {
+      return mins + " " + t("minutesAgo");
+    } else {
+      return t("justNow");
+    }
+  };
 
-	useEffect(() => {
-		loadAsync();
-	}, []);
+  const loadAsync = async () => {
+    // await GetDataSetting();
+    // if (datas && datas.setting_data) {
+    // 	await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
+    // }
 
-	let [liked, setLiked] = useState(false);
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
+  };
 
-	const createPost = () => {
-		props.navigation.push("Post");
-	};
+  useEffect(() => {
+    loadAsync();
+  }, []);
 
-	const viewcomment = (data) => {
-		props.navigation.navigate("CommentPost", {
-			data: data,
-			token: token,
-		});
-		// console.log(id_post);
-	};
+  let [liked, setLiked] = useState(false);
 
-	const [selected, setSelected] = useState(new Map());
+  const createPost = () => {
+    props.navigation.push("Post");
+  };
 
-	const OptionOpen = (data) => {
-		SetOption(data);
-		if (data.user.ismyfeed == true) {
-			setModalmenu(true);
-		} else {
-			setModalmenuother(true);
-		}
-	};
+  const viewcomment = (data) => {
+    props.navigation.navigate("CommentPost", {
+      data: data,
+      token: token,
+    });
+    // console.log(id_post);
+  };
+
+  const [selected, setSelected] = useState(new Map());
+
+  const OptionOpen = (data) => {
+    SetOption(data);
+    if (data.user.ismyfeed == true) {
+      setModalmenu(true);
+    } else {
+      setModalmenuother(true);
+    }
+  };
 
 	function Item({ selected, dataRender }) {
 		return (
 			<View
 				style={{
-					width: Dimensions.get("window").width - 20,
-					backgroundColor: "#FFFFFF",
-					flex: 1,
-					marginHorizontal: 10,
-					marginVertical: 7,
-					borderRadius: 20,
-					borderBottomWidth: 1,
-					borderBottomColor: "#EEEEEE",
-					paddingBottom: 25,
+				width: Dimensions.get("window").width - 20,
+				backgroundColor: "#FFFFFF",
+				flex: 1,
+				marginHorizontal: 10,
+				marginVertical:7,
+				borderRadius: 20,
+				borderBottomWidth: 1,
+				borderBottomColor: "#EEEEEE",
+				paddingBottom: 25,
 				}}
 			>
 				<View
-					style={{
-						width: "100%",
-						flexDirection: "row",
-						marginVertical: 15,
-						// justifyContent: 'space-evenly',
-						alignContent: "center",
-					}}
+				style={{
+					width: "100%",
+					flexDirection: "row",
+					marginVertical: 15,
+					// justifyContent: 'space-evenly',
+					alignContent: "center",
+				}}
 				>
-					<CustomImage
-						isTouchable
-						onPress={() => {
-							dataRender.user.id !== setting?.user?.id
-								? props.navigation.push("otherprofile", {
-										idUser: dataRender.user.id,
-								  })
-								: props.navigation.push("ProfileTab");
-						}}
-						customStyle={{
-							height: 40,
-							width: 40,
-							borderRadius: 15,
-							alignSelf: "center",
-							marginLeft: 15,
-						}}
-						customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
-						source={{ uri: dataRender.user.picture }}
-					/>
-					<View
-						style={{
-							justifyContent: "center",
-							marginHorizontal: 10,
-						}}
-					>
-						<Text
-							onPress={() => {
-								dataRender.user.id !== setting?.user?.id
-									? props.navigation.push("otherprofile", {
-											idUser: dataRender.user.id,
-									  })
-									: props.navigation.push("ProfileTab");
-							}}
-							style={{
-								fontFamily: "Lato-Bold",
-								fontSize: 14,
-								// marginTop: 7,
-							}}
-						>
-							{dataRender.user.first_name}{" "}
-							{dataRender.user.first_name ? dataRender.user.last_name : null}
-						</Text>
-						<View
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-							}}
-						>
-							<Text
-								style={{
-									fontFamily: "Lato-Regular",
-									fontSize: 10,
-									// marginTop: 7,
-								}}
-							>
-								{duration(dataRender.created_at)}
-							</Text>
-							{dataRender.location_name ? (
-								<View
-									style={{
-										marginHorizontal: 5,
-										backgroundColor: "black",
-										height: 4,
-										width: 4,
-										borderRadius: 2,
-									}}
-								></View>
-							) : null}
-							{dataRender.location_name ? (
-								<Text
-									style={{
-										fontFamily: "Lato-Regular",
-										fontSize: 10,
-										// marginTop: 7,
-									}}
-								>
-									<Truncate text={dataRender.location_name} length={40} />
-								</Text>
-							) : null}
-						</View>
-					</View>
-					<TouchableOpacity
-						onPress={() => OptionOpen(dataRender)}
-						style={{
-							position: "absolute",
-							right: 15,
-							top: 2,
-							alignSelf: "center",
-						}}
-					>
-						<More height={20} width={20} />
-					</TouchableOpacity>
-				</View>
+				<CustomImage
+					isTouchable
+					onPress={() => {
+					dataRender.user.id !== setting?.user?.id
+						? props.navigation.push("otherprofile", {
+							idUser: dataRender.user.id,
+						})
+						: props.navigation.push("ProfileTab");
+					}}
+					customStyle={{
+					height: 40,
+					width: 40,
+					borderRadius: 15,
+					alignSelf: "center",
+					marginLeft: 15,
+					}}
+					customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
+					source={{ uri: dataRender.user.picture }}
+				/>
 				<View
 					style={{
-						marginHorizontal: 10,
-						alignContent: "center",
-						justifyContent: "center",
-						alignItems: "center",
-						width: Dimensions.get("window").width - 40,
-						borderRadius: 15,
+					justifyContent: "center",
+					marginHorizontal: 10,
 					}}
 				>
-					{dataRender && dataRender.assets && dataRender.assets[0].filepath ? (
+					<Text
+					onPress={() => {
+						dataRender.user.id !== setting?.user?.id
+						? props.navigation.push("otherprofile", {
+							idUser: dataRender.user.id,
+							})
+						: props.navigation.push("ProfileTab");
+					}}
+					style={{
+						fontFamily: "Lato-Bold",
+						fontSize: 14,
+						// marginTop: 7,
+					}}
+					>
+					{dataRender.user.first_name}{" "}
+					{dataRender.user.first_name ? dataRender.user.last_name : null}
+					</Text>
+					<View
+					style={{
+						flexDirection: "row",
+						alignItems: "center",
+					}}
+					>
+					<Text
+						style={{
+						fontFamily: "Lato-Regular",
+						fontSize: 10,
+						// marginTop: 7,
+						}}
+					>
+						{duration(dataRender.created_at)}
+					</Text>
+					{dataRender.location_name ? (
+						<View
+						style={{
+							marginHorizontal: 5,
+							backgroundColor: "black",
+							height: 4,
+							width: 4,
+							borderRadius: 2,
+						}}
+						></View>
+					) : null}
+					{dataRender.location_name ? (
+						<Text
+						style={{
+							fontFamily: "Lato-Regular",
+							fontSize: 10,
+							// marginTop: 7,
+						}}
+						>
+						<Truncate text={dataRender.location_name} length={40} />
+						</Text>
+					) : null}
+					</View>
+				</View>
+				<TouchableOpacity
+					onPress={() => OptionOpen(dataRender)}
+					style={{
+					position: "absolute",
+					right: 15,
+					top: 2,
+					alignSelf: "center",
+					}}
+				>
+					<More height={20} width={20} />
+				</TouchableOpacity>
+				</View>
+				<View
+				style={{
+					marginHorizontal: 10,
+					alignContent: 'center',
+					justifyContent: 'center',
+					alignItems:'center',
+					width : Dimensions.get("window").width - 40,
+					minHeight : Dimensions.get("window").width - 155,
+					borderWidth: 0.5,
+					borderColor: '#EEEEEE',
+					borderRadius: 15,
+				}}>
+					{dataRender && dataRender.assets && dataRender.assets[0].filepath ?
 						<Image
 							style={{
 								width: Dimensions.get("window").width - 40,
 								borderRadius: 15,
 								alignSelf: "center",
 							}}
-							uri={dataRender.assets[0].filepath}
+							
+							uri= {dataRender.assets[0].filepath }
 						/>
-					) : null}
-					{/* <AutoHeightImage
-            width={Dimensions.get("window").width -40}
-            source={{ uri: dataRender.assets[0]?.filepath }}
-          /> */}
+					:null}
 				</View>
 
 				<View
@@ -845,6 +854,11 @@ export default function FeedList({
 				extraData={liked}
 				refreshing={refreshing}
 				showsVerticalScrollIndicator={false}
+				removeClippedSubviews={true} // Unmount components when outside of window 
+				initialNumToRender={2} // Reduce initial render amount
+				maxToRenderPerBatch={1} // Reduce number in each render batch
+				updateCellsBatchingPeriod={100} // Increase time between renders
+				windowSize={7} // Reduce the window size
 				refreshControl={
 					<RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
 				}
