@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const genderSettingAkun = gql`
-  mutation($gender: String!) {
-    update_gender_settings(gender: $gender) {
+  mutation($date: String!) {
+    update_birth_settings(birth_date: $date) {
       id
       response_time
       message

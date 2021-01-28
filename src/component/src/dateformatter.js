@@ -41,6 +41,36 @@ export const dateFormatDMY = (date) => {
   return newDate;
 };
 
+// date hasil 20-01-2021 from 2021-01-20
+
+export const dateFormatYMD = (date) => {
+  const format = new Date(date);
+  const month =
+    format.getMonth() + 1 < 10
+      ? "0" + (format.getMonth() + 1)
+      : format.getMonth() + 1;
+  const newDate =
+    format.getDate() +
+    "-" +
+    month.toString() +
+    "-" +
+    format.getFullYear().toString();
+  return newDate;
+};
+
+// date hasil 2021/01/21 from 2021-01-20
+
+export const FormatYMD = (date) => {
+  const format = new Date(date);
+  const month =
+    format.getMonth() + 1 < 10
+      ? "0" + (format.getMonth() + 1)
+      : format.getMonth() + 1;
+  let newDate = format.getDate() + "-" + month + "-" + format.getFullYear();
+  // console.log(newDate);
+  return newDate;
+};
+
 export const dateFormatMonthYears = (date) => {
   let monthNames = [
     "January",
