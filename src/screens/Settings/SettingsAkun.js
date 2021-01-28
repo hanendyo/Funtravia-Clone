@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Platform,
   Pressable,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,11 +26,16 @@ import Ripple from "react-native-material-ripple";
 import { Truncate } from "../../component";
 import DatePicker from "react-native-modern-datepicker";
 import { Picker } from "react-native";
-import { dateFormat, dateFormatDMY } from "../../component/src/dateformatter";
+import {
+  dateFormat,
+  dateFormatYMD,
+  FormatYMD,
+} from "../../component/src/dateformatter";
 import { Input, Item, Label } from "native-base";
 import City from "../../graphQL/Query/Itinerary/City";
 import { useMutation } from "@apollo/react-hooks";
 import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
+import Date from "../../graphQL/Mutation/Setting/dateSettingAkun";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -43,10 +49,12 @@ export default function SettingsAkun(props) {
   let [city, setCity] = useState("");
   let [cityId, setCityId] = useState("");
   let [cityName, setCityName] = useState("");
-  let [date, setDate] = useState();
+  let [genders, setGender] = useState("");
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
+  // let [dateUser, setDateUser] = useState(setting.user.birth_date);
+  let [date, setDate] = useState(setting.user.birth_date);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -55,6 +63,10 @@ export default function SettingsAkun(props) {
   const closeBirth1 = () => {
     setModalBirth(true);
     setModalBirth1(false);
+  };
+
+  const closeModalBirth = () => {
+    setDate(null);
   };
 
   const HeaderComponent = {
@@ -90,18 +102,6 @@ export default function SettingsAkun(props) {
   };
 
   const [
-    GetDataSetting,
-    { data: datas, loading: loadings, error: errors },
-  ] = useLazyQuery(GetSetting, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-  const [
     querycity,
     { loading: loadingcity, data: datacity, error: errorcity },
   ] = useLazyQuery(City, {
@@ -115,8 +115,6 @@ export default function SettingsAkun(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
-    await GetDataSetting();
-    // await setSetting();
     await querycity();
     await GetCurrencyList();
     let setsetting = await AsyncStorage.getItem("setting");
@@ -124,20 +122,21 @@ export default function SettingsAkun(props) {
   };
 
   const [
-    GetCurrencyList,
-    { data: datacurrency, loading: loadingcurrency, error: errorcurrency },
-  ] = useLazyQuery(CurrencyList);
-
-  const languageToggle = async (value) => {
-    setLanguage(value);
-    i18n.changeLanguage(value);
-    await AsyncStorage.setItem("setting_language", value);
-  };
-
-  const [
     mutationGender,
     { data: dataGender, loading: loadingGender, error: errorGender },
   ] = useMutation(Gender, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationDate,
+    { data: dataDate, loading: loadingDate, error: errorDate },
+  ] = useMutation(Date, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -161,7 +160,7 @@ export default function SettingsAkun(props) {
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
 
-  const setstart = (x) => {
+  const modalBirth1Close = (x) => {
     setDate(x);
     closeBirth1();
   };
@@ -181,9 +180,56 @@ export default function SettingsAkun(props) {
     await setModalBirth(false);
   };
 
-  const hasil = (dataSetting) => {
-    console.log("gender :", dataSetting);
+  const hasilGender = async (x) => {
+    try {
+      let response = await mutationGender({
+        variables: {
+          gender: x,
+        },
+      });
+      if (errorGender) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.update_gender_settings.code !== 200) {
+          throw new Error(response.data.update_gender_settings.message);
+        }
+        setModalGender(false);
+        let tmp_data = { ...setting };
+        tmp_data.user.gender = x;
+        await setSetting(tmp_data);
+        await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
   };
+
+  // const hasilDate = async (x) => {
+  //   let format = FormatYMD(x);
+  //   try {
+  //     let response = await mutationDate({
+  //       variables: {
+  //         date: x,
+  //       },
+  //     });
+  //     if (errorGender) {
+  //       throw new Error("Error Input");
+  //     }
+  //     if (response.data) {
+  //       if (response.data.update_gender_settings.code !== 200) {
+  //         throw new Error(response.data.update_gender_settings.message);
+  //       }
+  //       setModalGender(false);
+  //       let tmp_data = { ...setting };
+  //       tmp_data.user.gender = x;
+  //       await setSetting(tmp_data);
+  //       await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+  //     }
+  //   } catch (error) {
+  //     Alert.alert("" + error);
+  //   }
+  // };
 
   return (
     <ScrollView
@@ -306,7 +352,7 @@ export default function SettingsAkun(props) {
               onPress={() => closeBirth()}
             >
               <Text size="description" type="regular">
-                {dateFormatDMY(date)}
+                {date ? dateFormatYMD(date) : "Birth of Date"}
               </Text>
               <CustomImage
                 source={calendar_blue}
@@ -331,7 +377,7 @@ export default function SettingsAkun(props) {
                 size="medium"
                 style={{ width: "48%" }}
                 text="Save"
-                onPress={() => setModalBirth(false)}
+                onPress={() => hasilDate(date)}
               ></Button>
             </View>
           </View>
@@ -373,7 +419,7 @@ export default function SettingsAkun(props) {
               options={{}}
               // current={startDate ? startDate : getToday()}
               // selected={startDate ? startDate : getToday()}
-              onDateChange={(x) => setstart(x)}
+              onDateChange={(x) => setDate(x)}
               mode="calendar"
               style={{ borderRadius: 10 }}
             />
@@ -383,14 +429,14 @@ export default function SettingsAkun(props) {
                 style={{ alignSelf: "flex-end" }}
                 text="Cancel"
                 variant="transparent"
-                onPress={() => closeBirth1()}
+                onPress={() => closeModalBirth()}
               ></Button>
               <Button
                 size="small"
                 style={{ alignSelf: "flex-end" }}
                 text="Ok"
                 variant="transparent"
-                onPress={() => setstart()}
+                onPress={() => modalBirth1Close(date)}
               ></Button>
             </View>
           </View>
@@ -449,8 +495,8 @@ export default function SettingsAkun(props) {
                   marginLeft: -8,
                   elevation: 20,
                 }}
-                // selectedValue={() => hasil(x)}
-                onValueChange={(x) => hasil(x)}
+                selectedValue={genders}
+                onValueChange={(x) => setGender(x)}
               >
                 <Picker.Item label={t("Male")} value="M" />
                 <Picker.Item label={t("Female")} value="F" />
@@ -474,7 +520,7 @@ export default function SettingsAkun(props) {
                 size="medium"
                 style={{ width: "48%" }}
                 text="Save"
-                onPress={() => setModalGender(false)}
+                onPress={() => hasilGender(genders)}
               ></Button>
             </View>
           </View>
@@ -788,7 +834,9 @@ export default function SettingsAkun(props) {
             >
               <Text size="description" type="light" style={{}}>
                 {setting && setting.user && setting.user.gender
-                  ? setting.user.gender
+                  ? setting.user.gender === "M"
+                    ? "Male"
+                    : "Female"
                   : "Not Set"}
               </Text>
             </View>
