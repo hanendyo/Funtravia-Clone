@@ -270,7 +270,9 @@ export default function Feed(props) {
   let data_id = data ? data.feed_post.id : "data_id";
 
   const createPost = () => {
-    props.navigation.navigate("Post");
+    props.navigation.navigate("FeedStack", {
+      screen: "Post",
+    });
   };
 
   const likeToggle = (value) => {
@@ -498,7 +500,7 @@ export default function Feed(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#F6F6F6'}}>
+    <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
       {/* <NavigationEvents
 				// onWillFocus={(payload) => console.log('will focus', payload)}
 				onDidFocus={(payload) => eventDidFocus(payload.action.type)}

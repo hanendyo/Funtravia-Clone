@@ -297,8 +297,11 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     if (data.isread == false) {
       updateisread(data.id);
     }
-    navigation.push("CommentsById", {
-      post_id: data.comment_feed.post_id,
+    navigation.push("FeedStack", {
+      screen: "CommentsById",
+      params: {
+        post_id: data.comment_feed.post_id,
+      },
     });
   };
   const handle_areaklik_like = (data) => {
@@ -306,8 +309,11 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
       updateisread(data.id);
     }
     // console.log(data.isread);
-    navigation.push("SinglePost", {
-      post_id: data.like_feed.post_id,
+    navigation.push("FeedStack", {
+      screen: "SinglePost",
+      params: {
+        post_id: data.like_feed.post_id,
+      },
     });
   };
 

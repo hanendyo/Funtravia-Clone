@@ -13,6 +13,7 @@ import {
   SettingPhoneChange,
   SettingEmailChange,
 } from "../../screens/Settings";
+import Wishlist from "../../screens/Wishlist/Index";
 
 const AccountStack = createStackNavigator();
 export default function AccountStackNavigation() {
@@ -104,6 +105,14 @@ export default function AccountStackNavigation() {
         options={{
           headerTitle: "",
           headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="Wishlist"
+        component={Wishlist}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
         }}
       />
     </AccountStack.Navigator>

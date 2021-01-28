@@ -3,32 +3,24 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AuthStack from "./StackItems/AuthStackNavigation";
 import BottomStack from "./StackItems/BottomNavigation";
-import Postscreen from "../screens/Feed/Post";
-import CreatePostScreen from "../screens/Feed/Post/CreatePost";
-import NewChat from "../screens/Chat/NewChat";
-import GroupChat from "../screens/Chat/GroupRoom";
-import RoomChat from "../screens/Chat/PersonalRoom";
-import DestinationList from "../screens/Destination/DestinationList";
-import listevent from "../screens/Event/ListEvent";
-import eventdetail from "../screens/Event/EventDetail";
-import CommentPost from "../screens/Feed/Post/Comments";
-import EditPost from "../screens/Feed/Post/EditPost";
-import SinglePost from "../screens/Feed/Post/SinglePost";
-import { SearchPage, SearchTab } from "../screens/Search";
-import Wishlist from "../screens/Wishlist/Index";
-import Journal from "../screens/Journal/index";
-import DetailJournal from "../screens/Journal/DetailJournal";
-import detailStack from "../screens/Destination/DetailDestination/Index";
-import Notification from "../screens/Notification";
-import CommentsById from "../screens/Feed/Post/CommentsById";
-import TravelGoal from "../screens/TravelGoal/Index";
-import TravelGoalDetail from "../screens/TravelGoal/TravelGoalDetail";
-import TravelIdeas from "../screens/TravelIdeas/Index";
-import Unesco from "../screens/TravelIdeas/Unesco/Index";
 import ItineraryStack from "./StackItems/ItineraryStack";
 import ProfileStack from "./StackItems/ProfileStack";
 import CountryStack from "./StackItems/CountryStack";
 import AccountStack from "./StackItems/AccountStack";
+import ChatStack from "./StackItems/ChatStack";
+import FeedStack from "./StackItems/FeedStack";
+import TravelIdeaStack from "./StackItems/TravelIdeaStack";
+
+import DestinationList from "../screens/Destination/DestinationList";
+import listevent from "../screens/Event/ListEvent";
+import eventdetail from "../screens/Event/EventDetail";
+import { SearchPage, SearchTab } from "../screens/Search";
+import Journal from "../screens/Journal/index";
+import DetailJournal from "../screens/Journal/DetailJournal";
+import detailStack from "../screens/Destination/DetailDestination/Index";
+import Notification from "../screens/Notification";
+import TravelGoal from "../screens/TravelGoal/Index";
+import TravelGoalDetail from "../screens/TravelGoal/TravelGoalDetail";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeToken }) {
@@ -92,38 +84,26 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerShown: false,
           }}
         />
-
         <Tab.Screen
-          name="Post"
-          component={Postscreen}
-          options={{ headerShown: false }}
+          name="ChatStack"
+          component={ChatStack}
+          options={{
+            headerShown: false,
+          }}
         />
         <Tab.Screen
-          name="CommentPost"
-          component={CommentPost}
-          options={{ headerShown: false }}
+          name="FeedStack"
+          component={FeedStack}
+          options={{
+            headerShown: false,
+          }}
         />
         <Tab.Screen
-          name="EditPost"
-          component={EditPost}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
-          name="SinglePost"
-          component={SinglePost}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen name="CreatePostScreen" component={CreatePostScreen} />
-
-        <Tab.Screen
-          name="NewChat"
-          component={NewChat}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
-          name="RoomChat"
-          component={RoomChat}
-          options={{ headerShown: false }}
+          name="TravelIdeaStack"
+          component={TravelIdeaStack}
+          options={{
+            headerShown: false,
+          }}
         />
 
         <Tab.Screen
@@ -131,10 +111,9 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={DestinationList}
           options={{ headerShown: false }}
         />
-
         <Tab.Screen
-          name="GroupRoom"
-          component={GroupChat}
+          name="detailStack"
+          component={detailStack}
           options={{ headerShown: false }}
         />
 
@@ -143,6 +122,7 @@ export default function MainStackNavigator({ authorizeToken }) {
           component={Notification}
           options={{ headerShown: false }}
         />
+
         <Tab.Screen
           name="SearchPage"
           component={SearchPage}
@@ -151,6 +131,7 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
+
         <Tab.Screen
           name="SearchTab"
           component={SearchTab}
@@ -159,14 +140,7 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: false,
           }}
         />
-        <Tab.Screen
-          name="Wishlist"
-          component={Wishlist}
-          options={{
-            headerTitle: "",
-            headerTransparent: true,
-          }}
-        />
+
         <Tab.Screen
           name="Journal"
           component={Journal}
@@ -175,6 +149,7 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: true,
           }}
         />
+
         <Tab.Screen
           name="DetailJournal"
           component={DetailJournal}
@@ -183,21 +158,7 @@ export default function MainStackNavigator({ authorizeToken }) {
             headerTransparent: true,
           }}
         />
-        <Tab.Screen
-          name="detailStack"
-          component={detailStack}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
-          name="Inbox"
-          component={Notification}
-          name="CommentsById"
-          component={CommentsById}
-          options={{
-            headerTitle: "",
-            headerTransparent: false,
-          }}
-        />
+
         <Tab.Screen
           name="listevent"
           component={listevent}
@@ -220,22 +181,6 @@ export default function MainStackNavigator({ authorizeToken }) {
         <Tab.Screen
           name="TravelGoalDetail"
           component={TravelGoalDetail}
-          options={{
-            headerTitle: "",
-            headerTransparent: false,
-          }}
-        />
-        <Tab.Screen
-          name="TravelIdeas"
-          component={TravelIdeas}
-          options={{
-            headerTitle: "",
-            headerTransparent: false,
-          }}
-        />
-        <Tab.Screen
-          name="Unesco"
-          component={Unesco}
           options={{
             headerTitle: "",
             headerTransparent: false,

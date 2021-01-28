@@ -183,8 +183,11 @@ export default function EditPost(props) {
       if (response.data) {
         if (response.data.edit_post.code === 200) {
           setLoading(false);
-          props.navigation.navigate("SinglePost", {
-            post_id: datapost.id,
+          props.navigation.navigate("FeedStack", {
+            screen: "SinglePost",
+            params: {
+              post_id: datapost.id,
+            },
           });
         } else {
           // console.log('error');

@@ -327,9 +327,12 @@ export default function myfeed(props) {
 
   const viewcomment = (data) => {
     data.user = datauser;
-    props.navigation.navigate("CommentPost", {
-      data: data,
-      token: token,
+    props.navigation.navigate("FeedStack", {
+      screen: "CommentPost",
+      params: {
+        data: data,
+        token: token,
+      },
     });
     // console.log(id_post);
   };
@@ -715,8 +718,11 @@ export default function myfeed(props) {
             }}
             onPress={() => {
               setModalmenu(false),
-                props.navigation.push("EditPost", {
-                  datapost: selectedOption,
+                props.navigation.push("FeedStack", {
+                  screen: "EditPost",
+                  params: {
+                    datapost: selectedOption,
+                  },
                 });
             }}
           >

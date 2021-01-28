@@ -309,13 +309,18 @@ export default function FeedList({
   let [liked, setLiked] = useState(false);
 
   const createPost = () => {
-    props.navigation.push("Post");
+    props.navigation.push("FeedStack", {
+      screen: "Post",
+    });
   };
 
   const viewcomment = (data) => {
-    props.navigation.navigate("CommentPost", {
-      data: data,
-      token: token,
+    props.navigation.navigate("FeedStack", {
+      screen: "CommentPost",
+      params: {
+        data: data,
+        token: token,
+      },
     });
     // console.log(id_post);
   };
@@ -683,8 +688,11 @@ export default function FeedList({
             }}
             onPress={() => {
               setModalmenu(false),
-                props.navigation.push("EditPost", {
-                  datapost: selectedOption,
+                props.navigation.push("FeedStack", {
+                  screen: "EditPost",
+                  params: {
+                    datapost: selectedOption,
+                  },
                 });
             }}
           >
