@@ -121,14 +121,6 @@ export default function SearchBar({
     querySearchEvent,
     { loading: loadingEvent, data: dataEvent, error: errorEvent },
   ] = useLazyQuery(SearchEventQuery);
-  // const [
-  // 	querySearchAccommodation,
-  // 	{
-  // 		loading: loadingAccommodation,
-  // 		data: dataAccommodation,
-  // 		error: errorAccommodation,
-  // 	},
-  // ] = useLazyQuery(SearchAccommodationQuery);
 
   const [
     querySearchUser,
@@ -159,33 +151,25 @@ export default function SearchBar({
           ...searchDestination,
           dataDestination.destinationSearch,
         ]);
-        // console.log('data User: ' + dataUser.user_search);
-        // console.log(
-        // 	'data hasil Destination: ',
-        // 	dataDestination.destinationSearch,
-        // 	'\n\n',
-        // 	typeof searchDestination,
-        // );
-      }
-      // 	console.log(
-      // 		'data hasil search: ',
-      // 		searchDestination,
-      // 		'\n\n',
-      // 		typeof searchDestination,
-      // 	);
-      // 	// setSearch([...search, searchDestination]);
-      // 	// console.log('data Dest: ' + search);
-      // 	// console.log('searchResult: ' + searchDestination.id);
-      // }
-      else if (dataUser) {
+        console.log("data User: " + dataUser.user_search);
+        console.log(
+          "data hasil Destination: ",
+          dataDestination.destinationSearch,
+          "\n\n",
+          typeof searchDestination
+        );
+        setSearch([...search, searchDestination]);
+        console.log("data Dest: " + search);
+        console.log("searchResult: " + searchDestination.id);
+      } else if (dataUser) {
         setSearchUser([...searchUser, dataUser.user_search]);
-        // console.log('data User: ' + dataUser.user_search);
-        // console.log(
-        // 	'data hasil User: ',
-        // 	dataUser.user_search,
-        // 	'\n\n',
-        // 	typeof searchUser,
-        // );
+        console.log("data User: " + dataUser.user_search);
+        console.log(
+          "data hasil User: ",
+          dataUser.user_search,
+          "\n\n",
+          typeof searchUser
+        );
       } else if (dataUser || dataDestination == "") {
         setSearchUser(null);
         setSearchDestination(null);
@@ -400,14 +384,7 @@ export default function SearchBar({
             inverted
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => `${index}`}
-            data={
-              // search &&
-              // ||
-              searchDestination
-              // searchPost &&
-              // searchEvent ||
-              // searchUser
-            }
+            data={searchDestination || searchUser}
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={{

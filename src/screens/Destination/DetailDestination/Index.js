@@ -351,7 +351,7 @@ export default function DestinationDetail(props) {
               >
                 {data && data.destinationById
                   ? "About " + data.destinationById.name
-                  : null}
+                  : ""}
               </Text>
             </TouchableOpacity>
 

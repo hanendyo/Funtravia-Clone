@@ -81,7 +81,12 @@ export default function SearchPage(props, { navigation, route }) {
   }, []);
 
   const onSelectDestination = (item) => {
-    props.navigation.navigate("CityDetail", { data: item, exParam: true });
+    // props.navigation.navigate("CityDetail", { data: item, exParam: true });
+
+    props.navigation.navigate("detailStack", {
+      id: item.id,
+      name: item.name,
+    });
   };
 
   const userFromSearch = (data) => {
@@ -261,13 +266,17 @@ export default function SearchPage(props, { navigation, route }) {
     let seacac = await AsyncStorage.getItem("searchCache");
 
     let parseArr = JSON.parse(seacac);
-    console.log("SearchResult: " + parseArr);
-    let cacheArr = parseArr.slice(-5);
-    console.log("cacheSearchResult: " + cacheArr);
-    let deleteArr = cacheArr.slice(index, index + 1);
+    let filterArr = parseArr.filter(function (fil) {
+      return fil !== (" " || null || undefined);
+    });
+    limitArr = filterArr.slice(-6);
+    console.log("LIMIT ARR", limitArr);
+    reverseArr = limitArr.reverse();
+    console.log("REVERSE ARRAY", reverseArr);
+    let deleteArr = reverseArr.slice(index, index + 1);
     let deleteArrStr = deleteArr.toString();
     console.log("The Chosen One: " + deleteArrStr);
-    let remainArr = cacheArr.filter((e) => e != deleteArrStr);
+    let remainArr = reverseArr.filter((e) => e != deleteArrStr);
     console.log("Remaining: " + remainArr);
 
     setSearchCache(remainArr);
