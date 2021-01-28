@@ -28,6 +28,8 @@ import { Picker } from "react-native";
 import { dateFormat, dateFormatDMY } from "../../component/src/dateformatter";
 import { Input, Item, Label } from "native-base";
 import City from "../../graphQL/Query/Itinerary/City";
+import { useMutation } from "@apollo/react-hooks";
+import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -99,18 +101,6 @@ export default function SettingsAkun(props) {
       },
     },
   });
-  console.log("use :", setting.user);
-
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    await GetDataSetting();
-    await querycity();
-    await GetCurrencyList();
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
-
   const [
     querycity,
     { loading: loadingcity, data: datacity, error: errorcity },
@@ -122,6 +112,17 @@ export default function SettingsAkun(props) {
     },
   });
 
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+    await GetDataSetting();
+    // await setSetting();
+    await querycity();
+    await GetCurrencyList();
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
+  };
+
   const [
     GetCurrencyList,
     { data: datacurrency, loading: loadingcurrency, error: errorcurrency },
@@ -132,6 +133,18 @@ export default function SettingsAkun(props) {
     i18n.changeLanguage(value);
     await AsyncStorage.setItem("setting_language", value);
   };
+
+  const [
+    mutationGender,
+    { data: dataGender, loading: loadingGender, error: errorGender },
+  ] = useMutation(Gender, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -153,9 +166,6 @@ export default function SettingsAkun(props) {
     closeBirth1();
   };
 
-  console.log("id city :", cityId);
-  console.log("name city :", cityName);
-
   const searchcity = (text) => {
     setCity(text);
     querycity();
@@ -169,6 +179,10 @@ export default function SettingsAkun(props) {
 
   const birth = async () => {
     await setModalBirth(false);
+  };
+
+  const hasil = (dataSetting) => {
+    console.log("gender :", dataSetting);
   };
 
   return (
@@ -292,9 +306,7 @@ export default function SettingsAkun(props) {
               onPress={() => closeBirth()}
             >
               <Text size="description" type="regular">
-                {setting && setting.user && setting.user.birth_date
-                  ? setting.user.birth_date
-                  : dateFormatDMY(date)}
+                {dateFormatDMY(date)}
               </Text>
               <CustomImage
                 source={calendar_blue}
@@ -437,8 +449,8 @@ export default function SettingsAkun(props) {
                   marginLeft: -8,
                   elevation: 20,
                 }}
-                // selectedValue={this.state.selected}
-                // onValueChange={this.onValueChange.bind(this)}
+                // selectedValue={() => hasil(x)}
+                onValueChange={(x) => hasil(x)}
               >
                 <Picker.Item label={t("Male")} value="M" />
                 <Picker.Item label={t("Female")} value="F" />

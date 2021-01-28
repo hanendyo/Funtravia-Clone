@@ -47,6 +47,8 @@ export default function SettingNegara({
   });
 
   const hasil = async (detail, selected) => {
+    console.log("detail :", detail);
+    console.log("selected :", selected);
     if (token || token !== "") {
       try {
         let response = await MutationsetCountry({
