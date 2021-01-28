@@ -184,13 +184,16 @@ export default function listItinPlaning(props) {
       Alert.alert("Silahkan Login terlebih dahulu");
       props.navigation.navigate("HomeScreen");
     } else {
-      props.navigation.push("ItineraryChooseday", {
-        itintitle: data.name,
-        Iditinerary: data.id,
-        dateitin: getdate(data.start_date, data.end_date),
-        token: token,
-        Kiriman: idkiriman,
-        Position: props.route.params.Position,
+      props.navigation.push("ItineraryStack", {
+        screen: "ItineraryChooseday",
+        params: {
+          itintitle: data.name,
+          Iditinerary: data.id,
+          dateitin: getdate(data.start_date, data.end_date),
+          token: token,
+          Kiriman: idkiriman,
+          Position: props.route.params.Position,
+        },
       });
     }
   };
@@ -401,7 +404,11 @@ export default function listItinPlaning(props) {
       >
         <Button
           color={"secondary"}
-          onPress={() => props.navigation.push("Trip")}
+          onPress={() =>
+            props.navigation.push("ItineraryStack", {
+              screen: "Trip",
+            })
+          }
           style={{
             width: Dimensions.get("window").width - 60,
           }}

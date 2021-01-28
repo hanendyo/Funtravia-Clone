@@ -60,7 +60,11 @@ export default function PopularItinerary({ props }) {
           width: Dimensions.get("window").width - 40,
           marginLeft: 10,
         }}
-        onPress={() => props.navigation.navigate("ItineraryPlaning")}
+        onPress={() =>
+          props.navigation.navigate("ItineraryStack", {
+            screen: "ItineraryPlaning",
+          })
+        }
       >
         <ImageBackground
           key={id}

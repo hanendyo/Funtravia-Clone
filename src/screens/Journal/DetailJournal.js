@@ -170,10 +170,15 @@ export default function DetailJournal(props) {
           <TouchableOpacity
             onPress={() => {
               item.user.id !== setting?.user?.id
-                ? props.navigation.push("otherprofile", {
-                    idUser: item.user.id,
+                ? props.navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: item.user.id,
+                    },
                   })
-                : props.navigation.push("ProfileTab");
+                : props.navigation.push("ProfileStack", {
+                    screen: "ProfileTab",
+                  });
             }}
           >
             <Thumbnail
@@ -197,10 +202,15 @@ export default function DetailJournal(props) {
                 type={"bold"}
                 onPress={() => {
                   item.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: item.user.id,
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: item.user.id,
+                        },
                       })
-                    : props.navigation.push("ProfileTab");
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
                 }}
               >
                 {item.user.first_name}
@@ -255,10 +265,15 @@ export default function DetailJournal(props) {
                 onPress={() => {
                   data.journal_byid.userby
                     ? data.journal_byid.userby.id !== setting?.user?.id
-                      ? props.navigation.push("otherprofile", {
-                          idUser: data.journal_byid.userby.id,
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: data.journal_byid.userby.id,
+                          },
                         })
-                      : props.navigation.push("ProfileTab")
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                        })
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
@@ -278,10 +293,15 @@ export default function DetailJournal(props) {
                   onPress={() => {
                     data.journal_byid.userby
                       ? data.journal_byid.userby.id !== setting?.user?.id
-                        ? props.navigation.push("otherprofile", {
-                            idUser: data.journal_byid.userby.id,
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: data.journal_byid.userby.id,
+                            },
                           })
-                        : props.navigation.push("ProfileTab")
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                          })
                       : Alert.alert("Journal By Funtravia");
                   }}
                 >
@@ -478,10 +498,15 @@ export default function DetailJournal(props) {
                 onPress={() => {
                   data.journal_byid.userby
                     ? data.journal_byid.userby.id !== setting?.user?.id
-                      ? props.navigation.push("otherprofile", {
-                          idUser: data.journal_byid.userby.id,
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: data.journal_byid.userby.id,
+                          },
                         })
-                      : props.navigation.push("ProfileTab")
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                        })
                     : Alert.alert("Journal By Funtravia");
                 }}
               >

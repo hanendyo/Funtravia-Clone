@@ -1,0 +1,111 @@
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import {
+  NotificationSettings,
+  FAQ,
+  About,
+  Privacy,
+  SettingsAkun,
+  Settings,
+  Bantuan,
+  SettingEmail,
+  SettingPhone,
+  SettingPhoneChange,
+  SettingEmailChange,
+} from "../../screens/Settings";
+
+const AccountStack = createStackNavigator();
+export default function AccountStackNavigation() {
+  return (
+    <AccountStack.Navigator>
+      <AccountStack.Screen
+        name="settings"
+        component={Settings}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingsAkun"
+        component={SettingsAkun}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="bantuan"
+        component={Bantuan}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="FAQ"
+        component={FAQ}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="about"
+        component={About}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="privacy"
+        component={Privacy}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="notificationsettings"
+        component={NotificationSettings}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingEmail"
+        component={SettingEmail}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingPhone"
+        component={SettingPhone}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingPhoneChange"
+        component={SettingPhoneChange}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingEmailChange"
+        component={SettingEmailChange}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+        }}
+      />
+    </AccountStack.Navigator>
+  );
+}

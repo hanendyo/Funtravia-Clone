@@ -155,7 +155,7 @@ const DataInformasi = [
 
 export default function Invitation({ navigation, token, datas, GetListNotif }) {
   const { t, i18n } = useTranslation();
-console.log(datas);
+  console.log(datas);
   const [datanotif, SetDataNotif] = useState(datas.list_notification);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);
@@ -315,8 +315,11 @@ console.log(datas);
     if (data.isread == false) {
       updateisread(data.id);
     }
-    navigation.push("otherprofile", {
-      idUser: data.follow_user.user.id,
+    navigation.push("ProfileStack", {
+      screen: "otherprofile",
+      params: {
+        idUser: data.follow_user.user.id,
+      },
     });
   };
   const handle_areaklik_buddy = (data) => {
@@ -325,12 +328,15 @@ console.log(datas);
     }
     data.itinerary_buddy.isconfrim == true &&
     data.itinerary_buddy.accepted_at != null
-      ? navigation.navigate("itindetail", {
-          itintitle: "",
-          country: data.itinerary_buddy.itinerary_id,
-          dateitin: "",
-          token: token,
-          status: "saved",
+      ? navigation.navigate("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: "",
+            country: data.itinerary_buddy.itinerary_id,
+            dateitin: "",
+            token: token,
+            status: "saved",
+          },
         })
       : "";
   };

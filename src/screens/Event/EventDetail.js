@@ -113,9 +113,12 @@ export default function EventDetail(props) {
   }, []);
 
   const addToPlan = () => {
-    props.navigation.navigate("ItineraryPlaning", {
-      idkiriman: event_id,
-      Position: "Event",
+    props.navigation.navigate("ItineraryStack", {
+      screen: "ItineraryPlaning",
+      params: {
+        idkiriman: event_id,
+        Position: "Event",
+      },
     });
   };
 

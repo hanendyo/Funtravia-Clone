@@ -132,7 +132,11 @@ export default function Home(props) {
             </View>
             {seeAll ? (
               <Text
-                onPress={() => props.navigation.navigate("AllDestination")}
+                onPress={() =>
+                  props.navigation.navigate("CountryStack", {
+                    screen: "AllDestination",
+                  })
+                }
                 type="bold"
                 size="small"
                 style={{ color: "#209FAE", alignSelf: "baseline" }}

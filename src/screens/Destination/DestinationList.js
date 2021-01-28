@@ -470,9 +470,12 @@ export default function DestinationList(props) {
               style={{}}
               color="primary"
               onPress={() => {
-                props.navigation.navigate("ItineraryPlaning", {
-                  idkiriman: data.id,
-                  Position: "destination",
+                props.navigation.navigate("ItineraryStack", {
+                  screen: "ItineraryPlaning",
+                  params: {
+                    idkiriman: data.id,
+                    Position: "destination",
+                  },
                 });
               }}
             />

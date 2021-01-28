@@ -722,12 +722,15 @@ export default function Country(props) {
                       </Text>
                       <Ripple
                         onPress={() => {
-                          props.navigation.navigate("CityDetail", {
-                            data: {
-                              city_id: render.city[0].id,
-                              city_name: render.city[0].name,
+                          props.navigation.navigate("CountryStack", {
+                            screen: "CityDetail",
+                            params: {
+                              data: {
+                                city_id: render.city[0].id,
+                                city_name: render.city[0].name,
+                              },
+                              exParam: true,
                             },
-                            exParam: true,
                           });
                         }}
                         style={{
@@ -765,12 +768,15 @@ export default function Country(props) {
                           return index > 0 ? (
                             <Ripple
                               onPress={() => {
-                                props.navigation.navigate("CityDetail", {
-                                  data: {
-                                    city_id: item.id,
-                                    city_name: item.name,
+                                props.navigation.navigate("CountryStack", {
+                                  screen: "CityDetail",
+                                  params: {
+                                    data: {
+                                      city_id: item.id,
+                                      city_name: item.name,
+                                    },
+                                    exParam: true,
                                   },
-                                  exParam: true,
                                 });
                               }}
                               style={{

@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-import Image from 'react-native-auto-scale-image';
+import Image from "react-native-auto-scale-image";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
 // import { NavigationEvents, SafeAreaView } from "react-navigation";
@@ -25,7 +25,7 @@ import {
   FloatingInput,
   Peringatan,
   CustomImage,
-  Loading
+  Loading,
 } from "../../../component";
 
 import {
@@ -40,7 +40,7 @@ import {
   OptionsVertWhite,
   More,
   LikeBlack,
-  CommentBlack
+  CommentBlack,
 } from "../../../assets/svg";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
@@ -86,7 +86,7 @@ export default function Comments(props) {
   let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
-  
+
   // console.log(setting);
   // console.log(props.route.params.data);
   const onSelect = useCallback(
@@ -134,8 +134,6 @@ export default function Comments(props) {
       },
     },
   });
-
-
 
   const [
     MutationLike,
@@ -202,7 +200,6 @@ export default function Comments(props) {
   };
 
   const _unliked = async (id) => {
-
     if (token || token !== "") {
       dataPost.liked = false;
       try {
@@ -263,12 +260,11 @@ export default function Comments(props) {
             response.data.comment_post.code === "200"
           ) {
             setLoading(false);
-            
+
             setStatusText("");
             dataPost.comment_count = dataPost.comment_count + 1;
             GetCommentList();
             scroll_to();
-            
           } else {
             setLoading(false);
             throw new Error(response.data.comment_post.message);
@@ -388,10 +384,10 @@ export default function Comments(props) {
           backgroundColor: "#FFFFFF",
           // flex: 1,
           borderTopWidth: 1,
-          borderTopColor: '#EEEEEE',
+          borderTopColor: "#EEEEEE",
           paddingHorizontal: 15,
           paddingVertical: 10,
-          borderRadius:20,
+          borderRadius: 20,
         }}
       >
         <View
@@ -411,10 +407,15 @@ export default function Comments(props) {
               isTouchable
               onPress={() => {
                 dataComment.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
-                      idUser: dataComment.user.id,
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: dataComment.user.id,
+                      },
                     })
-                  : props.navigation.push("ProfileTab");
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                    });
               }}
               style={{
                 height: 35,
@@ -434,10 +435,15 @@ export default function Comments(props) {
               <Text
                 onPress={() => {
                   dataComment.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: dataComment.user.id,
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: dataComment.user.id,
+                        },
                       })
-                    : props.navigation.push("ProfileTab");
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
                 }}
                 allowFontScaling={false}
                 style={{
@@ -449,7 +455,7 @@ export default function Comments(props) {
                 {dataComment.user?.first_name} {dataComment.user?.last_name}
               </Text>
               <Text
-                size={'small'}
+                size={"small"}
                 style={{
                   fontFamily: "Lato-Regular",
                   // fontSize: 10,
@@ -469,7 +475,6 @@ export default function Comments(props) {
           }}
         >
           <Text
-
             style={{
               textAlign: "left",
             }}
@@ -485,24 +490,25 @@ export default function Comments(props) {
     <SafeAreaView
       style={{
         flex: 1,
-
-      }}>
+      }}
+    >
       <ScrollView
-        contentContainerStyle={{
-          // paddingBottom :100,
-        }}
+        contentContainerStyle={
+          {
+            // paddingBottom :100,
+          }
+        }
         style={{
           flex: 1,
-          
+
           // backgroundColor: "#FFF",
           // height: Dimensions.get('window').height - 100,
-          
-
-        }}>
-        <Loading show={loadings}/>
+        }}
+      >
+        <Loading show={loadings} />
         <View
           style={{
-            width: Dimensions.get('window').width-20,
+            width: Dimensions.get("window").width - 20,
             backgroundColor: "#FFFFFF",
             // flex: 1,
             borderBottomWidth: 1,
@@ -511,12 +517,13 @@ export default function Comments(props) {
             marginVertical: 10,
             // borderWidth:1,
             borderRadius: 20,
-            paddingBottom:20,
-          }}>
+            paddingBottom: 20,
+          }}
+        >
           <View
             style={{
               // width: "100%",
-              width: Dimensions.get('window').width-40,
+              width: Dimensions.get("window").width - 40,
               flexDirection: "row",
               marginVertical: 10,
               paddingHorizontal: 10,
@@ -526,10 +533,15 @@ export default function Comments(props) {
             <Pressable
               onPress={() => {
                 dataPost.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
-                      idUser: dataPost.user.id,
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: dataPost.user.id,
+                      },
                     })
-                  : props.navigation.push("ProfileTab");
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                    });
               }}
               u
               style={{
@@ -540,10 +552,15 @@ export default function Comments(props) {
                 isTouchable
                 onPress={() => {
                   dataPost.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: dataPost.user.id,
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: dataPost.user.id,
+                        },
                       })
-                    : props.navigation.push("ProfileTab");
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
                 }}
                 style={{
                   height: 35,
@@ -563,23 +580,23 @@ export default function Comments(props) {
                 <Text
                   onPress={() => {
                     dataPost.user.id !== setting?.user?.id
-                      ? props.navigation.push("otherprofile", {
-                          idUser: dataPost.user.id,
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: dataPost.user.id,
+                          },
                         })
-                      : props.navigation.push("ProfileTab");
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                        });
                   }}
-                  type={'bold'}
-                  style={{
-                  }}
+                  type={"bold"}
+                  style={{}}
                 >
                   {dataPost.user.first_name}{" "}
                   {dataPost.user.first_name ? dataPost.user.last_name : null}
                 </Text>
-                <Text
-                  size={'small'}
-                  style={{
-                  }}
-                >
+                <Text size={"small"} style={{}}>
                   {duration(dataPost.created_at)}
                 </Text>
               </View>
@@ -597,23 +614,23 @@ export default function Comments(props) {
           <View
             style={{
               marginHorizontal: 10,
-              alignContent: 'center',
-              justifyContent: 'center',
-              alignItems:'center',
-              width : Dimensions.get("window").width - 40,
+              alignContent: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              width: Dimensions.get("window").width - 40,
               borderRadius: 15,
-            }}>
-            {dataPost && dataPost.assets && dataPost.assets[0].filepath ?
+            }}
+          >
+            {dataPost && dataPost.assets && dataPost.assets[0].filepath ? (
               <Image
                 style={{
-                  width: Dimensions.get("window").width -40,
+                  width: Dimensions.get("window").width - 40,
                   borderRadius: 15,
                   alignSelf: "center",
                 }}
-                uri= {dataPost.assets[0].filepath }
-            />
-            :null
-            }
+                uri={dataPost.assets[0].filepath}
+              />
+            ) : null}
             {/* <AutoHeightImage
               width={Dimensions.get("window").width -40}
               source={{ uri: dataPost.assets[0]?.filepath }}
@@ -624,14 +641,16 @@ export default function Comments(props) {
               width: "100%",
               backgroundColor: "white",
               marginTop: 17,
-            }}>
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
                 backgroundColor: "white",
                 justifyContent: "space-between",
                 paddingHorizontal: 10,
-              }}>
+              }}
+            >
               <View
                 style={{
                   flexDirection: "row",
@@ -652,14 +671,18 @@ export default function Comments(props) {
                     style={{
                       paddingHorizontal: 10,
                       marginRight: 15,
-                      borderRadius:16,
-                      backgroundColor: '#F2DAE5'
+                      borderRadius: 16,
+                      backgroundColor: "#F2DAE5",
                       // minidth: 70,
                       // right: 10,
                     }}
                   >
                     <LikeRed height={15} width={15} />
-                    <Text type='black' size='label'  style={{ marginHorizontal: 5, color: '#BE3737' }}>
+                    <Text
+                      type="black"
+                      size="label"
+                      style={{ marginHorizontal: 5, color: "#BE3737" }}
+                    >
                       {dataPost.response_count}
                     </Text>
                   </Button>
@@ -673,12 +696,16 @@ export default function Comments(props) {
                     style={{
                       paddingHorizontal: 10,
                       marginRight: 15,
-                      borderRadius:16,
+                      borderRadius: 16,
                       // right: 10,
                     }}
                   >
                     <LikeBlack height={15} width={15} />
-                    <Text type='black' size='label' style={{ marginHorizontal: 7 }}>
+                    <Text
+                      type="black"
+                      size="label"
+                      style={{ marginHorizontal: 7 }}
+                    >
                       {dataPost.response_count}
                     </Text>
                   </Button>
@@ -697,7 +724,11 @@ export default function Comments(props) {
                   }}
                 >
                   <CommentBlack height={15} width={15} />
-                  <Text type='black' size='label'  style={{ marginHorizontal: 7 }}>
+                  <Text
+                    type="black"
+                    size="label"
+                    style={{ marginHorizontal: 7 }}
+                  >
                     {dataPost.comment_count}
                   </Text>
                 </Button>
@@ -755,34 +786,30 @@ export default function Comments(props) {
                     }}
                   >
                     {dataPost.user.first_name}{" "}
-                    {dataPost.user.first_name
-                      ? dataPost.user.last_name
-                      : null}{" "}
+                    {dataPost.user.first_name ? dataPost.user.last_name : null}{" "}
                   </Text>
                   {dataPost.caption}
                 </Text>
               ) : null}
             </View>
           </View>
-          
-          <FlatList
-          ref={slider}
-          data={data ? data.comment : null}
-          renderItem={({ item }) => {
-            return <Item dataComment={item} />;
-          }}
-          keyExtractor={(item) => item.id}
-          extraData={selected}
-        />
-        </View>
-      
 
+          <FlatList
+            ref={slider}
+            data={data ? data.comment : null}
+            renderItem={({ item }) => {
+              return <Item dataComment={item} />;
+            }}
+            keyExtractor={(item) => item.id}
+            extraData={selected}
+          />
+        </View>
       </ScrollView>
       <View
         style={{
           flexDirection: "row",
-          marginVertical : 5,
-          marginHorizontal : 10,
+          marginVertical: 5,
+          marginHorizontal: 10,
           // position: 'absolute',
           // bottom: 0,
           borderRadius: 50,
@@ -799,7 +826,13 @@ export default function Comments(props) {
         <TextInput
           allowFontScaling={false}
           multiline
-          placeholder={"Comment as " + setting?.user?.first_name + " " + setting?.user?.last_name + "..."}
+          placeholder={
+            "Comment as " +
+            setting?.user?.first_name +
+            " " +
+            setting?.user?.last_name +
+            "..."
+          }
           maxLength={255}
           style={{
             height: 60,
@@ -825,8 +858,8 @@ export default function Comments(props) {
         >
           <Text
             allowFontScaling={false}
-            size='label'
-            type='bold'
+            size="label"
+            type="bold"
             style={{
               alignSelf: "center",
               color: "#209fae",
@@ -836,8 +869,7 @@ export default function Comments(props) {
           </Text>
         </Pressable>
       </View>
-      
-    </SafeAreaView>  
+    </SafeAreaView>
   );
 }
 

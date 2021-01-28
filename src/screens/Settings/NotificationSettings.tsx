@@ -78,7 +78,9 @@ export default function NotificationSettings(props) {
             response.data.update_notif_settings.code === "200"
           ) {
             await AsyncStorage.setItem("setting", JSON.stringify(setting));
-            await props.navigation.navigate("settings");
+            await props.navigation.navigate("ProfileStack", {
+              screen: "settings",
+            });
           } else {
             throw new Error(response.data.update_currency_settings.message);
           }

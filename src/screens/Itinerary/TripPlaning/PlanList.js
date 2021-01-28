@@ -164,12 +164,15 @@ export default function PlanList({
       <View>
         <TouchableOpacity
           onPress={() =>
-            props.navigation.push("itindetail", {
-              itintitle: data.name,
-              country: data.id,
-              dateitin: getdate(data.start_date, data.end_date),
-              token: tok,
-              // status: 'saved',
+            props.navigation.push("ItineraryStack", {
+              screen: "itindetail",
+              params: {
+                itintitle: data.name,
+                country: data.id,
+                dateitin: getdate(data.start_date, data.end_date),
+                token: tok,
+                // status: 'saved',
+              },
             })
           }
           style={{
@@ -380,7 +383,9 @@ export default function PlanList({
             >
               <Button
                 color="secondary"
-                onPress={() => props.navigation.push("Trip")}
+                onPress={() =>
+                  props.navigation.push("ItineraryStack", { screen: "Trip" })
+                }
                 style={{
                   width: Dimensions.get("screen").width - 40,
                   height: 40,
@@ -412,7 +417,9 @@ export default function PlanList({
           />
           <Button
             color="secondary"
-            onPress={() => props.navigation.push("Trip")}
+            onPress={() =>
+              props.navigation.push("ItineraryStack", { screen: "Trip" })
+            }
             style={{
               width: Dimensions.get("screen").width - 40,
               height: 40,

@@ -265,19 +265,24 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.navigate("itindetail", {
-                      itintitle: dataItinerary.itinerary_detail.name,
-                      country: Iditinerary,
-                      dateitin:
-                        dataItinerary && dataItinerary.itinerary_detail
-                          ? dateFormatr(
-                              dataItinerary.itinerary_detail.start_date
-                            ) +
-                            "  -  " +
-                            dateFormatr(dataItinerary.itinerary_detail.end_date)
-                          : null,
-                      token: token,
-                      datadayaktif: dataSelected[0],
+                  ? props.navigation.navigate("ItineraryStack", {
+                      screen: "itindetail",
+                      params: {
+                        itintitle: dataItinerary.itinerary_detail.name,
+                        country: Iditinerary,
+                        dateitin:
+                          dataItinerary && dataItinerary.itinerary_detail
+                            ? dateFormatr(
+                                dataItinerary.itinerary_detail.start_date
+                              ) +
+                              "  -  " +
+                              dateFormatr(
+                                dataItinerary.itinerary_detail.end_date
+                              )
+                            : null,
+                        token: token,
+                        datadayaktif: dataSelected[0],
+                      },
                     })
                   : null;
               }
@@ -327,19 +332,24 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.navigate("itindetail", {
-                      itintitle: dataItinerary.itinerary_detail.name,
-                      country: Iditinerary,
-                      dateitin:
-                        dataItinerary && dataItinerary.itinerary_detail
-                          ? dateFormatr(
-                              dataItinerary.itinerary_detail.start_date
-                            ) +
-                            "  -  " +
-                            dateFormatr(dataItinerary.itinerary_detail.end_date)
-                          : null,
-                      token: token,
-                      datadayaktif: dataSelected[0],
+                  ? props.navigation.navigate("ItineraryStack", {
+                      screen: "itindetail",
+                      params: {
+                        itintitle: dataItinerary.itinerary_detail.name,
+                        country: Iditinerary,
+                        dateitin:
+                          dataItinerary && dataItinerary.itinerary_detail
+                            ? dateFormatr(
+                                dataItinerary.itinerary_detail.start_date
+                              ) +
+                              "  -  " +
+                              dateFormatr(
+                                dataItinerary.itinerary_detail.end_date
+                              )
+                            : null,
+                        token: token,
+                        datadayaktif: dataSelected[0],
+                      },
                     })
                   : null;
               }
@@ -379,19 +389,24 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.navigate("itindetail", {
-                      itintitle: dataItinerary.itinerary_detail.name,
-                      country: Iditinerary,
-                      dateitin:
-                        dataItinerary && dataItinerary.itinerary_detail
-                          ? dateFormatr(
-                              dataItinerary.itinerary_detail.start_date
-                            ) +
-                            "  -  " +
-                            dateFormatr(dataItinerary.itinerary_detail.end_date)
-                          : null,
-                      token: token,
-                      datadayaktif: dataSelected[0],
+                  ? props.navigation.navigate("ItineraryStack", {
+                      screen: "itindetail",
+                      params: {
+                        itintitle: dataItinerary.itinerary_detail.name,
+                        country: Iditinerary,
+                        dateitin:
+                          dataItinerary && dataItinerary.itinerary_detail
+                            ? dateFormatr(
+                                dataItinerary.itinerary_detail.start_date
+                              ) +
+                              "  -  " +
+                              dateFormatr(
+                                dataItinerary.itinerary_detail.end_date
+                              )
+                            : null,
+                        token: token,
+                        datadayaktif: dataSelected[0],
+                      },
                     })
                   : null;
               }

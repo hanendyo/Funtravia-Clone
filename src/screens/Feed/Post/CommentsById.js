@@ -270,10 +270,15 @@ export default function CommentsById(props) {
               isTouchable
               onPress={() => {
                 dataComment.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
-                      idUser: dataComment.user.id,
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: dataComment.user.id,
+                      },
                     })
-                  : props.navigation.push("ProfileTab");
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                    });
               }}
               customStyle={{
                 height: 35,
@@ -293,10 +298,15 @@ export default function CommentsById(props) {
               <Text
                 onPress={() => {
                   dataComment.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: dataComment.user.id,
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: dataComment.user.id,
+                        },
                       })
-                    : props.navigation.push("ProfileTab");
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
                 }}
                 allowFontScaling={false}
                 style={{
@@ -348,7 +358,6 @@ export default function CommentsById(props) {
       style={{
         flex: 1,
         backgroundColor: "#FFFFFF",
-
       }}
     >
       <View
@@ -379,10 +388,15 @@ export default function CommentsById(props) {
               isTouchable
               onPress={() => {
                 datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                  ? props.navigation.push("otherprofile", {
-                      idUser: datafeed?.feed_post_byid?.user.id,
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: datafeed?.feed_post_byid?.user.id,
+                      },
                     })
-                  : props.navigation.push("ProfileTab");
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                    });
               }}
               customStyle={{
                 height: 35,
@@ -402,10 +416,15 @@ export default function CommentsById(props) {
               <Text
                 onPress={() => {
                   datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                    ? props.navigation.push("otherprofile", {
-                        idUser: datafeed?.feed_post_byid?.user.id,
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: datafeed?.feed_post_byid?.user.id,
+                        },
                       })
-                    : props.navigation.push("ProfileTab");
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
                 }}
                 allowFontScaling={false}
                 style={{
