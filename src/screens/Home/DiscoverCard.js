@@ -71,7 +71,7 @@ export default function DiscoverCard({ props }) {
             style={{
               color: "#FFFFFF",
               textAlign: "center",
-              paddingBottom: 25,
+              paddingBottom: 20,
             }}
           >
             {discoverCardsData[0].text}
@@ -105,7 +105,7 @@ export default function DiscoverCard({ props }) {
             style={{
               color: "#FFFFFF",
               textAlign: "center",
-              paddingBottom: 25,
+              paddingBottom: 20,
             }}
           >
             {discoverCardsData[1].text}
@@ -135,7 +135,7 @@ export default function DiscoverCard({ props }) {
             style={{
               color: "#FFFFFF",
               textAlign: "center",
-              paddingBottom: 25,
+              paddingBottom: 20,
             }}
           >
             {discoverCardsData[2].text}

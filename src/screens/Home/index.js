@@ -198,7 +198,7 @@ export default function Home(props) {
           <TouchableOpacity
             onPress={searchpage}
             style={{
-              height: 45,
+              // borderWidth: 1,
               width: Dimensions.get("window").width,
               alignSelf: "center",
               flex: 1,
@@ -220,6 +220,7 @@ export default function Home(props) {
                 alignSelf: "center",
                 paddingHorizontal: 20,
                 width: Dimensions.get("screen").width * 0.9,
+                elevation: 3,
               }}
             >
               <View
