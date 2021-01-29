@@ -17,8 +17,6 @@ import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { OptionsVertBlack, Arrowbackwhite, Xhitam } from "../../assets/svg";
 import { calendar_blue } from "../../assets/png";
-import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
-import GetSetting from "../../graphQL/Query/Settings/GetSetting";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button, CustomImage } from "../../component";
@@ -28,7 +26,6 @@ import DatePicker from "react-native-modern-datepicker";
 import { Picker } from "react-native";
 import {
   dateFormat,
-  dateFormats,
   dateFormatYMD,
   FormatYMD,
 } from "../../component/src/dateformatter";
@@ -56,7 +53,6 @@ export default function SettingsAkun(props) {
   let [date, setDate] = useState(setting.user.birth_date);
   let [cityName, setCityName] = useState(setting.cities.name);
   let [cityId, setCityId] = useState(setting.cities.id);
-  // let [stateCity, setStateCity] = useState(setting.cities);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -118,7 +114,6 @@ export default function SettingsAkun(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await querycity();
-    await GetCurrencyList();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -210,9 +205,7 @@ export default function SettingsAkun(props) {
   };
 
   const hasilDate = async (x) => {
-    console.log(x);
     let format = FormatYMD(x);
-    console.log(format);
     try {
       let response = await mutationDate({
         variables: {
@@ -238,14 +231,12 @@ export default function SettingsAkun(props) {
   };
 
   const onCity = async (id, name) => {
-    console.log(id, name);
     await setCityId(id);
     await setCityName(name);
     await setModalCity1(false);
   };
 
   const hasilCity = async (id, name) => {
-    onCity(id, name);
     try {
       let response = await mutationCity({
         variables: {
@@ -259,11 +250,12 @@ export default function SettingsAkun(props) {
         if (response.data.update_city_settings.code !== 200) {
           throw new Error(response.data.update_city.message);
         }
-        setModalBirth(false);
         let tmp_data = { ...setting };
         tmp_data.cities.id = id;
+        tmp_data.cities.name = name;
         await setSetting(tmp_data);
         await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+        setModalCity(false);
       }
     } catch (error) {
       Alert.alert("" + error);
@@ -286,7 +278,7 @@ export default function SettingsAkun(props) {
           onBackdropPress={() => {
             setModalEmail(false);
           }}
-          // style={{ height: Dimensions.get("screen").width * 0.2 }}
+        // style={{ height: Dimensions.get("screen").width * 0.2 }}
         >
           <View style={styles.centeredView}>
             <View style={styles.modalViewEmail}>
@@ -295,7 +287,7 @@ export default function SettingsAkun(props) {
                 size="label"
                 onPress={() => {
                   setModalEmail(false),
-                    props.navigation.navigate("SettingEmailChange");
+                    props.navigation.navigate("SettingEmailChange", { setting: setting });
                 }}
               >
                 Change Email
@@ -608,11 +600,11 @@ export default function SettingsAkun(props) {
               <Text style={{ borderBottomWidth: 1, marginTop: 20 }}>
                 {cityName
                   ? cityName
-                      .toString()
-                      .toLowerCase()
-                      .replace(/\b[a-z]/g, function (letter) {
-                        return letter.toUpperCase();
-                      })
+                    .toString()
+                    .toLowerCase()
+                    .replace(/\b[a-z]/g, function (letter) {
+                      return letter.toUpperCase();
+                    })
                   : t("cityOfRecidence")}
               </Text>
             </Pressable>
@@ -634,7 +626,7 @@ export default function SettingsAkun(props) {
                 size="medium"
                 style={{ width: "48%" }}
                 text="Save"
-                onPress={() => setModalCity(false)}
+                onPress={() => hasilCity(cityId, cityName)}
               ></Button>
             </View>
           </View>
@@ -744,7 +736,7 @@ export default function SettingsAkun(props) {
                     width: "100%",
                     padding: 10,
                   }}
-                  onPress={() => hasilCity(item.id, item.name)}
+                  onPress={() => onCity(item.id, item.name)}
                 >
                   <Text size="description" type="regular" style={{}}>
                     {item.name
@@ -954,11 +946,11 @@ export default function SettingsAkun(props) {
               <Text size="description" type="light" style={{}}>
                 {setting.cities.name
                   ? setting.cities.name
-                      .toString()
-                      .toLowerCase()
-                      .replace(/\b[a-z]/g, function (letter) {
-                        return letter.toUpperCase();
-                      })
+                    .toString()
+                    .toLowerCase()
+                    .replace(/\b[a-z]/g, function (letter) {
+                      return letter.toUpperCase();
+                    })
                   : "Not Set"}
               </Text>
             </View>
@@ -1033,18 +1025,18 @@ export default function SettingsAkun(props) {
             />
           </View>
         ) : (
-          <Button
-            type="box"
-            size="medium"
-            color="tertiary"
-            text={t("AddEmail")}
-            onPress={() =>
-              props.navigation.navigate("SettingEmail", {
-                dataEmail: setting.user,
-              })
-            }
-          />
-        )}
+            <Button
+              type="box"
+              size="medium"
+              color="tertiary"
+              text={t("AddEmail")}
+              onPress={() =>
+                props.navigation.navigate("SettingEmail", {
+                  dataEmail: setting.user,
+                })
+              }
+            />
+          )}
       </View>
       <View
         style={{
@@ -1112,16 +1104,16 @@ export default function SettingsAkun(props) {
             />
           </View>
         ) : (
-          <Button
-            type="box"
-            size="medium"
-            color="tertiary"
-            text={t("addPhoneNumber")}
-            onPress={() => props.navigation.navigate("SettingPhone")}
-          />
-        )}
+            <Button
+              type="box"
+              size="medium"
+              color="tertiary"
+              text={t("addPhoneNumber")}
+              onPress={() => props.navigation.navigate("SettingPhone")}
+            />
+          )}
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 }
 

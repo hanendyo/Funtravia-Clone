@@ -445,5 +445,10 @@
   "Seemore": "See more",
   "Male": "Male",
   "Female": "Female",
-  "atGlance": " at Glance"
+  "atGlance": " at Glance",
+  "registerEmail": "Enter your registered email below to receive change email instruction",
+  "currentEmail": "Enter current email address",
+  "newEmail": "Enter new email address",
+  "verifyEmail": "Verify your email",
+  "verifyOtp": "Please enter 6 digit code sent to"
 }

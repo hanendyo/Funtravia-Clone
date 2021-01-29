@@ -162,6 +162,7 @@ import TravelStories from "./files/travel_stories.svg";
 import User from "./files/user.svg";
 import SettingsPutih from "./files/settings_putih.svg";
 import SharePutih from "./files/SharePutih.svg";
+import LogoEmail from "./files/logo_email.svg";
 
 export {
   LikeWhite,
@@ -328,4 +329,5 @@ export {
   User,
   SettingsPutih,
   SharePutih,
+  LogoEmail,
 };

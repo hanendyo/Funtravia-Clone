@@ -86,9 +86,6 @@ export default function Settings(props) {
     },
   });
 
-  // console.log("country setting :", data);
-  // console.log("setting :", setting);
-
   const [
     GetCurrencyList,
     { data: datacurrency, loading: loadingcurrency, error: errorcurrency },

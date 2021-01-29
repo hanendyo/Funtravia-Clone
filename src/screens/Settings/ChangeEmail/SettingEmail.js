@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Arrowbackwhite } from "../../assets/svg";
-import { Text, Button, PhoneCodeSelector } from "../../component";
+import { Arrowbackwhite } from "../../../assets/svg";
+import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { View, Dimensions, CheckBox } from "react-native";
+import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity, TextInput } from "react-native-gesture-handler";
 
-export default function SettingPhoneChange(props) {
+export default function SettingEmail(props) {
   let [token, setToken] = useState("");
-  const { t } = useTranslation();
-  let [region, setRegion] = useState("+62");
-  let [selector, setSelector] = useState(false);
+  const { t, i18n } = useTranslation();
   let [setSetting] = useState();
   const HeaderComponent = {
-    headerTitle: t("ChangePhoneNumber"),
+    headerTitle: t("ChangeEmail"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -68,56 +66,47 @@ export default function SettingPhoneChange(props) {
         }}
       >
         <Text size="description" type="regular">
-          {t("phoneUsed")}
-        </Text>
-      </View>
-      <View style={{ paddingHorizontal: 20, marginTop: 30 }}>
-        <Text size="description" type="regular">
-          {t("CountryCode")}
+          {t("emailUsed")}
         </Text>
       </View>
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          width: Dimensions.get("screen").width,
+          width: Dimensions.get("screen").width * 0.9,
+          marginHorizontal: 20,
+          marginTop: 20,
         }}
       >
-        <TouchableOpacity
-          onPress={() => setSelector(true)}
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: "#E1E1E1",
-            paddingVertical: 15,
-            marginRight: 10,
-            width: Dimensions.get("screen").width * 0.2,
-          }}
-        >
-          <Text size="description" type="regular">
-            {region}
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            width: Dimensions.get("screen").width * 0.65,
-          }}
-        >
-          <TextInput
+        <Item floatingLabel>
+          <Label
             style={{
               fontFamily: "Lato-Regular",
               fontSize: 14,
-              borderBottomWidth: 1,
-              borderBottomColor: "#E1E1E1",
-              paddingHorizontal: 10,
             }}
+          >
+            {"Email"}
+          </Label>
+          <Input
+            style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
             // value={data.first_name ? data.first_name : ""}
             // onChangeText={(text) => _handleOnChange(text, "first_name")}
-            keyboardType="number-pad"
-            placeholder="Mobile Number"
+            keyboardType="default"
           />
-        </View>
+        </Item>
+      </View>
+      <View
+        style={{
+          width: "100%",
+          paddingHorizontal: 30,
+          marginTop: 20,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CheckBox />
+        <Text type="regular" size="description" style={{ marginLeft: 10 }}>
+          {t("CheckChangeEmail")}
+        </Text>
       </View>
       <View
         style={{
@@ -129,18 +118,12 @@ export default function SettingPhoneChange(props) {
         <Button
           type="box"
           size="medium"
-          color="secondary"
+            color="secondary"
           text={t("save")}
           onPres={() => null}
           style={{ width: "100%" }}
         />
       </View>
-      <PhoneCodeSelector
-        show={selector}
-        close={() => setSelector(false)}
-        callBack={(e) => setRegion(e)}
-        value={region}
-      />
     </View>
   );
 }

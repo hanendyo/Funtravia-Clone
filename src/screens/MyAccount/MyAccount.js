@@ -42,20 +42,20 @@ export default function MyAccount(props) {
       marginLeft: 10,
     },
 
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
-    ),
+    // headerLeft: () => (
+    //   <Button
+    //     text={""}
+    //     size="medium"
+    //     type="circle"
+    //     variant="transparent"
+    //     onPress={() => props.navigation.goBack()}
+    //     style={{
+    //       height: 55,
+    //     }}
+    //   >
+    //     <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+    //   </Button>
+    // ),
 
     headerRight: () => (
       <View
