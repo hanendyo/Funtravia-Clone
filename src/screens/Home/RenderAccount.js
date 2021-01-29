@@ -73,7 +73,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
         height: ukuran,
         borderRadius: 5,
         borderColor: "#209FAE",
-        borderWidth: 1,
+        borderWidth: 1.5,
         backgroundColor: "#FFFFFF",
         alignContent: "center",
         alignItems: "center",

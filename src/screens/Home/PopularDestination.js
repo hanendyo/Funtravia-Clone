@@ -12,6 +12,7 @@ import BerandaPopuler from "../../graphQL/Query/Home/BerandaPopuler";
 import { useQuery } from "@apollo/react-hooks";
 import { Capital, Text, Truncate } from "../../component";
 import { default_image } from "../../assets/png";
+import LinearGradient from "react-native-linear-gradient";
 
 const defaultImage =
   "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
@@ -44,45 +45,43 @@ export default function PopularDestination({ props }) {
               : { uri: defaultImage }
           }
           style={{
-            width: (Dimensions.get("screen").width - 37) / 3,
-            height: (Dimensions.get("screen").width - 37) / 3,
-            marginHorizontal: 2,
-            borderRadius: 10,
+            width: (Dimensions.get("screen").width - 50) / 3,
+            height: (Dimensions.get("screen").width - 50) / 3,
+            marginHorizontal: 3,
+            borderRadius: 5,
+            justifyContent: "flex-end",
           }}
           imageStyle={styles.destinationImage}
         >
-          <View
-            style={[
-              styles.destinationImageView,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              },
-            ]}
+          <LinearGradient
+            colors={["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0)"]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 0, y: 0 }}
+            style={{
+              height: "50%",
+              width: "100%",
+              alignItems: "flex-start",
+              alignContent: "flex-start",
+              justifyContent: "flex-end",
+              borderRadius: 5,
+              paddingHorizontal: 10,
+              paddingVertical: 15,
+            }}
           >
             <Text
               size="label"
               type="black"
               style={{
-                flex: 0.75,
-                flexWrap: "wrap",
-                textAlign: "center",
+                // flex: 0.75,
+                // flexWrap: "wrap",
+                // textAlign: "center",
                 color: "#ffff",
                 letterSpacing: 0.5,
-                textShadowOffset: { width: 1, height: 3 },
-                textShadowRadius: 8.3,
-                textShadowColor: "#000",
-                elevation: 13,
               }}
             >
-              {/* <Truncate text= */}
               {Capital({ text: item.name })}
-              {/* length={10} /> */}
             </Text>
-          </View>
+          </LinearGradient>
         </ImageBackground>
       </TouchableOpacity>
     );
@@ -90,101 +89,66 @@ export default function PopularDestination({ props }) {
 
   return (
     <SafeAreaView>
-      <View style={{ marginHorizontal: 20 }}>
-        {/* <View
-					style={{
-						flex: 1,
-						alignItems: 'center',
-						marginTop: 30,
-					}}>
-					<Text
-					type='bold'
-					size='label'
-					style={{
-						alignSelf: 'flex-start',
-					}}>
-					{t('popularCityDestination')}
-					</Text>
-				</View> */}
-        <View
+      {data && data.beranda_popularV2.length ? (
+        <TouchableOpacity
           style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
+            width: Dimensions.get("screen").width,
+            marginTop: 10,
+            // height: 150,
+            paddingHorizontal: 20,
           }}
-        >
-          {/* <Text type='regular' size='description'>
-						{t('popularTourism')}
-						</Text>
-						<Text
-						onPress={() => props.navigation.navigate("CountryStack",{screen:'AllDestination'})}
-						type='regular'
-						size='description'
-						style={{ color: '#209FAE' }}>
-						{t('viewAll')}
-					</Text> */}
-        </View>
-      </View>
-      <TouchableOpacity
-        style={{
-          width: Dimensions.get("screen").width,
-          marginTop: 10,
-          height: 150,
-          paddingHorizontal: 20,
-        }}
-        onPress={() =>
-          onSelect(
-            data && data.beranda_popularV2 ? data.beranda_popularV2[0] : null
-          )
-        }
-      >
-        <ImageBackground
-          source={
-            data &&
-            data.beranda_popularV2[0] &&
-            data.beranda_popularV2[0].image?.image
-              ? { uri: data.beranda_popularV2[0].image?.image }
-              : default_image
+          onPress={() =>
+            onSelect(
+              data && data.beranda_popularV2 ? data.beranda_popularV2[0] : null
+            )
           }
-          style={{
-            width: Dimensions.get("screen").width - 35,
-            height: Dimensions.get("screen").width - 35,
-          }}
-          imageStyle={[styles.destinationMainImage, { height: 150 }]}
         >
-          <View
-            style={[
-              styles.destinationMainImageContainer,
-              {
-                height: 150,
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              },
-            ]}
+          <ImageBackground
+            source={
+              data &&
+              data.beranda_popularV2[0] &&
+              data.beranda_popularV2[0].image?.image
+                ? { uri: data.beranda_popularV2[0].image?.image }
+                : default_image
+            }
+            style={{
+              width: Dimensions.get("screen").width - 40,
+              height: 134,
+              justifyContent: "flex-end",
+            }}
+            imageStyle={[styles.destinationMainImage, { height: 134 }]}
           >
-            <Text
-              size="title"
-              type="black"
+            <LinearGradient
+              colors={["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0)"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }}
               style={{
-                zIndex: 2,
-                color: "#fff",
-                textShadowOffset: { width: 1, height: 3 },
-                textShadowRadius: 8.3,
-                textShadowColor: "#000",
-                elevation: 13,
+                height: "50%",
+                width: "100%",
+                alignItems: "flex-start",
+                alignContent: "flex-start",
+                justifyContent: "flex-end",
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                paddingVertical: 15,
               }}
             >
-              {data && data.beranda_popularV2[0]
-                ? Capital({ text: data.beranda_popularV2[0].name })
-                : ""}
-            </Text>
-          </View>
-        </ImageBackground>
-      </TouchableOpacity>
+              <Text
+                size="title"
+                type="black"
+                style={{
+                  zIndex: 2,
+                  color: "#fff",
+                }}
+              >
+                {data && data.beranda_popularV2[0]
+                  ? Capital({ text: data.beranda_popularV2[0].name })
+                  : ""}
+              </Text>
+            </LinearGradient>
+          </ImageBackground>
+        </TouchableOpacity>
+      ) : null}
       {data && data.beranda_popularV2.length ? (
         <FlatList
           contentContainerStyle={{
@@ -211,22 +175,22 @@ const styles = StyleSheet.create({
   destinationMainImageContainer: {
     width: "100%",
     height: 150,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   destinationMainImage: {
     resizeMode: "cover",
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: "black",
   },
   destinationImageView: {
     width: (Dimensions.get("screen").width - 37) / 3,
     height: (Dimensions.get("screen").width - 37) / 3,
     marginRight: 5,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   destinationImage: {
     resizeMode: "cover",
-    borderRadius: 10,
+    borderRadius: 5,
   },
 });
 

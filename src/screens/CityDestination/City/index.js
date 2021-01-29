@@ -32,7 +32,7 @@ import { default_image, search_button } from "../../../assets/png";
 import { Input } from "native-base";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
 import LinearGradient from "react-native-linear-gradient";
-import { Truncate } from "../../../component";
+import { Capital, Truncate } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import ImageSlider from "react-native-image-slider";
 const screenHeight = Dimensions.get("window").height;
@@ -524,7 +524,7 @@ export default function CityDetail(props) {
             }}
           >
             <Text size="label" type="bold" style={{}}>
-              {render.name}
+              <Capital text={render.name} />
               {t("atGlance")}
             </Text>
             <Text size="description">Good destination for your trip</Text>
@@ -1366,7 +1366,7 @@ export default function CityDetail(props) {
                 <Text size="title" type="black" style={{ color: "white" }}>
                   {data && data.CitiesInformation ? (
                     <Truncate
-                      text={data.CitiesInformation.name}
+                      text={Capital({ text: data.CitiesInformation.name })}
                       length={20}
                     ></Truncate>
                   ) : null}

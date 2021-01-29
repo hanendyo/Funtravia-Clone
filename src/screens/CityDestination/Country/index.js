@@ -30,7 +30,7 @@ import {
 } from "../../../assets/svg";
 import { default_image, search_button } from "../../../assets/png";
 import { Input } from "native-base";
-import { Truncate } from "../../../component";
+import { Capital, Truncate } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import { Text, Button } from "../../../component";
 import Article from "./Article";
@@ -474,7 +474,7 @@ export default function Country(props) {
             }}
           >
             <Text size="label" type="bold" style={{}}>
-              {render.name}
+              <Capital text={render.name} />
               {t("atGlance")}
             </Text>
             <Text size="description">Good destination for your trip</Text>
@@ -718,7 +718,7 @@ export default function Country(props) {
                         type="bold"
                         style={{ textAlign: "center", marginTop: 3 }}
                       >
-                        {render.city[0].name}
+                        <Capital text={render.city[0].name} />
                       </Text>
                       <Ripple
                         onPress={() => {
@@ -804,7 +804,10 @@ export default function Country(props) {
                                 type="bold"
                                 style={{ textAlign: "center", marginTop: 3 }}
                               >
-                                <Truncate text={item.name} length={16} />
+                                <Truncate
+                                  text={Capital({ text: item.name })}
+                                  length={16}
+                                />
                               </Text>
                             </Ripple>
                           ) : null;
@@ -1026,7 +1029,7 @@ export default function Country(props) {
                 <Text size="title" type="black" style={{ color: "white" }}>
                   {data && data.country_detail ? (
                     <Truncate
-                      text={data.country_detail.name}
+                      text={Capital({ text: data.country_detail.name })}
                       length={20}
                     ></Truncate>
                   ) : null}
