@@ -265,37 +265,49 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
 
   const updateisread = async (notif_id) => {
     var tempData = [...datanotif];
-    var index = tempData.findIndex((k) => k["id"] === notif_id);
+    var index = tempData.findIndex((k) => k["ids"] === notif_id);
     tempData[index].isread = true;
     SetDataNotif(tempData);
+    console.log('notif',notif_id);
     try {
       let response = await mutationIsRead({
         variables: {
           notif_id: notif_id,
         },
       });
-      if (dataInvit) {
-        // Alert.alert('Loading!!');
-      }
-      if (errorInvit) {
-        throw new Error("Error Input");
-      }
+      // if (dataInvit) {
+      //   // Alert.alert('Loading!!');
+      // }
+      // if (errorInvit) {
+      //   throw new Error("Error Input");
+      // }
+        console.log(response);
       if (response.data) {
         if (response.data.update_read.code !== 200) {
+          // var tempData = [...datanotif];
+          // var index = tempData.findIndex((k) => k["ids"] === notif_id);
+          // tempData[index].isread = true;
+          // SetDataNotif(tempData);
           throw new Error(response.data.reject_buddy.message);
+        }else{
+          // var tempData = [...datanotif];
+          // var index = tempData.findIndex((k) => k["ids"] === notif_id);
+          // tempData[index].isread = true;
+          // SetDataNotif(tempData);
         }
       }
     } catch (error) {
-      var tempData = [...datanotif];
-      var index = tempData.findIndex((k) => k["id"] === notif_id);
-      tempData[index].isread = true;
+      // var tempData = [...datanotif];
+      // var index = tempData.findIndex((k) => k["ids"] === notif_id);
+      // tempData[index].isread = false;
+      // SetDataNotif(tempData);
       // alert('' + error);
     }
   };
 
-  const handle_areaklik_comment = (data) => {
+  const handle_areaklik_comment = async (data) => {
     if (data.isread == false) {
-      updateisread(data.id);
+      await updateisread(data.ids);
     }
     navigation.push("FeedStack", {
       screen: "CommentsById",
@@ -304,9 +316,9 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
       },
     });
   };
-  const handle_areaklik_like = (data) => {
+  const handle_areaklik_like = async (data) => {
     if (data.isread == false) {
-      updateisread(data.id);
+      await updateisread(data.ids);
     }
     // console.log(data.isread);
     navigation.push("FeedStack", {
@@ -317,9 +329,9 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     });
   };
 
-  const handle_areaklik_follow = (data) => {
+  const handle_areaklik_follow = async (data) => {
     if (data.isread == false) {
-      updateisread(data.id);
+      await updateisread(data.ids);
     }
     navigation.push("ProfileStack", {
       screen: "otherprofile",
@@ -328,9 +340,9 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
       },
     });
   };
-  const handle_areaklik_buddy = (data) => {
+  const handle_areaklik_buddy = async (data) => {
     if (data.isread == false) {
-      updateisread(data.id);
+      await updateisread(data.ids);
     }
     data.itinerary_buddy.isconfrim == true &&
     data.itinerary_buddy.accepted_at != null
@@ -360,24 +372,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     }
   );
 
-  // const [
-  // 	GetListNotif,
-  // 	{ data: datanotif, loading: loadingnotif, error: errornotif },
-  // ] = useLazyQuery(ListNotifikasi_, {
-  // 	fetchPolicy: 'network-only',
-  // 	context: {
-  // 		headers: {
-  // 			'Content-Type': 'application/json',
-  // 			Authorization: `Bearer ${token}`,
-  // 		},
-  // 	},
-  // });
   useEffect(() => {}, []);
-  // console.log(
-  // 	data && data.list_notivication_invite.length
-  // 		? data.list_notivication_invite
-  // 		: null,
-  // );
   const duration = (datetime) => {
     var date1 = new Date(datetime).getTime();
     var datenow = new Date();

@@ -3,6 +3,7 @@ const ListNotifikasi = gql`
 	query {
 		list_notification {
 			id
+			ids
 			notification_type
 			isread
 			itinerary_buddy {
