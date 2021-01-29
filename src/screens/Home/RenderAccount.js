@@ -184,8 +184,8 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 }}
               >
                 <NotificationBlue
-                  height={25}
-                  width={25}
+                  height={20}
+                  width={20}
                   color={"#1F99A7"}
                   fill={"#1F99A7"}
                 />
@@ -193,14 +193,14 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                   <View
                     style={{
                       position: "absolute",
-                      left: 12,
-                      top: 5,
+                      left: 10,
+                      top: 1.5,
                       backgroundColor: "#D75995",
                       padding: 2,
                       alignContent: "center",
                       alignItems: "center",
                       justifyContent: "center",
-                      // width: 20,
+                      minWidth: 13,
                       borderWidth: 1,
                       borderColor: "white",
                       height: 13,

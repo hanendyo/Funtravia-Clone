@@ -12,8 +12,9 @@ export default function MenuNew({ props }) {
     <View style={styles.menuView}>
       <View
         style={{
-          width: "25%",
+          width: "33.3%",
           // height: 80,
+          // borderWidth: 1,
           marginBottom: 5,
           alignItems: "center",
         }}
@@ -37,7 +38,7 @@ export default function MenuNew({ props }) {
       </View>
       <View
         style={{
-          width: "25%",
+          width: "33.3%",
           marginBottom: 5,
           alignItems: "center",
         }}
@@ -61,7 +62,7 @@ export default function MenuNew({ props }) {
       </View>
       <View
         style={{
-          width: "25%",
+          width: "33.3%",
           marginBottom: 5,
           alignItems: "center",
         }}
@@ -89,19 +90,19 @@ export default function MenuNew({ props }) {
 
 const styles = StyleSheet.create({
   menu: {
-    width: 80,
-    height: 80,
+    width: 75,
+    height: 75,
     backgroundColor: "#daf0f2",
     alignItems: "center",
     justifyContent: "center",
     alignContent: "center",
-    borderRadius: 80 / 2,
+    borderRadius: 75 / 2,
   },
   menuView: {
     flexDirection: "row",
     width: "100%",
     paddingTop: 40,
     justifyContent: "space-between",
-    paddingHorizontal: 35,
+    paddingHorizontal: 30,
   },
 });
