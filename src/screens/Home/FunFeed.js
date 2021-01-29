@@ -133,6 +133,7 @@ export default function SearchFeed({ props }) {
     liked,
     comment,
     index,
+    item,
   }) => {
     return (
       <TouchableOpacity
@@ -366,6 +367,7 @@ export default function SearchFeed({ props }) {
               selected={!!selected.get(item.assets[0].filepath)}
               onSelect={onSelect}
               index={index}
+              item={item}
             />
           )}
           // horizontal={true}

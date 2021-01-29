@@ -21,6 +21,7 @@ const ListNotifikasi_ = gql`
   query {
     list_notification {
       id
+      ids
       notification_type
       isread
       created_at

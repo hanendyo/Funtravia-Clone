@@ -13,6 +13,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
 import Image from "react-native-auto-scale-image";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
@@ -44,8 +45,18 @@ import {
 } from "../../../assets/svg";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
-import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
+import { gql } from "apollo-boost";
 
+const deletepost = gql`
+	mutation($post_id: ID!) {
+		delete_post(post_id: $post_id) {
+			id
+			response_time
+			message
+			code
+		}
+	}
+`;
 export default function Comments(props) {
   const HeaderComponent = {
     headerShown: true,
@@ -86,6 +97,10 @@ export default function Comments(props) {
   let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
+  let [modalmenu, setModalmenu] = useState(false);
+  let [modalmenuother, setModalmenuother] = useState(false);
+  let [modalhapus, setModalhapus] = useState(false);
+  let [selectedOption, SetOption] = useState({});
 
   // console.log(setting);
   // console.log(props.route.params.data);
@@ -158,6 +173,69 @@ export default function Comments(props) {
       },
     },
   });
+  const [
+    Mutationdeletepost,
+    { loading: loadingdelete, data: datadelete, error: errordelete },
+  ] = useMutation(deletepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _deletepost = async (data) => {
+    setModalhapus(false);
+    setModalmenu(false);
+    // var tempData = [...datafeed];
+    // var index = tempData.findIndex((k) => k['id'] === id);
+
+    // SetDataFeed(tempData);
+    if (token || token !== "") {
+      try {
+        let response = await Mutationdeletepost({
+          variables: {
+            post_id: data.id,
+          },
+        });
+        // if (loadingdelete) {
+        //   Alert.alert("Loading!!");
+        // }
+        // if (errordelete) {
+        //   throw new Error("Error Input");
+        // }
+
+        // console.log(response);
+        if (response.data) {
+          if (
+            response.data.delete_post.code === 200 ||
+            response.data.delete_post.code === "200"
+          ) {
+            props.navigation.goBack();
+            // Refresh();
+            // var tempData = [...datafeed];
+            // var index = tempData.findIndex((k) => k['id'] === id);
+            // tempData[index].liked = false;
+            // tempData[index].response_count =
+            // 	response.data.delete_post.count_like;
+            // SetDataFeed(tempData);
+          } else {
+            throw new Error(response.data.delete_post.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+      }
+    } else {
+      // tempData[index].liked = true;
+      // tempData[index].response_count = tempData[index].response_count + 1;
+      // SetDataFeed(tempData);
+      Alert.alert("Please Login");
+    }
+  };
 
   const _liked = async (id) => {
     // console.log(id);
@@ -282,19 +360,7 @@ export default function Comments(props) {
     }
   };
 
-  const [
-    GetFeed,
-    { data: datafeed, loading: loadingfeed, error: errorfeed },
-  ] = useLazyQuery(FeedByID, {
-    fetchPolicy: "network-only",
-    variables: { post_id: postid },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
+
 
   const scroll_to = () => {
     // GetCommentList();
@@ -375,6 +441,14 @@ export default function Comments(props) {
   // 	onSelect('selected'), setLiked(!liked);
   // 	likeToggle(liked);
   // };
+  const OptionOpen = (data) => {
+    SetOption(data);
+    if (dataPost.user.id == setting?.user?.id) {
+      setModalmenu(true);
+    } else {
+      setModalmenuother(true);
+    }
+  };
 
   const Item = ({ dataComment }) => {
     return (
@@ -490,8 +564,216 @@ export default function Comments(props) {
     <SafeAreaView
       style={{
         flex: 1,
-      }}
-    >
+
+      }}>
+    	<Modal
+				onBackdropPress={() => {
+					setModalmenu(false);
+				}}
+				onRequestClose={() => setModalmenu(false)}
+				onDismiss={() => setModalmenu(false)}
+				animationIn="fadeIn"
+				animationOut="fadeOut"
+				isVisible={modalmenu}
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					alignSelf: "center",
+					alignContent: "center",
+				}}
+			>
+				<View
+					style={{
+						backgroundColor: "white",
+						width: Dimensions.get("screen").width - 80,
+						padding: 20,
+					}}
+				>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							console.log(data);
+						}}
+					>
+						<Text size="description" type="regular" style={{}}>
+							{t("shareTo")}...
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							setModalmenu(false),
+								props.navigation.push("EditPost", {
+									datapost: selectedOption,
+								});
+						}}
+					>
+						<Text size="description" type="regular" style={{}}>
+							{t("edit")}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							setModalmenu(false), setModalhapus(true);
+						}}
+					>
+						<Text
+							size="description"
+							type="regular"
+							style={{ color: "#d75995" }}
+						>
+							{t("delete")}
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</Modal>
+
+			<Modal
+				onBackdropPress={() => {
+					setModalmenuother(false);
+				}}
+				onRequestClose={() => setModalmenuother(false)}
+				onDismiss={() => setModalmenuother(false)}
+				animationIn="fadeIn"
+				animationOut="fadeOut"
+				isVisible={modalmenuother}
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					alignSelf: "center",
+					alignContent: "center",
+				}}
+			>
+				<View
+					style={{
+						backgroundColor: "white",
+						width: Dimensions.get("screen").width - 80,
+						padding: 20,
+					}}
+				>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							setModalmenuother(false);
+						}}
+					>
+						<Text
+							size="description"
+							type="regular"
+							style={{ color: "#d75995" }}
+						>
+							{t("reportThisPost")}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							setModalmenuother(false);
+						}}
+					>
+						<Text size="description" type="regular" style={{}}>
+							{t("blockUser")}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {}}
+					>
+						<Text size="description" type="regular" style={{}}>
+							{t("copyLink")}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							setModalmenuother(false);
+						}}
+					>
+						<Text size="description" type="regular" style={{}}>
+							{t("unfollow")}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							paddingVertical: 10,
+						}}
+						onPress={() => {
+							setModalmenuother(false);
+						}}
+					>
+						<Text size="description" type="regular" style={{}}>
+							{t("hidePost")}
+						</Text>
+					</TouchableOpacity>
+				</View>
+			</Modal>
+
+			<Modal
+				onBackdropPress={() => {
+					setModalhapus(false);
+				}}
+				onRequestClose={() => setModalhapus(false)}
+				onDismiss={() => setModalhapus(false)}
+				animationIn="fadeIn"
+				animationOut="fadeOut"
+				isVisible={modalhapus}
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					alignSelf: "center",
+					alignContent: "center",
+				}}
+			>
+				<View
+					style={{
+						backgroundColor: "white",
+						width: Dimensions.get("screen").width - 60,
+						padding: 20,
+					}}
+				>
+					<Text>{t("alertHapusPost")}</Text>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							paddingVertical: 20,
+							paddingHorizontal: 40,
+						}}
+					>
+						<Button
+							onPress={() => {
+								_deletepost(selectedOption);
+							}}
+							color="primary"
+							text={t("delete")}
+						></Button>
+						<Button
+							onPress={() => {
+								setModalhapus(false);
+							}}
+							color="secondary"
+							variant="bordered"
+							text={t("cancel")}
+						></Button>
+					</View>
+				</View>
+			</Modal>
+
       <ScrollView
         contentContainerStyle={
           {
@@ -602,6 +884,9 @@ export default function Comments(props) {
               </View>
             </Pressable>
             <TouchableOpacity
+              onPress={() => {
+                OptionOpen(dataPost);
+              }}
               style={{
                 position: "absolute",
                 right: 0,
