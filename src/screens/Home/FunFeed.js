@@ -80,46 +80,6 @@ export default function SearchFeed({ props }) {
     [selected]
   );
 
-  // const FeedModal = ({ uri }) => {
-  // 	return (
-  // 		<Modal
-  // 			hardwareAccelerated={true}
-  // 			animationType='fade'
-  // 			// transparent={true}
-  // 			visible={showModal}
-  // 			// presentationStyle='fullScreen'
-  // 			onRequestClose={() => {
-  // 				setShowModal(!showModal);
-  // 			}}>
-  // 			<View
-  // 				style={{
-  // 					alignContent: 'center',
-  // 					justifyContent: 'center',
-  // 					alignSelf: 'center',
-  // 					alignItems: 'center',
-  // 					height: '100%',
-  // 					width: '100%',
-  // 				}}>
-  // 				<ImageBackground
-  // 					source={uri ? { uri: selectedUri } : default_image}
-  // 					imageStyle={{
-  // 						resizeMode: 'cover',
-  // 					}}
-  // 					style={{
-  // 						alignSelf: 'center',
-  // 						justifyContent: 'center',
-  // 						alignContent: 'center',
-  // 						alignItems: 'center',
-  // 						// flex: 1,
-  // 						//	paddingHorizontal: normalize(-15),
-  // 						height: Dimensions.get('window').width,
-  // 						width: Dimensions.get('window').width,
-  // 					}}></ImageBackground>
-  // 			</View>
-  // 		</Modal>
-  // 	);
-  // };
-
   const Item = ({
     id,
     profile_uri,
@@ -137,7 +97,7 @@ export default function SearchFeed({ props }) {
   }) => {
     return (
       <TouchableOpacity
-        style={styles.main}
+        style={{ marginRight: 7 }}
         onPress={() =>
           props.navigation.navigate("FeedStack", {
             screen: "SinglePost",
@@ -150,7 +110,10 @@ export default function SearchFeed({ props }) {
         <ImageBackground
           source={uri ? { uri: uri } : default_image}
           imageStyle={{ resizeMode: "cover", borderRadius: 5 }}
-          style={{ width: "100%" }}
+          style={{
+            width: (Dimensions.get("screen").width - 45) / 2,
+            height: 248,
+          }}
         >
           <TouchableOpacity
             style={{
@@ -324,30 +287,17 @@ export default function SearchFeed({ props }) {
     );
   };
   return (
-    <ScrollView
-      contentContainerStyle={{
-        // alignSelf: 'center',
-        marginTop: 10,
-        paddingHorizontal: 10,
-        // width: '100%',
-      }}
-      horizontal={true}
-    >
-      {dataPost &&
-      dataPost.feed_post_populer.length !== 0 &&
-      dataPost !== NaN ? (
+    <>
+      {dataPost && dataPost.feed_post_populer.length > 0 ? (
         <FlatList
           contentContainerStyle={{
-            justifyContent: "space-evenly",
-            alignContent: "space-between",
-            // justifyContent: 'space-evenly',
-            alignItems: "center",
-            alignSelf: "center",
-            // borderWidth: 0.5,
-            marginBottom: 35,
-            paddingStart: 0,
-            flexDirection: "row",
+            marginTop: 10,
+            marginBottom: 30,
+            paddingStart: 20,
+            paddingEnd: 15,
+            // justifyContent: "space-evenly",
           }}
+          horizontal
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           data={dataPost ? dataPost.feed_post_populer : null}
@@ -376,40 +326,8 @@ export default function SearchFeed({ props }) {
           keyExtractor={(item) => item.id}
           extraData={selected}
         />
-      ) : (
-        <FlatList
-          contentContainerStyle={{
-            justifyContent: "space-evenly",
-            alignContent: "space-between",
-            // justifyContent: 'space-evenly',
-            alignItems: "center",
-            alignSelf: "center",
-            // borderWidth: 0.5,
-            marginBottom: 30,
-            paddingStart: 0,
-            flexDirection: "row",
-          }}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          data={placeholderFunFeed}
-          renderItem={({ item }) => (
-            <Item
-              id={item.id}
-              uri={item.uri}
-              username={item.username}
-              created_at={item.created_at}
-              selected={!!selected.get(item.id)}
-              onSelect={onSelect}
-            />
-          )}
-          // numColumns={3}
-          key={"_"}
-          keyExtractor={(item) => item.id}
-          extraData={selected}
-          horizontal={true}
-        />
-      )}
-    </ScrollView>
+      ) : null}
+    </>
   );
 }
 

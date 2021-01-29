@@ -87,64 +87,57 @@ export default function Home(props) {
     return (
       <View
         style={{
+          marginTop: 20,
+          marginHorizontal: 20,
+          flexDirection: "row",
           alignItems: "stretch",
-          alignSelf: "center",
-          width: "95%",
-          marginTop: 30,
         }}
       >
         <View
           style={{
-            paddingHorizontal: 10,
+            width: 5,
+            height: 40,
+            backgroundColor: "#209FAE",
+            borderRadius: 20,
+          }}
+        ></View>
+        <View
+          style={{
             flexDirection: "row",
-            alignItems: "stretch",
+            width: "97%",
+            justifyContent: "space-between",
+            alignContent: "flex-end",
+            alignItems: "flex-end",
           }}
         >
-          <View
-            style={{
-              width: 5,
-              height: 40,
-              backgroundColor: "#209FAE",
-              borderRadius: 20,
-            }}
-          ></View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "space-between",
-              alignContent: "center",
-            }}
-          >
-            <View style={{ marginLeft: 5 }}>
-              <Text
-                type="bold"
-                size="label"
-                style={{
-                  alignSelf: "flex-start",
-                }}
-              >
-                {title}
-              </Text>
-              <Text type="regular" size="small">
-                {label}
-              </Text>
-            </View>
-            {seeAll ? (
-              <Text
-                onPress={() =>
-                  props.navigation.navigate("CountryStack", {
-                    screen: "AllDestination",
-                  })
-                }
-                type="bold"
-                size="small"
-                style={{ color: "#209FAE", alignSelf: "baseline" }}
-              >
-                {t("viewAll")}
-              </Text>
-            ) : null}
+          <View style={{ paddingLeft: 5 }}>
+            <Text
+              type="bold"
+              size="label"
+              style={{
+                alignSelf: "flex-start",
+              }}
+            >
+              {title}
+            </Text>
+            <Text type="regular" size="small">
+              {label}
+            </Text>
           </View>
+          {seeAll ? (
+            <Text
+              onPress={() =>
+                props.navigation.navigate("CountryStack", {
+                  screen: "AllDestination",
+                })
+              }
+              type="bold"
+              size="small"
+              style={{ color: "#209FAE" }}
+            >
+              {t("viewAll")}
+            </Text>
+          ) : null}
         </View>
       </View>
     );
@@ -193,7 +186,7 @@ export default function Home(props) {
             alignContent: "center",
             alignSelf: "center",
             backgroundColor: `${searchBg}`,
-            height: 75,
+            height: 60,
             borderColor: "white",
             shadowColor: "#6F7273",
             shadowOffset: { width: 0, height: 1 },
@@ -222,7 +215,7 @@ export default function Home(props) {
                 flexDirection: "row",
                 backgroundColor: "white",
                 borderRadius: 5,
-                borderWidth: 1,
+                borderWidth: 0.5,
                 borderColor: "#6F7273",
                 alignSelf: "center",
                 paddingHorizontal: 20,

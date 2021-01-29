@@ -35,119 +35,113 @@ export default function DiscoverCard({ props }) {
   return (
     <View
       style={{
-        alignContent: "center",
-        justifyContent: "center",
+        marginHorizontal: 20,
+        // width: "95%",
+        // alignSelf: "center",
+        marginTop: 10,
+        justifyContent: "space-between",
         alignItems: "center",
+        flexDirection: "row",
+        // borderWidth: 1,
       }}
     >
-      <View
-        style={{
-          width: "95%",
-          alignSelf: "center",
-          marginTop: 10,
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          flexDirection: "row",
-        }}
+      <TouchableOpacity
+        key={discoverCardsData[0].id}
+        onPress={() =>
+          props.navigation.navigate("TravelIdeaStack", {
+            screen: "TravelIdeas",
+          })
+        }
       >
-        <TouchableOpacity
-          key={discoverCardsData[0].id}
-          onPress={() =>
-            props.navigation.navigate("TravelIdeaStack", {
-              screen: "TravelIdeas",
-            })
-          }
+        <ImageBackground
+          source={discoverCardsData[0].background_image}
+          style={{
+            height: 175,
+            width: (Dimensions.get("screen").width - 55) / 3,
+            borderRadius: 5,
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+          imageStyle={{ borderRadius: 5 }}
+          resizeMode="cover"
         >
-          <ImageBackground
-            source={discoverCardsData[0].background_image}
+          <Text
+            size="label"
+            type="bold"
             style={{
-              height: Dimensions.get("screen").height * 0.21 + 20,
-              width: Dimensions.get("screen").width * 0.3 - 7,
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "flex-end",
+              color: "#FFFFFF",
+              textAlign: "center",
+              paddingBottom: 25,
             }}
-            imageStyle={{ borderRadius: 10 }}
-            resizeMode="cover"
           >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                color: "#FFFFFF",
-                textAlign: "center",
-                paddingBottom: 25,
-              }}
-            >
-              {discoverCardsData[0].text}
-            </Text>
-          </ImageBackground>
-        </TouchableOpacity>
+            {discoverCardsData[0].text}
+          </Text>
+        </ImageBackground>
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          key={discoverCardsData[1].id}
-          onPress={() =>
-            props.navigation.navigate("ItineraryStack", {
-              screen: "ItineraryPopuler",
-            })
-          }
+      <TouchableOpacity
+        key={discoverCardsData[1].id}
+        onPress={() =>
+          props.navigation.navigate("ItineraryStack", {
+            screen: "ItineraryPopuler",
+          })
+        }
+      >
+        <ImageBackground
+          source={discoverCardsData[1].background_image}
+          style={{
+            height: 175,
+            width: (Dimensions.get("screen").width - 55) / 3,
+            borderRadius: 5,
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+          imageStyle={{ borderRadius: 5 }}
+          resizeMode="cover"
         >
-          <ImageBackground
-            source={discoverCardsData[1].background_image}
+          <Text
+            size="label"
+            type="bold"
             style={{
-              height: Dimensions.get("screen").height * 0.21 + 20,
-              width: Dimensions.get("screen").width * 0.3 - 7,
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "flex-end",
+              color: "#FFFFFF",
+              textAlign: "center",
+              paddingBottom: 25,
             }}
-            imageStyle={{ borderRadius: 10 }}
-            resizeMode="cover"
           >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                color: "#FFFFFF",
-                textAlign: "center",
-                paddingBottom: 25,
-              }}
-            >
-              {discoverCardsData[1].text}
-            </Text>
-          </ImageBackground>
-        </TouchableOpacity>
+            {discoverCardsData[1].text}
+          </Text>
+        </ImageBackground>
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          key={discoverCardsData[2].id}
-          onPress={() => props.navigation.navigate("Journal")}
+      <TouchableOpacity
+        key={discoverCardsData[2].id}
+        onPress={() => props.navigation.navigate("Journal")}
+      >
+        <ImageBackground
+          source={discoverCardsData[2].background_image}
+          style={{
+            height: 175,
+            width: (Dimensions.get("screen").width - 55) / 3,
+            borderRadius: 5,
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+          imageStyle={{ borderRadius: 5 }}
+          resizeMode="cover"
         >
-          <ImageBackground
-            source={discoverCardsData[2].background_image}
+          <Text
+            size="label"
+            type="bold"
             style={{
-              height: Dimensions.get("screen").height * 0.21 + 20,
-              width: Dimensions.get("screen").width * 0.3 - 7,
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "flex-end",
+              color: "#FFFFFF",
+              textAlign: "center",
+              paddingBottom: 25,
             }}
-            imageStyle={{ borderRadius: 10 }}
-            resizeMode="cover"
           >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                color: "#FFFFFF",
-                textAlign: "center",
-                paddingBottom: 25,
-              }}
-            >
-              {discoverCardsData[2].text}
-            </Text>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
+            {discoverCardsData[2].text}
+          </Text>
+        </ImageBackground>
+      </TouchableOpacity>
     </View>
   );
 }
