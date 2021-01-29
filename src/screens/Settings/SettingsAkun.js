@@ -28,6 +28,7 @@ import DatePicker from "react-native-modern-datepicker";
 import { Picker } from "react-native";
 import {
   dateFormat,
+  dateFormats,
   dateFormatYMD,
   FormatYMD,
 } from "../../component/src/dateformatter";
@@ -36,6 +37,7 @@ import City from "../../graphQL/Query/Itinerary/City";
 import { useMutation } from "@apollo/react-hooks";
 import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
 import Date from "../../graphQL/Mutation/Setting/dateSettingAkun";
+import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -47,14 +49,14 @@ export default function SettingsAkun(props) {
   let [modalCity, setModalCity] = useState(false);
   let [modalCity1, setModalCity1] = useState(false);
   let [city, setCity] = useState("");
-  let [cityId, setCityId] = useState("");
-  let [cityName, setCityName] = useState("");
   let [genders, setGender] = useState("");
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
-  // let [dateUser, setDateUser] = useState(setting.user.birth_date);
   let [date, setDate] = useState(setting.user.birth_date);
+  let [cityName, setCityName] = useState(setting.cities.name);
+  let [cityId, setCityId] = useState(setting.cities.id);
+  // let [stateCity, setStateCity] = useState(setting.cities);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -145,6 +147,18 @@ export default function SettingsAkun(props) {
     },
   });
 
+  const [
+    mutationCity,
+    { data: dataCity, loading: loadingCity, error: errorCity },
+  ] = useMutation(CityMutation, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -168,16 +182,6 @@ export default function SettingsAkun(props) {
   const searchcity = (text) => {
     setCity(text);
     querycity();
-  };
-
-  const cityOnPress = async (id, name) => {
-    await setCityId(id);
-    await setCityName(name);
-    await setModalCity1(false);
-  };
-
-  const birth = async () => {
-    await setModalBirth(false);
   };
 
   const hasilGender = async (x) => {
@@ -205,31 +209,66 @@ export default function SettingsAkun(props) {
     }
   };
 
-  // const hasilDate = async (x) => {
-  //   let format = FormatYMD(x);
-  //   try {
-  //     let response = await mutationDate({
-  //       variables: {
-  //         date: x,
-  //       },
-  //     });
-  //     if (errorGender) {
-  //       throw new Error("Error Input");
-  //     }
-  //     if (response.data) {
-  //       if (response.data.update_gender_settings.code !== 200) {
-  //         throw new Error(response.data.update_gender_settings.message);
-  //       }
-  //       setModalGender(false);
-  //       let tmp_data = { ...setting };
-  //       tmp_data.user.gender = x;
-  //       await setSetting(tmp_data);
-  //       await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
-  //     }
-  //   } catch (error) {
-  //     Alert.alert("" + error);
-  //   }
-  // };
+  const hasilDate = async (x) => {
+    console.log(x);
+    let format = FormatYMD(x);
+    console.log(format);
+    try {
+      let response = await mutationDate({
+        variables: {
+          date: format,
+        },
+      });
+      if (errorDate) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.update_birth_settings.code !== 200) {
+          throw new Error(response.data.update_birth_settings.message);
+        }
+        setModalBirth(false);
+        let tmp_data = { ...setting };
+        tmp_data.user.birth_date = format;
+        await setSetting(tmp_data);
+        await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
+
+  const onCity = async (id, name) => {
+    console.log(id, name);
+    await setCityId(id);
+    await setCityName(name);
+    await setModalCity1(false);
+  };
+
+  const hasilCity = async (id, name) => {
+    onCity(id, name);
+    try {
+      let response = await mutationCity({
+        variables: {
+          id: id,
+        },
+      });
+      if (errorCity) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.update_city_settings.code !== 200) {
+          throw new Error(response.data.update_city.message);
+        }
+        setModalBirth(false);
+        let tmp_data = { ...setting };
+        tmp_data.cities.id = id;
+        await setSetting(tmp_data);
+        await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
 
   return (
     <ScrollView
@@ -418,7 +457,8 @@ export default function SettingsAkun(props) {
             <DatePicker
               options={{}}
               // current={startDate ? startDate : getToday()}
-              // selected={startDate ? startDate : getToday()}
+              // selected={date}
+              // maximumDate={toDay()}
               onDateChange={(x) => setDate(x)}
               mode="calendar"
               style={{ borderRadius: 10 }}
@@ -526,6 +566,7 @@ export default function SettingsAkun(props) {
           </View>
         </View>
       </Modal>
+
       {/* Modal City */}
 
       <Modal
@@ -565,7 +606,14 @@ export default function SettingsAkun(props) {
             </Text>
             <Pressable onPress={() => setModalCity1(true)}>
               <Text style={{ borderBottomWidth: 1, marginTop: 20 }}>
-                {cityName}
+                {cityName
+                  ? cityName
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function (letter) {
+                        return letter.toUpperCase();
+                      })
+                  : t("cityOfRecidence")}
               </Text>
             </Pressable>
             <View
@@ -696,10 +744,15 @@ export default function SettingsAkun(props) {
                     width: "100%",
                     padding: 10,
                   }}
-                  onPress={() => cityOnPress(item.id, item.name)}
+                  onPress={() => hasilCity(item.id, item.name)}
                 >
-                  <Text size="title" type="regular" style={{}}>
-                    {item.name}
+                  <Text size="description" type="regular" style={{}}>
+                    {item.name
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function (letter) {
+                        return letter.toUpperCase();
+                      })}
                   </Text>
                 </Pressable>
               )}
@@ -868,7 +921,7 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting && setting.user && setting.user.birth_date
+                {setting.user.birth_date
                   ? dateFormat(setting.user.birth_date)
                   : "Not Set"}
               </Text>
@@ -899,7 +952,14 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {"Not Set"}
+                {setting.cities.name
+                  ? setting.cities.name
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function (letter) {
+                        return letter.toUpperCase();
+                      })
+                  : "Not Set"}
               </Text>
             </View>
           </View>

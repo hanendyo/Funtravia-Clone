@@ -20,6 +20,10 @@ const OtpAuth = gql`
           name
           code
         }
+        cities {
+          id
+          name
+        }
         aktivasi_akun
         price_notif
         status_order_and_payment
