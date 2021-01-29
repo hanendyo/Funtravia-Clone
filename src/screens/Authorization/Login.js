@@ -28,6 +28,7 @@ import {
   Peringatan,
   CustomImage,
 } from "../../component";
+import { StackActions } from "@react-navigation/native";
 
 export default function Login({ navigation }) {
   const { t } = useTranslation();
@@ -57,7 +58,7 @@ export default function Login({ navigation }) {
             "setting",
             JSON.stringify(response.data.login.data_setting)
           );
-          navigation.navigate("BottomStack");
+          navigation.navigate("BottomStack", { screen: "HomeScreen" });
         } catch (error) {
           showAlert({
             ...aler,

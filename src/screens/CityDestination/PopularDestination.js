@@ -14,7 +14,7 @@ import RegionList from "../../graphQL/Query/Countries/RegionList";
 import { useLazyQuery } from "@apollo/react-hooks";
 import Fillter from "./Fillter/index";
 import { Arrowbackwhite, OptionsVertWhite } from "../../assets/svg";
-import { Button, Text, Truncate } from "../../component";
+import { Button, Text, Truncate, Capital } from "../../component";
 export default function AllDestination(props) {
   const HeaderComponent = {
     headerShown: true,
@@ -156,7 +156,7 @@ export default function AllDestination(props) {
                       fontSize: 21,
                     }}
                   >
-                    {item.name}
+                    <Truncate text={Capital({ text: item.name })} length={10} />
                   </Text>
                 </View>
               </ImageBackground>
@@ -244,7 +244,10 @@ export default function AllDestination(props) {
                             color: "#3E3E3E",
                           }}
                         >
-                          <Truncate text={value.name} length={10} />
+                          <Truncate
+                            text={Capital({ text: value.name })}
+                            length={10}
+                          />
                         </Text>
                         <Text
                           style={{

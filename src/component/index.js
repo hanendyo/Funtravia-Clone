@@ -10,6 +10,7 @@ import Truncate from "./src/Truncate";
 import Loading from "./src/Loading";
 import Sidebar from "./src/Sidebar";
 import rupiah from "./src/Rupiah";
+import Capital from "./src/Capital";
 
 export {
   Text,
@@ -24,4 +25,5 @@ export {
   Loading,
   Sidebar,
   rupiah,
+  Capital,
 };

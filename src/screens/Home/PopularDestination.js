@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import BerandaPopuler from "../../graphQL/Query/Home/BerandaPopuler";
 import { useQuery } from "@apollo/react-hooks";
-import { Text } from "../../component";
+import { Capital, Text, Truncate } from "../../component";
 import { default_image } from "../../assets/png";
 
 const defaultImage =
@@ -78,7 +78,9 @@ export default function PopularDestination({ props }) {
                 elevation: 13,
               }}
             >
-              {item.name}
+              {/* <Truncate text= */}
+              {Capital({ text: item.name })}
+              {/* length={10} /> */}
             </Text>
           </View>
         </ImageBackground>
@@ -177,8 +179,8 @@ export default function PopularDestination({ props }) {
               }}
             >
               {data && data.beranda_popularV2[0]
-                ? data.beranda_popularV2[0].name
-                : "BEAUTIFUL VIEW"}
+                ? Capital({ text: data.beranda_popularV2[0].name })
+                : ""}
             </Text>
           </View>
         </ImageBackground>
