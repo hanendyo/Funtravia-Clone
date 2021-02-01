@@ -21,6 +21,7 @@ import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchEventQuery from "../../graphQL/Query/Search/SearchEvent";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function SearchBar({
   props,
@@ -29,11 +30,13 @@ export default function SearchBar({
   suggestion,
   mainTheme,
   searchtoMainPage,
-  // dataSearchtoMainPage,
+  initialTextFromMain,
+  initialArrayFromMain,
 }) {
   let [searchQuery, setSearchQuery] = useState(null);
-  const initialArray = [];
+  let initialArray = initialArrayFromMain;
 
+  let initialText = initialTextFromMain;
   const { t, i18n } = useTranslation();
   const [searchEvent, setSearchEvent] = useState(initialArray);
   const [searchUser, setSearchUser] = useState(initialArray);
@@ -43,7 +46,7 @@ export default function SearchBar({
   const [searchText, setSearchText] = useState([]);
   let [searchCache, setSearchCache] = useState([]);
   let [sentSearch, setSentSearch] = useState("");
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialText);
   let [modalSearch, setModalSearch] = useState(false);
 
   const goSearchTab = async () => {
@@ -73,6 +76,13 @@ export default function SearchBar({
       // await sendInitTab(tabTarget);
     }
   };
+
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      // setInput("");
+      setSearchText(null);
+    });
+  }, [navigation]);
 
   const sendInitTab = async (number) => {
     if (!sentSearch.trim() || sentSearch.length == 0) {
@@ -127,7 +137,7 @@ export default function SearchBar({
     { loading: loadingUser, data: dataUser, error: errorUser },
   ] = useLazyQuery(SearchUserQuery);
 
-  const searchInput = async (text) => {
+  const searchAutocomplete = async (text) => {
     setSearchText(text);
     try {
       let response = await querySearchDestination({
@@ -223,14 +233,16 @@ export default function SearchBar({
                 fontSize: 10,
               }}
               underlineColorAndroid="transparent"
-              // onKeyPress={({ nativeEvent }) => {
-              // 	nativeEvent.key === 'Backspace' ? searchInput(null) : null;
-              // }}
+              onKeyPress={(e) => {
+                e.key === "Backspace" ? searchInput("") : null;
+              }}
+              enablesReturnKeyAutomatically={true}
               onChangeText={(text) => {
                 setInput(text);
                 setSearchQuery(text);
                 setSentSearch(text);
                 setSearchText(text);
+                searchAutocomplete(text);
                 searchtoMainPage(text);
               }}
               onSubmitEditing={goSearchTab}
@@ -290,6 +302,7 @@ export default function SearchBar({
                 setSearchQuery(text);
                 setSentSearch(text);
                 setSearchText(text);
+                // searchInput(text);
                 searchtoMainPage(text);
               }}
               onSubmitEditing={goSearchTab}
@@ -374,17 +387,17 @@ export default function SearchBar({
               {`Search ${input} at Event`}
             </Text>
           </TouchableOpacity>
-          <FlatList
+          {/* <FlatList
             style={{
               // position: 'absolute',
               // top: 60,
               width: "100%",
               maxHeight: Dimensions.get("screen").width - 50,
             }}
-            inverted
+            // inverted
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => `${index}`}
-            data={searchDestination || searchUser}
+            data={searchDestination}
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={{
@@ -397,18 +410,19 @@ export default function SearchBar({
                 }}
                 onPress={() => {
                   // setResult(item.id, item.name),
-                  console.log(item[index]);
-                  setSearchQuery(item);
-                  sendInitTab(0);
+                  console.log("chosen item   ", item);
+                  setSearchText(item[0].name),
+                    setSentSearch(item[0].name),
+                    sendInitTab(0);
                 }}
               >
                 <Text>dari search Destination </Text>
                 <Text size="small" type="regular">
-                  {item ? item[0].name : "test"}
+                  {item && item[0] ? item[0].name : "test"}
                 </Text>
               </TouchableOpacity>
             )}
-          />
+          /> */}
         </View>
       ) : (
         <View></View>
