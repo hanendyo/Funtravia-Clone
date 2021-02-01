@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 const likedJournal = gql`
-	mutation($id_id: ID!) {
-		setEvent_wishlist(travel_journal_id: $id, qty: 1) {
+	mutation($id: ID!) {
+		like_journal(travel_journal_id: $id) {
 			count_like
 			response_time
 			message
