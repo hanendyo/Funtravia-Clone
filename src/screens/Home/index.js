@@ -51,7 +51,7 @@ export default function Home(props) {
     },
   });
 
-  console.log(datanotif);
+  // console.log(datanotif);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");

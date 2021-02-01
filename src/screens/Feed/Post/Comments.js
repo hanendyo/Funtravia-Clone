@@ -131,7 +131,7 @@ export default function Comments(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      GetFeed();
+      // GetFeed();
       GetCommentList();
       loadAsync();
     });

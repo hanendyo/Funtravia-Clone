@@ -100,7 +100,7 @@ export default function SearchFeed({ props }) {
         style={{ marginRight: 7 }}
         onPress={() =>
           props.navigation.navigate("FeedStack", {
-            screen: "SinglePost",
+            screen: "CommentsById",
             params: {
               post_id: id,
             },
