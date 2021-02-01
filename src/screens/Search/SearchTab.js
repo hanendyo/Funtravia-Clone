@@ -39,7 +39,7 @@ export default function SearchTab(props) {
 
   let [initTab, setInitTab] = useState(sentInitTab);
   let [input, setInput] = useState(props.route.params.searchInput);
-
+  let refreshOrder = true;
   console.log("INPUT DARI SEARCH PAGE: ", input);
   const HeaderComponent = {
     headerTitle: "Search",
@@ -50,7 +50,11 @@ export default function SearchTab(props) {
     },
     headerTitleStyle: { color: "white" },
     headerLeft: () => (
-      <TouchableOpacity onPress={() => props.navigation.goBack()}>
+      <TouchableOpacity
+        onPress={() =>
+          props.navigation.navigate("SearchPage", { refresh: refreshOrder })
+        }
+      >
         <Image
           style={{ width: 20, height: 20 }}
           imageStyle={{ width: 20, height: 20, resizeMode: "contain" }}

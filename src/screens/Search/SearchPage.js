@@ -14,6 +14,7 @@ import {
   SafeAreaView,
   Pressable,
   Image,
+  RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -37,9 +38,11 @@ import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import SearchBar from "./SearchBar";
 import FriendList from "../../component/src/FriendList";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function SearchPage(props, { navigation, route }) {
   const { t, i18n } = useTranslation();
+  const isFocused = useIsFocused();
   // console.log('data Search: ', dataFromSearchBar);
   const [selected, setSelected] = useState(new Map());
   const [selectedDestination, setSelectedDestination] = useState(new Map());
@@ -52,7 +55,9 @@ export default function SearchPage(props, { navigation, route }) {
   const viewWidth = Dimensions.get("window").width * 0.9;
   let [searchCache, setSearchCache] = useState();
   let [input, setInput] = useState("");
+  let [passedArr, setPassedArr] = useState([]);
 
+  let [refresh, setRefresh] = useState(false);
   const HeaderComponent = {
     headerTitle: "Search",
     headerTitleStyle: { color: "white" },
@@ -74,6 +79,10 @@ export default function SearchPage(props, { navigation, route }) {
       paddingLeft: 20,
     },
     headerRight: null,
+  };
+
+  const onRefresh = () => {
+    wait(10).then(() => setRefresh(false));
   };
 
   useEffect(() => {
@@ -99,13 +108,13 @@ export default function SearchPage(props, { navigation, route }) {
     // console.log('typeSearchResult ' + typeof seacac);
     let parseArr = JSON.parse(seacac);
     // console.log('typeSearchResult ' + parseArr.slice(0, 5));
-    console.log(parseArr);
+    console.log("ParseArr:", parseArr);
     let filterArr = parseArr.filter(function (fil) {
       return fil !== (" " || null || undefined);
     });
-    limitArr = filterArr.slice(-6);
+    let limitArr = filterArr.slice(-6);
     console.log("LIMIT ARR", limitArr);
-    reverseArr = limitArr.reverse();
+    let reverseArr = limitArr.reverse();
     console.log("REVERSE ARRAY", reverseArr);
     setSearchCache(reverseArr);
   };
@@ -144,6 +153,15 @@ export default function SearchPage(props, { navigation, route }) {
     },
   });
 
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      setPassedArr(null);
+      setInput(null);
+      cacheAsync();
+      userFromSearch("");
+    });
+  }, [navigation]);
+
   // if (dataUser) {
   // 	console.log('dataUser:  ', dataUser);
   // }
@@ -153,23 +171,6 @@ export default function SearchPage(props, { navigation, route }) {
     loading: loadingBerandaPopuler,
     error: errorBerandaPopuler,
   } = useQuery(BerandaPopuler);
-
-  // if (dataUser) {
-  // 	console.log(dataUser);
-  // }
-  // if (loadingUser) {
-  // 	console.log('Loading Data User' + loadingUser);
-  // }
-  // if (errorUser) {
-  // 	console.log('error User ' + errorUser);
-  // }
-
-  const toPage = () => {
-    props.navigation.navigate("destinationDetail", {
-      search: search,
-    });
-    // props.navigation.navigate('INSERT PAGE HERE')
-  };
 
   const toUser = () => {
     props.navigation.navigate("SearchPeople");
@@ -262,6 +263,7 @@ export default function SearchPage(props, { navigation, route }) {
     console.log("is it cleared? ", AsyncStorage.getItem("searchCache"));
     setSearchCache(null);
   };
+
   const _clearSpecificAsyncStorage = async (index) => {
     let seacac = await AsyncStorage.getItem("searchCache");
 
@@ -269,9 +271,9 @@ export default function SearchPage(props, { navigation, route }) {
     let filterArr = parseArr.filter(function (fil) {
       return fil !== (" " || null || undefined);
     });
-    limitArr = filterArr.slice(-6);
+    let limitArr = filterArr.slice(-6);
     console.log("LIMIT ARR", limitArr);
-    reverseArr = limitArr.reverse();
+    let reverseArr = limitArr.reverse();
     console.log("REVERSE ARRAY", reverseArr);
     let deleteArr = reverseArr.slice(index, index + 1);
     let deleteArrStr = deleteArr.toString();
@@ -293,6 +295,9 @@ export default function SearchPage(props, { navigation, route }) {
       keyboardVerticalOffset={null}
     >
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+        }
         contentContainerStyle={{
           width: viewWidth,
           alignSelf: "center",
@@ -312,6 +317,8 @@ export default function SearchPage(props, { navigation, route }) {
             searchtoMainPage={(dataSearchtoMainPage) =>
               userFromSearch(dataSearchtoMainPage)
             }
+            initialTextFromMain={input}
+            initialArrayFromMain={passedArr}
             // dataSearchtoMainPage={input}
           />
 
@@ -442,36 +449,6 @@ export default function SearchPage(props, { navigation, route }) {
               ) : null}
             </View>
           </View>
-
-          {/* <View
-						style={{
-							flexDirection: 'row',
-							width: viewWidth,
-							justifyContent: 'space-between',
-						}}>
-						<Text type='regular' style={{ textAlign: 'left' }}>
-							{t('ticketAndAccommodation')}
-						</Text>
-						<Text
-							type='bold'
-							size='small'
-							style={{
-								// fontFamily: "Lato-Bold",
-								textAlign: 'right',
-								color: '#5092D0',
-								// fontSize: 11,
-							}}>
-							{t('others')}
-						</Text>
-					</View>
-					<View
-						style={{
-							marginTop: -20,
-							width: viewWidth,
-							// backgroundColor: 'green',
-						}}>
-						<Menu props={props} />
-					</View> */}
           <>
             <View
               style={{
