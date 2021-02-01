@@ -448,5 +448,10 @@
   "Seemore": "Lihat lainnya",
   "Male": "Laki-laki",
   "Female": "Perempuan",
-  "atGlance": " at Glance"
+  "atGlance": " at Glance",
+  "registerEmail": "Masukkan email Anda yang terdaftar di bawah untuk menerima instruksi perubahan email",
+  "currentEmail": "Masukkan alamat email saat ini",
+  "newEmail": "Masukkan alamat email baru",
+  "verifyEmail": "Verifikasi email kamu",
+  "verifyOtp": "Harap masukkan 6 digit kode yang dikirim ke"
 }

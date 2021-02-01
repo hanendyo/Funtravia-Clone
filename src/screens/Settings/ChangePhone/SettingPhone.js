@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Arrowbackwhite } from "../../assets/svg";
-import { Text, Button, PhoneCodeSelector } from "../../component";
+import { Arrowbackwhite } from "../../../assets/svg";
+import { Text, Button, PhoneCodeSelector } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { View, Dimensions, CheckBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";

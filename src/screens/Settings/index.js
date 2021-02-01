@@ -5,10 +5,11 @@ import Privacy from "./Privacy";
 import SettingsAkun from "./SettingsAkun";
 import Settings from "./Settings";
 import Bantuan from "./Bantuan";
-import SettingEmail from "./SettingEmail";
-import SettingEmailChange from "./SettingEmailChange";
-import SettingPhone from "./SettingPhone";
-import SettingPhoneChange from "./SettingPhoneChange";
+import SettingEmail from "./ChangeEmail/SettingEmail";
+import SettingEmailChange from "./ChangeEmail/SettingEmailChange";
+import SettingEmailVerify from "./ChangeEmail/SettingEmailVerify";
+import SettingPhone from "./ChangePhone/SettingPhone";
+import SettingPhoneChange from "./ChangePhone/SettingPhoneChange";
 
 export {
   NotificationSettings,
@@ -22,4 +23,5 @@ export {
   SettingEmail,
   SettingPhone,
   SettingPhoneChange,
+  SettingEmailVerify,
 };

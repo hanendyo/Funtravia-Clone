@@ -12,6 +12,7 @@ import {
   SettingPhone,
   SettingPhoneChange,
   SettingEmailChange,
+  SettingEmailVerify,
 } from "../../screens/Settings";
 import Wishlist from "../../screens/Wishlist/Index";
 
@@ -113,6 +114,14 @@ export default function AccountStackNavigation() {
         options={{
           headerTitle: "",
           headerTransparent: true,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingEmailVerify"
+        component={SettingEmailVerify}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
         }}
       />
     </AccountStack.Navigator>
