@@ -74,10 +74,16 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Funtravia Access Camera To Take Foto</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>For Suggest Destination And Set Post Position</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>For Suggest Destination And Set Post Position</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>For Suggest Destination And Set Post Position</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Funtravia would like to save photos from the app to your gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>For Make Feed And Change Profile Picture</string>
 	<key>UIAppFonts</key>

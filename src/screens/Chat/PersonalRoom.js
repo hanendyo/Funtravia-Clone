@@ -10,9 +10,11 @@ import {
 	Image,
 	FlatList,
 	StatusBar,
+	Alert,
+	Dimensions,
 } from "react-native";
 import io from "socket.io-client";
-import { Arrowbackwhite, Send } from "../../assets/svg";
+import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
 import { Button, Text } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -20,6 +22,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 
 export default function Room({ navigation, route }) {
+	const { width, height } = Dimensions.get("screen");
+	const [scrollY, setScrollY] = useState(0);
 	const [room, setRoom] = useState(route.params.room_id);
 	const [receiver, setReceiver] = useState(route.params.receiver);
 	const [user, setUser] = useState({});
@@ -27,8 +31,8 @@ export default function Room({ navigation, route }) {
 	const [button, setButton] = useState(true);
 	const [token, setToken] = useState(null);
 	const socket = io(CHATSERVER);
-	let [chat, setChat] = useState(null);
-	let [message, setMessage] = useState([]);
+	const [chat, setChat] = useState(null);
+	const [message, setMessage] = useState([]);
 	let flatListRef = useRef();
 
 	const navigationOptions = {
@@ -344,6 +348,7 @@ export default function Room({ navigation, route }) {
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="#14646E" barStyle="light-content" />
 			<FlatList
+				onScroll={(e) => console.log(e.nativeEvent.contentOffset.y)}
 				ref={flatListRef}
 				data={message}
 				renderItem={RenderChat}
@@ -353,25 +358,36 @@ export default function Room({ navigation, route }) {
 			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={70}
+				keyboardVerticalOffset={80}
 			>
 				<View
 					style={{
 						flexDirection: "row",
-						paddingHorizontal: 5,
+						paddingHorizontal: 10,
 						alignContent: "center",
 						alignItems: "center",
-						paddingVertical: 5,
+						paddingVertical: 10,
+						backgroundColor: "#F6F6F6",
 					}}
 				>
+					<Button
+						text=""
+						type="circle"
+						size="medium"
+						variant="transparent"
+						onPress={() => Alert.alert("Sticker Cooming Soon")}
+						style={{ marginHorizontal: 5 }}
+					>
+						<Smile height={25} width={25} />
+					</Button>
 					<View
 						style={{
 							borderColor: "#D1D1D1",
 							borderWidth: 1,
-							width: "90%",
-							borderRadius: 25,
+							width: "75%",
 							paddingHorizontal: 10,
 							alignSelf: "center",
+							backgroundColor: "#FFFFFF",
 						}}
 					>
 						<TextInput
@@ -399,7 +415,7 @@ export default function Room({ navigation, route }) {
 						onPress={() => submitChatMessage()}
 						style={{ marginHorizontal: 5 }}
 					>
-						<Send height={28} width={28} />
+						<Send height={35} width={35} />
 					</Button>
 				</View>
 			</KeyboardAvoidingView>

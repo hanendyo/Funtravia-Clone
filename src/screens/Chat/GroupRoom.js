@@ -10,9 +10,10 @@ import {
 	FlatList,
 	SafeAreaView,
 	StatusBar,
+	Alert,
 } from "react-native";
 import io from "socket.io-client";
-import { Arrowbackwhite, Send } from "../../assets/svg";
+import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
 import { Button, Text } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -24,7 +25,6 @@ export default function Room({ navigation, route }) {
 	const [init, setInit] = useState(true);
 	const [button, setButton] = useState(true);
 	const [token, setToken] = useState(null);
-	const [color, setColor] = useState([]);
 	const socket = io(CHATSERVER);
 	let [chat, setChat] = useState(null);
 	let [message, setMessage] = useState([]);
@@ -358,30 +358,36 @@ export default function Room({ navigation, route }) {
 			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={70}
-				style={{
-					flexDirection: "row",
-					paddingHorizontal: 10,
-					alignContent: "center",
-					alignItems: "center",
-					marginVertical: 5,
-				}}
+				keyboardVerticalOffset={80}
 			>
 				<View
 					style={{
 						flexDirection: "row",
 						paddingHorizontal: 10,
-						paddingVertical: 5,
+						alignContent: "center",
+						alignItems: "center",
+						paddingVertical: 10,
+						backgroundColor: "#F6F6F6",
 					}}
 				>
+					<Button
+						text=""
+						type="circle"
+						size="medium"
+						variant="transparent"
+						onPress={() => Alert.alert("Sticker Cooming Soon")}
+						style={{ marginHorizontal: 5 }}
+					>
+						<Smile height={25} width={25} />
+					</Button>
 					<View
 						style={{
 							borderColor: "#D1D1D1",
 							borderWidth: 1,
-							width: "90%",
-							borderRadius: 25,
+							width: "75%",
 							paddingHorizontal: 10,
 							alignSelf: "center",
+							backgroundColor: "#FFFFFF",
 						}}
 					>
 						<TextInput
@@ -407,9 +413,9 @@ export default function Room({ navigation, route }) {
 						size="medium"
 						variant="transparent"
 						onPress={() => submitChatMessage()}
-						// style={{ marginHorizontal: 5 }}
+						style={{ marginHorizontal: 5 }}
 					>
-						<Send height={28} width={28} />
+						<Send height={35} width={35} />
 					</Button>
 				</View>
 			</KeyboardAvoidingView>
