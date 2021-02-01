@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import CheckBox from "@react-native-community/checkbox";
 import Modal from "react-native-modal";
 import { CustomImage, Button } from "../../component";
-import { CheckBox, Row } from "native-base";
+import { Row } from "native-base";
 
 import { close } from "../../assets/png";
 import { useTranslation } from "react-i18next";
@@ -177,38 +178,30 @@ export default function FilterModal({
               }}
               data={dataFilterCategori}
               renderItem={({ item, index }) => (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    _handleCheck(item["id"], index);
+                  }}
                   style={{
                     flexDirection: "row",
                     backgroundColor: "white",
                     borderColor: "#464646",
-
+                    alignContent: "center",
+                    alignItems: "center",
                     width: "49%",
                     marginRight: 5,
                     marginBottom: 15,
                     justifyContent: "flex-start",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "21%",
-                      height: "100%",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <CheckBox
-                      style={{
-                        marginLeft: -10,
+                  <CheckBox
+                    style={{}}
+                    tintColors={true ? "red" : "blue"}
+                    onValueChange={() => _handleCheck(item["id"], index)}
+                    value={item["checked"]}
+                    // color="#209FAE"
+                  />
 
-                        borderRadius: 5,
-                        borderColor: "#464646",
-                        alignSelf: "flex-start",
-                      }}
-                      onPress={() => _handleCheck(item["id"], index)}
-                      checked={item["checked"]}
-                      color="#209FAE"
-                    />
-                  </View>
                   <Text
                     style={{
                       fontFamily: "Lato-Regular",
@@ -219,7 +212,7 @@ export default function FilterModal({
                   >
                     {item["name"]}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
               keyExtractor={(item, index) => index.toString()}
               numColumns={2}

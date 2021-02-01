@@ -15,6 +15,8 @@ import { filter_blue2, search_button } from "../../../assets/png";
 import FillterModal from "./FillterModal";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
+import { useLazyQuery } from "@apollo/client";
+import Getcity from "../../../graphQL/Query/Event/Getcityfilter";
 
 export default function Fillter({ type, country, sendBack }) {
   const { t, i18n } = useTranslation();
@@ -24,6 +26,29 @@ export default function Fillter({ type, country, sendBack }) {
   let [datacountry, setdatacountry] = useState(country);
   let [Filterlenght, setfilterlenght] = useState(0);
   let [modal, setModal] = useState(false);
+  let [id_country, setId_country] = useState(null);
+
+  const [
+    Getcityfilter,
+    { data: datacity, loading: loadingcity, error: errorcity },
+  ] = useLazyQuery(Getcity, {
+    fetchPolicy: "network-only",
+    variables: {
+      country_id: id_country,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const getDatacity = async (id) => {
+    await setId_country(id);
+    await Getcityfilter();
+  };
+
   const compare = (a, b) => {
     return b.checked - a.checked;
   };
@@ -254,6 +279,10 @@ export default function Fillter({ type, country, sendBack }) {
         datascountry={datacountry}
         setValueFilter={(e) => sendBackData(e)}
         setJmlFilter={(y) => setfilterlenght(y)}
+        getDatacity={(id) => {
+          getDatacity(id);
+        }}
+        datacity={datacity}
       />
     </SafeAreaView>
   );

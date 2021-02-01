@@ -34,7 +34,7 @@ import Truncate from "../../../utils/Truncate";
 import { rupiah } from "../../../const/Rupiah";
 import Loading from "../Loading";
 import { FlatList } from "react-native-gesture-handler";
-import { CheckBox } from "native-base";
+import CheckBox from "@react-native-community/checkbox";
 
 export default function ListFlight(props) {
   let [loading, setLoading] = useState(false);
