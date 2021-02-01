@@ -21,6 +21,8 @@ import {
 	ChatOn,
 	ChatOff,
 } from "../../assets/svg";
+import { Text } from "../../component";
+import { View } from "react-native";
 
 const Home = createStackNavigator();
 function HomeStack() {
@@ -94,6 +96,14 @@ export default function BottomNavigationItems() {
 			tabBarOptions={{
 				activeTintColor: "#209FAE",
 				inactiveTintColor: "#4E4E4E",
+				labelStyle: {
+					fontFamily: "Lato-Regular",
+					fontSize: 12,
+					marginBottom: 2.5,
+				},
+				style: {
+					padding: 2.5,
+				},
 			}}
 		>
 			<MainNavigator.Screen
@@ -129,12 +139,23 @@ export default function BottomNavigationItems() {
 				component={TripPlaningscreen}
 				options={{
 					tabBarVisible: false,
-					tabBarLabel: "Trip Planer",
+					tabBarLabel: "Trip Planner",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
-							<Itinerary width="35" height="35" />
+							<Itinerary width="30" height="30" />
 						) : (
-							<ItineraryOn width="55" height="55" />
+							<View
+								style={{
+									marginBottom: 25,
+									shadowColor: "#464646",
+									shadowOffset: { width: 0, height: 1 },
+									shadowRadius: 1,
+									shadowOpacity: 1,
+									elevation: 1,
+								}}
+							>
+								<ItineraryOn width="50" height="50" />
+							</View>
 						),
 				}}
 			/>
