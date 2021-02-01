@@ -51,7 +51,7 @@ export default function Feed(props) {
     },
     headerRight: () => (
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => refetch()}>
+        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => props.navigation.navigate("FeedStack", { screen: "SearchPageFeed"})}>
           <SearchWhite height={20} width={20} />
         </TouchableOpacity>
       </View>
