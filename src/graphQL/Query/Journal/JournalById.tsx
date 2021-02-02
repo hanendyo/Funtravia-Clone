@@ -11,6 +11,7 @@ const JournalList = gql`
 			article_response_count
 			created_at
 			updated_at
+			liked
 			article {
 				id
 				type

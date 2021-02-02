@@ -455,6 +455,6 @@
   "verifyEmail": "Verifikasi email kamu",
   "verifyOtp": "Harap masukkan 6 digit kode yang dikirim ke",
   "location": "Lokasi",
-  "region": "Wilayah"
-
+  "region": "Wilayah",
+  "writeComment" : "Komentar"
 }

@@ -452,5 +452,6 @@
   "verifyEmail": "Verify your email",
   "verifyOtp": "Please enter 6 digit code sent to",
   "location": "Location",
-  "region": "Region"
+  "region": "Region",
+  "writeComment" : "Write Comment"
 }

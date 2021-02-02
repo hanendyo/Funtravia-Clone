@@ -88,9 +88,10 @@ export default function SettingEmailChange(props) {
           height: '100%',
         }}
         contentContainerStyle={{
-          height: "100%",
+          height: Dimensions.get('screen').height * 0.8,
           paddingBottom: 20,
-          justifyContent: "space-between"
+          justifyContent: "space-between",
+          // borderWidth: 1
         }}
         showsVerticalScrollIndicator={false}
       >
