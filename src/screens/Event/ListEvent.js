@@ -83,7 +83,6 @@ export default function ListEvent(props) {
       },
     },
   });
-  // console.log(token);-
 
   const [
     mutationUnliked,
@@ -103,11 +102,15 @@ export default function ListEvent(props) {
       keyword: search.keyword,
       type: search.tag,
       cities:
-        props.route.params && props.route.params.idcity
+        search.city.length > 0
+          ? search.city
+          : props.route.params && props.route.params.idcity
           ? [props.route.params.idcity]
           : null,
       countries:
-        props.route.params && props.route.params.idcountries
+        search.country.length > 0
+          ? search.country
+          : props.route.params && props.route.params.idcountries
           ? [props.route.params.idcountries]
           : null,
       price_start: null,
@@ -137,6 +140,7 @@ export default function ListEvent(props) {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
   }, []);
+
   const [refreshing, setRefreshing] = React.useState(
     props.route.params && props.route.params.refresh
       ? props.route.params.refresh
@@ -600,6 +604,7 @@ export default function ListEvent(props) {
           type={dataFillter.event_filter.type}
           country={dataFillter.event_filter.country}
           sendBack={(e) => _setSearch(e)}
+          props={props}
         />
       ) : null}
       {data && data.event_list_v2.length ? (

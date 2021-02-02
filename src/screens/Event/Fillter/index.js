@@ -18,7 +18,7 @@ import { Text, Button } from "../../../component";
 import { useLazyQuery } from "@apollo/client";
 import Getcity from "../../../graphQL/Query/Event/Getcityfilter";
 
-export default function Fillter({ type, country, sendBack }) {
+export default function Fillter({ type, country, sendBack, props }) {
   const { t, i18n } = useTranslation();
   let [selected] = useState(new Map());
   let [search, setSearch] = useState(null);
@@ -78,11 +78,27 @@ export default function Fillter({ type, country, sendBack }) {
 
   const sendBackData = (data) => {
     // console.log(data);
-    let tempData = [];
+    let temptag = [];
+    let tempcity = [];
+    let tempcountry = [];
     for (let i of data) {
-      i.checked ? tempData.push(i.id) : null;
+      if (i.__typename == "EventTypeResponse") {
+        i.checked ? temptag.push(i.id) : null;
+      }
+      if (i.__typename == "CityFitlterResponse") {
+        i.checked ? tempcity.push(i.id) : null;
+      }
+      if (i.__typename == "DestinationCountryResponse") {
+        i.checked ? tempcountry.push(i.id) : null;
+      }
     }
-    sendBack({ type: null, tag: tempData, keyword: search });
+    sendBack({
+      type: null,
+      tag: temptag,
+      city: tempcity,
+      keyword: search,
+      country: tempcountry,
+    });
     setdataFillter(data);
   };
 
@@ -273,6 +289,7 @@ export default function Fillter({ type, country, sendBack }) {
         </View>
       </View>
       <FillterModal
+        props={props}
         show={modal}
         setClose={() => setModal(!modal)}
         datasfilter={dataFillter}

@@ -12,6 +12,7 @@ import { Bottom } from "../../../assets/svg";
 import RenderCity from "./City";
 
 export default function FilterModal({
+  props,
   show,
   datasfilter,
   datascountry,
@@ -27,8 +28,8 @@ export default function FilterModal({
   const screenHeight = Dimensions.get("window").height;
   let [dataFilterCategori, setFilterCategori] = useState(datasfilter);
   let [dataFilterCountry, setFilterCountry] = useState(datascountry);
+  let [dataFilterCity, setFilterCity] = useState([]);
   let [id_country, setId_country] = useState(null);
-  let [id_city, setId_city] = useState(null);
   const _handleCheck = (id, indexType) => {
     const tempData = [...dataFilterCategori];
 
@@ -41,22 +42,39 @@ export default function FilterModal({
     await setId_country(id);
     await getDatacity(id);
     const tempData = [...dataFilterCountry];
+    for (var i in tempData) {
+      tempData[i]["checked"] = false;
+    }
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
     await setFilterCountry(tempData);
-    await setFilterCity(datacity);
   };
 
-  const UpdateFilter = () => {
+  const UpdateFilter = async () => {
     let tempdatasfilter = [...dataFilterCategori];
     for (var i in tempdatasfilter) {
       if (tempdatasfilter[i].checked == true) {
         tempdatasfilter[i].show = true;
       }
     }
+    let tempdatasfiltercountry = [...dataFilterCountry];
+    for (var i in tempdatasfiltercountry) {
+      if (tempdatasfiltercountry[i].checked == true) {
+        tempdatasfiltercountry[i].show = true;
+        tempdatasfilter.push(tempdatasfiltercountry[i]);
+      }
+    }
 
-    setValueFilter(tempdatasfilter);
-    hitungfilter(tempdatasfilter);
-    setClose();
+    let tempdatasfiltercity = [...dataFilterCity];
+    for (var i in tempdatasfiltercity) {
+      if (tempdatasfiltercity[i].checked == true) {
+        tempdatasfiltercity[i].show = true;
+        tempdatasfilter.push(tempdatasfiltercity[i]);
+      }
+    }
+
+    await setValueFilter(tempdatasfilter);
+    await hitungfilter(tempdatasfilter);
+    await setClose();
   };
 
   const ClearAllFilter = () => {
@@ -71,10 +89,12 @@ export default function FilterModal({
       tempdatascountry[i].checked = false;
       tempdatascountry[i].show = false;
     }
+
+    setFilterCity([]);
     // console.log(tempdatasfilter);
     setValueFilter(tempdatasfilter);
     hitungfilter(tempdatasfilter);
-    setClose();
+    // setClose();
   };
 
   const hitungfilter = (dataFillter) => {
@@ -290,7 +310,12 @@ export default function FilterModal({
             {datacity &&
             datacity.get_filter_city &&
             datacity.get_filter_city.length > 0 ? (
-              <RenderCity data={datacity} setId_city={(e) => setId_city(e)} />
+              <RenderCity
+                data={datacity}
+                dataFilterCity={dataFilterCity}
+                setFilterCity={(x) => setFilterCity(x)}
+                props={props}
+              />
             ) : null}
           </View>
         </ScrollView>
