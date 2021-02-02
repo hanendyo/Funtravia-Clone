@@ -22,7 +22,7 @@ import {
 } from "../../assets/svg";
 import FilterItin from "./FillterDestination";
 import Listdestination from "../../graphQL/Query/Destination/ListDestinationV2";
-import filterDestination from "./../../graphQL/Query/Destination/filterDestination";
+import filterDestination from "./../../graphQL/Query/Destination/Destinasifilter";
 import Liked from "../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { useTranslation } from "react-i18next";
@@ -91,14 +91,14 @@ export default function DestinationList(props) {
     facilities: null,
   });
 
-  console.log("testing", {
-    keyword: search.keyword ? search.keyword : null,
-    type: search.type ? search.type : null,
-    countries: search.countries ? search.countries : null,
-    cities: search.cities ? search.cities : null,
-    goodfor: search.goodfor ? search.goodfor : null,
-    facilities: search.facilities ? search.facilities : null,
-  });
+  // console.log("testing", {
+  //   keyword: search.keyword ? search.keyword : null,
+  //   type: search.type ? search.type : null,
+  //   countries: search.countries ? search.countries : null,
+  //   cities: search.cities ? search.cities : null,
+  //   goodfor: search.goodfor ? search.goodfor : null,
+  //   facilities: search.facilities ? search.facilities : null,
+  // });
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
     Listdestination,
@@ -106,9 +106,25 @@ export default function DestinationList(props) {
       fetchPolicy: "network-only",
       variables: {
         keyword: search.keyword ? search.keyword : null,
-        type: search.type ? search.type : null,
-        countries: search.countries ? search.countries : null,
-        cities: search.cities ? search.cities : null,
+        // type: search.type ? search.type : null,
+        type:
+          search.type && search.type.length > 0
+            ? search.type
+            : props.route.params && props.route.params.idtype
+            ? [props.route.params.idtype]
+            : null,
+        cities:
+          search.city && search.city.length > 0
+            ? search.city
+            : props.route.params && props.route.params.idcity
+            ? [props.route.params.idcity]
+            : null,
+        countries:
+          search.country && search.country.length > 0
+            ? search.country
+            : props.route.params && props.route.params.idcountries
+            ? [props.route.params.idcountries]
+            : null,
         goodfor: search.goodfor ? search.goodfor : null,
         facilities: search.facilities ? search.facilities : null,
         rating: search.rating ? search.rating : null,
@@ -503,67 +519,48 @@ export default function DestinationList(props) {
   }, [props.navigation]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <View>
-        <View
-          style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
-          {datafilter && datafilter.destination_type.length ? (
-            <FilterItin
-              fillter={
-                datafilter && datafilter.destination_type.length
-                  ? datafilter.destination_type
-                  : []
-              }
-              filterawal={
-                props.route.params !== undefined
-                  ? props.route.params.idtype
-                  : null
-              }
-              idcity={
-                props.route.params !== undefined
-                  ? props.route.params.idcity
-                  : null
-              }
-              sendBack={(e) => setSearch(e)}
-            />
-          ) : null}
+    <View
+      style={{
+        flex: 1,
+        alignContent: "center",
+        alignItems: "center",
+        justifyContent: "flex-start",
+      }}
+    >
+      {datafilter && datafilter.destination_filter ? (
+        <FilterItin
+          type={datafilter.destination_filter.type}
+          country={datafilter.destination_filter.country}
+          facility={datafilter.destination_filter.facility}
+          sendBack={(e) => setSearch(e)}
+          props={props}
+        />
+      ) : null}
 
-          <View
-            style={
-              {
-                // paddingVertical: 10,
-              }
-            }
-          >
-            {data && data.destinationList_v2.length ? (
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                style={{
-                  paddingTop: 5,
-                }}
-                contentContainerStyle={{
-                  // marginTop: 5,
-                  justifyContent: "space-evenly",
-                  paddingStart: 10,
-                  paddingEnd: 10,
-                  // paddingBottom: 250,
-                }}
-                horizontal={false}
-                data={data.destinationList_v2}
-                renderItem={({ item }) => <RenderDes data={item} />}
-                key={""}
-                keyExtractor={(item) => item.id}
-                showsHorizontalScrollIndicator={false}
-              />
-            ) : null}
-          </View>
-        </View>
-      </View>
+      {data && data.destinationList_v2.length ? (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          style={{
+            paddingTop: 5,
+            // height: Dimensions.get("screen").height - 215,
+            // borderWidth: 1,
+          }}
+          contentContainerStyle={{
+            // marginTop: 5,
+            justifyContent: "space-evenly",
+            paddingStart: 10,
+            paddingEnd: 10,
+            // borderWidth: 1,
+            paddingBottom: 10,
+          }}
+          horizontal={false}
+          data={data.destinationList_v2}
+          renderItem={({ item }) => <RenderDes data={item} />}
+          key={""}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+        />
+      ) : null}
     </View>
   );
 }

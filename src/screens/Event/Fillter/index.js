@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import { CustomImage } from "../../../component";
+import { Capital, CustomImage } from "../../../component";
 import { filter_blue2, search_button } from "../../../assets/png";
 import FillterModal from "./FillterModal";
 import { useTranslation } from "react-i18next";
@@ -120,7 +120,7 @@ export default function Fillter({ type, country, sendBack, props }) {
           type="box"
           size="small"
           color="primary"
-          text={item.name}
+          text={Capital({ text: item.name })}
           onPress={() => onSelectFilter(item.checked, item.id)}
           style={{
             marginRight: 3,
@@ -135,7 +135,7 @@ export default function Fillter({ type, country, sendBack, props }) {
           size="small"
           color="primary"
           variant="bordered"
-          text={item.name}
+          text={Capital({ text: item.name })}
           onPress={() => onSelectFilter(item.checked, item.id)}
           style={{
             marginRight: 3,
@@ -248,7 +248,7 @@ export default function Fillter({ type, country, sendBack, props }) {
             >
               {t("filter")}
             </Text>
-            {dataFillter.length ? (
+            {dataFillter.length && Filterlenght > 0 ? (
               <View
                 style={{
                   borderRadius: 3,

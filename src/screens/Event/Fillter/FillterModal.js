@@ -39,6 +39,7 @@ export default function FilterModal({
   };
 
   const _handleCheckc = async (id, indexType) => {
+    await setFilterCity([]);
     await setId_country(id);
     await getDatacity(id);
     const tempData = [...dataFilterCountry];
@@ -50,10 +51,13 @@ export default function FilterModal({
   };
 
   const UpdateFilter = async () => {
+    // let tempdata = [];
+
     let tempdatasfilter = [...dataFilterCategori];
     for (var i in tempdatasfilter) {
       if (tempdatasfilter[i].checked == true) {
         tempdatasfilter[i].show = true;
+        // tempdata.push(tempdatasfilter[i]);
       }
     }
     let tempdatasfiltercountry = [...dataFilterCountry];
@@ -272,51 +276,65 @@ export default function FilterModal({
             >
               {t("location")}
             </Text>
-            <Picker
-              iosIcon={
-                <View>
-                  <Bottom />
-                </View>
-              }
-              iosHeader="Select Hours"
-              note
-              mode="dropdown"
-              selectedValue={id_country}
-              textStyle={{ fontFamily: "Lato-Regular" }}
-              itemTextStyle={{ fontFamily: "Lato-Regular" }}
-              itemStyle={{ fontFamily: "Lato-Regular" }}
-              placeholderStyle={{ fontFamily: "Lato-Regular" }}
-              headerTitleStyle={{
-                fontFamily: "Lato-Regular",
-              }}
+            <View
               style={{
-                color: "#646464",
-                fontFamily: "Lato-Regular",
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: "#d3d3d3",
+                marginVertical: 10,
               }}
-              onValueChange={(itemValue, itemIndex) =>
-                _handleCheckc(itemValue, itemIndex)
-              }
             >
-              {dataFilterCountry.map((item, index) => {
-                return (
-                  <Picker.Item
-                    key={item.id}
-                    label={item.name}
-                    value={item.id}
-                  />
-                );
-              })}
-            </Picker>
+              <Picker
+                iosIcon={
+                  <View>
+                    <Bottom />
+                  </View>
+                }
+                iosHeader="Select Hours"
+                note
+                mode="dropdown"
+                selectedValue={id_country}
+                textStyle={{ fontFamily: "Lato-Regular" }}
+                itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                itemStyle={{ fontFamily: "Lato-Regular" }}
+                placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                headerTitleStyle={{
+                  fontFamily: "Lato-Regular",
+                }}
+                style={{
+                  color: "#646464",
+                  fontFamily: "Lato-Regular",
+                }}
+                onValueChange={(itemValue, itemIndex) =>
+                  _handleCheckc(itemValue, itemIndex - 1)
+                }
+              >
+                <Picker.Item key={0} label={"All Country"} value={""} />
+                {dataFilterCountry.map((item, index) => {
+                  return (
+                    <Picker.Item
+                      key={item.id}
+                      label={item.name}
+                      value={item.id}
+                    />
+                  );
+                })}
+              </Picker>
+            </View>
             {datacity &&
-            datacity.get_filter_city &&
-            datacity.get_filter_city.length > 0 ? (
+            datacity.get_filter_city_evnt &&
+            datacity.get_filter_city_evnt.length > 0 ? (
               <RenderCity
                 data={datacity}
                 dataFilterCity={dataFilterCity}
                 setFilterCity={(x) => setFilterCity(x)}
                 props={props}
               />
-            ) : null}
+            ) : (
+              () => {
+                setFilterCity([]);
+              }
+            )}
           </View>
         </ScrollView>
         <View
