@@ -1,32 +1,35 @@
-import React, { useState } from "react";
-import {
-  View,
-  Dimensions,
-  FlatList,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
-import { CustomImage, Button } from "../../../component";
+import { Capital, CustomImage } from "../../../component";
 import CheckBox from "@react-native-community/checkbox";
 import { close } from "../../../assets/png";
+import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
-import { Text } from "../../../component";
+import { Text, Button } from "../../../component";
+import { Picker } from "react-native";
+import { Bottom } from "../../../assets/svg";
+import RenderCity from "./City";
 
 export default function FilterModal({
+  props,
   show,
   datasfilter,
+  datascountry,
   setClose,
   setValueFilter,
   setJmlFilter,
+  getDatacity,
+  datacity,
 }) {
   const { t, i18n } = useTranslation();
 
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
-  let [dataFilterCategori, setFilterCategori] = useState(
-    datasfilter.length ? datasfilter : []
-  );
+  let [dataFilterCategori, setFilterCategori] = useState(datasfilter);
+  let [dataFilterCountry, setFilterCountry] = useState(datascountry);
+  let [dataFilterCity, setFilterCity] = useState([]);
+  let [id_country, setId_country] = useState(null);
   const _handleCheck = (id, indexType) => {
     const tempData = [...dataFilterCategori];
 
@@ -35,36 +38,61 @@ export default function FilterModal({
     setFilterCategori(tempData);
   };
 
-  const UpdateFilter = () => {
+  const _handleCheckc = async (id, indexType) => {
+    await setFilterCity([]);
+    await setId_country(id);
+    await getDatacity(id);
+    const tempData = [...dataFilterCountry];
+    for (var i in tempData) {
+      tempData[i]["checked"] = false;
+    }
+    tempData[indexType]["checked"] = !tempData[indexType]["checked"];
+    await setFilterCountry(tempData);
+  };
+
+  const UpdateFilter = async () => {
     let tempdatasfilter = [...dataFilterCategori];
     for (var i in tempdatasfilter) {
       if (tempdatasfilter[i].checked == true) {
-        tempdatasfilter[i].tampil = true;
-      } else if (tempdatasfilter[i].sugestion == false) {
-        tempdatasfilter[i].tampil = false;
+        tempdatasfilter[i].show = true;
+      }
+    }
+    let tempdatasfiltercountry = [...dataFilterCountry];
+    for (var i in tempdatasfiltercountry) {
+      if (tempdatasfiltercountry[i].checked == true) {
+        tempdatasfiltercountry[i].show = true;
+        tempdatasfilter.push(tempdatasfiltercountry[i]);
       }
     }
 
-    setValueFilter(tempdatasfilter);
-    hitungfilter(tempdatasfilter);
-    setClose();
+    let tempdatasfiltercity = [...dataFilterCity];
+    for (var i in tempdatasfiltercity) {
+      if (tempdatasfiltercity[i].checked == true) {
+        tempdatasfiltercity[i].show = true;
+        tempdatasfilter.push(tempdatasfiltercity[i]);
+      }
+    }
+
+    await setValueFilter(tempdatasfilter);
+    await hitungfilter(tempdatasfilter);
+    await setClose();
   };
 
   const ClearAllFilter = () => {
     let tempdatasfilter = [...dataFilterCategori];
     for (var i in tempdatasfilter) {
-      if (
-        tempdatasfilter[i].checked == true &&
-        tempdatasfilter[i].sugestion == false
-      ) {
-        tempdatasfilter[i].show = false;
-        tempdatasfilter[i].checked = false;
-      } else if (tempdatasfilter[i].sugestion == true) {
-        tempdatasfilter[i].checked = false;
-        tempdatasfilter[i].show = false;
-      }
+      tempdatasfilter[i].checked = false;
+      tempdatasfilter[i].show = false;
     }
 
+    let tempdatascountry = [...dataFilterCountry];
+    for (var i in tempdatascountry) {
+      tempdatascountry[i].checked = false;
+      tempdatascountry[i].show = false;
+    }
+
+    setFilterCity([]);
+    // console.log(tempdatasfilter);
     setValueFilter(tempdatasfilter);
     hitungfilter(tempdatasfilter);
     setClose();
@@ -81,14 +109,9 @@ export default function FilterModal({
   };
 
   let [selected] = useState(new Map());
+
   return (
     <Modal
-      onBackdropPress={() => {
-        setClose();
-      }}
-      onRequestClose={() => {
-        setClose();
-      }}
       isVisible={show}
       style={{
         justifyContent: "flex-end",
@@ -122,13 +145,15 @@ export default function FilterModal({
           }}
         >
           <Text
+            type="bold"
+            size="title"
             style={{
-              fontSize: 20,
-              fontFamily: "Lato-Bold",
+              // fontSize: 20,
+              // fontFamily: "Lato-Bold",
               color: "#464646",
             }}
           >
-            {t("filter")}
+            Filter
           </Text>
           <TouchableOpacity
             style={{
@@ -174,14 +199,17 @@ export default function FilterModal({
             }}
           >
             <Text
+              type="bold"
+              size="title"
               style={{
-                fontSize: 20,
-                fontFamily: "Lato-Bold",
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
                 color: "#464646",
               }}
             >
-              {t("Categories")}
+              {t("categories")}
             </Text>
+
             <FlatList
               contentContainerStyle={{
                 marginHorizontal: 3,
@@ -198,8 +226,8 @@ export default function FilterModal({
                     backgroundColor: "white",
                     borderColor: "#464646",
                     width: "49%",
-                    marginRight: 5,
-                    marginBottom: 15,
+                    marginRight: 3,
+                    marginBottom: 20,
                     justifyContent: "flex-start",
                     alignContent: "center",
                     alignItems: "center",
@@ -209,10 +237,16 @@ export default function FilterModal({
                     onValueChange={() => _handleCheck(item["id"], index)}
                     value={item["checked"]}
                   />
+
                   <Text
+                    size="label"
+                    type="regular"
                     style={{
-                      fontFamily: "Lato-Regular",
-                      fontSize: 16,
+                      // fontFamily: "Lato-Regular",
+                      // fontSize: 16,
+                      // alignContent:'center',
+                      // textAlign: "center",
+
                       marginLeft: 0,
                       color: "#464646",
                     }}
@@ -227,6 +261,77 @@ export default function FilterModal({
               scrollEnabled={false}
               extraData={selected}
             ></FlatList>
+
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
+                color: "#464646",
+              }}
+            >
+              {t("location")}
+            </Text>
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: "#d3d3d3",
+                marginVertical: 10,
+              }}
+            >
+              <Picker
+                iosIcon={
+                  <View>
+                    <Bottom />
+                  </View>
+                }
+                iosHeader="Select Hours"
+                note
+                mode="dropdown"
+                selectedValue={id_country}
+                textStyle={{ fontFamily: "Lato-Regular" }}
+                itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                itemStyle={{ fontFamily: "Lato-Regular" }}
+                placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                headerTitleStyle={{
+                  fontFamily: "Lato-Regular",
+                }}
+                style={{
+                  color: "#646464",
+                  fontFamily: "Lato-Regular",
+                }}
+                onValueChange={(itemValue, itemIndex) =>
+                  _handleCheckc(itemValue, itemIndex - 1)
+                }
+              >
+                <Picker.Item key={0} label={"All Country"} value={""} />
+                {dataFilterCountry.map((item, index) => {
+                  return (
+                    <Picker.Item
+                      key={item.id}
+                      label={item.name}
+                      value={item.id}
+                    />
+                  );
+                })}
+              </Picker>
+            </View>
+            {datacity &&
+            datacity.get_filter_city &&
+            datacity.get_filter_city.length > 0 ? (
+              <RenderCity
+                data={datacity}
+                dataFilterCity={dataFilterCity}
+                setFilterCity={(x) => setFilterCity(x)}
+                props={props}
+              />
+            ) : (
+              () => {
+                setFilterCity([]);
+              }
+            )}
           </View>
         </ScrollView>
         <View
@@ -271,3 +376,4 @@ export default function FilterModal({
     </Modal>
   );
 }
+

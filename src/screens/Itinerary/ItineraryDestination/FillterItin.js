@@ -2,21 +2,27 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   // Text,
+  StyleSheet,
+  ImageBackground,
   Dimensions,
   TextInput,
   FlatList,
-  Alert,
+  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import { CustomImage } from "../../../component";
+
+import { Capital, CustomImage } from "../../../component";
 import { filter_blue2, search_button } from "../../../assets/png";
 import FillterModal from "./FillterModal";
-import { Google } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
-import { Text } from "../../../component";
+import { Text, Button } from "../../../component";
+import { useLazyQuery } from "@apollo/client";
+import Getcity from "../../../graphQL/Query/Destination/Getcityfilter";
+import { Google } from "../../../assets/svg";
 
-export default function FilterItin({
-  fillter,
+export default function Fillter({
+  type,
+  country,
   sendBack,
   props,
   token,
@@ -26,12 +32,35 @@ export default function FilterItin({
   long,
 }) {
   const { t, i18n } = useTranslation();
-
   let [selected] = useState(new Map());
   let [search, setSearch] = useState(null);
-  let [dataFillter, setdataFillter] = useState([]);
+  let [dataFillter, setdataFillter] = useState(type);
+  let [datacountry, setdatacountry] = useState(country);
   let [Filterlenght, setfilterlenght] = useState(0);
   let [modal, setModal] = useState(false);
+  let [id_country, setId_country] = useState(null);
+
+  const [
+    Getcityfilter,
+    { data: datacity, loading: loadingcity, error: errorcity },
+  ] = useLazyQuery(Getcity, {
+    fetchPolicy: "network-only",
+    variables: {
+      country_id: id_country,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const getDatacity = async (id) => {
+    await setId_country(id);
+    await Getcityfilter();
+  };
+
   const compare = (a, b) => {
     return b.checked - a.checked;
   };
@@ -40,13 +69,14 @@ export default function FilterItin({
     setModal(!modal);
   };
 
-  const _setSearch = (text) => {
+  const _setSearch = (x) => {
+    // console.log(x);
     let tempData = [];
     for (let i of dataFillter) {
       i.checked ? tempData.push(i.id) : null;
     }
-    sendBack({ type: null, tag: tempData, keyword: text });
-    setSearch(text);
+    sendBack({ type: null, tag: tempData, keyword: search });
+    setSearch(search);
   };
 
   const onSelectFilter = (status, id) => {
@@ -59,11 +89,28 @@ export default function FilterItin({
   };
 
   const sendBackData = (data) => {
-    let tempData = [];
+    // console.log(data);
+    let temptag = [];
+    let tempcity = [];
+    let tempcountry = [];
     for (let i of data) {
-      i.checked ? tempData.push(i.id) : null;
+      if (i.__typename == "EventTypeResponse") {
+        i.checked ? temptag.push(i.id) : null;
+      }
+      if (i.__typename == "CityFitlterResponse") {
+        i.checked ? tempcity.push(i.id) : null;
+      }
+      if (i.__typename == "DestinationCountryResponse") {
+        i.checked ? tempcountry.push(i.id) : null;
+      }
     }
-    sendBack({ type: null, tag: tempData, keyword: search });
+    sendBack({
+      type: null,
+      tag: temptag,
+      city: tempcity,
+      keyword: search,
+      country: tempcountry,
+    });
     setdataFillter(data);
   };
 
@@ -78,70 +125,41 @@ export default function FilterItin({
   };
 
   const _renderFilter = ({ item, index }) => {
+    // console.log(item);
     if (item.checked == true) {
       return (
-        <TouchableOpacity
+        <Button
+          type="box"
+          size="small"
+          color="primary"
+          text={Capital({ text: item.name })}
           onPress={() => onSelectFilter(item.checked, item.id)}
           style={{
             marginRight: 3,
             flexDirection: "row",
-            backgroundColor: "#0095A7",
-            borderColor: "#0095A7",
-            borderRadius: 5,
-            height: 27,
-            minWidth: 80,
-            paddingHorizontal: 8,
-            justifyContent: "center",
           }}
-        >
-          <Text
-            style={{
-              fontFamily: "Lato-Regular",
-              color: "white",
-              marginVertical: 4,
-              fontSize: 14,
-              alignSelf: "center",
-            }}
-          >
-            {item.name}
-          </Text>
-        </TouchableOpacity>
+        ></Button>
       );
     } else if (item.sugestion == true || item.show == true) {
       return (
-        <TouchableOpacity
+        <Button
+          type="box"
+          size="small"
+          color="primary"
+          variant="bordered"
+          text={Capital({ text: item.name })}
           onPress={() => onSelectFilter(item.checked, item.id)}
           style={{
             marginRight: 3,
             flexDirection: "row",
-            backgroundColor: "white",
-            borderColor: "#E7E7E7",
-            borderRadius: 5,
-            height: 27,
-            minWidth: 80,
-            borderWidth: 1,
-            paddingHorizontal: 8,
-            justifyContent: "center",
           }}
-        >
-          <Text
-            style={{
-              fontFamily: "Lato-Regular",
-              color: "#0095A7",
-              marginVertical: 4,
-              fontSize: 14,
-              alignSelf: "center",
-            }}
-          >
-            {item.name}
-          </Text>
-        </TouchableOpacity>
+        ></Button>
       );
     }
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <View
         style={{
           backgroundColor: "white",
@@ -242,86 +260,74 @@ export default function FilterItin({
             </TouchableOpacity>
           </View>
         </View>
-
         <View
           style={{
             flexDirection: "row",
             zIndex: 5,
             marginHorizontal: 10,
-            marginBottom: 5,
+            marginBottom: 10,
           }}
         >
-          <TouchableOpacity
+          <Button
+            size="small"
+            type="icon"
+            variant="bordered"
+            color="primary"
             onPress={() => {
               modalTogle();
             }}
             style={{
               marginRight: 5,
-              height: 27,
+              // paddingHorizontal: 10,
             }}
           >
-            <View
+            <CustomImage
+              customStyle={{
+                width: 14,
+                height: 14,
+                alignSelf: "center",
+                marginRight: 5,
+              }}
+              customImageStyle={{ resizeMode: "contain" }}
+              source={filter_blue2}
+            />
+            <Text
               style={{
-                flex: 1,
-                flexDirection: "row",
-                backgroundColor: "white",
-                borderColor: "#E7E7E7",
-                borderRadius: 5,
-                borderWidth: 1,
-                minWidth: 80,
-                height: 27,
-                justifyContent: "center",
+                fontFamily: "Lato-Regular",
+                color: "#0095A7",
+                fontSize: 13,
+                alignSelf: "center",
+                marginRight: 3,
               }}
             >
-              <CustomImage
-                customStyle={{
+              {t("filter")}
+            </Text>
+            {dataFillter.length && Filterlenght > 0 ? (
+              <View
+                style={{
+                  borderRadius: 3,
                   width: 14,
                   height: 14,
+                  backgroundColor: "#0095A7",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
                   alignSelf: "center",
-                  marginRight: 5,
-                }}
-                customImageStyle={{ resizeMode: "contain" }}
-                source={filter_blue2}
-              />
-              <Text
-                style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#0095A7",
-                  fontSize: 14,
-                  alignSelf: "center",
-                  marginRight: 3,
                 }}
               >
-                {t("filter")}
-              </Text>
-              {/* {dataFillter.length ? ( */}
-              {dataFillter.length > 0 && Filterlenght > 0 ? (
-                <View
+                <Text
                   style={{
-                    borderRadius: 3,
-                    width: 14,
-                    height: 14,
-                    backgroundColor: "#0095A7",
-                    alignContent: "center",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    fontFamily: "Lato-Regular",
+                    color: "white",
+                    fontSize: 13,
                     alignSelf: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontFamily: "Lato-Regular",
-                      color: "white",
-                      fontSize: 14,
-                      alignSelf: "center",
-                    }}
-                  >
-                    {Filterlenght}
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-          </TouchableOpacity>
+                  {Filterlenght}
+                </Text>
+              </View>
+            ) : null}
+          </Button>
 
           <FlatList
             contentContainerStyle={{
@@ -337,12 +343,19 @@ export default function FilterItin({
         </View>
       </View>
       <FillterModal
+        props={props}
         show={modal}
         setClose={() => setModal(!modal)}
-        datasfilter={fillter}
+        datasfilter={dataFillter}
+        datascountry={datacountry}
         setValueFilter={(e) => sendBackData(e)}
         setJmlFilter={(y) => setfilterlenght(y)}
+        getDatacity={(id) => {
+          getDatacity(id);
+        }}
+        datacity={datacity}
       />
-    </View>
+    </SafeAreaView>
   );
 }
+

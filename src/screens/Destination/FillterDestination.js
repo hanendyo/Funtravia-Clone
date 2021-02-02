@@ -1,28 +1,54 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
+  // Text,
+  StyleSheet,
+  ImageBackground,
   Dimensions,
   TextInput,
   FlatList,
   SafeAreaView,
-  TouchableOpacity,
 } from "react-native";
-import { CustomImage } from "../../component";
+
+import { Capital, CustomImage } from "../../component";
 import { filter_blue2, search_button } from "../../assets/png";
 import FillterModal from "./FillterModal";
+import { useTranslation } from "react-i18next";
+import { Text, Button } from "../../component";
+import { useLazyQuery } from "@apollo/client";
+import Getcity from "../../graphQL/Query/Destination/Getcityfilter";
 
-export default function FillterDestination({
-  fillter,
-  filterawal,
-  sendBack,
-  idcity,
-}) {
+export default function Fillter({ type, country, sendBack, props }) {
+  const { t, i18n } = useTranslation();
   let [selected] = useState(new Map());
   let [search, setSearch] = useState(null);
-  let [dataFillter, setdataFillter] = useState([]);
+  let [dataFillter, setdataFillter] = useState(type);
+  let [datacountry, setdatacountry] = useState(country);
   let [Filterlenght, setfilterlenght] = useState(0);
   let [modal, setModal] = useState(false);
+  let [id_country, setId_country] = useState(null);
+
+  const [
+    Getcityfilter,
+    { data: datacity, loading: loadingcity, error: errorcity },
+  ] = useLazyQuery(Getcity, {
+    fetchPolicy: "network-only",
+    variables: {
+      country_id: id_country,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const getDatacity = async (id) => {
+    await setId_country(id);
+    await Getcityfilter();
+  };
+
   const compare = (a, b) => {
     return b.checked - a.checked;
   };
@@ -31,46 +57,15 @@ export default function FillterDestination({
     setModal(!modal);
   };
 
-  const _setSearch = async (text) => {
+  const _setSearch = (x) => {
+    // console.log(x);
     let tempData = [];
     for (let i of dataFillter) {
       i.checked ? tempData.push(i.id) : null;
     }
-    await sendBack({
-      type: tempData,
-      keyword: text,
-      countries: null,
-      cities: null,
-      goodfor: null,
-      facilities: null,
-    });
-    await setSearch(text);
+    sendBack({ type: null, tag: tempData, keyword: search });
+    setSearch(search);
   };
-
-  useEffect(() => {
-    if (filterawal !== null) {
-      let tempData = [...fillter];
-      for (let i in tempData) {
-        if (tempData[i].id === filterawal) {
-          tempData[i]["checked"] = true;
-          tempData[i]["show"] = true;
-        } else {
-          tempData[i]["checked"] = false;
-          tempData[i]["show"] = false;
-        }
-      }
-      sendBackData(tempData);
-    } else {
-      // setdataFillter(fillter);
-      let tempdatasfilter = [...fillter];
-      for (var i in tempdatasfilter) {
-        tempdatasfilter[i].checked = false;
-        tempdatasfilter[i].show = false;
-      }
-
-      sendBackData(tempdatasfilter);
-    }
-  }, []);
 
   const onSelectFilter = (status, id) => {
     const tempDataPg = [...dataFillter];
@@ -82,21 +77,27 @@ export default function FillterDestination({
   };
 
   const sendBackData = (data) => {
-    let tempData = [];
+    // console.log(data);
+    let temptag = [];
+    let tempcity = [];
+    let tempcountry = [];
     for (let i of data) {
-      i.checked ? tempData.push(i.id) : null;
-    }
-    let temptdata = [];
-    if (idcity) {
-      temptdata.push(idcity);
+      if (i.__typename == "EventTypeResponse") {
+        i.checked ? temptag.push(i.id) : null;
+      }
+      if (i.__typename == "CityFitlterResponse") {
+        i.checked ? tempcity.push(i.id) : null;
+      }
+      if (i.__typename == "DestinationCountryResponse") {
+        i.checked ? tempcountry.push(i.id) : null;
+      }
     }
     sendBack({
-      type: tempData,
+      type: null,
+      tag: temptag,
+      city: tempcity,
       keyword: search,
-      countries: null,
-      cities: temptdata ? temptdata : null,
-      goodfor: null,
-      facilities: null,
+      country: tempcountry,
     });
     setdataFillter(data);
   };
@@ -112,64 +113,35 @@ export default function FillterDestination({
   };
 
   const _renderFilter = ({ item, index }) => {
+    // console.log(item);
     if (item.checked == true) {
       return (
-        <TouchableOpacity
+        <Button
+          type="box"
+          size="small"
+          color="primary"
+          text={Capital({ text: item.name })}
           onPress={() => onSelectFilter(item.checked, item.id)}
           style={{
             marginRight: 3,
             flexDirection: "row",
-            backgroundColor: "#0095A7",
-            borderColor: "#0095A7",
-            borderRadius: 5,
-            height: 27,
-            minWidth: 80,
-            paddingHorizontal: 8,
-            justifyContent: "center",
           }}
-        >
-          <Text
-            style={{
-              fontFamily: "Lato-Regular",
-              color: "white",
-              marginVertical: 4,
-              fontSize: 13,
-              alignSelf: "center",
-            }}
-          >
-            {item.name}
-          </Text>
-        </TouchableOpacity>
+        ></Button>
       );
     } else if (item.sugestion == true || item.show == true) {
       return (
-        <TouchableOpacity
+        <Button
+          type="box"
+          size="small"
+          color="primary"
+          variant="bordered"
+          text={Capital({ text: item.name })}
           onPress={() => onSelectFilter(item.checked, item.id)}
           style={{
             marginRight: 3,
             flexDirection: "row",
-            backgroundColor: "white",
-            borderColor: "#E7E7E7",
-            borderRadius: 5,
-            height: 27,
-            minWidth: 80,
-            borderWidth: 1,
-            paddingHorizontal: 8,
-            justifyContent: "center",
           }}
-        >
-          <Text
-            style={{
-              fontFamily: "Lato-Regular",
-              color: "#0095A7",
-              marginVertical: 4,
-              fontSize: 13,
-              alignSelf: "center",
-            }}
-          >
-            {item.name}
-          </Text>
-        </TouchableOpacity>
+        ></Button>
       );
     }
   };
@@ -185,25 +157,24 @@ export default function FillterDestination({
       >
         <View
           style={{
-            alignContent: "flex-start",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            padding: 10,
+            alignContent: "center",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingVertical: 10,
             height: 50,
             zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
           }}
         >
           <View
             style={{
               backgroundColor: "#F0F0F0",
               borderRadius: 5,
-              width: "100%",
-              height: 35,
-              // flex: 1,
+              width: Dimensions.get("window").width - 20,
+              // height: 100,
+              flex: 1,
               flexDirection: "row",
               alignItems: "center",
+              alignContent: "center",
             }}
           >
             <View>
@@ -222,13 +193,15 @@ export default function FillterDestination({
 
             <TextInput
               underlineColorAndroid="transparent"
-              placeholder="Search"
+              placeholder={t("search")}
               style={{
                 width: "100%",
-                fontFamily: "Lato-Regular",
-                fontSize: 13,
+                // borderWidth: 1,
+                padding: 0,
               }}
-              onChangeText={(text) => _setSearch(text)}
+              returnKeyType="search"
+              onChangeText={(x) => _setSearch(x)}
+              onSubmitEditing={(x) => _setSearch(x)}
             />
           </View>
         </View>
@@ -238,80 +211,69 @@ export default function FillterDestination({
             flexDirection: "row",
             zIndex: 5,
             marginHorizontal: 10,
-            marginVertical: 5,
             marginBottom: 10,
           }}
         >
-          <TouchableOpacity
+          <Button
+            size="small"
+            type="icon"
+            variant="bordered"
+            color="primary"
             onPress={() => {
               modalTogle();
             }}
             style={{
               marginRight: 5,
-              height: 27,
+              // paddingHorizontal: 10,
             }}
           >
-            <View
+            <CustomImage
+              customStyle={{
+                width: 14,
+                height: 14,
+                alignSelf: "center",
+                marginRight: 5,
+              }}
+              customImageStyle={{ resizeMode: "contain" }}
+              source={filter_blue2}
+            />
+            <Text
               style={{
-                flex: 1,
-                flexDirection: "row",
-                backgroundColor: "white",
-                borderColor: "#E7E7E7",
-                borderRadius: 5,
-                borderWidth: 1,
-                minWidth: 80,
-                height: 27,
-                justifyContent: "center",
+                fontFamily: "Lato-Regular",
+                color: "#0095A7",
+                fontSize: 13,
+                alignSelf: "center",
+                marginRight: 3,
               }}
             >
-              <CustomImage
-                customStyle={{
+              {t("filter")}
+            </Text>
+            {dataFillter.length && Filterlenght > 0 ? (
+              <View
+                style={{
+                  borderRadius: 3,
                   width: 14,
                   height: 14,
+                  backgroundColor: "#0095A7",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
                   alignSelf: "center",
-                  marginRight: 5,
-                }}
-                customImageStyle={{ resizeMode: "contain" }}
-                source={filter_blue2}
-              />
-              <Text
-                style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#0095A7",
-                  fontSize: 13,
-                  alignSelf: "center",
-                  marginRight: 3,
                 }}
               >
-                Filter
-              </Text>
-              {dataFillter.length > 0 && Filterlenght > 0 ? (
-                <View
+                <Text
                   style={{
-                    borderRadius: 3,
-                    width: 14,
-                    height: 14,
-                    backgroundColor: "#0095A7",
-                    alignContent: "center",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    fontFamily: "Lato-Regular",
+                    color: "white",
+                    fontSize: 13,
                     alignSelf: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontFamily: "Lato-Regular",
-                      color: "white",
-                      fontSize: 13,
-                      alignSelf: "center",
-                    }}
-                  >
-                    {Filterlenght}
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-          </TouchableOpacity>
+                  {Filterlenght}
+                </Text>
+              </View>
+            ) : null}
+          </Button>
 
           <FlatList
             contentContainerStyle={{
@@ -327,11 +289,17 @@ export default function FillterDestination({
         </View>
       </View>
       <FillterModal
+        props={props}
         show={modal}
         setClose={() => setModal(!modal)}
-        datasfilter={fillter}
+        datasfilter={dataFillter}
+        datascountry={datacountry}
         setValueFilter={(e) => sendBackData(e)}
         setJmlFilter={(y) => setfilterlenght(y)}
+        getDatacity={(id) => {
+          getDatacity(id);
+        }}
+        datacity={datacity}
       />
     </SafeAreaView>
   );

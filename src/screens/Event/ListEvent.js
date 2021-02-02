@@ -102,13 +102,13 @@ export default function ListEvent(props) {
       keyword: search.keyword,
       type: search.tag,
       cities:
-        search.city.length > 0
+        search.city && search.city.length > 0
           ? search.city
           : props.route.params && props.route.params.idcity
           ? [props.route.params.idcity]
           : null,
       countries:
-        search.country.length > 0
+        search.country && search.country.length > 0
           ? search.country
           : props.route.params && props.route.params.idcountries
           ? [props.route.params.idcountries]

@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const Getcityfilter = gql`
   query($country_id: ID!) {
-    get_filter_city_evnt(country_id: $country_id, limit: 6, offset: null) {
+    get_filter_city(country_id: $country_id, limit: 6, offset: null) {
       id
       name
       code

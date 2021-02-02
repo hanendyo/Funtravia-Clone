@@ -22,7 +22,7 @@ export default function City({
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   useEffect(() => {
-    setFilterCity(data.get_filter_city_evnt);
+    setFilterCity(data.get_filter_city);
   }, []);
 
   const _handleCheckcity = async (id, indexType, item) => {

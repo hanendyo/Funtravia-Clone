@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
-import { Capital, CustomImage } from "../../../component";
+import { Capital, CustomImage } from "../../component";
 import CheckBox from "@react-native-community/checkbox";
-import { close } from "../../../assets/png";
+import { close } from "../../assets/png";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../../component";
+import { Text, Button } from "../../component";
 import { Picker } from "react-native";
-import { Bottom } from "../../../assets/svg";
+import { Bottom } from "../../assets/svg";
 
 export default function City({
   props,
@@ -22,7 +22,7 @@ export default function City({
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   useEffect(() => {
-    setFilterCity(data.get_filter_city_evnt);
+    setFilterCity(data.get_filter_city);
   }, []);
 
   const _handleCheckcity = async (id, indexType, item) => {

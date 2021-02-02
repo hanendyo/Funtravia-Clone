@@ -73,6 +73,8 @@ export default function ActivePlan({
                     height: 30,
                     width: 30,
                     borderRadius: 15,
+                    marginLeft: -10,
+
                   }}
                 />
               </View>
