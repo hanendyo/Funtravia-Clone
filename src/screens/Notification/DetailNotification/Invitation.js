@@ -320,13 +320,13 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     if (data.isread == false) {
       await updateisread(data.ids);
     }
-    // console.log(data.isread);
-    navigation.push("FeedStack", {
-      screen: "SinglePost",
+
+    navigation.navigate("FeedStack", {
+      screen: "CommentsById",
       params: {
         post_id: data.like_feed.post_id,
       },
-    });
+    })
   };
 
   const handle_areaklik_follow = async (data) => {
