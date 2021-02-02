@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { CustomImage, Button } from "../../../component";
-import { CheckBox } from "native-base";
+import CheckBox from "@react-native-community/checkbox";
 import { close } from "../../../assets/png";
 import { useTranslation } from "react-i18next";
 import { Text } from "../../../component";
@@ -191,7 +191,8 @@ export default function FilterModal({
               }}
               data={dataFilterCategori}
               renderItem={({ item, index }) => (
-                <View
+                <TouchableOpacity
+                  onPress={() => _handleCheck(item["id"], index)}
                   style={{
                     flexDirection: "row",
                     backgroundColor: "white",
@@ -200,28 +201,14 @@ export default function FilterModal({
                     marginRight: 5,
                     marginBottom: 15,
                     justifyContent: "flex-start",
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "21%",
-                      height: "100%",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <CheckBox
-                      style={{
-                        marginLeft: -10,
-
-                        borderRadius: 5,
-                        borderColor: "#464646",
-                        alignSelf: "flex-start",
-                      }}
-                      onPress={() => _handleCheck(item["id"], index)}
-                      checked={item["checked"]}
-                      color="#209FAE"
-                    />
-                  </View>
+                  <CheckBox
+                    onValueChange={() => _handleCheck(item["id"], index)}
+                    value={item["checked"]}
+                  />
                   <Text
                     style={{
                       fontFamily: "Lato-Regular",
@@ -232,7 +219,7 @@ export default function FilterModal({
                   >
                     {item["name"]}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
               keyExtractor={(item, index) => index.toString()}
               numColumns={2}

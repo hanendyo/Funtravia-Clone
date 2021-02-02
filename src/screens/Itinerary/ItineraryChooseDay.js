@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { back_arrow_white, default_image } from "../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { CheckBox } from "native-base";
+import CheckBox from "@react-native-community/checkbox";
 import ItineraryDetails from "../../graphQL/Query/Itinerary/ItineraryDetails";
 import { dateFormat, dateFormats } from "../../component/src/dateformatter";
 import AddDay from "../../graphQL/Mutation/Itinerary/AddDay";
@@ -487,15 +487,7 @@ export default function ItineraryChooseday(props) {
           paddingVertical: 10,
         }}
       >
-        <CheckBox
-          style={{
-            margin: 5,
-            borderRadius: 5,
-            borderColor: "#f3f3f3",
-          }}
-          checked={getchecked(item.id)}
-          color="#209FAE"
-        />
+        <CheckBox value={getchecked(item.id)} />
         <Text
           style={{
             fontFamily: "Lato-Bold",

@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
-import { CustomImage } from "../../../component";
-import { CheckBox } from "native-base";
-
+import { Capital, CustomImage } from "../../../component";
+import CheckBox from "@react-native-community/checkbox";
 import { close } from "../../../assets/png";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
+import { Picker } from "react-native";
+import { Bottom } from "../../../assets/svg";
+import RenderCity from "./City";
+
 export default function FilterModal({
   show,
   datasfilter,
@@ -15,6 +18,8 @@ export default function FilterModal({
   setClose,
   setValueFilter,
   setJmlFilter,
+  getDatacity,
+  datacity,
 }) {
   const { t, i18n } = useTranslation();
 
@@ -22,6 +27,8 @@ export default function FilterModal({
   const screenHeight = Dimensions.get("window").height;
   let [dataFilterCategori, setFilterCategori] = useState(datasfilter);
   let [dataFilterCountry, setFilterCountry] = useState(datascountry);
+  let [id_country, setId_country] = useState(null);
+  let [id_city, setId_city] = useState(null);
   const _handleCheck = (id, indexType) => {
     const tempData = [...dataFilterCategori];
 
@@ -30,12 +37,13 @@ export default function FilterModal({
     setFilterCategori(tempData);
   };
 
-  const _handleCheckc = (id, indexType) => {
+  const _handleCheckc = async (id, indexType) => {
+    await setId_country(id);
+    await getDatacity(id);
     const tempData = [...dataFilterCountry];
-
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
-
-    setFilterCountry(tempData);
+    await setFilterCountry(tempData);
+    await setFilterCity(datacity);
   };
 
   const UpdateFilter = () => {
@@ -80,6 +88,7 @@ export default function FilterModal({
   };
 
   let [selected] = useState(new Map());
+
   return (
     <Modal
       isVisible={show}
@@ -200,27 +209,14 @@ export default function FilterModal({
                     marginBottom: 20,
                     justifyContent: "flex-start",
                     alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "21%",
-                      height: "100%",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <CheckBox
-                      style={{
-                        marginLeft: -10,
-                        borderRadius: 5,
-                        borderColor: "#464646",
-                        alignSelf: "flex-start",
-                      }}
-                      onPress={() => _handleCheck(item["id"], index)}
-                      checked={item["checked"]}
-                      color="#209FAE"
-                    />
-                  </View>
+                  <CheckBox
+                    onValueChange={() => _handleCheck(item["id"], index)}
+                    value={item["checked"]}
+                  />
+
                   <Text
                     size="label"
                     type="regular"
@@ -228,7 +224,7 @@ export default function FilterModal({
                       // fontFamily: "Lato-Regular",
                       // fontSize: 16,
                       // alignContent:'center',
-                      textAlign: "center",
+                      // textAlign: "center",
 
                       marginLeft: 0,
                       color: "#464646",
@@ -254,72 +250,48 @@ export default function FilterModal({
                 color: "#464646",
               }}
             >
-              {t("country")}
+              {t("location")}
             </Text>
-            <FlatList
-              contentContainerStyle={{
-                marginHorizontal: 3,
-                paddingVertical: 15,
-                paddingRight: 10,
-                width: screenWidth - 40,
+            <Picker
+              iosIcon={
+                <View>
+                  <Bottom />
+                </View>
+              }
+              iosHeader="Select Hours"
+              note
+              mode="dropdown"
+              selectedValue={id_country}
+              textStyle={{ fontFamily: "Lato-Regular" }}
+              itemTextStyle={{ fontFamily: "Lato-Regular" }}
+              itemStyle={{ fontFamily: "Lato-Regular" }}
+              placeholderStyle={{ fontFamily: "Lato-Regular" }}
+              headerTitleStyle={{
+                fontFamily: "Lato-Regular",
               }}
-              data={dataFilterCountry}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => _handleCheckc(item["id"], index)}
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    borderColor: "#464646",
-                    width: "49%",
-                    marginRight: 3,
-                    marginBottom: 20,
-                    justifyContent: "flex-start",
-                    alignContent: "center",
-                  }}
-                >
-                  <View
-                    style={{
-                      width: "21%",
-                      height: "100%",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <CheckBox
-                      style={{
-                        marginLeft: -10,
-                        borderRadius: 5,
-                        borderColor: "#464646",
-                        alignSelf: "flex-start",
-                      }}
-                      onPress={() => _handleCheckc(item["id"], index)}
-                      checked={item["checked"]}
-                      color="#209FAE"
-                    />
-                  </View>
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 16,
-                      // alignContent:'center',
-                      textAlign: "center",
-
-                      marginLeft: 0,
-                      color: "#464646",
-                    }}
-                  >
-                    {item["name"]}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              extraData={selected}
-            ></FlatList>
+              style={{
+                color: "#646464",
+                fontFamily: "Lato-Regular",
+              }}
+              onValueChange={(itemValue, itemIndex) =>
+                _handleCheckc(itemValue, itemIndex)
+              }
+            >
+              {dataFilterCountry.map((item, index) => {
+                return (
+                  <Picker.Item
+                    key={item.id}
+                    label={item.name}
+                    value={item.id}
+                  />
+                );
+              })}
+            </Picker>
+            {datacity &&
+            datacity.get_filter_city &&
+            datacity.get_filter_city.length > 0 ? (
+              <RenderCity data={datacity} setId_city={(e) => setId_city(e)} />
+            ) : null}
           </View>
         </ScrollView>
         <View

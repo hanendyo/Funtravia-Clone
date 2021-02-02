@@ -11,7 +11,8 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
-import { CheckBox, Item, Label, Input, Textarea, Picker } from "native-base";
+import { Item, Label, Input, Textarea, Picker } from "native-base";
+import CheckBox from "@react-native-community/checkbox";
 import { Truncate } from "../../../component";
 import {
   Arrowbackwhite,
@@ -839,19 +840,12 @@ export default function CreateCustom(props) {
             style={{
               flexDirection: "row",
               paddingVertical: 20,
+              justifyContent: "flex-start",
+              alignItems: "center",
+              alignContent: "center",
             }}
           >
-            <CheckBox
-              style={{
-                marginLeft: -10,
-                // backgroundColor: '#209FAE',
-                // borderWidth: 0.1,
-                borderRadius: 3,
-                borderColor: "#A3A3A3",
-              }}
-              checked={cheked}
-              color="#209FAE"
-            />
+            <CheckBox value={cheked} />
             <Text
               size="small"
               type="regular"

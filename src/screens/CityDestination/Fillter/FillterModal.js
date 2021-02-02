@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { CustomImage } from "../../../component";
-import { CheckBox } from "native-base";
+import CheckBox from "@react-native-community/checkbox";
 import { close } from "../../../assets/png";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
@@ -182,6 +182,7 @@ export default function FilterModal({
                     marginBottom: 20,
                     justifyContent: "flex-start",
                     alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <View
@@ -192,15 +193,8 @@ export default function FilterModal({
                     }}
                   >
                     <CheckBox
-                      style={{
-                        marginLeft: -10,
-                        borderRadius: 5,
-                        borderColor: "#464646",
-                        alignSelf: "flex-start",
-                      }}
-                      onPress={() => _handleCheck(item["id"], index)}
-                      checked={item["checked"]}
-                      color="#209FAE"
+                      onValueChange={() => _handleCheck(item["id"], index)}
+                      value={item["checked"]}
                     />
                   </View>
                   <Text
