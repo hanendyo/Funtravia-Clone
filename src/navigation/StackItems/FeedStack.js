@@ -10,46 +10,48 @@ import SearchPageFeed from "../../screens/Feed/SearchPageFeed";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
-  return (
-    <FeedStack.Navigator>
-      <FeedStack.Screen
-        name="Post"
-        component={Postscreen}
-        options={{ headerShown: false }}
-      />
-      <FeedStack.Screen
-        name="CommentPost"
-        component={CommentPost}
-        options={{ headerShown: false }}
-      />
-      <FeedStack.Screen
-        name="EditPost"
-        component={EditPost}
-        options={{ headerShown: false }}
-      />
-      <FeedStack.Screen
-        name="SinglePost"
-        component={SinglePost}
-        options={{ headerShown: false }}
-      />
-      <FeedStack.Screen name="CreatePostScreen" component={CreatePostScreen} />
-
-      <FeedStack.Screen
-        name="CommentsById"
-        component={CommentsById}
-        options={{
-          headerTitle: "",
-          headerTransparent: false,
-        }}
-      />
-      <FeedStack.Screen
-        name="SearchPageFeed"
-        component={SearchPageFeed}
-        options={{
-          headerTitle: "",
-          headerTransparent: true,
-        }}
-      />
-    </FeedStack.Navigator>
-  );
+	return (
+		<FeedStack.Navigator>
+			<FeedStack.Screen
+				name="Post"
+				component={Postscreen}
+				options={{
+					headerShown: false,
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<FeedStack.Screen
+				name="CommentPost"
+				component={CommentPost}
+				options={{ headerShown: false }}
+			/>
+			<FeedStack.Screen
+				name="EditPost"
+				component={EditPost}
+				options={{ headerShown: false }}
+			/>
+			<FeedStack.Screen
+				name="SinglePost"
+				component={SinglePost}
+				options={{ headerShown: false }}
+			/>
+			<FeedStack.Screen name="CreatePostScreen" component={CreatePostScreen} />
+			<FeedStack.Screen
+				name="CommentsById"
+				component={CommentsById}
+				options={{
+					headerTitle: "",
+					headerTransparent: false,
+				}}
+			/>
+			<FeedStack.Screen
+				name="SearchPageFeed"
+				component={SearchPageFeed}
+				options={{
+					headerTitle: "",
+					headerTransparent: true,
+				}}
+			/>
+		</FeedStack.Navigator>
+	);
 }

@@ -8,6 +8,7 @@ import {
 	FlatList,
 	SafeAreaView,
 	Platform,
+	StatusBar,
 } from "react-native";
 import {
 	Arrowbackblack,
@@ -22,7 +23,6 @@ import Modal from "react-native-modal";
 import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { CropView } from "react-native-image-crop-tools";
 import ImgToBase64 from "react-native-image-base64";
 import ImageResizer from "react-native-image-resizer";
 import { request, check, PERMISSIONS } from "react-native-permissions";
@@ -65,7 +65,6 @@ export default function Post(props) {
 		location: {},
 	});
 	let slider = useRef(null);
-	let cropRef = useRef(null);
 
 	const selectImg = async (file) => {
 		await setRecent({ image: file.node.image, location: file.node.location });
@@ -90,13 +89,24 @@ export default function Post(props) {
 			cropperCircleOverlay: false,
 			includeBase64: false,
 		}).then((image) => {
-			console.log(image);
 			setRatio({ width: 1, height: 1, index: 0 }),
 				setRecent({ image: { uri: image.path }, location: {} });
 		});
 	};
 	const nextFunction = async () => {
-		cropRef.current.saveImage();
+		let result = await ImagePicker.openCropper({
+			path: recent.image.uri,
+			width: ratio.width * 1000,
+			height: ratio.height * 1000,
+			includeBase64: true,
+			compressImageQuality: 0.7,
+		});
+		console.log(result);
+		await props.navigation.navigate("CreatePostScreen", {
+			location: recent.location,
+			base64: result.data,
+			image: result,
+		});
 	};
 
 	useEffect(() => {
@@ -199,39 +209,6 @@ export default function Post(props) {
 		props.navigation.setOptions(HeaderComponent);
 	};
 
-	const convertBase64 = (result) => {
-		Image.getSize(result.uri, (width, height) => {
-			let compress;
-			if (width < 1024) {
-				compress = 90;
-			} else {
-				compress = 70;
-			}
-			ImageResizer.createResizedImage(
-				result.uri,
-				width,
-				height,
-				"PNG",
-				compress,
-				0,
-				undefined
-			)
-				.then((response) => {
-					ImgToBase64.getBase64String(response.uri)
-						.then((base64String) =>
-							props.navigation.navigate("CreatePostScreen", {
-								location: recent.location,
-								base64: base64String,
-								image: result,
-							})
-						)
-						.catch((err) => console.log(err));
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		});
-	};
 	const _modalGalery = () => {
 		return (
 			<Modal
@@ -322,6 +299,7 @@ export default function Post(props) {
 
 	return (
 		<SafeAreaView>
+			<StatusBar backgroundColor="#209FAE" barStyle="dark-content" />
 			<Loading show={loading} />
 			<_modalGalery />
 			<View style={{ backgroundColor: "#209FAE", height: 55 }}>
@@ -366,47 +344,48 @@ export default function Post(props) {
 					/>
 				</View>
 			</View>
-			<View>
-				<CropView
-					sourceUrl={recent.image.uri}
-					style={{ width: width, height: width }}
-					ref={cropRef}
-					onImageCrop={(result) => convertBase64(result)}
-					keepAspectRatio
-					aspectRatio={{ width: ratio.width, height: ratio.height }}
-				/>
-				<TouchableOpacity
-					onPress={() =>
-						setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-					}
-					style={{
-						backgroundColor: "#B2B2B2",
-						position: "absolute",
-						bottom: 0,
-						borderRadius: 20,
-						margin: 15,
-						width: 40,
-						height: 40,
-						alignItems: "center",
-						justifyContent: "center",
-					}}
-				>
-					{ratio.index == 0 ? (
-						<SizeOri height={23} width={23} />
-					) : (
-						<SizeStrace height={23} width={23} />
-					)}
-				</TouchableOpacity>
-			</View>
 			<FlatList
 				style={{
 					paddingStart: 0,
 					alignContent: "center",
 					backgroundColor: "white",
-					height: width - 20,
 				}}
 				ref={slider}
 				data={imageRoll && imageRoll.length ? imageRoll : null}
+				ListHeaderComponent={() => (
+					<View>
+						<Image
+							source={{ uri: recent.image.uri }}
+							style={{
+								width: width,
+								height: width,
+								resizeMode: ratio.width == 1 ? "cover" : "contain",
+							}}
+						/>
+						<TouchableOpacity
+							onPress={() =>
+								setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+							}
+							style={{
+								backgroundColor: "#B2B2B2",
+								position: "absolute",
+								bottom: 0,
+								borderRadius: 20,
+								margin: 15,
+								width: 40,
+								height: 40,
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							{ratio.index == 0 ? (
+								<SizeOri height={23} width={23} />
+							) : (
+								<SizeStrace height={23} width={23} />
+							)}
+						</TouchableOpacity>
+					</View>
+				)}
 				renderItem={({ item, index }) =>
 					item.mediaType !== "camera" ? (
 						<TouchableOpacity
