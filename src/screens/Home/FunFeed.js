@@ -50,6 +50,7 @@ export default function SearchFeed({ props }) {
   ] = useLazyQuery(FeedPopuler, {
     variables: {
       limit: 5,
+      offset: null,
     },
     fetchPolicy: "network-only",
   });

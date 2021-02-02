@@ -68,6 +68,7 @@ export default function Feed(props) {
   const { loading: loadingPost, data: dataPost, error: errorPost } = useQuery(FeedPopuler, {
     variables: {
       limit: 36,
+      offset: null,
     },
     notifyOnNetworkStatusChange: true,
   });
