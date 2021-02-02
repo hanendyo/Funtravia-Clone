@@ -25,9 +25,8 @@ import { useTranslation } from "react-i18next";
 import { CropView } from "react-native-image-crop-tools";
 import ImgToBase64 from "react-native-image-base64";
 import ImageResizer from "react-native-image-resizer";
-import ImagePicker from "react-native-image-crop-picker";
 import { request, check, PERMISSIONS } from "react-native-permissions";
-var RNFS = require("react-native-fs");
+import ImagePicker from "react-native-image-crop-picker";
 
 const { width } = Dimensions.get("screen");
 export default function Post(props) {
@@ -69,16 +68,7 @@ export default function Post(props) {
 	let cropRef = useRef(null);
 
 	const selectImg = async (file) => {
-		let image = file.node.image;
-		// if (Platform.OS == "ios" && image.uri.substring(0, 5) == "ph://") {
-		// 	let dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
-		// 		.toString(36)
-		// 		.substring(7)}.jpg`;
-		// 	let get = await RNFS.copyAssetsFileIOS(image.uri, dest, 0, 0);
-		// 	image["uri"] = get;
-		// }
-		// console.log(image);
-		await setRecent({ image: image, location: file.node.location });
+		await setRecent({ image: file.node.image, location: file.node.location });
 		await setLoading(false);
 		setRatio({ width: 1, height: 1, index: 0 });
 		if (file.node.image.width > file.node.image.height) {
@@ -368,30 +358,12 @@ export default function Post(props) {
 						</Text>
 						<Comboboxdown height={10} width={10} />
 					</TouchableOpacity>
-					<TouchableOpacity
+					<Button
+						size="medium"
+						text="Next"
+						style={{ fontSize: 14 }}
 						onPress={() => nextFunction()}
-						style={{
-							paddingRight: 10,
-							paddingLeft: 20,
-							height: 55,
-							alignItems: "center",
-							alignContent: "center",
-							justifyContent: "center",
-						}}
-					>
-						<Text
-							allowFontScaling={false}
-							style={{
-								alignSelf: "center",
-								color: "#FFF",
-								fontFamily: "Lato-Bold",
-								fontSize: 14,
-								marginHorizontal: 5,
-							}}
-						>
-							Next
-						</Text>
-					</TouchableOpacity>
+					/>
 				</View>
 			</View>
 			<View>

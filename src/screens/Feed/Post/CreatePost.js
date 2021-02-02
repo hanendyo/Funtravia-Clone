@@ -7,14 +7,12 @@ import {
 	Platform,
 	TouchableWithoutFeedback,
 	Keyboard,
-	TouchableOpacity,
 	Alert,
 	Image,
-	PermissionsAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { default_image, back_arrow_white } from "../../../assets/png";
-import { CustomImage, Text, Button, Loading } from "../../../component";
+import { default_image } from "../../../assets/png";
+import { Text, Button, Loading } from "../../../component";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -22,7 +20,7 @@ import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
 import { PinHijau, Xgray } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import Geolocation from "react-native-geolocation-service";
 import ImgToBase64 from "react-native-image-base64";
 import { request, check, PERMISSIONS } from "react-native-permissions";
@@ -71,18 +69,13 @@ export default function CreatePost(props) {
 			color: "white",
 		},
 	};
-	// const HeaderComponent = {
-	// 	tabBarBadge: 8,
-	// };
 	let [statusText, setStatusText] = useState("");
-	// console.log(statusText);
 	let [modellocation, setModellocation] = useState(false);
 	let [Location, setLocation] = useState({
 		address: "Add Location",
 		latitude: "",
 		longitude: "",
 	});
-	// console.log(Location);
 	let [loadingok, setLoading] = useState(false);
 	let [chosenPicture, setChosenPicture] = useState(props.route.params.image);
 	let [chosenPictureBase64, setChosenPictureBase64] = useState(
@@ -122,12 +115,12 @@ export default function CreatePost(props) {
 	const _setStatusText = (data) => {
 		setStatusText(data);
 	};
+
 	const _setLocation = (data) => {
 		setLocation(data);
 	};
-	// console.log(chosenPicture.base64);
+
 	const SubmitData = async () => {
-		// return false;
 		setLoading(true);
 		let caption = statusText ? statusText : "-";
 		let latitude = Location.latitude !== "" ? Location.latitude : "0";
@@ -136,8 +129,6 @@ export default function CreatePost(props) {
 			Location.address == "" || Location.address == "Add Location"
 				? "0"
 				: Location.address;
-		// console.log('BASE64'+ chosenPictureBase64);
-		// console.log('BASE64');
 		try {
 			let response = await MutationCreate({
 				variables: {
@@ -151,16 +142,12 @@ export default function CreatePost(props) {
 			console.log(response);
 			if (response.data) {
 				if (response.data.create_post.code === 200) {
-					// console.log('ok');
 					setLoading(false);
 					props.navigation.navigate("FeedScreen", { isposting: true });
 				} else {
-					// console.log('error');
 					setLoading(false);
 					throw new Error(response.data.create_post.message);
 				}
-
-				// Alert.alert('Succes');
 			} else {
 				throw new Error("Error Input");
 			}
@@ -191,7 +178,6 @@ export default function CreatePost(props) {
 		});
 	};
 	const clearLoaction = () => {
-		// console.log(detail);
 		setLocation({
 			address: "Add Location",
 			latitude: "",
@@ -232,7 +218,6 @@ export default function CreatePost(props) {
 		loadAsync();
 	}, []);
 	const convertBase64 = () => {
-		// console.log('aaa');
 		ImgToBase64.getBase64String(chosenPicture.uri)
 			.then((base64String) => setChosenPictureBase64(base64String))
 			.catch((err) => doSomethingWith(err));
@@ -248,7 +233,6 @@ export default function CreatePost(props) {
 			props.route.params.location && props.route.params.location.longitude
 				? props.route.params.location.longitude
 				: position.coords.longitude;
-		// console.log(latitude, longitude);
 
 		try {
 			let response = await fetch(
@@ -309,62 +293,13 @@ export default function CreatePost(props) {
 						height: 55,
 					}}
 				>
-					<TouchableOpacity
-						onPress={() => SubmitData()}
-						style={{
-							paddingRight: 10,
-							paddingLeft: 20,
-							height: 55,
-							// borderWidth: 1,
-							alignItems: "center",
-							alignContent: "center",
-							justifyContent: "center",
-						}}
-					>
-						<Text
-							allowFontScaling={false}
-							style={{
-								alignSelf: "center",
-								color: "#FFF",
-								fontFamily: "Lato-Bold",
-								fontSize: 14,
-								marginHorizontal: 5,
-							}}
-						>
-							Post
-						</Text>
-					</TouchableOpacity>
+					<Button size="medium" text="Post" onPress={() => SubmitData()} />
 				</View>
 			</View>
 			<ScrollView style={{}}>
 				<Loading show={loadingok} />
-				{/* <NavigationEvents
-					onDidFocus={() =>
-						props.navigation.setParams({
-							SubmitData: SubmitData,
-							location: Location,
-							text: statusText,
-						})
-					}
-				/> */}
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-					<View
-						style={
-							{
-								// flex: 1,
-								// justifyContent: 'flex-start',
-							}
-						}
-					>
-						{/* <View
-							style={{
-								// height: Dimensions.get('screen').width,
-								width: Dimensions.get('screen').width,
-								// Height: Dimensions.get('screen').width,
-								height: Dimensions.get('screen').width,
-								backgroundColor: 'white',
-								justifyContent: 'center',
-							}}> */}
+					<View>
 						<AutoHeightImage
 							width={Dimensions.get("window").width}
 							source={
@@ -380,11 +315,9 @@ export default function CreatePost(props) {
 						<View
 							style={{
 								flexDirection: "row",
-								// marginTop: 25,
 								backgroundColor: "#ffffff",
 								borderBottomColor: "#f0f0f0f0",
 								borderBottomWidth: 1,
-								// height: Dimensions.get('screen').height / 3,
 							}}
 						>
 							<Image
@@ -397,7 +330,6 @@ export default function CreatePost(props) {
 								style={{
 									width: 50,
 									height: 50,
-									// padding: 10,
 									borderRadius: 50,
 									margin: 10,
 									marginRight: 15,
@@ -410,8 +342,6 @@ export default function CreatePost(props) {
 								style={{
 									height: 75,
 									width: Dimensions.get("screen").width - 100,
-									// borderBottomColor: '#f0f0f0f0',
-									// borderWidth: 1,
 								}}
 								onChangeText={(text) => _setStatusText(text)}
 								value={statusText}
@@ -465,26 +395,6 @@ export default function CreatePost(props) {
 								margin: 10,
 							}}
 						></View>
-						{/* <FlatList
-							data={datanearby}
-							style={{
-								marginHorizontal: 10,
-							}}
-							renderItem={({ item, index }) => (
-								<Button
-									type='box'
-									variant='bordered'
-									color='primary'
-									size='small'
-									style={{
-										marginHorizontal: 2,
-									}}
-									text={item.name}></Button>
-							)}
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							keyExtractor={(item) => item.place_id}
-						/> */}
 						<View
 							style={{
 								width: "100%",
