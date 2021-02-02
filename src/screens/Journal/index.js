@@ -7,9 +7,11 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
+  Pressable,
+  Alert
 } from "react-native";
 import { Text, Button } from "../../component";
-import { default_image } from "../../assets/png";
+import { default_image, logo_funtravia } from "../../assets/png";
 import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
@@ -171,10 +173,6 @@ export default function Journal(props) {
     );
   };
 
-  {
-    /* ======================================= Render All ====================================================*/
-  }
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -182,6 +180,10 @@ export default function Journal(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+  {
+    /* ======================================= Render All ====================================================*/
+  }
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -219,9 +221,11 @@ export default function Journal(props) {
                 <View style={styles.editor}>
                   <Thumbnail
                     source={
-                      data.journal_most_populer.userby
+                      data && data.journal_most_populer
+                        && data.journal_most_populer.userby
+                        && data.journal_most_populer.userby.picture
                         ? { uri: data.journal_most_populer.userby.picture }
-                        : default_image
+                        : logo_funtravia
                     }
                     style={{ borderColor: "#ffffff", borderWidth: 2 }}
                   />
@@ -297,25 +301,29 @@ export default function Journal(props) {
 					</View>
 				</View> */}
         {/* ============================== Type Journal ====================================================*/}
-        {/* <View>
-					<TouchableOpacity style={styles.filterStyle}>
-						<View style={styles.contentFilter}>
-							<Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-								Family
+        {/* <View style={styles.filterStyle}>
+          <Pressable onPress={() => alert("Coming Soon")}>
+            <View style={styles.contentFilter}>
+              <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                Family
 							</Text>
-						</View>
-						<View style={styles.contentFilter}>
-							<Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-								Honeymoon
+            </View>
+          </Pressable>
+          <Pressable onPress={() => alert("Coming Soon")}>
+            <View style={styles.contentFilter}>
+              <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                Honey Moon
 							</Text>
-						</View>
-						<View style={styles.contentFilter}>
-							<Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-								solo
+            </View>
+          </Pressable>
+          <Pressable onPress={() => alert("Coming Soon")}>
+            <View style={styles.contentFilter}>
+              <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                Solo
 							</Text>
-						</View>
-					</TouchableOpacity>
-				</View> */}
+            </View>
+          </Pressable>
+        </View> */}
 
         {/* ============================== List Journal ====================================================*/}
 
@@ -333,7 +341,40 @@ export default function Journal(props) {
               renderItem={renderList}
               keyExtractor={(data) => data.id}
               nestedScrollEnabled
-              ListHeaderComponent={null}
+              ListHeaderComponent={
+                <ScrollView>
+                  <View style={styles.filterStyle}>
+                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
+                      <View style={styles.contentFilter}>
+                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                          Family
+                        </Text>
+                      </View>
+                    </Pressable>
+                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
+                      <View style={styles.contentFilter}>
+                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                          Honey Moon
+                        </Text>
+                      </View>
+                    </Pressable>
+                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
+                      <View style={styles.contentFilter}>
+                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                          Solo
+                        </Text>
+                      </View>
+                    </Pressable>
+                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
+                      <View style={styles.contentFilter}>
+                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                          Bussines
+                        </Text>
+                      </View>
+                    </Pressable>
+                  </View>
+                </ScrollView>
+              }
               ListFooterComponent={null}
             />
           </View>
@@ -380,10 +421,8 @@ const styles = StyleSheet.create({
   },
   filterStyle: {
     flexDirection: "row",
-    marginTop: 20,
-    // backgroundColor: '#2c2c2c',
-    width: Dimensions.get("window").width * 0.9,
-    marginHorizontal: 20,
+    marginBottom: 10,
+    // paddingHorizontal: 10,
   },
   contentFilter: {
     marginRight: 10,
