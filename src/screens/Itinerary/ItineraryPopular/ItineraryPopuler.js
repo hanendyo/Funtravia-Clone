@@ -251,7 +251,6 @@ export default function ItineraryPopuler(props) {
           height: Dimensions.get("screen").width * 0.48,
           paddingHorizontal: 10,
           marginTop: 5,
-          borderWidth: 1,
         }}
       >
         <View
@@ -304,7 +303,6 @@ export default function ItineraryPopuler(props) {
                 paddingHorizontal: 10,
                 backgroundColor: "#FFFFFF",
                 marginVertical: 5,
-                // justifyContent: "space-between",
               }}
             >
               <View>
@@ -317,7 +315,6 @@ export default function ItineraryPopuler(props) {
                 >
                   <View
                     style={{
-                      borderWidth: 1,
                       borderColor: "#209FAE",
                       borderRadius: 3,
                       backgroundColor: "#DAF0F2",
@@ -363,7 +360,7 @@ export default function ItineraryPopuler(props) {
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: 3,
+                    marginTop: 5,
                   }}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
