@@ -10,25 +10,30 @@ import { Text, Button } from "../../../component";
 import { Picker } from "react-native";
 import { Bottom } from "../../../assets/svg";
 
-export default function City({ data, setId_city }) {
+export default function City({
+  props,
+  data,
+  setId_city,
+  setFilterCity,
+  dataFilterCity,
+}) {
   const { t, i18n } = useTranslation();
 
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
-  let [dataFilterCity, setFilterCity] = useState(data.get_filter_city);
+  useEffect(() => {
+    setFilterCity(data.get_filter_city);
+  }, []);
 
-  const _handleCheckcity = async (id, indexType) => {
-    console.log(id);
-    console.log(indexType);
-
-    await setId_city(id);
-    const tempData = [...dataFilterCity];
+  const _handleCheckcity = async (id, indexType, item) => {
+    let tempData = [...dataFilterCity];
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
 
+    await setFilterCity([]);
     await setFilterCity(tempData);
   };
 
-  return (
+  return dataFilterCity.length > 0 ? (
     <>
       <Text
         type="bold"
@@ -53,7 +58,7 @@ export default function City({ data, setId_city }) {
         renderItem={({ item, index }) =>
           index < 6 ? (
             <TouchableOpacity
-              onPress={() => _handleCheckcity(item["id"], index)}
+              onPress={() => _handleCheckcity(item["id"], index, item)}
               style={{
                 flexDirection: "row",
                 backgroundColor: "white",
@@ -67,7 +72,7 @@ export default function City({ data, setId_city }) {
               }}
             >
               <CheckBox
-                onValueChange={() => _handleCheckcity(item["id"], index)}
+                onValueChange={() => _handleCheckcity(item["id"], index, item)}
                 value={item["checked"]}
                 color="#209FAE"
               />
@@ -92,5 +97,5 @@ export default function City({ data, setId_city }) {
         // extraData={selected}
       ></FlatList>
     </>
-  );
+  ) : null;
 }
