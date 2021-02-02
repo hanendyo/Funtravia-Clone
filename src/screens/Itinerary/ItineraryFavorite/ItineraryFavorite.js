@@ -296,10 +296,10 @@ export default function ItineraryFavorite(props) {
                     <LikeEmpty height={20} width={20} />
                   </TouchableOpacity>
                 ) : (
-                  <TouchableOpacity onPress={() => _unliked(item.id, index)}>
-                    <LikeRed height={20} width={20} />
-                  </TouchableOpacity>
-                )}
+                    <TouchableOpacity onPress={() => _unliked(item.id, index)}>
+                      <LikeRed height={20} width={20} />
+                    </TouchableOpacity>
+                  )}
               </View>
               <Text size="description" type="black" style={{ marginTop: 10 }}>
                 <Truncate text={item.name} length={40} />
