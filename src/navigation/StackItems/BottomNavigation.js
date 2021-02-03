@@ -113,9 +113,9 @@ export default function BottomNavigationItems() {
 					tabBarLabel: "Home",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
-							<HomeOn width="24" height="24" />
+							<HomeOn width="20" height="22" />
 						) : (
-							<HomeOff width="24" height="24" />
+							<HomeOff width="20" height="22" />
 						),
 				}}
 			/>
@@ -128,9 +128,9 @@ export default function BottomNavigationItems() {
 					tabBarLabel: "Feed",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
-							<FeedOn width="24" height="24" />
+							<FeedOn width="20" height="22" />
 						) : (
-							<FeedOff width="24" height="24" />
+							<FeedOff width="20" height="22" />
 						),
 				}}
 			/>
@@ -151,10 +151,11 @@ export default function BottomNavigationItems() {
 									shadowOffset: { width: 0, height: 1 },
 									shadowRadius: 1,
 									shadowOpacity: 1,
-									elevation: 1,
+									elevation: 3,
+									borderRadius: 22.5,
 								}}
 							>
-								<ItineraryOn width="50" height="50" />
+								<ItineraryOn width="45" height="45" />
 							</View>
 						),
 				}}
@@ -166,9 +167,9 @@ export default function BottomNavigationItems() {
 					tabBarLabel: "Message",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
-							<ChatOn width="24" height="24" />
+							<ChatOn width="20" height="22" />
 						) : (
-							<ChatOff width="24" height="24" />
+							<ChatOff width="20" height="22" />
 						),
 				}}
 			/>
@@ -179,9 +180,9 @@ export default function BottomNavigationItems() {
 					tabBarLabel: "Account",
 					tabBarIcon: ({ focused }) =>
 						focused ? (
-							<ProfileOn width="24" height="24" />
+							<ProfileOn width="20" height="22" />
 						) : (
-							<ProfileOff width="24" height="24" />
+							<ProfileOff width="20" height="22" />
 						),
 				}}
 			/>

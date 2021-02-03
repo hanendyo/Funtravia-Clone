@@ -74,8 +74,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Media Library Access Apps</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Funtravia Access Camera To Take Foto</string>
+	<key>NSContactsUsageDescription</key>
+	<string>To add friend or connect in apps</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>For Suggest Destination And Set Post Position</string>
 	<key>NSLocationAlwaysUsageDescription</key>
