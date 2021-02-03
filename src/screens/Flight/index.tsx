@@ -1,4 +1,4 @@
-import { Item, Label, Input, Picker } from "native-base";
+import { Item, Label, Input } from "native-base";
 import React, { useState, useEffect } from "react";
 import {
   Dimensions,
