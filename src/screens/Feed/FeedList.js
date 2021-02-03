@@ -55,7 +55,7 @@ export default function FeedList({
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
-  console.log(setting?.user?.id);
+  console.log(datafeed);
   const { t, i18n } = useTranslation();
   const [
     MutationLike,

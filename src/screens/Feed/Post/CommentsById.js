@@ -102,8 +102,8 @@ export default function CommentsById(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-
+    await setToken(tkn);
+    await GetFeed();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -111,7 +111,6 @@ export default function CommentsById(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      GetFeed();
       GetCommentList();
       loadAsync();
     });
@@ -375,7 +374,7 @@ export default function CommentsById(props) {
   // if (errorfeed){
   //   return <View></View>
   // }
-  console.log(datafeed);
+  console.log(token);
   console.log(datafeed &&  datafeed.feed_post_byid ? datafeed.feed_post_byid: null);
 
   const scroll_to = () => {
@@ -427,6 +426,7 @@ export default function CommentsById(props) {
   };
 
   const duration = (datetime) => {
+    console.log(datetime);
     var date1 = new Date(datetime).getTime();
     var date2 = new Date().getTime();
     var msec = date2 - date1;
@@ -894,7 +894,7 @@ export default function CommentsById(props) {
                   style={{
                   }}
                 >
-                  {duration(datafeed?.feed_post_byid?.created_at)}
+                  {duration(datafeed?.feed_post_byid.created_at)}
                 </Text>
               </View>
             </Pressable>

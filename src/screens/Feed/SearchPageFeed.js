@@ -37,7 +37,6 @@ import {
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
-import AutoHeightImage from "react-native-auto-height-image";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
@@ -65,9 +64,9 @@ export default function Feed(props) {
     // });
     // return unsubscribe;
   }, []);
-  const { loading: loadingPost, data: dataPost, error: errorPost } = useQuery(FeedPopuler, {
+  const { loading: loadingPost, data: dataPost, error: errorPost, refetch, networkStatus } = useQuery(FeedPopuler, {
     variables: {
-      limit: 36,
+      limit: 20,
       offset: null,
     },
     notifyOnNetworkStatusChange: true,
@@ -325,19 +324,49 @@ export default function Feed(props) {
     );
   }
 
-  // if (networkStatus === NetworkStatus.refetch) return 'Refetching!';
-  // const _refresh =() => {
-  //   setRefreshing(true);
-  //   refetch();
-  //   wait(1000).then(() => {
-  //     setRefreshing(false);
-  //   });
-  // };
+  if (networkStatus === NetworkStatus.refetch) return 'Refetching!';
+  const _refresh =() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  };
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
     });
   };
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.organization.repositories;
+    const nodes = [
+      ...prev.organization.repositories.nodes,
+      ...fetchMoreResult.organization.repositories.nodes,
+    ];
+    return Object.assign({}, prev, {
+      organization: {
+        __typename: prev.organization.__typename,
+        repositories: {
+          __typename: prev.organization.repositories.__typename,
+          pageInfo,
+          nodes,
+        },
+      },
+    });
+  };
+
+  const handleOnEndReached = () => {
+    if (data.organization.repositories.pageInfo.hasNextPage)
+      return fetchMore({
+        variables: {
+          after: data.organization.repositories.pageInfo.endCursor,
+          first: 15,
+        },
+        updateQuery: onUpdate,
+      });
+  };
+
   return(
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <View style={{ backgroundColor: "#209FAE" }}>
@@ -458,72 +487,132 @@ export default function Feed(props) {
                       <View style={{
                         
                       }}>
-                        <Image
-                          source={{ uri: dataPost.feed_post_populer[index-8].assets[0].filepath }}
+                        <Pressable
+                          onPress={()=> 
+                            props.navigation.navigate("FeedStack", {
+                            screen: "CommentsById",
+                            params: {
+                              post_id: dataPost.feed_post_populer[index-8].id,
+                            },
+                            })
+                          }
                           style={{
-                            height: width/3 - 10,
-                            width: width/3 - 10,
-                            borderRadius: 5,
-                            margin: 2,
-                            alignSelf: "center",
-                            resizeMode: "cover",
-                          }}
-                        />
-                        <Image
-                          source={{ uri: dataPost.feed_post_populer[index-7].assets[0].filepath }}
+                            // height: width/3 - 10,
+                            // width: width/3 - 10,
+                          }}>
+                          <Image
+                            
+                            source={{ uri: dataPost.feed_post_populer[index-8].assets[0].filepath }}
+                            style={{
+                              height: width/3 - 10,
+                              width: width/3 - 10,
+                              borderRadius: 5,
+                              margin: 2,
+                              alignSelf: "center",
+                              resizeMode: "cover",
+                            }}
+                          />
+                        </Pressable>
+                        <Pressable
+                          onPress={()=> 
+                            props.navigation.navigate("FeedStack", {
+                            screen: "CommentsById",
+                            params: {
+                              post_id: dataPost.feed_post_populer[index-7].id,
+                            },
+                            })
+                          }
                           style={{
-                            height: width/3 - 10,
-                            width: width/3 - 10,
-                            borderRadius: 5,
-                            margin: 2,
-                            alignSelf: "center",
-                            resizeMode: "cover",
-                          }}
-                        />
+                            // height: width/3 - 10,
+                            // width: width/3 - 10,
+                          }}>
+                            <Image
+                              source={{ uri: dataPost.feed_post_populer[index-7].assets[0].filepath }}
+                              style={{
+                                height: width/3 - 10,
+                                width: width/3 - 10,
+                                borderRadius: 5,
+                                margin: 2,
+                                alignSelf: "center",
+                                resizeMode: "cover",
+                              }}
+                            />
+                        </Pressable>
                       </View>
-                      <Image
-                          source={{ uri: dataPost.feed_post_populer[index-6].assets[0].filepath }}
+                      <Pressable
+                          onPress={()=> 
+                            props.navigation.navigate("FeedStack", {
+                            screen: "CommentsById",
+                            params: {
+                              post_id: dataPost.feed_post_populer[index-6].id,
+                            },
+                            })
+                          }
                           style={{
-                            height: (width + width)/3 -15,
-                            width: (width + width)/3 -20,
-                            borderRadius: 5,
-                            margin: 2,
-                            alignSelf: "center",
-                            resizeMode: "cover",
-                          }}
-                        />
+                            // height: (width + width)/3 -15,
+                            // width: (width + width)/3 -20,
+                          }}>
+                          <Image
+                              source={{ uri: dataPost.feed_post_populer[index-6].assets[0].filepath }}
+                              style={{
+                                height: (width + width)/3 -15,
+                                width: (width + width)/3 -20,
+                                borderRadius: 5,
+                                margin: 2,
+                                alignSelf: "center",
+                                resizeMode: "cover",
+                              }}
+                            />
+                      </Pressable>
                 </View>
                 <View
                   style={{
                     flexDirection:'row',
                   }}> 
-                  <Image
-                  source={{ uri: dataPost.feed_post_populer[index-5].assets[0].filepath }}
-                  style={{
-                    height: (width + width)/3 -15,
-                    width: (width + width)/3 -20,
-                    borderRadius: 5,
-                    margin: 2,
-                    alignSelf: "center",
-                    resizeMode: "cover",
-                  }}
-                  />
-                  <View style={{
-                    
-                  }}>
-                    <Image
-                      source={{ uri: dataPost.feed_post_populer[index-4].assets[0].filepath }}
+                  <Pressable
+                    onPress={()=> 
+                      props.navigation.navigate("FeedStack", {
+                      screen: "CommentsById",
+                      params: {
+                        post_id: dataPost.feed_post_populer[index-5].id,
+                      },
+                      })
+                    }
+                    style={{
+                      // height: (width + width)/3 -15,
+                      // width: (width + width)/3 -20,
+                    }}>
+                      <Image
+                      source={{ uri: dataPost.feed_post_populer[index-5].assets[0].filepath }}
                       style={{
-                        height: width/3 - 10,
-                        width: width/3 - 10,
+                        height: (width + width)/3 -15,
+                        width: (width + width)/3 -20,
                         borderRadius: 5,
                         margin: 2,
                         alignSelf: "center",
                         resizeMode: "cover",
                       }}
-                    />
+                      />
+                  </Pressable>
+
+                  <View style={{
+                    
+                  }}>
+                    <Pressable
+                      onPress={()=> 
+                        props.navigation.navigate("FeedStack", {
+                        screen: "CommentsById",
+                        params: {
+                          post_id: dataPost.feed_post_populer[index-4].id,
+                        },
+                        })
+                      }
+                      style={{
+                        // height: width/3 - 10,
+                        // width: width/3 - 10,
+                      }}>
                       <Image
-                        source={{ uri: dataPost.feed_post_populer[index-3].assets[0].filepath }}
+                        source={{ uri: dataPost.feed_post_populer[index-4].assets[0].filepath }}
                         style={{
                           height: width/3 - 10,
                           width: width/3 - 10,
@@ -533,23 +622,78 @@ export default function Feed(props) {
                           resizeMode: "cover",
                         }}
                       />
+                    </Pressable>
+                    <Pressable
+                      onPress={()=> 
+                        props.navigation.navigate("FeedStack", {
+                        screen: "CommentsById",
+                        params: {
+                          post_id: dataPost.feed_post_populer[index-3].id,
+                        },
+                        })
+                      }
+                      style={{
+                        // height: width/3 - 10,
+                        // width: width/3 - 10,
+                      }}>
+                          <Image
+                            source={{ uri: dataPost.feed_post_populer[index-3].assets[0].filepath }}
+                            style={{
+                              height: width/3 - 10,
+                              width: width/3 - 10,
+                              borderRadius: 5,
+                              margin: 2,
+                              alignSelf: "center",
+                              resizeMode: "cover",
+                            }}
+                          />
+                      </Pressable>
                 </View>
                 </View>
                 <View
                     style={{
                       flexDirection:'row',
                     }}> 
-                      <Image
-                        source={{ uri: dataPost.feed_post_populer[index-2].assets[0].filepath }}
-                        style={{
-                          height: width/3 - 10,
-                          width: width/3 - 10,
-                          borderRadius: 5,
-                          margin: 2,
-                          alignSelf: "center",
-                          resizeMode: "cover",
-                        }}
-                      />
+                    <Pressable
+                      onPress={()=> 
+                        props.navigation.navigate("FeedStack", {
+                        screen: "CommentsById",
+                        params: {
+                          post_id: dataPost.feed_post_populer[index-2].id,
+                        },
+                        })
+                      }
+                      style={{
+                        // height: width/3 - 10,
+                        // width: width/3 - 10,
+                      }}>
+                        <Image
+                          source={{ uri: dataPost.feed_post_populer[index-2].assets[0].filepath }}
+                          style={{
+                            height: width/3 - 10,
+                            width: width/3 - 10,
+                            borderRadius: 5,
+                            margin: 2,
+                            alignSelf: "center",
+                            resizeMode: "cover",
+                          }}
+                        />
+
+                    </Pressable>
+                    <Pressable
+                      onPress={()=> 
+                        props.navigation.navigate("FeedStack", {
+                        screen: "CommentsById",
+                        params: {
+                          post_id: dataPost.feed_post_populer[index-1].id,
+                        },
+                        })
+                      }
+                      style={{
+                        // height: width/3 - 10,
+                        // width: width/3 - 10,
+                      }}>
+
                         <Image
                           source={{ uri: dataPost.feed_post_populer[index-1].assets[0].filepath }}
                           style={{
@@ -561,6 +705,20 @@ export default function Feed(props) {
                             resizeMode: "cover",
                           }}
                         />
+                    </Pressable>
+                    <Pressable
+                      onPress={()=> 
+                        props.navigation.navigate("FeedStack", {
+                        screen: "CommentsById",
+                        params: {
+                          post_id: item.id,
+                        },
+                        })
+                      }
+                      style={{
+                        // height: width/3 - 10,
+                        // width: width/3 - 10,
+                      }}>
                         <Image
                           source={{ uri: item.assets[0].filepath }}
                           style={{
@@ -572,6 +730,7 @@ export default function Feed(props) {
                             resizeMode: "cover",
                           }}
                         />
+                    </Pressable>
                   </View>
             </View>:null        
         )}
@@ -588,10 +747,10 @@ export default function Feed(props) {
         }}
         keyExtractor={(item) => item.id_post}
         showsVerticalScrollIndicator={false}
-        // refreshing={false}
-        // refreshControl={
-        //   <RefreshControl refreshing={refreshing}  onRefresh={() => _refresh()}/>
-        // }
+        refreshing={refreshing}
+        refreshControl={
+          <RefreshControl refreshing={refreshing}  onRefresh={() => _refresh()}/>
+        }
 
       />
       
