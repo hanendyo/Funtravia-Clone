@@ -6,12 +6,13 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Picker,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
-import { Item, Label, Input, Textarea, Picker } from "native-base";
+import { Item, Label, Input, Textarea } from "native-base";
 import CheckBox from "@react-native-community/checkbox";
 import { Truncate } from "../../../component";
 import {

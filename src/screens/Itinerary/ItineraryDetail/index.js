@@ -11,6 +11,7 @@ import {
   Platform,
   BackHandler,
   Image,
+  FlatList,
 } from "react-native";
 import { Text } from "../../../component";
 import { Button, Truncate, Loading } from "../../../component";
@@ -48,9 +49,11 @@ import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
 import Uploadfoto from "../../../graphQL/Mutation/Itinerary/Uploadcover";
 import ImagePicker from "react-native-image-crop-picker";
 import LinearGradient from "react-native-linear-gradient";
+import Ripple from "react-native-material-ripple";
+import ItinDrag from "./ItinDrag";
 
 // let HEADER_MAX_HEIGHT = 200;
-let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.2;
+let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.15;
 let HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 75 : 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -64,6 +67,7 @@ export default function ItineraryDetail(props) {
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif
   );
+  let [actives, setActives] = useState("Itinerary");
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -77,6 +81,18 @@ export default function ItineraryDetail(props) {
     outputRange: [1, 0.5, 0],
     extrapolate: "clamp",
   });
+
+  const warna = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: ["#464646", "#fff", "#fff"],
+    extrapolate: "clamp",
+  });
+  const warna2 = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: ["#838383", "#fff", "#fff"],
+    extrapolate: "clamp",
+  });
+
   const textLeft = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [20, 40, 55],
@@ -100,7 +116,7 @@ export default function ItineraryDetail(props) {
 
   const textSize = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [20, 20, 14],
+    outputRange: [20, 20, 16],
     extrapolate: "clamp",
   });
   const imageTranslate = scrollY.interpolate({
@@ -401,7 +417,7 @@ export default function ItineraryDetail(props) {
     setRefreshing(true);
     setloading(true);
     GetListEvent();
-    // GetTimeline();
+    GetTimeline();
     wait(2000).then(() => {
       setRefreshing(false);
       setloading(false);
@@ -431,6 +447,8 @@ export default function ItineraryDetail(props) {
                     width: 30,
                     borderRadius: 15,
                     marginLeft: -10,
+                    borderWidth: 1.5,
+                    borderColor: "#fff",
                   }}
                 />
               </View>
@@ -445,25 +463,19 @@ export default function ItineraryDetail(props) {
               justifyContent: "center",
             }}
           >
-            {/* '' +
-										databuddy.length >
-									2
-										? ' + ' + (databuddy.length - 2) + ' ' + t('others')
-										: ' ' */}
-
-            <Text size="small" type="regular">
+            <Text size="small" type="bold">
               <Truncate
                 text={
-                  " " +
-                  t("with") +
-                  " " +
+                  // " " +
+                  // t("with") +
+                  "   " +
                   databuddy[1].user.first_name +
                   " " +
                   (databuddy.length > 2
                     ? " + " + (databuddy.length - 2) + " " + t("others")
                     : " ")
                 }
-                length={25}
+                length={23}
               />
             </Text>
           </View>
@@ -528,6 +540,63 @@ export default function ItineraryDetail(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  console.log(datatimeline);
+
+  const RenderUtama = ({ aktif, render }) => {
+    if (aktif == "Itinerary") {
+      return (
+        <>
+          {datatimeline && datatimeline.day_timeline.length ? (
+            <ItinDrag
+              idDay={idDay}
+              data={datatimeline.day_timeline}
+              props={props}
+              setAkhir={(e) => {
+                setAkhir(e), setdataAkhir(e);
+              }}
+              setidDayz={(e) => setidDayz(e)}
+              token={token}
+              iditinerary={itincountries}
+              setloading={(e) => setLoading(e)}
+              refresh={(e) => Refresh(e)}
+              GetTimeline={(e) => GetTimeline()}
+              datadayaktif={datadayaktif}
+              setdatadayaktif={(e) => setdatadayaktif(e)}
+              status={status && status === "saved" ? "saved" : "notsaved"}
+              setCover={(e) => setCover(e)}
+              cover={datadetail.itinerary_detail.cover}
+            />
+          ) : (
+            <View
+              style={{
+                height: Dimensions.get("screen").height - 200,
+                // borderWidth: 1,
+              }}
+            >
+              {datadetail && datadetail.itinerary_detail.cover
+                ? setCover(datadetail.itinerary_detail.cover)
+                : null}
+            </View>
+          )}
+        </>
+      );
+    } else if (aktif == "Picture") {
+      return (
+        <View>
+          <Text>picture</Text>
+        </View>
+      );
+    } else if (aktif == "Diary") {
+      return (
+        <View>
+          <Text>Diary</Text>
+        </View>
+      );
+    } else {
+      return <View></View>;
+    }
+  };
+
   return (
     <View
       style={{
@@ -543,7 +612,9 @@ export default function ItineraryDetail(props) {
         style={{
           marginTop: 55,
         }}
-        contentContainerStyle={{}}
+        contentContainerStyle={{
+          paddingBottom: 57,
+        }}
         onScroll={Animated.event([
           {
             nativeEvent: { contentOffset: { y: scrollY } },
@@ -551,117 +622,218 @@ export default function ItineraryDetail(props) {
         ])}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        stickyHeaderIndices={[2]}
+        stickyHeaderIndices={[1]}
         nestedScrollEnabled={true}
       >
         <View
           style={{
-            width: Dimensions.get("screen").width,
-            height: HEADER_MAX_HEIGHT,
+            paddingVertical: 5,
+            paddingHorizontal: 20,
+            width: "100%",
             backgroundColor: "white",
           }}
-        ></View>
-        <View>
+        >
           <View
             style={{
-              paddingVertical: 5,
-              paddingHorizontal: 20,
-              width: "100%",
+              width: Dimensions.get("screen").width,
+              height: HEADER_MAX_HEIGHT,
               backgroundColor: "white",
-              borderTopWidth: 0,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 1,
-              elevation: 1,
+            }}
+          ></View>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.push("ItineraryBuddy", {
+                iditin:
+                  datadetail && datadetail.itinerary_detail
+                    ? datadetail.itinerary_detail.id
+                    : null,
+                token: token ? token : null,
+                dataitin:
+                  datadetail && datadetail.itinerary_detail ? datadetail : null,
+                databuddy:
+                  datadetail && datadetail.itinerary_detail
+                    ? datadetail.itinerary_detail.buddy
+                    : null,
+                created_by:
+                  datadetail && datadetail.itinerary_detail
+                    ? datadetail.itinerary_detail.created_by
+                    : null,
+              });
+            }}
+            style={{
+              flexDirection: "row",
+              // marginTop: 5,
+              paddingVertical: 7,
+              paddingHorizontal: 10,
+              alignItems: "center",
+              alignContent: "center",
+              justifyContent: "flex-start",
+              // borderWidth: 1,
+              borderRadius: 5,
+              backgroundColor: "#daf0f2",
             }}
           >
             <View
               style={{
-                flexDirection: "row",
-                paddingVertical: 10,
-                alignItems: "center",
+                backgroundColor: "#209fae",
+                width: 7,
+                height: 17,
+                borderRadius: 5,
+                marginRight: 5,
+              }}
+            ></View>
+            <Text
+              size="small"
+              type="bold"
+              style={{
+                marginRight: 15,
               }}
             >
-              <Text size="small" type="bold" style={{}}>
-                {t("dates")} :{" "}
-                {datadetail && datadetail.itinerary_detail
-                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                    "  -  " +
-                    dateFormatr(datadetail.itinerary_detail.end_date)
-                  : null}
-              </Text>
-            </View>
-            <TouchableOpacity
+              {t("travelBuddy")} :
+            </Text>
+            {datadetail && datadetail.itinerary_detail ? (
+              <RenderBuddy databuddy={datadetail.itinerary_detail.buddy} />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              backgroundColor: "#fff",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d3d3d3",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <Ripple
               onPress={() => {
-                props.navigation.push("ItineraryBuddy", {
-                  iditin:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.id
-                      : null,
-                  token: token ? token : null,
-                  dataitin:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail
-                      : null,
-                  databuddy:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.buddy
-                      : null,
-                  created_by:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.created_by
-                      : null,
-                });
+                setActives("Itinerary");
               }}
               style={{
-                flexDirection: "row",
-                paddingVertical: 5,
+                alignContent: "center",
                 alignItems: "center",
+                justifyContent: "flex-end",
+                paddingHorizontal: 10,
               }}
             >
               <Text
-                size="small"
-                type="bold"
+                type={actives == "Itinerary" ? "bold" : "regular"}
                 style={{
-                  marginRight: 20,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  borderBottomWidth: actives == "Itinerary" ? 3 : 0,
+                  borderBottomColor:
+                    actives == "Itinerary" ? "#209FAE" : "#EEEEEE",
+                  color: actives == "Itinerary" ? "#209FAE" : "#464646",
                 }}
               >
-                {t("travelBuddy")}
+                Itinerary
               </Text>
-              {datadetail && datadetail.itinerary_detail ? (
-                <RenderBuddy databuddy={datadetail.itinerary_detail.buddy} />
-              ) : null}
-            </TouchableOpacity>
+            </Ripple>
+            <Ripple
+              onPress={() => {
+                setActives("Picture");
+              }}
+              style={{
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text
+                type={actives == "Picture" ? "bold" : "regular"}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  borderBottomWidth: actives == "Picture" ? 3 : 0,
+                  borderBottomColor:
+                    actives == "Picture" ? "#209FAE" : "#EEEEEE",
+                  color: actives == "Picture" ? "#209FAE" : "#464646",
+                }}
+              >
+                Travel Picture
+              </Text>
+            </Ripple>
+            <Ripple
+              onPress={() => {
+                setActives("Diary");
+              }}
+              style={{
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text
+                type={actives == "Diary" ? "bold" : "regular"}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  borderBottomWidth: actives == "Diary" ? 3 : 0,
+                  borderBottomColor: actives == "Diary" ? "#209FAE" : "#EEEEEE",
+                  color: actives == "Diary" ? "#209FAE" : "#464646",
+                }}
+              >
+                Diary
+              </Text>
+            </Ripple>
           </View>
-        </View>
 
-        {datadetail && datadetail.itinerary_detail.day.length ? (
-          <ItineraryDay
-            dataitin={datadetail.itinerary_detail}
-            dataday={datadetail.itinerary_detail.day}
-            props={props}
-            token={token}
-            lat={datadetail.itinerary_detail.city.latitude}
-            long={datadetail.itinerary_detail.city.longitude}
-            kota={datadetail.itinerary_detail.city.name}
-            iditinerary={itincountries}
-            getdata={() => setParamAdd(true)}
-            setAkhir={(e) => setDataAkhir(e)}
-            setidDayz={(e) => setidDay(e)}
-            GetTimeline={(e) => GetTimeline(e)}
-            setCover={(e) => setCover(e)}
-            cover={datadetail.itinerary_detail.cover}
-            datadayaktif={
-              datadayaktif ? datadayaktif : props.route.params.datadayaktif
-            }
-            setdatadayaktif={(e) => setdatadayaktif(e)}
-            setLoading={(e) => setloading(e)}
-            Refresh={(e) => _Refresh(e)}
-            status={status && status === "saved" ? "saved" : "notsaved"}
-          />
-        ) : null}
+          {datadetail && datadetail.itinerary_detail.day.length ? (
+            <ItineraryDay
+              dataitin={datadetail.itinerary_detail}
+              dataday={datadetail.itinerary_detail.day}
+              props={props}
+              token={token}
+              lat={datadetail.itinerary_detail.city.latitude}
+              long={datadetail.itinerary_detail.city.longitude}
+              kota={datadetail.itinerary_detail.city.name}
+              iditinerary={itincountries}
+              getdata={() => setParamAdd(true)}
+              setAkhir={(e) => setDataAkhir(e)}
+              setidDayz={(e) => setidDay(e)}
+              GetTimeline={(e) => GetTimeline(e)}
+              setCover={(e) => setCover(e)}
+              cover={datadetail.itinerary_detail.cover}
+              datadayaktif={
+                datadayaktif ? datadayaktif : props.route.params.datadayaktif
+              }
+              setdatadayaktif={(e) => setdatadayaktif(e)}
+              setLoading={(e) => setloading(e)}
+              Refresh={(e) => _Refresh(e)}
+              status={status && status === "saved" ? "saved" : "notsaved"}
+            />
+          ) : (
+            <View
+              style={{
+                height: 47,
+                width: "100%",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>Loading...</Text>
+            </View>
+          )}
+        </View>
+        <RenderUtama
+          aktif={actives}
+          // render={
+          //   data && data.CitiesInformation ? data.CitiesInformation : {}
+          // }
+        />
       </ScrollView>
       {/* ======================== (Panel bawah) ========================= */}
       {status && status === "saved" ? (
@@ -1186,9 +1358,6 @@ export default function ItineraryDetail(props) {
             }}
           >
             <Button
-              // onPress={() => {
-              // 	setModalcustom(false);
-              // }}
               text=""
               size="large"
               color="tertiary"
@@ -1251,6 +1420,7 @@ export default function ItineraryDetail(props) {
             onPress={() => _handlerBack()}
             style={{
               height: 55,
+              marginLeft: 7,
             }}
           >
             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
@@ -1348,13 +1518,13 @@ export default function ItineraryDetail(props) {
           }}
         >
           {/* LinearGradient */}
-          <LinearGradient
-            colors={["rgba(032, 159, 174,0.8)", "rgba(0, 0, 0, 0)"]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 1 }}
+          <Animated.View
+            // colors={["rgba(032, 159, 174,0.8)", "rgba(0, 0, 0, 0)"]}
+            // start={{ x: 0, y: 1 }}
+            // end={{ x: 1, y: 1 }}
             style={{
               height: 55,
-
+              opacity: imageOpacity,
               paddingHorizontal: 20,
               paddingVertical: 10,
               width: "100%",
@@ -1374,21 +1544,26 @@ export default function ItineraryDetail(props) {
             {datadetail &&
             datadetail.itinerary_detail &&
             datadetail.itinerary_detail.isprivate === true ? (
-              <TouchableOpacity
+              <Button
                 onPress={() => Alert.alert("coming soon")}
+                type="circle"
+                variant="bordered"
+                size="small"
                 style={{
+                  flexDirection: "row",
+                  width: 80,
                   alignContent: "center",
-                  justifyContent: "center",
                   alignItems: "center",
+                  // paddingHorizontal: 20,
                 }}
               >
-                <Sharegreen height={20} width={20} />
-                <Text size="small" type="regular" style={{}}>
+                <Sharegreen height={15} width={15} />
+                <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
                   {t("share")}
                 </Text>
-              </TouchableOpacity>
+              </Button>
             ) : null}
-          </LinearGradient>
+          </Animated.View>
         </Animated.View>
 
         <Animated.View
@@ -1405,13 +1580,37 @@ export default function ItineraryDetail(props) {
             allowFontScaling={false}
             style={[
               styles.title,
-              { fontSize: textSize, fontFamily: "Lato-Bold" },
+              {
+                fontSize: textSize,
+                fontFamily: "Lato-Bold",
+                color: warna,
+              },
             ]}
           >
             {datadetail && datadetail.itinerary_detail ? (
               <Truncate text={datadetail.itinerary_detail.name} length={30} />
             ) : null}
           </Animated.Text>
+          <View
+            style={{
+              flexDirection: "row",
+              // paddingVertical: 10,
+              alignItems: "center",
+            }}
+          >
+            <Animated.Text
+              size="small"
+              type="bold"
+              style={{ color: warna2, fontFamily: "Lato-Bold", fontSize: 12 }}
+            >
+              {/* {t("dates")} :{" "} */}
+              {datadetail && datadetail.itinerary_detail
+                ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                  "  -  " +
+                  dateFormatr(datadetail.itinerary_detail.end_date)
+                : null}
+            </Animated.Text>
+          </View>
         </Animated.View>
       </Animated.View>
       <Sidebar
@@ -1692,7 +1891,6 @@ const styles = StyleSheet.create({
   },
   title: {
     backgroundColor: "transparent",
-    color: "white",
   },
   scrollViewContent: {
     marginTop: HEADER_MAX_HEIGHT,

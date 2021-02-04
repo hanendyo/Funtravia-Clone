@@ -17,6 +17,9 @@ import {
   Car,
   Service,
   OptionsVertBlack,
+  Plus,
+  Plusgrey,
+  PlusBlack,
 } from "../../../assets/svg";
 import { FlatList } from "react-native-gesture-handler";
 import ItinDrag from "./ItinDrag";
@@ -25,32 +28,25 @@ import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
 import DeleteDay from "../../../graphQL/Mutation/Itinerary/DeleteDay";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import { useTranslation } from "react-i18next";
+import Ripple from "react-native-material-ripple";
 
 export default function ItineraryDay({
-  dataitin,
   dataday,
   props,
   token,
-  kota,
   iditinerary,
   setAkhir,
   setidDayz,
-  setCover,
-  cover,
-  lat,
-  long,
   datadayaktif,
   setdatadayaktif,
   setLoading,
   Refresh,
   status,
-  // GetTimeline,
 }) {
   const { t, i18n } = useTranslation();
 
   let [modalmenu, setModalmenu] = useState(false);
   let [dataDay, setDataday] = useState(dataday);
-  let [dataKota, setDataKota] = useState(kota);
   let [dataAkhir, setdataAkhir] = useState();
 
   const [
@@ -122,6 +118,7 @@ export default function ItineraryDay({
     tomorrow.setDate(tomorrow.getDate());
     return tomorrow;
   };
+
   const addButton = async () => {
     setLoading(true);
     var datebaru = getdatebaru(dataDay[dataDay.length - 1].date);
@@ -171,65 +168,6 @@ export default function ItineraryDay({
   const setIdDay = (id) => {
     setIdDays(id);
     setidDayz(id);
-  };
-
-  const itindest = () => {
-    props.navigation.navigate("itindest");
-  };
-
-  // const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState({});
-  const [icons, setIcons] = useState({
-    "01d": "w-sunny",
-    "02d": "w-partly_cloudy",
-    "03d": "w-cloudy",
-    "04d": "w-fog",
-    "09d": "w-fog_rain",
-    "10d": "w-sunny_rainy",
-    "11d": "w-thunderstorm",
-    "13d": "w-snowflakes",
-    "50d": "w-windy",
-    "01n": "w-sunny",
-    "02n": "w-partly_cloudy",
-    "03n": "w-cloudy",
-    "04n": "w-fog",
-    "09n": "w-fog_rain",
-    "10n": "w-sunny_rainy",
-    "11n": "w-thunderstorm",
-    "13n": "w-snowflakes",
-    "50n": "w-windy",
-  });
-
-  const _fetchItem = async (kotanya) => {
-    try {
-      if (lat && long) {
-        let response = await fetch(
-          "https://api.openweathermap.org/data/2.5/weather?lat=" +
-            lat +
-            "&lon=" +
-            long +
-            "&appid=366be4c20ca623155ffc0175772909bf"
-        );
-        let responseJson = await response.json();
-        setLoading(false);
-        // var tempdata = [...data];
-        // tempdata.push(responseJson);
-        setData(responseJson);
-      } else {
-        let response = await fetch(
-          "https://api.openweathermap.org/data/2.5/weather?q=" +
-            kotanya.toLowerCase() +
-            "&appid=366be4c20ca623155ffc0175772909bf"
-        );
-        let responseJson = await response.json();
-        setLoading(false);
-        // var tempdata = [...data];
-        // tempdata.push(responseJson);
-        setData(responseJson);
-      }
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   let [modalsave, setModalsave] = useState(false);
@@ -318,7 +256,7 @@ export default function ItineraryDay({
         : setdata(dataDay && dataDay.length ? dataDay : []);
     }
 
-    _fetchItem(dataKota);
+    // _fetchItem(dataKota);
   }, []);
 
   const [
@@ -339,454 +277,68 @@ export default function ItineraryDay({
     <View
       style={{
         width: Dimensions.get("screen").width,
-        backgroundColor: "#f6f6f6",
       }}
     >
       <View
         style={{
-          marginTop: 10,
-          marginHorizontal: 20,
-          width: Dimensions.get("screen").width - 40,
-
-          borderRadius: 5,
-          borderWidth: 0.5,
-          borderColor: "#C0C0C0",
-          backgroundColor: "white",
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 1,
-          elevation: 1,
-          padding: 15,
+          flexDirection: "row",
+          width: "100%",
+          justifyContent: "space-between",
         }}
       >
-        <View style={{ width: "100%", alignItems: "center" }}>
-          <Text
-            size="description"
-            type="bold"
-            style={{
-              marginBottom: 5,
-            }}
-          >
-            {t("Itinerary")}
-          </Text>
-        </View>
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ width: status === "notsaved" ? "87%" : "100%" }}>
-            {dataDay && dataDay.length ? (
-              <FlatList
-                ref={slider}
-                style={{}}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                initialScrollIndex={indexnya}
-                horizontal={true}
-                keyExtractor={(item, index) => index + ""}
-                data={dataDay}
-                contentContainerStyle={{
-                  flexDirection: "row",
+        {/* {dataDay && dataDay.length ? ( */}
+        <FlatList
+          ref={slider}
+          style={{}}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          initialScrollIndex={indexnya}
+          horizontal={true}
+          keyExtractor={(item, index) => index + ""}
+          data={dataDay}
+          ListFooterComponent={
+            status === "notsaved" ? (
+              <Ripple
+                onPress={() => addButton()}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 25,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                  borderColor: "#d3d3d3",
+                  borderStyle: "dashed",
+                  marginHorizontal: 2.5,
                   borderRadius: 5,
                 }}
-                renderItem={({ item, index }) => {
-                  return (
-                    <Button
-                      onPress={() => setaktip(item, index)}
-                      text={t("day") + " " + item.day}
-                      size="small"
-                      color={indexnya !== index ? "tertiary" : "primary"}
-                      type="box"
-                      style={{
-                        marginHorizontal: 2.5,
-                      }}
-                    ></Button>
-                  );
-                }}
-              />
-            ) : null}
-          </View>
-          {status === "notsaved" ? (
-            <Button
-              onPress={() => addButton()}
-              text={""}
-              size="small"
-              color={"tertiary"}
-              type="circle"
-              style={{
-                marginHorizontal: 2.5,
-              }}
-            >
-              <Add width={25} height={25} />
-            </Button>
-          ) : null}
-        </View>
-        {data && data.cod === 200 && data.weather ? (
-          <View
-            style={{
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "center",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                height: 50,
-              }}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  height: "100%",
-                }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <FunIcon
-                    icon={icons[data.weather[0].icon]}
-                    height={35}
-                    width={35}
-                    style={{
-                      bottom: -3,
-                    }}
-                  />
-                  <View
-                    style={{
-                      paddingTop: 5,
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Text size="title" type="bold" style={{}}>
-                      {(data.main.temp / 10).toFixed(1)}
-                    </Text>
-                    <View
-                      style={{
-                        marginTop: 7,
-                        alignSelf: "flex-start",
-                        height: 5,
-                        width: 5,
-                        borderWidth: 1,
-                        borderRadius: 2.5,
-                      }}
-                    ></View>
-                  </View>
-                </View>
-                <Text size="small" type="regular" style={{}}>
-                  {data.weather[0].description}
-                </Text>
-              </View>
-
-              {data.main.temp / 10 > 27.2 ? (
-                <View
-                  style={{
-                    height: "100%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <FunIcon
-                    icon={"w-hot"}
-                    height={35}
-                    style={{
-                      bottom: -3,
-                    }}
-                  />
-                  <Text size="small" type="regular" style={{}}>
-                    Hot
-                  </Text>
-                </View>
-              ) : null}
-
-              {data.main.temp / 10 > 25.8 && data.main.temp / 10 < 27.3 ? (
-                <View
-                  style={{
-                    height: "100%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <FunIcon icon={"w-warm"} height={50} width={50} />
-                  <Text size="small" type="regular" style={{}}>
-                    Warm
-                  </Text>
-                </View>
-              ) : null}
-
-              {data.main.temp / 10 > 22.8 && data.main.temp / 10 < 25.9 ? (
-                <View
-                  style={{
-                    height: "100%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <FunIcon icon={"w-humid"} height={50} width={50} />
-                  <Text size="small" type="regular" style={{}}>
-                    Humid
-                  </Text>
-                </View>
-              ) : null}
-
-              {data.main.temp / 10 > 20.5 && data.main.temp / 10 < 22.9 ? (
-                <View
-                  style={{
-                    height: "100%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <FunIcon icon={"w-cold"} height={50} width={50} />
-                  <Text size="small" type="regular" style={{}}>
-                    Cold
-                  </Text>
-                </View>
-              ) : null}
-
-              {data.main.temp / 10 < 20.6 ? (
-                <View
-                  style={{
-                    height: "100%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <FunIcon icon={"w-freezing"} height={50} />
-                  <Text size="small" type="regular" style={{}}>
-                    Freezing
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-          </View>
-        ) : null}
-      </View>
-      <View
-        style={{
-          width: "100%",
-        }}
-      >
-        <View
-          style={{
-            paddingHorizontal: 20,
-            paddingVertical: 5,
+                <PlusBlack width={10} height={10} />
+              </Ripple>
+            ) : null
+          }
+          contentContainerStyle={{
             flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            alignItems: "center",
+            paddingStart: 15,
+            paddingEnd: 15,
+            paddingVertical: 10,
           }}
-        >
-          <Text
-            size="label"
-            type="bold"
-            style={
-              {
-                // fontFamily: "Lato-Bold",
-                // fontSize: 16,
-              }
-            }
-          >
-            {dataDay &&
-            dataDay.length > 0 &&
-            dataDay[indexnya] &&
-            dataDay[indexnya].day
-              ? t("day") + " " + dataDay[indexnya].day + " : " + dataKota
-              : null}
-          </Text>
-          {status === "notsaved" && dataDay.length > 1 ? (
-            <Button
-              size="small"
-              text=""
-              type="circle"
-              variant="transparent"
-              style={
-                {
-                  // borderWidth: 1
-                }
-              }
-              onPress={() => {
-                setModalmenu(true);
-                // deteteday(iditinerary, idDay);
-              }}
-            >
-              <OptionsVertBlack width={15} height={15} />
-            </Button>
-          ) : null}
-        </View>
-
-        <View
-          style={{
-            marginHorizontal: 20,
-            width: Dimensions.get("screen").width - 40,
-            height: 50,
-
-            // height: Dimensions.get('screen').width * 0.2,
-            // height: 500,
-            borderRadius: 5,
-            borderWidth: 0.5,
-            borderColor: "#C0C0C0",
-            backgroundColor: "white",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 1,
-            elevation: 1,
-            paddingTop: 5,
-            paddingBottom: 5,
-            paddingHorizontal: 30,
+          renderItem={({ item, index }) => {
+            return (
+              <Button
+                onPress={() => setaktip(item, index)}
+                text={t("day") + " " + item.day}
+                size="small"
+                color={indexnya !== index ? "green" : "primary"}
+                type="box"
+                style={{
+                  marginHorizontal: 2.5,
+                }}
+              ></Button>
+            );
           }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              height: "100%",
-
-              justifyContent: "space-between",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                width: "33.3%",
-                height: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                // borderWidth: 1,
-                // borderColor: 'red',
-              }}
-            >
-              <Hotel width={25} height={25} />
-
-              <Text size="small" type="bold" style={{}}>
-                {t("hotel")}
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                height: "60%",
-                width: 1,
-                borderRightWidth: 1,
-                borderRightColor: "rgba(0, 0, 0, 0.2)",
-              }}
-            ></View>
-            <TouchableOpacity
-              // onPress={() => props.navigation.navigate('RentTransportation')}
-              onPress={() =>
-                props.navigation.navigate("RentList", {
-                  dataitin: dataitin,
-                  token: token,
-                })
-              }
-              style={{
-                width: "33.3%",
-                height: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Car width={25} height={25} />
-
-              <Text size="small" type="bold" style={{}}>
-                {t("rent")}
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                height: "60%",
-                width: 1,
-                borderRightWidth: 1,
-                borderRightColor: "rgba(0, 0, 0, 0.2)",
-              }}
-            ></View>
-            <TouchableOpacity
-              // onPress={() => props.navigation.navigate('Service')}
-              onPress={() =>
-                props.navigation.navigate("ServiceList", {
-                  dataitin: dataitin,
-                  token: token,
-                })
-              }
-              style={{
-                width: "33.3%",
-                height: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Service width={25} height={25} />
-              <Text size="small" type="bold" style={{}}>
-                {t("service")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            borderBottomWidth: 1,
-            borderBottomColor: "#d3d3d3",
-            paddingBottom: 10,
-          }}
-        ></View>
-      </View>
-      {/* ? (setCover(
-					datatimeline.day_timeline[0].images
-					? datatimeline.day_timeline[0].images
-						: null,
-		   ),
-			  setidDayz(idDay), */}
-      {datatimeline && datatimeline.day_timeline.length ? (
-        <ItinDrag
-          idDay={idDay}
-          data={datatimeline.day_timeline}
-          props={props}
-          setAkhir={(e) => {
-            setAkhir(e), setdataAkhir(e);
-          }}
-          setidDayz={(e) => setidDayz(e)}
-          token={token}
-          iditinerary={iditinerary}
-          setloading={(e) => setLoading(e)}
-          refresh={(e) => Refresh(e)}
-          GetTimeline={(e) => GetTimeline()}
-          datadayaktif={datadayaktif}
-          setdatadayaktif={(e) => setdatadayaktif(e)}
-          status={status}
-          setCover={(e) => setCover(e)}
-          cover={cover}
         />
-      ) : (
-        <View style={{ height: Dimensions.get("screen").height * 0.6 }}>
-          {cover ? setCover(cover) : null}
-        </View>
-      )}
+        {/* ) : null} */}
+      </View>
 
       <Modal
         onBackdropPress={() => {

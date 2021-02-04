@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Dimensions, Image, Alert } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  Image,
+  Alert,
+  Picker,
+} from "react-native";
 // import { Modal, Portal, Provider } from 'react-native-paper';
 import Modal from "react-native-modal";
 import {
@@ -11,11 +18,10 @@ import {
   Bottom,
   OptionsVertBlack,
 } from "../../../assets/svg";
-
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { FlatList } from "react-native-gesture-handler";
 import { FunIcon } from "../../../component";
-import { Textarea, Picker } from "native-base";
+import { Textarea } from "native-base";
 import { Button } from "../../../component";
 import { Text } from "../../../component";
 import moment from "moment";
@@ -555,11 +561,10 @@ export default function ItinDrag({
 
   const renderItem = ({ item, index, drag, isActive }) => {
     const x = dataList.length - 1;
-    // console.log(item)
     return (
       <View
         style={{
-          height: item.note ? 210 : 170,
+          // height: item.note ? 210 : 170,
           width: "100%",
           backgroundColor: isActive ? "white" : "#f6f6f6",
           flexDirection: "row",
@@ -599,47 +604,63 @@ export default function ItinDrag({
           )}
         </TouchableOpacity>
         {/* garis======================= */}
-        <View style={{ height: "100%", width: 20, alignItems: "center" }}>
-          <View
-            style={{
-              height: 45,
-              borderRightWidth: index && index > 0 ? 2 : 0,
-              borderRightColor: "#d1d1d1",
-            }}
-          ></View>
-
-          <View
-            style={{
-              position: "absolute",
-              height: 20,
-              width: 20,
-              top: 40,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+        <View
+          style={{
+            height: 210,
+            position: "absolute",
+            left: "30%",
+            // borderWidth: 1,
+          }}
+        >
+          <View style={{ height: "100%", width: 20, alignItems: "center" }}>
             <View
               style={{
-                height: 10,
-                width: 10,
-                borderRadius: 10,
-                backgroundColor: "#d1d1d1",
+                height: 45,
+                borderRightWidth: index && index > 0 ? 2 : 0,
+                borderRightColor: "#d1d1d1",
+              }}
+            ></View>
+
+            <View
+              style={{
+                position: "absolute",
+                height: 20,
+                width: 20,
+                top: 40,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  height: 10,
+                  width: 10,
+                  borderRadius: 10,
+                  backgroundColor: "#d1d1d1",
+                }}
+              ></View>
+            </View>
+            {/* )} */}
+            <View
+              style={{
+                height: item.note ? "80%" : "80%",
+                borderRightWidth: index < x ? 2 : 0,
+
+                borderRightColor: "#d1d1d1",
               }}
             ></View>
           </View>
-          {/* )} */}
-          <View
-            style={{
-              height: item.note ? "80%" : "80%",
-              borderRightWidth: index < x ? 2 : 0,
-
-              borderRightColor: "#d1d1d1",
-            }}
-          ></View>
         </View>
         {/* garis======================= */}
 
-        <View style={{ height: "100%", width: "70%", paddingTop: 12.5 }}>
+        <View
+          style={{
+            height: "100%",
+            width: "70%",
+            paddingTop: 12.5,
+            marginLeft: 20,
+          }}
+        >
           <View
             style={{
               width: "100%",
@@ -891,16 +912,35 @@ export default function ItinDrag({
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <DraggableFlatList
         style={{
-          height: Dimensions.get("screen").height * 0.6,
+          height: Dimensions.get("screen").height - 250,
         }}
         key={""}
-        ListHeaderComponent={<View style={{ paddingTop: 10 }}></View>}
+        ListHeaderComponent={
+          <View style={{ paddingHorizontal: 15 }}>
+            <View
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 5,
+                borderLeftWidth: 5,
+                padding: 10,
+                borderLeftColor: "#209fae",
+                height: 50,
+              }}
+            >
+              <Text>weather</Text>
+            </View>
+          </View>
+        }
+        contentContainerStyle={{
+          paddingTop: 10,
+          paddingBottom: 50,
+        }}
         // stickyHeaderIndices={[0]}
         nestedScrollEnabled={true}
-        // scrollEnabled={true}
+        // scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         data={dataList}
@@ -1175,6 +1215,6 @@ export default function ItinDrag({
           </TouchableOpacity>
         </View>
       </Modal>
-    </View>
+    </>
   );
 }
