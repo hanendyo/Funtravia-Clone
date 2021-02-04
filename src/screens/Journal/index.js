@@ -8,7 +8,7 @@ import {
   ScrollView,
   FlatList,
   Pressable,
-  Alert
+  Alert,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
@@ -100,15 +100,16 @@ export default function Journal(props) {
             source={item.firstimg ? { uri: item.firstimg } : default_image}
             style={{
               width: "30%",
-              height: Dimensions.get("window").width - 220,
+              height: 140,
               borderRadius: 10,
             }}
           />
           <View
             style={{
               width: "70%",
-              height: Dimensions.get("window").width * 0.34,
-              marginTop: 10,
+              // height: Dimensions.get("window").width * 0.34,
+              // height: 100,
+              marginVertical: 10,
               paddingLeft: 20,
               justifyContent: "space-between",
             }}
@@ -184,7 +185,6 @@ export default function Journal(props) {
     /* ======================================= Render All ====================================================*/
   }
 
-
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Loading show={loading} />
@@ -213,29 +213,44 @@ export default function Journal(props) {
               <View style={{ marginHorizontal: 20 }}>
                 <View>
                   <Text style={styles.title} size={"title"} type={"bold"}>
-                    {data.journal_most_populer
-                      ? data.journal_most_populer.title
-                      : "Title"}
+                    {data.journal_most_populer ? (
+                      <Truncate
+                        text={data.journal_most_populer.title}
+                        length={50}
+                      />
+                    ) : (
+                      "Title"
+                    )}
                   </Text>
                 </View>
                 <View style={styles.editor}>
                   <Thumbnail
                     source={
-                      data && data.journal_most_populer
-                        && data.journal_most_populer.userby
-                        && data.journal_most_populer.userby.picture
+                      data &&
+                      data.journal_most_populer &&
+                      data.journal_most_populer.userby &&
+                      data.journal_most_populer.userby.picture
                         ? { uri: data.journal_most_populer.userby.picture }
                         : logo_funtravia
                     }
-                    style={{ borderColor: "#ffffff", borderWidth: 2 }}
+                    style={{
+                      borderColor: "#ffffff",
+                      // borderWidth: 2,
+                      height: 30,
+                      width: 30,
+                    }}
                   />
                   <View style={styles.dataEditor}>
-                    <Text size={"label"} type={"bold"}>
+                    <Text size={"description"} type={"bold"}>
                       {data.journal_most_populer.userby
                         ? data.journal_most_populer.userby
                         : "Funtravia"}
                     </Text>
-                    <Text size={"small"} type={"regular"}>
+                    <Text
+                      size={"small"}
+                      type={"regular"}
+                      style={{ marginTop: -2 }}
+                    >
                       {data.journal_most_populer.date
                         ? dateFormatMonthYears(data.journal_most_populer.date)
                         : null}
@@ -346,28 +361,44 @@ export default function Journal(props) {
                   <View style={styles.filterStyle}>
                     <Pressable onPress={() => Alert.alert("Coming Soon")}>
                       <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                        <Text
+                          style={{ padding: 10 }}
+                          size={"description"}
+                          type={"bold"}
+                        >
                           Family
                         </Text>
                       </View>
                     </Pressable>
                     <Pressable onPress={() => Alert.alert("Coming Soon")}>
                       <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                        <Text
+                          style={{ padding: 10 }}
+                          size={"description"}
+                          type={"bold"}
+                        >
                           Honey Moon
                         </Text>
                       </View>
                     </Pressable>
                     <Pressable onPress={() => Alert.alert("Coming Soon")}>
                       <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                        <Text
+                          style={{ padding: 10 }}
+                          size={"description"}
+                          type={"bold"}
+                        >
                           Solo
                         </Text>
                       </View>
                     </Pressable>
                     <Pressable onPress={() => Alert.alert("Coming Soon")}>
                       <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
+                        <Text
+                          style={{ padding: 10 }}
+                          size={"description"}
+                          type={"bold"}
+                        >
                           Bussines
                         </Text>
                       </View>
@@ -396,19 +427,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#f6f6f6",
     width: Dimensions.get("window").width * 0.95,
     alignSelf: "center",
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   imageTop: {
     width: Dimensions.get("window").width * 0.95,
-    height: Dimensions.get("window").width * 0.5,
+    height: 150,
     borderRadius: 15,
   },
   title: {
-    marginVertical: 5,
+    marginTop: 10,
   },
   editor: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 10,
   },
   dataEditor: { marginHorizontal: 10 },
   topContributor: {

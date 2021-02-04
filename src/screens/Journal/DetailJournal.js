@@ -10,7 +10,10 @@ import { Truncate, Loading } from "../../component";
 import { useLazyQuery } from "@apollo/react-hooks";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
 import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
-import { dateFormatForNotif } from "../../component/src/dateformatter";
+import {
+  dateFormatForNotif,
+  dateFormat,
+} from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
 
@@ -71,7 +74,7 @@ export default function DetailJournal(props) {
     },
   });
 
-  console.log(data)
+  console.log(data);
 
   const afterComment = async () => {
     await fetchDataComment();
@@ -102,7 +105,7 @@ export default function DetailJournal(props) {
     await fetchDataComment();
   };
 
-  console.log("token detail journal", token)
+  console.log("token detail journal", token);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -129,10 +132,14 @@ export default function DetailJournal(props) {
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);
     var days = Math.floor(hrs / 24);
+    console.log("menit", mins);
+    console.log("jam", hrs);
+    console.log("days", days > 0);
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
     hrs = hrs % 24;
     if (days > 1) {
+      // dateFormat(datetime);
       return dateFormatForNotif(
         datetime.slice(0, 10),
         datenow.toISOString().slice(0, 10)
@@ -175,14 +182,14 @@ export default function DetailJournal(props) {
             onPress={() => {
               item.user.id !== setting?.user?.id
                 ? props.navigation.push("ProfileStack", {
-                  screen: "otherprofile",
-                  params: {
-                    idUser: item.user.id,
-                  },
-                })
+                    screen: "otherprofile",
+                    params: {
+                      idUser: item.user.id,
+                    },
+                  })
                 : props.navigation.push("ProfileStack", {
-                  screen: "ProfileTab",
-                });
+                    screen: "ProfileTab",
+                  });
             }}
           >
             <Thumbnail
@@ -191,7 +198,10 @@ export default function DetailJournal(props) {
                   ? { uri: item.user.picture }
                   : default_image
               }
-              style={{ borderColor: "#fcfcfc", borderWidth: 2 }}
+              style={{
+                height: 35,
+                width: 35,
+              }}
             />
           </TouchableOpacity>
           <View style={{ marginLeft: 15 }}>
@@ -207,14 +217,14 @@ export default function DetailJournal(props) {
                 onPress={() => {
                   item.user.id !== setting?.user?.id
                     ? props.navigation.push("ProfileStack", {
-                      screen: "otherprofile",
-                      params: {
-                        idUser: item.user.id,
-                      },
-                    })
+                        screen: "otherprofile",
+                        params: {
+                          idUser: item.user.id,
+                        },
+                      })
                     : props.navigation.push("ProfileStack", {
-                      screen: "ProfileTab",
-                    });
+                        screen: "ProfileTab",
+                      });
                 }}
               >
                 {item.user.first_name}
@@ -270,24 +280,27 @@ export default function DetailJournal(props) {
                   data.journal_byid.userby
                     ? data.journal_byid.userby.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: data.journal_byid.userby.id,
-                        },
-                      })
+                          screen: "otherprofile",
+                          params: {
+                            idUser: data.journal_byid.userby.id,
+                          },
+                        })
                       : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                      })
+                          screen: "ProfileTab",
+                        })
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
                 <Thumbnail
+                  style={{
+                    height: 30,
+                    width: 30,
+                  }}
                   source={
                     data.journal_byid.userby
                       ? { uri: data.journal_byid.userby.picture }
                       : logo_funtravia
                   }
-                  style={{ borderColor: "#fcfcfc", borderWidth: 2 }}
                 />
               </TouchableOpacity>
               <View style={{ marginLeft: 10 }}>
@@ -298,14 +311,14 @@ export default function DetailJournal(props) {
                     data.journal_byid.userby
                       ? data.journal_byid.userby.id !== setting?.user?.id
                         ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: data.journal_byid.userby.id,
-                          },
-                        })
+                            screen: "otherprofile",
+                            params: {
+                              idUser: data.journal_byid.userby.id,
+                            },
+                          })
                         : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                        })
+                            screen: "ProfileTab",
+                          })
                       : Alert.alert("Journal By Funtravia");
                   }}
                 >
@@ -321,37 +334,37 @@ export default function DetailJournal(props) {
                 <Text
                   size={"small"}
                   type={"regular"}
-                  style={{ color: "#209FAE" }}
+                  style={{ color: "#209FAE", marginTop: -2 }}
                 >
                   #solo
                 </Text>
               </View>
             </View>
             {data.journal_byid &&
-              data.journal_byid.userby &&
-              data.journal_byid.userby.id ? (
-                <TouchableOpacity>
-                  <View
+            data.journal_byid.userby &&
+            data.journal_byid.userby.id ? (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    borderColor: "#209FAE",
+                    borderWidth: 1,
+                    borderRadius: 14,
+                  }}
+                >
+                  <Text
+                    size={"small"}
+                    type={"regular"}
                     style={{
-                      borderColor: "#209FAE",
-                      borderWidth: 1,
-                      borderRadius: 14,
+                      paddingHorizontal: 25,
+                      paddingVertical: 6,
+                      color: "#209FAE",
                     }}
                   >
-                    <Text
-                      size={"small"}
-                      type={"regular"}
-                      style={{
-                        paddingHorizontal: 25,
-                        paddingVertical: 6,
-                        color: "#209FAE",
-                      }}
-                    >
-                      {`${t("follow")}`}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ) : null}
+                    {`${t("follow")}`}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
           </View>
           <View style={{ marginHorizontal: 20 }}>
             <View>
@@ -372,19 +385,20 @@ export default function DetailJournal(props) {
                 {data && data.journal_byid && data.journal_byid.created_at ? (
                   <Text size={"small"} type={"light"}>
                     {duration(data.journal_byid.created_at)}
+                    {/* {data.journal_byid.created_at} */}
                   </Text>
                 ) : null}
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <LikeEmpty width={10} height={10} />
                   <Text size={"small"} type={"bold"} style={{ marginLeft: 5 }}>
                     {data.journal_byid &&
-                      data.journal_byid.article_response_count > 1
+                    data.journal_byid.article_response_count > 1
                       ? data.journal_byid.article_response_count +
-                      " " +
-                      t("likeMany")
+                        " " +
+                        t("likeMany")
                       : data.journal_byid.article_response_count +
-                      " " +
-                      t("like")}
+                        " " +
+                        t("like")}
                   </Text>
                 </View>
               </View>
@@ -399,8 +413,8 @@ export default function DetailJournal(props) {
                 if (item.type === "image") {
                   return (
                     <View key={index}>
-                      <View style={{ marginTop: 20 }}>
-                        {item.image ?
+                      {item.image ? (
+                        <View style={{ marginTop: 20 }}>
                           <Image
                             source={item.image ? { uri: item.image } : null}
                             style={{
@@ -408,8 +422,8 @@ export default function DetailJournal(props) {
                               height: Dimensions.get("window").width * 0.7,
                             }}
                           />
-                          : null}
-                      </View>
+                        </View>
+                      ) : null}
                       {item.title ? (
                         <View
                           style={{
@@ -449,14 +463,14 @@ export default function DetailJournal(props) {
                 } else {
                   return (
                     <View key={index}>
-                      <View
-                        style={{
-                          marginTop: 1,
-                          alignSelf: "center",
-                          width: Dimensions.get("window").width * 0.9,
-                        }}
-                      >
-                        {item.text ? (
+                      {item.text ? (
+                        <View
+                          style={{
+                            marginTop: 1,
+                            alignSelf: "center",
+                            width: Dimensions.get("window").width * 0.9,
+                          }}
+                        >
                           <View
                             style={{
                               marginTop: 5,
@@ -472,8 +486,8 @@ export default function DetailJournal(props) {
                               {item.text ? item.text : null}
                             </Text>
                           </View>
-                        ) : null}
-                      </View>
+                        </View>
+                      ) : null}
                     </View>
                   );
                 }
@@ -505,14 +519,14 @@ export default function DetailJournal(props) {
                   data.journal_byid.userby
                     ? data.journal_byid.userby.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: data.journal_byid.userby.id,
-                        },
-                      })
+                          screen: "otherprofile",
+                          params: {
+                            idUser: data.journal_byid.userby.id,
+                          },
+                        })
                       : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                      })
+                          screen: "ProfileTab",
+                        })
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
@@ -557,51 +571,51 @@ export default function DetailJournal(props) {
             </View>
           </View>
           {dataComment &&
-            dataComment.comment_journal_list &&
-            dataComment.comment_journal_list.length ? (
-              <FlatList
-                renderItem={renderComment}
-                data={dataComment.comment_journal_list}
-                keyExtractor={(dataComment) => dataComment.id}
-                nestedScrollEnabled
-                ListHeaderComponent={null}
-                ListFooterComponent={null}
-              />
-            ) : (
+          dataComment.comment_journal_list &&
+          dataComment.comment_journal_list.length ? (
+            <FlatList
+              renderItem={renderComment}
+              data={dataComment.comment_journal_list}
+              keyExtractor={(dataComment) => dataComment.id}
+              nestedScrollEnabled
+              ListHeaderComponent={null}
+              ListFooterComponent={null}
+            />
+          ) : (
+            <View
+              style={{
+                width: Dimensions.get("window").width * 0.9,
+                marginHorizontal: 20,
+                alignItems: "center",
+              }}
+            >
+              <Text>{`${t("NoComment")}`}</Text>
+            </View>
+          )}
+          {dataComment &&
+          dataComment.comment_journal_list &&
+          dataComment.comment_journal_list.length > 100 ? (
+            <TouchableOpacity>
               <View
                 style={{
-                  width: Dimensions.get("window").width * 0.9,
+                  marginVertical: 20,
                   marginHorizontal: 20,
-                  alignItems: "center",
                 }}
               >
-                <Text>{`${t("NoComment")}`}</Text>
-              </View>
-            )}
-          {dataComment &&
-            dataComment.comment_journal_list &&
-            dataComment.comment_journal_list.length > 100 ? (
-              <TouchableOpacity>
-                <View
+                <Button
+                  text={"Load More Comments"}
+                  size="medium"
+                  type="box"
+                  color="black"
+                  variant="bordered"
+                  onPress={() => props.navigation.goBack()}
                   style={{
-                    marginVertical: 20,
-                    marginHorizontal: 20,
+                    borderColor: "#464646",
                   }}
-                >
-                  <Button
-                    text={"Load More Comments"}
-                    size="medium"
-                    type="box"
-                    color="black"
-                    variant="bordered"
-                    onPress={() => props.navigation.goBack()}
-                    style={{
-                      borderColor: "#464646",
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-            ) : null}
+                />
+              </View>
+            </TouchableOpacity>
+          ) : null}
         </ScrollView>
       ) : null}
       {/* ==================================== Add Comment, Like and Unlike ============================================== */}

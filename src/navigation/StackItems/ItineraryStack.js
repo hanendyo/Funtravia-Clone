@@ -14,6 +14,7 @@ import ItineraryChooseday from "../../screens/Itinerary/ItineraryChooseDay";
 import ItineraryPopuler from "../../screens/Itinerary/ItineraryPopular/ItineraryPopuler";
 import ItineraryFavorite from "../../screens/Itinerary/ItineraryFavorite/ItineraryFavorite";
 import ItineraryPlaning from "../../screens/Itinerary/ItineraryPlaning/index";
+import ItineraryCategory from "../../screens/Itinerary/ItineraryCategory/ItineraryCategory";
 
 const ItineraryStack = createStackNavigator();
 export default function ItineraryStackNavigation() {
@@ -91,6 +92,11 @@ export default function ItineraryStackNavigation() {
         name="ItineraryPlaning"
         component={ItineraryPlaning}
         options={{ headerShown: false }}
+      />
+      <ItineraryStack.Screen
+        name="ItineraryCategory"
+        component={ItineraryCategory}
+        options={{ headerTitle: "", headerTransparent: true }}
       />
     </ItineraryStack.Navigator>
   );
