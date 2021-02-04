@@ -259,3 +259,48 @@ export const dateFormatForNotif = (date_from, date_until) => {
 
   return newDate;
 };
+
+// from 22-01-2020 00:00:00 to June, 22 2020
+export const dateFormatMDY = (date) => {
+  date = date.split(" ");
+  let monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  let formattedDate = new Date(date[0]);
+  let newDate =
+    monthNames[formattedDate.getMonth()] +
+    ", " +
+    formattedDate.getDate().toString() +
+    " " +
+    formattedDate.getFullYear().toString();
+
+  return newDate;
+};
+
+// from 22-01-2020 00:00:00 to Hari
+export const dateFormatHari = (date) => {
+  date = date.split(" ");
+  var days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  let formattedDate = new Date(date[0]);
+  let newDate = days[formattedDate.getDay()];
+  return newDate;
+};

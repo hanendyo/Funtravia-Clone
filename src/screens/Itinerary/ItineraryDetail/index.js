@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { Text } from "../../../component";
 import { Button, Truncate, Loading } from "../../../component";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
 // import { LinearGradient } from "expo-linear-gradient";
 import {
   Chat,
@@ -68,6 +68,14 @@ export default function ItineraryDetail(props) {
     props.route.params.datadayaktif
   );
   let [actives, setActives] = useState("Itinerary");
+  let [dataAkhir, setDataAkhir] = useState(null);
+  let [Cover, setCover] = useState(null);
+  let [idDay, setidDay] = useState(null);
+  let itincountries = props.route.params.country;
+  let [status, setStatus] = useState(props.route.params.status);
+  let token = props.route.params.token;
+  let [modalsave, setModalsave] = useState(false);
+  let [modal, setModal] = useState(false);
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -116,7 +124,7 @@ export default function ItineraryDetail(props) {
 
   const textSize = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [20, 20, 16],
+    outputRange: [18, 18, 14],
     extrapolate: "clamp",
   });
   const imageTranslate = scrollY.interpolate({
@@ -130,14 +138,6 @@ export default function ItineraryDetail(props) {
     outputRange: [HEADER_MAX_HEIGHT + 55, HEADER_MIN_HEIGHT],
     extrapolate: "clamp",
   });
-
-  let [dataAkhir, setDataAkhir] = useState(null);
-  let [Cover, setCover] = useState(null);
-  let [idDay, setidDay] = useState(null);
-
-  let itincountries = props.route.params.country;
-  let [status, setStatus] = useState(props.route.params.status);
-  let token = props.route.params.token;
 
   const [
     mutationdeleteItinerary,
@@ -189,10 +189,8 @@ export default function ItineraryDetail(props) {
 
   const upload = async (data) => {
     setloading(true);
-    // console.log(data);
 
     if (data) {
-      // console.log(tmpFile.base64);
       try {
         let response = await mutationUpload({
           variables: {
@@ -230,6 +228,7 @@ export default function ItineraryDetail(props) {
       upload(image.data);
     });
   };
+
   const pickGallery = async () => {
     ImagePicker.openPicker({
       width: 600,
@@ -275,7 +274,6 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    // await console.log(status);
     if (dataAkhir && dataAkhir.length > 0) {
       setModalsave(true);
     } else {
@@ -285,9 +283,6 @@ export default function ItineraryDetail(props) {
       });
     }
   };
-
-  let [modalsave, setModalsave] = useState(false);
-  let [modal, setModal] = useState(false);
 
   const completePlan = async () => {
     setloading(true);
@@ -340,14 +335,12 @@ export default function ItineraryDetail(props) {
                 throw new Error(response.data.change_status.message);
               }
               setDataAkhir([]);
-              // status = '';
               setStatus("saved");
             }
             setloading(false);
           } catch (error) {
             setloading(false);
             Alert.alert("" + error);
-            // throw new Error(error);
           }
         }
         setloading(false);
@@ -374,23 +367,22 @@ export default function ItineraryDetail(props) {
             throw new Error(response.data.change_status.message);
           }
           setDataAkhir([]);
-          // status = '';
           setStatus("saved");
         }
         setloading(false);
       } catch (error) {
         setloading(false);
         Alert.alert("" + error);
-        // throw new Error(error);
       }
     }
   };
 
-  const [
-    GetListEvent,
-    { data: datadetail, loading: loadingdetail, error: errordetail },
-  ] = useLazyQuery(ItineraryDetails, {
-    fetchPolicy: "network-only",
+  const {
+    data: datadetail,
+    loading: loadingdetail,
+    error: errordetail,
+    refetch: _Refresh,
+  } = useQuery(ItineraryDetails, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -412,17 +404,6 @@ export default function ItineraryDetail(props) {
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
-
-  const _Refresh = React.useCallback(() => {
-    setRefreshing(true);
-    setloading(true);
-    GetListEvent();
-    GetTimeline();
-    wait(2000).then(() => {
-      setRefreshing(false);
-      setloading(false);
-    });
-  }, []);
 
   const RenderBuddy = ({ databuddy }) => {
     return (
@@ -503,7 +484,6 @@ export default function ItineraryDetail(props) {
           index: status === "saved" ? 1 : 0,
         });
       }
-      // setDataAkhir([]);
 
       setloading(false);
     } catch (error) {
@@ -513,16 +493,17 @@ export default function ItineraryDetail(props) {
   };
 
   const GetTimeline = async (id) => {
-    setidDay(id);
-    // console.log('panggil mas');
+    await setidDay(id);
     await GetTimelin();
   };
 
-  const [
-    GetTimelin,
-    { data: datatimeline, loading: loadingtimeline, error: errortimeline },
-  ] = useLazyQuery(Timeline, {
-    fetchPolicy: "network-only",
+  const {
+    data: datatimeline,
+    loading: loadingtimeline,
+    error: errortimeline,
+    refetch: GetTimelin,
+  } = useQuery(Timeline, {
+    // fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -533,14 +514,9 @@ export default function ItineraryDetail(props) {
   });
 
   useEffect(() => {
-    // props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      _Refresh();
-    });
+    const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
   }, [props.navigation]);
-
-  console.log(datatimeline);
 
   const RenderUtama = ({ aktif, render }) => {
     if (aktif == "Itinerary") {
@@ -552,12 +528,12 @@ export default function ItineraryDetail(props) {
               data={datatimeline.day_timeline}
               props={props}
               setAkhir={(e) => {
-                setAkhir(e), setdataAkhir(e);
+                setdataAkhir(e);
               }}
               setidDayz={(e) => setidDayz(e)}
               token={token}
               iditinerary={itincountries}
-              setloading={(e) => setLoading(e)}
+              setloading={(e) => setloading(e)}
               refresh={(e) => Refresh(e)}
               GetTimeline={(e) => GetTimeline()}
               datadayaktif={datadayaktif}
@@ -565,6 +541,9 @@ export default function ItineraryDetail(props) {
               status={status && status === "saved" ? "saved" : "notsaved"}
               setCover={(e) => setCover(e)}
               cover={datadetail.itinerary_detail.cover}
+              lat={datadetail.itinerary_detail.city.latitude}
+              long={datadetail.itinerary_detail.city.longitude}
+              kota={datadetail.itinerary_detail.city.name}
             />
           ) : (
             <View
@@ -597,837 +576,830 @@ export default function ItineraryDetail(props) {
     }
   };
 
-  return (
-    <View
-      style={{
-        height: Dimensions.get("screen").height,
-        width: Dimensions.get("screen").width,
-        backgroundColor: "#f3f3f3",
-        flex: 1,
-      }}
-    >
-      <Loading show={loading} />
+  if (datadetail) {
+    // GetTimeline(datadetail.itinerary_detail.day[0].id);
 
-      <ScrollView
+    return (
+      <View
         style={{
-          marginTop: 55,
+          height: Dimensions.get("screen").height,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#f3f3f3",
+          flex: 1,
         }}
-        contentContainerStyle={{
-          paddingBottom: 57,
-        }}
-        onScroll={Animated.event([
-          {
-            nativeEvent: { contentOffset: { y: scrollY } },
-          },
-        ])}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
-        nestedScrollEnabled={true}
       >
-        <View
+        <Loading show={loading} />
+
+        <ScrollView
           style={{
-            paddingVertical: 5,
-            paddingHorizontal: 20,
-            width: "100%",
-            backgroundColor: "white",
+            marginTop: 55,
           }}
+          contentContainerStyle={{
+            paddingBottom: 57,
+          }}
+          onScroll={Animated.event([
+            {
+              nativeEvent: { contentOffset: { y: scrollY } },
+            },
+          ])}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          stickyHeaderIndices={[1]}
+          nestedScrollEnabled={true}
         >
           <View
             style={{
-              width: Dimensions.get("screen").width,
-              height: HEADER_MAX_HEIGHT,
+              paddingVertical: 5,
+              paddingHorizontal: 20,
+              width: "100%",
               backgroundColor: "white",
-            }}
-          ></View>
-          <TouchableOpacity
-            onPress={() => {
-              props.navigation.push("ItineraryBuddy", {
-                iditin:
-                  datadetail && datadetail.itinerary_detail
-                    ? datadetail.itinerary_detail.id
-                    : null,
-                token: token ? token : null,
-                dataitin:
-                  datadetail && datadetail.itinerary_detail ? datadetail : null,
-                databuddy:
-                  datadetail && datadetail.itinerary_detail
-                    ? datadetail.itinerary_detail.buddy
-                    : null,
-                created_by:
-                  datadetail && datadetail.itinerary_detail
-                    ? datadetail.itinerary_detail.created_by
-                    : null,
-              });
-            }}
-            style={{
-              flexDirection: "row",
-              // marginTop: 5,
-              paddingVertical: 7,
-              paddingHorizontal: 10,
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "flex-start",
-              // borderWidth: 1,
-              borderRadius: 5,
-              backgroundColor: "#daf0f2",
             }}
           >
             <View
               style={{
-                backgroundColor: "#209fae",
-                width: 7,
-                height: 17,
-                borderRadius: 5,
-                marginRight: 5,
+                width: Dimensions.get("screen").width,
+                height: HEADER_MAX_HEIGHT,
+                backgroundColor: "white",
               }}
             ></View>
-            <Text
-              size="small"
-              type="bold"
+            <TouchableOpacity
+              onPress={() => {
+                props.navigation.push("ItineraryBuddy", {
+                  iditin:
+                    datadetail && datadetail.itinerary_detail
+                      ? datadetail.itinerary_detail.id
+                      : null,
+                  token: token ? token : null,
+                  dataitin:
+                    datadetail && datadetail.itinerary_detail
+                      ? datadetail
+                      : null,
+                  databuddy:
+                    datadetail && datadetail.itinerary_detail
+                      ? datadetail.itinerary_detail.buddy
+                      : null,
+                  created_by:
+                    datadetail && datadetail.itinerary_detail
+                      ? datadetail.itinerary_detail.created_by
+                      : null,
+                });
+              }}
               style={{
-                marginRight: 15,
+                flexDirection: "row",
+                // marginTop: 5,
+                paddingVertical: 7,
+                paddingHorizontal: 10,
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "flex-start",
+                // borderWidth: 1,
+                borderRadius: 5,
+                backgroundColor: "#daf0f2",
               }}
             >
-              {t("travelBuddy")} :
-            </Text>
-            {datadetail && datadetail.itinerary_detail ? (
-              <RenderBuddy databuddy={datadetail.itinerary_detail.buddy} />
-            ) : null}
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            backgroundColor: "#fff",
-          }}
-        >
+              <View
+                style={{
+                  backgroundColor: "#209fae",
+                  width: 7,
+                  height: 17,
+                  borderRadius: 5,
+                  marginRight: 5,
+                }}
+              ></View>
+              <Text
+                size="small"
+                type="bold"
+                style={{
+                  marginRight: 15,
+                }}
+              >
+                {t("travelBuddy")} :
+              </Text>
+              {datadetail && datadetail.itinerary_detail ? (
+                <RenderBuddy databuddy={datadetail.itinerary_detail.buddy} />
+              ) : null}
+            </TouchableOpacity>
+          </View>
           <View
             style={{
               width: "100%",
               backgroundColor: "#fff",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              alignContent: "center",
             }}
           >
-            <Ripple
-              onPress={() => {
-                setActives("Itinerary");
-              }}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text
-                type={actives == "Itinerary" ? "bold" : "regular"}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
-                  borderBottomWidth: actives == "Itinerary" ? 3 : 0,
-                  borderBottomColor:
-                    actives == "Itinerary" ? "#209FAE" : "#EEEEEE",
-                  color: actives == "Itinerary" ? "#209FAE" : "#464646",
-                }}
-              >
-                Itinerary
-              </Text>
-            </Ripple>
-            <Ripple
-              onPress={() => {
-                setActives("Picture");
-              }}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text
-                type={actives == "Picture" ? "bold" : "regular"}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
-                  borderBottomWidth: actives == "Picture" ? 3 : 0,
-                  borderBottomColor:
-                    actives == "Picture" ? "#209FAE" : "#EEEEEE",
-                  color: actives == "Picture" ? "#209FAE" : "#464646",
-                }}
-              >
-                Travel Picture
-              </Text>
-            </Ripple>
-            <Ripple
-              onPress={() => {
-                setActives("Diary");
-              }}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text
-                type={actives == "Diary" ? "bold" : "regular"}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
-                  borderBottomWidth: actives == "Diary" ? 3 : 0,
-                  borderBottomColor: actives == "Diary" ? "#209FAE" : "#EEEEEE",
-                  color: actives == "Diary" ? "#209FAE" : "#464646",
-                }}
-              >
-                Diary
-              </Text>
-            </Ripple>
-          </View>
-
-          {datadetail && datadetail.itinerary_detail.day.length ? (
-            <ItineraryDay
-              dataitin={datadetail.itinerary_detail}
-              dataday={datadetail.itinerary_detail.day}
-              props={props}
-              token={token}
-              lat={datadetail.itinerary_detail.city.latitude}
-              long={datadetail.itinerary_detail.city.longitude}
-              kota={datadetail.itinerary_detail.city.name}
-              iditinerary={itincountries}
-              getdata={() => setParamAdd(true)}
-              setAkhir={(e) => setDataAkhir(e)}
-              setidDayz={(e) => setidDay(e)}
-              GetTimeline={(e) => GetTimeline(e)}
-              setCover={(e) => setCover(e)}
-              cover={datadetail.itinerary_detail.cover}
-              datadayaktif={
-                datadayaktif ? datadayaktif : props.route.params.datadayaktif
-              }
-              setdatadayaktif={(e) => setdatadayaktif(e)}
-              setLoading={(e) => setloading(e)}
-              Refresh={(e) => _Refresh(e)}
-              status={status && status === "saved" ? "saved" : "notsaved"}
-            />
-          ) : (
             <View
               style={{
-                height: 47,
                 width: "100%",
+                backgroundColor: "#fff",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d3d3d3",
+                flexDirection: "row",
                 justifyContent: "center",
                 alignContent: "center",
-                alignItems: "center",
+                alignContent: "center",
               }}
             >
-              <Text>Loading...</Text>
+              <Ripple
+                onPress={() => {
+                  setActives("Itinerary");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Text
+                  type={actives == "Itinerary" ? "bold" : "regular"}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 10,
+                    borderBottomWidth: actives == "Itinerary" ? 3 : 0,
+                    borderBottomColor:
+                      actives == "Itinerary" ? "#209FAE" : "#EEEEEE",
+                    color: actives == "Itinerary" ? "#209FAE" : "#464646",
+                  }}
+                >
+                  Itinerary
+                </Text>
+              </Ripple>
+              <Ripple
+                onPress={() => {
+                  setActives("Picture");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Text
+                  type={actives == "Picture" ? "bold" : "regular"}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 10,
+                    borderBottomWidth: actives == "Picture" ? 3 : 0,
+                    borderBottomColor:
+                      actives == "Picture" ? "#209FAE" : "#EEEEEE",
+                    color: actives == "Picture" ? "#209FAE" : "#464646",
+                  }}
+                >
+                  Travel Picture
+                </Text>
+              </Ripple>
+              <Ripple
+                onPress={() => {
+                  setActives("Diary");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Text
+                  type={actives == "Diary" ? "bold" : "regular"}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 10,
+                    borderBottomWidth: actives == "Diary" ? 3 : 0,
+                    borderBottomColor:
+                      actives == "Diary" ? "#209FAE" : "#EEEEEE",
+                    color: actives == "Diary" ? "#209FAE" : "#464646",
+                  }}
+                >
+                  Diary
+                </Text>
+              </Ripple>
             </View>
-          )}
-        </View>
-        <RenderUtama
-          aktif={actives}
-          // render={
-          //   data && data.CitiesInformation ? data.CitiesInformation : {}
-          // }
-        />
-      </ScrollView>
-      {/* ======================== (Panel bawah) ========================= */}
-      {status && status === "saved" ? (
-        <View
-          style={{
-            zIndex: 999999,
-            position: "absolute",
-            left: 0,
-            bottom: 0,
-            width: Dimensions.get("window").width,
-            backgroundColor: "white",
-            borderTopWidth: 1,
-            borderColor: "#F0F0F0",
-            shadowColor: "#F0F0F0",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 3,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            disabled
-            text={t("addDestination")}
-            size="large"
-            style={{
-              backgroundColor: "#d3d3d3",
-              borderRadius: 0,
-              width: "50%",
-              height: 56,
-              fontSize: 18,
-            }}
-          ></Button>
 
+            {datadetail && datadetail.itinerary_detail.day.length ? (
+              <ItineraryDay
+                dataitin={datadetail.itinerary_detail}
+                dataday={datadetail.itinerary_detail.day}
+                props={props}
+                token={token}
+                lat={datadetail.itinerary_detail.city.latitude}
+                long={datadetail.itinerary_detail.city.longitude}
+                kota={datadetail.itinerary_detail.city.name}
+                iditinerary={itincountries}
+                getdata={() => setParamAdd(true)}
+                dataAkhir={dataAkhir}
+                setAkhir={(e) => setDataAkhir(e)}
+                setidDayz={(e) => setidDay(e)}
+                GetTimeline={(e) => GetTimeline(e)}
+                setCover={(e) => setCover(e)}
+                cover={datadetail.itinerary_detail.cover}
+                datadayaktif={
+                  datadayaktif ? datadayaktif : props.route.params.datadayaktif
+                }
+                setdatadayaktif={(e) => setdatadayaktif(e)}
+                setLoading={(e) => setloading(e)}
+                Refresh={(e) => _Refresh(e)}
+                status={status && status === "saved" ? "saved" : "notsaved"}
+              />
+            ) : (
+              <View
+                style={{
+                  height: 47,
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text>Loading...</Text>
+              </View>
+            )}
+          </View>
+          <RenderUtama
+            aktif={actives}
+            // render={
+            //   data && data.CitiesInformation ? data.CitiesInformation : {}
+            // }
+          />
+        </ScrollView>
+        {/* ======================== (Panel bawah) ========================= */}
+        {status && status === "saved" ? (
           <View
             style={{
-              height: "100%",
-              width: "50%",
+              zIndex: 999999,
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: Dimensions.get("window").width,
+              backgroundColor: "white",
+              borderTopWidth: 1,
+              borderColor: "#F0F0F0",
+              shadowColor: "#F0F0F0",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation: 3,
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
             }}
           >
             <Button
               disabled
-              text=""
+              text={t("addDestination")}
               size="large"
-              color="tertiary"
-              type="circle"
               style={{
-                backgroundColor: "#f3f3f3",
+                backgroundColor: "#d3d3d3",
                 borderRadius: 0,
                 width: "50%",
                 height: 56,
                 fontSize: 18,
               }}
+            ></Button>
+
+            <View
+              style={{
+                height: "100%",
+                width: "50%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              <Plusgrey width={20} height={20} />
-              <Text size="small" style={{ color: "#d3d3d3" }}>
-                {t("addOption")}
-              </Text>
-            </Button>
+              <Button
+                disabled
+                text=""
+                size="large"
+                color="tertiary"
+                type="circle"
+                style={{
+                  backgroundColor: "#f3f3f3",
+                  borderRadius: 0,
+                  width: "50%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+              >
+                <Plusgrey width={20} height={20} />
+                <Text size="small" style={{ color: "#d3d3d3" }}>
+                  {t("addOption")}
+                </Text>
+              </Button>
+              <Button
+                onPress={() => {
+                  setStatus("Edit"), setshowside(false);
+                }}
+                text=""
+                size="large"
+                variant="transparent"
+                type="circle"
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: 0,
+                  width: "50%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+              >
+                <Create width={20} height={20} />
+                <Text
+                  size="small"
+                  style={
+                    {
+                      // color: '#d75995'
+                    }
+                  }
+                >
+                  {t("edit")}
+                </Text>
+              </Button>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={{
+              zIndex: 999999,
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: Dimensions.get("window").width,
+              backgroundColor: "white",
+              borderTopWidth: 1,
+              borderColor: "#F0F0F0",
+              shadowColor: "#F0F0F0",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation: 3,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
             <Button
               onPress={() => {
-                setStatus("Edit"), setshowside(false);
-              }}
-              text=""
-              size="large"
-              variant="transparent"
-              type="circle"
-              style={{
-                backgroundColor: "white",
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            >
-              <Create width={20} height={20} />
-              <Text
-                size="small"
-                style={
-                  {
-                    // color: '#d75995'
+                let maxjam = datadayaktif.total_hours.split(":");
+                let jam = parseFloat(maxjam[0]);
+                let menit = parseFloat(maxjam[1]);
+                if (jam < 24) {
+                  if (jam < 23) {
+                    props.navigation.push("itindest", {
+                      IdItinerary: itincountries,
+                      token: token,
+                      datadayaktif: datadayaktif,
+                      dataDes:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail
+                          : null,
+                      lat: datadetail.itinerary_detail.city.latitude,
+                      long: datadetail.itinerary_detail.city.longitude,
+                    });
+                  } else if (jam === 23 && menit === 0) {
+                    props.navigation.push("itindest", {
+                      IdItinerary: itincountries,
+                      token: token,
+                      datadayaktif: datadayaktif,
+                      dataDes:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail
+                          : null,
+                      lat: datadetail.itinerary_detail.city.latitude,
+                      long: datadetail.itinerary_detail.city.longitude,
+                    });
+                  } else {
+                    Alert.alert(t("alertjam"));
                   }
-                }
-              >
-                {t("edit")}
-              </Text>
-            </Button>
-          </View>
-        </View>
-      ) : (
-        <View
-          style={{
-            zIndex: 999999,
-            position: "absolute",
-            left: 0,
-            bottom: 0,
-            width: Dimensions.get("window").width,
-            backgroundColor: "white",
-            borderTopWidth: 1,
-            borderColor: "#F0F0F0",
-            shadowColor: "#F0F0F0",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 3,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            onPress={() => {
-              let maxjam = datadayaktif.total_hours.split(":");
-              let jam = parseFloat(maxjam[0]);
-              let menit = parseFloat(maxjam[1]);
-              if (jam < 24) {
-                if (jam < 23) {
-                  props.navigation.push("itindest", {
-                    IdItinerary: itincountries,
-                    token: token,
-                    datadayaktif: datadayaktif,
-                    dataDes:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                    lat: datadetail.itinerary_detail.city.latitude,
-                    long: datadetail.itinerary_detail.city.longitude,
-                  });
-                } else if (jam === 23 && menit === 0) {
-                  props.navigation.push("itindest", {
-                    IdItinerary: itincountries,
-                    token: token,
-                    datadayaktif: datadayaktif,
-                    dataDes:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                    lat: datadetail.itinerary_detail.city.latitude,
-                    long: datadetail.itinerary_detail.city.longitude,
-                  });
                 } else {
                   Alert.alert(t("alertjam"));
                 }
-              } else {
-                Alert.alert(t("alertjam"));
-              }
-            }}
-            text={t("addDestination")}
-            size="large"
-            style={{
-              borderRadius: 0,
-              width: "50%",
-              height: 56,
-              fontSize: 18,
-            }}
-          ></Button>
+              }}
+              text={t("addDestination")}
+              size="large"
+              style={{
+                borderRadius: 0,
+                width: "50%",
+                height: 56,
+                fontSize: 18,
+              }}
+            ></Button>
 
-          <View
-            style={{
-              height: "100%",
-              width: "50%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              onPress={() => {
-                setModalcustom(true);
-              }}
-              text=""
-              size="large"
-              color="tertiary"
-              type="circle"
+            <View
               style={{
-                borderRadius: 0,
+                height: "100%",
                 width: "50%",
-                height: 56,
-                fontSize: 18,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <Plus width={20} height={20} />
-              <Text size="small" style={{ color: "#209fae" }}>
-                {t("addOption")}
-              </Text>
-            </Button>
-            <Button
-              onPress={() => {
-                completePlan();
-              }}
-              text=""
-              size="large"
-              variant="transparent"
-              type="circle"
-              style={{
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            >
-              <Disketpink width={20} height={20} />
-              <Text size="small" style={{ color: "#d75995" }}>
-                {t("completePlan")}
-              </Text>
-            </Button>
+              <Button
+                onPress={() => {
+                  setModalcustom(true);
+                }}
+                text=""
+                size="large"
+                color="tertiary"
+                type="circle"
+                style={{
+                  borderRadius: 0,
+                  width: "50%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+              >
+                <Plus width={20} height={20} />
+                <Text size="small" style={{ color: "#209fae" }}>
+                  {t("addOption")}
+                </Text>
+              </Button>
+              <Button
+                onPress={() => {
+                  completePlan();
+                }}
+                text=""
+                size="large"
+                variant="transparent"
+                type="circle"
+                style={{
+                  borderRadius: 0,
+                  width: "50%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+              >
+                <Disketpink width={20} height={20} />
+                <Text size="small" style={{ color: "#d75995" }}>
+                  {t("completePlan")}
+                </Text>
+              </Button>
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      <Modal
-        onRequestClose={() => {
-          setModalcustom(false);
-        }}
-        onBackdropPress={() => {
-          setModalcustom(false);
-        }}
-        onSwipeComplete={() => {
-          setModalcustom(false);
-        }}
-        swipeDirection={"down"}
-        isVisible={Modalcustom}
-        style={{ justifyContent: "flex-end", padding: 0, margin: 0 }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            width: "100%",
-            // borderWidth: 1,
+        <Modal
+          onRequestClose={() => {
+            setModalcustom(false);
           }}
+          onBackdropPress={() => {
+            setModalcustom(false);
+          }}
+          onSwipeComplete={() => {
+            setModalcustom(false);
+          }}
+          swipeDirection={"down"}
+          isVisible={Modalcustom}
+          style={{ justifyContent: "flex-end", padding: 0, margin: 0 }}
         >
           <View
             style={{
+              backgroundColor: "white",
               width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#209FAE",
-              paddingVertical: 10,
-              paddingHorizontal: 20,
+              // borderWidth: 1,
             }}
           >
-            <Text
-              size="label"
-              type="bold"
+            <View
               style={{
-                color: "white",
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignContent: "center",
+                alignItems: "center",
+                backgroundColor: "#209FAE",
+                paddingVertical: 10,
+                paddingHorizontal: 20,
               }}
             >
-              {t("addDestinationForm")}
-            </Text>
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  color: "white",
+                }}
+              >
+                {t("addDestinationForm")}
+              </Text>
+              <TouchableOpacity
+                style={{}}
+                onPress={() => {
+                  setModalcustom(false);
+                }}
+              >
+                <Xhitam width={20} height={20} />
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              style={{}}
               onPress={() => {
                 setModalcustom(false);
+                let maxjam = datadayaktif.total_hours.split(":");
+                let jam = parseFloat(maxjam[0]);
+                let menit = parseFloat(maxjam[1]);
+                if (jam < 24) {
+                  if (jam < 23) {
+                    props.navigation.push("CustomItinerary", {
+                      idItin: itincountries,
+                      idDay: datadayaktif.id,
+                      itintitle: props.route.params.itintitle,
+                      dateitin: props.route.params.dateitin,
+                      datadayaktif: datadayaktif,
+                    });
+                  } else if (jam === 23 && menit === 0) {
+                    props.navigation.push("CustomItinerary", {
+                      idItin: itincountries,
+                      idDay: datadayaktif.id,
+                      itintitle: props.route.params.itintitle,
+                      dateitin: props.route.params.dateitin,
+                      datadayaktif: datadayaktif,
+                    });
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                } else {
+                  Alert.alert(t("alertjam"));
+                }
+              }}
+              style={{
+                marginVertical: 2.5,
+                width: "100%",
+                height: Dimensions.get("screen").width * 0.2,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                alignItems: "center",
               }}
             >
-              <Xhitam width={20} height={20} />
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 25,
+                  backgroundColor: "#f3f3f3",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <PlusBlack height={15} width={15} />
+              </View>
+              <View>
+                <Text size="description" type="bold">
+                  {t("createActivity")}
+                </Text>
+                <Text size="small" type="regular">
+                  {t("addCustomActivity")}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setModalcustom(false);
+                let maxjam = datadayaktif.total_hours.split(":");
+                let jam = parseFloat(maxjam[0]);
+                let menit = parseFloat(maxjam[1]);
+                if (jam < 24) {
+                  if (jam < 23) {
+                    props.navigation.push("AccountStack", {
+                      screen: "Wishlist",
+                    });
+                  } else if (jam === 23 && menit === 0) {
+                    props.navigation.push("AccountStack", {
+                      screen: "Wishlist",
+                    });
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                } else {
+                  Alert.alert(t("alertjam"));
+                }
+              }}
+              style={{
+                marginVertical: 2.5,
+                width: "100%",
+                height: Dimensions.get("screen").width * 0.2,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                borderRadius: 5,
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 25,
+                  backgroundColor: "#f3f3f3",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <Love height={15} width={15} />
+              </View>
+              <View>
+                <Text size="description" type="bold">
+                  {t("myWishlist")}
+                </Text>
+                <Text size="small" type="regular">
+                  {t("addFromWishtlist")}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setModalcustom(false);
+                let maxjam = datadayaktif.total_hours.split(":");
+                let jam = parseFloat(maxjam[0]);
+                let menit = parseFloat(maxjam[1]);
+                if (jam < 24) {
+                  if (jam < 23) {
+                    props.navigation.push("ItinGoogle", {
+                      dataDes:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail
+                          : null,
+                      token: token,
+                      datadayaktif: datadayaktif,
+                      lat: datadetail.itinerary_detail.city.latitude,
+                      long: datadetail.itinerary_detail.city.longitude,
+                    });
+                  } else if (jam === 23 && menit === 0) {
+                    props.navigation.push("ItinGoogle", {
+                      dataDes:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail
+                          : null,
+                      token: token,
+                      datadayaktif: datadayaktif,
+                      lat: datadetail.itinerary_detail.city.latitude,
+                      long: datadetail.itinerary_detail.city.longitude,
+                    });
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                } else {
+                  Alert.alert(t("alertjam"));
+                }
+              }}
+              style={{
+                marginVertical: 2.5,
+                width: "100%",
+                height: Dimensions.get("screen").width * 0.2,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                borderRadius: 5,
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 25,
+                  backgroundColor: "#f3f3f3",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <Google height={15} width={15} />
+              </View>
+              <View>
+                <Text size="description" type="bold">
+                  {t("searchFromGoogle")}
+                </Text>
+                <Text size="small" type="regular">
+                  {t("addDestinationGoogle")}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              setModalcustom(false);
-              let maxjam = datadayaktif.total_hours.split(":");
-              let jam = parseFloat(maxjam[0]);
-              let menit = parseFloat(maxjam[1]);
-              if (jam < 24) {
-                if (jam < 23) {
-                  props.navigation.push("CustomItinerary", {
-                    idItin: itincountries,
-                    idDay: datadayaktif.id,
-                    itintitle: props.route.params.itintitle,
-                    dateitin: props.route.params.dateitin,
-                    datadayaktif: datadayaktif,
-                  });
-                } else if (jam === 23 && menit === 0) {
-                  props.navigation.push("CustomItinerary", {
-                    idItin: itincountries,
-                    idDay: datadayaktif.id,
-                    itintitle: props.route.params.itintitle,
-                    dateitin: props.route.params.dateitin,
-                    datadayaktif: datadayaktif,
-                  });
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              } else {
-                Alert.alert(t("alertjam"));
-              }
-            }}
-            style={{
-              marginVertical: 2.5,
-              width: "100%",
-              height: Dimensions.get("screen").width * 0.2,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              flexDirection: "row",
-              paddingHorizontal: 20,
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 25,
-                backgroundColor: "#f3f3f3",
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 10,
-              }}
-            >
-              <PlusBlack height={15} width={15} />
-            </View>
-            <View>
-              <Text size="description" type="bold">
-                {t("createActivity")}
-              </Text>
-              <Text size="small" type="regular">
-                {t("addCustomActivity")}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setModalcustom(false);
-              let maxjam = datadayaktif.total_hours.split(":");
-              let jam = parseFloat(maxjam[0]);
-              let menit = parseFloat(maxjam[1]);
-              if (jam < 24) {
-                if (jam < 23) {
-                  props.navigation.push("AccountStack", { screen: "Wishlist" });
-                } else if (jam === 23 && menit === 0) {
-                  props.navigation.push("AccountStack", { screen: "Wishlist" });
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              } else {
-                Alert.alert(t("alertjam"));
-              }
-            }}
-            style={{
-              marginVertical: 2.5,
-              width: "100%",
-              height: Dimensions.get("screen").width * 0.2,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              borderRadius: 5,
-              flexDirection: "row",
-              paddingHorizontal: 20,
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 25,
-                backgroundColor: "#f3f3f3",
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 10,
-              }}
-            >
-              <Love height={15} width={15} />
-            </View>
-            <View>
-              <Text size="description" type="bold">
-                {t("myWishlist")}
-              </Text>
-              <Text size="small" type="regular">
-                {t("addFromWishtlist")}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setModalcustom(false);
-              let maxjam = datadayaktif.total_hours.split(":");
-              let jam = parseFloat(maxjam[0]);
-              let menit = parseFloat(maxjam[1]);
-              if (jam < 24) {
-                if (jam < 23) {
-                  props.navigation.push("ItinGoogle", {
-                    dataDes:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                    token: token,
-                    datadayaktif: datadayaktif,
-                    lat: datadetail.itinerary_detail.city.latitude,
-                    long: datadetail.itinerary_detail.city.longitude,
-                  });
-                } else if (jam === 23 && menit === 0) {
-                  props.navigation.push("ItinGoogle", {
-                    dataDes:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                    token: token,
-                    datadayaktif: datadayaktif,
-                    lat: datadetail.itinerary_detail.city.latitude,
-                    long: datadetail.itinerary_detail.city.longitude,
-                  });
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              } else {
-                Alert.alert(t("alertjam"));
-              }
-            }}
-            style={{
-              marginVertical: 2.5,
-              width: "100%",
-              height: Dimensions.get("screen").width * 0.2,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              borderRadius: 5,
-              flexDirection: "row",
-              paddingHorizontal: 20,
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 25,
-                backgroundColor: "#f3f3f3",
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 10,
-              }}
-            >
-              <Google height={15} width={15} />
-            </View>
-            <View>
-              <Text size="description" type="bold">
-                {t("searchFromGoogle")}
-              </Text>
-              <Text size="small" type="regular">
-                {t("addDestinationGoogle")}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: Dimensions.get("window").width,
-            backgroundColor: "white",
-            borderTopWidth: 1,
-            borderColor: "#F0F0F0",
-            shadowColor: "#F0F0F0",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 3,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            onPress={() => {
-              setModalcustom(false);
-              let maxjam = datadayaktif.total_hours.split(":");
-              let jam = parseFloat(maxjam[0]);
-              let menit = parseFloat(maxjam[1]);
-              if (jam < 24) {
-                if (jam < 23) {
-                  props.navigation.push("itindest", {
-                    IdItinerary: itincountries,
-                    token: token,
-                    datadayaktif: datadayaktif,
-                    dataDes:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                    lat: datadetail.itinerary_detail.city.latitude,
-                    long: datadetail.itinerary_detail.city.longitude,
-                  });
-                } else if (jam === 23 && menit === 0) {
-                  props.navigation.push("itindest", {
-                    IdItinerary: itincountries,
-                    token: token,
-                    datadayaktif: datadayaktif,
-                    dataDes:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                    lat: datadetail.itinerary_detail.city.latitude,
-                    long: datadetail.itinerary_detail.city.longitude,
-                  });
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              } else {
-                Alert.alert(t("alertjam"));
-              }
-            }}
-            text={t("addDestination")}
-            size="large"
-            style={{
-              borderRadius: 0,
-              width: "50%",
-              height: 56,
-              fontSize: 18,
-            }}
-          ></Button>
-
           <View
             style={{
-              height: "100%",
-              width: "50%",
+              width: Dimensions.get("window").width,
+              backgroundColor: "white",
+              borderTopWidth: 1,
+              borderColor: "#F0F0F0",
+              shadowColor: "#F0F0F0",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation: 3,
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
             }}
           >
-            <Button
-              text=""
-              size="large"
-              color="tertiary"
-              type="circle"
-              style={{
-                opacity: 0.5,
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            >
-              <Plus width={20} height={20} />
-              <Text size="small" style={{ color: "#209fae" }}>
-                {t("addOption")}
-              </Text>
-            </Button>
             <Button
               onPress={() => {
-                completePlan();
                 setModalcustom(false);
+                let maxjam = datadayaktif.total_hours.split(":");
+                let jam = parseFloat(maxjam[0]);
+                let menit = parseFloat(maxjam[1]);
+                if (jam < 24) {
+                  if (jam < 23) {
+                    props.navigation.push("itindest", {
+                      IdItinerary: itincountries,
+                      token: token,
+                      datadayaktif: datadayaktif,
+                      dataDes:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail
+                          : null,
+                      lat: datadetail.itinerary_detail.city.latitude,
+                      long: datadetail.itinerary_detail.city.longitude,
+                    });
+                  } else if (jam === 23 && menit === 0) {
+                    props.navigation.push("itindest", {
+                      IdItinerary: itincountries,
+                      token: token,
+                      datadayaktif: datadayaktif,
+                      dataDes:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail
+                          : null,
+                      lat: datadetail.itinerary_detail.city.latitude,
+                      long: datadetail.itinerary_detail.city.longitude,
+                    });
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                } else {
+                  Alert.alert(t("alertjam"));
+                }
               }}
-              text=""
+              text={t("addDestination")}
               size="large"
-              variant="transparent"
-              type="circle"
               style={{
                 borderRadius: 0,
                 width: "50%",
                 height: 56,
                 fontSize: 18,
               }}
+            ></Button>
+
+            <View
+              style={{
+                height: "100%",
+                width: "50%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              <Disketpink width={20} height={20} />
-              <Text size="small" style={{ color: "#d75995" }}>
-                {t("completePlan")}
-              </Text>
-            </Button>
+              <Button
+                text=""
+                size="large"
+                color="tertiary"
+                type="circle"
+                style={{
+                  opacity: 0.5,
+                  borderRadius: 0,
+                  width: "50%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+              >
+                <Plus width={20} height={20} />
+                <Text size="small" style={{ color: "#209fae" }}>
+                  {t("addOption")}
+                </Text>
+              </Button>
+              <Button
+                onPress={() => {
+                  completePlan();
+                  setModalcustom(false);
+                }}
+                text=""
+                size="large"
+                variant="transparent"
+                type="circle"
+                style={{
+                  borderRadius: 0,
+                  width: "50%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+              >
+                <Disketpink width={20} height={20} />
+                <Text size="small" style={{ color: "#d75995" }}>
+                  {t("completePlan")}
+                </Text>
+              </Button>
+            </View>
           </View>
-        </View>
-      </Modal>
-      <Animated.View style={[styles.header, { height: headerHeight, top: 0 }]}>
+        </Modal>
         <Animated.View
-          style={{
-            position: "absolute",
-            top: textTops,
-            zIndex: 9999,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: Dimensions.get("screen").width,
-            alignContent: "center",
-            alignItems: "center",
-          }}
+          style={[styles.header, { height: headerHeight, top: 0 }]}
         >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => _handlerBack()}
+          <Animated.View
             style={{
-              height: 55,
-              marginLeft: 7,
-            }}
-          >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          </Button>
-          <View
-            style={{
+              position: "absolute",
+              top: textTops,
+              zIndex: 9999,
               flexDirection: "row",
+              justifyContent: "space-between",
+              width: Dimensions.get("screen").width,
               alignContent: "center",
               alignItems: "center",
             }}
@@ -1437,251 +1409,217 @@ export default function ItineraryDetail(props) {
               size="medium"
               type="circle"
               variant="transparent"
+              onPress={() => _handlerBack()}
               style={{
                 height: 55,
+                marginLeft: 7,
               }}
-              onPress={() => Alert.alert("coming soon")}
             >
-              <Book height={20} width={20} />
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
             </Button>
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              style={{ height: 55 }}
-              onPress={() => Alert.alert("coming soon")}
+            <View
+              style={{
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+              }}
             >
-              <Expences height={20} width={20} />
-            </Button>
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              style={{ height: 55 }}
-              onPress={() => Alert.alert("coming soon")}
-            >
-              <Chat height={20} width={20} />
-            </Button>
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              style={{ height: 55 }}
-              onPress={() => setshowside(true)}
-            >
-              <OptionsVertWhite height={20} width={20} />
-            </Button>
-          </View>
-        </Animated.View>
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                style={{
+                  height: 55,
+                }}
+                onPress={() => Alert.alert("coming soon")}
+              >
+                <Book height={20} width={20} />
+              </Button>
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                style={{ height: 55 }}
+                onPress={() => Alert.alert("coming soon")}
+              >
+                <Expences height={20} width={20} />
+              </Button>
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                style={{ height: 55 }}
+                onPress={() => Alert.alert("coming soon")}
+              >
+                <Chat height={20} width={20} />
+              </Button>
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                style={{ height: 55 }}
+                onPress={() => setshowside(true)}
+              >
+                <OptionsVertWhite height={20} width={20} />
+              </Button>
+            </View>
+          </Animated.View>
 
-        <Animated.View
-          style={{
-            height: 90,
-            width: "100%",
-            position: "absolute",
-            zIndex: 1,
-
-            top: 0,
-            left: 0,
-            opacity: imageOpacity,
-          }}
-        >
-          <LinearGradient
-            colors={["rgba(0, 0, 0, 1)", "rgba(34, 34, 34, 0)"]}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 1, y: 1 }}
+          <Animated.View
             style={{
               height: 90,
               width: "100%",
-            }}
-          ></LinearGradient>
-        </Animated.View>
+              position: "absolute",
+              zIndex: 1,
 
-        <Animated.Image
-          source={Cover ? { uri: Cover } : default_image}
-          style={[
-            styles.backgroundImage,
-            {
+              top: 0,
+              left: 0,
               opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
-            },
-          ]}
-        />
-        <Animated.View
-          style={{
-            width: "100%",
-            backgroundColor: "white",
-            transform: [{ translateY: imageTranslate }],
-          }}
-        >
-          {/* LinearGradient */}
-          <Animated.View
-            // colors={["rgba(032, 159, 174,0.8)", "rgba(0, 0, 0, 0)"]}
-            // start={{ x: 0, y: 1 }}
-            // end={{ x: 1, y: 1 }}
-            style={{
-              height: 55,
-              opacity: imageOpacity,
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignContent: "center",
-              alignItems: "center",
             }}
           >
-            <Text
-              size="title"
-              type="black"
+            <LinearGradient
+              colors={["rgba(0, 0, 0, 1)", "rgba(34, 34, 34, 0)"]}
+              start={{ x: 1, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={{
-                color: "white",
+                height: 90,
+                width: "100%",
               }}
-            ></Text>
-            {datadetail &&
-            datadetail.itinerary_detail &&
-            datadetail.itinerary_detail.isprivate === true ? (
-              <Button
-                onPress={() => Alert.alert("coming soon")}
-                type="circle"
-                variant="bordered"
-                size="small"
-                style={{
-                  flexDirection: "row",
-                  width: 80,
-                  alignContent: "center",
-                  alignItems: "center",
-                  // paddingHorizontal: 20,
-                }}
-              >
-                <Sharegreen height={15} width={15} />
-                <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
-                  {t("share")}
-                </Text>
-              </Button>
-            ) : null}
+            ></LinearGradient>
           </Animated.View>
-        </Animated.View>
 
-        <Animated.View
-          style={[
-            styles.bar,
-            {
-              left: textLeft,
-              bottom: textTop,
-              height: 55,
-            },
-          ]}
-        >
-          <Animated.Text
-            allowFontScaling={false}
+          <Animated.Image
+            source={Cover ? { uri: Cover } : default_image}
             style={[
-              styles.title,
+              styles.backgroundImage,
               {
-                fontSize: textSize,
-                fontFamily: "Lato-Bold",
-                color: warna,
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
+              },
+            ]}
+          />
+          <Animated.View
+            style={{
+              width: "100%",
+              backgroundColor: "white",
+              transform: [{ translateY: imageTranslate }],
+            }}
+          >
+            {/* LinearGradient */}
+            <Animated.View
+              // colors={["rgba(032, 159, 174,0.8)", "rgba(0, 0, 0, 0)"]}
+              // start={{ x: 0, y: 1 }}
+              // end={{ x: 1, y: 1 }}
+              style={{
+                height: 55,
+                opacity: imageOpacity,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                size="title"
+                type="black"
+                style={{
+                  color: "white",
+                }}
+              ></Text>
+              {datadetail &&
+              datadetail.itinerary_detail &&
+              datadetail.itinerary_detail.isprivate === true ? (
+                <Button
+                  onPress={() => Alert.alert("coming soon")}
+                  type="circle"
+                  variant="bordered"
+                  size="small"
+                  style={{
+                    flexDirection: "row",
+                    width: 80,
+                    alignContent: "center",
+                    alignItems: "center",
+                    // paddingHorizontal: 20,
+                  }}
+                >
+                  <Sharegreen height={15} width={15} />
+                  <Text
+                    size="small"
+                    style={{ marginLeft: 5, color: "#209fae" }}
+                  >
+                    {t("share")}
+                  </Text>
+                </Button>
+              ) : null}
+            </Animated.View>
+          </Animated.View>
+
+          <Animated.View
+            style={[
+              styles.bar,
+              {
+                left: textLeft,
+                bottom: textTop,
+                height: 55,
               },
             ]}
           >
-            {datadetail && datadetail.itinerary_detail ? (
-              <Truncate text={datadetail.itinerary_detail.name} length={30} />
-            ) : null}
-          </Animated.Text>
-          <View
-            style={{
-              flexDirection: "row",
-              // paddingVertical: 10,
-              alignItems: "center",
-            }}
-          >
             <Animated.Text
-              size="small"
-              type="bold"
-              style={{ color: warna2, fontFamily: "Lato-Bold", fontSize: 12 }}
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                {
+                  fontSize: textSize,
+                  fontFamily: "Lato-Bold",
+                  color: warna,
+                },
+              ]}
             >
-              {/* {t("dates")} :{" "} */}
-              {datadetail && datadetail.itinerary_detail
-                ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                  "  -  " +
-                  dateFormatr(datadetail.itinerary_detail.end_date)
-                : null}
+              {datadetail && datadetail.itinerary_detail ? (
+                <Truncate text={datadetail.itinerary_detail.name} length={30} />
+              ) : null}
             </Animated.Text>
-          </View>
-        </Animated.View>
-      </Animated.View>
-      <Sidebar
-        props={props}
-        show={showside}
-        Data={() => {
-          return (
             <View
               style={{
-                padding: 10,
-                width: "100%",
-                justifyContent: "flex-start",
+                flexDirection: "row",
+                // paddingVertical: 10,
+                alignItems: "center",
               }}
             >
-              <TouchableOpacity
+              <Animated.Text
+                size="small"
+                type="bold"
+                style={{ color: warna2, fontFamily: "Lato-Bold", fontSize: 12 }}
+              >
+                {/* {t("dates")} :{" "} */}
+                {datadetail && datadetail.itinerary_detail
+                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                    "  -  " +
+                    dateFormatr(datadetail.itinerary_detail.end_date)
+                  : null}
+              </Animated.Text>
+            </View>
+          </Animated.View>
+        </Animated.View>
+        <Sidebar
+          props={props}
+          show={showside}
+          Data={() => {
+            return (
+              <View
                 style={{
-                  marginVertical: 5,
-                  flexDirection: "row",
+                  padding: 10,
                   width: "100%",
-                  paddingVertical: 2,
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  setmodalcover(true), setshowside(false);
+                  justifyContent: "flex-start",
                 }}
               >
-                <Create height={15} width={15} />
-
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{
-                    marginLeft: 10,
-                  }}
-                >
-                  {t("EditCover")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  width: "100%",
-                  paddingVertical: 2,
-                  alignItems: "center",
-                  marginVertical: 5,
-                }}
-                onPress={() => {
-                  props.navigation.push("SettingItin", {
-                    token: token,
-                    iditin: itincountries,
-                    isPrivate:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail.itinerary_detail.isprivate
-                        : false,
-                  }),
-                    setshowside(false);
-                }}
-              >
-                <Settings height={15} width={15} />
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{
-                    marginLeft: 10,
-                  }}
-                >
-                  {t("setting")}
-                </Text>
-              </TouchableOpacity>
-
-              {status === "saved" ? (
                 <TouchableOpacity
                   style={{
                     marginVertical: 5,
@@ -1691,10 +1629,11 @@ export default function ItineraryDetail(props) {
                     alignItems: "center",
                   }}
                   onPress={() => {
-                    setStatus("Edit"), setshowside(false);
+                    setmodalcover(true), setshowside(false);
                   }}
                 >
                   <Create height={15} width={15} />
+
                   <Text
                     size="label"
                     type="regular"
@@ -1702,148 +1641,207 @@ export default function ItineraryDetail(props) {
                       marginLeft: 10,
                     }}
                   >
-                    {t("edit")}
+                    {t("EditCover")}
                   </Text>
                 </TouchableOpacity>
-              ) : null}
-
-              <TouchableOpacity
-                style={{
-                  marginVertical: 5,
-                  flexDirection: "row",
-                  width: "100%",
-                  paddingVertical: 2,
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  _handlehapus(itincountries), setshowside(false);
-                }}
-              >
-                <Delete height={15} width={15} />
-
-                <Text
-                  size="label"
-                  type="regular"
+                <TouchableOpacity
                   style={{
-                    marginLeft: 10,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 2,
+                    alignItems: "center",
+                    marginVertical: 5,
+                  }}
+                  onPress={() => {
+                    props.navigation.push("SettingItin", {
+                      token: token,
+                      iditin: itincountries,
+                      isPrivate:
+                        datadetail && datadetail.itinerary_detail
+                          ? datadetail.itinerary_detail.isprivate
+                          : false,
+                    }),
+                      setshowside(false);
                   }}
                 >
-                  {t("delete")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          );
-        }}
-        setClose={(e) => setshowside(false)}
-      />
+                  <Settings height={15} width={15} />
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 10,
+                    }}
+                  >
+                    {t("setting")}
+                  </Text>
+                </TouchableOpacity>
 
-      <Modal
-        onBackdropPress={() => {
-          setModalsave(false);
-        }}
-        onRequestClose={() => setModalsave(false)}
-        onDismiss={() => setModalsave(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modalsave}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
+                {status === "saved" ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 2,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setStatus("Edit"), setshowside(false);
+                    }}
+                  >
+                    <Create height={15} width={15} />
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("edit")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 2,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    _handlehapus(itincountries), setshowside(false);
+                  }}
+                >
+                  <Delete height={15} width={15} />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 10,
+                    }}
+                  >
+                    {t("delete")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
+          setClose={(e) => setshowside(false)}
+        />
+
+        <Modal
+          onBackdropPress={() => {
+            setModalsave(false);
+          }}
+          onRequestClose={() => setModalsave(false)}
+          onDismiss={() => setModalsave(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalsave}
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
           }}
         >
-          <Text>{t("alertsave")}</Text>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingVertical: 20,
-              paddingHorizontal: 40,
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              padding: 20,
             }}
           >
-            <Button
-              onPress={() => {
-                savetimeline();
+            <Text>{t("alertsave")}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingVertical: 20,
+                paddingHorizontal: 40,
               }}
-              color="primary"
-              text={t("save")}
-            ></Button>
-            <Button
-              onPress={() => {
-                props.navigation.push("MainTripPlaning", {
-                  index: status === "saved" ? 1 : 0,
-                });
-              }}
-              color="secondary"
-              variant="bordered"
-              text={t("delete")}
-            ></Button>
+            >
+              <Button
+                onPress={() => {
+                  savetimeline();
+                }}
+                color="primary"
+                text={t("save")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  props.navigation.push("MainTripPlaning", {
+                    index: status === "saved" ? 1 : 0,
+                  });
+                }}
+                color="secondary"
+                variant="bordered"
+                text={t("delete")}
+              ></Button>
+            </View>
           </View>
-        </View>
-      </Modal>
-      <Modal
-        onBackdropPress={() => {
-          setmodalcover(false);
-        }}
-        onRequestClose={() => setmodalcover(false)}
-        onDismiss={() => setmodalcover(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modalcover}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
+        </Modal>
+        <Modal
+          onBackdropPress={() => {
+            setmodalcover(false);
+          }}
+          onRequestClose={() => setmodalcover(false)}
+          onDismiss={() => setmodalcover(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalcover}
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
           }}
         >
-          <TouchableOpacity
+          <View
             style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setmodalcover(false), pickcamera();
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              padding: 20,
             }}
           >
-            <Text
-              size="description"
-              type="regular"
-              style={{ color: "#d75995" }}
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setmodalcover(false), pickcamera();
+              }}
             >
-              {t("OpenCamera")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setmodalcover(false), pickGallery();
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenGallery")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
-  );
+              <Text
+                size="description"
+                type="regular"
+                style={{ color: "#d75995" }}
+              >
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setmodalcover(false), pickGallery();
+              }}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenGallery")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </View>
+    );
+  } else {
+    return null;
+  }
 }
 
 const styles = StyleSheet.create({

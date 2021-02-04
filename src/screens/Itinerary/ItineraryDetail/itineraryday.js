@@ -10,7 +10,7 @@ import { FunIcon } from "../../../component";
 import { Text } from "../../../component";
 import { Button } from "../../../component";
 import Modal from "react-native-modal";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
 import {
   Add,
   Hotel,
@@ -42,12 +42,17 @@ export default function ItineraryDay({
   setLoading,
   Refresh,
   status,
+  GetTimeline,
+  dataAkhir,
 }) {
   const { t, i18n } = useTranslation();
-
   let [modalmenu, setModalmenu] = useState(false);
   let [dataDay, setDataday] = useState(dataday);
-  let [dataAkhir, setdataAkhir] = useState();
+  let slider = useRef();
+  let [indexnya, setIndex] = useState(0);
+  let [idDay, setIdDays] = useState(dataDay[0].id);
+  let [modalsave, setModalsave] = useState(false);
+  let [nexts, setnexts] = useState({});
 
   const [
     mutationAddDay,
@@ -86,7 +91,6 @@ export default function ItineraryDay({
   });
 
   const deteteday = async (iditinerary, idDay) => {
-    setLoading(true);
     try {
       let response = await mutationDeleteDay({
         variables: {
@@ -105,9 +109,7 @@ export default function ItineraryDay({
         await setdatadayaktif(dataDay[0]);
         await Refresh();
       }
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       Alert.alert("" + error);
     }
   };
@@ -120,7 +122,6 @@ export default function ItineraryDay({
   };
 
   const addButton = async () => {
-    setLoading(true);
     var datebaru = getdatebaru(dataDay[dataDay.length - 1].date);
     var urutanbaru = parseInt(dataDay[dataDay.length - 1].day);
 
@@ -142,40 +143,22 @@ export default function ItineraryDay({
         }
 
         setDataday(response.data.add_dayitinerary.dataday);
-        // setTimeout(() => {
         setIndex(dataDay.length);
         setIdDay(dataDay[dataDay.length - 1].id);
         await slider.current.scrollToEnd();
         Refresh();
-        // await slider.current.scrollToIndex({
-        // 	index: dataDay.length - 1,
-        // });
-        // }, 1700);
       }
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       Alert.alert("" + error);
     }
   };
-
-  let slider = useRef();
-
-  let [indexnya, setIndex] = useState(0);
-
-  let [idDay, setIdDays] = useState(dataDay[0].id);
 
   const setIdDay = (id) => {
     setIdDays(id);
     setidDayz(id);
   };
 
-  let [modalsave, setModalsave] = useState(false);
-  let [nexts, setnexts] = useState({});
-
   const savetimeline = async () => {
-    setLoading(true);
-
     setModalsave(false);
 
     if (dataAkhir && dataAkhir.length > 0) {
@@ -194,151 +177,116 @@ export default function ItineraryDay({
           if (response.data.update_timeline.code !== 200) {
             throw new Error(response.data.update_timeline.message);
           }
-          // Refresh();
-          setdataAkhir(null);
           setAkhir([]);
           nextday(nexts);
           setnexts({});
         }
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
         Alert.alert("" + error);
       }
     }
   };
 
   const nextday = async (nex) => {
-    setAkhir(null), setdataAkhir(null);
+    setAkhir(null);
     setModalsave(false);
     setIndex(nex.index);
     setIdDay(nex.item.id);
-    await GetTimeline(idDay);
-    // setTimeout(() => {
+    await GetTimeline(nex.item.id);
     await slider.current.scrollToIndex({
       index: nex.index,
     });
-    setLoading(false);
+
     setdatadayaktif(nex.item);
     setnexts({});
   };
 
   const setaktip = async (item, x) => {
-    setLoading(true);
     setnexts({
       item: item,
       index: x,
     });
     if (dataAkhir && dataAkhir.length > 0) {
-      // Alert.alert('Silahkan simpan data sebelumnya');
       setModalsave(true);
-      setLoading(false);
     } else {
       setIndex(x);
       setIdDay(item.id);
-      await GetTimeline(idDay);
+      await GetTimeline(item.id);
       await slider.current.scrollToIndex({
         index: x,
       });
-      setLoading(false);
       setdatadayaktif(item);
     }
   };
+
   const setdata = async (data) => {
     setdatadayaktif(data[0]);
     await GetTimeline(idDay);
   };
 
-  useEffect(() => {
-    {
-      datadayaktif && datadayaktif.day
-        ? setaktip(datadayaktif, parseInt(datadayaktif.day) - 1)
-        : setdata(dataDay && dataDay.length ? dataDay : []);
-    }
-
-    // _fetchItem(dataKota);
-  }, []);
-
-  const [
-    GetTimeline,
-    { data: datatimeline, loading: loadingtimeline, error: errortimeline },
-  ] = useLazyQuery(Timeline, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: { id: idDay },
-  });
-
   return (
     <View
+      onLayout={() => {
+        {
+          datadayaktif && datadayaktif.day
+            ? setaktip(datadayaktif, parseInt(datadayaktif.day) - 1)
+            : setdata(dataDay && dataDay.length ? dataDay : []);
+        }
+      }}
       style={{
         width: Dimensions.get("screen").width,
       }}
     >
-      <View
-        style={{
+      <FlatList
+        ref={slider}
+        style={{}}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        initialScrollIndex={indexnya}
+        horizontal={true}
+        keyExtractor={(item, index) => index + ""}
+        data={dataDay}
+        ListFooterComponent={
+          status === "notsaved" ? (
+            <Ripple
+              onPress={() => addButton()}
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 25,
+                alignContent: "center",
+                justifyContent: "center",
+                borderWidth: 1,
+                borderColor: "#d3d3d3",
+                borderStyle: "dashed",
+                marginHorizontal: 2.5,
+                borderRadius: 5,
+              }}
+            >
+              <PlusBlack width={10} height={10} />
+            </Ripple>
+          ) : null
+        }
+        contentContainerStyle={{
           flexDirection: "row",
-          width: "100%",
-          justifyContent: "space-between",
+          paddingStart: 15,
+          paddingEnd: 15,
+          paddingVertical: 10,
         }}
-      >
-        {/* {dataDay && dataDay.length ? ( */}
-        <FlatList
-          ref={slider}
-          style={{}}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          initialScrollIndex={indexnya}
-          horizontal={true}
-          keyExtractor={(item, index) => index + ""}
-          data={dataDay}
-          ListFooterComponent={
-            status === "notsaved" ? (
-              <Ripple
-                onPress={() => addButton()}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 25,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: "#d3d3d3",
-                  borderStyle: "dashed",
-                  marginHorizontal: 2.5,
-                  borderRadius: 5,
-                }}
-              >
-                <PlusBlack width={10} height={10} />
-              </Ripple>
-            ) : null
-          }
-          contentContainerStyle={{
-            flexDirection: "row",
-            paddingStart: 15,
-            paddingEnd: 15,
-            paddingVertical: 10,
-          }}
-          renderItem={({ item, index }) => {
-            return (
-              <Button
-                onPress={() => setaktip(item, index)}
-                text={t("day") + " " + item.day}
-                size="small"
-                color={indexnya !== index ? "green" : "primary"}
-                type="box"
-                style={{
-                  marginHorizontal: 2.5,
-                }}
-              ></Button>
-            );
-          }}
-        />
-        {/* ) : null} */}
-      </View>
+        renderItem={({ item, index }) => {
+          return (
+            <Button
+              onPress={() => setaktip(item, index)}
+              text={t("day") + " " + item.day}
+              size="small"
+              color={indexnya !== index ? "green" : "primary"}
+              type="box"
+              style={{
+                marginHorizontal: 2.5,
+              }}
+            ></Button>
+          );
+        }}
+      />
 
       <Modal
         onBackdropPress={() => {
@@ -402,7 +350,6 @@ export default function ItineraryDay({
             backgroundColor: "white",
             width: Dimensions.get("screen").width - 60,
             padding: 20,
-            // height: '50%',
           }}
         >
           <Text>{t("alertsave")}</Text>
