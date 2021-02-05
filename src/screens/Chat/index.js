@@ -286,8 +286,12 @@ export default function Message({ navigation }) {
 			<FlatList
 				data={
 					active == "personal"
-						? dataRes.sort((a, b) => a.created_at - b.created_at)
-						: dataGroupRes.sort((a, b) => a.created_at - b.created_at)
+						? dataRes.sort(
+								(a, b) => new Date(b.recent.date) - new Date(a.recent.date)
+						  )
+						: dataGroupRes.sort(
+								(a, b) => new Date(b.recent.date) - new Date(a.recent.date)
+						  )
 				}
 				renderItem={active == "personal" ? renderItem : renderItemGroup}
 				keyExtractor={(item) => item.id}

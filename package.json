@@ -20,6 +20,7 @@
 		"@react-native-firebase/app": "^10.5.0",
 		"@react-native-firebase/messaging": "^10.4.0",
 		"@react-navigation/bottom-tabs": "^5.11.2",
+		"@react-navigation/material-top-tabs": "^5.3.13",
 		"@react-navigation/native": "^5.8.10",
 		"@react-navigation/stack": "^5.12.8",
 		"apollo-boost": "^0.4.9",
@@ -59,6 +60,7 @@
 		"react-native-svg": "^12.1.0",
 		"react-native-svg-transformer": "^0.14.3",
 		"react-native-swipeout": "^2.3.6",
+		"react-native-tab-view": "^2.15.2",
 		"react-native-webview": "^11.0.3",
 		"save": "^2.4.0",
 		"socket.io-client": "^3.0.5"

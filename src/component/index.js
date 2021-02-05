@@ -11,19 +11,21 @@ import Loading from "./src/Loading";
 import Sidebar from "./src/Sidebar";
 import rupiah from "./src/Rupiah";
 import Capital from "./src/Capital";
+import FTabs from "./src/Tabs";
 
 export {
-  Text,
-  Button,
-  CustomImage,
-  FloatingInput,
-  Peringatan,
-  DurationSelector,
-  FunIcon,
-  PhoneCodeSelector,
-  Truncate,
-  Loading,
-  Sidebar,
-  rupiah,
-  Capital,
+	Text,
+	Button,
+	CustomImage,
+	FloatingInput,
+	Peringatan,
+	DurationSelector,
+	FunIcon,
+	PhoneCodeSelector,
+	Truncate,
+	Loading,
+	Sidebar,
+	rupiah,
+	Capital,
+	FTabs,
 };
