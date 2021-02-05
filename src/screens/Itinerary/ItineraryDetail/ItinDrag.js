@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-  Alert,
-  Picker,
-} from "react-native";
+import { View, TouchableOpacity, Dimensions, Image, Alert } from "react-native";
+import { Picker } from "react-native";
 // import { Modal, Portal, Provider } from 'react-native-paper';
 import Modal from "react-native-modal";
 import {
@@ -52,13 +46,14 @@ export default function ItinDrag({
   status,
   setCover,
   cover,
+  loadingtimeline,
 }) {
   const { t, i18n } = useTranslation();
-
   let [modal, setModal] = useState(false);
   let [modaldate, setModaldate] = useState(false);
   let [modalmenu, setModalmenu] = useState(false);
-  let [dataList, setDataList] = useState([...data]);
+  let [dataList, setDataList] = useState(data);
+  let [akhir, setdataAkhir] = useState([]);
   let [startTime, setStarTime] = useState(dataList[0].time);
   let [textinput, setInput] = useState("");
   let [indexinput, setIndexInput] = useState("");
@@ -85,6 +80,7 @@ export default function ItinDrag({
     "50n": "w-windy",
   });
   let [jamer, setjamer] = useState("00");
+  let [jamers, setjamers] = useState(0);
   let [menor, setmenor] = useState("00");
   let [idactivity, setidactivity] = useState("");
   let [types, settypes] = useState("");
@@ -115,6 +111,8 @@ export default function ItinDrag({
     }
   };
 
+  console.log(akhir);
+
   const [
     mutationDeleteActivity,
     {
@@ -143,20 +141,6 @@ export default function ItinDrag({
     },
   });
 
-  const [
-    mutationSaveTimeline,
-    { loading: loadingSave, data: dataSave, error: errorSave },
-  ] = useMutation(UpdateTimeline, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  useEffect(() => {}, []);
-
   const jams = [
     "00",
     "01",
@@ -184,6 +168,7 @@ export default function ItinDrag({
     "23",
     "24",
   ];
+
   const menits = [
     "00",
     "05",
@@ -204,16 +189,16 @@ export default function ItinDrag({
       hour: "2",
       minutes: "5",
     },
-    {
-      type: "motorcycle",
-      hour: "2",
-      minutes: "5",
-    },
-    {
-      type: "walk",
-      hour: "2",
-      minutes: "5",
-    },
+    // {
+    //   type: "motorcycle",
+    //   hour: "2",
+    //   minutes: "5",
+    // },
+    // {
+    //   type: "walk",
+    //   hour: "2",
+    //   minutes: "5",
+    // },
   ];
 
   const getjarakgoogle = (dataAll, index) => {
@@ -230,12 +215,14 @@ export default function ItinDrag({
             <View
               style={{
                 marginRight: 5,
-                borderColor: "#d1d1d1",
-                borderRadius: 20,
-                borderWidth: 1,
+                borderRadius: 5,
+                elevation: 3,
+                marginVertical: 2,
+                marginLeft: 1,
+                backgroundColor: "#fff",
                 flexDirection: "row",
                 paddingHorizontal: 10,
-                paddingVertical: 5,
+                paddingVertical: 10,
                 alignItems: "center",
               }}
             >
@@ -260,40 +247,42 @@ export default function ItinDrag({
     );
   };
 
-  const handledrag = async (data, from, to) => {
-    data[0].time = startTime;
+  const handledrag = async (datakiriman, from, to) => {
+    datakiriman[0].time = startTime;
     var x = 0;
     var order = 1;
-    for (var y in data) {
-      data[y].order = order;
+    for (var y in datakiriman) {
+      datakiriman[y].order = order;
 
-      if (data[y - 1]) {
-        data[y].time = hitungDuration({
-          startt: data[y - 1].time,
-          dur: data[y - 1].duration,
+      if (datakiriman[y - 1]) {
+        datakiriman[y].time = hitungDuration({
+          startt: datakiriman[y - 1].time,
+          dur: datakiriman[y - 1].duration,
         });
       }
       x++;
       order++;
     }
 
-    if ((x = data.length)) {
-      await setAkhir(data);
-      await setDataList(data);
+    if ((x = datakiriman.length)) {
+      setDataList(datakiriman);
       await setidDayz(idDay);
       if (cover === null) {
-        await Updatecovers(data[0].images ? data[0].images : null);
+        await Updatecovers(
+          datakiriman[0].images ? datakiriman[0].images : null
+        );
       }
+      await savetimeline(datakiriman);
     }
   };
 
-  const saveNotes = () => {
+  const saveNotes = async () => {
     var tempData = [...dataList];
     tempData[indexinput].note = textinput;
-    setDataList(tempData);
-    setAkhir(tempData);
-    setModal(false);
-    setidDayz(idDay);
+    await setDataList(tempData);
+    await setModal(false);
+    await setidDayz(idDay);
+    savetimeline(tempData);
   };
 
   const bukaModal = (text = null, index) => {
@@ -350,7 +339,7 @@ export default function ItinDrag({
     );
   };
 
-  const setTime = (timeselected, nn) => {
+  const setTime = async (timeselected, nn) => {
     let datas = [...nn];
     let awal = datas[indexinput].duration;
 
@@ -450,24 +439,23 @@ export default function ItinDrag({
 
     if (hasiljam <= 23) {
       let dataday = { ...datadayaktif };
-      // setdatadayaktif
 
       if (hasiljam === 23 && hasilmenit <= 59) {
-        setAkhir(datas);
-        setDataList(datas);
-        setidDayz(idDay);
-        setPositiondate("");
-        setModaldate(false);
+        await setDataList(datas);
+        savetimeline(datas);
+        await setidDayz(idDay);
+        await setPositiondate("");
+        await setModaldate(false);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
-        setdatadayaktif(dataday);
+        await setdatadayaktif(dataday);
       } else if (hasiljam < 23) {
-        setAkhir(datas);
-        setDataList(datas);
-        setidDayz(idDay);
-        setPositiondate("");
-        setModaldate(false);
+        await setDataList(datas);
+        savetimeline(datas);
+        await setidDayz(idDay);
+        await setPositiondate("");
+        await setModaldate(false);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
-        setdatadayaktif(dataday);
+        await setdatadayaktif(dataday);
       } else {
         datas[indexinput].duration = awal;
 
@@ -486,7 +474,7 @@ export default function ItinDrag({
           order++;
         }
 
-        setidDayz(idDay);
+        await setidDayz(idDay);
 
         Alert.alert("Waktu sudah melewati batas maksimal");
       }
@@ -508,7 +496,7 @@ export default function ItinDrag({
         order++;
       }
 
-      setidDayz(idDay);
+      await setidDayz(idDay);
 
       Alert.alert("Waktu sudah melewati batas maksimal");
     }
@@ -568,11 +556,25 @@ export default function ItinDrag({
     await setModalmenu(true);
   };
 
+  const Getdurasi = (durasi) => {
+    durasi = durasi.split(":");
+    return (
+      parseFloat(durasi[0]) +
+      " " +
+      t("hours") +
+      " " +
+      (parseFloat(durasi[1]) > 0
+        ? parseFloat(durasi[1]) + " " + t("minutes")
+        : " ")
+    );
+  };
+
   const renderItem = ({ item, index, drag, isActive }) => {
     const x = dataList.length - 1;
     return (
       <View
         style={{
+          marginTop: -1,
           // height: item.note ? 210 : 170,
           width: "100%",
           backgroundColor: isActive ? "white" : "#f6f6f6",
@@ -610,19 +612,21 @@ export default function ItinDrag({
           >
             <View
               style={{
-                height: 34,
+                height: 25,
                 marginRight: 4.2,
-                borderBottomWidth: 1,
-                borderRightWidth: index && index > 0 ? 1 : 0,
+                // borderBottomWidth: 1,
+                // borderRightWidth: index && index > 0 ? 1 : 0,
+                borderRightWidth: index > 0 ? 1 : 0,
                 borderRightColor: "#464646",
               }}
             ></View>
+
             <View
               style={{
                 marginTop: -20,
                 flexDirection: "row",
                 position: "absolute",
-                top: 34,
+                top: 25,
                 justifyContent: "center",
                 alignItems: "center",
                 zIndex: 99,
@@ -704,7 +708,7 @@ export default function ItinDrag({
               style={{
                 flex: 1,
                 marginRight: 4.2,
-                borderTopWidth: 1,
+                // borderTopWidth: 1,
                 borderRightWidth: index < x ? 1 : 0,
                 borderRightColor: "#464646",
               }}
@@ -713,174 +717,192 @@ export default function ItinDrag({
 
           {/* garis======================= */}
         </View>
-        {/* <TouchableOpacity
-          onLongPress={status == "notsaved" ? drag : null}
-          style={{
-            height: "100%",
-            width: "30%",
-            alignItems: "flex-end",
-            paddingTop: 10,
-            paddingRight: 10,
-          }}
-        >
-          {item.type !== "custom" ? (
-            <Image
-              source={item.images ? { uri: item.images } : { uri: item.icon }}
-              style={{
-                height: 75,
-                width: 75,
-                resizeMode: "cover",
-                borderRadius: 5,
-              }}
-            />
-          ) : item.icon ? (
-            <FunIcon icon={item.icon} height={50} width={50} />
-          ) : (
-            <FunIcon icon={"i-tour"} height={50} width={50} />
-          )}
-        </TouchableOpacity> */}
 
         <View
           style={{
             height: "100%",
             width: "80%",
-            paddingTop: 12.5,
           }}
         >
           <View
             style={{
-              borderRadius: 5,
-              marginBottom: 2,
-              marginLeft: 10,
-              marginRight: 2,
-              backgroundColor: "#fff",
-              elevation: 3,
-              padding: 10,
+              flex: 1,
+              flexDirection: "row",
+              paddingLeft: 10,
+              paddingRight: 2,
+              paddingBottom: 1,
             }}
           >
+            {index > 0 &&
+            dataList[index - 1] &&
+            dataList[index].latitude == dataList[index - 1].latitude &&
+            dataList[index].longitude == dataList[index - 1].longitude ? (
+              <View
+                style={{
+                  // position: "relative",
+                  // top: -10,
+                  width: 20,
+                  marginLeft: 20,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftWidth: 1,
+                    borderBottomWidth: 1,
+                    borderColor: "#464646",
+                    height: 30,
+                  }}
+                ></View>
+                {dataList[index + 1] &&
+                dataList[index].latitude == dataList[index + 1].latitude &&
+                dataList[index].longitude == dataList[index + 1].longitude ? (
+                  <View
+                    style={{
+                      marginTop: -1,
+                      borderLeftWidth: 1,
+                      // borderBottomWidth: 1,
+                      borderColor: "#464646",
+                      flex: 1,
+                    }}
+                  ></View>
+                ) : null}
+              </View>
+            ) : null}
             <View
               style={{
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "space-between",
+                marginTop: 5,
+                flex: 1,
+                borderRadius: 5,
+                marginBottom: 2,
+                backgroundColor: "#fff",
+                elevation: 3,
+                padding: 10,
               }}
             >
-              {item.type !== "custom" ? (
-                <Image
-                  source={
-                    item.images ? { uri: item.images } : { uri: item.icon }
-                  }
-                  style={{
-                    height: 30,
-                    width: 30,
-                    resizeMode: "cover",
-                    borderRadius: 15,
-                  }}
-                />
-              ) : item.icon ? (
-                <FunIcon
-                  icon={item.icon}
-                  height={30}
-                  width={30}
-                  style={{
-                    borderRadius: 15,
-                  }}
-                />
-              ) : (
-                <FunIcon
-                  icon={"i-tour"}
-                  height={30}
-                  width={30}
-                  style={{
-                    borderRadius: 15,
-                  }}
-                />
-              )}
-              <TouchableOpacity
-                style={{ width: "70%" }}
-                onLongPress={status == "notsaved" ? drag : null}
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "space-between",
+                }}
               >
-                <Text size="label" type="bold" style={{}}>
-                  {item.name}
-                </Text>
-                <Text>{Capital({ text: item.type })}</Text>
-              </TouchableOpacity>
-              {status === "notsaved" ? (
-                <Button
-                  size="small"
-                  text=""
-                  type="circle"
-                  variant="transparent"
-                  style={{}}
-                  onPress={() => {
-                    bukamodalmenu(item.id, item.type);
-                  }}
-                >
-                  <OptionsVertBlack width={15} height={15} />
-                </Button>
-              ) : null}
-            </View>
-            <TouchableOpacity
-              onLongPress={drag}
-              style={{ width: "100%", paddingHorizontal: 10 }}
-            >
-              {item.note ? (
-                <View>
-                  <Text
-                    size="small"
-                    type="regular"
+                {item.type !== "custom" ? (
+                  <Image
+                    source={
+                      item.images ? { uri: item.images } : { uri: item.icon }
+                    }
                     style={{
-                      marginVertical: 5,
-                      width: Dimensions.get("screen").width * 0.55,
-
-                      textAlign: "justify",
+                      height: 30,
+                      width: 30,
+                      resizeMode: "cover",
+                      borderRadius: 15,
+                    }}
+                  />
+                ) : item.icon ? (
+                  <FunIcon
+                    icon={item.icon}
+                    height={30}
+                    width={30}
+                    style={{
+                      borderRadius: 15,
+                    }}
+                  />
+                ) : (
+                  <FunIcon
+                    icon={"i-tour"}
+                    height={30}
+                    width={30}
+                    style={{
+                      borderRadius: 15,
+                    }}
+                  />
+                )}
+                <TouchableOpacity
+                  style={{ flex: 1, paddingHorizontal: 10 }}
+                  onLongPress={status == "notsaved" ? drag : null}
+                >
+                  <Text size="label" type="bold" style={{}}>
+                    {item.name}
+                  </Text>
+                  <Text>{Capital({ text: item.type })}</Text>
+                </TouchableOpacity>
+                {status === "notsaved" ? (
+                  <Button
+                    size="small"
+                    text=""
+                    type="circle"
+                    variant="transparent"
+                    style={{}}
+                    onPress={() => {
+                      bukamodalmenu(item.id, item.type);
                     }}
                   >
-                    {item.note}
+                    <OptionsVertBlack width={15} height={15} />
+                  </Button>
+                ) : null}
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  paddingVertical: 5,
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#daf0f2",
+                    paddingVertical: 5,
+                    paddingHorizontal: 15,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Text>
+                    {Getdurasi(item.duration ? item.duration : "00:00:00")}
                   </Text>
                 </View>
-              ) : null}
-            </TouchableOpacity>
-            <View style={{}}>
-              {item.note ? (
-                <TouchableOpacity
-                  onPress={() => bukaModal(item.note, index)}
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                >
-                  <Pencilgreen width={10} height={10} />
-                  <Text
-                    size="small"
-                    type="regular"
-                    style={{
-                      marginLeft: 5,
-                      marginVertical: 5,
-
-                      color: "#209fae",
-                    }}
+              </View>
+              <View
+                style={{
+                  borderTopWidth: 1,
+                  borderColor: "#d3d3d3",
+                  marginTop: 5,
+                  paddingTop: 5,
+                }}
+              >
+                {item.note ? (
+                  <TouchableOpacity
+                    onPress={() => bukaModal(item.note, index)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
                   >
-                    {t("EditNotes")}
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => bukaModal(null, index)}
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                >
-                  <Pencilgreen width={10} height={10} />
-                  <Text
-                    size="small"
-                    type="regular"
-                    style={{
-                      marginLeft: 5,
-                      marginVertical: 5,
-
-                      color: "#209fae",
-                    }}
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        textAlign: "left",
+                      }}
+                    >
+                      {item.note}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => bukaModal(null, index)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
                   >
-                    {t("addNotes")}
-                  </Text>
-                </TouchableOpacity>
-              )}
+                    <Pencilgreen width={10} height={10} />
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        marginLeft: 5,
+                        color: "#209fae",
+                      }}
+                    >
+                      {t("addNotes")}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
           {index < x &&
@@ -898,7 +920,7 @@ export default function ItinDrag({
             >
               <View
                 style={{
-                  width: 10,
+                  width: 15,
                   borderTopWidth: 1,
                   borderTopColor: "#464646",
                 }}
@@ -933,33 +955,33 @@ export default function ItinDrag({
           throw new Error(response.data.delete_activity.message);
         }
 
-        var data = [...dataList];
-        var inde = data.findIndex((k) => k["id"] === idactivitys);
+        var Xdata = [...dataList];
+        var inde = Xdata.findIndex((k) => k["id"] === idactivitys);
 
         if (inde !== -1) {
-          data.splice(inde, 1);
+          Xdata.splice(inde, 1);
 
           var x = 0;
           var order = 1;
-          for (var y in data) {
-            data[y].order = order;
+          for (var y in Xdata) {
+            Xdata[y].order = order;
 
-            if (data[y - 1]) {
-              data[y].time = hitungDuration({
-                startt: data[y - 1].time,
-                dur: data[y - 1].duration,
+            if (Xdata[y - 1]) {
+              Xdata[y].time = hitungDuration({
+                startt: Xdata[y - 1].time,
+                dur: Xdata[y - 1].duration,
               });
             }
             x++;
             order++;
           }
 
-          if ((x = data.length)) {
+          if ((x = Xdata.length)) {
             try {
               let response = await mutationSaveTimeline({
                 variables: {
                   idday: idDay,
-                  value: JSON.stringify(data),
+                  value: JSON.stringify(Xdata),
                 },
               });
 
@@ -970,8 +992,9 @@ export default function ItinDrag({
                 if (response.data.update_timeline.code !== 200) {
                   throw new Error(response.data.update_timeline.message);
                 }
-                // GetTimeline();
-                refresh();
+
+                GetTimeline();
+                // refresh();
               }
               setloading(false);
             } catch (error) {
@@ -1037,6 +1060,47 @@ export default function ItinDrag({
     return hasil.slice(0, -3);
   };
 
+  const [
+    mutationSaveTimeline,
+    { loading: loadingSave, data: dataSave, error: errorSave },
+  ] = useMutation(UpdateTimeline, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const savetimeline = async (datakiriman) => {
+    try {
+      let response = await mutationSaveTimeline({
+        variables: {
+          idday: idDay,
+          value: JSON.stringify(datakiriman),
+        },
+      });
+      if (loadingSave) {
+        Alert.alert("Loading!!");
+      }
+      if (errorSave) {
+        throw new Error("Error Input");
+      }
+
+      if (response.data) {
+        if (response.data.update_timeline.code !== 200) {
+          throw new Error(response.data.update_timeline.message);
+        }
+        // GetTimeline();
+        // refresh();
+      }
+
+      console.log(response);
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
+
   return (
     <View
       style={{
@@ -1065,6 +1129,7 @@ export default function ItinDrag({
               justifyContent: "space-between",
               alignContent: "center",
               alignItems: "center",
+              marginBottom: 10,
             }}
           >
             <View
@@ -1271,7 +1336,7 @@ export default function ItinDrag({
         showsHorizontalScrollIndicator={false}
         data={dataList}
         renderItem={renderItem}
-        keyExtractor={(item, index) => `draggable-item-${index}`}
+        keyExtractor={(item, index) => `draggable-item-${item.id}`}
         onDragEnd={({ data, from, to }) => handledrag(data, from, to)}
       />
       <Modal
@@ -1446,39 +1511,43 @@ export default function ItinDrag({
           </Text>
           <View
             style={{
-              width: "70%",
+              // width: "70%",
               flexDirection: "row",
+              justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
             }}
           >
-            <Picker
-              iosIcon={
-                <View>
-                  <Bottom />
-                </View>
-              }
-              iosHeader="Select Hours"
-              note
-              mode="dropdown"
-              selectedValue={jamer}
-              textStyle={{ fontFamily: "Lato-Regular" }}
-              itemTextStyle={{ fontFamily: "Lato-Regular" }}
-              itemStyle={{ fontFamily: "Lato-Regular" }}
-              placeholderStyle={{ fontFamily: "Lato-Regular" }}
-              headerTitleStyle={{
-                fontFamily: "Lato-Regular",
-              }}
-              style={{
-                color: "#209fae",
-                fontFamily: "Lato-Regular",
-              }}
-              onValueChange={(itemValue, itemIndex) => setjamer(itemValue)}
-            >
-              {jams.map((item, index) => {
-                return <Picker.Item key={item} label={item} value={item} />;
-              })}
-            </Picker>
+            <View style={{ width: "30%" }}>
+              <Picker
+                iosIcon={
+                  <View>
+                    <Bottom />
+                  </View>
+                }
+                iosHeader="Select Hours"
+                note
+                mode="dropdown"
+                selectedValue={jamer}
+                textStyle={{ fontFamily: "Lato-Regular" }}
+                itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                itemStyle={{ fontFamily: "Lato-Regular" }}
+                placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                headerTitleStyle={{
+                  fontFamily: "Lato-Regular",
+                }}
+                style={{
+                  color: "#209fae",
+                  fontFamily: "Lato-Regular",
+                }}
+                onValueChange={(itemValue, itemIndex) => setjamer(itemValue)}
+              >
+                {jams.map((item, index) => {
+                  return <Picker.Item key={item} label={item} value={item} />;
+                })}
+              </Picker>
+            </View>
+
             <View
               style={{
                 width: "10%",
@@ -1490,34 +1559,38 @@ export default function ItinDrag({
                 :
               </Text>
             </View>
-            <Picker
-              iosHeader="Select Minutes"
-              headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}
-              note
-              mode="dropdown"
-              selectedValue={menor}
-              textStyle={{ fontFamily: "Lato-Regular" }}
-              itemTextStyle={{ fontFamily: "Lato-Regular" }}
-              itemStyle={{ fontFamily: "Lato-Regular" }}
-              placeholderStyle={{ fontFamily: "Lato-Regular" }}
-              iosIcon={
-                <View>
-                  <Bottom />
-                </View>
-              }
-              headerTitleStyle={{
-                fontFamily: "Lato-Regular",
-              }}
-              style={{
-                color: "#209fae",
-                fontFamily: "Lato-Regular",
-              }}
-              onValueChange={(itemValue, itemIndex) => setmenor(itemValue)}
-            >
-              {menits.map((item, index) => {
-                return <Picker.Item key={""} label={item + ""} value={item} />;
-              })}
-            </Picker>
+            <View style={{ width: "30%" }}>
+              <Picker
+                iosHeader="Select Minutes"
+                headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}
+                note
+                mode="dropdown"
+                selectedValue={menor}
+                textStyle={{ fontFamily: "Lato-Regular" }}
+                itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                itemStyle={{ fontFamily: "Lato-Regular" }}
+                placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                iosIcon={
+                  <View>
+                    <Bottom />
+                  </View>
+                }
+                headerTitleStyle={{
+                  fontFamily: "Lato-Regular",
+                }}
+                style={{
+                  color: "#209fae",
+                  fontFamily: "Lato-Regular",
+                }}
+                onValueChange={(itemValue, itemIndex) => setmenor(itemValue)}
+              >
+                {menits.map((item, index) => {
+                  return (
+                    <Picker.Item key={""} label={item + ""} value={item} />
+                  );
+                })}
+              </Picker>
+            </View>
           </View>
           <TouchableOpacity
             onPress={() => setTime(jamer + ":" + menor + ":00", dataList)}

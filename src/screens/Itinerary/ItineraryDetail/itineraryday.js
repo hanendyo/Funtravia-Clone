@@ -188,14 +188,14 @@ export default function ItineraryDay({
   };
 
   const nextday = async (nex) => {
-    setAkhir(null);
-    setModalsave(false);
-    setIndex(nex.index);
-    setIdDay(nex.item.id);
-    await GetTimeline(nex.item.id);
+    await setAkhir(null);
+    await setModalsave(false);
+    await setIndex(nex.index);
+    await setIdDay(nex.item.id);
     await slider.current.scrollToIndex({
       index: nex.index,
     });
+    await GetTimeline(nex.item.id);
 
     setdatadayaktif(nex.item);
     setnexts({});
@@ -207,15 +207,15 @@ export default function ItineraryDay({
       index: x,
     });
     if (dataAkhir && dataAkhir.length > 0) {
-      setModalsave(true);
+      await setModalsave(true);
     } else {
-      setIndex(x);
-      setIdDay(item.id);
-      await GetTimeline(item.id);
+      await setIndex(x);
+      await setIdDay(item.id);
       await slider.current.scrollToIndex({
         index: x,
       });
-      setdatadayaktif(item);
+      await setdatadayaktif(item);
+      await GetTimeline(item.id);
     }
   };
 
