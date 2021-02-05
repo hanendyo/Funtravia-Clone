@@ -180,16 +180,18 @@ export default function DetailJournal(props) {
         >
           <TouchableOpacity
             onPress={() => {
-              item.user.id !== setting?.user?.id
-                ? props.navigation.push("ProfileStack", {
-                    screen: "otherprofile",
-                    params: {
-                      idUser: item.user.id,
-                    },
-                  })
-                : props.navigation.push("ProfileStack", {
-                    screen: "ProfileTab",
-                  });
+              item && item.user && item.user.id !== null
+                ? item?.user?.id !== setting?.user?.id
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: item.user.id,
+                      },
+                    })
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                    })
+                : Alert.alert("User has been deleted");
             }}
           >
             <Thumbnail
@@ -215,19 +217,23 @@ export default function DetailJournal(props) {
                 size={"description"}
                 type={"bold"}
                 onPress={() => {
-                  item.user.id !== setting?.user?.id
-                    ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: item.user.id,
-                        },
-                      })
-                    : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                      });
+                  item && item.user && item.user.id !== null
+                    ? item.user.id !== setting?.user?.id
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: item.user.id,
+                          },
+                        })
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                        })
+                    : Alert.alert("User has been deleted");
                 }}
               >
-                {item.user.first_name}
+                {item && item.user && item.user.first_name
+                  ? item.user.first_name
+                  : "user_deleted"}
               </Text>
               {item && item.created_at ? (
                 <Text size={"small"} type={"light"} style={{ marginLeft: 10 }}>
@@ -324,7 +330,9 @@ export default function DetailJournal(props) {
                 >
                   <Truncate
                     text={
-                      data.journal_byid.userby
+                      data.journal_byid &&
+                      data.journal_byid.userby &&
+                      data.journal_byid.userby.username
                         ? data.journal_byid.userby.username
                         : "Funtravia"
                     }

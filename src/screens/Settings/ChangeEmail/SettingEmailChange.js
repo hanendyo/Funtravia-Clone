@@ -1,21 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Arrowbackwhite, LogoEmail } from "../../../assets/svg";
-import { Text, Button } from "../../../component";
+import { Text, Button, Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { View, Dimensions, CheckBox, KeyboardAvoidingView } from "react-native";
+import { View, Dimensions, KeyboardAvoidingView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
+import changeEmail from "../../../graphQL/Mutation/Setting/changeEmail";
+import { useMutation } from "@apollo/client";
 
 export default function SettingEmailChange(props) {
   let [token, setToken] = useState("");
-  let { t, i18n } = useTranslation();
-  let [setting, setSetting] = useState(setting);
+  let { t } = useTranslation();
+  let [setting, setSetting] = useState("");
   let [email1, setEmail1] = useState("");
   let [email2, setEmail2] = useState("");
-  let ref1 = useRef()
-  let ref2 = useRef()
-  let [errorEmail, setErrorEmail] = useState(false)
-  console.log("setting :", setting)
+  let ref1 = useRef();
+  let ref2 = useRef();
+
   const HeaderComponent = {
     headerTitle: t("ChangeEmail"),
     headerMode: "screen",
@@ -63,16 +64,56 @@ export default function SettingEmailChange(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const verify = async (text1, text2) => {
-    console.log("email 1:", email1)
-    console.log("setting email:", setting.user.email)
-    if (setting.user.email !== text1) {
-      alert("email tidak sama")
-    } else {
-      await props.navigation.navigate("SettingEmailVerify", { setting: setting })
-      // setErrorEmailmail(true)
+  const [
+    mutationChangeEmail,
+    { loading: loadingEmail, data: dataEmail, error: errorMutationEmail },
+  ] = useMutation(changeEmail, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const resultChangeEmail = async (oldEmail, newEmail) => {
+    if (setting.user.email === newEmail) {
+      alert("Email lama dan email baru tidak boleh sama");
     }
-  }
+    if (setting.user.email !== oldEmail) {
+      alert("Email lama tidak sama");
+    } else {
+      if (token || token !== "") {
+        try {
+          let response = await mutationChangeEmail({
+            variables: {
+              oldEmail: oldEmail,
+              newEmail: newEmail,
+            },
+          });
+          if (loadingEmail) {
+            Alert.alert("Loading!!");
+          }
+          if (errorMutationEmail) {
+            throw new Error("Email change failed");
+          }
+          if (response.data) {
+            if (response.data.changemail.code !== 200) {
+              throw new Error(response.data.changemail.message);
+            }
+            await props.navigation.navigate("SettingEmailVerify", {
+              emailNew: newEmail,
+              emailOld: oldEmail,
+            });
+          }
+        } catch (error) {
+          alert("" + error);
+        }
+      } else {
+        alert("Please Insert a Text");
+      }
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={{
@@ -82,13 +123,14 @@ export default function SettingEmailChange(props) {
       behavior={Platform.OS === "ios" ? "padding" : null}
       enabled
     >
+      <Loading show={loadingEmail} />
       <ScrollView
         style={{
           backgroundColor: "white",
-          height: '100%',
+          height: "100%",
         }}
         contentContainerStyle={{
-          height: Dimensions.get('screen').height * 0.8,
+          height: Dimensions.get("screen").height * 0.8,
           paddingBottom: 20,
           justifyContent: "space-between",
           // borderWidth: 1
@@ -107,7 +149,6 @@ export default function SettingEmailChange(props) {
           <LogoEmail height={200} width={200} />
           <Text size="title" type="bold">
             {t("ChangeEmail") + " " + "?"}
-
           </Text>
           <Text
             style={{
@@ -161,7 +202,7 @@ export default function SettingEmailChange(props) {
             size="medium"
             color="secondary"
             text={t("save")}
-            onPress={() => verify(email1, email2)}
+            onPress={() => resultChangeEmail(email1, email2)}
             style={{ width: "100%" }}
           />
         </View>

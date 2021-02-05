@@ -278,7 +278,7 @@ export default function SettingsAkun(props) {
           onBackdropPress={() => {
             setModalEmail(false);
           }}
-        // style={{ height: Dimensions.get("screen").width * 0.2 }}
+          // style={{ height: Dimensions.get("screen").width * 0.2 }}
         >
           <View style={styles.centeredView}>
             <View style={styles.modalViewEmail}>
@@ -287,7 +287,9 @@ export default function SettingsAkun(props) {
                 size="label"
                 onPress={() => {
                   setModalEmail(false),
-                    props.navigation.navigate("SettingEmailChange", { setting: setting });
+                    props.navigation.navigate("SettingEmailChange", {
+                      setting: setting,
+                    });
                 }}
               >
                 Change Email
@@ -600,11 +602,11 @@ export default function SettingsAkun(props) {
               <Text style={{ borderBottomWidth: 1, marginTop: 20 }}>
                 {cityName
                   ? cityName
-                    .toString()
-                    .toLowerCase()
-                    .replace(/\b[a-z]/g, function (letter) {
-                      return letter.toUpperCase();
-                    })
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function (letter) {
+                        return letter.toUpperCase();
+                      })
                   : t("cityOfRecidence")}
               </Text>
             </Pressable>
@@ -880,8 +882,8 @@ export default function SettingsAkun(props) {
               <Text size="description" type="light" style={{}}>
                 {setting && setting.user && setting.user.gender
                   ? setting.user.gender === "M"
-                    ? "Male"
-                    : "Female"
+                    ? t("Male")
+                    : t("Female")
                   : "Not Set"}
               </Text>
             </View>
@@ -946,11 +948,11 @@ export default function SettingsAkun(props) {
               <Text size="description" type="light" style={{}}>
                 {setting.cities.name
                   ? setting.cities.name
-                    .toString()
-                    .toLowerCase()
-                    .replace(/\b[a-z]/g, function (letter) {
-                      return letter.toUpperCase();
-                    })
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function (letter) {
+                        return letter.toUpperCase();
+                      })
                   : "Not Set"}
               </Text>
             </View>
@@ -1025,18 +1027,18 @@ export default function SettingsAkun(props) {
             />
           </View>
         ) : (
-            <Button
-              type="box"
-              size="medium"
-              color="tertiary"
-              text={t("AddEmail")}
-              onPress={() =>
-                props.navigation.navigate("SettingEmail", {
-                  dataEmail: setting.user,
-                })
-              }
-            />
-          )}
+          <Button
+            type="box"
+            size="medium"
+            color="tertiary"
+            text={t("AddEmail")}
+            onPress={() =>
+              props.navigation.navigate("SettingEmail", {
+                dataEmail: setting.user,
+              })
+            }
+          />
+        )}
       </View>
       <View
         style={{
@@ -1104,16 +1106,16 @@ export default function SettingsAkun(props) {
             />
           </View>
         ) : (
-            <Button
-              type="box"
-              size="medium"
-              color="tertiary"
-              text={t("addPhoneNumber")}
-              onPress={() => props.navigation.navigate("SettingPhone")}
-            />
-          )}
+          <Button
+            type="box"
+            size="medium"
+            color="tertiary"
+            text={t("addPhoneNumber")}
+            onPress={() => props.navigation.navigate("SettingPhone")}
+          />
+        )}
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 }
 
