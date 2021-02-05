@@ -493,7 +493,7 @@ export default function ItineraryDetail(props) {
   };
 
   const GetTimeline = async (id) => {
-    await setidDay(id);
+    await setidDay(id ? id : idDay);
     await GetTimelin();
   };
 
@@ -503,7 +503,7 @@ export default function ItineraryDetail(props) {
     error: errortimeline,
     refetch: GetTimelin,
   } = useQuery(Timeline, {
-    // fetchPolicy: "network-only",
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -528,13 +528,13 @@ export default function ItineraryDetail(props) {
               data={datatimeline.day_timeline}
               props={props}
               setAkhir={(e) => {
-                setdataAkhir(e);
+                setDataAkhir(e);
               }}
-              setidDayz={(e) => setidDayz(e)}
+              setidDayz={(e) => setidDay(e)}
               token={token}
               iditinerary={itincountries}
               setloading={(e) => setloading(e)}
-              refresh={(e) => Refresh(e)}
+              refresh={(e) => _Refresh(e)}
               GetTimeline={(e) => GetTimeline()}
               datadayaktif={datadayaktif}
               setdatadayaktif={(e) => setdatadayaktif(e)}
@@ -544,14 +544,24 @@ export default function ItineraryDetail(props) {
               lat={datadetail.itinerary_detail.city.latitude}
               long={datadetail.itinerary_detail.city.longitude}
               kota={datadetail.itinerary_detail.city.name}
+              loadingtimeline={loadingtimeline}
             />
           ) : (
             <View
               style={{
                 height: Dimensions.get("screen").height - 200,
+                justifyContent: "flex-start",
+                alignContent: "center",
+                alignItems: "center",
+                paddingTop: 150,
                 // borderWidth: 1,
               }}
             >
+              {loadingtimeline ? (
+                <Text>Loading....</Text>
+              ) : (
+                <Text>Timeline kosong</Text>
+              )}
               {datadetail && datadetail.itinerary_detail.cover
                 ? setCover(datadetail.itinerary_detail.cover)
                 : null}
