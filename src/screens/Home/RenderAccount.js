@@ -58,13 +58,13 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 	};
 
 	const goToProfile = (target) => {
-		props.navigation.navigate("ProfileStack", { screen: "ProfileTab" });
+		props.navigation.navigate("ProfileStack", {
+			screen: "ProfileTab",
+			params: { token: token },
+		});
 	};
 
 	const ukuran = 100;
-
-	// console.log(token);
-	// console.log(datanotif);
 
 	return (
 		<View
@@ -132,22 +132,28 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 							/>
 						</TouchableOpacity>
 					) : (
-						<Image
+						<TouchableOpacity
 							style={{
-								width: ukuran - 15,
-								height: ukuran - 15,
+								elevation: 2,
+								shadowColor: "#464646",
+								shadowOffset: { width: 0, height: 0 },
+								shadowRadius: 0.5,
+								shadowOpacity: 0.5,
 								borderRadius: 10,
-								shadowRadius: 1,
-								shadowColor: "gray",
-								shadowOffset: { width: 0, height: 1 },
-								borderWidth: 3,
-								borderColor: "white",
-								shadowOpacity: 1,
-								resizeMode: "cover",
-								elevation: 3,
 							}}
-							source={default_image}
-						/>
+						>
+							<Image
+								style={{
+									width: ukuran - 15,
+									height: ukuran - 15,
+									borderRadius: 10,
+									resizeMode: "cover",
+									borderWidth: 3,
+									borderColor: "white",
+								}}
+								source={default_image}
+							/>
+						</TouchableOpacity>
 					)}
 				</View>
 				{token !== null && token !== "" ? (
