@@ -41,13 +41,25 @@ import likepost from "../../graphQL/Mutation/Post/likepost";
 import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
 import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
+import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
+import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
+import Modal from "react-native-modal";
+
 export default function Feed(props) {
   const [active, setActive] = useState("personal");
   const[searchtext, SetSearchtext] = useState("");
+  // let [token, setToken] = useState(props.route.params.token);
   let [token, setToken] = useState("");
+  // console.log(props.route.params.token);
   let [idx, setIdx] = useState(2);
   let [refreshing, setRefreshing] = useState(false);
+  let [modalsearch, setModalsearch] = useState(false);
   let {width, height} = Dimensions.get("screen");
+	const loadAsync = async () => {
+		let tkn = await AsyncStorage.getItem("access_token");
+		setToken(tkn);
+    // refetch();
+	};
   const _searchHandle = (text) => {
     SetSearchtext(text)
   };
@@ -58,150 +70,30 @@ export default function Feed(props) {
   };
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    // getUserAndToken();
-    // const unsubscribe = navigation.addListener("focus", () => {
-    //   getUserAndToken();
-    // });
-    // return unsubscribe;
+
   }, []);
-  const { loading: loadingPost, data: dataPost, error: errorPost, refetch, networkStatus } = useQuery(FeedPopuler, {
+  const { loading: loadingPost, data: dataPost, error: errorPost, fetchMore, refetch, networkStatus } = useQuery(FeedPopulerPageing, {
     variables: {
-      limit: 20,
-      offset: null,
+      limit: 10,
+      offset: 0,
     },
+    context: {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
     notifyOnNetworkStatusChange: true,
   });
-
-  // console.log(dataPost);
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    // querySearchPost();
-  };
+	// console.log(dataPost);
+  let feed_post_populer_paging = [];
+  if (dataPost && dataPost && 'datas' in dataPost.feed_post_populer_paging){
+    feed_post_populer_paging = dataPost.feed_post_populer_paging.datas;
+  }
   useEffect(() => {
     loadAsync();
   }, []);
-  if (loadingPost){
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-      <View style={{ backgroundColor: "#209FAE" }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}>
-            <View
-              style={{
-                // borderWidth:1,
-                margin: 15,
-                backgroundColor: "#FFFFFF",
-                flexDirection: "row",
-                borderRadius: 3,
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Magnifying
-                width="20"
-                height="20"
-                style={{ marginHorizontal: 10 }}
-              />
-              <TextInput
-                value={searchtext}
-                onChangeText={(e) => _searchHandle(e)}
-                placeholder="Search Feed"
-                style={{
-                  color: "#464646",
-                  height: 40,
-                  width: "80%",
-                }}
-              />
-            </View>
-            <Pressable
-              style={{
-                height: 70,
-                paddingRight: 5,
-                // borderWidth:1,
-                justifyContent: 'center'
-              }}>
-              <OptionsVertWhite width={20} height={20}/>
-            </Pressable>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: "#fff",
-            borderWidth: 1,
-            borderColor: "#EEEEEE",
-            paddingHorizontal: 10,
-          }}
-        >
-          <Ripple
-            onPress={() => {
-              setActive("personal");
-            }}
-            style={{
-              // width: width / 2,
-              alignContent: "center",
-              alignItems: "center",
-              // borderBottomWidth: active == "personal" ? 3 : 1,
-              // borderBottomColor:
-              //   active == "personal" ? "#209FAE" : "#EEEEEE",
-              paddingVertical: 15,
-              backgroundColor: "#FFFFFF",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Text
-              size="description"
-              type={active == "personal" ? "bold" : "bold"}
-              style={{
-                color: active == "personal" ? "#209FAE" : "#D1D1D1",
-              }}
-            >
-              All Post
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActive("group");
-            }}
-            style={{
-              // width: width / 2,
-              alignContent: "center",
-              alignItems: "center",
-              // borderBottomWidth: active == "group" ? 3 : 1,
-              // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
-              paddingVertical: 15,
-              backgroundColor: "#FFFFFF",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Text
-              size="description"
-              type={active == "group" ? "bold" : "bold"}
-              style={{
-                color: active == "group" ? "#209FAE" : "#D1D1D1",
-              }}
-            >
-              Travel
-            </Text>
-          </Ripple>
-        </View>
-      </View>
-      <View
-        style={{
-          flex:1,
-          justifyContent: 'center',
-          alignItems:'center',
-        }}>
-        <Text size='title'>Loading...</Text>
-      </View>
-      
-    </SafeAreaView>
-  
-    );
-  }
+ 
   if (errorPost){
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
@@ -324,10 +216,12 @@ export default function Feed(props) {
     );
   }
 
-  if (networkStatus === NetworkStatus.refetch) return 'Refetching!';
-  const _refresh =() => {
+  const refresh = networkStatus === NetworkStatus.refetch;
+  const _refresh = async() => {
     setRefreshing(true);
+    feed_post_populer_paging = [];
     refetch();
+
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -339,33 +233,43 @@ export default function Feed(props) {
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const { pageInfo } = fetchMoreResult.organization.repositories;
-    const nodes = [
-      ...prev.organization.repositories.nodes,
-      ...fetchMoreResult.organization.repositories.nodes,
+    const { page_info } = fetchMoreResult.feed_post_populer_paging;
+    const datas = [
+      ...prev.feed_post_populer_paging.datas,
+      ...fetchMoreResult.feed_post_populer_paging.datas,
     ];
     return Object.assign({}, prev, {
-      organization: {
-        __typename: prev.organization.__typename,
-        repositories: {
-          __typename: prev.organization.repositories.__typename,
-          pageInfo,
-          nodes,
+        feed_post_populer_paging: {
+          __typename: prev.feed_post_populer_paging.__typename,
+          page_info,
+          datas,
         },
-      },
     });
   };
 
   const handleOnEndReached = () => {
-    if (data.organization.repositories.pageInfo.hasNextPage)
-      return fetchMore({
-        variables: {
-          after: data.organization.repositories.pageInfo.endCursor,
-          first: 15,
-        },
-        updateQuery: onUpdate,
-      });
+    // console.log('test');
+    if (dataPost.feed_post_populer_paging.page_info.hasNextPage){
+        return fetchMore({
+          variables: {
+            limit: 10,
+            offset: dataPost.feed_post_populer_paging.page_info.offset + 1,
+          },
+          updateQuery: onUpdate,
+        });
+    }
   };
+
+  const teststate = async (index) =>{
+    feed_post_populer_paging[index].assets[0].filepath = "https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg"
+    // console.log(feed_post_populer_paging);
+    // _refresh();
+    setRefreshing(true);
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+    // _refresh()
+  }
 
   return(
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
@@ -394,6 +298,7 @@ export default function Feed(props) {
               <TextInput
                 value={searchtext}
                 onChangeText={(e) => _searchHandle(e)}
+                onFocus={()=>setModalsearch(true)}
                 placeholder="Search Feed"
                 style={{
                   color: "#464646",
@@ -402,7 +307,11 @@ export default function Feed(props) {
                 }}
               />
             </View>
-            <Pressable
+            <Ripple
+              onPress={() => {
+                // refetch();
+                setModalsearch(true)
+              }}
               style={{
                 height: 70,
                 paddingRight: 5,
@@ -410,8 +319,88 @@ export default function Feed(props) {
                 justifyContent: 'center'
               }}>
               <OptionsVertWhite width={20} height={20}/>
-            </Pressable>
+            </Ripple>
         </View>
+      </View>
+      <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: "#fff",
+            borderWidth: 1,
+            borderColor: "#EEEEEE",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Ripple
+            onPress={() => {
+              setActive("personal");
+            }}
+            style={{
+              // width: width / 2,
+              alignContent: "center",
+              alignItems: "center",
+              // borderBottomWidth: active == "personal" ? 3 : 1,
+              // borderBottomColor:
+              //   active == "personal" ? "#209FAE" : "#EEEEEE",
+              paddingVertical: 15,
+              backgroundColor: "#FFFFFF",
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={active == "personal" ? "bold" : "bold"}
+              style={{
+                color: active == "personal" ? "#209FAE" : "#D1D1D1",
+              }}
+            >
+              All Post
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() => {
+              setActive("group");
+            }}
+            style={{
+              // width: width / 2,
+              alignContent: "center",
+              alignItems: "center",
+              // borderBottomWidth: active == "group" ? 3 : 1,
+              // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
+              paddingVertical: 15,
+              backgroundColor: "#FFFFFF",
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={active == "group" ? "bold" : "bold"}
+              style={{
+                color: active == "group" ? "#209FAE" : "#D1D1D1",
+              }}
+            >
+              Travel
+            </Text>
+          </Ripple>
+      </View>
+      <Modal
+        // onBackdropPress={() => {
+        //   setModalsearch(false);
+        // }}
+        hasBackdrop={false}
+        
+        onRequestClose={() => setModalsearch(false)}
+        // onDismiss={() => setModalmenu(false)}
+        // animationIn="fadeInDown"
+        // animationOut="fadeInDown"
+        isVisible={modalsearch}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -473,11 +462,11 @@ export default function Feed(props) {
             </Text>
           </Ripple>
         </View>
-      </View>
+      </Modal>
       <FlatList
-        data={dataPost.feed_post_populer }
+        data={feed_post_populer_paging }
         renderItem={({ item, index }) => (
-            console.log(index),
+
             (index+1)%9 == 0 ?
             <View>
                 <View
@@ -492,9 +481,10 @@ export default function Feed(props) {
                             props.navigation.navigate("FeedStack", {
                             screen: "CommentsById",
                             params: {
-                              post_id: dataPost.feed_post_populer[index-8].id,
+                              post_id: feed_post_populer_paging[index-8].id,
                             },
                             })
+                            // teststate(index-8)
                           }
                           style={{
                             // height: width/3 - 10,
@@ -502,7 +492,7 @@ export default function Feed(props) {
                           }}>
                           <Image
                             
-                            source={{ uri: dataPost.feed_post_populer[index-8].assets[0].filepath }}
+                            source={{ uri: feed_post_populer_paging[index-8].assets[0].filepath }}
                             style={{
                               height: width/3 - 10,
                               width: width/3 - 10,
@@ -518,7 +508,7 @@ export default function Feed(props) {
                             props.navigation.navigate("FeedStack", {
                             screen: "CommentsById",
                             params: {
-                              post_id: dataPost.feed_post_populer[index-7].id,
+                              post_id: feed_post_populer_paging[index-7].id,
                             },
                             })
                           }
@@ -527,7 +517,7 @@ export default function Feed(props) {
                             // width: width/3 - 10,
                           }}>
                             <Image
-                              source={{ uri: dataPost.feed_post_populer[index-7].assets[0].filepath }}
+                              source={{ uri: feed_post_populer_paging[index-7].assets[0].filepath }}
                               style={{
                                 height: width/3 - 10,
                                 width: width/3 - 10,
@@ -544,7 +534,7 @@ export default function Feed(props) {
                             props.navigation.navigate("FeedStack", {
                             screen: "CommentsById",
                             params: {
-                              post_id: dataPost.feed_post_populer[index-6].id,
+                              post_id: feed_post_populer_paging[index-6].id,
                             },
                             })
                           }
@@ -553,7 +543,7 @@ export default function Feed(props) {
                             // width: (width + width)/3 -20,
                           }}>
                           <Image
-                              source={{ uri: dataPost.feed_post_populer[index-6].assets[0].filepath }}
+                              source={{ uri: feed_post_populer_paging[index-6].assets[0].filepath }}
                               style={{
                                 height: (width + width)/3 -15,
                                 width: (width + width)/3 -20,
@@ -574,7 +564,7 @@ export default function Feed(props) {
                       props.navigation.navigate("FeedStack", {
                       screen: "CommentsById",
                       params: {
-                        post_id: dataPost.feed_post_populer[index-5].id,
+                        post_id: feed_post_populer_paging[index-5].id,
                       },
                       })
                     }
@@ -583,7 +573,7 @@ export default function Feed(props) {
                       // width: (width + width)/3 -20,
                     }}>
                       <Image
-                      source={{ uri: dataPost.feed_post_populer[index-5].assets[0].filepath }}
+                      source={{ uri: feed_post_populer_paging[index-5].assets[0].filepath }}
                       style={{
                         height: (width + width)/3 -15,
                         width: (width + width)/3 -20,
@@ -603,7 +593,7 @@ export default function Feed(props) {
                         props.navigation.navigate("FeedStack", {
                         screen: "CommentsById",
                         params: {
-                          post_id: dataPost.feed_post_populer[index-4].id,
+                          post_id: feed_post_populer_paging[index-4].id,
                         },
                         })
                       }
@@ -612,7 +602,7 @@ export default function Feed(props) {
                         // width: width/3 - 10,
                       }}>
                       <Image
-                        source={{ uri: dataPost.feed_post_populer[index-4].assets[0].filepath }}
+                        source={{ uri: feed_post_populer_paging[index-4].assets[0].filepath }}
                         style={{
                           height: width/3 - 10,
                           width: width/3 - 10,
@@ -628,7 +618,7 @@ export default function Feed(props) {
                         props.navigation.navigate("FeedStack", {
                         screen: "CommentsById",
                         params: {
-                          post_id: dataPost.feed_post_populer[index-3].id,
+                          post_id: feed_post_populer_paging[index-3].id,
                         },
                         })
                       }
@@ -637,7 +627,7 @@ export default function Feed(props) {
                         // width: width/3 - 10,
                       }}>
                           <Image
-                            source={{ uri: dataPost.feed_post_populer[index-3].assets[0].filepath }}
+                            source={{ uri: feed_post_populer_paging[index-3].assets[0].filepath }}
                             style={{
                               height: width/3 - 10,
                               width: width/3 - 10,
@@ -659,7 +649,7 @@ export default function Feed(props) {
                         props.navigation.navigate("FeedStack", {
                         screen: "CommentsById",
                         params: {
-                          post_id: dataPost.feed_post_populer[index-2].id,
+                          post_id: feed_post_populer_paging[index-2].id,
                         },
                         })
                       }
@@ -668,7 +658,7 @@ export default function Feed(props) {
                         // width: width/3 - 10,
                       }}>
                         <Image
-                          source={{ uri: dataPost.feed_post_populer[index-2].assets[0].filepath }}
+                          source={{ uri: feed_post_populer_paging[index-2].assets[0].filepath }}
                           style={{
                             height: width/3 - 10,
                             width: width/3 - 10,
@@ -685,7 +675,7 @@ export default function Feed(props) {
                         props.navigation.navigate("FeedStack", {
                         screen: "CommentsById",
                         params: {
-                          post_id: dataPost.feed_post_populer[index-1].id,
+                          post_id: feed_post_populer_paging[index-1].id,
                         },
                         })
                       }
@@ -695,7 +685,7 @@ export default function Feed(props) {
                       }}>
 
                         <Image
-                          source={{ uri: dataPost.feed_post_populer[index-1].assets[0].filepath }}
+                          source={{ uri: feed_post_populer_paging[index-1].assets[0].filepath }}
                           style={{
                             height: width/3 - 10,
                             width: width/3 - 10,
@@ -720,7 +710,7 @@ export default function Feed(props) {
                         // width: width/3 - 10,
                       }}>
                         <Image
-                          source={{ uri: item.assets[0].filepath }}
+                          source={{ uri: feed_post_populer_paging[index].assets[0].filepath }}
                           style={{
                             height: width/3 - 10,
                             width: width/3 - 10,
@@ -733,6 +723,7 @@ export default function Feed(props) {
                     </Pressable>
                   </View>
             </View>:null        
+        
         )}
         style={{
           marginHorizontal: 10,
@@ -743,7 +734,8 @@ export default function Feed(props) {
         contentContainerStyle={{
           // flexDirection: 'column',
           // flexWrap: 'wrap',
-          
+            // flexGrow:1,
+            // borderWidth:1,
         }}
         keyExtractor={(item) => item.id_post}
         showsVerticalScrollIndicator={false}
@@ -751,9 +743,25 @@ export default function Feed(props) {
         refreshControl={
           <RefreshControl refreshing={refreshing}  onRefresh={() => _refresh()}/>
         }
-
+        onEndReachedThreshold={1}
+        ListFooterComponent={
+          loadingPost? 
+          <View
+            style={{
+              // position: 'absolute',
+              // bottom:0,
+              width: width,
+              justifyContent: 'center',
+              alignItems:'center',
+            }}>
+            <Text size='title' type='bold' 
+            // style={{ color:'#209fae'}}
+            >Loading...</Text>
+          </View>
+          :null
+        }
+        onEndReached={handleOnEndReached}
       />
-      
     </SafeAreaView>
   
   );

@@ -482,20 +482,7 @@ export default function Feed(props) {
 		);
 	}
 
-	const [refreshing, setRefreshing] = React.useState(false);
 
-	const _Refresh = React.useCallback(() => {
-		setRefreshing(true);
-		LoadFeed();
-		wait(2000).then(() => {
-			setRefreshing(false);
-		});
-	}, []);
-	const wait = (timeout) => {
-		return new Promise((resolve) => {
-			setTimeout(resolve, timeout);
-		});
-	};
 
 	const eventDidFocus = (event) => {
 		// console.log(event);
@@ -506,40 +493,12 @@ export default function Feed(props) {
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-			{/* <NavigationEvents
-				// onWillFocus={(payload) => console.log('will focus', payload)}
-				onDidFocus={(payload) => eventDidFocus(payload.action.type)}
-			/> */}
-			{
-				data && data.feed_post.length ? (
-					<FeedList
-						props={props}
-						dataRender={data.feed_post}
-						Refresh={(e) => _Refresh()}
-						refreshing={refreshing}
-						token={token}
-					/>
-				) : // <View>
-				// 	<FlatList
-				// 		data={data ? data.feed_post : null}
-				// 		renderItem={({ item }) => (
-				// 			<Item dataRender={item} selected={selected} />
-				// 		)}
-				// 		keyExtractor={(item) => item.id_post}
-				// 		extraData={liked}
-				// 		refreshControl={
-				// 			<RefreshControl
-				// 				refreshing={refreshing}
-				// 				onRefresh={() => _Refresh()}
-				// 			/>
-				// 		}
-				// 	/>
-				// 	<TouchableOpacity style={styles.fab} onPress={createPost}>
-				// 		<PostButton height={50} width={50} />
-				// 	</TouchableOpacity>
-				// </View>
-				null
-				// <ErrorPost />
+			{token?
+				<FeedList
+				props={props}
+				token={token}
+				/>
+			:null
 			}
 			<TouchableOpacity style={styles.fab} onPress={createPost}>
 				<PostButton height={50} width={50} />
