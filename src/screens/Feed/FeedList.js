@@ -24,13 +24,15 @@ import {
   CommentBlack,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import AutoHeightImage from "react-native-auto-height-image";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { Text, Button } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
+import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
+
 const deletepost = gql`
   mutation($post_id: ID!) {
     delete_post(post_id: $post_id) {
@@ -44,19 +46,17 @@ const deletepost = gql`
 
 export default function FeedList({
   props,
-  dataRender,
-  Refresh,
-  refreshing,
   token,
 }) {
-  let [datafeed, SetDataFeed] = useState(dataRender);
+  // let [datafeed, SetDataFeed] = useState(dataRender);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
-  console.log(datafeed);
+  let [activelike, setactivelike] = useState(true);
   const { t, i18n } = useTranslation();
+  let {width, height} = Dimensions.get("screen");
   const [
     MutationLike,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -93,136 +93,171 @@ export default function FeedList({
     },
   });
 
-  const _liked = async (id) => {
-    // console.log(id);
-    // SetDataFeed(tempData);
-    if (token) {
-      var tempData = [...datafeed];
-      var index = tempData.findIndex((k) => k["id"] === id);
-      tempData[index].liked = true;
-      tempData[index].response_count = tempData[index].response_count + 1;
-      try {
-        let response = await MutationLike({
-          variables: {
-            post_id: id,
-          },
-        });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
+  const _liked = async (id, index) => {
+    if (activelike){
+      if (token) {
+        setactivelike(false);
+        feed_post_pageing[index].liked = true;
+        feed_post_pageing[index].response_count = feed_post_pageing[index].response_count +1;
+        try {
+          let response = await MutationLike({
+            variables: {
+              post_id: id,
+            },
+          });
+          // if (loadingLike) {
+          //   Alert.alert("Loading!!");
+          // }
+          if (errorLike) {
+            throw new Error("Error");
+          }
+          // console.log(response);
+          if (response.data) {
+            if (
+              response.data.like_post.code === 200 ||
+              response.data.like_post.code === "200"
+            ) {
+              feed_post_pageing[index].liked = true;
+              setactivelike(true);
 
-        if (response.data) {
-          if (
-            response.data.like_post.code === 200 ||
-            response.data.like_post.code === "200"
-          ) {
-            // _Refresh();
-            var tempData = [...datafeed];
-            var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = true;
-            tempData[index].response_count = response.data.like_post.count_like;
-            // SetDataFeed(tempData);
-          } else {
-            var tempData = [...datafeed];
-            var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = false;
-            tempData[index].response_count = tempData[index].response_count - 1;
-            // SetDataFeed(tempData);
-            throw new Error(response.data.like_post.message);
+              // feed_post_pageing[index].response_count = feed_post_pageing[index].response_count +1;
+            } else {
+              throw new Error(response.data.like_post.message);
+            }
+
+            // Alert.alert('Succes');
+          }
+        } catch (error) {
+          feed_post_pageing[index].liked = false;
+          feed_post_pageing[index].response_count = feed_post_pageing[index].response_count - 1;
+          setactivelike(true);
+          console.log(error);
+          // Alert.alert("" + error);
+        }
+      } else {
+        Alert.alert("Please Login");
+      }
+    }
+
+  };
+
+  const _unliked = async (id, index) => {
+    if (activelike){
+      if (token || token !== "") {
+        setactivelike(false);
+        feed_post_pageing[index].liked = false;
+        feed_post_pageing[index].response_count = feed_post_pageing[index].response_count -1;
+        try {
+          let response = await MutationunLike({
+            variables: {
+              post_id: id,
+            },
+          });
+          // if (loadingunLike) {
+          //   Alert.alert("Loading!!");
+          // }
+          if (errorunLike) {
+            throw new Error("Error");
           }
 
-          // Alert.alert('Succes');
+          if (response.data) {
+            if (
+              response.data.unlike_post.code === 200 ||
+              response.data.unlike_post.code === "200"
+            ) {            
+              // _Refresh();
+              feed_post_pageing[index].liked = false;
+              setactivelike(true);
+            } else {
+              throw new Error(response.data.unlike_post.message);
+            }
+
+            // Alert.alert('Succes');
+          }
+        } catch (error) {
+          setactivelike(true);
+          feed_post_pageing[index].response_count = feed_post_pageing[index].response_count +1;
+          feed_post_pageing[index].liked = true;
+          console.log(error);
         }
-      } catch (error) {
-        var tempData = [...datafeed];
-        var index = tempData.findIndex((k) => k["id"] === id);
-        tempData[index].liked = false;
-        tempData[index].response_count = tempData[index].response_count - 1;
-        // SetDataFeed(tempData);
-        console.log(error);
-        // Alert.alert("" + error);
+      } else {
+        Alert.alert("Please Login");
       }
-    } else {
-      Alert.alert("Please Login");
     }
   };
 
-  const _unliked = async (id) => {
-    if (token || token !== "") {
-      var tempData = [...datafeed];
-      var index = tempData.findIndex((k) => k["id"] === id);
-      tempData[index].liked = false;
-      tempData[index].response_count = tempData[index].response_count - 1;
-      //   SetDataFeed(tempData);
-      try {
-        let response = await MutationunLike({
-          variables: {
-            post_id: id,
-          },
-        });
-        // if (loadingunLike) {
-        //   Alert.alert("Loading!!");
-        // }
-        // if (errorunLike) {
-        //   throw new Error("Error Input");
-        // }
+  const { loading: loadingPost, data: dataPost, error: errorPost, fetchMore, refetch, networkStatus } = useQuery(FeedPageing, {
+    variables: {
+      limit: 10,
+      offset: 0,
+    },
+    context: {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+    // pollInterval: 5500,
+    notifyOnNetworkStatusChange: true,
+  });
+  // console.log(token);
+  // console.log(dataPost);
+  let feed_post_pageing = [];
+  if (dataPost && dataPost && 'datas' in dataPost.feed_post_pageing){
+    feed_post_pageing = dataPost.feed_post_pageing.datas;
+  }
 
-        if (response.data) {
-          if (
-            response.data.unlike_post.code === 200 ||
-            response.data.unlike_post.code === "200"
-          ) {
-            // _Refresh();
-            var tempData = [...datafeed];
-            var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = false;
-            tempData[index].response_count =
-              response.data.unlike_post.count_like;
-            // SetDataFeed(tempData);
-          } else {
-            var tempData = [...datafeed];
-            var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = false;
-            tempData[index].response_count = tempData[index].response_count + 1;
-            // SetDataFeed(tempData);
-            throw new Error(response.data.unlike_post.message);
-          }
+  const [refreshing, setRefreshing] = React.useState(false);
 
-          // Alert.alert('Succes');
-        }
-      } catch (error) {
-        var tempData = [...datafeed];
-        var index = tempData.findIndex((k) => k["id"] === id);
-        tempData[index].liked = false;
-        tempData[index].response_count = tempData[index].response_count + 1;
-        // SetDataFeed(tempData);
-        // Alert.alert("" + error);
-        console.log(error);
-      }
-    } else {
-      Alert.alert("Please Login");
-    }
+	const Refresh = React.useCallback(() => {
+		setRefreshing(true);
+		refetch();
+		wait(1000).then(() => {
+			setRefreshing(false);
+		});
+	}, []);
+	const wait = (timeout) => {
+		return new Promise((resolve) => {
+			setTimeout(resolve, timeout);
+		});
   };
 
-  const image_scaling = async (image) => {
-    // console.log(data);
-    let screen_widht = Dimensions.get("screen").width - 50;
-    let screen_height = Dimensions.get("screen").width - 50;
-    await Image.getSize(image, (width, height) => {
-      screen_height = height * (screen_widht / width);
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.feed_post_pageing;
+    const datas = [
+      ...prev.feed_post_pageing.datas,
+      ...fetchMoreResult.feed_post_pageing.datas,
+    ];
+    return Object.assign({}, prev, {
+        feed_post_pageing: {
+          __typename: prev.feed_post_pageing.__typename,
+          page_info,
+          datas,
+        },
     });
-    return screen_height;
   };
+
+  const handleOnEndReached = () => {
+    console.log(dataPost.feed_post_pageing.page_info.hasNextPage);
+    console.log(dataPost.feed_post_pageing.page_info.offset);
+    if (dataPost.feed_post_pageing.page_info.hasNextPage){
+        return fetchMore({
+          variables: {
+            limit: 10,
+            offset: dataPost.feed_post_pageing.page_info.offset,
+          },
+          updateQuery: onUpdate,
+        });
+    }
+  };
+
+
+  
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
-    // var tempData = [...datafeed];
-    // var index = tempData.findIndex((k) => k['id'] === id);
 
-    // SetDataFeed(tempData);
     if (token || token !== "") {
       try {
         let response = await Mutationdeletepost({
@@ -336,13 +371,13 @@ export default function FeedList({
     }
   };
 
-  function Item({ selected, dataRender }) {
+  function Item({ selected, dataRender, index }) {
     return (
       <View
         style={{
           width: Dimensions.get("window").width - 20,
           backgroundColor: "#FFFFFF",
-          flex: 1,
+          // flex: 1,
           marginHorizontal: 10,
           marginVertical: 7,
           borderRadius: 20,
@@ -470,22 +505,32 @@ export default function FeedList({
             justifyContent: "center",
             alignItems: "center",
             width: Dimensions.get("window").width - 40,
-            minHeight: Dimensions.get("window").width - 155,
+            height: Dimensions.get("window").width - 40,
+            // minHeight: Dimensions.get("window").width - 155,
             borderWidth: 0.5,
             borderColor: "#EEEEEE",
             borderRadius: 15,
           }}
         >
-          {dataRender && dataRender.assets && dataRender.assets[0].filepath ? (
-            <Image
+          {/* {dataRender && dataRender.assets && dataRender.assets[0].filepath ? ( */}
+            {/* <Image
               style={{
                 width: Dimensions.get("window").width - 40,
                 borderRadius: 15,
                 alignSelf: "center",
               }}
               uri={dataRender.assets[0].filepath}
+            /> */}
+             <Image
+              style={{
+                width: Dimensions.get("window").width - 40,
+                height: Dimensions.get("window").width - 40,
+                borderRadius: 15,
+                alignSelf: "center",
+              }}
+              source={{uri:dataRender.assets[0].filepath}}
             />
-          ) : null}
+          {/* ) : null} */}
         </View>
 
         <View
@@ -515,7 +560,7 @@ export default function FeedList({
             >
               {dataRender.liked ? (
                 <Button
-                  onPress={() => _unliked(dataRender.id)}
+                  onPress={() => _unliked(dataRender.id, index)}
                   type="icon"
                   // variant="transparent"
                   position="left"
@@ -540,7 +585,7 @@ export default function FeedList({
                 </Button>
               ) : (
                 <Button
-                  onPress={() => _liked(dataRender.id)}
+                  onPress={() => _liked(dataRender.id, index)}
                   type="icon"
                   position="left"
                   size="small"
@@ -652,9 +697,9 @@ export default function FeedList({
           setModalmenu(false);
         }}
         onRequestClose={() => setModalmenu(false)}
-        onDismiss={() => setModalmenu(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
+        // onDismiss={() => setModalmenu(false)}
+        animationIn="fadeInDown"
+        animationOut="fadeInDown"
         isVisible={modalmenu}
         style={{
           justifyContent: "center",
@@ -859,13 +904,341 @@ export default function FeedList({
       </Modal>
 
       <FlatList
-        data={datafeed}
-        renderItem={({ item }) => (
-          <Item dataRender={item} selected={selected} />
+        data={feed_post_pageing}
+        renderItem={({ item, index }) => (
+          // <Image
+          //   source={{ uri: item.assets[0].filepath }}
+          //   style={{
+          //     height: (width) -15,
+          //     width: (width) -20,
+          //     borderRadius: 5,
+          //     margin: 2,
+          //     alignSelf: "center",
+          //     resizeMode: "cover",
+          //   }}
+          // />
+          // return (
+            <View
+              style={{
+                width: Dimensions.get("window").width - 20,
+                backgroundColor: "#FFFFFF",
+                // flex: 1,
+                marginHorizontal: 10,
+                marginVertical: 7,
+                borderRadius: 20,
+                borderBottomWidth: 1,
+                borderBottomColor: "#EEEEEE",
+                paddingBottom: 25,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  marginVertical: 15,
+                  // justifyContent: 'space-evenly',
+                  alignContent: "center",
+                }}
+              >
+                <CustomImage
+                  isTouchable
+                  onPress={() => {
+                    item.user.id !== setting?.user?.id
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: item.user.id,
+                          },
+                        })
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                        });
+                  }}
+                  customStyle={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 15,
+                    alignSelf: "center",
+                    marginLeft: 15,
+                  }}
+                  customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
+                  source={{ uri: item.user.picture }}
+                />
+                <View
+                  style={{
+                    justifyContent: "center",
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <Text
+                    onPress={() => {
+                      item.user.id !== setting?.user?.id
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: item.user.id,
+                            },
+                          })
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                          });
+                    }}
+                    style={{
+                      fontFamily: "Lato-Bold",
+                      fontSize: 14,
+                      // marginTop: 7,
+                    }}
+                  >
+                    {item.user.first_name}{" "}
+                    {item.user.first_name ? item.user.last_name : null}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        fontSize: 10,
+                        // marginTop: 7,
+                      }}
+                    >
+                      {duration(item.created_at)}
+                    </Text>
+                    {item.location_name ? (
+                      <View
+                        style={{
+                          marginHorizontal: 5,
+                          backgroundColor: "black",
+                          height: 4,
+                          width: 4,
+                          borderRadius: 2,
+                        }}
+                      ></View>
+                    ) : null}
+                    {item.location_name ? (
+                      <Text
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 10,
+                          // marginTop: 7,
+                        }}
+                      >
+                        <Truncate text={item.location_name} length={40} />
+                      </Text>
+                    ) : null}
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => OptionOpen(item)}
+                  style={{
+                    position: "absolute",
+                    right: 15,
+                    top: 2,
+                    alignSelf: "center",
+                  }}
+                >
+                  <More height={20} width={20} />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  marginHorizontal: 10,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: Dimensions.get("window").width - 40,
+                  // height: Dimensions.get("window").width - 40,
+                  minHeight: Dimensions.get("window").width - 155,
+                  borderWidth: 0.5,
+                  borderColor: "#EEEEEE",
+                  borderRadius: 15,
+                }}
+              >
+                {/* {item && item.assets && item.assets[0].filepath ? ( */}
+                  <Image
+                    style={{
+                      width: Dimensions.get("window").width - 40,
+                      borderRadius: 15,
+                      alignSelf: "center",
+                    }}
+                    uri={item.assets[0].filepath}
+                  />
+                   {/* <Image
+                    style={{
+                      width: Dimensions.get("window").width - 40,
+                      height: Dimensions.get("window").width - 40,
+                      borderRadius: 15,
+                      alignSelf: "center",
+                    }}
+                    source={{uri:item.assets[0].filepath}}
+                  /> */}
+                {/* ) : null} */}
+              </View>
+      
+              <View
+                style={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  marginTop: 17,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "white",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      width: "50%",
+                      alignSelf: "flex-start",
+                      alignContent: "space-between",
+                      alignItems: "center",
+                      // justifyContent: 'space-evenly',
+                    }}
+                  >
+                    {item.liked ? (
+                      <Button
+                        onPress={() => _unliked(item.id, index)}
+                        type="icon"
+                        // variant="transparent"
+                        position="left"
+                        size="small"
+                        style={{
+                          paddingHorizontal: 10,
+                          marginRight: 15,
+                          borderRadius: 16,
+                          backgroundColor: "#F2DAE5",
+                          // minidth: 70,
+                          // right: 10,
+                        }}
+                      >
+                        <LikeRed height={15} width={15} />
+                        <Text
+                          type="black"
+                          size="label"
+                          style={{ marginHorizontal: 5, color: "#BE3737" }}
+                        >
+                          {item.response_count}
+                        </Text>
+                      </Button>
+                    ) : (
+                      <Button
+                        onPress={() => _liked(item.id, index)}
+                        type="icon"
+                        position="left"
+                        size="small"
+                        color="tertiary"
+                        style={{
+                          paddingHorizontal: 10,
+                          marginRight: 15,
+                          borderRadius: 16,
+                          // right: 10,
+                        }}
+                      >
+                        <LikeBlack height={15} width={15} />
+                        <Text
+                          type="black"
+                          size="label"
+                          style={{ marginHorizontal: 7 }}
+                        >
+                          {item.response_count}
+                        </Text>
+                      </Button>
+                    )}
+      
+                    <Button
+                      onPress={() => viewcomment(item)}
+                      type="icon"
+                      variant="transparent"
+                      position="left"
+                      size="small"
+                      style={{
+                        paddingHorizontal: 2,
+      
+                        // right: 10,
+                      }}
+                    >
+                      <CommentBlack height={15} width={15} />
+                      <Text type="black" size="label" style={{ marginHorizontal: 7 }}>
+                        {item.comment_count}
+                      </Text>
+                    </Button>
+                  </View>
+      
+                  <Button
+                    type="icon"
+                    variant="transparent"
+                    position="left"
+                    size="small"
+                    style={{
+                      // right: 10,
+                      paddingHorizontal: 2,
+                    }}
+                  >
+                    <ShareBlack height={17} width={17} />
+                    <Text size="small" style={{ marginLeft: 3 }}>
+                      {t("share")}
+                    </Text>
+                  </Button>
+                </View>
+                <View
+                  style={{
+                    width: "100%",
+                    padding: 10,
+                    flexDirection: "row",
+                  }}
+                >
+                  {/* <Text
+                    style={{
+                      textAlign: 'left',
+                      fontFamily: "Lato-Bold",
+                      fontSize: 14,
+                      color: '#616161',
+                      marginRight: 5,
+                    }}>
+                    {item.user.first_name} {''}{' '}
+                    {item.user.first_name ? item.user.last_name : null}
+                  </Text> */}
+                  {item.caption ? (
+                    <Text
+                      style={{
+                        textAlign: "left",
+                        fontFamily: "Lato-Regular",
+                        fontSize: 14,
+                        lineHeight: 20,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "Lato-Bold",
+                          marginRight: 5,
+                        }}
+                      >
+                        {item.user.first_name}{" "}
+                        {item.user.first_name
+                          ? item.user.last_name
+                          : null}{" "}
+                      </Text>
+                      {item.caption}
+                    </Text>
+                  ) : null}
+                </View>
+              </View>
+            </View>
+          
+          // <Item item={item} selected={selected} index={index} />
         )}
         style={{
           paddingVertical: 7,
         }}
+        initialNumToRender={7}
         keyExtractor={(item) => item.id_post}
         extraData={liked}
         refreshing={refreshing}
@@ -873,6 +1246,24 @@ export default function FeedList({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }
+        ListFooterComponent={
+          loadingPost? 
+          <View
+            style={{
+              // position: 'absolute',
+              // bottom:0,
+              width: width,
+              justifyContent: 'center',
+              alignItems:'center',
+            }}>
+            <Text size='title' type='bold' 
+            // style={{ color:'#209fae'}}
+            >Loading...</Text>
+          </View>
+          :null
+        }
+        onEndReachedThreshold={1}
+        onEndReached={handleOnEndReached}
       />
     </View>
   );
