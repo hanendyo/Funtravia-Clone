@@ -2,22 +2,33 @@ import React, { useState, useEffect, useRef } from "react";
 import { Arrowbackwhite, LogoEmail } from "../../../assets/svg";
 import { Text, Button, Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { View, Dimensions, CheckBox } from "react-native";
+import {
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native-gesture-handler";
 import { useMutation } from "@apollo/client";
 import verifyEmail from "../../../graphQL/Mutation/Setting/verifyEmail";
+import RESEND from "../../../graphQL/Mutation/Register/ResendOtpRegEmail";
 
 export default function SettingEmailVerify(props) {
   let [token, setToken] = useState("");
   let { t, i18n } = useTranslation();
   let [setting, setSetting] = useState("");
+  const [resend] = useMutation(RESEND);
+  let [Timer, setTimer] = useState(0);
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let refBox1 = useRef(null);
   let refBox2 = useRef(null);
   let refBox3 = useRef(null);
   let refBox4 = useRef(null);
   let refBox5 = useRef(null);
   let refBox6 = useRef(null);
+  let [modalSuccess, setModalSuccess] = useState(false);
 
   let [state, setState] = useState({
     onebox: null,
@@ -90,18 +101,6 @@ export default function SettingEmailVerify(props) {
     } else {
       next ? next.current.focus() : null;
     }
-
-    // if (e.nativeEvent.key === "Backspace") {
-    //   if (state[rName] === null) {
-    //     (await prev) ? prev.current.focus() : null;
-    //     await setState({ ...state, [pName]: null });
-    //   } else {
-    //     await setState({ ...state, [rName]: null });
-    //   }
-    // } else {
-    //   await setState({ ...state, [rName]: e.nativeEvent.key });
-    //   (await next) ? next.current.focus() : null;
-    // }
   };
 
   const [
@@ -133,7 +132,7 @@ export default function SettingEmailVerify(props) {
           },
         });
         if (errorVerify) {
-          throw new Error("Email verification failed");
+          throw new Error(t("verifyFail"));
         }
         if (loadingVerify) {
           alert("Loading!!");
@@ -149,13 +148,84 @@ export default function SettingEmailVerify(props) {
           await props.navigation.navigate("SettingsAkun", { setting: setting });
         }
       } catch (error) {
-        alert("" + error);
+        let errors = error.toString().replace("Error:", "");
+        Alert.alert(errors);
       }
     }
   };
+
+  const hitungMundur = () => {
+    var timeleft = 30;
+    var downloadTimer = setInterval(function () {
+      timeleft -= 1;
+      setTimer(timeleft);
+      if (timeleft === 0) {
+        clearInterval(downloadTimer);
+        return false;
+      }
+    }, 1000);
+  };
+
+  const resendOTP = async () => {
+    console.log("response");
+    try {
+      let response = await resend({
+        variables: {
+          user_id: setting?.user?.id,
+          email: props.route.params.emailOld,
+        },
+      });
+      hitungMundur();
+    } catch (error) {
+      showAlert({
+        ...aler,
+        show: true,
+        judul: "Failed Send OTP",
+        detail: "",
+      });
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <Loading show={loadingVerify} />
+      {/* Modal Phone
+      <View style={styles.centeredView}>
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalSuccess}
+          onRequestClose={() => setModalSuccess(false)}
+          onBackdropPress={() => {
+            setModalSuccess(false);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text
+                style={{ color: "#209FAE", marginBottom: 20 }}
+                size="label"
+                type="bold"
+              >
+                Delete Phone Number
+              </Text>
+              <Text
+                type="bold"
+                size="label"
+                onPress={() => {
+                  setModalSuccess(!modalSuccess);
+                }}
+                onPress={() => {
+                  setModalSuccess(false),
+                    props.navigation.navigate("SettingPhoneChange");
+                }}
+              >
+                Change Phone Number
+              </Text>
+            </View>
+          </View>
+        </Modal>
+      </View> */}
       <View
         style={{
           width: Dimensions.get("screen").width * 0.9,
@@ -363,7 +433,7 @@ export default function SettingEmailVerify(props) {
       <View
         style={{
           marginHorizontal: 20,
-          marginVertical: Dimensions.get("screen").height * 0.15,
+          // marginVertical: Dimensions.get("screen").height * 0.15,
           flexDirection: "row",
           justifyContent: "space-between",
         }}
@@ -372,11 +442,46 @@ export default function SettingEmailVerify(props) {
           type="box"
           size="medium"
           color="secondary"
-          text={t("save")}
+          text={t("verify")}
           onPress={() => resultVerifyEmail()}
           style={{ width: "100%" }}
         />
       </View>
+      <View
+        style={{
+          marginTop: 10,
+          marginBottom: 30,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text size="description">{t("didntReceive")}</Text>
+        <TouchableOpacity
+          onPress={() => resendOTP()}
+          disabled={Timer === 0 ? false : true}
+        >
+          <Text size="description" type="black" style={{ color: "#209FAE" }}>
+            {`${t("resend")} ${Timer > 0 ? Timer : ""}`}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
+
+// const styles = StyleSheet.create({
+//   centeredView: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   modalView: {
+//     margin: 20,
+//     backgroundColor: "white",
+//     borderRadius: 5,
+//     width: Dimensions.get("screen").width * 0.7,
+//     height: Dimensions.get("screen").width * 0.4,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+// });

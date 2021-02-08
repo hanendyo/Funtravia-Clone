@@ -450,6 +450,7 @@
   "currentEmail": "Enter current email address",
   "newEmail": "Enter new email address",
   "verifyEmail": "Verify your email",
+  "verifyFail": "Your email verification failed",
   "verifyOtp": "Please enter 6 digit code sent to",
   "location": "Location",
   "region": "Region",
