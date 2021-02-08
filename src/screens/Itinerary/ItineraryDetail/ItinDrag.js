@@ -11,6 +11,7 @@ import {
   Xhitam,
   Bottom,
   OptionsVertBlack,
+  More,
 } from "../../../assets/svg";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { FlatList } from "react-native-gesture-handler";
@@ -28,6 +29,7 @@ import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import UpdateCover from "../../../graphQL/Mutation/Itinerary/Updatecover";
 import { useMutation } from "@apollo/client";
 import { useTranslation } from "react-i18next";
+import DeleteDay from "../../../graphQL/Mutation/Itinerary/DeleteDay";
 
 export default function ItinDrag({
   idDay,
@@ -39,7 +41,7 @@ export default function ItinDrag({
   token,
   iditinerary,
   setloading,
-  refresh,
+  Refresh,
   GetTimeline,
   datadayaktif,
   setdatadayaktif,
@@ -47,14 +49,23 @@ export default function ItinDrag({
   setCover,
   cover,
   loadingtimeline,
+  lat,
+  long,
+  kota,
+  dataday,
+  indexnya,
+  setIndex,
 }) {
   const { t, i18n } = useTranslation();
   let [modal, setModal] = useState(false);
   let [modaldate, setModaldate] = useState(false);
   let [modalmenu, setModalmenu] = useState(false);
+  let [modalmenuday, setModalmenuday] = useState(false);
   let [dataList, setDataList] = useState(data);
   let [akhir, setdataAkhir] = useState([]);
-  let [startTime, setStarTime] = useState(dataList[0].time);
+  let [startTime, setStarTime] = useState(
+    dataList[0] ? dataList[0].time : "00:00"
+  );
   let [textinput, setInput] = useState("");
   let [indexinput, setIndexInput] = useState("");
   let [positiondate, setPositiondate] = useState("");
@@ -110,8 +121,6 @@ export default function ItinDrag({
       console.error(error);
     }
   };
-
-  console.log(akhir);
 
   const [
     mutationDeleteActivity,
@@ -837,7 +846,7 @@ export default function ItinDrag({
                       bukamodalmenu(item.id, item.type);
                     }}
                   >
-                    <OptionsVertBlack width={15} height={15} />
+                    <More width={15} height={15} />
                   </Button>
                 ) : null}
               </View>
@@ -938,7 +947,7 @@ export default function ItinDrag({
   };
 
   const deleteactivity = async (iditinerarys, idactivitys, typess) => {
-    setloading(true);
+    // setloading(true);
     try {
       let response = await mutationDeleteActivity({
         variables: {
@@ -992,21 +1001,20 @@ export default function ItinDrag({
                 if (response.data.update_timeline.code !== 200) {
                   throw new Error(response.data.update_timeline.message);
                 }
-
                 GetTimeline();
-                // refresh();
               }
-              setloading(false);
+              // setloading(false);
             } catch (error) {
-              setloading(false);
+              // setloading(false);
               Alert.alert("" + error);
             }
           }
+          await GetTimeline();
         }
       }
-      setloading(false);
+      // setloading(false);
     } catch (error) {
-      setloading(false);
+      // setloading(false);
       Alert.alert("" + error);
     }
   };
@@ -1025,13 +1033,11 @@ export default function ItinDrag({
         throw new Error("Error Input");
       }
       if (response.data) {
-        // console.log(data);
         if (response.data.update_cover_itinerary.code !== 200) {
           throw new Error(response.data.update_cover_itinerary.message);
         } else {
-          refresh();
+          Refresh();
         }
-        // GetTimeline();
       }
       setloading(false);
     } catch (error) {
@@ -1091,11 +1097,45 @@ export default function ItinDrag({
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
         }
-        // GetTimeline();
-        // refresh();
       }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
 
-      console.log(response);
+  const [
+    mutationDeleteDay,
+    { loading: Loadingdeleteday, data: datadeleteDay, error: errordeleteday },
+  ] = useMutation(DeleteDay, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _handledeleteDay = async (iditinerary, idDay) => {
+    try {
+      let response = await mutationDeleteDay({
+        variables: {
+          itinerary_id: iditinerary,
+          day_id: idDay,
+        },
+      });
+
+      if (errordeleteday) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.delete_day.code !== 200) {
+          throw new Error(response.data.delete_day.message);
+        }
+        await setdatadayaktif(dataday[0]);
+        await setidDayz(dataday[0].id);
+        await setIndex(0);
+        await Refresh();
+      }
     } catch (error) {
       Alert.alert("" + error);
     }
@@ -1135,9 +1175,9 @@ export default function ItinDrag({
             <View
               onLayout={() => {
                 _fetchItem(
-                  dataList[0].city,
-                  dataList[0].latitude,
-                  dataList[0].longitude
+                  dataList[0] ? dataList[0].city : kota,
+                  dataList[0] ? dataList[0].latitude : lat,
+                  dataList[0] ? dataList[0].longitude : long
                 );
               }}
             >
@@ -1166,7 +1206,11 @@ export default function ItinDrag({
                 </Text>
               </View>
               <Text>
-                <Truncate text={getcity(dataList)} length={35} />
+                {dataList.length > 0 ? (
+                  <Truncate text={getcity(dataList)} length={35} />
+                ) : (
+                  <Capital text={kota} length={35} />
+                )}
               </Text>
             </View>
             {dataweather && dataweather.cod === 200 && dataweather.weather ? (
@@ -1314,6 +1358,19 @@ export default function ItinDrag({
                     </Text>
                   </View>
                 ) : null}
+
+                <Button
+                  size="small"
+                  text=""
+                  type="circle"
+                  variant="transparent"
+                  style={{}}
+                  onPress={() => {
+                    setModalmenuday(true);
+                  }}
+                >
+                  <More width={15} height={15} />
+                </Button>
               </View>
             ) : null}
           </View>
@@ -1329,8 +1386,45 @@ export default function ItinDrag({
                     : 70
                   : 200
                 : 300
-              : 500,
+              : 420,
         }}
+        ListFooterComponent={
+          dataList.length < 1 ? (
+            loadingtimeline ? (
+              <View
+                style={{
+                  height: 150,
+                  justifyContent: "flex-start",
+                  alignContent: "center",
+                  alignItems: "center",
+                  paddingTop: 150,
+                  // borderWidth: 1,
+                }}
+              >
+                <Text>Loading....</Text>
+                {/* {datadetail && datadetail.itinerary_detail.cover
+                    ? setCover(datadetail.itinerary_detail.cover)
+                  : null} */}
+              </View>
+            ) : (
+              <View
+                style={{
+                  height: 150,
+                  justifyContent: "flex-start",
+                  alignContent: "center",
+                  alignItems: "center",
+                  paddingTop: 150,
+                  // borderWidth: 1,
+                }}
+              >
+                <Text>Timeline kosong</Text>
+                {/* {datadetail && datadetail.itinerary_detail.cover
+                    ? setCover(datadetail.itinerary_detail.cover)
+                  : null} */}
+              </View>
+            )
+          ) : null
+        }
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -1339,6 +1433,7 @@ export default function ItinDrag({
         keyExtractor={(item, index) => `draggable-item-${item.id}`}
         onDragEnd={({ data, from, to }) => handledrag(data, from, to)}
       />
+
       <Modal
         onBackdropPress={() => {
           setModalmenu(false);
@@ -1610,6 +1705,42 @@ export default function ItinDrag({
               }}
             >
               {t("Select")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal
+        onBackdropPress={() => {
+          setModalmenuday(false);
+        }}
+        onRequestClose={() => setModalmenuday(false)}
+        onDismiss={() => setModalmenuday(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalmenuday}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 60,
+            padding: 20,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              _handledeleteDay(datadayaktif.itinerary_id, datadayaktif.id);
+            }}
+          >
+            <Text style={{ color: "#d75995" }}>
+              {t("delete")} {t("day")} {datadayaktif.day} {t("from")}{" "}
+              {t("Itinerary")}
             </Text>
           </TouchableOpacity>
         </View>

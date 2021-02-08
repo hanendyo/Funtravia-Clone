@@ -52,7 +52,6 @@ import LinearGradient from "react-native-linear-gradient";
 import Ripple from "react-native-material-ripple";
 import ItinDrag from "./ItinDrag";
 
-// let HEADER_MAX_HEIGHT = 200;
 let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.15;
 let HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 75 : 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -64,6 +63,7 @@ export default function ItineraryDetail(props) {
   let [loading, setloading] = useState(false);
   let [showside, setshowside] = useState(false);
   let [isPrivate, setPrivate] = useState();
+  let [indexnya, setIndex] = useState(1);
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif
   );
@@ -205,9 +205,7 @@ export default function ItineraryDetail(props) {
           if (response.data.upload_cover_itinerary.code !== 200) {
             throw new Error(response.data.upload_cover_itinerary.message);
           }
-          // Alert.alert(t('success'));
           _Refresh();
-          // props.navigation.goBack();
         }
         setloading(false);
       } catch (error) {
@@ -503,7 +501,6 @@ export default function ItineraryDetail(props) {
     error: errortimeline,
     refetch: GetTimelin,
   } = useQuery(Timeline, {
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -522,10 +519,14 @@ export default function ItineraryDetail(props) {
     if (aktif == "Itinerary") {
       return (
         <>
-          {datatimeline && datatimeline.day_timeline.length ? (
+          {datadayaktif && datadayaktif.day ? (
             <ItinDrag
               idDay={idDay}
-              data={datatimeline.day_timeline}
+              data={
+                datatimeline && datatimeline.day_timeline.length > 0
+                  ? datatimeline.day_timeline
+                  : []
+              }
               props={props}
               setAkhir={(e) => {
                 setDataAkhir(e);
@@ -534,7 +535,7 @@ export default function ItineraryDetail(props) {
               token={token}
               iditinerary={itincountries}
               setloading={(e) => setloading(e)}
-              refresh={(e) => _Refresh(e)}
+              Refresh={(e) => _Refresh(e)}
               GetTimeline={(e) => GetTimeline()}
               datadayaktif={datadayaktif}
               setdatadayaktif={(e) => setdatadayaktif(e)}
@@ -545,28 +546,11 @@ export default function ItineraryDetail(props) {
               long={datadetail.itinerary_detail.city.longitude}
               kota={datadetail.itinerary_detail.city.name}
               loadingtimeline={loadingtimeline}
+              dataday={datadetail.itinerary_detail.day}
+              indexnya={indexnya}
+              setIndex={(e) => setIndex(e)}
             />
-          ) : (
-            <View
-              style={{
-                height: Dimensions.get("screen").height - 200,
-                justifyContent: "flex-start",
-                alignContent: "center",
-                alignItems: "center",
-                paddingTop: 150,
-                // borderWidth: 1,
-              }}
-            >
-              {loadingtimeline ? (
-                <Text>Loading....</Text>
-              ) : (
-                <Text>Timeline kosong</Text>
-              )}
-              {datadetail && datadetail.itinerary_detail.cover
-                ? setCover(datadetail.itinerary_detail.cover)
-                : null}
-            </View>
-          )}
+          ) : null}
         </>
       );
     } else if (aktif == "Picture") {
@@ -587,8 +571,6 @@ export default function ItineraryDetail(props) {
   };
 
   if (datadetail) {
-    // GetTimeline(datadetail.itinerary_detail.day[0].id);
-
     return (
       <View
         style={{
@@ -784,11 +766,22 @@ export default function ItineraryDetail(props) {
                 </Text>
               </Ripple>
             </View>
-
-            {datadetail && datadetail.itinerary_detail.day.length ? (
+            {loadingdetail ? (
+              <View
+                style={{
+                  height: 47,
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text>Loading...</Text>
+              </View>
+            ) : (
               <ItineraryDay
                 dataitin={datadetail.itinerary_detail}
-                dataday={datadetail.itinerary_detail.day}
+                dataDay={datadetail.itinerary_detail.day}
                 props={props}
                 token={token}
                 lat={datadetail.itinerary_detail.city.latitude}
@@ -809,27 +802,12 @@ export default function ItineraryDetail(props) {
                 setLoading={(e) => setloading(e)}
                 Refresh={(e) => _Refresh(e)}
                 status={status && status === "saved" ? "saved" : "notsaved"}
+                indexnya={indexnya}
+                setIndex={(e) => setIndex(e)}
               />
-            ) : (
-              <View
-                style={{
-                  height: 47,
-                  width: "100%",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text>Loading...</Text>
-              </View>
             )}
           </View>
-          <RenderUtama
-            aktif={actives}
-            // render={
-            //   data && data.CitiesInformation ? data.CitiesInformation : {}
-            // }
-          />
+          <RenderUtama aktif={actives} />
         </ScrollView>
         {/* ======================== (Panel bawah) ========================= */}
         {status && status === "saved" ? (
