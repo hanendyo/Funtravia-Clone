@@ -44,10 +44,7 @@ const deletepost = gql`
   }
 `;
 
-export default function FeedList({
-  props,
-  token,
-}) {
+export default function FeedList({ props, token }) {
   // let [datafeed, SetDataFeed] = useState(dataRender);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -56,7 +53,7 @@ export default function FeedList({
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
   const { t, i18n } = useTranslation();
-  let {width, height} = Dimensions.get("screen");
+  let { width, height } = Dimensions.get("screen");
   const [
     MutationLike,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -94,11 +91,12 @@ export default function FeedList({
   });
 
   const _liked = async (id, index) => {
-    if (activelike){
+    if (activelike) {
       if (token) {
         setactivelike(false);
         feed_post_pageing[index].liked = true;
-        feed_post_pageing[index].response_count = feed_post_pageing[index].response_count +1;
+        feed_post_pageing[index].response_count =
+          feed_post_pageing[index].response_count + 1;
         try {
           let response = await MutationLike({
             variables: {
@@ -129,7 +127,8 @@ export default function FeedList({
           }
         } catch (error) {
           feed_post_pageing[index].liked = false;
-          feed_post_pageing[index].response_count = feed_post_pageing[index].response_count - 1;
+          feed_post_pageing[index].response_count =
+            feed_post_pageing[index].response_count - 1;
           setactivelike(true);
           console.log(error);
           // Alert.alert("" + error);
@@ -138,15 +137,15 @@ export default function FeedList({
         Alert.alert("Please Login");
       }
     }
-
   };
 
   const _unliked = async (id, index) => {
-    if (activelike){
+    if (activelike) {
       if (token || token !== "") {
         setactivelike(false);
         feed_post_pageing[index].liked = false;
-        feed_post_pageing[index].response_count = feed_post_pageing[index].response_count -1;
+        feed_post_pageing[index].response_count =
+          feed_post_pageing[index].response_count - 1;
         try {
           let response = await MutationunLike({
             variables: {
@@ -164,7 +163,7 @@ export default function FeedList({
             if (
               response.data.unlike_post.code === 200 ||
               response.data.unlike_post.code === "200"
-            ) {            
+            ) {
               // _Refresh();
               feed_post_pageing[index].liked = false;
               setactivelike(true);
@@ -176,7 +175,8 @@ export default function FeedList({
           }
         } catch (error) {
           setactivelike(true);
-          feed_post_pageing[index].response_count = feed_post_pageing[index].response_count +1;
+          feed_post_pageing[index].response_count =
+            feed_post_pageing[index].response_count + 1;
           feed_post_pageing[index].liked = true;
           console.log(error);
         }
@@ -186,40 +186,47 @@ export default function FeedList({
     }
   };
 
-  const { loading: loadingPost, data: dataPost, error: errorPost, fetchMore, refetch, networkStatus } = useQuery(FeedPageing, {
+  const {
+    loading: loadingPost,
+    data: dataPost,
+    error: errorPost,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(FeedPageing, {
     variables: {
       limit: 10,
       offset: 0,
     },
     context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
   // console.log(token);
   // console.log(dataPost);
   let feed_post_pageing = [];
-  if (dataPost && dataPost && 'datas' in dataPost.feed_post_pageing){
+  if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
     feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
 
   const [refreshing, setRefreshing] = React.useState(false);
 
-	const Refresh = React.useCallback(() => {
-		setRefreshing(true);
-		refetch();
-		wait(1000).then(() => {
-			setRefreshing(false);
-		});
-	}, []);
-	const wait = (timeout) => {
-		return new Promise((resolve) => {
-			setTimeout(resolve, timeout);
-		});
+  const Refresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
   };
 
   const onUpdate = (prev, { fetchMoreResult }) => {
@@ -230,30 +237,28 @@ export default function FeedList({
       ...fetchMoreResult.feed_post_pageing.datas,
     ];
     return Object.assign({}, prev, {
-        feed_post_pageing: {
-          __typename: prev.feed_post_pageing.__typename,
-          page_info,
-          datas,
-        },
+      feed_post_pageing: {
+        __typename: prev.feed_post_pageing.__typename,
+        page_info,
+        datas,
+      },
     });
   };
 
   const handleOnEndReached = () => {
     console.log(dataPost.feed_post_pageing.page_info.hasNextPage);
     console.log(dataPost.feed_post_pageing.page_info.offset);
-    if (dataPost.feed_post_pageing.page_info.hasNextPage){
-        return fetchMore({
-          variables: {
-            limit: 10,
-            offset: dataPost.feed_post_pageing.page_info.offset,
-          },
-          updateQuery: onUpdate,
-        });
+    if (dataPost.feed_post_pageing.page_info.hasNextPage) {
+      return fetchMore({
+        variables: {
+          limit: 10,
+          offset: dataPost.feed_post_pageing.page_info.offset,
+        },
+        updateQuery: onUpdate,
+      });
     }
   };
 
-
-  
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
@@ -513,7 +518,7 @@ export default function FeedList({
           }}
         >
           {/* {dataRender && dataRender.assets && dataRender.assets[0].filepath ? ( */}
-            {/* <Image
+          {/* <Image
               style={{
                 width: Dimensions.get("window").width - 40,
                 borderRadius: 15,
@@ -521,15 +526,15 @@ export default function FeedList({
               }}
               uri={dataRender.assets[0].filepath}
             /> */}
-             <Image
-              style={{
-                width: Dimensions.get("window").width - 40,
-                height: Dimensions.get("window").width - 40,
-                borderRadius: 15,
-                alignSelf: "center",
-              }}
-              source={{uri:dataRender.assets[0].filepath}}
-            />
+          <Image
+            style={{
+              width: Dimensions.get("window").width - 40,
+              height: Dimensions.get("window").width - 40,
+              borderRadius: 15,
+              alignSelf: "center",
+            }}
+            source={{ uri: dataRender.assets[0].filepath }}
+          />
           {/* ) : null} */}
         </View>
 
@@ -918,30 +923,59 @@ export default function FeedList({
           //   }}
           // />
           // return (
+          <View
+            style={{
+              width: Dimensions.get("window").width - 20,
+              backgroundColor: "#FFFFFF",
+              // flex: 1,
+              marginHorizontal: 10,
+              marginVertical: 7,
+              borderRadius: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: "#EEEEEE",
+              paddingBottom: 25,
+            }}
+          >
             <View
               style={{
-                width: Dimensions.get("window").width - 20,
-                backgroundColor: "#FFFFFF",
-                // flex: 1,
-                marginHorizontal: 10,
-                marginVertical: 7,
-                borderRadius: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: "#EEEEEE",
-                paddingBottom: 25,
+                width: "100%",
+                flexDirection: "row",
+                marginVertical: 15,
+                // justifyContent: 'space-evenly',
+                alignContent: "center",
               }}
             >
+              <CustomImage
+                isTouchable
+                onPress={() => {
+                  item.user.id !== setting?.user?.id
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: item.user.id,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                      });
+                }}
+                customStyle={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                  marginLeft: 15,
+                }}
+                customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
+                source={{ uri: item.user.picture }}
+              />
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  marginVertical: 15,
-                  // justifyContent: 'space-evenly',
-                  alignContent: "center",
+                  justifyContent: "center",
+                  marginHorizontal: 10,
                 }}
               >
-                <CustomImage
-                  isTouchable
+                <Text
                   onPress={() => {
                     item.user.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
@@ -954,50 +988,42 @@ export default function FeedList({
                           screen: "ProfileTab",
                         });
                   }}
-                  customStyle={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 15,
-                    alignSelf: "center",
-                    marginLeft: 15,
+                  style={{
+                    fontFamily: "Lato-Bold",
+                    fontSize: 14,
+                    // marginTop: 7,
                   }}
-                  customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
-                  source={{ uri: item.user.picture }}
-                />
+                >
+                  {item.user.first_name}{" "}
+                  {item.user.first_name ? item.user.last_name : null}
+                </Text>
                 <View
                   style={{
-                    justifyContent: "center",
-                    marginHorizontal: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
                   <Text
-                    onPress={() => {
-                      item.user.id !== setting?.user?.id
-                        ? props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: {
-                              idUser: item.user.id,
-                            },
-                          })
-                        : props.navigation.push("ProfileStack", {
-                            screen: "ProfileTab",
-                          });
-                    }}
                     style={{
-                      fontFamily: "Lato-Bold",
-                      fontSize: 14,
+                      fontFamily: "Lato-Regular",
+                      fontSize: 10,
                       // marginTop: 7,
                     }}
                   >
-                    {item.user.first_name}{" "}
-                    {item.user.first_name ? item.user.last_name : null}
+                    {duration(item.created_at)}
                   </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
+                  {item.location_name ? (
+                    <View
+                      style={{
+                        marginHorizontal: 5,
+                        backgroundColor: "black",
+                        height: 4,
+                        width: 4,
+                        borderRadius: 2,
+                      }}
+                    ></View>
+                  ) : null}
+                  {item.location_name ? (
                     <Text
                       style={{
                         fontFamily: "Lato-Regular",
@@ -1005,68 +1031,47 @@ export default function FeedList({
                         // marginTop: 7,
                       }}
                     >
-                      {duration(item.created_at)}
+                      <Truncate text={item.location_name} length={40} />
                     </Text>
-                    {item.location_name ? (
-                      <View
-                        style={{
-                          marginHorizontal: 5,
-                          backgroundColor: "black",
-                          height: 4,
-                          width: 4,
-                          borderRadius: 2,
-                        }}
-                      ></View>
-                    ) : null}
-                    {item.location_name ? (
-                      <Text
-                        style={{
-                          fontFamily: "Lato-Regular",
-                          fontSize: 10,
-                          // marginTop: 7,
-                        }}
-                      >
-                        <Truncate text={item.location_name} length={40} />
-                      </Text>
-                    ) : null}
-                  </View>
+                  ) : null}
                 </View>
-                <TouchableOpacity
-                  onPress={() => OptionOpen(item)}
-                  style={{
-                    position: "absolute",
-                    right: 15,
-                    top: 2,
-                    alignSelf: "center",
-                  }}
-                >
-                  <More height={20} width={20} />
-                </TouchableOpacity>
               </View>
-              <View
+              <TouchableOpacity
+                onPress={() => OptionOpen(item)}
                 style={{
-                  marginHorizontal: 10,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: Dimensions.get("window").width - 40,
-                  // height: Dimensions.get("window").width - 40,
-                  minHeight: Dimensions.get("window").width - 155,
-                  borderWidth: 0.5,
-                  borderColor: "#EEEEEE",
-                  borderRadius: 15,
+                  position: "absolute",
+                  right: 15,
+                  top: 2,
+                  alignSelf: "center",
                 }}
               >
-                {/* {item && item.assets && item.assets[0].filepath ? ( */}
-                  <Image
-                    style={{
-                      width: Dimensions.get("window").width - 40,
-                      borderRadius: 15,
-                      alignSelf: "center",
-                    }}
-                    uri={item.assets[0].filepath}
-                  />
-                   {/* <Image
+                <More height={20} width={20} />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                marginHorizontal: 10,
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                width: Dimensions.get("window").width - 40,
+                // height: Dimensions.get("window").width - 40,
+                minHeight: Dimensions.get("window").width - 155,
+                borderWidth: 0.5,
+                borderColor: "#EEEEEE",
+                borderRadius: 15,
+              }}
+            >
+              {/* {item && item.assets && item.assets[0].filepath ? ( */}
+              <Image
+                style={{
+                  width: Dimensions.get("window").width - 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                }}
+                uri={item.assets[0].filepath}
+              />
+              {/* <Image
                     style={{
                       width: Dimensions.get("window").width - 40,
                       height: Dimensions.get("window").width - 40,
@@ -1075,127 +1080,131 @@ export default function FeedList({
                     }}
                     source={{uri:item.assets[0].filepath}}
                   /> */}
-                {/* ) : null} */}
-              </View>
-      
+              {/* ) : null} */}
+            </View>
+
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "white",
+                marginTop: 17,
+              }}
+            >
               <View
                 style={{
-                  width: "100%",
+                  flexDirection: "row",
                   backgroundColor: "white",
-                  marginTop: 17,
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
                 }}
               >
                 <View
                   style={{
                     flexDirection: "row",
-                    backgroundColor: "white",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 10,
+                    width: "50%",
+                    alignSelf: "flex-start",
+                    alignContent: "space-between",
+                    alignItems: "center",
+                    // justifyContent: 'space-evenly',
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      width: "50%",
-                      alignSelf: "flex-start",
-                      alignContent: "space-between",
-                      alignItems: "center",
-                      // justifyContent: 'space-evenly',
-                    }}
-                  >
-                    {item.liked ? (
-                      <Button
-                        onPress={() => _unliked(item.id, index)}
-                        type="icon"
-                        // variant="transparent"
-                        position="left"
-                        size="small"
-                        style={{
-                          paddingHorizontal: 10,
-                          marginRight: 15,
-                          borderRadius: 16,
-                          backgroundColor: "#F2DAE5",
-                          // minidth: 70,
-                          // right: 10,
-                        }}
-                      >
-                        <LikeRed height={15} width={15} />
-                        <Text
-                          type="black"
-                          size="label"
-                          style={{ marginHorizontal: 5, color: "#BE3737" }}
-                        >
-                          {item.response_count}
-                        </Text>
-                      </Button>
-                    ) : (
-                      <Button
-                        onPress={() => _liked(item.id, index)}
-                        type="icon"
-                        position="left"
-                        size="small"
-                        color="tertiary"
-                        style={{
-                          paddingHorizontal: 10,
-                          marginRight: 15,
-                          borderRadius: 16,
-                          // right: 10,
-                        }}
-                      >
-                        <LikeBlack height={15} width={15} />
-                        <Text
-                          type="black"
-                          size="label"
-                          style={{ marginHorizontal: 7 }}
-                        >
-                          {item.response_count}
-                        </Text>
-                      </Button>
-                    )}
-      
+                  {item.liked ? (
                     <Button
-                      onPress={() => viewcomment(item)}
+                      onPress={() => _unliked(item.id, index)}
                       type="icon"
-                      variant="transparent"
+                      // variant="transparent"
                       position="left"
                       size="small"
                       style={{
-                        paddingHorizontal: 2,
-      
+                        paddingHorizontal: 10,
+                        marginRight: 15,
+                        borderRadius: 16,
+                        backgroundColor: "#F2DAE5",
+                        // minidth: 70,
                         // right: 10,
                       }}
                     >
-                      <CommentBlack height={15} width={15} />
-                      <Text type="black" size="label" style={{ marginHorizontal: 7 }}>
-                        {item.comment_count}
+                      <LikeRed height={15} width={15} />
+                      <Text
+                        type="black"
+                        size="label"
+                        style={{ marginHorizontal: 5, color: "#BE3737" }}
+                      >
+                        {item.response_count}
                       </Text>
                     </Button>
-                  </View>
-      
+                  ) : (
+                    <Button
+                      onPress={() => _liked(item.id, index)}
+                      type="icon"
+                      position="left"
+                      size="small"
+                      color="tertiary"
+                      style={{
+                        paddingHorizontal: 10,
+                        marginRight: 15,
+                        borderRadius: 16,
+                        // right: 10,
+                      }}
+                    >
+                      <LikeBlack height={15} width={15} />
+                      <Text
+                        type="black"
+                        size="label"
+                        style={{ marginHorizontal: 7 }}
+                      >
+                        {item.response_count}
+                      </Text>
+                    </Button>
+                  )}
+
                   <Button
+                    onPress={() => viewcomment(item)}
                     type="icon"
                     variant="transparent"
                     position="left"
                     size="small"
                     style={{
-                      // right: 10,
                       paddingHorizontal: 2,
+
+                      // right: 10,
                     }}
                   >
-                    <ShareBlack height={17} width={17} />
-                    <Text size="small" style={{ marginLeft: 3 }}>
-                      {t("share")}
+                    <CommentBlack height={15} width={15} />
+                    <Text
+                      type="black"
+                      size="label"
+                      style={{ marginHorizontal: 7 }}
+                    >
+                      {item.comment_count}
                     </Text>
                   </Button>
                 </View>
-                <View
+
+                <Button
+                  type="icon"
+                  variant="transparent"
+                  position="left"
+                  size="small"
                   style={{
-                    width: "100%",
-                    padding: 10,
-                    flexDirection: "row",
+                    // right: 10,
+                    paddingHorizontal: 2,
                   }}
                 >
-                  {/* <Text
+                  <ShareBlack height={17} width={17} />
+                  <Text size="small" style={{ marginLeft: 3 }}>
+                    {t("share")}
+                  </Text>
+                </Button>
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  flexDirection: "row",
+                }}
+              >
+                {/* <Text
                     style={{
                       textAlign: 'left',
                       fontFamily: "Lato-Bold",
@@ -1206,33 +1215,31 @@ export default function FeedList({
                     {item.user.first_name} {''}{' '}
                     {item.user.first_name ? item.user.last_name : null}
                   </Text> */}
-                  {item.caption ? (
+                {item.caption ? (
+                  <Text
+                    style={{
+                      textAlign: "left",
+                      fontFamily: "Lato-Regular",
+                      fontSize: 14,
+                      lineHeight: 20,
+                    }}
+                  >
                     <Text
                       style={{
-                        textAlign: "left",
-                        fontFamily: "Lato-Regular",
-                        fontSize: 14,
-                        lineHeight: 20,
+                        fontFamily: "Lato-Bold",
+                        marginRight: 5,
                       }}
                     >
-                      <Text
-                        style={{
-                          fontFamily: "Lato-Bold",
-                          marginRight: 5,
-                        }}
-                      >
-                        {item.user.first_name}{" "}
-                        {item.user.first_name
-                          ? item.user.last_name
-                          : null}{" "}
-                      </Text>
-                      {item.caption}
+                      {item.user.first_name}{" "}
+                      {item.user.first_name ? item.user.last_name : null}{" "}
                     </Text>
-                  ) : null}
-                </View>
+                    {item.caption}
+                  </Text>
+                ) : null}
               </View>
             </View>
-          
+          </View>
+
           // <Item item={item} selected={selected} index={index} />
         )}
         style={{
@@ -1247,20 +1254,25 @@ export default function FeedList({
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }
         ListFooterComponent={
-          loadingPost? 
-          <View
-            style={{
-              // position: 'absolute',
-              // bottom:0,
-              width: width,
-              justifyContent: 'center',
-              alignItems:'center',
-            }}>
-            <Text size='title' type='bold' 
-            // style={{ color:'#209fae'}}
-            >Loading...</Text>
-          </View>
-          :null
+          loadingPost ? (
+            <View
+              style={{
+                // position: 'absolute',
+                // bottom:0,
+                width: width,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                // style={{ color:'#209fae'}}
+              >
+                Loading...
+              </Text>
+            </View>
+          ) : null
         }
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}

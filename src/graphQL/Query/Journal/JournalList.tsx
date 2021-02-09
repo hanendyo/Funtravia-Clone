@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 const JournalList = gql`
-	query {
-		journal_list {
+	query($category_id:[ID], $order:String) {
+		journal_list (category_id:$category_id order_by: $order){
 			id
 			title
 			date
