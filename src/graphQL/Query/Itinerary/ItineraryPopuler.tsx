@@ -7,6 +7,8 @@ const ListPopulerGQL = gql`
 		$cities: [ID]
 		$rating: [Int]
 		$orderby: String
+		$limit: Int
+		$offset: Int
 	) {
 		itinerary_list_populer(
 			key: {
@@ -16,32 +18,40 @@ const ListPopulerGQL = gql`
 				cities: $cities
 				orderby: $orderby
 				rating: $rating
+				limit: $limit
+				offset: $offset
 			}
 		) {
-			id
-			name
-			cover
-			country {
-				id
-				name
-			}
-			city {
-				id
-				name
-				flag
-			}
-			buddy_count
-			favorit_count
-			start_date
-			end_date
-			isprivate
-			status
-			day {
-				id
-				day
-				date
-			}
-			liked
+			page_info{
+      hasNextPage
+      offset
+    }
+    datas{
+      id
+      name
+      cover
+      country{
+        id
+        name
+      }
+      city{
+        id
+        name
+        flag
+      }
+      buddy_count
+      favorit_count
+      start_date
+      end_date
+      isprivate
+      status
+      day{
+        id
+        day
+        date
+      }
+      liked
+      }
 		}
 	}
 `;
