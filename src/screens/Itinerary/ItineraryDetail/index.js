@@ -63,7 +63,7 @@ export default function ItineraryDetail(props) {
   let [loading, setloading] = useState(false);
   let [showside, setshowside] = useState(false);
   let [isPrivate, setPrivate] = useState();
-  let [indexnya, setIndex] = useState(1);
+  let [indexnya, setIndex] = useState(0);
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif
   );
@@ -511,7 +511,10 @@ export default function ItineraryDetail(props) {
   });
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {});
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      _Refresh();
+      GetTimelin();
+    });
     return unsubscribe;
   }, [props.navigation]);
 

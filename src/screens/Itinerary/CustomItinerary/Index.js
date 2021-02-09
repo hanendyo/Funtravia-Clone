@@ -68,7 +68,6 @@ export default function CustomItinerary(props) {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
-    // console.log(tkn);
 
     if (tkn) {
       GetTimeline();
@@ -77,7 +76,6 @@ export default function CustomItinerary(props) {
     }
   };
 
-  // console.log(idDay);
   const [
     GetTimeline,
     { data: datatimeline, loading: loadingtimeline, error: errortimeline },
@@ -122,7 +120,6 @@ export default function CustomItinerary(props) {
     return potong[0] + " h : " + potong[1] + " m";
   };
 
-  // console.log(dataSaved);
   const hapus = async (id) => {
     setloading(true);
     try {
@@ -134,7 +131,6 @@ export default function CustomItinerary(props) {
       if (errorSaved) {
         throw new Error("Error Input");
       }
-      // console.log(response.data.save_custom);
       if (response.data) {
         if (response.data.delete_activity_saved.code !== 200) {
           throw new Error(response.data.delete_activity_saved.message);
@@ -187,13 +183,12 @@ export default function CustomItinerary(props) {
   return (
     <View
       style={{
-        // marginTop: 70,
         flex: 1,
+        backgroundColor: "#fff",
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
       }}
     >
-      {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
       <Loading show={loading} />
 
       <View
@@ -345,7 +340,6 @@ export default function CustomItinerary(props) {
             size="title"
             type="bold"
             style={{
-              // width: Dimensions.get('screen').width * 0.5,
               marginBottom: 20,
             }}
           >
@@ -540,7 +534,7 @@ export default function CustomItinerary(props) {
                     <View
                       style={{
                         paddingVertical: 5,
-
+                        zIndex: 1,
                         width: Dimensions.get("screen").width,
                         flexDirection: "row",
                         alignItems: "center",
@@ -626,8 +620,8 @@ export default function CustomItinerary(props) {
                     <View
                       style={{
                         position: "absolute",
-                        zIndex: 1,
-                        top: 25,
+                        zIndex: 99,
+                        top: 22,
                         right: 7.5,
                         width: 25,
                         height: 25,
@@ -644,11 +638,9 @@ export default function CustomItinerary(props) {
                       <ArrowRight height={10} width={10} />
                     </View>
                   </Swipeout>
-                  // </View>
                 );
               })
             : null}
-          {/* </View> */}
         </View>
       </ScrollView>
     </View>

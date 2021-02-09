@@ -17,8 +17,7 @@ import DraggableFlatList from "react-native-draggable-flatlist";
 import { FlatList } from "react-native-gesture-handler";
 import { Capital, FunIcon, Truncate } from "../../../component";
 import { Textarea } from "native-base";
-import { Button } from "../../../component";
-import { Text } from "../../../component";
+import { Button, Text, Distance } from "../../../component";
 import {
   dateFormatMDY,
   dateFormatHari,
@@ -643,7 +642,7 @@ export default function ItinDrag({
             >
               <View
                 style={{
-                  // width: "100%",
+                  width: "80%",
                   paddingVertical: 5,
                   paddingHorizontal: 10,
                   backgroundColor: "#daf0f2",
@@ -672,10 +671,7 @@ export default function ItinDrag({
                     </Text>
                   )}
                 </TouchableOpacity>
-                {/* <Text size="description" type="regular">
-              {" "}
-              -{" "}
-            </Text> */}
+
                 <TouchableOpacity
                   onPress={() => {
                     status == "notsaved"
@@ -717,7 +713,6 @@ export default function ItinDrag({
               style={{
                 flex: 1,
                 marginRight: 4.2,
-                // borderTopWidth: 1,
                 borderRightWidth: index < x ? 1 : 0,
                 borderRightColor: "#464646",
               }}
@@ -748,8 +743,6 @@ export default function ItinDrag({
             dataList[index].longitude == dataList[index - 1].longitude ? (
               <View
                 style={{
-                  // position: "relative",
-                  // top: -10,
                   width: 20,
                   marginLeft: 20,
                 }}
@@ -769,7 +762,6 @@ export default function ItinDrag({
                     style={{
                       marginTop: -1,
                       borderLeftWidth: 1,
-                      // borderBottomWidth: 1,
                       borderColor: "#464646",
                       flex: 1,
                     }}
@@ -869,6 +861,7 @@ export default function ItinDrag({
                     {Getdurasi(item.duration ? item.duration : "00:00:00")}
                   </Text>
                 </View>
+                <Button type="circle" size="small"></Button>
               </View>
               <View
                 style={{
@@ -935,15 +928,66 @@ export default function ItinDrag({
                 }}
               ></View>
               <View style={{}}>
-                {dataList[index + 1].latitude && dataList[index + 1].longitude
-                  ? getjarakgoogle(dataList, index)
-                  : null}
+                <View
+                  style={{
+                    marginRight: 5,
+                    borderRadius: 5,
+                    elevation: 3,
+                    marginVertical: 2,
+                    marginLeft: 1,
+                    backgroundColor: "#fff",
+                    flexDirection: "row",
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  {/* {item.type == "car" ? <Mobil height={15} width={15} /> : null}
+              {item.type == "motorcycle" ? (
+                <Motor height={15} width={15} />
+              ) : null}
+              {item.type == "walk" ? <Jalan height={15} width={15} /> : null} */}
+                  <Jalan height={15} width={15} style={{ marginRight: 10 }} />
+                  <Text>
+                    <Distance
+                      lat1={dataList[index].latitude}
+                      lon1={dataList[index].longitude}
+                      lat2={dataList[index + 1].latitude}
+                      lon2={dataList[index + 1].longitude}
+                      unit={"km"}
+                    />{" "}
+                    Km
+                  </Text>
+                  <Text> - </Text>
+                  <Text>
+                    <HitungWaktu
+                      lat1={dataList[index].latitude}
+                      lon1={dataList[index].longitude}
+                      lat2={dataList[index + 1].latitude}
+                      lon2={dataList[index + 1].longitude}
+                      unit={"km"}
+                    />{" "}
+                  </Text>
+                </View>
               </View>
             </View>
           ) : null}
         </View>
       </View>
     );
+  };
+
+  const HitungWaktu = ({ lat1, lon1, lat2, lon2, unit }) => {
+    let jarak = Distance({
+      lat1: lat1,
+      lon1: lon1,
+      lat2: lat2,
+      lon2: lon2,
+      unit: unit,
+    });
+    let kecepatan = 10; //km per jam
+    let hasil = jarak / kecepatan;
+    return Math.floor(hasil);
   };
 
   const deleteactivity = async (iditinerarys, idactivitys, typess) => {
@@ -1606,7 +1650,7 @@ export default function ItinDrag({
           </Text>
           <View
             style={{
-              // width: "70%",
+              width: "100%",
               flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",

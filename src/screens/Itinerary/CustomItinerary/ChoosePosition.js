@@ -80,6 +80,9 @@ export default function ChoosePosition(props) {
   let [indexinput, setIndexInput] = useState("");
   let [jammax, setjammax] = useState(props.route.params.jammax);
 
+  console.log(props.route.params.jammax);
+  console.log(jammax);
+
   let [dataAkhir, setData] = useState([]);
   let [dataInput, setDataInput] = useState(props.route.params.dataCustom);
 
@@ -687,6 +690,7 @@ export default function ChoosePosition(props) {
     <View
       style={{
         flex: 1,
+        backgroundColor: "#fff",
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
       }}
