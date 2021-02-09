@@ -36,8 +36,10 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import Populer_ from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import Ripple from "react-native-material-ripple";
 
 export default function ItineraryPopuler(props) {
+  let [actives, setActives] = useState("Itinerary");
   const HeaderComponent = {
     headerShown: true,
     title: "Itinerary",
@@ -261,7 +263,7 @@ export default function ItineraryPopuler(props) {
         style={{
           // height: Dimensions.get("screen").width * 0.48,
           height: 180,
-          paddingHorizontal: 10,
+          paddingHorizontal: 15,
           marginTop: 5,
         }}
       >
@@ -495,346 +497,393 @@ export default function ItineraryPopuler(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  const RenderUtama = ({ aktif }) => {
+    console.log(aktif);
+    if (aktif == "Itinerary") {
+      return (
+        <>
+          {loadingPopuler ? (
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 15,
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Loading...
+              </Text>
+            </View>
+          ) : dataPopuler && dataPopuler.itinerary_list_populer.name ? (
+            <FlatList
+              data={dataPopuler.itinerary_list_populer}
+              renderItem={renderPopuler}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View
+              style={{
+                borderWidth: 1,
+                paddingHorizontal: 15,
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Tidak ada Itinerary
+              </Text>
+            </View>
+          )}
+        </>
+      );
+    } else if (aktif == "Album") {
+      return (
+        <View>
+          <Text>picture</Text>
+        </View>
+      );
+    } else if (aktif == "Stories") {
+      return (
+        <View>
+          <Text>Diary</Text>
+        </View>
+      );
+    } else {
+      return <View></View>;
+    }
+  };
+
   {
     /* ======================================= Render All ====================================================*/
   }
   return (
-    <View style={{ flex: 1 }}>
-      <Loading show={loadingPopuler} />
-      {dataPopuler && dataPopuler.itinerary_list_populer ? (
-        <FlatList
-          renderItem={renderPopuler}
-          data={dataPopuler.itinerary_list_populer}
-          keyExtractor={(dataPopuler) => dataPopuler.id}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={{ backgroundColor: "white" }}>
-              <ScrollView
-                style={{ flex: 1 }}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                <View
-                  style={{
-                    // width: Dimensions.get("screen").width,
-                    height: Dimensions.get("screen").width * 0.3,
-                    paddingHorizontal: 10,
-                    marginTop: 10,
-                    flexDirection: "row",
-                  }}
-                >
-                  <Pressable style={{ marginRight: 5, borderRadius: 10 }}>
-                    <Image
-                      source={itinerary_1}
-                      style={{
-                        height: "100%",
-                        width: 200,
-                      }}
-                    />
-                    <Text
-                      size="description"
-                      type="bold"
-                      style={{
-                        position: "absolute",
-                        paddingHorizontal: 10,
-                        marginTop: 15,
-                        paddingVertical: 3,
-                        backgroundColor: "#209FAE",
-                        color: "white",
-                      }}
-                    >
-                      New Itinerary
-                    </Text>
-                  </Pressable>
-                  <Pressable style={{ marginRight: 5, borderRadius: 10 }}>
-                    <Image
-                      source={itinerary_2}
-                      style={{
-                        height: "100%",
-                        width: Dimensions.get("screen").width * 0.55,
-                      }}
-                    />
-                    <Text
-                      size="description"
-                      type="bold"
-                      style={{
-                        position: "absolute",
-                        paddingHorizontal: 10,
-                        marginTop: 15,
-                        paddingVertical: 3,
-                        backgroundColor: "#209FAE",
-                        color: "white",
-                      }}
-                    >
-                      Populer
-                    </Text>
-                  </Pressable>
-                </View>
-              </ScrollView>
-              <View
+    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+      {/* <Loading show={loadingPopuler} /> */}
+      {/* {dataPopuler && dataPopuler.itinerary_list_populer ? ( */}
+      <View style={{ backgroundColor: "white" }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          <View
+            style={{
+              // width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").width * 0.3,
+              paddingHorizontal: 15,
+              marginTop: 10,
+              flexDirection: "row",
+            }}
+          >
+            <Pressable style={{ marginRight: 5, borderRadius: 10 }}>
+              <Image
+                source={itinerary_1}
                 style={{
-                  width: Dimensions.get("screen").width * 0.9,
+                  height: "100%",
+                  width: 200,
+                }}
+              />
+              <Text
+                size="description"
+                type="bold"
+                style={{
+                  position: "absolute",
                   paddingHorizontal: 10,
-                  marginTop: 10,
+                  marginTop: 15,
+                  paddingVertical: 3,
+                  backgroundColor: "#209FAE",
+                  color: "white",
                 }}
               >
-                <Text size="title" type="bold">
-                  Category Itinerary
-                </Text>
-              </View>
-              <ScrollView
-                style={{ flex: 1 }}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                <View
-                  style={{
-                    // width: Dimensions.get("screen").width,
-                    paddingHorizontal: 10,
-                    marginTop: 10,
-                    flexDirection: "row",
-                  }}
-                >
-                  <Pressable
-                    style={{
-                      width: Dimensions.get("screen").width * 0.23,
-                      height: Dimensions.get("screen").width * 0.27,
-                      backgroundColor: "white",
-                      marginRight: 5,
-                      shadowColor: "gray",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: arrayShadow.shadowOpacity,
-                      shadowRadius: arrayShadow.shadowRadius,
-                      elevation: arrayShadow.elevation,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 5,
-                    }}
-                    onPress={() =>
-                      props.navigation.navigate("ItineraryCategory")
-                    }
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#f6f6f6",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <CompervanIcon height={40} width={40} />
-                    </View>
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{ textAlign: "center" }}
-                    >
-                      Compervan
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={{
-                      width: Dimensions.get("screen").width * 0.23,
-                      height: Dimensions.get("screen").width * 0.27,
-                      backgroundColor: "white",
-                      marginRight: 5,
-                      shadowColor: "gray",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: arrayShadow.shadowOpacity,
-                      shadowRadius: arrayShadow.shadowRadius,
-                      elevation: arrayShadow.elevation,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#f6f6f6",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <BussinessIcon height={40} width={40} />
-                    </View>
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{ textAlign: "center" }}
-                    >
-                      Bussines
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={{
-                      width: Dimensions.get("screen").width * 0.23,
-                      height: Dimensions.get("screen").width * 0.27,
-                      backgroundColor: "white",
-                      marginRight: 5,
-                      shadowColor: "gray",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: arrayShadow.shadowOpacity,
-                      shadowRadius: arrayShadow.shadowRadius,
-                      elevation: arrayShadow.elevation,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#f6f6f6",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <SoloIcon height={40} width={40} />
-                    </View>
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{ textAlign: "center" }}
-                    >
-                      Solo
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={{
-                      width: Dimensions.get("screen").width * 0.23,
-                      height: Dimensions.get("screen").width * 0.27,
-                      backgroundColor: "white",
-                      marginRight: 5,
-                      shadowColor: "gray",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: arrayShadow.shadowOpacity,
-                      shadowRadius: arrayShadow.shadowRadius,
-                      elevation: arrayShadow.elevation,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#f6f6f6",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <HoneyIcon height={40} width={40} />
-                    </View>
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{ textAlign: "center" }}
-                    >
-                      Honeymoon
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={{
-                      width: Dimensions.get("screen").width * 0.23,
-                      height: Dimensions.get("screen").width * 0.27,
-                      backgroundColor: "white",
-                      marginRight: 5,
-                      shadowColor: "gray",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: arrayShadow.shadowOpacity,
-                      shadowRadius: arrayShadow.shadowRadius,
-                      elevation: arrayShadow.elevation,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#f6f6f6",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 50,
-                      }}
-                    >
-                      <FamilyIcon height={40} width={40} />
-                    </View>
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{ textAlign: "center" }}
-                    >
-                      Family
-                    </Text>
-                  </Pressable>
-                </View>
-              </ScrollView>
-              <View
+                New Itinerary
+              </Text>
+            </Pressable>
+            <Pressable style={{ marginRight: 5, borderRadius: 10 }}>
+              <Image
+                source={itinerary_2}
                 style={{
-                  marginTop: 10,
-                  flexDirection: "row",
+                  height: "100%",
+                  width: Dimensions.get("screen").width * 0.55,
+                }}
+              />
+              <Text
+                size="description"
+                type="bold"
+                style={{
+                  position: "absolute",
                   paddingHorizontal: 10,
-                  shadowColor: "gray",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: arrayShadow.shadowOpacity,
-                  shadowRadius: arrayShadow.shadowRadius,
-                  elevation: arrayShadow.elevation,
-                  backgroundColor: "white",
+                  marginTop: 15,
+                  paddingVertical: 3,
+                  backgroundColor: "#209FAE",
+                  color: "white",
                 }}
               >
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width * 0.31,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderBottomWidth: 2,
-                    borderBottomColor: "#249FAE",
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ color: "#209FAE" }}
-                  >
-                    Itinerary
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width * 0.31,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    // borderBottomWidth: 2,
-                    borderBottomColor: "#249FAE",
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text size="description" type="bold">
-                    Travel Album
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width * 0.31,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    // borderBottomWidth: 2,
-                    borderBottomColor: "#249FAE",
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text size="description" type="bold">
-                    Travel Stories
-                  </Text>
-                </View>
+                Populer
+              </Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            width: Dimensions.get("screen").width * 0.9,
+            paddingHorizontal: 15,
+            marginTop: 10,
+          }}
+        >
+          <Text size="title" type="bold">
+            Category Itinerary
+          </Text>
+        </View>
+        <ScrollView
+          style={{ flex: 1 }}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          <View
+            style={{
+              // width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+              marginTop: 10,
+              flexDirection: "row",
+            }}
+          >
+            <Pressable
+              style={{
+                width: Dimensions.get("screen").width * 0.23,
+                height: Dimensions.get("screen").width * 0.27,
+                backgroundColor: "white",
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+              onPress={() => props.navigation.navigate("ItineraryCategory")}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50,
+                }}
+              >
+                <CompervanIcon height={40} width={40} />
               </View>
-            </View>
-          }
-          ListFooterComponent={null}
-        />
-      ) : null}
-    </View>
+              <Text size="small" type="regular" style={{ textAlign: "center" }}>
+                Compervan
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                width: Dimensions.get("screen").width * 0.23,
+                height: Dimensions.get("screen").width * 0.27,
+                backgroundColor: "white",
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50,
+                }}
+              >
+                <BussinessIcon height={40} width={40} />
+              </View>
+              <Text size="small" type="regular" style={{ textAlign: "center" }}>
+                Bussines
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                width: Dimensions.get("screen").width * 0.23,
+                height: Dimensions.get("screen").width * 0.27,
+                backgroundColor: "white",
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50,
+                }}
+              >
+                <SoloIcon height={40} width={40} />
+              </View>
+              <Text size="small" type="regular" style={{ textAlign: "center" }}>
+                Solo
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                width: Dimensions.get("screen").width * 0.23,
+                height: Dimensions.get("screen").width * 0.27,
+                backgroundColor: "white",
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50,
+                }}
+              >
+                <HoneyIcon height={40} width={40} />
+              </View>
+              <Text size="small" type="regular" style={{ textAlign: "center" }}>
+                Honeymoon
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                width: Dimensions.get("screen").width * 0.23,
+                height: Dimensions.get("screen").width * 0.27,
+                backgroundColor: "white",
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50,
+                }}
+              >
+                <FamilyIcon height={40} width={40} />
+              </View>
+              <Text size="small" type="regular" style={{ textAlign: "center" }}>
+                Family
+              </Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            marginTop: 10,
+            flexDirection: "row",
+            paddingHorizontal: 15,
+            shadowColor: "gray",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
+            backgroundColor: "white",
+          }}
+        >
+          <Ripple
+            onPress={() => setActives("Itinerary")}
+            style={{
+              width: Dimensions.get("screen").width * 0.31,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: actives == "Itinerary" ? 2 : 0,
+              borderBottomColor: actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={actives == "Itinerary" ? "bold" : "regular"}
+              style={{
+                color: actives == "Itinerary" ? "#209FAE" : "#464646",
+              }}
+            >
+              Itinerary
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() => setActives("Album")}
+            style={{
+              width: Dimensions.get("screen").width * 0.31,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: actives == "Album" ? 2 : 0,
+              borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={actives == "Album" ? "bold" : "reguler"}
+              style={{
+                color: actives == "Album" ? "#209FAE" : "#464646",
+              }}
+            >
+              Travel Album
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() => setActives("Stories")}
+            style={{
+              width: Dimensions.get("screen").width * 0.31,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: actives == "Stories" ? 2 : 0,
+              borderBottomColor: actives == "Stories" ? "#249FAE" : "#EEEEEE",
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={actives == "Stories" ? "bold" : "reguler"}
+              style={{
+                color: actives == "Stories" ? "#209FAE" : "#464646",
+              }}
+            >
+              Travel Stories
+            </Text>
+          </Ripple>
+        </View>
+        <RenderUtama aktif={actives} />
+      </View>
+      {/* ) : null} */}
+    </ScrollView>
   );
 }
