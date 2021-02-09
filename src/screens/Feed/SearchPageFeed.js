@@ -11,7 +11,7 @@ import {
   FlatList,
   Image,
   RefreshControl,
-
+  Keyboard
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,7 +33,8 @@ import {
   Kosong,
   SearchWhite,
   Magnifying,
-  OptionsVertWhite
+  OptionsVertWhite,
+  Arrowbackwhite
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
@@ -42,22 +43,28 @@ import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
 import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
 import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
+import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import Modal from "react-native-modal";
 
 export default function Feed(props) {
   const [active, setActive] = useState("personal");
   const[searchtext, SetSearchtext] = useState("");
+  let [setting, setSetting] = useState();
+
   // let [token, setToken] = useState(props.route.params.token);
   let [token, setToken] = useState("");
+  const default_image = "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
   // console.log(props.route.params.token);
   let [idx, setIdx] = useState(2);
   let [refreshing, setRefreshing] = useState(false);
-  let [modalsearch, setModalsearch] = useState(false);
+  let [aktifsearch, setAktifSearch] = useState(false);
   let {width, height} = Dimensions.get("screen");
 	const loadAsync = async () => {
 		let tkn = await AsyncStorage.getItem("access_token");
-		setToken(tkn);
+    setToken(tkn);
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
     // refetch();
 	};
   const _searchHandle = (text) => {
@@ -90,6 +97,26 @@ export default function Feed(props) {
   if (dataPost && dataPost && 'datas' in dataPost.feed_post_populer_paging){
     feed_post_populer_paging = dataPost.feed_post_populer_paging.datas;
   }
+
+  const { loading: loadingSrcuser, data: dataSrcuser, error: errorSrcuser, refetch: refetchSrcuser, networkStatus : networkStatusSrcuser  } = useQuery(SearchUserQuery, {
+    variables: {
+      keyword: searchtext,
+    },
+    context: {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+    notifyOnNetworkStatusChange: true,
+  });
+	// // console.log(dataPost);
+  let user_search = [];
+  if (dataSrcuser && dataSrcuser.user_search){
+    user_search = dataSrcuser.user_search;
+  }
+	console.log(user_search);
+
   useEffect(() => {
     loadAsync();
   }, []);
@@ -271,6 +298,16 @@ export default function Feed(props) {
     // _refresh()
   }
 
+  const _BackHandler = () =>{
+    if (aktifsearch == true){
+      setAktifSearch(false);
+      SetSearchtext("");
+      Keyboard.dismiss();
+    }else{
+      props.navigation.goBack();
+    }
+  }
+
   return(
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <View style={{ backgroundColor: "#209FAE" }}>
@@ -278,11 +315,24 @@ export default function Feed(props) {
           style={{
             flexDirection: "row",
             alignItems: "center",
+            // justifyContent: "center"
+            paddingHorizontal:10,
+            width:"100%",
+            justifyContent: "space-between"
           }}>
+            <Ripple 
+              onPress={()=> _BackHandler()}
+              style={{
+                height: 70,
+                width: 35,
+                justifyContent: 'center'
+              }}>
+              <Arrowbackwhite width={20} height={20}/>
+            </Ripple>
             <View
               style={{
                 // borderWidth:1,
-                margin: 15,
+                marginVertical: 15,
                 backgroundColor: "#FFFFFF",
                 flexDirection: "row",
                 borderRadius: 3,
@@ -298,30 +348,35 @@ export default function Feed(props) {
               <TextInput
                 value={searchtext}
                 onChangeText={(e) => _searchHandle(e)}
-                onFocus={()=>setModalsearch(true)}
+                onFocus={()=>setAktifSearch(true)}
                 placeholder="Search Feed"
                 style={{
                   color: "#464646",
                   height: 40,
-                  width: "80%",
+                  width: "70%",
                 }}
               />
             </View>
             <Ripple
               onPress={() => {
                 // refetch();
-                setModalsearch(true)
+                setAktifSearch(false)
               }}
               style={{
                 height: 70,
-                paddingRight: 5,
+                width: 35,
+                // paddingRight: 5,
                 // borderWidth:1,
-                justifyContent: 'center'
+                justifyContent: 'center',
+                alignItems: "center"
               }}>
               <OptionsVertWhite width={20} height={20}/>
             </Ripple>
         </View>
       </View>
+      
+      {aktifsearch == true?
+      <>
       <View
           style={{
             flexDirection: "row",
@@ -354,7 +409,7 @@ export default function Feed(props) {
                 color: active == "personal" ? "#209FAE" : "#D1D1D1",
               }}
             >
-              All Post
+              Account
             </Text>
           </Ripple>
           <Ripple
@@ -379,90 +434,176 @@ export default function Feed(props) {
                 color: active == "group" ? "#209FAE" : "#D1D1D1",
               }}
             >
-              Travel
+              Tag
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() => {
+              setActive("group");
+            }}
+            style={{
+              // width: width / 2,
+              alignContent: "center",
+              alignItems: "center",
+              // borderBottomWidth: active == "group" ? 3 : 1,
+              // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
+              paddingVertical: 15,
+              backgroundColor: "#FFFFFF",
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={active == "group" ? "bold" : "bold"}
+              style={{
+                color: active == "group" ? "#209FAE" : "#D1D1D1",
+              }}
+            >
+              Places
             </Text>
           </Ripple>
       </View>
-      <Modal
-        // onBackdropPress={() => {
-        //   setModalsearch(false);
-        // }}
-        hasBackdrop={false}
-        
-        onRequestClose={() => setModalsearch(false)}
-        // onDismiss={() => setModalmenu(false)}
-        // animationIn="fadeInDown"
-        // animationOut="fadeInDown"
-        isVisible={modalsearch}
+      {loadingSrcuser? 
+      <View
+      style={{
+        // position: 'absolute',
+        // bottom:0,
+        flex:1,
+        width: width,
+        justifyContent: 'center',
+        alignItems:'center',
+      }}>
+        <Text size='title' type='bold'
+        // style={{ color:'#209fae'}}
+        >Loading...</Text>
+      </View>
+        :
+        <FlatList
+          data={user_search}
+          renderItem={({ item, index }) => (
+          <Pressable
+            onPress={() => {
+              item.id !== setting?.user?.id
+                ? props.navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: item.id,
+                    },
+                  })
+                : props.navigation.push("ProfileStack", {
+                    screen: "ProfileTab",
+                  });
+            }}
+            style={{
+              flexDirection:'row',
+              paddingVertical: 15,
+              marginHorizontal:15,
+              borderBottomWidth:1,
+              borderBottomColor:'#EEEEEE'
+            }}>
+            
+              <CustomImage
+                // isTouchable
+                // onPress={() => {
+                //   item.id !== setting?.user?.id
+                //     ? props.navigation.push("ProfileStack", {
+                //         screen: "otherprofile",
+                //         params: {
+                //           idUser: item.id,
+                //         },
+                //       })
+                //     : props.navigation.push("ProfileStack", {
+                //         screen: "ProfileTab",
+                //       });
+                // }}
+                customStyle={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                  marginLeft: 15,
+                }}
+                customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
+                source={ { uri: item.picture ? item.picture :default_image }}
+              />
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                }}>
+                <Text type='bold'>{item.first_name}{" "}{item?.last_name}</Text>
+                <Text>@{item.username}</Text>
+                <Text>{item.username}</Text>
+              </View>
+          </Pressable>
+          )}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+        />
+      }
+      </>
+      :
+      <>
+      <View
         style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
+          flexDirection: "row",
+          backgroundColor: "#fff",
+          borderWidth: 1,
+          borderColor: "#EEEEEE",
+          paddingHorizontal: 10,
         }}
       >
-        <View
+        <Ripple
+          onPress={() => {
+            setActive("personal");
+          }}
           style={{
-            flexDirection: "row",
-            backgroundColor: "#fff",
-            borderWidth: 1,
-            borderColor: "#EEEEEE",
+            // width: width / 2,
+            alignContent: "center",
+            alignItems: "center",
+            // borderBottomWidth: active == "personal" ? 3 : 1,
+            // borderBottomColor:
+            //   active == "personal" ? "#209FAE" : "#EEEEEE",
+            paddingVertical: 15,
+            backgroundColor: "#FFFFFF",
             paddingHorizontal: 10,
           }}
         >
-          <Ripple
-            onPress={() => {
-              setActive("personal");
-            }}
+          <Text
+            size="description"
+            type={active == "personal" ? "bold" : "bold"}
             style={{
-              // width: width / 2,
-              alignContent: "center",
-              alignItems: "center",
-              // borderBottomWidth: active == "personal" ? 3 : 1,
-              // borderBottomColor:
-              //   active == "personal" ? "#209FAE" : "#EEEEEE",
-              paddingVertical: 15,
-              backgroundColor: "#FFFFFF",
-              paddingHorizontal: 10,
+              color: active == "personal" ? "#209FAE" : "#D1D1D1",
             }}
           >
-            <Text
-              size="description"
-              type={active == "personal" ? "bold" : "bold"}
-              style={{
-                color: active == "personal" ? "#209FAE" : "#D1D1D1",
-              }}
-            >
-              All Post
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActive("group");
-            }}
+            All Post
+          </Text>
+        </Ripple>
+        <Ripple
+          onPress={() => {
+            setActive("group");
+          }}
+          style={{
+            // width: width / 2,
+            alignContent: "center",
+            alignItems: "center",
+            // borderBottomWidth: active == "group" ? 3 : 1,
+            // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
+            paddingVertical: 15,
+            backgroundColor: "#FFFFFF",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text
+            size="description"
+            type={active == "group" ? "bold" : "bold"}
             style={{
-              // width: width / 2,
-              alignContent: "center",
-              alignItems: "center",
-              // borderBottomWidth: active == "group" ? 3 : 1,
-              // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
-              paddingVertical: 15,
-              backgroundColor: "#FFFFFF",
-              paddingHorizontal: 10,
+              color: active == "group" ? "#209FAE" : "#D1D1D1",
             }}
           >
-            <Text
-              size="description"
-              type={active == "group" ? "bold" : "bold"}
-              style={{
-                color: active == "group" ? "#209FAE" : "#D1D1D1",
-              }}
-            >
-              Travel
-            </Text>
-          </Ripple>
-        </View>
-      </Modal>
+            Travel
+          </Text>
+        </Ripple>
+      </View>
       <FlatList
         data={feed_post_populer_paging }
         renderItem={({ item, index }) => (
@@ -762,6 +903,8 @@ export default function Feed(props) {
         }
         onEndReached={handleOnEndReached}
       />
+      </>
+      }
     </SafeAreaView>
   
   );
