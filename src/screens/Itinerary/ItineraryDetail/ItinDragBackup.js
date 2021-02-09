@@ -1248,11 +1248,9 @@ export default function ItinDrag({
       }}
     >
       <DraggableFlatList
-        style={
-          {
-            // height: Dimensions.get("screen").height - 200,
-          }
-        }
+        style={{
+          height: Dimensions.get("screen").height - 200,
+        }}
         key={""}
         ListHeaderComponent={
           <View
