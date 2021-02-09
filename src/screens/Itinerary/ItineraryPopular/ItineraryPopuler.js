@@ -501,12 +501,18 @@ export default function ItineraryPopuler(props) {
     console.log(aktif);
     if (aktif == "Itinerary") {
       return (
-        <>
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        >
           {loadingPopuler ? (
             <View
               style={{
-                borderWidth: 1,
                 paddingHorizontal: 15,
+                height: "100%",
                 marginTop: 20,
                 flex: 1,
                 backgroundColor: "white",
@@ -516,7 +522,7 @@ export default function ItineraryPopuler(props) {
                 Loading...
               </Text>
             </View>
-          ) : dataPopuler && dataPopuler.itinerary_list_populer.name ? (
+          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
             <FlatList
               data={dataPopuler.itinerary_list_populer}
               renderItem={renderPopuler}
@@ -526,11 +532,11 @@ export default function ItineraryPopuler(props) {
           ) : (
             <View
               style={{
-                borderWidth: 1,
                 paddingHorizontal: 15,
                 marginTop: 20,
                 flex: 1,
                 backgroundColor: "white",
+                alignItems: "center",
               }}
             >
               <Text size="label" type="bold" style={{ textAlign: "center" }}>
@@ -538,18 +544,100 @@ export default function ItineraryPopuler(props) {
               </Text>
             </View>
           )}
-        </>
+        </View>
       );
     } else if (aktif == "Album") {
       return (
-        <View>
-          <Text>picture</Text>
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          {loadingPopuler ? (
+            <View
+              style={{
+                paddingHorizontal: 15,
+                height: "100%",
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Loading...
+              </Text>
+            </View>
+          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
+            <FlatList
+              data={dataPopuler.itinerary_list_populer}
+              renderItem={renderPopuler}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View
+              style={{
+                paddingHorizontal: 15,
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+                alignItems: "center",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Tidak ada Travel Album
+              </Text>
+            </View>
+          )}
         </View>
       );
     } else if (aktif == "Stories") {
       return (
-        <View>
-          <Text>Diary</Text>
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          {loadingPopuler ? (
+            <View
+              style={{
+                paddingHorizontal: 15,
+                height: "100%",
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Loading...
+              </Text>
+            </View>
+          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
+            <FlatList
+              data={dataPopuler.itinerary_list_populer}
+              renderItem={renderPopuler}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View
+              style={{
+                paddingHorizontal: 15,
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+                alignItems: "center",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Tidak ada Travel Stories
+              </Text>
+            </View>
+          )}
         </View>
       );
     } else {
@@ -584,7 +672,8 @@ export default function ItineraryPopuler(props) {
                 source={itinerary_1}
                 style={{
                   height: "100%",
-                  width: 200,
+                  width: Dimensions.get("screen").width * 0.55,
+                  borderRadius: 5,
                 }}
               />
               <Text
@@ -608,6 +697,7 @@ export default function ItineraryPopuler(props) {
                 style={{
                   height: "100%",
                   width: Dimensions.get("screen").width * 0.55,
+                  borderRadius: 5,
                 }}
               />
               <Text
@@ -648,6 +738,7 @@ export default function ItineraryPopuler(props) {
               // width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
               marginTop: 10,
+              marginBottom: 5,
               flexDirection: "row",
             }}
           >
@@ -666,7 +757,7 @@ export default function ItineraryPopuler(props) {
                 justifyContent: "center",
                 borderRadius: 5,
               }}
-              onPress={() => props.navigation.navigate("ItineraryCategory")}
+              // onPress={() => props.navigation.navigate("ItineraryCategory")}
             >
               <View
                 style={{
@@ -674,6 +765,8 @@ export default function ItineraryPopuler(props) {
                   height: 50,
                   width: 50,
                   borderRadius: 50,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <CompervanIcon height={40} width={40} />
@@ -704,6 +797,8 @@ export default function ItineraryPopuler(props) {
                   height: 50,
                   width: 50,
                   borderRadius: 50,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <BussinessIcon height={40} width={40} />
@@ -734,6 +829,8 @@ export default function ItineraryPopuler(props) {
                   height: 50,
                   width: 50,
                   borderRadius: 50,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <SoloIcon height={40} width={40} />
@@ -764,6 +861,8 @@ export default function ItineraryPopuler(props) {
                   height: 50,
                   width: 50,
                   borderRadius: 50,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <HoneyIcon height={40} width={40} />
