@@ -1,5 +1,5 @@
 import { View } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Alert,
   Dimensions,
@@ -8,6 +8,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -16,8 +17,6 @@ import { default_image, itinerary_1, itinerary_2 } from "../../../assets/png";
 import {
   Arrowbackwhite,
   Calendargrey,
-  LikeRed,
-  LikeEmpty,
   PinHijau,
   User,
   TravelStories,
@@ -30,9 +29,9 @@ import {
   Star,
   SearchWhite,
 } from "../../../assets/svg";
-import { Truncate, Loading } from "../../../component";
+import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import Populer_ from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
@@ -40,6 +39,7 @@ import Ripple from "react-native-material-ripple";
 
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
+  let { width, height } = Dimensions.get("screen");
   const HeaderComponent = {
     headerShown: true,
     title: "Itinerary",
@@ -110,12 +110,6 @@ export default function ItineraryPopuler(props) {
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
 
-  const cari = async (e) => {
-    console.log(e);
-    await setSearch(e);
-    await fetchDataListPopuler;
-  };
-
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
@@ -125,10 +119,13 @@ export default function ItineraryPopuler(props) {
     await fetchDataListPopuler();
   };
 
-  const [
-    fetchDataListPopuler,
-    { data: dataPopuler, loading: loadingPopuler },
-  ] = useLazyQuery(Populer_, {
+  const {
+    data: dataPopuler,
+    loading: loadingPopuler,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(Populer_, {
     variables: {
       keyword: search.keyword,
       type: null,
@@ -136,15 +133,73 @@ export default function ItineraryPopuler(props) {
       cities: null,
       rating: null,
       orderby: null,
+      limit: 10,
+      offset: 0,
     },
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
+
+  let list_populer = [];
+  if (dataPopuler && "datas" in dataPopuler.itinerary_list_populer) {
+    list_populer = dataPopuler.itinerary_list_populer.datas;
+  }
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const Refresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.itinerary_list_populer;
+    const datas = [
+      ...prev.itinerary_list_populer.datas,
+      ...fetchMoreResult.itinerary_list_populer.datas,
+    ];
+    return Object.assign({}, prev, {
+      list_populer: {
+        __typename: prev.itinerary_list_populer.__typename,
+        page_info,
+        datas,
+      },
+    });
+  };
+
+  const handleOnEndReached = () => {
+    if (dataPopuler.itinerary_list_populer.page_info.hasNextPage) {
+      return fetchMore({
+        variables: {
+          keyword: search.keyword,
+          type: null,
+          countries: null,
+          cities: null,
+          rating: null,
+          orderby: null,
+          limit: 10,
+          offset: dataPopuler.itinerary_list_populer.page_info.offset,
+        },
+        updateQuery: onUpdate,
+      });
+    }
+  };
+
+  console.log("dataPopuler :", dataPopuler);
 
   const [
     mutationliked,
@@ -498,52 +553,51 @@ export default function ItineraryPopuler(props) {
   }, [props.navigation]);
 
   const RenderUtama = ({ aktif }) => {
-    console.log(aktif);
     if (aktif == "Itinerary") {
       return (
         <View
           style={{
             flex: 1,
             width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
           }}
         >
-          {loadingPopuler ? (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                height: "100%",
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Loading...
-              </Text>
-            </View>
-          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
-            <FlatList
-              data={dataPopuler.itinerary_list_populer}
-              renderItem={renderPopuler}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-                alignItems: "center",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Tidak ada Itinerary
-              </Text>
-            </View>
-          )}
+          <FlatList
+            data={list_populer}
+            renderItem={renderPopuler}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => Refresh()}
+              />
+            }
+            ListFooterComponent={
+              loadingPopuler ? (
+                <View
+                  style={{
+                    // position: 'absolute',
+                    // bottom:0,
+                    width: width,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    size="title"
+                    type="bold"
+                    // style={{ color:'#209fae'}}
+                  >
+                    Loading...
+                  </Text>
+                </View>
+              ) : null
+            }
+            onEndReachedThreshold={1}
+            onEndReached={handleOnEndReached}
+          />
         </View>
       );
     } else if (aktif == "Album") {

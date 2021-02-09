@@ -70,6 +70,10 @@ export default function Journal(props) {
   });
 
   const [fetchDataList, { data: dataList }] = useLazyQuery(JournalList, {
+    variables: {
+      category_id: null,
+      order: "",
+    },
     fetchPolicy: "network-only",
     context: {
       headers: {
