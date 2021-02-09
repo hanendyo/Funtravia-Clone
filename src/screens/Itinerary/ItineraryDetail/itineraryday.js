@@ -31,7 +31,7 @@ import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
 
 export default function ItineraryDay({
-  dataday,
+  dataDay,
   props,
   token,
   iditinerary,
@@ -44,13 +44,14 @@ export default function ItineraryDay({
   status,
   GetTimeline,
   dataAkhir,
+  indexnya,
+  setIndex,
 }) {
   const { t, i18n } = useTranslation();
   let [modalmenu, setModalmenu] = useState(false);
-  let [dataDay, setDataday] = useState(dataday);
+  // let [dataDay, setDataday] = useState(dataday);
   let slider = useRef();
-  let [indexnya, setIndex] = useState(0);
-  let [idDay, setIdDays] = useState(dataDay[0].id);
+  let [idDay, setIdDays] = useState(dataDay ? dataDay[0].id : null);
   let [modalsave, setModalsave] = useState(false);
   let [nexts, setnexts] = useState({});
 
@@ -90,30 +91,6 @@ export default function ItineraryDay({
     },
   });
 
-  const deteteday = async (iditinerary, idDay) => {
-    try {
-      let response = await mutationDeleteDay({
-        variables: {
-          itinerary_id: iditinerary,
-          day_id: idDay,
-        },
-      });
-
-      if (errorday) {
-        throw new Error("Error Input");
-      }
-      if (response.data) {
-        if (response.data.delete_day.code !== 200) {
-          throw new Error(response.data.delete_day.message);
-        }
-        await setdatadayaktif(dataDay[0]);
-        await Refresh();
-      }
-    } catch (error) {
-      Alert.alert("" + error);
-    }
-  };
-
   const getdatebaru = (dateakhir) => {
     dateakhir = dateakhir.split(" ");
     var tomorrow = new Date(dateakhir[0]);
@@ -142,11 +119,20 @@ export default function ItineraryDay({
           throw new Error(response.data.add_dayitinerary.message);
         }
 
-        setDataday(response.data.add_dayitinerary.dataday);
-        setIndex(dataDay.length);
-        setIdDay(dataDay[dataDay.length - 1].id);
+        // setDataday(response.data.add_dayitinerary.dataday);
+        await setIndex(response.data.add_dayitinerary.dataday.length - 1);
+        await setdatadayaktif(
+          response.data.add_dayitinerary.dataday[
+            response.data.add_dayitinerary.dataday.length - 1
+          ]
+        );
+        await setIdDay(
+          response.data.add_dayitinerary.dataday[
+            response.data.add_dayitinerary.dataday.length - 1
+          ].id
+        );
         await slider.current.scrollToEnd();
-        Refresh();
+        await Refresh();
       }
     } catch (error) {
       Alert.alert("" + error);
@@ -224,6 +210,15 @@ export default function ItineraryDay({
     await GetTimeline(idDay);
   };
 
+  // useEffect(() => {
+  //   console.log("masuk paji :", datadayaktif);
+  //   {
+  //     datadayaktif && datadayaktif.day
+  //       ? setaktip(datadayaktif, parseInt(datadayaktif.day) - 1)
+  //       : setdata(dataDay && dataDay.length ? dataDay : []);
+  //   }
+  // }, []);
+
   return (
     <View
       onLayout={() => {
@@ -243,6 +238,7 @@ export default function ItineraryDay({
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         initialScrollIndex={indexnya}
+        // scrollToIndex={indexnya}
         horizontal={true}
         keyExtractor={(item, index) => index + ""}
         data={dataDay}
