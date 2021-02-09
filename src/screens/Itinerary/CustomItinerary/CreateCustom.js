@@ -181,10 +181,6 @@ export default function CreateCustom(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    // const unsubscribe = props.navigation.addListener("focus", () => {
-    //   loadAsync();
-    // });
-    // return unsubscribe;
   }, [props.navigation]);
 
   const [
@@ -299,6 +295,7 @@ export default function CreateCustom(props) {
         idDay: idDay,
         token: token,
         datatimeline: datatimeline,
+        jammax: jammax,
         dataCustom: {
           __typename: "ListSavedActivity",
           address: DetailAddress,
@@ -325,6 +322,7 @@ export default function CreateCustom(props) {
       style={{
         // marginTop: 70,
         flex: 1,
+        backgroundColor: "#fff",
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
       }}
@@ -626,45 +624,51 @@ export default function CreateCustom(props) {
                 </Text>
                 <View
                   style={{
-                    width: "70%",
+                    width: "100%",
+                    // borderWidth: 1,
                     flexDirection: "row",
+                    justifyContent: "center",
                     alignContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <Picker
-                    iosIcon={
-                      <View>
-                        <Bottom />
-                      </View>
-                    }
-                    iosHeader="Select Hours"
-                    note
-                    mode="dropdown"
-                    selectedValue={hour}
-                    textStyle={{ fontFamily: "Lato-Regular" }}
-                    itemTextStyle={{ fontFamily: "Lato-Regular" }}
-                    itemStyle={{ fontFamily: "Lato-Regular" }}
-                    placeholderStyle={{ fontFamily: "Lato-Regular" }}
-                    headerTitleStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    style={{
-                      color: "#209fae",
-                      fontFamily: "Lato-Regular",
-                    }}
-                    onValueChange={(itemValue, itemIndex) => sethour(itemValue)}
-                  >
-                    {jam.map((item, index) => {
-                      return (
-                        <Picker.Item
-                          key={""}
-                          label={item + " h"}
-                          value={item}
-                        />
-                      );
-                    })}
-                  </Picker>
+                  <View style={{ width: "30%" }}>
+                    <Picker
+                      iosIcon={
+                        <View>
+                          <Bottom />
+                        </View>
+                      }
+                      iosHeader="Select Hours"
+                      note
+                      mode="dropdown"
+                      selectedValue={hour}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                      headerTitleStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      style={{
+                        color: "#209fae",
+                        fontFamily: "Lato-Regular",
+                      }}
+                      onValueChange={(itemValue, itemIndex) =>
+                        sethour(itemValue)
+                      }
+                    >
+                      {jam.map((item, index) => {
+                        return (
+                          <Picker.Item
+                            key={""}
+                            label={item + " h"}
+                            value={item}
+                          />
+                        );
+                      })}
+                    </Picker>
+                  </View>
                   <View
                     style={{
                       width: "10%",
@@ -676,42 +680,44 @@ export default function CreateCustom(props) {
                       :
                     </Text>
                   </View>
-                  <Picker
-                    iosHeader="Select Minutes"
-                    headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}
-                    note
-                    mode="dropdown"
-                    selectedValue={minutes}
-                    textStyle={{ fontFamily: "Lato-Regular" }}
-                    itemTextStyle={{ fontFamily: "Lato-Regular" }}
-                    itemStyle={{ fontFamily: "Lato-Regular" }}
-                    placeholderStyle={{ fontFamily: "Lato-Regular" }}
-                    iosIcon={
-                      <View>
-                        <Bottom />
-                      </View>
-                    }
-                    headerTitleStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    style={{
-                      color: "#209fae",
-                      fontFamily: "Lato-Regular",
-                    }}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setMinutes(itemValue)
-                    }
-                  >
-                    {menit.map((item, index) => {
-                      return (
-                        <Picker.Item
-                          key={""}
-                          label={item + " m"}
-                          value={item}
-                        />
-                      );
-                    })}
-                  </Picker>
+                  <View style={{ width: "30%" }}>
+                    <Picker
+                      iosHeader="Select Minutes"
+                      headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}
+                      note
+                      mode="dropdown"
+                      selectedValue={minutes}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                      iosIcon={
+                        <View>
+                          <Bottom />
+                        </View>
+                      }
+                      headerTitleStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      style={{
+                        color: "#209fae",
+                        fontFamily: "Lato-Regular",
+                      }}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setMinutes(itemValue)
+                      }
+                    >
+                      {menit.map((item, index) => {
+                        return (
+                          <Picker.Item
+                            key={""}
+                            label={item + " m"}
+                            value={item}
+                          />
+                        );
+                      })}
+                    </Picker>
+                  </View>
                 </View>
                 <TouchableOpacity
                   onPress={() => setModaldate(false)}

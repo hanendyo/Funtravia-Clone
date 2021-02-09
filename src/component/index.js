@@ -12,20 +12,22 @@ import Sidebar from "./src/Sidebar";
 import rupiah from "./src/Rupiah";
 import Capital from "./src/Capital";
 import FTabs from "./src/Tabs";
+import Distance from "./src/Distance";
 
 export {
-	Text,
-	Button,
-	CustomImage,
-	FloatingInput,
-	Peringatan,
-	DurationSelector,
-	FunIcon,
-	PhoneCodeSelector,
-	Truncate,
-	Loading,
-	Sidebar,
-	rupiah,
-	Capital,
-	FTabs,
+  Text,
+  Button,
+  CustomImage,
+  FloatingInput,
+  Peringatan,
+  DurationSelector,
+  FunIcon,
+  PhoneCodeSelector,
+  Truncate,
+  Loading,
+  Sidebar,
+  rupiah,
+  Capital,
+  FTabs,
+  Distance,
 };
