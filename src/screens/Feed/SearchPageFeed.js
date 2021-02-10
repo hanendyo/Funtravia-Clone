@@ -22,6 +22,7 @@ import {
   FloatingInput,
   Peringatan,
   Loading,
+  Truncate,
 } from "../../component";
 import { NetworkStatus } from "@apollo/client";
 import {
@@ -36,6 +37,7 @@ import {
   Magnifying,
   OptionsVertWhite,
   Arrowbackwhite,
+  Pinloc,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
@@ -44,12 +46,14 @@ import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
 import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
 import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
-import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
+// import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
+import SearchUserQuery from "../../graphQL/Query/Search/SearchPeopleV2";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import Modal from "react-native-modal";
 
 export default function Feed(props) {
   const [active, setActive] = useState("personal");
+  const [active_src, setActiveSrc] = useState("account");
   const [searchtext, SetSearchtext] = useState("");
   let [setting, setSetting] = useState();
 
@@ -71,6 +75,7 @@ export default function Feed(props) {
   };
   const _searchHandle = (text) => {
     SetSearchtext(text);
+    _autocomplitLocation(text);
   };
   const HeaderComponent = {
     tabBarBadge: null,
@@ -124,11 +129,11 @@ export default function Feed(props) {
     notifyOnNetworkStatusChange: true,
   });
   // // console.log(dataPost);
-  let user_search = [];
-  if (dataSrcuser && dataSrcuser.user_search) {
-    user_search = dataSrcuser.user_search;
+  let user_search_feed = [];
+  if (dataSrcuser && dataSrcuser.user_search_feed) {
+    user_search_feed = dataSrcuser.user_search_feed;
   }
-  console.log(user_search);
+  // console.log(user_search_feed);
 
   useEffect(() => {
     loadAsync();
@@ -301,16 +306,9 @@ export default function Feed(props) {
     }
   };
 
-  const teststate = async (index) => {
-    feed_post_populer_paging[index].assets[0].filepath =
-      "https://i.pinimg.com/736x/c6/4f/04/c64f0475196dc54f4dd4386ad962beba.jpg";
-    // console.log(feed_post_populer_paging);
-    // _refresh();
-    setRefreshing(true);
-    wait(1000).then(() => {
-      setRefreshing(false);
-    });
-    // _refresh()
+  const showsearchpage = () => {
+    create_UUID();
+    setAktifSearch(true);
   };
 
   const _BackHandler = () => {
@@ -320,6 +318,51 @@ export default function Feed(props) {
       Keyboard.dismiss();
     } else {
       props.navigation.goBack();
+    }
+  };
+  function create_UUID() {
+    var dt = new Date().getTime();
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (dt + Math.random() * 16) % 16 | 0;
+        dt = Math.floor(dt / 16);
+        return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+    setSessionToken(uuid);
+  }
+  let [sessiontoken, setSessionToken] = useState("");
+  let [datalocation, setDatalocation] = useState([]);
+  let [loadinglocation, setLoadinglocation] = useState(false);
+  // console.log(sessiontoken);
+  const _autocomplitLocation = async (input) => {
+    setLoadinglocation(true);
+    try {
+      let response = await fetch(
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" +
+          input +
+          "&key=AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg&sessiontoken=" +
+          sessiontoken,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      let responseJson = await response.json();
+      if (responseJson && responseJson.status == "OK") {
+        setDatalocation(responseJson.predictions);
+        setLoadinglocation(false);
+      } else {
+        setDatalocation(responseJson.predictions);
+        setLoadinglocation(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoadinglocation(false);
     }
   };
 
@@ -365,7 +408,7 @@ export default function Feed(props) {
             <TextInput
               value={searchtext}
               onChangeText={(e) => _searchHandle(e)}
-              onFocus={() => setAktifSearch(true)}
+              onFocus={() => showsearchpage(true)}
               placeholder="Search Feed"
               style={{
                 color: "#464646",
@@ -406,25 +449,26 @@ export default function Feed(props) {
           >
             <Ripple
               onPress={() => {
-                setActive("personal");
+                setActiveSrc("account");
               }}
               style={{
                 // width: width / 2,
                 alignContent: "center",
                 alignItems: "center",
-                // borderBottomWidth: active == "personal" ? 3 : 1,
-                // borderBottomColor:
-                //   active == "personal" ? "#209FAE" : "#EEEEEE",
+                borderBottomWidth: active_src == "account" ? 3 : 0,
+                borderBottomColor:
+                  active_src == "account" ? "#209FAE" : "#EEEEEE",
                 paddingVertical: 15,
                 backgroundColor: "#FFFFFF",
                 paddingHorizontal: 10,
+                marginHorizontal: 10,
               }}
             >
               <Text
                 size="description"
-                type={active == "personal" ? "bold" : "bold"}
+                type={active_src == "account" ? "bold" : "bold"}
                 style={{
-                  color: active == "personal" ? "#209FAE" : "#D1D1D1",
+                  color: active_src == "account" ? "#209FAE" : "#D1D1D1",
                 }}
               >
                 Account
@@ -432,24 +476,25 @@ export default function Feed(props) {
             </Ripple>
             <Ripple
               onPress={() => {
-                setActive("group");
+                setActiveSrc("tag");
               }}
               style={{
                 // width: width / 2,
                 alignContent: "center",
                 alignItems: "center",
-                // borderBottomWidth: active == "group" ? 3 : 1,
-                // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
+                borderBottomWidth: active_src == "tag" ? 3 : 0,
+                borderBottomColor: active_src == "tag" ? "#209FAE" : "#EEEEEE",
                 paddingVertical: 15,
                 backgroundColor: "#FFFFFF",
                 paddingHorizontal: 10,
+                marginHorizontal: 10,
               }}
             >
               <Text
                 size="description"
-                type={active == "group" ? "bold" : "bold"}
+                type={active_src == "tag" ? "bold" : "bold"}
                 style={{
-                  color: active == "group" ? "#209FAE" : "#D1D1D1",
+                  color: active_src == "tag" ? "#209FAE" : "#D1D1D1",
                 }}
               >
                 Tag
@@ -457,76 +502,197 @@ export default function Feed(props) {
             </Ripple>
             <Ripple
               onPress={() => {
-                setActive("group");
+                setActiveSrc("places");
               }}
               style={{
                 // width: width / 2,
                 alignContent: "center",
                 alignItems: "center",
-                // borderBottomWidth: active == "group" ? 3 : 1,
-                // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
+                borderBottomWidth: active_src == "places" ? 3 : 0,
+                borderBottomColor:
+                  active_src == "places" ? "#209FAE" : "#EEEEEE",
                 paddingVertical: 15,
                 backgroundColor: "#FFFFFF",
                 paddingHorizontal: 10,
+                marginHorizontal: 10,
               }}
             >
               <Text
                 size="description"
-                type={active == "group" ? "bold" : "bold"}
+                type={active_src == "places" ? "bold" : "bold"}
                 style={{
-                  color: active == "group" ? "#209FAE" : "#D1D1D1",
+                  color: active_src == "places" ? "#209FAE" : "#D1D1D1",
                 }}
               >
                 Places
               </Text>
             </Ripple>
           </View>
-          {loadingSrcuser ? (
-            <View
+          {active_src === "account" ? (
+            loadingSrcuser ? (
+              <View
+                style={{
+                  // position: 'absolute',
+                  // bottom:0,
+                  flex: 1,
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  // style={{ color:'#209fae'}}
+                >
+                  Loading...
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={user_search_feed}
+                renderItem={({ item, index }) => (
+                  <Pressable
+                    onPress={() => {
+                      item.id !== setting?.user?.id
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: item.id,
+                            },
+                          })
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                          });
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      paddingVertical: 15,
+                      marginHorizontal: 15,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EEEEEE",
+                      alignContent: "center",
+                    }}
+                  >
+                    <CustomImage
+                      // isTouchable
+                      // onPress={() => {
+                      //   item.id !== setting?.user?.id
+                      //     ? props.navigation.push("ProfileStack", {
+                      //         screen: "otherprofile",
+                      //         params: {
+                      //           idUser: item.id,
+                      //         },
+                      //       })
+                      //     : props.navigation.push("ProfileStack", {
+                      //         screen: "ProfileTab",
+                      //       });
+                      // }}
+                      customStyle={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 15,
+                        alignSelf: "center",
+                        marginLeft: 15,
+                      }}
+                      customImageStyle={{
+                        resizeMode: "cover",
+                        borderRadius: 50,
+                      }}
+                      source={{
+                        uri: item.picture ? item.picture : default_image,
+                      }}
+                    />
+                    <View
+                      style={{
+                        paddingHorizontal: 10,
+                      }}
+                    >
+                      <Text type="bold">
+                        {item.first_name} {item?.last_name}
+                      </Text>
+                      <Text>@{item.username}</Text>
+                      {/* <Text>{item.bio}</Text> */}
+                    </View>
+                  </Pressable>
+                )}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            )
+          ) : null}
+          {active_src === "tag" && searchtext ? (
+            <Pressable
+              // onPress={() => {
+              //   item.id !== setting?.user?.id
+              //     ? props.navigation.push("ProfileStack", {
+              //         screen: "otherprofile",
+              //         params: {
+              //           idUser: item.id,
+              //         },
+              //       })
+              //     : props.navigation.push("ProfileStack", {
+              //         screen: "ProfileTab",
+              //       });
+              // }}
               style={{
-                // position: 'absolute',
-                // bottom:0,
-                flex: 1,
-                width: width,
-                justifyContent: "center",
+                flexDirection: "row",
+                paddingVertical: 15,
+                marginHorizontal: 15,
+                borderBottomWidth: 1,
+                borderBottomColor: "#EEEEEE",
+                alignContent: "center",
                 alignItems: "center",
               }}
             >
-              <Text
-                size="title"
-                type="bold"
-                // style={{ color:'#209fae'}}
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  alignSelf: "center",
+                  marginLeft: 15,
+                  backgroundColor: "#DAF0F2",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                Loading...
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={user_search}
-              renderItem={({ item, index }) => (
-                <Pressable
-                  onPress={() => {
-                    item.id !== setting?.user?.id
-                      ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: item.id,
-                          },
-                        })
-                      : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                        });
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    paddingVertical: 15,
-                    marginHorizontal: 15,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#EEEEEE",
-                  }}
+                <Text size="h5">#</Text>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Text type="bold">#{searchtext}</Text>
+              </View>
+            </Pressable>
+          ) : null}
+          {active_src === "places" ? (
+            loadinglocation == true ? (
+              <View
+                style={{
+                  // position: 'absolute',
+                  // bottom:0,
+                  flex: 1,
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  // style={{ color:'#209fae'}}
                 >
-                  <CustomImage
-                    // isTouchable
+                  Loading...
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={datalocation}
+                renderItem={({ item, index }) => (
+                  <Pressable
                     // onPress={() => {
                     //   item.id !== setting?.user?.id
                     //     ? props.navigation.push("ProfileStack", {
@@ -539,35 +705,55 @@ export default function Feed(props) {
                     //         screen: "ProfileTab",
                     //       });
                     // }}
-                    customStyle={{
-                      height: 40,
-                      width: 40,
-                      borderRadius: 15,
-                      alignSelf: "center",
-                      marginLeft: 15,
-                    }}
-                    customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
-                    source={{
-                      uri: item.picture ? item.picture : default_image,
-                    }}
-                  />
-                  <View
                     style={{
-                      paddingHorizontal: 10,
+                      flexDirection: "row",
+                      paddingVertical: 15,
+                      marginHorizontal: 15,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#EEEEEE",
+                      alignContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    <Text type="bold">
-                      {item.first_name} {item?.last_name}
-                    </Text>
-                    <Text>@{item.username}</Text>
-                    <Text>{item.username}</Text>
-                  </View>
-                </Pressable>
-              )}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          )}
+                    <View
+                      style={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 20,
+                        alignSelf: "center",
+                        marginLeft: 15,
+                        backgroundColor: "#DAF0F2",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Pinloc width={15} height={15} />
+                    </View>
+                    <View
+                      style={{
+                        paddingHorizontal: 10,
+                      }}
+                    >
+                      <Text type="bold">
+                        {item.structured_formatting.main_text}
+                      </Text>
+                      {item.structured_formatting &&
+                      item.structured_formatting.secondary_text ? (
+                        <Text>
+                          <Truncate
+                            text={item.structured_formatting.secondary_text}
+                            length={50}
+                          />
+                        </Text>
+                      ) : null}
+                    </View>
+                  </Pressable>
+                )}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            )
+          ) : null}
         </>
       ) : (
         <>

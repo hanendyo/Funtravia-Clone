@@ -929,7 +929,7 @@ export default function FeedList({ props, token }) {
               backgroundColor: "#FFFFFF",
               // flex: 1,
               marginHorizontal: 10,
-              marginVertical: 7,
+              marginVertical: 5,
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
