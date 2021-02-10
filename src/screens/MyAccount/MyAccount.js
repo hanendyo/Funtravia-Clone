@@ -429,13 +429,17 @@ export default function MyAccount(props) {
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
                   await LoadUserProfile();
-                  props.navigation.navigate("AuthStack");
+                  props.navigation.navigate("AuthStack", {
+                    screen: "SplashScreen",
+                  });
                 }
               } catch (error) {
                 Alert.alert("" + error);
                 await AsyncStorage.setItem("access_token", "");
                 await LoadUserProfile();
-                props.navigation.navigate("AuthStack");
+                props.navigation.navigate("AuthStack", {
+                  screen: "SplashScreen",
+                });
               }
             }}
             style={{
