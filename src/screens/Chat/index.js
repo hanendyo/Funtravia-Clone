@@ -284,15 +284,7 @@ export default function Message({ navigation }) {
 		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar barStyle="dark-content" />
 			<FlatList
-				data={
-					active == "personal"
-						? dataRes.sort(
-								(a, b) => new Date(b.recent.date) - new Date(a.recent.date)
-						  )
-						: dataGroupRes.sort(
-								(a, b) => new Date(b.recent.date) - new Date(a.recent.date)
-						  )
-				}
+				data={active == "personal" ? dataRes : dataGroupRes}
 				renderItem={active == "personal" ? renderItem : renderItemGroup}
 				keyExtractor={(item) => item.id}
 				stickyHeaderIndices={[0]}

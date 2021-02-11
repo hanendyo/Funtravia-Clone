@@ -42,6 +42,7 @@
                 <category android:name="android.intent.catergory.BROWSABLE" />
                 <data android:scheme="http" android:host="link.funtravia.com" />
                 <data android:scheme="https" android:host="link.funtravia.com" />
+                <data android:scheme="funtravia"/>
             </intent-filter>
             <!--Universal Link End-->
         </activity>

@@ -14,7 +14,6 @@ import tripalbumdetail from "../../screens/Profile/tripalbumdetail";
 
 const ProfileStack = createStackNavigator();
 export default function ProfileStackNavigation(props) {
-	console.log("profile_token", props);
 	return (
 		<ProfileStack.Navigator>
 			<ProfileStack.Screen

@@ -46,7 +46,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>deepLink</string>
+			<string>funtravia</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>funtravia</string>

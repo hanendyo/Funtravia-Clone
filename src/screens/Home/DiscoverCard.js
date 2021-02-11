@@ -59,7 +59,7 @@ export default function DiscoverCard({ props }) {
 				<ImageBackground
 					source={discoverCardsData[0].background_image}
 					style={{
-						height: (width + 80) / 3,
+						height: (width + 100) / 3,
 						width: (width - 55) / 3,
 						borderRadius: 5,
 						alignItems: "center",
@@ -93,7 +93,7 @@ export default function DiscoverCard({ props }) {
 				<ImageBackground
 					source={discoverCardsData[1].background_image}
 					style={{
-						height: (width + 80) / 3,
+						height: (width + 100) / 3,
 						width: (width - 55) / 3,
 						borderRadius: 5,
 						alignItems: "center",
@@ -123,7 +123,7 @@ export default function DiscoverCard({ props }) {
 				<ImageBackground
 					source={discoverCardsData[2].background_image}
 					style={{
-						height: (width + 80) / 3,
+						height: (width + 100) / 3,
 						width: (width - 55) / 3,
 						borderRadius: 5,
 						alignItems: "center",
