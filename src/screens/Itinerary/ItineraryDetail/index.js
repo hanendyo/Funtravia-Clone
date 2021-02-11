@@ -1,379 +1,88 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
+// import Animated, { Easing } from "react-native-reanimated";
 import {
-  View,
   StyleSheet,
+  View,
   Dimensions,
   Animated,
-  Alert,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
+  PanResponder,
   Platform,
-  BackHandler,
+  TouchableOpacity,
+  Alert,
+  StatusBar,
+  ActivityIndicator,
   Image,
-  FlatList,
+  ScrollView,
 } from "react-native";
-import { Text } from "../../../component";
-import { Button, Truncate, Loading } from "../../../component";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
-// import { LinearGradient } from "expo-linear-gradient";
-import {
-  Chat,
-  Disketpink,
-  Create,
-  Settings,
-  Plus,
-  OptionsVertWhite,
-  Arrowbackwhite,
-  Sharegreen,
-  Xhitam,
-  Love,
-  Google,
-  PlusBlack,
-  Book,
-  Expences,
-  Delete,
-  Plusgrey,
-} from "../../../assets/svg";
-import { default_image } from "../../../assets/png";
-import Modal from "react-native-modal";
-import ItineraryDay from "./itineraryday";
-import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
-import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
-import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
-import ChangeStatus from "../../../graphQL/Mutation/Itinerary/ChangeStatus";
-import { dateFormats } from "../../../component/src/dateformatter";
-import Sidebar from "../../../component/src/Sidebar";
-import { useTranslation } from "react-i18next";
-import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
-import Uploadfoto from "../../../graphQL/Mutation/Itinerary/Uploadcover";
-import ImagePicker from "react-native-image-crop-picker";
+import DraggableFlatList from "react-native-draggable-flatlist";
 import LinearGradient from "react-native-linear-gradient";
-import Ripple from "react-native-material-ripple";
-import ItinDrag from "./ItinDrag";
+import { TabView, TabBar } from "react-native-tab-view";
+import { default_image } from "../../../assets/png";
+import {
+  Arrowbackwhite,
+  Create,
+  Disketpink,
+  Jalan,
+  Mobil,
+  More,
+  Next,
+  Pencilgreen,
+  Plus,
+  Plusgrey,
+  Sharegreen,
+} from "../../../assets/svg";
+import {
+  Button,
+  Capital,
+  Distance,
+  FunIcon,
+  Text,
+  Truncate,
+} from "../../../component";
+import { dateFormats } from "../../../component/src/dateformatter";
+import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
+import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
+import ItineraryDay from "./itineraryday";
 
-let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.15;
-let HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 75 : 55;
-let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
+const { width, height } = Dimensions.get("screen");
+const TabBarHeight = 48;
+const HeaderHeight = Dimensions.get("screen").height * 0.35;
+const SafeStatusBar = Platform.select({
+  ios: 44,
+  android: StatusBar.currentHeight,
+});
+const tab1ItemSize = (width - 30) / 2;
+const tab2ItemSize = (width - 40) / 3;
+const PullToRefreshDist = 150;
 
 export default function ItineraryDetail(props) {
+  /**
+   * stats
+   */
   const { t, i18n } = useTranslation();
-  let [Modalcustom, setModalcustom] = useState(false);
-  let [modalcover, setmodalcover] = useState(false);
-  let [loading, setloading] = useState(false);
-  let [showside, setshowside] = useState(false);
-  let [isPrivate, setPrivate] = useState();
-  let [indexnya, setIndex] = useState(0);
+  let [Cover, setCover] = useState(null);
+  const [tabIndex, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "tab1", title: "Itinerary" },
+    { key: "tab2", title: "Travel Picture" },
+    { key: "tab3", title: "Diary" },
+  ]);
+  const [canScroll, setCanScroll] = useState(true);
+  let dataList = [];
+  const [tab2Data] = useState(Array(30).fill(0));
+  const [tab3Data] = useState(Array(30).fill(0));
+  let itincountries = props.route.params.country;
+  let token = props.route.params.token;
+  let [status, setStatus] = useState(props.route.params.status);
+  let [idDay, setidDay] = useState(null);
+  let [dataAkhir, setDataAkhir] = useState(null);
+  let [indexnya, setIndexnya] = useState(0);
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif
   );
-  let [actives, setActives] = useState("Itinerary");
-  let [dataAkhir, setDataAkhir] = useState(null);
-  let [Cover, setCover] = useState(null);
-  let [idDay, setidDay] = useState(null);
-  let itincountries = props.route.params.country;
-  let [status, setStatus] = useState(props.route.params.status);
-  let token = props.route.params.token;
-  let [modalsave, setModalsave] = useState(false);
-  let [modal, setModal] = useState(false);
-
-  const setdatadayaktif = (data) => {
-    setdatadayaktifs(data);
-    props.navigation.setParams({ datadayaktif: data });
-  };
-
-  let [scrollY, setscrollY] = useState(new Animated.Value(0));
-
-  const imageOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0.5, 0],
-    extrapolate: "clamp",
-  });
-
-  const warna = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: ["#464646", "#fff", "#fff"],
-    extrapolate: "clamp",
-  });
-  const warna2 = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: ["#838383", "#fff", "#fff"],
-    extrapolate: "clamp",
-  });
-
-  const textLeft = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [20, 40, 55],
-    extrapolate: "clamp",
-  });
-
-  const textTop = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 50, 0],
-    extrapolate: "clamp",
-  });
-
-  const textTops = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [
-      Platform.OS === "ios" ? 20 : 0,
-      Platform.OS === "ios" ? 20 : 0,
-    ],
-    extrapolate: "clamp",
-  });
-
-  const textSize = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [18, 18, 14],
-    extrapolate: "clamp",
-  });
-  const imageTranslate = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -50],
-    extrapolate: "clamp",
-  });
-
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [HEADER_MAX_HEIGHT + 55, HEADER_MIN_HEIGHT],
-    extrapolate: "clamp",
-  });
-
-  const [
-    mutationdeleteItinerary,
-    { loading: loadingdelete, data: datadelete, error: errordelete },
-  ] = useMutation(Deleteitinerary, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    mutationChangestatus,
-    { loading: loadingchange, data: datachange, error: errorchange },
-  ] = useMutation(ChangeStatus, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    mutationSaveTimeline,
-    { loading: loadingSave, data: dataSave, error: errorSave },
-  ] = useMutation(UpdateTimeline, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    mutationUpload,
-    { loading: loadingupload, data: dataupload, error: errorupload },
-  ] = useMutation(Uploadfoto, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const upload = async (data) => {
-    setloading(true);
-
-    if (data) {
-      try {
-        let response = await mutationUpload({
-          variables: {
-            itinerary_id: itincountries,
-            cover: "data:image/jpeg;base64," + data,
-          },
-        });
-        if (errorupload) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (response.data.upload_cover_itinerary.code !== 200) {
-            throw new Error(response.data.upload_cover_itinerary.message);
-          }
-          _Refresh();
-        }
-        setloading(false);
-      } catch (error) {
-        Alert.alert("" + error);
-        setloading(false);
-      }
-    }
-  };
-
-  const pickcamera = async () => {
-    ImagePicker.openCamera({
-      width: 600,
-      height: 400,
-      cropping: true,
-      // freeStyleCropEnabled: true,
-      includeBase64: true,
-    }).then((image) => {
-      upload(image.data);
-    });
-  };
-
-  const pickGallery = async () => {
-    ImagePicker.openPicker({
-      width: 600,
-      height: 400,
-      cropping: true,
-      // freeStyleCropEnabled: true,
-      includeBase64: true,
-    }).then((image) => {
-      upload(image.data);
-    });
-  };
-
-  const savetimeline = async () => {
-    try {
-      let response = await mutationSaveTimeline({
-        variables: {
-          idday: idDay,
-          value: JSON.stringify(dataAkhir),
-        },
-      });
-      if (loadingSave) {
-        Alert.alert("Loading!!");
-      }
-      if (errorSave) {
-        throw new Error("Error Input");
-      }
-      if (response.data) {
-        if (response.data.update_timeline.code !== 200) {
-          throw new Error(response.data.update_timeline.message);
-        }
-        props.navigation.push("MainTripPlaning", {
-          index: status === "saved" ? 1 : 0,
-        });
-      }
-      setDataAkhir([]);
-
-      setloading(false);
-    } catch (error) {
-      setloading(false);
-      Alert.alert("" + error);
-    }
-    setModalsave(false);
-  };
-
-  const _handlerBack = async () => {
-    if (dataAkhir && dataAkhir.length > 0) {
-      setModalsave(true);
-    } else {
-      // status = '';
-      props.navigation.navigate("TripPlaning", {
-        index: status === "saved" ? 1 : 0,
-      });
-    }
-  };
-
-  const completePlan = async () => {
-    setloading(true);
-    for (var i of datadetail.itinerary_detail.day) {
-      let x = i.total_hours.split(":");
-      let y = parseFloat(x[0]);
-      if (y < 1) {
-        setloading(false);
-        Alert.alert(
-          "" + t("Activity") + " " + t("day") + " " + i.day + " " + t("emptys")
-        );
-        return false;
-      }
-    }
-
-    if (dataAkhir && dataAkhir.length > 0) {
-      try {
-        let response = await mutationSaveTimeline({
-          variables: {
-            idday: idDay,
-            value: JSON.stringify(dataAkhir),
-          },
-        });
-        if (loadingSave) {
-          Alert.alert("Loading!!");
-        }
-        if (errorSave) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (response.data.update_timeline.code !== 200) {
-            throw new Error(response.data.update_timeline.message);
-          }
-          setDataAkhir([]);
-          try {
-            let response = await mutationChangestatus({
-              variables: {
-                id: itincountries,
-                status: "A",
-              },
-            });
-            if (loadingchange) {
-              Alert.alert("Loading!!");
-            }
-            if (errorchange) {
-              throw new Error("Error Input");
-            }
-            if (response.data) {
-              if (response.data.change_status.code !== 200) {
-                throw new Error(response.data.change_status.message);
-              }
-              setDataAkhir([]);
-              setStatus("saved");
-            }
-            setloading(false);
-          } catch (error) {
-            setloading(false);
-            Alert.alert("" + error);
-          }
-        }
-        setloading(false);
-      } catch (error) {
-        setloading(false);
-        Alert.alert("" + error);
-      }
-    } else {
-      try {
-        let response = await mutationChangestatus({
-          variables: {
-            id: itincountries,
-            status: "A",
-          },
-        });
-        if (loadingchange) {
-          Alert.alert("Loading!!");
-        }
-        if (errorchange) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (response.data.change_status.code !== 200) {
-            throw new Error(response.data.change_status.message);
-          }
-          setDataAkhir([]);
-          setStatus("saved");
-        }
-        setloading(false);
-      } catch (error) {
-        setloading(false);
-        Alert.alert("" + error);
-      }
-    }
-  };
 
   const {
     data: datadetail,
@@ -390,18 +99,87 @@ export default function ItineraryDetail(props) {
     variables: { id: itincountries },
   });
 
-  const dateFormatr = (date) => {
-    var x = date.split(" ");
-    return dateFormats(x[0]);
+  const GetTimeline = async (id) => {
+    await setidDay(id ? id : idDay);
+    await GetTimelin();
   };
 
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
+  const {
+    data: datatimeline,
+    loading: loadingtimeline,
+    error: errortimeline,
+    refetch: GetTimelin,
+  } = useQuery(Timeline, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: { id: idDay },
+  });
+  const setdatadayaktif = (data) => {
+    setdatadayaktifs(data);
+    props.navigation.setParams({ datadayaktif: data });
+  };
+
+  if (datatimeline && datatimeline.day_timeline.length) {
+    dataList = datatimeline.day_timeline;
+  }
+
+  const GetStartTime = ({ startt }) => {
+    var starttime = startt.split(":");
+
+    return (
+      <Text size="description" type="regular" style={{}}>
+        {starttime[0]}:{starttime[1]}
+      </Text>
+    );
+  };
+
+  const GetEndTime = ({ startt, dur }) => {
+    var duration = dur.split(":");
+    var starttime = startt.split(":");
+
+    var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
+
+    var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
+    if (menit > 59) {
+      menit = menit - 60;
+    }
+
+    return (
+      <Text size="description" type="regular" style={{}}>
+        {jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam}:
+        {menit < 10 ? "0" + menit : menit}
+      </Text>
+    );
+  };
+
+  const Getdurasi = (durasi) => {
+    durasi = durasi.split(":");
+    return (
+      parseFloat(durasi[0]) +
+      " " +
+      t("hours") +
+      " " +
+      (parseFloat(durasi[1]) > 0
+        ? parseFloat(durasi[1]) + " " + t("minutes")
+        : " ")
+    );
+  };
+
+  const HitungWaktu = ({ lat1, lon1, lat2, lon2, unit, kecepatan }) => {
+    let jarak = Distance({
+      lat1: lat1,
+      lon1: lon1,
+      lat2: lat2,
+      lon2: lon2,
+      unit: unit,
     });
+    let hasil = jarak / kecepatan;
+    return hasil.toFixed(0) > 0 ? hasil.toFixed(0) : 1;
   };
-
-  const [refreshing, setRefreshing] = React.useState(false);
 
   const RenderBuddy = ({ databuddy }) => {
     return (
@@ -463,160 +241,555 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const _handlehapus = async (id) => {
-    setloading(true);
-    try {
-      let response = await mutationdeleteItinerary({
-        variables: {
-          id: id,
-        },
-      });
-      if (errordelete) {
-        throw new Error("Error Input");
-      }
-      if (response.data) {
-        if (response.data.delete_itinerary.code !== 200) {
-          throw new Error(response.data.delete_itinerary.message);
-        }
-        props.navigation.push("TripPlaning", {
-          index: status === "saved" ? 1 : 0,
-        });
-      }
-
-      setloading(false);
-    } catch (error) {
-      setloading(false);
-      Alert.alert("" + error);
-    }
+  const dateFormatr = (date) => {
+    var x = date.split(" ");
+    return dateFormats(x[0]);
   };
 
-  const GetTimeline = async (id) => {
-    await setidDay(id ? id : idDay);
-    await GetTimelin();
-  };
-
-  const {
-    data: datatimeline,
-    loading: loadingtimeline,
-    error: errortimeline,
-    refetch: GetTimelin,
-  } = useQuery(Timeline, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+  /** ---------------------------------------------------------------------------------------------------------------
+   * ref
+   */
+  const HeaderComponent = {
+    headerShown: true,
+    title: "",
+    headerTransparent: true,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
     },
-    variables: { id: idDay },
-  });
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
 
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      _Refresh();
-      GetTimelin();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
-
-  const RenderUtama = ({ aktif, render }) => {
-    if (aktif == "Itinerary") {
-      return (
-        <>
-          {datadayaktif && datadayaktif.day ? (
-            <ItinDrag
-              idDay={idDay}
-              data={
-                datatimeline && datatimeline.day_timeline.length > 0
-                  ? datatimeline.day_timeline
-                  : []
-              }
-              props={props}
-              setAkhir={(e) => {
-                setDataAkhir(e);
-              }}
-              setidDayz={(e) => setidDay(e)}
-              token={token}
-              iditinerary={itincountries}
-              setloading={(e) => setloading(e)}
-              Refresh={(e) => _Refresh(e)}
-              GetTimeline={(e) => GetTimeline()}
-              datadayaktif={datadayaktif}
-              setdatadayaktif={(e) => setdatadayaktif(e)}
-              status={status && status === "saved" ? "saved" : "notsaved"}
-              setCover={(e) => setCover(e)}
-              cover={datadetail.itinerary_detail.cover}
-              lat={datadetail.itinerary_detail.city.latitude}
-              long={datadetail.itinerary_detail.city.longitude}
-              kota={datadetail.itinerary_detail.city.name}
-              loadingtimeline={loadingtimeline}
-              dataday={datadetail.itinerary_detail.day}
-              indexnya={indexnya}
-              setIndex={(e) => setIndex(e)}
-            />
-          ) : null}
-        </>
-      );
-    } else if (aktif == "Picture") {
-      return (
-        <View>
-          <Text>picture</Text>
-        </View>
-      );
-    } else if (aktif == "Diary") {
-      return (
-        <View>
-          <Text>Diary</Text>
-        </View>
-      );
-    } else {
-      return <View></View>;
-    }
-  };
-
-  if (datadetail) {
-    return (
-      <View
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
         style={{
-          height: Dimensions.get("screen").height,
-          width: Dimensions.get("screen").width,
-          backgroundColor: "#f3f3f3",
-          flex: 1,
+          height: 55,
         }}
       >
-        <Loading show={loading} />
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
 
-        <ScrollView
+  let scrollY = useRef(new Animated.Value(0)).current;
+
+  const headerScrollY = useRef(new Animated.Value(0)).current;
+  // for capturing header scroll on Android
+  const headerMoveScrollY = useRef(new Animated.Value(0)).current;
+  const listRefArr = useRef([]);
+  const listOffset = useRef({});
+  const isListGliding = useRef(false);
+  const headerScrollStart = useRef(0);
+  const _tabIndex = useRef(0);
+  const refreshStatusRef = useRef(false);
+  let HEADER_MAX_HEIGHT = HeaderHeight;
+  let HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 75 : 60;
+  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0.5, 0],
+    extrapolate: "clamp",
+  });
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -50],
+    extrapolate: "clamp",
+  });
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
+
+  const contentTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 50],
+    extrapolate: "clamp",
+  });
+
+  const warna = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: ["#464646", "#fff"],
+    // extrapolate: "clamp",
+  });
+  const warna2 = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: ["#838383", "#fff", "#fff"],
+    extrapolate: "clamp",
+  });
+
+  const textLeft = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 50, 50],
+    extrapolate: "clamp",
+  });
+
+  const textLefts = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [23, 0, 0],
+    extrapolate: "clamp",
+  });
+
+  const textTop = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 20, 50],
+    extrapolate: "clamp",
+  });
+
+  const textTops = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [-4, -2, 0],
+    extrapolate: "clamp",
+  });
+
+  const textSize = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1.3, 1, 1],
+    extrapolate: "clamp",
+  });
+
+  /**
+   * PanResponder for header
+   */
+  const headerPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        syncScrollOffset();
+        return false;
+      },
+
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        return Math.abs(gestureState.dy) > 5;
+      },
+      onPanResponderEnd: (evt, gestureState) => {
+        handlePanReleaseOrEnd(evt, gestureState);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        const curListRef = listRefArr.current.find(
+          (ref) => ref.key === routes[_tabIndex.current].key
+        );
+        const headerScrollOffset = -gestureState.dy + headerScrollStart.current;
+        if (curListRef.value) {
+          // scroll up
+          if (headerScrollOffset > 0) {
+            curListRef.value.scrollToOffset({
+              offset: headerScrollOffset,
+              animated: false,
+            });
+            // start pull down
+          } else {
+            if (Platform.OS === "ios") {
+              curListRef.value.scrollToOffset({
+                offset: headerScrollOffset / 3,
+                animated: false,
+              });
+            } else if (Platform.OS === "android") {
+              if (!refreshStatusRef.current) {
+                headerMoveScrollY.setValue(headerScrollOffset / 1.5);
+              }
+            }
+          }
+        }
+      },
+      onShouldBlockNativeResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        headerScrollStart.current = scrollY._value;
+      },
+    })
+  ).current;
+
+  /**
+   * PanResponder for list in tab scene
+   */
+  const listPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        return false;
+      },
+      onShouldBlockNativeResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+      },
+    })
+  ).current;
+
+  /**
+   * effect
+   */
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+
+    scrollY.addListener(({ value }) => {
+      const curRoute = routes[tabIndex].key;
+      listOffset.current[curRoute] = value;
+    });
+
+    headerScrollY.addListener(({ value }) => {
+      listRefArr.current.forEach((item) => {
+        if (item.key !== routes[tabIndex].key) {
+          return;
+        }
+        if (value > HeaderHeight || value < 0) {
+          headerScrollY.stopAnimation();
+          syncScrollOffset();
+        }
+        if (item.value && value <= HeaderHeight) {
+          item.value.scrollToOffset({
+            offset: value,
+            animated: false,
+          });
+        }
+      });
+    });
+    return () => {
+      scrollY.removeAllListeners();
+      headerScrollY.removeAllListeners();
+    };
+  }, [routes, tabIndex]);
+
+  /**
+   *  helper functions
+   */
+  const syncScrollOffset = () => {
+    const curRouteKey = routes[_tabIndex.current].key;
+
+    listRefArr.current.forEach((item) => {
+      if (item.key !== curRouteKey) {
+        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
+          if (item.value) {
+            item.value.scrollToOffset({
+              offset: scrollY._value,
+              animated: false,
+            });
+            listOffset.current[item.key] = scrollY._value;
+          }
+        } else if (scrollY._value >= HeaderHeight) {
+          if (
+            listOffset.current[item.key] < HeaderHeight ||
+            listOffset.current[item.key] == null
+          ) {
+            if (item.value) {
+              item.value.scrollToOffset({
+                offset: HeaderHeight,
+                animated: false,
+              });
+              listOffset.current[item.key] = HeaderHeight;
+            }
+          }
+        }
+      }
+    });
+  };
+
+  const startRefreshAction = () => {
+    if (Platform.OS === "ios") {
+      listRefArr.current.forEach((listRef) => {
+        listRef.value.scrollToOffset({
+          offset: -50,
+          animated: true,
+        });
+      });
+      refresh().finally(() => {
+        syncScrollOffset();
+        // do not bounce back if user scroll to another position
+        if (scrollY._value < 0) {
+          listRefArr.current.forEach((listRef) => {
+            listRef.value.scrollToOffset({
+              offset: 0,
+              animated: true,
+            });
+          });
+        }
+      });
+    } else if (Platform.OS === "android") {
+      Animated.timing(headerMoveScrollY, {
+        toValue: -150,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      refresh().finally(() => {
+        Animated.timing(headerMoveScrollY, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      });
+    }
+  };
+
+  const handlePanReleaseOrEnd = (evt, gestureState) => {
+    // console.log('handlePanReleaseOrEnd', scrollY._value);
+    syncScrollOffset();
+    headerScrollY.setValue(scrollY._value);
+    if (Platform.OS === "ios") {
+      if (scrollY._value < 0) {
+        if (scrollY._value < -PullToRefreshDist && !refreshStatusRef.current) {
+          startRefreshAction();
+        } else {
+          // should bounce back
+          listRefArr.current.forEach((listRef) => {
+            listRef.value.scrollToOffset({
+              offset: 0,
+              animated: true,
+            });
+          });
+        }
+      } else {
+        if (Math.abs(gestureState.vy) < 0.2) {
+          return;
+        }
+        Animated.decay(headerScrollY, {
+          velocity: -gestureState.vy,
+          useNativeDriver: true,
+        }).start(() => {
+          syncScrollOffset();
+        });
+      }
+    } else if (Platform.OS === "android") {
+      if (
+        headerMoveScrollY._value < 0 &&
+        headerMoveScrollY._value / 1.5 < -PullToRefreshDist
+      ) {
+        startRefreshAction();
+      } else {
+        Animated.timing(headerMoveScrollY, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  };
+
+  const onMomentumScrollBegin = () => {
+    isListGliding.current = true;
+  };
+
+  const onMomentumScrollEnd = () => {
+    isListGliding.current = false;
+    syncScrollOffset();
+    // console.log('onMomentumScrollEnd');
+  };
+
+  const onScrollEndDrag = (e) => {
+    syncScrollOffset();
+
+    const offsetY = e.nativeEvent.contentOffset.y;
+    // console.log('onScrollEndDrag', offsetY);
+    // iOS only
+    if (Platform.OS === "ios") {
+      if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
+        startRefreshAction();
+      }
+    }
+
+    // check pull to refresh
+  };
+
+  const refresh = async () => {
+    console.log("-- start refresh");
+    refreshStatusRef.current = true;
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("done");
+      }, 2000);
+    }).then((value) => {
+      console.log("-- refresh done!");
+      refreshStatusRef.current = false;
+    });
+  };
+
+  /**
+   * render Helper
+   */
+  const renderHeader = () => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, -HeaderHeight + 60],
+      extrapolateRight: "clamp",
+      // extrapolate: 'clamp',
+    });
+    return (
+      <Animated.View
+        {...headerPanResponder.panHandlers}
+        style={{
+          transform: [{ translateY: y }],
+          height: HeaderHeight,
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          backgroundColor: "#209fae",
+        }}
+      >
+        <Animated.View
           style={{
-            marginTop: 55,
+            height: 90,
+            width: "100%",
+            position: "absolute",
+            zIndex: 1,
+
+            top: 0,
+            left: 0,
+            opacity: imageOpacity,
           }}
-          contentContainerStyle={{
-            paddingBottom: 57,
-          }}
-          onScroll={Animated.event([
-            {
-              nativeEvent: { contentOffset: { y: scrollY } },
-            },
-          ])}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          stickyHeaderIndices={[1]}
-          nestedScrollEnabled={true}
         >
-          <View
+          <LinearGradient
+            colors={["rgba(0, 0, 0, 1)", "rgba(34, 34, 34, 0)"]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={{
-              paddingVertical: 5,
-              paddingHorizontal: 20,
+              height: 90,
               width: "100%",
-              backgroundColor: "white",
+            }}
+          ></LinearGradient>
+        </Animated.View>
+        <Animated.Image
+          source={default_image}
+          style={{
+            opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
+            width: "100%",
+            height: HEADER_MAX_HEIGHT - 110,
+            resizeMode: "cover",
+          }}
+        />
+        <Animated.View
+          style={{
+            position: "absolute",
+            bottom: 62,
+            left: 15,
+            transform: [{ translateY: textTop }, { translateX: textLeft }],
+            zIndex: 9,
+          }}
+        >
+          <Animated.Text
+            allowFontScaling={false}
+            style={{
+              transform: [
+                { translateX: textLefts },
+                { translateY: textTops },
+                {
+                  scale: textSize,
+                },
+              ],
+              fontFamily: "Lato-Bold",
+              // color: warna,
             }}
           >
-            <View
+            {datadetail && datadetail.itinerary_detail ? (
+              <Truncate text={datadetail.itinerary_detail.name} length={30} />
+            ) : null}
+          </Animated.Text>
+          <View
+            style={{
+              flexDirection: "row",
+              // paddingVertical: 10,
+              alignItems: "center",
+            }}
+          >
+            <Animated.Text
+              size="small"
+              type="bold"
               style={{
-                width: Dimensions.get("screen").width,
-                height: HEADER_MAX_HEIGHT,
-                backgroundColor: "white",
+                // color: warna2,
+                fontFamily: "Lato-Bold",
+                fontSize: 12,
               }}
-            ></View>
+            >
+              {/* {t("dates")} :{" "} */}
+              {datadetail && datadetail.itinerary_detail
+                ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                  "  -  " +
+                  dateFormatr(datadetail.itinerary_detail.end_date)
+                : null}
+            </Animated.Text>
+          </View>
+        </Animated.View>
+        <Animated.View
+          style={{
+            width: "100%",
+            backgroundColor: "white",
+            // transform: [{ translateY: contentTranslate }],
+            height: 55,
+            opacity: imageOpacity,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            size="title"
+            type="black"
+            style={{
+              color: "white",
+            }}
+          ></Text>
+          {datadetail &&
+          datadetail.itinerary_detail &&
+          datadetail.itinerary_detail.isprivate === true ? (
+            <Button
+              onPress={() => Alert.alert("coming soon")}
+              type="circle"
+              variant="bordered"
+              size="small"
+              style={{
+                flexDirection: "row",
+                width: 80,
+                alignContent: "center",
+                alignItems: "center",
+                // paddingHorizontal: 20,
+              }}
+            >
+              <Sharegreen height={15} width={15} />
+              <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
+                {t("share")}
+              </Text>
+            </Button>
+          ) : null}
+        </Animated.View>
+        <Animated.View
+          style={{
+            opacity: imageOpacity,
+            // transform: [{ translateY: contentTranslate }],
+            paddingVertical: 5,
+            paddingHorizontal: 20,
+            width: "100%",
+            height: 55,
+            backgroundColor: "white",
+          }}
+        >
+          {datadetail && datadetail.itinerary_detail ? (
             <TouchableOpacity
               onPress={() => {
                 props.navigation.push("ItineraryBuddy", {
@@ -670,1238 +843,1012 @@ export default function ItineraryDetail(props) {
               >
                 {t("travelBuddy")} :
               </Text>
-              {datadetail && datadetail.itinerary_detail ? (
-                <RenderBuddy databuddy={datadetail.itinerary_detail.buddy} />
-              ) : null}
+              <RenderBuddy databuddy={datadetail.itinerary_detail.buddy} />
             </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              backgroundColor: "#fff",
-            }}
-          >
-            <View
-              style={{
-                width: "100%",
-                backgroundColor: "#fff",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignContent: "center",
-              }}
-            >
-              <Ripple
-                onPress={() => {
-                  setActives("Itinerary");
-                }}
-                style={{
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  paddingHorizontal: 20,
-                }}
-              >
-                <Text
-                  type={actives == "Itinerary" ? "bold" : "regular"}
-                  style={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 10,
-                    borderBottomWidth: actives == "Itinerary" ? 3 : 0,
-                    borderBottomColor:
-                      actives == "Itinerary" ? "#209FAE" : "#EEEEEE",
-                    color: actives == "Itinerary" ? "#209FAE" : "#464646",
-                  }}
-                >
-                  Itinerary
-                </Text>
-              </Ripple>
-              <Ripple
-                onPress={() => {
-                  setActives("Picture");
-                }}
-                style={{
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  paddingHorizontal: 20,
-                }}
-              >
-                <Text
-                  type={actives == "Picture" ? "bold" : "regular"}
-                  style={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 10,
-                    borderBottomWidth: actives == "Picture" ? 3 : 0,
-                    borderBottomColor:
-                      actives == "Picture" ? "#209FAE" : "#EEEEEE",
-                    color: actives == "Picture" ? "#209FAE" : "#464646",
-                  }}
-                >
-                  Travel Picture
-                </Text>
-              </Ripple>
-              <Ripple
-                onPress={() => {
-                  setActives("Diary");
-                }}
-                style={{
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  paddingHorizontal: 20,
-                }}
-              >
-                <Text
-                  type={actives == "Diary" ? "bold" : "regular"}
-                  style={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 10,
-                    borderBottomWidth: actives == "Diary" ? 3 : 0,
-                    borderBottomColor:
-                      actives == "Diary" ? "#209FAE" : "#EEEEEE",
-                    color: actives == "Diary" ? "#209FAE" : "#464646",
-                  }}
-                >
-                  Diary
-                </Text>
-              </Ripple>
-            </View>
-            {loadingdetail ? (
-              <View
-                style={{
-                  height: 47,
-                  width: "100%",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text>Loading...</Text>
-              </View>
-            ) : (
-              <ItineraryDay
-                dataitin={datadetail.itinerary_detail}
-                dataDay={datadetail.itinerary_detail.day}
-                props={props}
-                token={token}
-                lat={datadetail.itinerary_detail.city.latitude}
-                long={datadetail.itinerary_detail.city.longitude}
-                kota={datadetail.itinerary_detail.city.name}
-                iditinerary={itincountries}
-                getdata={() => setParamAdd(true)}
-                dataAkhir={dataAkhir}
-                setAkhir={(e) => setDataAkhir(e)}
-                setidDayz={(e) => setidDay(e)}
-                GetTimeline={(e) => GetTimeline(e)}
-                setCover={(e) => setCover(e)}
-                cover={datadetail.itinerary_detail.cover}
-                datadayaktif={
-                  datadayaktif ? datadayaktif : props.route.params.datadayaktif
-                }
-                setdatadayaktif={(e) => setdatadayaktif(e)}
-                setLoading={(e) => setloading(e)}
-                Refresh={(e) => _Refresh(e)}
-                status={status && status === "saved" ? "saved" : "notsaved"}
-                indexnya={indexnya}
-                setIndex={(e) => setIndex(e)}
-              />
-            )}
-          </View>
-          <RenderUtama aktif={actives} />
-        </ScrollView>
-        {/* ======================== (Panel bawah) ========================= */}
-        {status && status === "saved" ? (
-          <View
-            style={{
-              zIndex: 999999,
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              width: Dimensions.get("window").width,
-              backgroundColor: "white",
-              borderTopWidth: 1,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-              elevation: 3,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Button
-              disabled
-              text={t("addDestination")}
-              size="large"
-              style={{
-                backgroundColor: "#d3d3d3",
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            ></Button>
+          ) : null}
+        </Animated.View>
+      </Animated.View>
+    );
+  };
 
-            <View
-              style={{
-                height: "100%",
-                width: "50%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                disabled
-                text=""
-                size="large"
-                color="tertiary"
-                type="circle"
-                style={{
-                  backgroundColor: "#f3f3f3",
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
-                }}
-              >
-                <Plusgrey width={20} height={20} />
-                <Text size="small" style={{ color: "#d3d3d3" }}>
-                  {t("addOption")}
-                </Text>
-              </Button>
-              <Button
-                onPress={() => {
-                  setStatus("Edit"), setshowside(false);
-                }}
-                text=""
-                size="large"
-                variant="transparent"
-                type="circle"
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
-                }}
-              >
-                <Create width={20} height={20} />
-                <Text
-                  size="small"
-                  style={
-                    {
-                      // color: '#d75995'
-                    }
-                  }
-                >
-                  {t("edit")}
-                </Text>
-              </Button>
-            </View>
-          </View>
-        ) : (
-          <View
-            style={{
-              zIndex: 999999,
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              width: Dimensions.get("window").width,
-              backgroundColor: "white",
-              borderTopWidth: 1,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-              elevation: 3,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Button
-              onPress={() => {
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itincountries,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itincountries,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              text={t("addDestination")}
-              size="large"
-              style={{
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            ></Button>
-
-            <View
-              style={{
-                height: "100%",
-                width: "50%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                onPress={() => {
-                  setModalcustom(true);
-                }}
-                text=""
-                size="large"
-                color="tertiary"
-                type="circle"
-                style={{
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
-                }}
-              >
-                <Plus width={20} height={20} />
-                <Text size="small" style={{ color: "#209fae" }}>
-                  {t("addOption")}
-                </Text>
-              </Button>
-              <Button
-                onPress={() => {
-                  completePlan();
-                }}
-                text=""
-                size="large"
-                variant="transparent"
-                type="circle"
-                style={{
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
-                }}
-              >
-                <Disketpink width={20} height={20} />
-                <Text size="small" style={{ color: "#d75995" }}>
-                  {t("completePlan")}
-                </Text>
-              </Button>
-            </View>
-          </View>
-        )}
-
-        <Modal
-          onRequestClose={() => {
-            setModalcustom(false);
+  const rednerTab1Item = ({ item, index }) => {
+    const x = dataList.length - 1;
+    return (
+      <View
+        style={{
+          marginTop: -1,
+          // height: item.note ? 210 : 170,
+          width: "100%",
+          backgroundColor: "#f6f6f6",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          shadowColor: "#d3d3d3",
+          // shadowOffset: isActive ? { width: 2, height: 2 } : {},
+          // shadowOpacity: isActive ? 1 : 0,
+          // shadowRadius: isActive ? 2 : 0,
+          // elevation: isActive ? 5 : 0,
+        }}
+      >
+        <View
+          style={{
+            height: "100%",
+            width: "20%",
+            alignContent: "flex-end",
+            alignItems: "flex-end",
+            // paddingTop: 10,
+            // paddingRight: 10,
           }}
-          onBackdropPress={() => {
-            setModalcustom(false);
-          }}
-          onSwipeComplete={() => {
-            setModalcustom(false);
-          }}
-          swipeDirection={"down"}
-          isVisible={Modalcustom}
-          style={{ justifyContent: "flex-end", padding: 0, margin: 0 }}
         >
+          {/* garis======================= */}
+
           <View
             style={{
-              backgroundColor: "white",
+              height: "100%",
               width: "100%",
+              position: "absolute",
               // borderWidth: 1,
+              width: "100%",
+              alignItems: "flex-end",
             }}
           >
             <View
               style={{
-                width: "100%",
+                height: 25,
+                marginRight: 4.2,
+                // borderBottomWidth: 1,
+                // borderRightWidth: index && index > 0 ? 1 : 0,
+                borderRightWidth: index > 0 ? 1 : 0,
+                borderRightColor: "#464646",
+              }}
+            ></View>
+
+            <View
+              style={{
+                marginTop: -20,
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignContent: "center",
+                position: "absolute",
+                top: 25,
+                justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "#209FAE",
-                paddingVertical: 10,
-                paddingHorizontal: 20,
+                zIndex: 99,
               }}
             >
-              <Text
-                size="label"
-                type="bold"
+              <View
                 style={{
-                  color: "white",
+                  width: "80%",
+                  paddingVertical: 5,
+                  paddingHorizontal: 10,
+                  backgroundColor: "#daf0f2",
+                  borderRadius: 5,
+                  alignContent: "center",
+                  alignItems: "center",
                 }}
               >
-                {t("addDestinationForm")}
-              </Text>
-              <TouchableOpacity
-                style={{}}
-                onPress={() => {
-                  setModalcustom(false);
+                <TouchableOpacity
+                  onPress={() =>
+                    status == "notsaved"
+                      ? openModaldate(
+                          "start",
+                          index,
+                          item.time ? item.time : "00:00:00",
+                          "00:00:00"
+                        )
+                      : null
+                  }
+                >
+                  {item.time ? (
+                    <GetStartTime startt={item.time} />
+                  ) : (
+                    <Text size="description" type="regular">
+                      00:00
+                    </Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    status == "notsaved"
+                      ? openModaldate(
+                          "end",
+                          index,
+                          item.time ? item.time : "00:00:00",
+                          item.duration ? item.duration : "00:00:00"
+                        )
+                      : null;
+                  }}
+                >
+                  {item.duration ? (
+                    <GetEndTime
+                      startt={item.time ? item.time : "00:00"}
+                      dur={item.duration ? item.duration : "00:00"}
+                    />
+                  ) : (
+                    <Text size="description" type="regular">
+                      00:00
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{
+                  zIndex: 99,
+                  height: 10,
+                  width: 10,
+                  marginLeft: 5,
+                  borderRadius: 10,
+                  backgroundColor: "#209fae",
                 }}
-              >
-                <Xhitam width={20} height={20} />
-              </TouchableOpacity>
+              ></View>
             </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("CustomItinerary", {
-                      idItin: itincountries,
-                      idDay: datadayaktif.id,
-                      itintitle: props.route.params.itintitle,
-                      dateitin: props.route.params.dateitin,
-                      datadayaktif: datadayaktif,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("CustomItinerary", {
-                      idItin: itincountries,
-                      idDay: datadayaktif.id,
-                      itintitle: props.route.params.itintitle,
-                      dateitin: props.route.params.dateitin,
-                      datadayaktif: datadayaktif,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
+            <View
               style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
+                flex: 1,
+                marginRight: 4.2,
+                borderRightWidth: index < x ? 1 : 0,
+                borderRightColor: "#464646",
               }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <PlusBlack height={15} width={15} />
-              </View>
-              <View>
-                <Text size="description" type="bold">
-                  {t("createActivity")}
-                </Text>
-                <Text size="small" type="regular">
-                  {t("addCustomActivity")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("AccountStack", {
-                      screen: "Wishlist",
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("AccountStack", {
-                      screen: "Wishlist",
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                borderRadius: 5,
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <Love height={15} width={15} />
-              </View>
-              <View>
-                <Text size="description" type="bold">
-                  {t("myWishlist")}
-                </Text>
-                <Text size="small" type="regular">
-                  {t("addFromWishtlist")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("ItinGoogle", {
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("ItinGoogle", {
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                borderRadius: 5,
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <Google height={15} width={15} />
-              </View>
-              <View>
-                <Text size="description" type="bold">
-                  {t("searchFromGoogle")}
-                </Text>
-                <Text size="small" type="regular">
-                  {t("addDestinationGoogle")}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            ></View>
           </View>
+
+          {/* garis======================= */}
+        </View>
+
+        <View
+          style={{
+            height: "100%",
+            width: "80%",
+          }}
+        >
           <View
             style={{
-              width: Dimensions.get("window").width,
-              backgroundColor: "white",
-              borderTopWidth: 1,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-              elevation: 3,
+              flex: 1,
               flexDirection: "row",
-              justifyContent: "space-between",
+              paddingLeft: 10,
+              paddingRight: 2,
+              paddingBottom: 1,
             }}
           >
-            <Button
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itincountries,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itincountries,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              text={t("addDestination")}
-              size="large"
-              style={{
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            ></Button>
-
+            {index > 0 &&
+            dataList[index - 1] &&
+            dataList[index].latitude == dataList[index - 1].latitude &&
+            dataList[index].longitude == dataList[index - 1].longitude ? (
+              <View
+                style={{
+                  width: 20,
+                  marginLeft: 20,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftWidth: 1,
+                    borderBottomWidth: 1,
+                    borderColor: "#464646",
+                    height: 30,
+                  }}
+                ></View>
+                {dataList[index + 1] &&
+                dataList[index].latitude == dataList[index + 1].latitude &&
+                dataList[index].longitude == dataList[index + 1].longitude ? (
+                  <View
+                    style={{
+                      marginTop: -1,
+                      borderLeftWidth: 1,
+                      borderColor: "#464646",
+                      flex: 1,
+                    }}
+                  ></View>
+                ) : null}
+              </View>
+            ) : null}
             <View
               style={{
-                height: "100%",
-                width: "50%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
+                marginTop: 5,
+                flex: 1,
+                borderRadius: 5,
+                marginBottom: 2,
+                backgroundColor: "#fff",
+                elevation: 3,
+                padding: 10,
               }}
             >
-              <Button
-                text=""
-                size="large"
-                color="tertiary"
-                type="circle"
+              <View
                 style={{
-                  opacity: 0.5,
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "space-between",
                 }}
               >
-                <Plus width={20} height={20} />
-                <Text size="small" style={{ color: "#209fae" }}>
-                  {t("addOption")}
-                </Text>
-              </Button>
-              <Button
-                onPress={() => {
-                  completePlan();
-                  setModalcustom(false);
-                }}
-                text=""
-                size="large"
-                variant="transparent"
-                type="circle"
+                {item.type !== "custom" ? (
+                  <Image
+                    source={
+                      item.images ? { uri: item.images } : { uri: item.icon }
+                    }
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: "cover",
+                      borderRadius: 15,
+                    }}
+                  />
+                ) : item.icon ? (
+                  <FunIcon
+                    icon={item.icon}
+                    height={30}
+                    width={30}
+                    style={{
+                      borderRadius: 15,
+                    }}
+                  />
+                ) : (
+                  <FunIcon
+                    icon={"i-tour"}
+                    height={30}
+                    width={30}
+                    style={{
+                      borderRadius: 15,
+                    }}
+                  />
+                )}
+                <TouchableOpacity
+                  style={{ flex: 1, paddingHorizontal: 10 }}
+                  onLongPress={status == "notsaved" ? drag : null}
+                >
+                  <Text size="label" type="bold" style={{}}>
+                    {item.name}
+                  </Text>
+                  <Text>
+                    {Capital({
+                      text:
+                        item.type !== "custom"
+                          ? item.type !== "google"
+                            ? item.type
+                            : "Destination from Google"
+                          : "Custom Activity",
+                    })}
+                  </Text>
+                </TouchableOpacity>
+                {status === "notsaved" ? (
+                  <Button
+                    size="small"
+                    text=""
+                    type="circle"
+                    variant="transparent"
+                    style={{}}
+                    onPress={() => {
+                      bukamodalmenu(item.id, item.type);
+                    }}
+                  >
+                    <More width={15} height={15} />
+                  </Button>
+                ) : null}
+              </View>
+              <View
                 style={{
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
+                  width: "100%",
+                  flexDirection: "row",
+                  paddingVertical: 5,
+                  justifyContent: "space-between",
+                  alignContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Disketpink width={20} height={20} />
-                <Text size="small" style={{ color: "#d75995" }}>
-                  {t("completePlan")}
-                </Text>
-              </Button>
+                <View
+                  style={{
+                    backgroundColor: "#daf0f2",
+                    paddingVertical: 5,
+                    paddingHorizontal: 15,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Text>
+                    {Getdurasi(item.duration ? item.duration : "00:00:00")}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert("Coming soon");
+                  }}
+                >
+                  <Next width={15} height={15} />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  borderTopWidth: 1,
+                  borderColor: "#d3d3d3",
+                  marginTop: 5,
+                  paddingTop: 5,
+                }}
+              >
+                {item.note ? (
+                  <TouchableOpacity
+                    onPress={() => bukaModal(item.note, index)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                  >
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        textAlign: "left",
+                      }}
+                    >
+                      {item.note}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => bukaModal(null, index)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                  >
+                    <Pencilgreen width={10} height={10} />
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        marginLeft: 5,
+                        color: "#209fae",
+                      }}
+                    >
+                      {t("addNotes")}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
-        </Modal>
+          {index < x &&
+          dataList[index + 1] &&
+          dataList[index].latitude !== dataList[index + 1].latitude &&
+          dataList[index].longitude !== dataList[index + 1].longitude ? (
+            <View
+              style={{
+                position: "relative",
+                left: -5,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: 15,
+                  borderTopWidth: 1,
+                  borderTopColor: "#464646",
+                }}
+              ></View>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                <View
+                  style={{
+                    marginRight: 5,
+                    borderRadius: 5,
+                    elevation: 3,
+                    marginVertical: 2,
+                    marginLeft: 1,
+                    backgroundColor: "#fff",
+                    flexDirection: "row",
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <Jalan height={15} width={15} style={{ marginRight: 10 }} />
+                  <Text>
+                    <Distance
+                      lat1={dataList[index].latitude}
+                      lon1={dataList[index].longitude}
+                      lat2={dataList[index + 1].latitude}
+                      lon2={dataList[index + 1].longitude}
+                      unit={"km"}
+                    />{" "}
+                    Km
+                  </Text>
+                  <Text> - </Text>
+                  <Text>
+                    <HitungWaktu
+                      lat1={dataList[index].latitude}
+                      lon1={dataList[index].longitude}
+                      lat2={dataList[index + 1].latitude}
+                      lon2={dataList[index + 1].longitude}
+                      unit={"km"}
+                      kecepatan={10}
+                    />
+                    {" Jam"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    marginRight: 5,
+                    borderRadius: 5,
+                    elevation: 3,
+                    marginVertical: 2,
+                    marginLeft: 1,
+                    backgroundColor: "#fff",
+                    flexDirection: "row",
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <Mobil height={15} width={15} style={{ marginRight: 10 }} />
+                  <Text>
+                    <Distance
+                      lat1={dataList[index].latitude}
+                      lon1={dataList[index].longitude}
+                      lat2={dataList[index + 1].latitude}
+                      lon2={dataList[index + 1].longitude}
+                      unit={"km"}
+                    />{" "}
+                    Km
+                  </Text>
+                  <Text> - </Text>
+                  <Text>
+                    <HitungWaktu
+                      lat1={dataList[index].latitude}
+                      lon1={dataList[index].longitude}
+                      lat2={dataList[index + 1].latitude}
+                      lon2={dataList[index + 1].longitude}
+                      unit={"km"}
+                      kecepatan={60}
+                    />
+                    {" Jam"}
+                  </Text>
+                </View>
+              </ScrollView>
+            </View>
+          ) : null}
+        </View>
+      </View>
+    );
+  };
 
-        <Animated.View
-          style={[styles.header, { height: headerHeight, top: 0 }]}
+  const rednerTab2Item = ({ item, index }) => {
+    return (
+      <View
+        style={{
+          marginLeft: index % 3 === 0 ? 0 : 10,
+          borderRadius: 16,
+          width: tab2ItemSize,
+          height: tab2ItemSize,
+          backgroundColor: "#aaa",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>{index}</Text>
+      </View>
+    );
+  };
+
+  const rednerTab3Item = ({ item, index }) => {
+    return (
+      <View
+        style={{
+          marginLeft: index % 3 === 0 ? 0 : 10,
+          borderRadius: 16,
+          width: tab2ItemSize,
+          height: tab2ItemSize,
+          backgroundColor: "#aaa",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>{index}</Text>
+      </View>
+    );
+  };
+
+  const renderLabel = ({ route, focused }) => {
+    return (
+      <View
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          width: Dimensions.get("screen").width / 3,
+        }}
+      >
+        <Text
+          type={focused ? "bold" : "regular"}
+          style={{
+            color: focused ? "#209FAE" : "#464646",
+          }}
         >
-          <Animated.View
+          {route.title}
+        </Text>
+      </View>
+    );
+  };
+
+  const renderScene = ({ route }) => {
+    const focused = route.key === routes[tabIndex].key;
+    let numCols;
+    let data;
+    let renderItem;
+    switch (route.key) {
+      case "tab1":
+        numCols = 1;
+        data = dataList;
+        renderItem = rednerTab1Item;
+        break;
+      case "tab2":
+        numCols = 3;
+        data = tab2Data;
+        renderItem = rednerTab2Item;
+        break;
+      case "tab3":
+        numCols = 3;
+        data = tab2Data;
+        renderItem = rednerTab2Item;
+        break;
+      default:
+        return null;
+    }
+    return (
+      <Animated.FlatList
+        scrollToOverflowEnabled={true}
+        scrollEnabled={canScroll}
+        {...listPanResponder.panHandlers}
+        numColumns={numCols}
+        ref={(ref) => {
+          if (ref) {
+            const found = listRefArr.current.find((e) => e.key === route.key);
+            if (!found) {
+              listRefArr.current.push({
+                key: route.key,
+                value: ref,
+              });
+            }
+          }
+        }}
+        scrollEventThrottle={16}
+        onScroll={
+          focused
+            ? Animated.event(
+                [
+                  {
+                    nativeEvent: { contentOffset: { y: scrollY } },
+                  },
+                ],
+                { useNativeDriver: true }
+              )
+            : null
+        }
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        onScrollEndDrag={onScrollEndDrag}
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListHeaderComponent={() => <View style={{ height: 10 }} />}
+        contentContainerStyle={{
+          paddingTop: HeaderHeight + TabBarHeight + 50,
+          paddingHorizontal: 15,
+          minHeight: height - SafeStatusBar + HeaderHeight + 60,
+          paddingBottom: 70,
+        }}
+        ListFooterComponent={() => (
+          <View
             style={{
-              position: "absolute",
-              top: textTops,
-              zIndex: 9999,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: Dimensions.get("screen").width,
               alignContent: "center",
               alignItems: "center",
             }}
           >
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              onPress={() => _handlerBack()}
-              style={{
-                height: 55,
-                marginLeft: 7,
-              }}
-            >
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            </Button>
+            {loadingtimeline ? (
+              <Text>Loading</Text>
+            ) : dataList.length == 0 ? (
+              <Text>No data</Text>
+            ) : null}
+          </View>
+        )}
+        showsHorizontalScrollIndicator={false}
+        data={data}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
+        initialScrollIndex={0}
+      />
+    );
+  };
+
+  const renderTabBar = (props) => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [HeaderHeight, 60],
+      // extrapolate: 'clamp',
+      extrapolateRight: "clamp",
+    });
+    return (
+      <Animated.View
+        style={{
+          top: 0,
+          zIndex: 1,
+          position: "absolute",
+          transform: [{ translateY: y }],
+          width: "100%",
+        }}
+      >
+        <TabBar
+          {...props}
+          onTabPress={({ route, preventDefault }) => {
+            if (isListGliding.current) {
+              preventDefault();
+            }
+          }}
+          style={{
+            elevation: 0,
+            shadowOpacity: 0,
+            backgroundColor: "white",
+            height: TabBarHeight,
+          }}
+          renderLabel={renderLabel}
+          indicatorStyle={{
+            backgroundColor: "#209fae",
+          }}
+        />
+        <View
+          style={{
+            backgroundColor: "white",
+          }}
+        >
+          {loadingdetail ? (
             <View
               style={{
-                flexDirection: "row",
+                height: 47,
+                width: "100%",
+                justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
               }}
             >
-              {/* <Button
-                text={""}
-                size="medium"
-                type="circle"
-                variant="transparent"
-                style={{
-                  height: 55,
-                }}
-                onPress={() => Alert.alert("coming soon")}
-              >
-                <Book height={20} width={20} />
-              </Button>
-              <Button
-                text={""}
-                size="medium"
-                type="circle"
-                variant="transparent"
-                style={{ height: 55 }}
-                onPress={() => Alert.alert("coming soon")}
-              >
-                <Expences height={20} width={20} />
-              </Button> */}
-              <Button
-                text={""}
-                size="medium"
-                type="circle"
-                variant="transparent"
-                style={{ height: 55 }}
-                onPress={() =>
-                  props.navigation.navigate("ChatStack", {
-                    screen: "GroupRoom",
-                    params: {
-                      room_id: itincountries,
-                      name:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail.itinerary_detail.name
-                          : null,
-                      picture: Cover,
-                    },
-                  })
+              <Text>Loading...</Text>
+            </View>
+          ) : (
+            <ItineraryDay
+              dataitin={datadetail.itinerary_detail}
+              dataDay={datadetail.itinerary_detail.day}
+              props={props}
+              token={token}
+              lat={datadetail.itinerary_detail.city.latitude}
+              long={datadetail.itinerary_detail.city.longitude}
+              kota={datadetail.itinerary_detail.city.name}
+              iditinerary={itincountries}
+              getdata={() => setParamAdd(true)}
+              dataAkhir={dataAkhir}
+              setAkhir={(e) => setDataAkhir(e)}
+              setidDayz={(e) => setidDay(e)}
+              GetTimeline={(e) => GetTimeline(e)}
+              setCover={(e) => setCover(e)}
+              cover={datadetail.itinerary_detail.cover}
+              datadayaktif={datadayaktif}
+              setdatadayaktif={(e) => setdatadayaktif(e)}
+              setLoading={(e) => setloading(e)}
+              Refresh={(e) => _Refresh(e)}
+              status={status && status === "saved" ? "saved" : "notsaved"}
+              indexnya={indexnya}
+              setIndex={(e) => setIndexnya(e)}
+            />
+          )}
+        </View>
+      </Animated.View>
+    );
+  };
+
+  const renderTabView = () => {
+    return (
+      <TabView
+        onSwipeStart={() => setCanScroll(false)}
+        onSwipeEnd={() => setCanScroll(true)}
+        onIndexChange={(id) => {
+          _tabIndex.current = id;
+          setIndex(id);
+        }}
+        navigationState={{ index: tabIndex, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        initialLayout={{
+          height: 0,
+          width: width,
+        }}
+      />
+    );
+  };
+
+  const renderCustomRefresh = () => {
+    // headerMoveScrollY
+    return Platform.select({
+      ios: (
+        <AnimatedIndicator
+          style={{
+            top: -50,
+            position: "absolute",
+            alignSelf: "center",
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [-100, 0],
+                  outputRange: [120, 0],
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
+          }}
+          animating
+        />
+      ),
+      android: (
+        <Animated.View
+          style={{
+            transform: [
+              {
+                translateY: headerMoveScrollY.interpolate({
+                  inputRange: [-300, 0],
+                  outputRange: [150, 0],
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
+            backgroundColor: "#eee",
+            height: 38,
+            width: 38,
+            borderRadius: 19,
+            borderWidth: 2,
+            borderColor: "#ddd",
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            top: -50,
+            position: "absolute",
+          }}
+        >
+          <ActivityIndicator animating />
+        </Animated.View>
+      ),
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      {renderTabView()}
+      {renderHeader()}
+      {renderCustomRefresh()}
+      {status && status === "saved" ? (
+        <View
+          style={{
+            zIndex: 999999,
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            width: Dimensions.get("window").width,
+            backgroundColor: "white",
+            borderTopWidth: 1,
+            borderColor: "#F0F0F0",
+            shadowColor: "#F0F0F0",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+            elevation: 3,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            disabled
+            text={t("addDestination")}
+            size="large"
+            style={{
+              backgroundColor: "#d3d3d3",
+              borderRadius: 0,
+              width: "50%",
+              height: 56,
+              fontSize: 18,
+            }}
+          ></Button>
+
+          <View
+            style={{
+              height: "100%",
+              width: "50%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              disabled
+              text=""
+              size="large"
+              color="tertiary"
+              type="circle"
+              style={{
+                backgroundColor: "#f3f3f3",
+                borderRadius: 0,
+                width: "50%",
+                height: 56,
+                fontSize: 18,
+              }}
+            >
+              <Plusgrey width={20} height={20} />
+              <Text size="small" style={{ color: "#d3d3d3" }}>
+                {t("addOption")}
+              </Text>
+            </Button>
+            <Button
+              onPress={() => {
+                setStatus("Edit"), setshowside(false);
+              }}
+              text=""
+              size="large"
+              variant="transparent"
+              type="circle"
+              style={{
+                backgroundColor: "white",
+                borderRadius: 0,
+                width: "50%",
+                height: 56,
+                fontSize: 18,
+              }}
+            >
+              <Create width={20} height={20} />
+              <Text
+                size="small"
+                style={
+                  {
+                    // color: '#d75995'
+                  }
                 }
               >
-                <Chat height={20} width={20} />
-              </Button>
-              <Button
-                text={""}
-                size="medium"
-                type="circle"
-                variant="transparent"
-                style={{ height: 55 }}
-                onPress={() => setshowside(true)}
-              >
-                <OptionsVertWhite height={20} width={20} />
-              </Button>
-            </View>
-          </Animated.View>
-
-          <Animated.View
-            style={{
-              height: 90,
-              width: "100%",
-              position: "absolute",
-              zIndex: 1,
-
-              top: 0,
-              left: 0,
-              opacity: imageOpacity,
-            }}
-          >
-            <LinearGradient
-              colors={["rgba(0, 0, 0, 1)", "rgba(34, 34, 34, 0)"]}
-              start={{ x: 1, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                height: 90,
-                width: "100%",
-              }}
-            ></LinearGradient>
-          </Animated.View>
-
-          <Animated.Image
-            source={Cover ? { uri: Cover } : default_image}
-            style={[
-              styles.backgroundImage,
-              {
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-              },
-            ]}
-          />
-          <Animated.View
-            style={{
-              width: "100%",
-              backgroundColor: "white",
-              transform: [{ translateY: imageTranslate }],
-            }}
-          >
-            {/* LinearGradient */}
-            <Animated.View
-              // colors={["rgba(032, 159, 174,0.8)", "rgba(0, 0, 0, 0)"]}
-              // start={{ x: 0, y: 1 }}
-              // end={{ x: 1, y: 1 }}
-              style={{
-                height: 55,
-                opacity: imageOpacity,
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="black"
-                style={{
-                  color: "white",
-                }}
-              ></Text>
-              {datadetail &&
-              datadetail.itinerary_detail &&
-              datadetail.itinerary_detail.isprivate === true ? (
-                <Button
-                  onPress={() => Alert.alert("coming soon")}
-                  type="circle"
-                  variant="bordered"
-                  size="small"
-                  style={{
-                    flexDirection: "row",
-                    width: 80,
-                    alignContent: "center",
-                    alignItems: "center",
-                    // paddingHorizontal: 20,
-                  }}
-                >
-                  <Sharegreen height={15} width={15} />
-                  <Text
-                    size="small"
-                    style={{ marginLeft: 5, color: "#209fae" }}
-                  >
-                    {t("share")}
-                  </Text>
-                </Button>
-              ) : null}
-            </Animated.View>
-          </Animated.View>
-
-          <Animated.View
-            style={[
-              styles.bar,
-              {
-                left: textLeft,
-                bottom: textTop,
-                height: 55,
-              },
-            ]}
-          >
-            <Animated.Text
-              allowFontScaling={false}
-              style={[
-                styles.title,
-                {
-                  fontSize: textSize,
-                  fontFamily: "Lato-Bold",
-                  color: warna,
-                },
-              ]}
-            >
-              {datadetail && datadetail.itinerary_detail ? (
-                <Truncate text={datadetail.itinerary_detail.name} length={30} />
-              ) : null}
-            </Animated.Text>
-            <View
-              style={{
-                flexDirection: "row",
-                // paddingVertical: 10,
-                alignItems: "center",
-              }}
-            >
-              <Animated.Text
-                size="small"
-                type="bold"
-                style={{ color: warna2, fontFamily: "Lato-Bold", fontSize: 12 }}
-              >
-                {/* {t("dates")} :{" "} */}
-                {datadetail && datadetail.itinerary_detail
-                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                    "  -  " +
-                    dateFormatr(datadetail.itinerary_detail.end_date)
-                  : null}
-              </Animated.Text>
-            </View>
-          </Animated.View>
-        </Animated.View>
-
-        <Sidebar
-          props={props}
-          show={showside}
-          Data={() => {
-            return (
-              <View
-                style={{
-                  padding: 10,
-                  width: "100%",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    marginVertical: 5,
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 2,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    setmodalcover(true), setshowside(false);
-                  }}
-                >
-                  <Create height={15} width={15} />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("EditCover")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 2,
-                    alignItems: "center",
-                    marginVertical: 5,
-                  }}
-                  onPress={() => {
-                    props.navigation.push("SettingItin", {
-                      token: token,
-                      iditin: itincountries,
-                      isPrivate:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail.itinerary_detail.isprivate
-                          : false,
-                    }),
-                      setshowside(false);
-                  }}
-                >
-                  <Settings height={15} width={15} />
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("setting")}
-                  </Text>
-                </TouchableOpacity>
-
-                {status === "saved" ? (
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 2,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setStatus("Edit"), setshowside(false);
-                    }}
-                  >
-                    <Create height={15} width={15} />
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("edit")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
-
-                <TouchableOpacity
-                  style={{
-                    marginVertical: 5,
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 2,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    _handlehapus(itincountries), setshowside(false);
-                  }}
-                >
-                  <Delete height={15} width={15} />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("delete")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          }}
-          setClose={(e) => setshowside(false)}
-        />
-
-        <Modal
-          onBackdropPress={() => {
-            setModalsave(false);
-          }}
-          onRequestClose={() => setModalsave(false)}
-          onDismiss={() => setModalsave(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalsave}
+                {t("edit")}
+              </Text>
+            </Button>
+          </View>
+        </View>
+      ) : (
+        <View
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
+            zIndex: 999999,
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            width: Dimensions.get("window").width,
+            backgroundColor: "white",
+            borderTopWidth: 1,
+            borderColor: "#F0F0F0",
+            shadowColor: "#F0F0F0",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+            elevation: 3,
+            flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
-            }}
-          >
-            <Text>{t("alertsave")}</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
-              }}
-            >
-              <Button
-                onPress={() => {
-                  savetimeline();
-                }}
-                color="primary"
-                text={t("save")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  props.navigation.push("MainTripPlaning", {
-                    index: status === "saved" ? 1 : 0,
+          <Button
+            onPress={() => {
+              let maxjam = datadayaktif.total_hours.split(":");
+              let jam = parseFloat(maxjam[0]);
+              let menit = parseFloat(maxjam[1]);
+              if (jam < 24) {
+                if (jam < 23) {
+                  props.navigation.push("itindest", {
+                    IdItinerary: itincountries,
+                    token: token,
+                    datadayaktif: datadayaktif,
+                    dataDes:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail
+                        : null,
+                    lat: datadetail.itinerary_detail.city.latitude,
+                    long: datadetail.itinerary_detail.city.longitude,
                   });
-                }}
-                color="secondary"
-                variant="bordered"
-                text={t("delete")}
-              ></Button>
-            </View>
-          </View>
-        </Modal>
+                } else if (jam === 23 && menit === 0) {
+                  props.navigation.push("itindest", {
+                    IdItinerary: itincountries,
+                    token: token,
+                    datadayaktif: datadayaktif,
+                    dataDes:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail
+                        : null,
+                    lat: datadetail.itinerary_detail.city.latitude,
+                    long: datadetail.itinerary_detail.city.longitude,
+                  });
+                } else {
+                  Alert.alert(t("alertjam"));
+                }
+              } else {
+                Alert.alert(t("alertjam"));
+              }
+            }}
+            text={t("addDestination")}
+            size="large"
+            style={{
+              borderRadius: 0,
+              width: "50%",
+              height: 56,
+              fontSize: 18,
+            }}
+          ></Button>
 
-        <Modal
-          onBackdropPress={() => {
-            setmodalcover(false);
-          }}
-          onRequestClose={() => setmodalcover(false)}
-          onDismiss={() => setmodalcover(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalcover}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              height: "100%",
+              width: "50%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
+            <Button
               onPress={() => {
-                setmodalcover(false), pickcamera();
+                setModalcustom(true);
+              }}
+              text=""
+              size="large"
+              color="tertiary"
+              type="circle"
+              style={{
+                borderRadius: 0,
+                width: "50%",
+                height: 56,
+                fontSize: 18,
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ color: "#d75995" }}
-              >
-                {t("OpenCamera")}
+              <Plus width={20} height={20} />
+              <Text size="small" style={{ color: "#209fae" }}>
+                {t("addOption")}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
+            </Button>
+            <Button
               onPress={() => {
-                setmodalcover(false), pickGallery();
+                completePlan();
+              }}
+              text=""
+              size="large"
+              variant="transparent"
+              type="circle"
+              style={{
+                borderRadius: 0,
+                width: "50%",
+                height: 56,
+                fontSize: 18,
               }}
             >
-              <Text size="description" type="regular" style={{}}>
-                {t("OpenGallery")}
+              <Disketpink width={20} height={20} />
+              <Text size="small" style={{ color: "#d75995" }}>
+                {t("completePlan")}
               </Text>
-            </TouchableOpacity>
+            </Button>
           </View>
-        </Modal>
-      </View>
-    );
-  } else {
-    return null;
-  }
+        </View>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  main: {
-    width: Dimensions.get("window").width - 10,
-  },
-  dayButton: {
-    height: 30,
-    width: 75,
-    marginHorizontal: 5,
-    backgroundColor: "#209FAE",
-  },
-  dayHalfButton: {
-    height: 30,
-    width: 150,
-    backgroundColor: "#209FAE",
-  },
-  dayButtonFont: { fontSize: 12, fontFamily: "Lato-Regular" },
-
-  fill: {
+  container: {
     flex: 1,
   },
-  row: {
-    height: 40,
-    margin: 16,
-    backgroundColor: "#D3D3D3",
+  header: {
+    height: HeaderHeight,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
-  },
-  header: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#209fae",
-    overflow: "hidden",
+    backgroundColor: "#FFA088",
   },
-  bar: {
-    marginTop: 28,
-    height: 32,
-    zIndex: 999,
-    position: "absolute",
-    alignItems: "flex-start",
-    justifyContent: "center",
+  label: { fontSize: 16, color: "#222" },
+  tab: {
+    elevation: 0,
+    shadowOpacity: 0,
+    backgroundColor: "#FFCC80",
+    height: TabBarHeight,
   },
-  title: {
-    backgroundColor: "transparent",
-  },
-  scrollViewContent: {
-    marginTop: HEADER_MAX_HEIGHT,
-  },
-  backgroundImage: {
-    width: null,
-    height: HEADER_MAX_HEIGHT,
-    resizeMode: "cover",
-  },
+  indicator: { backgroundColor: "#222" },
 });
+
+// export default ItineraryDetail;
