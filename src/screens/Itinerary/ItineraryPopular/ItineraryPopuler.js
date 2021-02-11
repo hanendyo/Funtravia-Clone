@@ -11,8 +11,7 @@ import {
   RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, Text } from "../../../component";
+import { Button, FunIcon, Text } from "../../../component";
 import { default_image, itinerary_1, itinerary_2 } from "../../../assets/png";
 import {
   Arrowbackwhite,
@@ -33,6 +32,7 @@ import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import Populer_ from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
+import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import Ripple from "react-native-material-ripple";
@@ -116,8 +116,25 @@ export default function ItineraryPopuler(props) {
 
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
-    await fetchDataListPopuler();
+    await fetchCategory();
+    // await fetchDataListPopuler();
   };
+
+  const [
+    fetchCategory,
+    { data: dataCategory, loading: loadingCategory, error: errorCategory },
+  ] = useLazyQuery(Category, {
+    variables: {
+      category_id: null,
+      order_by: null,
+    },
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  });
 
   const {
     data: dataPopuler,
@@ -199,100 +216,6 @@ export default function ItineraryPopuler(props) {
     }
   };
 
-  console.log("dataPopuler :", dataPopuler);
-
-  const [
-    mutationliked,
-    { loading: loadingLike, data: dataLike, error: errorLike },
-  ] = useMutation(ItineraryLiked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    mutationUnliked,
-    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-  ] = useMutation(ItineraryUnliked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const _liked = async (id, index) => {
-    if (token || token !== "") {
-      try {
-        let response = await mutationliked({
-          variables: {
-            id: id,
-            qty: 1,
-          },
-        });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (
-            response.data.setItineraryFavorit.code === 200 ||
-            response.data.setItineraryFavorit.code === "200"
-          ) {
-            fetchDataListPopuler();
-          } else {
-            throw new Error(response.data.setItineraryFavorit.message);
-          }
-
-          // Alert.alert('Succes');
-        }
-      } catch (error) {
-        Alert.alert("" + error);
-      }
-    } else {
-      Alert.alert("Please Login");
-    }
-  };
-
-  const _unliked = async (id, index) => {
-    if (token || token !== "") {
-      try {
-        let response = await mutationUnliked({
-          variables: {
-            id: id,
-          },
-        });
-        if (loadingUnLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
-
-        if (response.data) {
-          if (
-            response.data.unsetItineraryFavorit.code === 200 ||
-            response.data.unsetItineraryFavorit.code === "200"
-          ) {
-            fetchDataListPopuler();
-          } else {
-            throw new Error(response.data.unsetItineraryFavorit.message);
-          }
-        }
-      } catch (error) {
-        Alert.alert("" + error);
-      }
-    } else {
-      Alert.alert("Please Login");
-    }
-  };
-
   const getDN = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");
@@ -316,7 +239,6 @@ export default function ItineraryPopuler(props) {
     return (
       <View
         style={{
-          // height: Dimensions.get("screen").width * 0.48,
           height: 180,
           paddingHorizontal: 15,
           marginTop: 5,
@@ -331,6 +253,7 @@ export default function ItineraryPopuler(props) {
             elevation: arrayShadow.elevation,
             justifyContent: "space-between",
             backgroundColor: "#F7F7F7",
+            overflow: "hidden",
           }}
         >
           <Pressable
@@ -353,7 +276,7 @@ export default function ItineraryPopuler(props) {
               flexDirection: "row",
             }}
           >
-            <TouchableOpacity
+            <Ripple
               onPress={() =>
                 props.navigation.navigate("ItineraryStack", {
                   screen: "itindetail",
@@ -376,10 +299,10 @@ export default function ItineraryPopuler(props) {
                   borderTopLeftRadius: 10,
                 }}
               />
-            </TouchableOpacity>
+            </Ripple>
             <View
               style={{
-                width: Dimensions.get("screen").width * 0.6,
+                width: "100%",
                 paddingHorizontal: 10,
                 backgroundColor: "#FFFFFF",
                 marginVertical: 5,
@@ -425,7 +348,6 @@ export default function ItineraryPopuler(props) {
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    // marginTop: 3,
                   }}
                 >
                   <PinHijau width={15} height={15} />
@@ -476,7 +398,7 @@ export default function ItineraryPopuler(props) {
                     </Text>
                   </View>
                 </View>
-                <View
+                {/* <View
                   style={{
                     marginTop: 3,
                     flexDirection: "row",
@@ -494,7 +416,7 @@ export default function ItineraryPopuler(props) {
                   <Text style={{ marginLeft: 5 }} size="small" type="regular">
                     (283 reviews)
                   </Text>
-                </View>
+                </View> */}
               </View>
             </View>
           </Pressable>
@@ -721,7 +643,7 @@ export default function ItineraryPopuler(props) {
               flexDirection: "row",
             }}
           >
-            <Pressable style={{ marginRight: 5, borderRadius: 10 }}>
+            <Ripple style={{ marginRight: 5, borderRadius: 10 }}>
               <Image
                 source={itinerary_1}
                 style={{
@@ -744,8 +666,8 @@ export default function ItineraryPopuler(props) {
               >
                 New Itinerary
               </Text>
-            </Pressable>
-            <Pressable style={{ marginRight: 5, borderRadius: 10 }}>
+            </Ripple>
+            <Ripple style={{ marginRight: 5, borderRadius: 10 }}>
               <Image
                 source={itinerary_2}
                 style={{
@@ -768,7 +690,7 @@ export default function ItineraryPopuler(props) {
               >
                 Populer
               </Text>
-            </Pressable>
+            </Ripple>
           </View>
         </ScrollView>
         <View
@@ -782,181 +704,67 @@ export default function ItineraryPopuler(props) {
             Category Itinerary
           </Text>
         </View>
-        <ScrollView
-          style={{ flex: 1 }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
+        <View
+          style={{
+            paddingHorizontal: 15,
+            marginTop: 10,
+            flexDirection: "row",
+          }}
         >
-          <View
-            style={{
-              // width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
-              marginTop: 10,
-              marginBottom: 5,
-              flexDirection: "row",
+          <FlatList
+            data={dataCategory?.category_journal}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item, index }) => {
+              return (
+                <Ripple
+                  style={{
+                    width: Dimensions.get("screen").width * 0.23,
+                    height: Dimensions.get("screen").width * 0.27,
+                    backgroundColor: "white",
+                    marginRight: 5,
+                    shadowColor: "gray",
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: arrayShadow.shadowOpacity,
+                    shadowRadius: arrayShadow.shadowRadius,
+                    elevation: arrayShadow.elevation,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 5,
+                    marginBottom: 10,
+                  }}
+                  onPress={() =>
+                    props.navigation.navigate("ItineraryCategory", {
+                      dataPopuler: dataPopuler,
+                    })
+                  }
+                >
+                  <View
+                    style={{
+                      backgroundColor: "#f6f6f6",
+                      height: 50,
+                      width: 50,
+                      borderRadius: 50,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FunIcon icon={item.icon} />
+                  </View>
+                  <Text
+                    size="small"
+                    type="regular"
+                    // style={{ textAlign: "center" }}
+                  >
+                    {item?.name}
+                  </Text>
+                </Ripple>
+              );
             }}
-          >
-            <Pressable
-              style={{
-                width: Dimensions.get("screen").width * 0.23,
-                height: Dimensions.get("screen").width * 0.27,
-                backgroundColor: "white",
-                marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-              // onPress={() => props.navigation.navigate("ItineraryCategory")}
-            >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 50,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <CompervanIcon height={40} width={40} />
-              </View>
-              <Text size="small" type="regular" style={{ textAlign: "center" }}>
-                Compervan
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                width: Dimensions.get("screen").width * 0.23,
-                height: Dimensions.get("screen").width * 0.27,
-                backgroundColor: "white",
-                marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 50,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <BussinessIcon height={40} width={40} />
-              </View>
-              <Text size="small" type="regular" style={{ textAlign: "center" }}>
-                Bussines
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                width: Dimensions.get("screen").width * 0.23,
-                height: Dimensions.get("screen").width * 0.27,
-                backgroundColor: "white",
-                marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 50,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <SoloIcon height={40} width={40} />
-              </View>
-              <Text size="small" type="regular" style={{ textAlign: "center" }}>
-                Solo
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                width: Dimensions.get("screen").width * 0.23,
-                height: Dimensions.get("screen").width * 0.27,
-                backgroundColor: "white",
-                marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 50,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <HoneyIcon height={40} width={40} />
-              </View>
-              <Text size="small" type="regular" style={{ textAlign: "center" }}>
-                Honeymoon
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                width: Dimensions.get("screen").width * 0.23,
-                height: Dimensions.get("screen").width * 0.27,
-                backgroundColor: "white",
-                marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 50,
-                }}
-              >
-                <FamilyIcon height={40} width={40} />
-              </View>
-              <Text size="small" type="regular" style={{ textAlign: "center" }}>
-                Family
-              </Text>
-            </Pressable>
-          </View>
-        </ScrollView>
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
         <View
           style={{
             marginTop: 10,

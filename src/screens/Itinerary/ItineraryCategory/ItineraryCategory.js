@@ -1,5 +1,5 @@
-import { useLazyQuery } from "@apollo/client";
-import React, { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   View,
@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   Picker,
+  RefreshControl,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -38,6 +39,8 @@ export default function ItineraryCategory(props) {
   const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState();
+  let { width, height } = Dimensions.get("screen");
+  // let [dataPop, setDataPop] = useState(props.route.params.dataPopuler);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -98,7 +101,13 @@ export default function ItineraryCategory(props) {
     ),
   };
 
-  const [fetchDataCategory, { data, loading }] = useLazyQuery(Category, {
+  const {
+    data: dataPopuler,
+    loading: loadingPopuler,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(Category, {
     variables: {
       keyword: search.keyword,
       type: null,
@@ -106,15 +115,71 @@ export default function ItineraryCategory(props) {
       cities: null,
       rating: null,
       orderby: null,
+      limit: 10,
+      offset: 0,
     },
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
+
+  let list_populer = [];
+  if (dataPopuler && "datas" in dataPopuler.itinerary_list_populer) {
+    list_populer = dataPopuler.itinerary_list_populer.datas;
+  }
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const Refresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.itinerary_list_populer;
+    const datas = [
+      ...prev.itinerary_list_populer.datas,
+      ...fetchMoreResult.itinerary_list_populer.datas,
+    ];
+    return Object.assign({}, prev, {
+      list_populer: {
+        __typename: prev.itinerary_list_populer.__typename,
+        page_info,
+        datas,
+      },
+    });
+  };
+
+  const handleOnEndReached = () => {
+    if (dataPopuler.itinerary_list_populer.page_info.hasNextPage) {
+      return fetchMore({
+        variables: {
+          keyword: search.keyword,
+          type: null,
+          countries: null,
+          cities: null,
+          rating: null,
+          orderby: null,
+          limit: 10,
+          offset: dataPopuler.itinerary_list_populer.page_info.offset,
+        },
+        updateQuery: onUpdate,
+      });
+    }
+  };
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -392,237 +457,265 @@ export default function ItineraryCategory(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      {data && data.itinerary_list_populer ? (
-        <FlatList
-          renderItem={renderCategory}
-          data={data?.itinerary_list_populer}
-          keyExtractor={(data) => data.id}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={{ flex: 1 }}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
+      <FlatList
+        data={list_populer}
+        renderItem={renderCategory}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        refreshing={refreshing}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        }
+        ListHeaderComponent={
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{
+                paddingHorizontal: 10,
+                height: 30,
+                marginTop: 10,
+                flexDirection: "row",
+              }}
+            >
+              <Pressable
                 style={{
-                  paddingHorizontal: 10,
-                  height: 30,
-                  marginTop: 10,
+                  // height: "100%",
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: "#209FAE",
+                  alignItems: "center",
+                  justifyContent: "center",
                   flexDirection: "row",
+                  marginLeft: 5,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
                 }}
               >
-                <Pressable
-                  style={{
-                    // height: "100%",
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    borderColor: "#209FAE",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                    marginLeft: 5,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                  }}
+                <CompervanIcon height={20} width={20} />
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{ marginLeft: 5, color: "#209FAE" }}
                 >
-                  <CompervanIcon height={20} width={20} />
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginLeft: 5, color: "#209FAE" }}
-                  >
-                    Compervan
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={{
-                    // height: "100%",
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    borderColor: "#209FAE",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                    marginLeft: 5,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    backgroundColor: "#209FAE",
-                  }}
+                  Compervan
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: "#209FAE",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  marginLeft: 5,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  backgroundColor: "#209FAE",
+                }}
+              >
+                <SoloIcon height={20} width={20} />
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{ marginLeft: 5, color: "white" }}
                 >
-                  <SoloIcon height={20} width={20} />
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginLeft: 5, color: "white" }}
-                  >
-                    Solo
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={{
-                    // height: "100%",
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    borderColor: "#209FAE",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                    marginLeft: 5,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                  }}
+                  Solo
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: "#209FAE",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  marginLeft: 5,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                }}
+              >
+                <BussinessIcon height={20} width={20} />
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{ marginLeft: 5, color: "#209FAE" }}
                 >
-                  <BussinessIcon height={20} width={20} />
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginLeft: 5, color: "#209FAE" }}
-                  >
-                    Bussiness
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={{
-                    // height: "100%",
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    borderColor: "#209FAE",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                    marginLeft: 5,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                  }}
+                  Bussiness
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  // height: "100%",
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: "#209FAE",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  marginLeft: 5,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                }}
+              >
+                <FamilyIcon height={20} width={20} />
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{ marginLeft: 5, color: "#209FAE" }}
                 >
-                  <FamilyIcon height={20} width={20} />
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginLeft: 5, color: "#209FAE" }}
-                  >
-                    Family
-                  </Text>
-                </Pressable>
-              </ScrollView>
+                  Family
+                </Text>
+              </Pressable>
+            </ScrollView>
+            <View
+              style={{
+                marginTop: 10,
+                flexDirection: "row",
+                paddingHorizontal: 10,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                backgroundColor: "white",
+              }}
+            >
               <View
                 style={{
-                  marginTop: 10,
-                  flexDirection: "row",
-                  paddingHorizontal: 10,
+                  width: Dimensions.get("screen").width * 0.31,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#249FAE",
+                  paddingVertical: 10,
+                }}
+              >
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{ color: "#209FAE" }}
+                >
+                  Itinerary
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: Dimensions.get("screen").width * 0.31,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  // borderBottomWidth: 2,
+                  borderBottomColor: "#249FAE",
+                  paddingVertical: 10,
+                }}
+              >
+                <Text size="description" type="bold">
+                  Travel Album
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: Dimensions.get("screen").width * 0.31,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  // borderBottomWidth: 2,
+                  borderBottomColor: "#249FAE",
+                  paddingVertical: 10,
+                }}
+              >
+                <Text size="description" type="bold">
+                  Travel Stories
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                marginTop: 10,
+                paddingHorizontal: 10,
+                height: 50,
+                justifyContent: "center",
+                // borderWidth: 1,
+              }}
+            >
+              <View
+                style={{
                   shadowColor: "gray",
                   shadowOffset: { width: 0, height: 1 },
                   shadowOpacity: arrayShadow.shadowOpacity,
                   shadowRadius: arrayShadow.shadowRadius,
                   elevation: arrayShadow.elevation,
                   backgroundColor: "white",
-                }}
-              >
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width * 0.31,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderBottomWidth: 2,
-                    borderBottomColor: "#249FAE",
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ color: "#209FAE" }}
-                  >
-                    Itinerary
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width * 0.31,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    // borderBottomWidth: 2,
-                    borderBottomColor: "#249FAE",
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text size="description" type="bold">
-                    Travel Album
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width * 0.31,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    // borderBottomWidth: 2,
-                    borderBottomColor: "#249FAE",
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text size="description" type="bold">
-                    Travel Stories
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                  paddingHorizontal: 10,
-                  height: 50,
-                  justifyContent: "center",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 15,
+                  height: "100%",
+                  justifyContent: "space-between",
+                  borderRadius: 5,
                   // borderWidth: 1,
                 }}
               >
+                <Text size="description" type="bold">
+                  Show Result
+                </Text>
                 <View
                   style={{
-                    shadowColor: "gray",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: arrayShadow.shadowOpacity,
-                    shadowRadius: arrayShadow.shadowRadius,
-                    elevation: arrayShadow.elevation,
-                    backgroundColor: "white",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 15,
-                    height: "100%",
-                    justifyContent: "space-between",
+                    height: 30,
+                    width: 100,
+                    backgroundColor: "#F3F3F3",
                     borderRadius: 5,
-                    // borderWidth: 1,
                   }}
                 >
-                  <Text size="description" type="bold">
-                    Show Result
-                  </Text>
-                  <View
+                  <Picker
+                    mode="dropdown"
                     style={{
-                      height: 30,
-                      width: 100,
-                      backgroundColor: "#F3F3F3",
-                      borderRadius: 5,
+                      fontSize: 7,
+                      fontFamily: "Lato-Regular",
+                      // elevation: 20,
+                      height: "100%",
+                      width: "100%",
                     }}
+                    // selectedValue={genders}
+                    // onValueChange={(x) => setGender(x)}
                   >
-                    <Picker
-                      mode="dropdown"
-                      style={{
-                        fontSize: 12,
-                        fontFamily: "Lato-Regular",
-                        // elevation: 20,
-                        height: "100%",
-                        width: "100%",
-                      }}
-                      // selectedValue={genders}
-                      // onValueChange={(x) => setGender(x)}
-                    >
-                      <Picker.Item label="New Post" value="M" />
-                      <Picker.Item label="Populer" value="F" />
-                    </Picker>
-                  </View>
+                    <Picker.Item
+                      style={{ fontSize: 12 }}
+                      label="New Post"
+                      value="M"
+                    />
+                    <Picker.Item label="Populer" value="F" />
+                  </Picker>
                 </View>
               </View>
             </View>
-          }
-        />
-      ) : null}
+          </View>
+        }
+        ListFooterComponent={
+          loadingPopuler ? (
+            <View
+              style={{
+                // position: 'absolute',
+                // bottom:0,
+                width: width,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                // style={{ color:'#209fae'}}
+              >
+                Loading...
+              </Text>
+            </View>
+          ) : null
+        }
+        onEndReachedThreshold={1}
+        onEndReached={handleOnEndReached}
+      />
     </View>
   );
 }

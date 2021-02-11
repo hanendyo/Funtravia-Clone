@@ -421,8 +421,8 @@ export default function DetailJournal(props) {
                 if (item.type === "image") {
                   return (
                     <View key={index}>
-                      {item.image ? (
-                        <View style={{ marginTop: 20 }}>
+                      <View style={{ marginTop: 20 }}>
+                        {item.image ? (
                           <Image
                             source={item.image ? { uri: item.image } : null}
                             style={{
@@ -430,8 +430,8 @@ export default function DetailJournal(props) {
                               height: Dimensions.get("window").width * 0.7,
                             }}
                           />
-                        </View>
-                      ) : null}
+                        ) : null}
+                      </View>
                       {item.title ? (
                         <View
                           style={{
