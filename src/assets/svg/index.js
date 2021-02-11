@@ -341,5 +341,5 @@ export {
   BussinessIcon,
   FamilyIcon,
   HoneyIcon,
-  CompervanIcon
+  CompervanIcon,
 };
