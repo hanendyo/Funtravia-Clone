@@ -24,16 +24,16 @@ import Reviews from "../../graphQL/Query/Profile/review";
 import Itinerary from "../../graphQL/Query/Profile/itinerary";
 import { TabView, TabBar } from "react-native-tab-view";
 import { default_image } from "../../assets/png";
+import { set } from "react-native-reanimated";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 45;
-const HeaderHeight = width - 60;
+const TabBarHeight = 50;
+const HeaderHeight = width;
 const SafeStatusBar = Platform.select({
 	ios: 44,
 	android: StatusBar.currentHeight,
 });
-const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
@@ -47,8 +47,8 @@ export default function MyProfile({ navigation, route }) {
 		headerTintColor: "white",
 		headerTitleStyle: {
 			fontFamily: "Lato-Bold",
-			fontSize: 14,
-			color: "white",
+			fontSize: 12,
+			color: "black",
 		},
 	};
 	/**
@@ -60,7 +60,6 @@ export default function MyProfile({ navigation, route }) {
 		{ key: "review", title: "Review" },
 		{ key: "mytrip", title: "My Trip" },
 	]);
-	const [tab2Data] = useState(Array(30).fill(0));
 
 	/**
 	 * ref
@@ -308,7 +307,6 @@ export default function MyProfile({ navigation, route }) {
 
 	const onScrollEndDrag = (e) => {
 		syncScrollOffset();
-
 		const offsetY = e.nativeEvent.contentOffset.y;
 		// console.log('onScrollEndDrag', offsetY);
 		// iOS only
@@ -400,7 +398,7 @@ export default function MyProfile({ navigation, route }) {
 				<View>
 					<Image
 						source={Akunsaya}
-						style={{ width: width, height: height / 3.5 }}
+						style={{ width: width, height: HeaderHeight - 125 }}
 					/>
 				</View>
 				<View>
@@ -440,6 +438,7 @@ export default function MyProfile({ navigation, route }) {
 					<View
 						style={{
 							flexDirection: "row",
+							marginVertical: 5,
 						}}
 					>
 						<View
@@ -450,7 +449,7 @@ export default function MyProfile({ navigation, route }) {
 						>
 							<Text size="label" type="bold">
 								{rData.first_name +
-									(rData.last_name ? " " + rData.last_name : null)}
+									(rData.last_name ? " " + rData.last_name : "")}
 							</Text>
 							<Text size="label">{"@" + rData.username}</Text>
 						</View>
@@ -497,11 +496,12 @@ export default function MyProfile({ navigation, route }) {
 						<View
 							style={{
 								paddingHorizontal: 25,
-								paddingVertical: 20,
+								paddingTop: 10,
+								paddingBottom: 25,
 							}}
 						>
 							<Text size="description" style={{ textAlign: "justify" }}>
-								<Truncate text={rData.bio} length={250} ending=" ..." />
+								<Truncate text={rData.bio} length={250} ending="..." />
 							</Text>
 						</View>
 					) : null}
@@ -510,31 +510,249 @@ export default function MyProfile({ navigation, route }) {
 		);
 	};
 
+	let grid = 0;
 	const renderPost = ({ item, index }) => {
-		return (
-			<TouchableOpacity
-				key={index}
-				onPress={() =>
-					navigation.push("myfeed", {
-						token: token,
-						data: item,
-						index: index,
-						datauser: datauser,
-					})
-				}
-			>
-				<Image
-					style={{
-						margin: 2,
-						width: width * 0.322,
-						height: width * 0.322,
-					}}
-					source={
-						item.assets ? { uri: item.assets[0].filepath } : default_image
-					}
-				></Image>
-			</TouchableOpacity>
-		);
+		if (grid == 0) {
+			grid++;
+			return (
+				<View style={{ flexDirection: "row" }}>
+					<TouchableOpacity
+						key={index + "_1"}
+						onPress={() =>
+							navigation.push("myfeed", {
+								token: token,
+								data: dataPost.user_post,
+								index: index,
+								datauser: data.user_profile,
+							})
+						}
+					>
+						<Image
+							style={{
+								margin: 2,
+								width: (width * 2) / 3 - 4,
+								height: (width * 2) / 3 - 4,
+							}}
+							source={
+								item[0].assets
+									? { uri: item[0].assets[0].filepath }
+									: default_image
+							}
+						></Image>
+					</TouchableOpacity>
+					<View>
+						<TouchableOpacity
+							key={index + "_2"}
+							onPress={() =>
+								navigation.push("myfeed", {
+									token: token,
+									data: dataPost.user_post,
+									index: index,
+									datauser: data.user_profile,
+								})
+							}
+						>
+							<Image
+								style={{
+									margin: 2,
+									width: (width * 2) / 3 / 2 - 4,
+									height: (width * 2) / 3 / 2 - 4,
+								}}
+								source={
+									item[1].assets
+										? { uri: item[1].assets[0].filepath }
+										: default_image
+								}
+							></Image>
+						</TouchableOpacity>
+						<TouchableOpacity
+							key={index + "_3"}
+							onPress={() =>
+								navigation.push("myfeed", {
+									token: token,
+									data: dataPost.user_post,
+									index: index,
+									datauser: data.user_profile,
+								})
+							}
+						>
+							<Image
+								style={{
+									margin: 2,
+									width: (width * 2) / 3 / 2 - 4,
+									height: (width * 2) / 3 / 2 - 4,
+								}}
+								source={
+									item[2].assets
+										? { uri: item[2].assets[0].filepath }
+										: default_image
+								}
+							></Image>
+						</TouchableOpacity>
+					</View>
+				</View>
+			);
+		}
+		if (grid == 1) {
+			grid++;
+			return (
+				<View style={{ flexDirection: "row" }}>
+					<TouchableOpacity
+						key={index + "_1"}
+						onPress={() =>
+							navigation.push("myfeed", {
+								token: token,
+								data: dataPost.user_post,
+								index: index,
+								datauser: data.user_profile,
+							})
+						}
+					>
+						<Image
+							style={{
+								margin: 2,
+								width: width / 3 - 4,
+								height: width / 3 - 4,
+							}}
+							source={
+								item[0].assets
+									? { uri: item[0].assets[0].filepath }
+									: default_image
+							}
+						></Image>
+					</TouchableOpacity>
+					<TouchableOpacity
+						key={index + "_2"}
+						onPress={() =>
+							navigation.push("myfeed", {
+								token: token,
+								data: dataPost.user_post,
+								index: index,
+								datauser: data.user_profile,
+							})
+						}
+					>
+						<Image
+							style={{
+								margin: 2,
+								width: width / 3 - 4,
+								height: width / 3 - 4,
+							}}
+							source={
+								item[1].assets
+									? { uri: item[1].assets[0].filepath }
+									: default_image
+							}
+						></Image>
+					</TouchableOpacity>
+					<TouchableOpacity
+						key={index + "_3"}
+						onPress={() =>
+							navigation.push("myfeed", {
+								token: token,
+								data: dataPost.user_post,
+								index: index,
+								datauser: data.user_profile,
+							})
+						}
+					>
+						<Image
+							style={{
+								margin: 2,
+								width: width / 3 - 4,
+								height: width / 3 - 4,
+							}}
+							source={
+								item[2].assets
+									? { uri: item[2].assets[0].filepath }
+									: default_image
+							}
+						></Image>
+					</TouchableOpacity>
+				</View>
+			);
+		}
+		if (grid == 2) {
+			grid = 0;
+			return (
+				<View style={{ flexDirection: "row" }}>
+					<View>
+						<TouchableOpacity
+							key={index + "_2"}
+							onPress={() =>
+								navigation.push("myfeed", {
+									token: token,
+									data: dataPost.user_post,
+									index: index,
+									datauser: data.user_profile,
+								})
+							}
+						>
+							<Image
+								style={{
+									margin: 2,
+									width: (width * 2) / 3 / 2 - 4,
+									height: (width * 2) / 3 / 2 - 4,
+								}}
+								source={
+									item[0].assets
+										? { uri: item[0].assets[0].filepath }
+										: default_image
+								}
+							></Image>
+						</TouchableOpacity>
+						<TouchableOpacity
+							key={index + "_3"}
+							onPress={() =>
+								navigation.push("myfeed", {
+									token: token,
+									data: dataPost.user_post,
+									index: index,
+									datauser: data.user_profile,
+								})
+							}
+						>
+							<Image
+								style={{
+									margin: 2,
+									width: (width * 2) / 3 / 2 - 4,
+									height: (width * 2) / 3 / 2 - 4,
+								}}
+								source={
+									item[1].assets
+										? { uri: item[1].assets[0].filepath }
+										: default_image
+								}
+							></Image>
+						</TouchableOpacity>
+					</View>
+					<TouchableOpacity
+						key={index + "_1"}
+						onPress={() =>
+							navigation.push("myfeed", {
+								token: token,
+								data: dataPost.user_post,
+								index: index,
+								datauser: data.user_profile,
+							})
+						}
+					>
+						<Image
+							style={{
+								margin: 2,
+								width: (width * 2) / 3 - 4,
+								height: (width * 2) / 3 - 4,
+							}}
+							source={
+								item[2].assets
+									? { uri: item[2].assets[0].filepath }
+									: default_image
+							}
+						></Image>
+					</TouchableOpacity>
+				</View>
+			);
+		}
 	};
 
 	const renderReview = ({ item, index }) => {
@@ -677,7 +895,7 @@ export default function MyProfile({ navigation, route }) {
 					navigation.push("tripalbum", {
 						iditinerary: item.id,
 						token: token,
-						position: position,
+						position: "profile",
 					})
 				}
 				style={{
@@ -754,24 +972,46 @@ export default function MyProfile({ navigation, route }) {
 		);
 	};
 
+	const spreadData = (data) => {
+		let tmpData = [];
+		let count = 1;
+		let tmpArray = [];
+		for (let val of data) {
+			if (count < 3) {
+				tmpArray.push(val);
+				count++;
+			} else {
+				tmpArray.push(val);
+				tmpData.push(tmpArray);
+				count = 1;
+				tmpArray = [];
+			}
+		}
+		return tmpData;
+	};
+
 	const renderScene = ({ route }) => {
 		const focused = route.key === routes[tabIndex].key;
 		let numCols;
 		let dataR;
 		let renderItem;
+		let flex;
 		switch (route.key) {
 			case "post":
-				numCols = 3;
-				dataR = dataPost ? dataPost.user_post : null;
+				numCols = null;
+				flex = null;
+				dataR = dataPost ? spreadData(dataPost.user_post) : null;
 				renderItem = renderPost;
 				break;
 			case "review":
-				numCols = 1;
+				numCols = 3;
+				flex = null;
 				dataR = dataReview ? dataReview.user_review : null;
 				renderItem = renderReview;
 				break;
 			case "mytrip":
-				numCols = 3;
+				numCols = 2;
+				flex = 0.5;
 				dataR = dataTrip ? dataTrip.user_trip : null;
 				renderItem = renderTrip;
 				break;
@@ -815,6 +1055,7 @@ export default function MyProfile({ navigation, route }) {
 					contentContainerStyle={{
 						paddingTop: HeaderHeight + TabBarHeight,
 						minHeight: height - SafeStatusBar + HeaderHeight,
+						flex: flex,
 					}}
 					showsHorizontalScrollIndicator={false}
 					data={dataR}
@@ -926,7 +1167,7 @@ export default function MyProfile({ navigation, route }) {
 								}),
 							},
 						],
-						backgroundColor: "#209FAE",
+						backgroundColor: "#FFF",
 						height: 38,
 						width: 38,
 						borderRadius: 19,
@@ -987,5 +1228,5 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFF",
 		height: TabBarHeight,
 	},
-	indicator: { backgroundColor: "#209FAE", height: 3 },
+	indicator: { backgroundColor: "#FFF", height: 3 },
 });

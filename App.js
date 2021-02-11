@@ -7,11 +7,13 @@ import messaging from "@react-native-firebase/messaging";
 import SplashScreen from "react-native-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API, END_POINT_NOTIFY } from "./src/config";
-import "./src/i18n";
 import { mascot_black } from "./src/assets/png";
 import { SafeAreaView, Image, Dimensions } from "react-native";
+import "./src/i18n";
+import { useTranslation } from "react-i18next";
 
 function App() {
+	const { t, i18n } = useTranslation();
 	const { width } = Dimensions.get("screen");
 	let [accessToken, setAccessToken] = useState(null);
 	let [appLoading, setAppLoading] = useState(true);
@@ -30,7 +32,8 @@ function App() {
 
 	const getToken = async () => {
 		let fcmToken = await AsyncStorage.getItem("FCM_TOKEN");
-		console.log("FCM_TOKEN", fcmToken);
+		let setting = await AsyncStorage.getItem("setting_language");
+		await i18n.changeLanguage(setting);
 		if (!fcmToken) {
 			await messaging().registerDeviceForRemoteMessages();
 			fcmToken = await messaging().getToken();

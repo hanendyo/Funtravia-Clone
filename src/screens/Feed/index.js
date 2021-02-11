@@ -311,7 +311,6 @@ export default function Feed(props) {
 			newSelected.set(id_post, !selected.get(id_post));
 			setLiked(!liked);
 			likeToggle(liked);
-			console.log(newSelected);
 			setSelected(newSelected);
 		},
 		[selected]
@@ -321,8 +320,7 @@ export default function Feed(props) {
 		return (
 			<View
 				style={{
-					width: Dimensions.get("window").width,
-					// backgroundColor: "#FFFFFF",
+					width: Dimensions.get("screen").width,
 					flex: 1,
 					borderBottomWidth: 1,
 					borderBottomColor: "#EEEEEE",
@@ -482,8 +480,6 @@ export default function Feed(props) {
 		);
 	}
 
-
-
 	const eventDidFocus = (event) => {
 		// console.log(event);
 		if (event == "Navigation/JUMP_TO" || event == "Navigation/NAVIGATE") {
@@ -493,13 +489,7 @@ export default function Feed(props) {
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-			{token?
-				<FeedList
-				props={props}
-				token={token}
-				/>
-			:null
-			}
+			{token ? <FeedList props={props} token={token} /> : null}
 			<TouchableOpacity style={styles.fab} onPress={createPost}>
 				<PostButton height={50} width={50} />
 			</TouchableOpacity>

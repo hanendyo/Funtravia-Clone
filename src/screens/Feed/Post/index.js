@@ -23,8 +23,6 @@ import Modal from "react-native-modal";
 import { Loading } from "../../../component";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
-import ImgToBase64 from "react-native-image-base64";
-import ImageResizer from "react-native-image-resizer";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import ImagePicker from "react-native-image-crop-picker";
 
@@ -101,8 +99,7 @@ export default function Post(props) {
 			includeBase64: true,
 			compressImageQuality: 0.7,
 		});
-		console.log(result);
-		await props.navigation.navigate("CreatePostScreen", {
+		props.navigation.navigate("CreatePostScreen", {
 			location: recent.location,
 			base64: result.data,
 			image: result,
@@ -298,7 +295,7 @@ export default function Post(props) {
 	};
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar backgroundColor="#209FAE" barStyle="dark-content" />
 			<Loading show={loading} />
 			<_modalGalery />
@@ -322,6 +319,7 @@ export default function Post(props) {
 							borderWidth: 1,
 							borderColor: "#209fae",
 							paddingHorizontal: 5,
+							borderWidth: 1,
 						}}
 					>
 						<Text
@@ -339,7 +337,9 @@ export default function Post(props) {
 					<Button
 						size="medium"
 						text="Next"
-						style={{ fontSize: 14 }}
+						style={{
+							paddingHorizontal: 10,
+						}}
 						onPress={() => nextFunction()}
 					/>
 				</View>

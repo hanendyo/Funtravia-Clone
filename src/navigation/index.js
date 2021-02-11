@@ -31,11 +31,15 @@ export default function MainStackNavigator({ authorizeToken }) {
 					ChatScreen: "chat/:id",
 				},
 			},
-			SinglePost: "feed/:post_id",
+			BottomStack: {
+				screens: {
+					SinglePost: "feed/:post_id",
+				},
+			},
 		},
 	};
 	const linking = {
-		prefixes: ["http://link.funtravia.com", "https://link.funtravia.com"],
+		prefixes: ["funtravia://", "https://*.funtravia.com"],
 		config,
 	};
 

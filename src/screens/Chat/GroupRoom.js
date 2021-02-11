@@ -148,13 +148,13 @@ export default function Room({ navigation, route }) {
 			await setMessage(responseJson.data);
 			await setTimeout(function () {
 				flatListRef.current.scrollToEnd({ animated: true });
-			}, 500);
+			}, 1000);
 		}
 	};
 
 	const submitChatMessage = async () => {
 		let d = new Date();
-		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
+		let date = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/");
 		let time = [
 			d.getHours(),
 			d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes(),
@@ -182,7 +182,7 @@ export default function Room({ navigation, route }) {
 				await setChat("");
 				await setTimeout(function () {
 					flatListRef.current.scrollToEnd({ animated: true });
-				}, 500);
+				}, 1000);
 				await setButton(true);
 			}
 		}
