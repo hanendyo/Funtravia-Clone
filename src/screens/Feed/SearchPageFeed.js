@@ -50,7 +50,7 @@ import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
 import SearchUserQuery from "../../graphQL/Query/Search/SearchPeopleV2";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import Modal from "react-native-modal";
-
+import { API_KEY } from "../../config";
 export default function Feed(props) {
   const [active, setActive] = useState("personal");
   const [active_src, setActiveSrc] = useState("account");
@@ -306,6 +306,15 @@ export default function Feed(props) {
     }
   };
 
+  const Searchbytag = (text) => {
+    props.navigation.navigate("FeedStack", {
+      screen: "SearchFeedByTag",
+      params: {
+        keyword: text,
+      },
+    });
+  };
+
   const showsearchpage = () => {
     create_UUID();
     setAktifSearch(true);
@@ -342,7 +351,9 @@ export default function Feed(props) {
       let response = await fetch(
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" +
           input +
-          "&key=AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg&sessiontoken=" +
+          "&key=" +
+          API_KEY +
+          "&sessiontoken=" +
           sessiontoken,
         {
           method: "GET",
@@ -366,6 +377,38 @@ export default function Feed(props) {
     }
   };
 
+  const _get_search_bylocation = async (data) => {
+    setLoadinglocation(true);
+    try {
+      let response = await fetch(
+        "https://maps.googleapis.com/maps/api/place/details/json?place_id=" +
+          data.place_id +
+          "&fields=geometry&key=" +
+          API_KEY,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      let responseJson = await response.json();
+      if (responseJson && responseJson.status == "OK") {
+        console.log(responseJson.result.geometry.location);
+        // setDatalocation(responseJson.predictions);
+        setLoadinglocation(false);
+      } else {
+        // setDatalocation(responseJson.predictions);
+        setLoadinglocation(false);
+        Alert("location not found");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert("location not found");
+      setLoadinglocation(false);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <View style={{ backgroundColor: "#209FAE" }}>
@@ -623,18 +666,9 @@ export default function Feed(props) {
           ) : null}
           {active_src === "tag" && searchtext ? (
             <Pressable
-              // onPress={() => {
-              //   item.id !== setting?.user?.id
-              //     ? props.navigation.push("ProfileStack", {
-              //         screen: "otherprofile",
-              //         params: {
-              //           idUser: item.id,
-              //         },
-              //       })
-              //     : props.navigation.push("ProfileStack", {
-              //         screen: "ProfileTab",
-              //       });
-              // }}
+              onPress={() => {
+                Searchbytag(searchtext);
+              }}
               style={{
                 flexDirection: "row",
                 paddingVertical: 15,
@@ -693,18 +727,9 @@ export default function Feed(props) {
                 data={datalocation}
                 renderItem={({ item, index }) => (
                   <Pressable
-                    // onPress={() => {
-                    //   item.id !== setting?.user?.id
-                    //     ? props.navigation.push("ProfileStack", {
-                    //         screen: "otherprofile",
-                    //         params: {
-                    //           idUser: item.id,
-                    //         },
-                    //       })
-                    //     : props.navigation.push("ProfileStack", {
-                    //         screen: "ProfileTab",
-                    //       });
-                    // }}
+                    onPress={() => {
+                      _get_search_bylocation(item);
+                    }}
                     style={{
                       flexDirection: "row",
                       paddingVertical: 15,
