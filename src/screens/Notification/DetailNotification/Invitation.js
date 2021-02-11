@@ -9,7 +9,13 @@ import {
   Pressable,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, Button, CustomImage, Truncate } from "../../../component";
+import {
+  Text,
+  Button,
+  CustomImage,
+  Truncate,
+  Loading,
+} from "../../../component";
 
 import { default_image } from "../../../assets/png";
 import { gql } from "apollo-boost";
@@ -159,6 +165,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
   const [datanotif, SetDataNotif] = useState(datas.list_notification);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);
+  let [loadings, setLoadings] = useState(false);
   // ===modalfilter===
 
   const CarDetail = (data, dataIten) => {
@@ -204,11 +211,15 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     },
   });
 
-  const reject = async (id_buddy) => {
+  const reject = async (data) => {
+    setLoadings(true);
+    if (data.isread == false) {
+      await updateisread(data.ids);
+    }
     try {
       let response = await mutationRejectInvitation({
         variables: {
-          buddy_id: id_buddy,
+          buddy_id: data.itinerary_buddy.id,
         },
       });
       if (dataInvit) {
@@ -222,11 +233,14 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
         if (response.data.reject_buddy.code !== 200) {
           throw new Error(response.data.reject_buddy.message);
         }
+
         // console.log(response.data.reject_buddy.data_itin.start_date);
         // Alert.alert('Succes');
-        GetListNotif();
+        await GetListNotif();
+        await setLoadings(false);
       }
     } catch (error) {
+      setLoadings(false);
       alert("" + error);
     }
   };
@@ -237,11 +251,16 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
 
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
   };
-  const accept = async (id_buddy) => {
+  const accept = async (data) => {
+    setLoadings(true);
+
+    if (data.isread == false) {
+      await updateisread(data.ids);
+    }
     try {
       let response = await mutationAcceptInvitation({
         variables: {
-          buddy_id: id_buddy,
+          buddy_id: data.itinerary_buddy.id,
         },
       });
       if (dataInvit) {
@@ -256,9 +275,11 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
         }
         // console.log(response.data.confrim_buddy.data_itin.start_date);
         // Alert.alert('Succes');
-        GetListNotif();
+        await GetListNotif();
+        await setLoadings(false);
       }
     } catch (error) {
+      setLoadings(false);
       alert("" + error);
     }
   };
@@ -268,7 +289,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     var index = tempData.findIndex((k) => k["ids"] === notif_id);
     tempData[index].isread = true;
     SetDataNotif(tempData);
-    console.log('notif',notif_id);
+    // console.log("notif", notif_id);
     try {
       let response = await mutationIsRead({
         variables: {
@@ -281,7 +302,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
       // if (errorInvit) {
       //   throw new Error("Error Input");
       // }
-        console.log(response);
+      console.log(response);
       if (response.data) {
         if (response.data.update_read.code !== 200) {
           // var tempData = [...datanotif];
@@ -289,7 +310,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
           // tempData[index].isread = true;
           // SetDataNotif(tempData);
           throw new Error(response.data.reject_buddy.message);
-        }else{
+        } else {
           // var tempData = [...datanotif];
           // var index = tempData.findIndex((k) => k["ids"] === notif_id);
           // tempData[index].isread = true;
@@ -326,7 +347,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
       params: {
         post_id: data.like_feed.post_id,
       },
-    })
+    });
   };
 
   const handle_areaklik_follow = async (data) => {
@@ -521,7 +542,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                   }}
                 >
                   <Button
-                    onPress={() => reject(item.itinerary_buddy.id)}
+                    onPress={() => reject(item)}
                     style={{
                       fontFamily: "lato-semibold",
                       // borderRadius: 30,
@@ -548,7 +569,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                     text="Reject"
                   />
                   <Button
-                    onPress={() => accept(item.itinerary_buddy.id)}
+                    onPress={() => accept(item)}
                     size="small"
                     style={{
                       fontFamily: "lato-semibold",
@@ -779,7 +800,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                     // fontSize: 15,
                   }}
                 >
-                  {item.like_feed.user.first_name}{" "}
+                  {item.like_feed.user?.first_name}{" "}
                   {item.like_feed.user?.last_name}
                 </Text>
                 <Text
@@ -945,6 +966,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
 
   return (
     <View style={{ flex: 1 }}>
+      <Loading show={loadings} />
       {datanotif && datanotif.length ? (
         <FlatList
           contentContainerStyle={{

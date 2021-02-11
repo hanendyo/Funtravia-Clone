@@ -169,6 +169,7 @@ import BussinessIcon from "./files/bussiness_icon.svg";
 import FamilyIcon from "./files/family_icon.svg";
 import HoneyIcon from "./files/honey_moon_icon.svg";
 import CompervanIcon from "./files/compervan_icon.svg";
+import Pinloc from "./files/pinloc.svg";
 
 export {
   LikeWhite,
@@ -342,4 +343,5 @@ export {
   FamilyIcon,
   HoneyIcon,
   CompervanIcon,
+  Pinloc,
 };
