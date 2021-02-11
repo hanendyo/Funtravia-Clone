@@ -20,13 +20,9 @@ import {
   User,
   TravelStories,
   TravelAlbum,
-  SoloIcon,
-  BussinessIcon,
-  FamilyIcon,
-  HoneyIcon,
-  CompervanIcon,
-  Star,
   SearchWhite,
+  LikeRed,
+  LikeEmpty,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -40,6 +36,7 @@ import Ripple from "react-native-material-ripple";
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
   let { width, height } = Dimensions.get("screen");
+
   const HeaderComponent = {
     headerShown: true,
     title: "Itinerary",
@@ -107,7 +104,7 @@ export default function ItineraryPopuler(props) {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-    elevation: Platform.OS == "ios" ? 3 : 1.5,
+    elevation: Platform.OS == "ios" ? 3 : 3.5,
   };
 
   const loadAsync = async () => {
@@ -216,6 +213,109 @@ export default function ItineraryPopuler(props) {
     }
   };
 
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(ItineraryLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(ItineraryUnliked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _liked = async (id, index) => {
+    if (token || token !== "") {
+      list_populer[index].liked = true;
+      list_populer[index].response_count =
+        list_populer[index].response_count - 1;
+      try {
+        let response = await mutationliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.setItineraryFavorit.code === 200 ||
+            response.data.setItineraryFavorit.code === "200"
+          ) {
+            list_populer[index].liked = true;
+          } else {
+            throw new Error(response.data.setItineraryFavorit.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        feed_post_pageing[index].liked = false;
+        feed_post_pageing[index].response_count =
+          feed_post_pageing[index].response_count + 1;
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _unliked = async (id, index) => {
+    if (token || token !== "") {
+      list_populer[index].liked = false;
+      list_populer[index].response_count =
+        list_populer[index].response_count + 1;
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadingUnLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+
+        if (response.data) {
+          if (
+            response.data.unsetItineraryFavorit.code === 200 ||
+            response.data.unsetItineraryFavorit.code === "200"
+          ) {
+            list_populer[index].liked = false;
+          } else {
+            throw new Error(response.data.unsetItineraryFavorit.message);
+          }
+        }
+      } catch (error) {
+        list_populer[index].liked = true;
+        list_populer[index].response_count =
+          list_populer[index].response_count - 1;
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
   const getDN = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");
@@ -239,14 +339,14 @@ export default function ItineraryPopuler(props) {
     return (
       <View
         style={{
-          height: 180,
+          height: 145,
           paddingHorizontal: 15,
           marginTop: 5,
         }}
       >
         <View
           style={{
-            borderRadius: 10,
+            borderRadius: 5,
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: arrayShadow.shadowOpacity,
             shadowRadius: arrayShadow.shadowRadius,
@@ -256,23 +356,23 @@ export default function ItineraryPopuler(props) {
             overflow: "hidden",
           }}
         >
-          <Pressable
-            onPress={() =>
-              props.navigation.navigate("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  itintitle: item.name,
-                  country: item.id,
-                  token: token,
-                  status: "favorite",
-                },
-              })
-            }
+          <View
+            // onPress={() =>
+            //   props.navigation.navigate("ItineraryStack", {
+            //     screen: "itindetail",
+            //     params: {
+            //       itintitle: item.name,
+            //       country: item.id,
+            //       token: token,
+            //       status: "favorite",
+            //     },
+            //   })
+            // }
             style={{
               backgroundColor: "#FFFFFF",
               height: "77%",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
               flexDirection: "row",
             }}
           >
@@ -296,16 +396,17 @@ export default function ItineraryPopuler(props) {
                 style={{
                   height: "100%",
                   width: Dimensions.get("screen").width * 0.33,
-                  borderTopLeftRadius: 10,
+                  borderTopLeftRadius: 5,
                 }}
               />
             </Ripple>
             <View
               style={{
-                width: "100%",
+                width: Dimensions.get("screen").width * 0.58,
                 paddingHorizontal: 10,
                 backgroundColor: "#FFFFFF",
                 marginVertical: 5,
+                overflow: "hidden",
               }}
             >
               <View>
@@ -318,36 +419,44 @@ export default function ItineraryPopuler(props) {
                 >
                   <View
                     style={{
-                      borderColor: "#209FAE",
-                      borderRadius: 3,
                       backgroundColor: "#DAF0F2",
+                      borderWidth: 1,
+                      borderRadius: 3,
+                      borderColor: "#209FAE",
+                      paddingHorizontal: 5,
                     }}
                   >
                     <Text
-                      style={{ color: "#209FAE", padding: 3 }}
-                      size="small"
                       type="bold"
+                      size="description"
+                      style={{ color: "#209FAE" }}
                     >
-                      Family Trip
+                      {item?.categori?.name
+                        ? item?.categori?.name
+                        : "No Category"}
                     </Text>
                   </View>
-                  {/* {item.liked === false ? (
-                    <TouchableOpacity onPress={() => _liked(item.id, index)}>
-                      <LikeEmpty height={20} width={20} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => _unliked(item.id, index)}>
-                      <LikeRed height={20} width={20} />
-                    </TouchableOpacity>
-                  )} */}
+                  <View>
+                    {item.liked === false ? (
+                      <Ripple onPress={() => _liked(item.id, index)}>
+                        <LikeEmpty height={15} width={15} />
+                      </Ripple>
+                    ) : (
+                      <Ripple onPress={() => _unliked(item.id, index)}>
+                        <LikeRed height={15} width={15} />
+                      </Ripple>
+                    )}
+                  </View>
                 </View>
-                <Text size="description" type="black" style={{ marginTop: 5 }}>
+                <Text size="label" type="black" style={{ marginTop: 5 }}>
                   <Truncate text={item.name} length={40} />
                 </Text>
+                <View></View>
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
+                    marginTop: 5,
                   }}
                 >
                   <PinHijau width={15} height={15} />
@@ -362,7 +471,7 @@ export default function ItineraryPopuler(props) {
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: 10,
+                    marginTop: 20,
                   }}
                 >
                   <View
@@ -419,7 +528,7 @@ export default function ItineraryPopuler(props) {
                 </View> */}
               </View>
             </View>
-          </Pressable>
+          </View>
           <View
             style={{
               // borderWidth: 1,
@@ -576,44 +685,12 @@ export default function ItineraryPopuler(props) {
             flex: 1,
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
+            height: "100%",
           }}
         >
-          {loadingPopuler ? (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                height: "100%",
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Loading...
-              </Text>
-            </View>
-          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
-            <FlatList
-              data={dataPopuler.itinerary_list_populer}
-              renderItem={renderPopuler}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-                alignItems: "center",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Tidak ada Travel Stories
-              </Text>
-            </View>
-          )}
+          <Text size="label" type="bold" style={{ textAlign: "center" }}>
+            Tidak ada Travel Stories
+          </Text>
         </View>
       );
     } else {
@@ -625,9 +702,11 @@ export default function ItineraryPopuler(props) {
     /* ======================================= Render All ====================================================*/
   }
   return (
-    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-      {/* <Loading show={loadingPopuler} /> */}
-      {/* {dataPopuler && dataPopuler.itinerary_list_populer ? ( */}
+    <ScrollView
+      style={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
+      stickyHeaderIndices={[0]}
+    >
       <View style={{ backgroundColor: "white" }}>
         <ScrollView
           style={{ flex: 1 }}
@@ -636,20 +715,34 @@ export default function ItineraryPopuler(props) {
         >
           <View
             style={{
-              // width: Dimensions.get("screen").width,
               height: Dimensions.get("screen").width * 0.3,
               paddingHorizontal: 15,
               marginTop: 10,
               flexDirection: "row",
+              // borderWidth: 1,
             }}
           >
-            <Ripple style={{ marginRight: 5, borderRadius: 10 }}>
+            <Ripple
+              style={{
+                marginRight: 5,
+                borderRadius: 10,
+                height: "100%",
+                width: Dimensions.get("screen").width * 0.57,
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                paddingVertical: 2,
+              }}
+            >
               <Image
                 source={itinerary_1}
                 style={{
                   height: "100%",
-                  width: Dimensions.get("screen").width * 0.55,
-                  borderRadius: 5,
+                  width: "100%",
+                  borderRadius: 10,
                 }}
               />
               <Text
@@ -657,23 +750,40 @@ export default function ItineraryPopuler(props) {
                 type="bold"
                 style={{
                   position: "absolute",
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 5,
+                  marginHorizontal: 5,
+                  borderRadius: 3,
                   marginTop: 15,
-                  paddingVertical: 3,
-                  backgroundColor: "#209FAE",
-                  color: "white",
+                  backgroundColor: "#DAF0F2",
+                  color: "#209FAE",
+                  borderWidth: 1,
+                  borderColor: "#209FAE",
                 }}
               >
                 New Itinerary
               </Text>
             </Ripple>
-            <Ripple style={{ marginRight: 5, borderRadius: 10 }}>
+            <Ripple
+              style={{
+                marginRight: 5,
+                borderRadius: 10,
+                height: "100%",
+                width: Dimensions.get("screen").width * 0.57,
+                marginRight: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                paddingVertical: 2,
+              }}
+            >
               <Image
                 source={itinerary_2}
                 style={{
                   height: "100%",
-                  width: Dimensions.get("screen").width * 0.55,
-                  borderRadius: 5,
+                  width: "100%",
+                  borderRadius: 10,
                 }}
               />
               <Text
@@ -681,14 +791,17 @@ export default function ItineraryPopuler(props) {
                 type="bold"
                 style={{
                   position: "absolute",
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 5,
+                  marginHorizontal: 5,
+                  borderRadius: 3,
                   marginTop: 15,
-                  paddingVertical: 3,
-                  backgroundColor: "#209FAE",
-                  color: "white",
+                  backgroundColor: "#DAF0F2",
+                  color: "#209FAE",
+                  borderWidth: 1,
+                  borderColor: "#209FAE",
                 }}
               >
-                Populer
+                Populer Itinerary
               </Text>
             </Ripple>
           </View>
@@ -707,8 +820,9 @@ export default function ItineraryPopuler(props) {
         <View
           style={{
             paddingHorizontal: 15,
-            marginTop: 10,
+            marginTop: 5,
             flexDirection: "row",
+            height: Dimensions.get("screen").width * 0.24,
           }}
         >
           <FlatList
@@ -719,23 +833,26 @@ export default function ItineraryPopuler(props) {
               return (
                 <Ripple
                   style={{
+                    overflow: "hidden",
                     width: Dimensions.get("screen").width * 0.23,
-                    height: Dimensions.get("screen").width * 0.27,
+                    height: Dimensions.get("screen").width * 0.23,
                     backgroundColor: "white",
                     marginRight: 5,
                     shadowColor: "gray",
-                    shadowOffset: { width: 0, height: 1 },
+                    // shadowOffset: { width: 0, height: 1 },
                     shadowOpacity: arrayShadow.shadowOpacity,
                     shadowRadius: arrayShadow.shadowRadius,
                     elevation: arrayShadow.elevation,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 5,
-                    marginBottom: 10,
+                    marginTop: 1,
+                    marginLeft: 1,
                   }}
                   onPress={() =>
                     props.navigation.navigate("ItineraryCategory", {
                       dataPopuler: dataPopuler,
+                      typeCategory: item.id,
                     })
                   }
                 >
@@ -754,7 +871,7 @@ export default function ItineraryPopuler(props) {
                   <Text
                     size="small"
                     type="regular"
-                    // style={{ textAlign: "center" }}
+                    style={{ textAlign: "center" }}
                   >
                     {item?.name}
                   </Text>
@@ -767,21 +884,22 @@ export default function ItineraryPopuler(props) {
         </View>
         <View
           style={{
-            marginTop: 10,
+            marginTop: 5,
+            width: Dimensions.get("screen").width,
             flexDirection: "row",
-            paddingHorizontal: 15,
             shadowColor: "gray",
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: arrayShadow.shadowOpacity,
             shadowRadius: arrayShadow.shadowRadius,
             elevation: arrayShadow.elevation,
             backgroundColor: "white",
+            justifyContent: "space-around",
           }}
         >
           <Ripple
             onPress={() => setActives("Itinerary")}
             style={{
-              width: Dimensions.get("screen").width * 0.31,
+              width: Dimensions.get("screen").width * 0.32,
               alignItems: "center",
               justifyContent: "center",
               borderBottomWidth: actives == "Itinerary" ? 2 : 0,
@@ -802,7 +920,7 @@ export default function ItineraryPopuler(props) {
           <Ripple
             onPress={() => setActives("Album")}
             style={{
-              width: Dimensions.get("screen").width * 0.31,
+              width: Dimensions.get("screen").width * 0.32,
               alignItems: "center",
               justifyContent: "center",
               borderBottomWidth: actives == "Album" ? 2 : 0,
@@ -823,7 +941,7 @@ export default function ItineraryPopuler(props) {
           <Ripple
             onPress={() => setActives("Stories")}
             style={{
-              width: Dimensions.get("screen").width * 0.31,
+              width: Dimensions.get("screen").width * 0.32,
               alignItems: "center",
               justifyContent: "center",
               borderBottomWidth: actives == "Stories" ? 2 : 0,
@@ -842,6 +960,8 @@ export default function ItineraryPopuler(props) {
             </Text>
           </Ripple>
         </View>
+      </View>
+      <View>
         <RenderUtama aktif={actives} />
       </View>
       {/* ) : null} */}

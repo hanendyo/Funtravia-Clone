@@ -51,6 +51,12 @@ const ListPopulerGQL = gql`
         date
       }
       liked
+      categori{
+        id
+        name
+        slug
+        icon
+      }
       }
 		}
 	}

@@ -139,5 +139,5 @@ export const Akunsaya = require("./files/Akunsaya.png");
 export const Emptys = require("./files/empty.png");
 export const sampul2 = require("./files/sampul2.png");
 export const logo_funtravia = require("./files/logo_funtravia.png");
-export const itinerary_1 = require("./files/itinerary_image_1.png");
-export const itinerary_2 = require("./files/itinerary_image_2.png");
+export const itinerary_1 = require("./files/itinerary_image2.png");
+export const itinerary_2 = require("./files/itinerary_image1.png");
