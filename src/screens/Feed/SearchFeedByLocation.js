@@ -45,7 +45,7 @@ import likepost from "../../graphQL/Mutation/Post/likepost";
 import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
 import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
-import Feedsearchbytag from "../../graphQL/Query/Home/Feedsearchbytag";
+import Feedsearchbylocation from "../../graphQL/Query/Home/Feedsearchbylocation";
 // import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
 import SearchUserQuery from "../../graphQL/Query/Search/SearchPeopleV2";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
@@ -57,8 +57,9 @@ export default function Feed(props) {
   const [searchtext, SetSearchtext] = useState("");
   let [setting, setSetting] = useState();
 
-  let keyword = props.route.params.keyword;
-
+  let latitude = props.route.params.latitude;
+  let longitude = props.route.params.longitude;
+  console.log(latitude, longitude);
   // let [token, setToken] = useState(props.route.params.token);
   let [token, setToken] = useState("");
   const default_image =
@@ -93,9 +94,10 @@ export default function Feed(props) {
     fetchMore,
     refetch,
     networkStatus,
-  } = useQuery(Feedsearchbytag, {
+  } = useQuery(Feedsearchbylocation, {
     variables: {
-      keyword: keyword,
+      latitude: latitude,
+      longitude: longitude,
       orderby: "new",
       limit: 30,
       offset: 0,
@@ -129,24 +131,28 @@ export default function Feed(props) {
     }
     return tmpData;
   };
-  let feed_search_bytag_paging = [];
-  if (dataPost && dataPost && "datas" in dataPost.feed_search_bytag_paging) {
-    feed_search_bytag_paging = spreadData(
-      dataPost.feed_search_bytag_paging.datas
+  let feed_search_bylocation_paging = [];
+  if (
+    dataPost &&
+    dataPost &&
+    "datas" in dataPost.feed_search_bylocation_paging
+  ) {
+    feed_search_bylocation_paging = spreadData(
+      dataPost.feed_search_bylocation_paging.datas
     );
   }
   // console.log(
-  //   dataPost && dataPost && "datas" in dataPost.feed_search_bytag_paging
-  //     ? dataPost.feed_search_bytag_paging.datas
+  //   dataPost && dataPost && "datas" in dataPost.feed_search_bylocation_paging
+  //     ? dataPost.feed_search_bylocation_paging.datas
   //     : null
   // );
-  console.log(feed_search_bytag_paging);
+  console.log(feed_search_bylocation_paging);
 
   useEffect(() => {
     loadAsync();
   }, []);
 
-  // let dataspred = spreadData(feed_search_bytag_paging);
+  // let dataspred = spreadData(feed_search_bylocation_paging);
 
   // console.log(dataspred);
 
@@ -276,7 +282,7 @@ export default function Feed(props) {
   const refresh = networkStatus === NetworkStatus.refetch;
   const _refresh = async () => {
     setRefreshing(true);
-    feed_search_bytag_paging = [];
+    feed_search_bylocation_paging = [];
     refetch();
     grid = 1;
     wait(1000).then(() => {
@@ -290,14 +296,14 @@ export default function Feed(props) {
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.feed_search_bytag_paging;
+    const { page_info } = fetchMoreResult.feed_search_bylocation_paging;
     const datas = [
-      ...prev.feed_search_bytag_paging.datas,
-      ...fetchMoreResult.feed_search_bytag_paging.datas,
+      ...prev.feed_search_bylocation_paging.datas,
+      ...fetchMoreResult.feed_search_bylocation_paging.datas,
     ];
     return Object.assign({}, prev, {
-      feed_search_bytag_paging: {
-        __typename: prev.feed_search_bytag_paging.__typename,
+      feed_search_bylocation_paging: {
+        __typename: prev.feed_search_bylocation_paging.__typename,
         page_info,
         datas,
       },
@@ -305,11 +311,11 @@ export default function Feed(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataPost.feed_search_bytag_paging.page_info.hasNextPage) {
+    if (dataPost.feed_search_bylocation_paging.page_info.hasNextPage) {
       return fetchMore({
         variables: {
           limit: 30,
-          offset: dataPost.feed_search_bytag_paging.page_info.offset,
+          offset: dataPost.feed_search_bylocation_paging.page_info.offset,
           keyword: keyword,
           orderby: "new",
         },
@@ -747,7 +753,7 @@ export default function Feed(props) {
               color: "#FFFFFF",
             }}
           >
-            Search By Tag
+            Search By Location
           </Text>
           <Ripple
             onPress={() => {
@@ -767,9 +773,8 @@ export default function Feed(props) {
           </Ripple>
         </View>
       </View>
-
       <FlatList
-        data={feed_search_bytag_paging}
+        data={feed_search_bylocation_paging}
         renderItem={({ item, index }) => {
           if (grid == 1 && item.length == 3) {
             grid++;
@@ -1162,14 +1167,13 @@ export default function Feed(props) {
           // height: '50%'
         }}
         // horizontal
-        contentContainerStyle={
-          {
-            // flexDirection: 'column',
-            // flexWrap: 'wrap',
-            // flexGrow:1,
-            // borderWidth:1,
-          }
-        }
+        contentContainerStyle={{
+          paddingVertical: 5,
+          // flexDirection: 'column',
+          // flexWrap: 'wrap',
+          // flexGrow:1,
+          // borderWidth:1,
+        }}
         keyExtractor={(item) => item.id_post}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
