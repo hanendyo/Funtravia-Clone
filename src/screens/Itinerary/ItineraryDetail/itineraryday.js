@@ -46,6 +46,7 @@ export default function ItineraryDay({
   dataAkhir,
   indexnya,
   setIndex,
+  Anggota,
 }) {
   const { t, i18n } = useTranslation();
   let [modalmenu, setModalmenu] = useState(false);
@@ -119,13 +120,16 @@ export default function ItineraryDay({
           throw new Error(response.data.add_dayitinerary.message);
         }
 
+        const xX = {
+          ...response.data.add_dayitinerary.dataday[
+            response.data.add_dayitinerary.dataday.length - 1
+          ],
+        };
+
+        xX["total_hours"] = "00:00";
         // setDataday(response.data.add_dayitinerary.dataday);
         await setIndex(response.data.add_dayitinerary.dataday.length - 1);
-        await setdatadayaktif(
-          response.data.add_dayitinerary.dataday[
-            response.data.add_dayitinerary.dataday.length - 1
-          ]
-        );
+        await setdatadayaktif(xX);
         await setIdDay(
           response.data.add_dayitinerary.dataday[
             response.data.add_dayitinerary.dataday.length - 1
@@ -243,7 +247,7 @@ export default function ItineraryDay({
         keyExtractor={(item, index) => index + ""}
         data={dataDay}
         ListFooterComponent={
-          status === "notsaved" ? (
+          status === "notsaved" && Anggota === true ? (
             <Ripple
               onPress={() => addButton()}
               style={{
