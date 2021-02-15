@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,31 +16,30 @@ import {
   Arrowbackwhite,
   SearchWhite,
   Calendargrey,
-  //   LikeRed,
-  //   LikeEmpty,
+  LikeRed,
+  LikeEmpty,
   PinHijau,
   User,
   TravelStories,
   TravelAlbum,
-  SoloIcon,
-  BussinessIcon,
-  FamilyIcon,
-  HoneyIcon,
-  CompervanIcon,
   Star,
 } from "../../../assets/svg";
-import { Text, Button } from "../../../component/index";
-import Category from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
+import { Text, Button, FunIcon } from "../../../component/index";
+import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
+import Populer from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
 import { Truncate, Loading } from "../../../component";
+import Ripple from "react-native-material-ripple";
 
 export default function ItineraryCategory(props) {
   const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState();
   let { width, height } = Dimensions.get("screen");
-  // let [dataPop, setDataPop] = useState(props.route.params.dataPopuler);
+  let [dataType, setDataType] = useState(props.route.params.typeCategory);
+  let [actives, setActives] = useState("Itinerary");
+
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -101,16 +100,32 @@ export default function ItineraryCategory(props) {
     ),
   };
 
+  const [
+    fetchCategory,
+    { data: dataCategory, loading: loadingCategory, error: errorCategory },
+  ] = useLazyQuery(Category, {
+    variables: {
+      category_id: null,
+      order_by: null,
+    },
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  });
+
   const {
     data: dataPopuler,
     loading: loadingPopuler,
     fetchMore,
     refetch,
     networkStatus,
-  } = useQuery(Category, {
+  } = useQuery(Populer, {
     variables: {
       keyword: search.keyword,
-      type: null,
+      type: dataType,
       countries: null,
       cities: null,
       rating: null,
@@ -186,7 +201,7 @@ export default function ItineraryCategory(props) {
     await setToken(tkn);
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
-    await fetchDataCategory();
+    await fetchCategory();
   };
 
   const arrayShadow = {
@@ -194,6 +209,83 @@ export default function ItineraryCategory(props) {
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
     elevation: Platform.OS == "ios" ? 3 : 1.5,
+  };
+
+  const _liked = async (id, index) => {
+    if (token || token !== "") {
+      list_populer[index].liked = true;
+      list_populer[index].response_count =
+        list_populer[index].response_count - 1;
+      try {
+        let response = await mutationliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.setItineraryFavorit.code === 200 ||
+            response.data.setItineraryFavorit.code === "200"
+          ) {
+            list_populer[index].liked = true;
+          } else {
+            throw new Error(response.data.setItineraryFavorit.message);
+          }
+        }
+      } catch (error) {
+        feed_post_pageing[index].liked = false;
+        feed_post_pageing[index].response_count =
+          feed_post_pageing[index].response_count + 1;
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _unliked = async (id, index) => {
+    if (token || token !== "") {
+      list_populer[index].liked = false;
+      list_populer[index].response_count =
+        list_populer[index].response_count + 1;
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadingUnLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+
+        if (response.data) {
+          if (
+            response.data.unsetItineraryFavorit.code === 200 ||
+            response.data.unsetItineraryFavorit.code === "200"
+          ) {
+            list_populer[index].liked = false;
+          } else {
+            throw new Error(response.data.unsetItineraryFavorit.message);
+          }
+        }
+      } catch (error) {
+        list_populer[index].liked = true;
+        list_populer[index].response_count =
+          list_populer[index].response_count - 1;
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
   };
 
   const getDN = (start, end) => {
@@ -215,48 +307,48 @@ export default function ItineraryCategory(props) {
     );
   };
 
-  const renderCategory = ({ item, index }) => {
+  const renderPopuler = ({ item, index }) => {
     return (
       <View
         style={{
-          // height: Dimensions.get("screen").width * 0.48,
-          height: 160,
-          paddingHorizontal: 10,
+          height: 145,
+          paddingHorizontal: 15,
           marginTop: 5,
         }}
       >
         <View
           style={{
-            borderRadius: 10,
+            borderRadius: 5,
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: arrayShadow.shadowOpacity,
             shadowRadius: arrayShadow.shadowRadius,
             elevation: arrayShadow.elevation,
             justifyContent: "space-between",
             backgroundColor: "#F7F7F7",
+            overflow: "hidden",
           }}
         >
-          <Pressable
-            onPress={() =>
-              props.navigation.navigate("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  itintitle: item.name,
-                  country: item.id,
-                  token: token,
-                  status: "favorite",
-                },
-              })
-            }
+          <View
+            // onPress={() =>
+            //   props.navigation.navigate("ItineraryStack", {
+            //     screen: "itindetail",
+            //     params: {
+            //       itintitle: item.name,
+            //       country: item.id,
+            //       token: token,
+            //       status: "favorite",
+            //     },
+            //   })
+            // }
             style={{
               backgroundColor: "#FFFFFF",
               height: "77%",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
               flexDirection: "row",
             }}
           >
-            <TouchableOpacity
+            <Ripple
               onPress={() =>
                 props.navigation.navigate("ItineraryStack", {
                   screen: "itindetail",
@@ -276,16 +368,17 @@ export default function ItineraryCategory(props) {
                 style={{
                   height: "100%",
                   width: Dimensions.get("screen").width * 0.33,
-                  borderTopLeftRadius: 10,
+                  borderTopLeftRadius: 5,
                 }}
               />
-            </TouchableOpacity>
+            </Ripple>
             <View
               style={{
-                width: Dimensions.get("screen").width * 0.6,
+                width: Dimensions.get("screen").width * 0.58,
                 paddingHorizontal: 10,
                 backgroundColor: "#FFFFFF",
                 marginVertical: 5,
+                overflow: "hidden",
               }}
             >
               <View>
@@ -298,37 +391,44 @@ export default function ItineraryCategory(props) {
                 >
                   <View
                     style={{
-                      borderColor: "#209FAE",
-                      borderRadius: 3,
                       backgroundColor: "#DAF0F2",
+                      borderWidth: 1,
+                      borderRadius: 3,
+                      borderColor: "#209FAE",
+                      paddingHorizontal: 5,
                     }}
                   >
                     <Text
-                      style={{ color: "#209FAE", padding: 3 }}
-                      size="small"
                       type="bold"
+                      size="description"
+                      style={{ color: "#209FAE" }}
                     >
-                      Family Trip
+                      {item?.categori?.name
+                        ? item?.categori?.name
+                        : "No Category"}
                     </Text>
                   </View>
-                  {/* {item.liked === false ? (
-                    <TouchableOpacity onPress={() => _liked(item.id, index)}>
-                      <LikeEmpty height={20} width={20} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => _unliked(item.id, index)}>
-                      <LikeRed height={20} width={20} />
-                    </TouchableOpacity>
-                  )} */}
+                  <View>
+                    {item.liked === false ? (
+                      <Ripple onPress={() => _liked(item.id, index)}>
+                        <LikeEmpty height={15} width={15} />
+                      </Ripple>
+                    ) : (
+                      <Ripple onPress={() => _unliked(item.id, index)}>
+                        <LikeRed height={15} width={15} />
+                      </Ripple>
+                    )}
+                  </View>
                 </View>
-                <Text size="description" type="black" style={{ marginTop: 5 }}>
+                <Text size="label" type="black" style={{ marginTop: 5 }}>
                   <Truncate text={item.name} length={40} />
                 </Text>
+                <View></View>
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    // marginTop: 3,
+                    marginTop: 5,
                   }}
                 >
                   <PinHijau width={15} height={15} />
@@ -343,7 +443,7 @@ export default function ItineraryCategory(props) {
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: 10,
+                    marginTop: 20,
                   }}
                 >
                   <View
@@ -379,7 +479,7 @@ export default function ItineraryCategory(props) {
                     </Text>
                   </View>
                 </View>
-                <View
+                {/* <View
                   style={{
                     marginTop: 3,
                     flexDirection: "row",
@@ -397,10 +497,10 @@ export default function ItineraryCategory(props) {
                   <Text style={{ marginLeft: 5 }} size="small" type="regular">
                     (283 reviews)
                   </Text>
-                </View>
+                </View> */}
               </View>
             </View>
-          </Pressable>
+          </View>
           <View
             style={{
               // borderWidth: 1,
@@ -455,267 +555,300 @@ export default function ItineraryCategory(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <FlatList
-        data={list_populer}
-        renderItem={renderCategory}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        refreshing={refreshing}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
-        }
-        ListHeaderComponent={
-          <View style={{ flex: 1 }}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={{
-                paddingHorizontal: 10,
-                height: 30,
-                marginTop: 10,
-                flexDirection: "row",
-              }}
-            >
-              <Pressable
-                style={{
-                  // height: "100%",
-                  borderRadius: 5,
-                  borderWidth: 1,
-                  borderColor: "#209FAE",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  marginLeft: 5,
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                }}
-              >
-                <CompervanIcon height={20} width={20} />
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{ marginLeft: 5, color: "#209FAE" }}
+  const RenderUtama = ({ aktif }) => {
+    if (aktif == "Itinerary") {
+      return (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+          }}
+        >
+          <View
+            style={{
+              height: Dimensions.get("screen").width * 0.13,
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <Text size="description" type="bold" style={{ marginRight: 5 }}>
+                Show Result
+              </Text>
+              <Text size="description" type="bold">
+                100
+              </Text>
+            </View>
+            <Text size="description" type="bold">
+              New Post
+            </Text>
+          </View>
+          <FlatList
+            data={list_populer}
+            renderItem={renderPopuler}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => Refresh()}
+              />
+            }
+            ListHeaderComponent={
+              <View>
+                <Text>test</Text>
+              </View>
+            }
+            ListFooterComponent={
+              loadingPopuler ? (
+                <View
+                  style={{
+                    // position: 'absolute',
+                    // bottom:0,
+                    width: width,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  Compervan
-                </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  borderRadius: 5,
-                  borderWidth: 1,
-                  borderColor: "#209FAE",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  marginLeft: 5,
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  backgroundColor: "#209FAE",
-                }}
-              >
-                <SoloIcon height={20} width={20} />
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{ marginLeft: 5, color: "white" }}
-                >
-                  Solo
-                </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  borderRadius: 5,
-                  borderWidth: 1,
-                  borderColor: "#209FAE",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  marginLeft: 5,
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                }}
-              >
-                <BussinessIcon height={20} width={20} />
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{ marginLeft: 5, color: "#209FAE" }}
-                >
-                  Bussiness
-                </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  // height: "100%",
-                  borderRadius: 5,
-                  borderWidth: 1,
-                  borderColor: "#209FAE",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  marginLeft: 5,
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                }}
-              >
-                <FamilyIcon height={20} width={20} />
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{ marginLeft: 5, color: "#209FAE" }}
-                >
-                  Family
-                </Text>
-              </Pressable>
-            </ScrollView>
+                  <Text
+                    size="title"
+                    type="bold"
+                    // style={{ color:'#209fae'}}
+                  >
+                    Loading...
+                  </Text>
+                </View>
+              ) : null
+            }
+            onEndReachedThreshold={1}
+            onEndReached={handleOnEndReached}
+          />
+        </View>
+      );
+    } else if (aktif == "Album") {
+      return (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          {loadingPopuler ? (
             <View
               style={{
-                marginTop: 10,
-                flexDirection: "row",
-                paddingHorizontal: 10,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
+                paddingHorizontal: 15,
+                height: "100%",
+                marginTop: 20,
+                flex: 1,
                 backgroundColor: "white",
               }}
             >
-              <View
-                style={{
-                  width: Dimensions.get("screen").width * 0.31,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderBottomWidth: 2,
-                  borderBottomColor: "#249FAE",
-                  paddingVertical: 10,
-                }}
-              >
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{ color: "#209FAE" }}
-                >
-                  Itinerary
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: Dimensions.get("screen").width * 0.31,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  // borderBottomWidth: 2,
-                  borderBottomColor: "#249FAE",
-                  paddingVertical: 10,
-                }}
-              >
-                <Text size="description" type="bold">
-                  Travel Album
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: Dimensions.get("screen").width * 0.31,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  // borderBottomWidth: 2,
-                  borderBottomColor: "#249FAE",
-                  paddingVertical: 10,
-                }}
-              >
-                <Text size="description" type="bold">
-                  Travel Stories
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                marginTop: 10,
-                paddingHorizontal: 10,
-                height: 50,
-                justifyContent: "center",
-                // borderWidth: 1,
-              }}
-            >
-              <View
-                style={{
-                  shadowColor: "gray",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: arrayShadow.shadowOpacity,
-                  shadowRadius: arrayShadow.shadowRadius,
-                  elevation: arrayShadow.elevation,
-                  backgroundColor: "white",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  padding: 15,
-                  height: "100%",
-                  justifyContent: "space-between",
-                  borderRadius: 5,
-                  // borderWidth: 1,
-                }}
-              >
-                <Text size="description" type="bold">
-                  Show Result
-                </Text>
-                <View
-                  style={{
-                    height: 30,
-                    width: 100,
-                    backgroundColor: "#F3F3F3",
-                    borderRadius: 5,
-                  }}
-                >
-                  <Picker
-                    mode="dropdown"
-                    style={{
-                      fontSize: 7,
-                      fontFamily: "Lato-Regular",
-                      // elevation: 20,
-                      height: "100%",
-                      width: "100%",
-                    }}
-                    // selectedValue={genders}
-                    // onValueChange={(x) => setGender(x)}
-                  >
-                    <Picker.Item
-                      style={{ fontSize: 12 }}
-                      label="New Post"
-                      value="M"
-                    />
-                    <Picker.Item label="Populer" value="F" />
-                  </Picker>
-                </View>
-              </View>
-            </View>
-          </View>
-        }
-        ListFooterComponent={
-          loadingPopuler ? (
-            <View
-              style={{
-                // position: 'absolute',
-                // bottom:0,
-                width: width,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                // style={{ color:'#209fae'}}
-              >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
                 Loading...
               </Text>
             </View>
-          ) : null
-        }
-        onEndReachedThreshold={1}
-        onEndReached={handleOnEndReached}
-      />
+          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
+            <FlatList
+              data={dataPopuler.itinerary_list_populer}
+              renderItem={renderPopuler}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View
+              style={{
+                paddingHorizontal: 15,
+                marginTop: 20,
+                flex: 1,
+                backgroundColor: "white",
+                alignItems: "center",
+              }}
+            >
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                Tidak ada Travel Album
+              </Text>
+            </View>
+          )}
+        </View>
+      );
+    } else if (aktif == "Stories") {
+      return (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            height: "100%",
+          }}
+        >
+          <Text size="label" type="bold" style={{ textAlign: "center" }}>
+            Tidak ada Travel Stories
+          </Text>
+        </View>
+      );
+    } else {
+      return <View></View>;
+    }
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          backgroundColor: "white",
+        }}
+      >
+        <View
+          style={{
+            marginTop: 10,
+            flexDirection: "row",
+            height: Dimensions.get("screen").width * 0.1,
+            backgroundColor: "white",
+            justifyContent: "center",
+          }}
+        >
+          <FlatList
+            data={dataCategory?.category_journal}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 15 }}
+            renderItem={({ item, index }) => {
+              return (
+                <Ripple
+                  style={{
+                    overflow: "hidden",
+                    height: "95%",
+                    marginRight: 5,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 5,
+                    marginTop: 1,
+                    marginLeft: 1,
+                    backgroundColor: dataType === item.id ? "#209FAE" : "white",
+                    borderColor: "#209FAE",
+                    paddingHorizontal: 5,
+                    marginVertical: 4,
+                    borderWidth: 1,
+                    flexDirection: "row",
+                  }}
+                  // onPress={() =>
+                  //   props.navigation.navigate("ItineraryCategory", {
+                  //     dataPopuler: dataPopuler,
+                  //     typeCategory: item.id,
+                  //   })
+                  // }
+                >
+                  <FunIcon
+                    icon={item.icon}
+                    height={30}
+                    width={30}
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{
+                      textAlign: "center",
+                      color: dataType === item.id ? "white" : "#209FAE",
+                    }}
+                  >
+                    {item?.name}
+                  </Text>
+                </Ripple>
+              );
+            }}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 5,
+            width: Dimensions.get("screen").width,
+            flexDirection: "row",
+            shadowColor: "gray",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
+            backgroundColor: "white",
+            justifyContent: "space-around",
+          }}
+        >
+          <Ripple
+            onPress={() => setActives("Itinerary")}
+            style={{
+              width: Dimensions.get("screen").width * 0.32,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: actives == "Itinerary" ? 2 : 0,
+              borderBottomColor: actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={actives == "Itinerary" ? "bold" : "regular"}
+              style={{
+                color: actives == "Itinerary" ? "#209FAE" : "#464646",
+              }}
+            >
+              Itinerary
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() => setActives("Album")}
+            style={{
+              width: Dimensions.get("screen").width * 0.32,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: actives == "Album" ? 2 : 0,
+              borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={actives == "Album" ? "bold" : "reguler"}
+              style={{
+                color: actives == "Album" ? "#209FAE" : "#464646",
+              }}
+            >
+              Travel Album
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() => setActives("Stories")}
+            style={{
+              width: Dimensions.get("screen").width * 0.32,
+              alignItems: "center",
+              justifyContent: "center",
+              borderBottomWidth: actives == "Stories" ? 2 : 0,
+              borderBottomColor: actives == "Stories" ? "#249FAE" : "#EEEEEE",
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              size="description"
+              type={actives == "Stories" ? "bold" : "reguler"}
+              style={{
+                color: actives == "Stories" ? "#209FAE" : "#464646",
+              }}
+            >
+              Travel Stories
+            </Text>
+          </Ripple>
+        </View>
+      </View>
+      <View>
+        <RenderUtama aktif={actives} />
+      </View>
     </View>
   );
 }
