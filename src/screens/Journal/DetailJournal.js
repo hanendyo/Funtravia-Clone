@@ -74,8 +74,6 @@ export default function DetailJournal(props) {
     },
   });
 
-  console.log(data);
-
   const afterComment = async () => {
     await fetchDataComment();
     await scroll_to();
@@ -105,8 +103,6 @@ export default function DetailJournal(props) {
     await fetchDataComment();
   };
 
-  console.log("token detail journal", token);
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
@@ -132,9 +128,6 @@ export default function DetailJournal(props) {
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);
     var days = Math.floor(hrs / 24);
-    console.log("menit", mins);
-    console.log("jam", hrs);
-    console.log("days", days > 0);
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
     hrs = hrs % 24;
@@ -344,7 +337,15 @@ export default function DetailJournal(props) {
                   type={"regular"}
                   style={{ color: "#209FAE", marginTop: -2 }}
                 >
-                  #solo
+                  #
+                  {data &&
+                  data.journal_byid &&
+                  data.journal_byid.categori &&
+                  data.journal_byid.categori.name
+                    ? data.journal_byid.categori.name
+                        .toLowerCase()
+                        .replace(/ /g, "")
+                    : "funtravia"}
                 </Text>
               </View>
             </View>
@@ -376,10 +377,10 @@ export default function DetailJournal(props) {
           </View>
           <View style={{ marginHorizontal: 20 }}>
             <View>
-              <Text size={"title"} type={"bold"}>
+              <Text size={"title"} type={"bold"} style={{ lineHeight: 25 }}>
                 <Truncate
                   text={data.journal_byid ? data.journal_byid.title : "Title"}
-                  length={50}
+                  length={80}
                 />
               </Text>
             </View>
@@ -443,7 +444,7 @@ export default function DetailJournal(props) {
                           <Text
                             size={"label"}
                             type={"bold"}
-                            style={{ textAlign: "justify" }}
+                            style={{ textAlign: "justify", lineHeight: 20 }}
                           >
                             {item.title ? item.title : null}
                           </Text>
@@ -460,7 +461,7 @@ export default function DetailJournal(props) {
                           <Text
                             size={"description"}
                             type={"regular"}
-                            style={{ textAlign: "justify" }}
+                            style={{ textAlign: "justify", lineHeight: 16 }}
                           >
                             {item.text ? item.text : null}
                           </Text>
@@ -489,7 +490,7 @@ export default function DetailJournal(props) {
                             <Text
                               size={"description"}
                               type={"regular"}
-                              style={{ textAlign: "justify" }}
+                              style={{ textAlign: "justify", lineHeight: 16 }}
                             >
                               {item.text ? item.text : null}
                             </Text>

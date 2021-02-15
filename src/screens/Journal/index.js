@@ -19,6 +19,7 @@ import { useLazyQuery } from "@apollo/react-hooks";
 import { Loading, Truncate } from "../../component";
 import { dateFormatMonthYears } from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
+import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 
 export default function Journal(props) {
   const HeaderComponent = {
@@ -82,6 +83,22 @@ export default function Journal(props) {
     },
   });
 
+  const [
+    fetchCategory,
+    { data: dataCategory, loading: loadingCategory, error: errorCategory },
+  ] = useLazyQuery(Category, {
+    variables: {
+      category_id: null,
+      order_by: null,
+    },
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  });
+
   const JournalDetail = (data) => {
     props.navigation.navigate("DetailJournal", {
       dataPopuler: data,
@@ -96,43 +113,45 @@ export default function Journal(props) {
   const renderList = ({ item, index }) => {
     return (
       <View>
-        <TouchableOpacity
+        <Pressable
           style={{ flexDirection: "row" }}
           onPress={() => JournalDetail(item)}
         >
           <Image
             source={item.firstimg ? { uri: item.firstimg } : default_image}
             style={{
-              width: "30%",
-              height: 140,
+              width: "21%",
+              height: 110,
               borderRadius: 10,
             }}
           />
           <View
             style={{
-              width: "70%",
-              // height: Dimensions.get("window").width * 0.34,
-              // height: 100,
-              marginVertical: 10,
-              paddingLeft: 20,
+              width: "79%",
+              marginVertical: 5,
+              paddingLeft: 10,
               justifyContent: "space-between",
             }}
           >
             <View>
               <Text style={{ color: "#209FAE" }} size={"small"} type={"bold"}>
-                #solo
+                #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
               </Text>
-              <Text size={"label"} type={"bold"} style={{ color: "#3E3E3E" }}>
-                <Truncate text={item.title ? item.title : ""} length={50} />
+              <Text
+                size={"label"}
+                type={"bold"}
+                style={{ color: "#3E3E3E", marginTop: 5 }}
+              >
+                <Truncate text={item.title ? item.title : ""} length={40} />
               </Text>
               <Text
                 size={"small"}
                 type={"regular"}
-                style={{ textAlign: "justify" }}
+                style={{ textAlign: "justify", marginTop: 5, lineHeight: 16 }}
               >
                 <Truncate
                   text={item.firsttxt ? item.firsttxt : ""}
-                  length={100}
+                  length={110}
                 />
               </Text>
             </View>
@@ -166,7 +185,7 @@ export default function Journal(props) {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
         <View
           style={{
             margin: 10,
@@ -182,9 +201,11 @@ export default function Journal(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       refresh();
+      fetchCategory();
     });
     return unsubscribe;
   }, [props.navigation]);
+
   {
     /* ======================================= Render All ====================================================*/
   }
@@ -192,83 +213,129 @@ export default function Journal(props) {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Loading show={loading} />
-      {/* <NavigationEvents onDidFocus={() => refresh()} /> */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        style={styles.scroll}
-        stickyHeaderIndices={[2]}
-      >
-        {/* ============================== Populer Journal ====================================================*/}
+      {/* ============================== Populer Journal ====================================================*/}
 
-        {data && data.journal_most_populer ? (
-          <View style={styles.container}>
-            <TouchableOpacity
-              onPress={() => JournalDetail(data.journal_most_populer)}
-            >
-              <Image
-                source={
-                  data.journal_most_populer.firstimg
-                    ? { uri: data.journal_most_populer.firstimg }
-                    : default_image
-                }
-                style={styles.imageTop}
-              />
-              <View style={{ marginHorizontal: 20 }}>
-                <View>
-                  <Text style={styles.title} size={"title"} type={"bold"}>
-                    {data.journal_most_populer ? (
-                      <Truncate
-                        text={data.journal_most_populer.title}
-                        length={50}
-                      />
-                    ) : (
-                      "Title"
-                    )}
+      {data && data.journal_most_populer ? (
+        <View style={styles.container}>
+          <Pressable onPress={() => JournalDetail(data.journal_most_populer)}>
+            <Image
+              source={
+                data.journal_most_populer.firstimg
+                  ? { uri: data.journal_most_populer.firstimg }
+                  : default_image
+              }
+              style={styles.imageTop}
+            />
+            <View style={{ marginHorizontal: 10 }}>
+              <View>
+                <Text style={styles.title} size={"title"} type={"bold"}>
+                  {data.journal_most_populer ? (
+                    <Truncate
+                      text={data.journal_most_populer.title}
+                      length={80}
+                    />
+                  ) : (
+                    "Title"
+                  )}
+                </Text>
+              </View>
+              <View style={styles.editor}>
+                <Thumbnail
+                  source={
+                    data &&
+                    data.journal_most_populer &&
+                    data.journal_most_populer.userby &&
+                    data.journal_most_populer.userby.picture
+                      ? { uri: data.journal_most_populer.userby.picture }
+                      : logo_funtravia
+                  }
+                  style={{
+                    borderColor: "#ffffff",
+                    height: 35,
+                    width: 35,
+                  }}
+                />
+                <View style={styles.dataEditor}>
+                  <Text size={"label"} type={"bold"}>
+                    {data.journal_most_populer.userby
+                      ? data.journal_most_populer.userby
+                      : "Funtravia"}
+                  </Text>
+                  <Text
+                    size={"description"}
+                    type={"regular"}
+                    style={{ marginTop: -2 }}
+                  >
+                    {data.journal_most_populer.date
+                      ? dateFormatMonthYears(data.journal_most_populer.date)
+                      : null}
                   </Text>
                 </View>
-                <View style={styles.editor}>
-                  <Thumbnail
-                    source={
-                      data &&
-                      data.journal_most_populer &&
-                      data.journal_most_populer.userby &&
-                      data.journal_most_populer.userby.picture
-                        ? { uri: data.journal_most_populer.userby.picture }
-                        : logo_funtravia
-                    }
-                    style={{
-                      borderColor: "#ffffff",
-                      // borderWidth: 2,
-                      height: 30,
-                      width: 30,
-                    }}
-                  />
-                  <View style={styles.dataEditor}>
-                    <Text size={"description"} type={"bold"}>
-                      {data.journal_most_populer.userby
-                        ? data.journal_most_populer.userby
-                        : "Funtravia"}
-                    </Text>
-                    <Text
-                      size={"small"}
-                      type={"regular"}
-                      style={{ marginTop: -2 }}
-                    >
-                      {data.journal_most_populer.date
-                        ? dateFormatMonthYears(data.journal_most_populer.date)
-                        : null}
-                    </Text>
-                  </View>
-                </View>
               </View>
-            </TouchableOpacity>
+            </View>
+          </Pressable>
+        </View>
+      ) : null}
+      {dataCategory && dataCategory.category_journal ? (
+        <View
+          style={{
+            height: 50,
+            marginTop: 15,
+          }}
+        >
+          <FlatList
+            data={dataCategory?.category_journal}
+            contentContainerStyle={{
+              flexDirection: "row",
+              paddingHorizontal: 5,
+            }}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <Pressable
+                onPress={() =>
+                  props.navigation.navigate("JournalCategory", {
+                    category: item.id,
+                  })
+                }
+              >
+                <Text
+                  style={{
+                    padding: 10,
+                    backgroundColor: "#F6F6F6",
+                    marginLeft: 10,
+                    borderRadius: 5,
+                  }}
+                  size={"description"}
+                  type={"bold"}
+                >
+                  {item.name}
+                </Text>
+              </Pressable>
+            )}
+          />
+        </View>
+      ) : null}
+      {/* {dataCategory && dataCategory.category_journal ? (
+          <FlatList
+            data={dataCategory.category_journal}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <View>
+                <Text>{item.name}</Text>
+              </View>
+            )}
+          />
+        ) : (
+          <View>
+            <Text>test</Text>
           </View>
-        ) : null}
+        )} */}
 
-        {/* ============================== Top Contributor ====================================================*/}
+      {/* ============================== Top Contributor ====================================================*/}
 
-        {/* <View style={styles.topContributor}>
+      {/* <View style={styles.topContributor}>
 					<Text size={'label'} type={'bold'}>
 						Top Contributor
 					</Text>
@@ -319,8 +386,8 @@ export default function Journal(props) {
 						</TouchableOpacity>
 					</View>
 				</View> */}
-        {/* ============================== Type Journal ====================================================*/}
-        {/* <View style={styles.filterStyle}>
+      {/* ============================== Type Journal ====================================================*/}
+      {/* <View style={styles.filterStyle}>
           <Pressable onPress={() => alert("Coming Soon")}>
             <View style={styles.contentFilter}>
               <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
@@ -344,77 +411,26 @@ export default function Journal(props) {
           </Pressable>
         </View> */}
 
-        {/* ============================== List Journal ====================================================*/}
+      {/* ============================== List Journal ====================================================*/}
 
-        {dataList && dataList.journal_list.length > 0 ? (
-          <View
-            style={{
-              marginVertical: 10,
-              width: Dimensions.get("window").width,
-              paddingHorizontal: 10,
-              alignContent: "center",
-            }}
-          >
-            <FlatList
-              data={dataList.journal_list}
-              renderItem={renderList}
-              keyExtractor={(data) => data.id}
-              nestedScrollEnabled
-              ListHeaderComponent={
-                <ScrollView>
-                  <View style={styles.filterStyle}>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text
-                          style={{ padding: 10 }}
-                          size={"description"}
-                          type={"bold"}
-                        >
-                          Family
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text
-                          style={{ padding: 10 }}
-                          size={"description"}
-                          type={"bold"}
-                        >
-                          Honey Moon
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text
-                          style={{ padding: 10 }}
-                          size={"description"}
-                          type={"bold"}
-                        >
-                          Solo
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text
-                          style={{ padding: 10 }}
-                          size={"description"}
-                          type={"bold"}
-                        >
-                          Bussines
-                        </Text>
-                      </View>
-                    </Pressable>
-                  </View>
-                </ScrollView>
-              }
-              ListFooterComponent={null}
-            />
-          </View>
-        ) : null}
-      </ScrollView>
+      {dataList && dataList.journal_list.length > 0 ? (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("window").width,
+            paddingHorizontal: 15,
+            alignContent: "center",
+          }}
+        >
+          <FlatList
+            data={dataList.journal_list}
+            renderItem={renderList}
+            keyExtractor={(data) => data.id}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -425,21 +441,19 @@ export default function Journal(props) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    marginHorizontal: 5,
-    borderRadius: 15,
+    marginTop: 15,
+    borderRadius: 10,
     backgroundColor: "#f6f6f6",
-    width: Dimensions.get("window").width * 0.95,
-    alignSelf: "center",
     paddingBottom: 20,
+    marginHorizontal: 15,
   },
   imageTop: {
-    width: Dimensions.get("window").width * 0.95,
     height: 150,
-    borderRadius: 15,
+    borderRadius: 10,
   },
   title: {
     marginTop: 10,
+    lineHeight: 22,
   },
   editor: {
     flexDirection: "row",
@@ -456,9 +470,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   filterStyle: {
-    flexDirection: "row",
     marginBottom: 10,
-    // paddingHorizontal: 10,
+    marginTop: 10,
+    paddingHorizontal: 10,
   },
   contentFilter: {
     marginRight: 10,

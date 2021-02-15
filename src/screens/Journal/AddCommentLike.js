@@ -17,7 +17,6 @@ export default function AddCommentLike({
   listComment,
 }) {
   let [dataList, setDataList] = useState(data);
-  console.log("data :", data)
   let [text, setText] = useState("");
   const { t } = useTranslation();
   const [
@@ -91,10 +90,7 @@ export default function AddCommentLike({
     }
   };
 
-  console.log("token:", token)
   const _liked = async (id) => {
-    console.log("token like:", token)
-    console.log("id like:", id)
     if (token || token !== "") {
       try {
         let response = await mutationliked({
@@ -108,7 +104,6 @@ export default function AddCommentLike({
         if (errorLike) {
           throw new Error("Error Input");
         }
-        console.log(response);
         if (response.data) {
           if (
             response.data.like_journal.code === 200 ||
@@ -131,8 +126,6 @@ export default function AddCommentLike({
   };
 
   const _unliked = async (id) => {
-    console.log("token unlike:", token)
-    console.log("id unlike:", id)
     if (token || token !== "") {
       try {
         let response = await mutationUnliked({
@@ -146,7 +139,6 @@ export default function AddCommentLike({
         if (errorUnLike) {
           throw new Error("Error Input");
         }
-        console.log(response);
         if (response.data) {
           if (
             response.data.unlike_journal.code === 200 ||
@@ -174,7 +166,7 @@ export default function AddCommentLike({
         paddingBottom: 10,
         paddingHorizontal: 20,
         width: Dimensions.get("window").width,
-        justifyContent: 'center',
+        justifyContent: "center",
         flexDirection: "row",
         backgroundColor: "white",
       }}
@@ -212,7 +204,7 @@ export default function AddCommentLike({
         />
       </View>
       <TouchableOpacity onPress={() => Alert.alert("Comming Soon")}>
-        < View
+        <View
           style={{
             marginLeft: 10,
             borderRadius: 30,
@@ -224,43 +216,41 @@ export default function AddCommentLike({
           }}
         >
           <Shareout width={20} height={20} />
-        </ View>
+        </View>
       </TouchableOpacity>
-      {
-        data.liked === false ? (
-          <TouchableOpacity onPress={() => _liked(dataList.id)}>
-            <View
-              style={{
-                marginLeft: 10,
-                borderRadius: 30,
-                backgroundColor: "#f6f6f6",
-                width: Dimensions.get("window").width * 0.13,
-                height: Dimensions.get("window").width * 0.13,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <LikeJournal width={20} height={20} />
-            </View>
-          </TouchableOpacity>
-        ) : (
-            <TouchableOpacity onPress={() => _unliked(dataList.id)}>
-              <View
-                style={{
-                  marginLeft: 10,
-                  borderRadius: 30,
-                  backgroundColor: "#f6f6f6",
-                  width: Dimensions.get("window").width * 0.13,
-                  height: Dimensions.get("window").width * 0.13,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <LikeRed width={20} height={20} />
-              </View>
-            </TouchableOpacity>
-          )
-      }
-    </View >
+      {data.liked === false ? (
+        <TouchableOpacity onPress={() => _liked(dataList.id)}>
+          <View
+            style={{
+              marginLeft: 10,
+              borderRadius: 30,
+              backgroundColor: "#f6f6f6",
+              width: Dimensions.get("window").width * 0.13,
+              height: Dimensions.get("window").width * 0.13,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <LikeJournal width={20} height={20} />
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={() => _unliked(dataList.id)}>
+          <View
+            style={{
+              marginLeft: 10,
+              borderRadius: 30,
+              backgroundColor: "#f6f6f6",
+              width: Dimensions.get("window").width * 0.13,
+              height: Dimensions.get("window").width * 0.13,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <LikeRed width={20} height={20} />
+          </View>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 }

@@ -10,6 +10,7 @@ import {
   ScrollView,
   Picker,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -39,6 +40,10 @@ export default function ItineraryCategory(props) {
   let { width, height } = Dimensions.get("screen");
   let [dataType, setDataType] = useState(props.route.params.typeCategory);
   let [actives, setActives] = useState("Itinerary");
+  let [order, setOrder] = useState(props.route.params.typeOrder);
+
+  console.log("order", order);
+  console.log("category", dataType);
 
   let [search, setSearch] = useState({
     keyword: "",
@@ -129,7 +134,7 @@ export default function ItineraryCategory(props) {
       countries: null,
       cities: null,
       rating: null,
-      orderby: null,
+      orderby: order,
       limit: 10,
       offset: 0,
     },
@@ -240,9 +245,9 @@ export default function ItineraryCategory(props) {
           }
         }
       } catch (error) {
-        feed_post_pageing[index].liked = false;
-        feed_post_pageing[index].response_count =
-          feed_post_pageing[index].response_count + 1;
+        list_populer[index].liked = false;
+        list_populer[index].response_count =
+          list_populer[index].response_count + 1;
         Alert.alert("" + error);
       }
     } else {
@@ -558,77 +563,66 @@ export default function ItineraryCategory(props) {
   const RenderUtama = ({ aktif }) => {
     if (aktif == "Itinerary") {
       return (
-        <View
-          style={{
-            flex: 1,
-            width: Dimensions.get("screen").width,
+        <FlatList
+          data={list_populer}
+          renderItem={renderPopuler}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingVertical: 5,
           }}
-        >
-          <View
-            style={{
-              height: Dimensions.get("screen").width * 0.13,
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-around",
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <Text size="description" type="bold" style={{ marginRight: 5 }}>
-                Show Result
-              </Text>
-              <Text size="description" type="bold">
-                100
-              </Text>
-            </View>
-            <Text size="description" type="bold">
-              New Post
-            </Text>
-          </View>
-          <FlatList
-            data={list_populer}
-            renderItem={renderPopuler}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => Refresh()}
-              />
-            }
-            ListHeaderComponent={
-              <View>
-                <Text>test</Text>
+          refreshing={refreshing}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => Refresh()}
+            />
+          }
+          ListHeaderComponent={
+            <View
+              style={{
+                height: Dimensions.get("screen").width * 0.13,
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                <Text size="description" type="bold" style={{ marginRight: 5 }}>
+                  Show Result
+                </Text>
+                <Text size="description" type="bold">
+                  {list_populer?.length}
+                </Text>
               </View>
-            }
-            ListFooterComponent={
-              loadingPopuler ? (
-                <View
-                  style={{
-                    // position: 'absolute',
-                    // bottom:0,
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+              <View
+                style={{
+                  width: Dimensions.get("screen").width * 0.35,
+                  height: "100%",
+                  elevation: 20,
+                  justifyContent: "center",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                }}
+              >
+                <Picker
+                  mode="dropdown"
+                  selectedValue={order}
+                  onValueChange={(x) => setOrder(x)}
                 >
-                  <Text
-                    size="title"
-                    type="bold"
-                    // style={{ color:'#209fae'}}
-                  >
-                    Loading...
-                  </Text>
-                </View>
-              ) : null
-            }
-            onEndReachedThreshold={1}
-            onEndReached={handleOnEndReached}
-          />
-        </View>
+                  <Picker.Item label="New Post" value="new" />
+                  <Picker.Item label="Populer" value="populer" />
+                </Picker>
+              </View>
+            </View>
+          }
+          onEndReachedThreshold={1}
+          onEndReached={handleOnEndReached}
+        />
       );
     } else if (aktif == "Album") {
       return (
@@ -637,44 +631,13 @@ export default function ItineraryCategory(props) {
             flex: 1,
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
+            height: "100%",
+            marginTop: 20,
           }}
         >
-          {loadingPopuler ? (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                height: "100%",
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Loading...
-              </Text>
-            </View>
-          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
-            <FlatList
-              data={dataPopuler.itinerary_list_populer}
-              renderItem={renderPopuler}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-                alignItems: "center",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Tidak ada Travel Album
-              </Text>
-            </View>
-          )}
+          <Text size="label" type="bold" style={{ textAlign: "center" }}>
+            Tidak ada Travel Album
+          </Text>
         </View>
       );
     } else if (aktif == "Stories") {
@@ -685,6 +648,7 @@ export default function ItineraryCategory(props) {
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
             height: "100%",
+            marginTop: 20,
           }}
         >
           <Text size="label" type="bold" style={{ textAlign: "center" }}>
@@ -698,7 +662,11 @@ export default function ItineraryCategory(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       <View
         style={{
           backgroundColor: "white",
@@ -708,7 +676,6 @@ export default function ItineraryCategory(props) {
           style={{
             marginTop: 10,
             flexDirection: "row",
-            height: Dimensions.get("screen").width * 0.1,
             backgroundColor: "white",
             justifyContent: "center",
           }}
@@ -737,17 +704,13 @@ export default function ItineraryCategory(props) {
                     borderWidth: 1,
                     flexDirection: "row",
                   }}
-                  // onPress={() =>
-                  //   props.navigation.navigate("ItineraryCategory", {
-                  //     dataPopuler: dataPopuler,
-                  //     typeCategory: item.id,
-                  //   })
-                  // }
+                  onPress={() => setDataType(item.id)}
                 >
                   <FunIcon
                     icon={item.icon}
                     height={30}
                     width={30}
+                    fill={dataType === item.id ? "white" : "black"}
                     style={{ marginRight: 5 }}
                   />
                   <Text
@@ -846,9 +809,7 @@ export default function ItineraryCategory(props) {
           </Ripple>
         </View>
       </View>
-      <View>
-        <RenderUtama aktif={actives} />
-      </View>
+      <RenderUtama aktif={actives} />
     </View>
   );
 }

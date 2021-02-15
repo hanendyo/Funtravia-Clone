@@ -66,6 +66,12 @@ const JournalList = gql`
 				latitude
 				longitude
 			}
+			categori{
+				id
+				name
+				slug
+				icon
+			}
 		}
 	}
 `;

@@ -48,7 +48,7 @@ const fontSize = StyleSheet.create({
   small: { fontSize: 10 },
   description: { fontSize: 12 },
   label: { fontSize: 14 },
-  title: { fontSize: 18 },
+  title: { fontSize: 16 },
   h5: { fontSize: 22 },
   h4: { fontSize: 28 },
   h3: { fontSize: 34 },
