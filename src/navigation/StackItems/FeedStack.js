@@ -8,6 +8,7 @@ import SinglePost from "../../screens/Feed/Post/SinglePost";
 import CommentsById from "../../screens/Feed/Post/CommentsById";
 import SearchPageFeed from "../../screens/Feed/SearchPageFeed";
 import SearchFeedByTag from "../../screens/Feed/SearchFeedByTag";
+import SearchFeedByLocation from "../../screens/Feed/SearchFeedByLocation";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
@@ -56,6 +57,14 @@ export default function FeedStackNavigation() {
       <FeedStack.Screen
         name="SearchFeedByTag"
         component={SearchFeedByTag}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+        }}
+      />
+      <FeedStack.Screen
+        name="SearchFeedByLocation"
+        component={SearchFeedByLocation}
         options={{
           headerTitle: "",
           headerTransparent: true,

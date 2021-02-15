@@ -25,11 +25,17 @@ export default function LoginGoogle({ navigation }) {
   const [mutation, { loading, data, error }] = useMutation(GoogleGraph);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   const signInWithGoogle = async () => {
-    try {
+    // try {
+    // await GoogleSignin.revokeAccess();
+    // // console.log("deleted");
+    // // } catch (error) {
+    // // console.error(error);
+    // // }
+    let data = await GoogleSignin.getCurrentUser();
+    // console.log(data);
+
+    if (data) {
       await GoogleSignin.revokeAccess();
-      console.log("deleted");
-    } catch (error) {
-      console.error(error);
     }
     await GoogleSignin.configure({
       iosClientId:
@@ -41,7 +47,7 @@ export default function LoginGoogle({ navigation }) {
     const result = await GoogleSignin.getTokens();
     let response;
     let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
-    console.log("FCM TOKEN", FCM_TOKEN);
+    // console.log("FCM TOKEN", FCM_TOKEN);
     if (result) {
       response = await mutation({
         variables: {
@@ -71,11 +77,11 @@ export default function LoginGoogle({ navigation }) {
       response.data.login_google.code === 400 ||
       response.data.login_google.code === "400"
     ) {
-      await GoogleSignin.revokeAccess();
+      // await GoogleSignin.revokeAccess();
       Alert.alert("Failed", response.data.login_google.message);
       navigation.navigate("LoginScreen");
     } else {
-      await GoogleSignin.revokeAccess();
+      // await GoogleSignin.revokeAccess();
       Alert.alert("Failed", "Failed Login With Google");
       navigation.navigate("LoginScreen");
     }
