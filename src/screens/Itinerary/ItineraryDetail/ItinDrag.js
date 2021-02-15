@@ -1248,234 +1248,240 @@ export default function ItinDrag({
       }}
     >
       <DraggableFlatList
-        style={
-          {
-            // height: Dimensions.get("screen").height - 200,
-          }
-        }
+        onScrollOffsetChange={(data) => console.log(data)}
+        style={{
+          height: Dimensions.get("screen").height - 200,
+        }}
         key={""}
+        stickyHeaderIndices={[0]}
+        // scrollEnabled={false}
         ListHeaderComponent={
-          <View
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 5,
-              borderWidth: 0.5,
-              borderTopColor: "#d3d3d3",
-              borderBottomColor: "#d3d3d3",
-              borderRightColor: "#d3d3d3",
-              borderLeftColor: "#209fae",
-              borderLeftWidth: 5,
-              padding: 10,
-              height: 60,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignContent: "center",
-              alignItems: "center",
-              marginBottom: 10,
-            }}
-          >
+          <>
+            <View>
+              <Text>test</Text>
+            </View>
             <View
-              onLayout={() => {
-                _fetchItem(
-                  dataList[0] ? dataList[0].city : kota,
-                  dataList[0] ? dataList[0].latitude : lat,
-                  dataList[0] ? dataList[0].longitude : long
-                );
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 5,
+                borderWidth: 0.5,
+                borderTopColor: "#d3d3d3",
+                borderBottomColor: "#d3d3d3",
+                borderRightColor: "#d3d3d3",
+                borderLeftColor: "#209fae",
+                borderLeftWidth: 5,
+                padding: 10,
+                height: 60,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignContent: "center",
+                alignItems: "center",
+                marginBottom: 10,
               }}
             >
               <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text type={"bold"} size="label">
-                  {dateFormatHari(datadayaktif.date)}
-                </Text>
-                <View
-                  style={{
-                    marginTop: 3,
-                    backgroundColor: "#464646",
-                    borderRadius: 5,
-                    width: 5,
-                    height: 5,
-                    marginHorizontal: 5,
-                  }}
-                ></View>
-                <Text type={"bold"} size="label">
-                  {dateFormatMDY(datadayaktif.date)}
-                </Text>
-              </View>
-              <Text>
-                {dataList.length > 0 ? (
-                  <Truncate text={getcity(dataList)} length={35} />
-                ) : (
-                  <Capital text={kota} length={35} />
-                )}
-              </Text>
-            </View>
-            {dataweather && dataweather.cod === 200 && dataweather.weather ? (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
+                onLayout={() => {
+                  _fetchItem(
+                    dataList[0] ? dataList[0].city : kota,
+                    dataList[0] ? dataList[0].latitude : lat,
+                    dataList[0] ? dataList[0].longitude : long
+                  );
                 }}
               >
                 <View
                   style={{
+                    flexDirection: "row",
+                    alignContent: "center",
                     alignItems: "center",
-                    justifyContent: "flex-end",
-                    height: "100%",
                   }}
                 >
+                  <Text type={"bold"} size="label">
+                    {dateFormatHari(datadayaktif.date)}
+                  </Text>
                   <View
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      marginTop: 3,
+                      backgroundColor: "#464646",
+                      borderRadius: 5,
+                      width: 5,
+                      height: 5,
+                      marginHorizontal: 5,
                     }}
-                  >
-                    <FunIcon
-                      icon={icons[dataweather.weather[0].icon]}
-                      height={35}
-                      width={35}
-                      style={{
-                        bottom: -3,
-                      }}
-                    />
-                    <View
-                      style={{
-                        paddingTop: 5,
-                        flexDirection: "row",
-                      }}
-                    >
-                      <Text size="title" type="bold" style={{}}>
-                        {(dataweather.main.temp / 10).toFixed(1)}
-                      </Text>
-                      <View
-                        style={{
-                          marginTop: 7,
-                          alignSelf: "flex-start",
-                          height: 5,
-                          width: 5,
-                          borderWidth: 1,
-                          borderRadius: 2.5,
-                        }}
-                      ></View>
-                    </View>
-                  </View>
-                  <Text size="small" type="regular" style={{}}>
-                    {dataweather.weather[0].description}
+                  ></View>
+                  <Text type={"bold"} size="label">
+                    {dateFormatMDY(datadayaktif.date)}
                   </Text>
                 </View>
-
-                {dataweather.main.temp / 10 > 27.2 ? (
-                  <View
-                    style={{
-                      height: "100%",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <FunIcon
-                      icon={"w-hot"}
-                      height={35}
-                      style={{
-                        bottom: -3,
-                      }}
-                    />
-                    <Text size="small" type="regular" style={{}}>
-                      Hot
-                    </Text>
-                  </View>
-                ) : null}
-
-                {dataweather.main.temp / 10 > 25.8 &&
-                dataweather.main.temp / 10 < 27.3 ? (
-                  <View
-                    style={{
-                      height: "100%",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <FunIcon icon={"w-warm"} height={50} width={50} />
-                    <Text size="small" type="regular" style={{}}>
-                      Warm
-                    </Text>
-                  </View>
-                ) : null}
-
-                {dataweather.main.temp / 10 > 22.8 &&
-                dataweather.main.temp / 10 < 25.9 ? (
-                  <View
-                    style={{
-                      height: "100%",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <FunIcon icon={"w-humid"} height={50} width={50} />
-                    <Text size="small" type="regular" style={{}}>
-                      Humid
-                    </Text>
-                  </View>
-                ) : null}
-
-                {dataweather.main.temp / 10 > 20.5 &&
-                dataweather.main.temp / 10 < 22.9 ? (
-                  <View
-                    style={{
-                      height: "100%",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <FunIcon icon={"w-cold"} height={50} width={50} />
-                    <Text size="small" type="regular" style={{}}>
-                      Cold
-                    </Text>
-                  </View>
-                ) : null}
-
-                {dataweather.main.temp / 10 < 20.6 ? (
-                  <View
-                    style={{
-                      height: "100%",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <FunIcon icon={"w-freezing"} height={50} />
-                    <Text size="small" type="regular" style={{}}>
-                      Freezing
-                    </Text>
-                  </View>
-                ) : null}
-
-                <Button
-                  size="small"
-                  text=""
-                  type="circle"
-                  variant="transparent"
-                  style={{}}
-                  onPress={() => {
-                    setModalmenuday(true);
+                <Text>
+                  {dataList.length > 0 ? (
+                    <Truncate text={getcity(dataList)} length={35} />
+                  ) : (
+                    <Capital text={kota} length={35} />
+                  )}
+                </Text>
+              </View>
+              {dataweather && dataweather.cod === 200 && dataweather.weather ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <More width={15} height={15} />
-                </Button>
-              </View>
-            ) : null}
-          </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      height: "100%",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <FunIcon
+                        icon={icons[dataweather.weather[0].icon]}
+                        height={35}
+                        width={35}
+                        style={{
+                          bottom: -3,
+                        }}
+                      />
+                      <View
+                        style={{
+                          paddingTop: 5,
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Text size="title" type="bold" style={{}}>
+                          {(dataweather.main.temp / 10).toFixed(1)}
+                        </Text>
+                        <View
+                          style={{
+                            marginTop: 7,
+                            alignSelf: "flex-start",
+                            height: 5,
+                            width: 5,
+                            borderWidth: 1,
+                            borderRadius: 2.5,
+                          }}
+                        ></View>
+                      </View>
+                    </View>
+                    <Text size="small" type="regular" style={{}}>
+                      {dataweather.weather[0].description}
+                    </Text>
+                  </View>
+
+                  {dataweather.main.temp / 10 > 27.2 ? (
+                    <View
+                      style={{
+                        height: "100%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <FunIcon
+                        icon={"w-hot"}
+                        height={35}
+                        style={{
+                          bottom: -3,
+                        }}
+                      />
+                      <Text size="small" type="regular" style={{}}>
+                        Hot
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {dataweather.main.temp / 10 > 25.8 &&
+                  dataweather.main.temp / 10 < 27.3 ? (
+                    <View
+                      style={{
+                        height: "100%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <FunIcon icon={"w-warm"} height={50} width={50} />
+                      <Text size="small" type="regular" style={{}}>
+                        Warm
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {dataweather.main.temp / 10 > 22.8 &&
+                  dataweather.main.temp / 10 < 25.9 ? (
+                    <View
+                      style={{
+                        height: "100%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <FunIcon icon={"w-humid"} height={50} width={50} />
+                      <Text size="small" type="regular" style={{}}>
+                        Humid
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {dataweather.main.temp / 10 > 20.5 &&
+                  dataweather.main.temp / 10 < 22.9 ? (
+                    <View
+                      style={{
+                        height: "100%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <FunIcon icon={"w-cold"} height={50} width={50} />
+                      <Text size="small" type="regular" style={{}}>
+                        Cold
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {dataweather.main.temp / 10 < 20.6 ? (
+                    <View
+                      style={{
+                        height: "100%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <FunIcon icon={"w-freezing"} height={50} />
+                      <Text size="small" type="regular" style={{}}>
+                        Freezing
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  <Button
+                    size="small"
+                    text=""
+                    type="circle"
+                    variant="transparent"
+                    style={{}}
+                    onPress={() => {
+                      setModalmenuday(true);
+                    }}
+                  >
+                    <More width={15} height={15} />
+                  </Button>
+                </View>
+              ) : null}
+            </View>
+          </>
         }
         contentContainerStyle={{
           paddingTop: 10,
