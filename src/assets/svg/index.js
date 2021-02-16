@@ -170,6 +170,8 @@ import FamilyIcon from "./files/family_icon.svg";
 import HoneyIcon from "./files/honey_moon_icon.svg";
 import CompervanIcon from "./files/compervan_icon.svg";
 import Pinloc from "./files/pinloc.svg";
+import Unesco from "./files/unesco.svg";
+import Movie from "./files/movie.svg";
 
 export {
   LikeWhite,
@@ -344,4 +346,6 @@ export {
   HoneyIcon,
   CompervanIcon,
   Pinloc,
+  Unesco,
+  Movie,
 };

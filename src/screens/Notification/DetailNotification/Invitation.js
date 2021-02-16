@@ -495,7 +495,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                     marginBottom: 5,
                   }}
                 >
-                  Hi {item.itinerary_buddy.myuser.first_name}, let's join my
+                  Hi {item.itinerary_buddy.myuser?.first_name}, let's join my
                   trip
                 </Text>
                 <Text
@@ -907,7 +907,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                     // fontSize: 15,
                   }}
                 >
-                  {item.follow_user.user.first_name}{" "}
+                  {item.follow_user.user?.first_name}{" "}
                   {item.follow_user.user?.last_name}
                 </Text>
                 <Text
@@ -944,7 +944,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                 >
                   {t("startedFollowingYou")}
                 </Text>
-                {item.follow_user.user.status_following == false ? (
+                {item.follow_user.user?.status_following == false ? (
                   <Text
                     type="regular"
                     size="description"
