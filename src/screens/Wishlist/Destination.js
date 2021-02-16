@@ -24,19 +24,7 @@ export default function Destination({
   Refresh,
 }) {
   const { t, i18n } = useTranslation();
-  // let [token, setToken] = useState('');
   let [dataDes, setDes] = useState(destinationData);
-  let [selected] = useState(new Map());
-  // let [token, setToken] = useState('');
-  const eventdetail = (data) => {
-    props.navigation.navigate("eventdetail", {
-      data: data,
-      name: data.name,
-      token: token,
-    });
-  };
-
-  // console.log(dataDes);
 
   const [
     mutationUnliked,
@@ -66,7 +54,6 @@ export default function Destination({
           throw new Error("Error Input");
         }
 
-        // console.log(response.data.unset_wishlist.code);
         if (response.data) {
           if (
             response.data.unset_wishlist.code === 200 ||
@@ -204,8 +191,6 @@ export default function Destination({
                         height: 20,
                         resizeMode: "contain",
                       }}
-                      // isTouchable={true}
-                      // onPress={() => props.navigation.navigate('Home')}
                       source={MapIconGreen}
                     />
                     <Text
@@ -218,14 +203,7 @@ export default function Destination({
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={
-                    {
-                      // marginTop: (-20),
-                      // marginRight: (20),
-                    }
-                  }
-                >
+                <View style={{}}>
                   <TouchableOpacity
                     onPress={() => _unliked(data.id)}
                     style={{
@@ -265,6 +243,8 @@ export default function Destination({
                     flexDirection: "row",
                     alignContent: "center",
                     alignItems: "center",
+                    flex: 1,
+                    marginRight: 5,
                   }}
                 >
                   <CustomImage
@@ -284,26 +264,41 @@ export default function Destination({
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  onPress={() => {
+                    props.route.params && props.route.params.iditinerary
+                      ? props.navigation.push("ItineraryStack", {
+                          screen: "ItineraryChooseday",
+                          params: {
+                            Iditinerary: props.route.params.iditinerary,
+                            Kiriman: data.id,
+                            token: token,
+                            Position: "destination",
+                            datadayaktif: props.route.params.datadayaktif,
+                          },
+                        })
+                      : props.navigation.push("ItineraryStack", {
+                          screen: "ItineraryPlaning",
+                          params: {
+                            idkiriman: data.id,
+                            Position: "destination",
+                          },
+                        });
+                  }}
                   style={{
                     backgroundColor: "#209fae",
                     paddingVertical: 10,
                     paddingHorizontal: 12,
                     borderRadius: 5,
                     justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    flex: 1,
                   }}
                 >
                   <Text size="small" type="bold" style={{ color: "white" }}>
                     {t("addToPlan")}
                   </Text>
                 </TouchableOpacity>
-                {/* <Button
-                  size="small"
-                  text={t("addToPlan")}
-                  style={
-                    {
-                    }
-                  }
-                ></Button> */}
               </View>
             </View>
           </View>

@@ -36,11 +36,19 @@ export default function Event({
   // let [token, setToken] = useState('');
   let [dataEv, setEv] = useState(dataEvent);
   const eventdetail = (data) => {
-    props.navigation.navigate("eventdetail", {
-      data: data,
-      name: data.name,
-      token: token,
-    });
+    props.route.params && props.route.params.iditinerary
+      ? props.navigation.navigate("eventdetail", {
+          data: data,
+          name: data.name,
+          token: token,
+          iditinerary: props.route.params.iditinerary,
+          datadayaktif: props.route.params.datadayaktif,
+        })
+      : props.navigation.navigate("eventdetail", {
+          data: data,
+          name: data.name,
+          token: token,
+        });
   };
 
   const [
@@ -71,7 +79,6 @@ export default function Event({
           throw new Error("Error Input");
         }
 
-        // console.log(response.data.unset_wishlist.code);
         if (response.data) {
           if (
             response.data.unset_wishlist.code === 200 ||
@@ -95,8 +102,6 @@ export default function Event({
   };
 
   useEffect(() => {}, []);
-
-  // console.log(dataEv);
 
   const _FormatData = (dataCart, numColumns) => {
     const totalRows = Math.floor(dataCart.length / numColumns);
