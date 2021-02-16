@@ -1239,16 +1239,11 @@ export default function Feed(props) {
                             },
                           })
                         }
-                        style={
-                          {
-                            // height: width/3 - 10,
-                            // width: width/3 - 10,
-                          }
-                        }
+                        style={{}}
                       >
                         <Image
                           source={{
-                            uri: item[0].assets[0].filepath,
+                            uri: item[1].assets[0].filepath,
                           }}
                           style={{
                             height: width / 3 - 10,

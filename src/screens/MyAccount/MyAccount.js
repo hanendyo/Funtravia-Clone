@@ -414,7 +414,8 @@ export default function MyAccount(props) {
             color="secondary"
             text={t("logout")}
             onPress={async () => {
-              let pushTkn = await AsyncStorage.getItem("token");
+              let pushTkn = await AsyncStorage.getItem("FCM_TOKEN");
+              // console.log(pushTkn);
               try {
                 let response = await mutationlogout({
                   variables: { token: pushTkn },
@@ -428,6 +429,7 @@ export default function MyAccount(props) {
 
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
+                  await AsyncStorage.setItem("setting", "");
                   await LoadUserProfile();
                   props.navigation.navigate("AuthStack", {
                     screen: "SplashScreen",
@@ -436,6 +438,7 @@ export default function MyAccount(props) {
               } catch (error) {
                 Alert.alert("" + error);
                 await AsyncStorage.setItem("access_token", "");
+                await AsyncStorage.setItem("setting", "");
                 await LoadUserProfile();
                 props.navigation.navigate("AuthStack", {
                   screen: "SplashScreen",
