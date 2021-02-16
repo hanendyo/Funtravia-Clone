@@ -95,13 +95,14 @@ export default function ItineraryDetail(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let dataList = [];
-  const [tab2Data] = useState(Array(30).fill(0));
-  const [tab3Data] = useState(Array(30).fill(0));
+  const [tab2Data] = useState([]);
+  const [tab3Data] = useState([]);
   let itincountries = props.route.params.country;
   let token = props.route.params.token;
-  let [status, setStatus] = useState(props.route.params.status);
+  let [statusKiriman, setStatusKiriman] = useState(props.route.params.status);
+  let [status, setStatus] = useState("edit");
   let [idDay, setidDay] = useState(null);
-  let [dataAkhir, setDataAkhir] = useState(null);
+  let [dataAkhir, setDataAkhir] = useState();
   let [indexnya, setIndexnya] = useState(0);
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif ? props.route.params.datadayaktif : {}
@@ -187,7 +188,7 @@ export default function ItineraryDetail(props) {
     user = JSON.parse(user);
     await setuser(user.user);
   };
-  let [Anggota, setAnggota] = useState(null);
+  let [Anggota, setAnggota] = useState();
 
   const {
     data: datadetail,
@@ -356,12 +357,85 @@ export default function ItineraryDetail(props) {
   };
 
   const cekAnggota = async () => {
+    await setStatus(
+      datadetail.itinerary_detail.status === "D"
+        ? "edit"
+        : datadetail.itinerary_detail.status === "F"
+        ? "finish"
+        : "saved"
+    );
     let useridasyc = users.id;
     let datX = [...datadetail.itinerary_detail.buddy];
     let anggota = datX.findIndex((k) => k["user_id"] === useridasyc);
-    props.navigation.setOptions(HeaderComponent);
-
-    await setAnggota(anggota < 0 ? false : true);
+    if (anggota !== -1) {
+      await setAnggota("true");
+    } else {
+      await setAnggota("false");
+    }
+    await props.navigation.setOptions({
+      headerRight: () => (
+        <View style={{ flexDirection: "row" }}>
+          {/* <Button
+                  text={""}
+                  size="medium"
+                  type="circle"
+                  variant="transparent"
+                  style={{
+                    height: 55,
+                  }}
+                  onPress={() => Alert.alert("coming soon")}
+                >
+                  <Book height={20} width={20} />
+                </Button>
+                <Button
+                  text={""}
+                  size="medium"
+                  type="circle"
+                  variant="transparent"
+                  style={{ height: 55 }}
+                  onPress={() => Alert.alert("coming soon")}
+                >
+                  <Expences height={20} width={20} />
+                </Button> */}
+          {anggota !== -1 ? (
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              style={{ height: 55 }}
+              onPress={() =>
+                props.navigation.navigate("ChatStack", {
+                  screen: "GroupRoom",
+                  params: {
+                    room_id: itincountries,
+                    name:
+                      datadetail && datadetail.itinerary_detail
+                        ? datadetail.itinerary_detail.name
+                        : null,
+                    picture: Cover,
+                  },
+                })
+              }
+            >
+              <Chat height={20} width={20} />
+            </Button>
+          ) : null}
+          {anggota !== -1 ? (
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              style={{ height: 55 }}
+              onPress={() => setshowside(true)}
+            >
+              <OptionsVertWhite height={20} width={20} />
+            </Button>
+          ) : null}
+        </View>
+      ),
+    });
   };
 
   const [
@@ -870,9 +944,13 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    props.navigation.navigate("TripPlaning", {
-      index: status === "saved" ? 1 : 0,
-    });
+    if (statusKiriman == "favorite") {
+      props.navigation.goBack();
+    } else {
+      props.navigation.navigate("TripPlaning", {
+        index: status === "saved" ? 1 : 0,
+      });
+    }
   };
 
   /** ---------------------------------------------------------------------------------------------------------------
@@ -900,68 +978,7 @@ export default function ItineraryDetail(props) {
 
       marginLeft: 10,
     },
-    headerRight: () => (
-      <View style={{ flexDirection: "row" }}>
-        {/* <Button
-                text={""}
-                size="medium"
-                type="circle"
-                variant="transparent"
-                style={{
-                  height: 55,
-                }}
-                onPress={() => Alert.alert("coming soon")}
-              >
-                <Book height={20} width={20} />
-              </Button>
-              <Button
-                text={""}
-                size="medium"
-                type="circle"
-                variant="transparent"
-                style={{ height: 55 }}
-                onPress={() => Alert.alert("coming soon")}
-              >
-                <Expences height={20} width={20} />
-              </Button> */}
-        {Anggota === true ? (
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            style={{ height: 55 }}
-            onPress={() =>
-              props.navigation.navigate("ChatStack", {
-                screen: "GroupRoom",
-                params: {
-                  room_id: itincountries,
-                  name:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.name
-                      : null,
-                  picture: Cover,
-                },
-              })
-            }
-          >
-            <Chat height={20} width={20} />
-          </Button>
-        ) : null}
-        {Anggota === true ? (
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            style={{ height: 55 }}
-            onPress={() => setshowside(true)}
-          >
-            <OptionsVertWhite height={20} width={20} />
-          </Button>
-        ) : null}
-      </View>
-    ),
+
     headerRightStyle: {},
     headerLeft: () => (
       <Button
@@ -1135,6 +1152,7 @@ export default function ItineraryDetail(props) {
    * effect
    */
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
     loadasync();
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
@@ -1328,9 +1346,6 @@ export default function ItineraryDetail(props) {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        onLayout={() => {
-          cekAnggota();
-        }}
         style={{
           transform: [{ translateY: y }],
           height: HeaderHeight,
@@ -1620,7 +1635,7 @@ export default function ItineraryDetail(props) {
               >
                 <TouchableOpacity
                   onPress={() =>
-                    status !== "saved" && Anggota === true
+                    status !== "saved" && Anggota === "true"
                       ? openModaldate(
                           "start",
                           index,
@@ -1641,7 +1656,7 @@ export default function ItineraryDetail(props) {
 
                 <TouchableOpacity
                   onPress={() => {
-                    status !== "saved" && Anggota === true
+                    status !== "saved" && Anggota === "true"
                       ? openModaldate(
                           "end",
                           index,
@@ -1803,7 +1818,7 @@ export default function ItineraryDetail(props) {
                     })}
                   </Text>
                 </TouchableOpacity>
-                {status !== "saved" && Anggota === true ? (
+                {status !== "saved" && Anggota === "true" ? (
                   <Button
                     size="small"
                     text=""
@@ -1859,7 +1874,7 @@ export default function ItineraryDetail(props) {
                 {item.note ? (
                   <TouchableOpacity
                     onPress={() =>
-                      status !== "saved" && Anggota === true
+                      status == "edit" && Anggota === "true"
                         ? bukaModal(item.note, index)
                         : null
                     }
@@ -1875,10 +1890,10 @@ export default function ItineraryDetail(props) {
                       {item.note}
                     </Text>
                   </TouchableOpacity>
-                ) : status !== "saved" && Anggota === true ? (
+                ) : status == "edit" && Anggota === "true" ? (
                   <TouchableOpacity
                     onPress={() =>
-                      status !== "saved" && Anggota === true
+                      status == "edit" && Anggota === "true"
                         ? bukaModal(null, index)
                         : null
                     }
@@ -2367,7 +2382,7 @@ export default function ItineraryDetail(props) {
                       </Text>
                     </View>
                   ) : null}
-                  {status !== "saved" && Anggota === true ? (
+                  {status == "edit" && Anggota === "true" ? (
                     <Button
                       size="small"
                       text=""
@@ -2466,7 +2481,7 @@ export default function ItineraryDetail(props) {
               setdatadayaktif={(e) => setdatadayaktif(e)}
               setLoading={(e) => setloading(e)}
               Refresh={(e) => _Refresh(e)}
-              status={status && status === "saved" ? "saved" : "notsaved"}
+              status={status}
               indexnya={indexnya}
               setIndex={(e) => setIndexnya(e)}
               Anggota={Anggota}
@@ -2484,7 +2499,9 @@ export default function ItineraryDetail(props) {
         onSwipeEnd={() => setCanScroll(true)}
         onIndexChange={(id) => {
           _tabIndex.current = id;
-          setIndex(id);
+          {
+            status === "saved" && status === "finish" ? setIndex(id) : null;
+          }
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
@@ -2550,14 +2567,10 @@ export default function ItineraryDetail(props) {
     });
   };
 
-  return (
-    <View style={styles.container}>
-      {renderTabView()}
-      {renderHeader()}
-      {renderCustomRefresh()}
-
-      {Anggota === true ? (
-        status && status === "saved" ? (
+  const renderMenuBottom = () => {
+    switch (Anggota) {
+      case "true":
+        return status && status === "saved" ? (
           <View
             style={{
               zIndex: 999999,
@@ -2648,7 +2661,7 @@ export default function ItineraryDetail(props) {
               </Button>
             </View>
           </View>
-        ) : (
+        ) : status == "edit" ? (
           <View
             style={{
               zIndex: 999999,
@@ -2766,65 +2779,139 @@ export default function ItineraryDetail(props) {
               </Button>
             </View>
           </View>
-        )
-      ) : (
-        <View
-          style={{
-            zIndex: 999999,
-            position: "absolute",
-            left: 0,
-            bottom: 0,
-            width: Dimensions.get("window").width,
-            backgroundColor: "white",
-            borderTopWidth: 1,
-            borderColor: "#F0F0F0",
-            shadowColor: "#F0F0F0",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 3,
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
+        ) : (
           <View
             style={{
-              height: "100%",
-              width: "100%",
+              zIndex: 999999,
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: Dimensions.get("window").width,
+              backgroundColor: "white",
+              borderTopWidth: 1,
+              borderColor: "#F0F0F0",
+              shadowColor: "#F0F0F0",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation: 3,
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
-              paddingHorizontal: 20,
             }}
           >
-            <Button
-              onPress={() => Alert.alert("Coming soon")}
-              text=""
-              size="medium"
-              color="tertiary"
-              type="circle"
+            <View
               style={{
-                backgroundColor: "#f2dae5",
-                borderRadius: 5,
-                marginVertical: 10,
-                marginRight: 10,
+                height: "100%",
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: 20,
               }}
             >
-              <Love width={20} height={20} />
-            </Button>
-            <Button
-              onPress={() => Alert.alert("Coming soon")}
-              text={t("CopyTrip")}
-              size="medium"
-              style={{
-                flex: 1,
-                borderRadius: 5,
-                marginVertical: 10,
-              }}
-            ></Button>
+              <Button
+                onPress={() => Alert.alert("Coming soon")}
+                text=""
+                size="medium"
+                color="tertiary"
+                type="circle"
+                style={{
+                  backgroundColor: "#f2dae5",
+                  borderRadius: 5,
+                  marginVertical: 10,
+                  marginRight: 10,
+                }}
+              >
+                <Love width={20} height={20} />
+              </Button>
+              <Button
+                onPress={() => Alert.alert("Coming soon")}
+                text={t("CopyTrip")}
+                size="medium"
+                style={{
+                  flex: 1,
+                  borderRadius: 5,
+                  marginVertical: 10,
+                }}
+              ></Button>
+            </View>
           </View>
-        </View>
-      )}
+        );
+      case "false":
+        return (
+          <View
+            style={{
+              zIndex: 999999,
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: Dimensions.get("window").width,
+              backgroundColor: "white",
+              borderTopWidth: 1,
+              borderColor: "#F0F0F0",
+              shadowColor: "#F0F0F0",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation: 3,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <View
+              style={{
+                height: "100%",
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: 20,
+              }}
+            >
+              <Button
+                onPress={() => Alert.alert("Coming soon")}
+                text=""
+                size="medium"
+                color="tertiary"
+                type="circle"
+                style={{
+                  backgroundColor: "#f2dae5",
+                  borderRadius: 5,
+                  marginVertical: 10,
+                  marginRight: 10,
+                }}
+              >
+                <Love width={20} height={20} />
+              </Button>
+              <Button
+                onPress={() => Alert.alert("Coming soon")}
+                text={t("CopyTrip")}
+                size="medium"
+                style={{
+                  flex: 1,
+                  borderRadius: 5,
+                  marginVertical: 10,
+                }}
+              ></Button>
+            </View>
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <View
+      onLayout={() => {
+        cekAnggota();
+      }}
+      style={styles.container}
+    >
+      {renderTabView()}
+      {renderHeader()}
+      {renderCustomRefresh()}
+      {renderMenuBottom()}
 
       <Modal
         onBackdropPress={() => {
@@ -3507,7 +3594,7 @@ export default function ItineraryDetail(props) {
                 justifyContent: "flex-start",
               }}
             >
-              {Anggota === true ? (
+              {Anggota === "true" && status !== "finish" ? (
                 <TouchableOpacity
                   style={{
                     marginVertical: 5,
@@ -3533,7 +3620,7 @@ export default function ItineraryDetail(props) {
                   </Text>
                 </TouchableOpacity>
               ) : null}
-              {Anggota === true ? (
+              {Anggota === "true" ? (
                 <TouchableOpacity
                   style={{
                     flexDirection: "row",
@@ -3566,7 +3653,7 @@ export default function ItineraryDetail(props) {
                   </Text>
                 </TouchableOpacity>
               ) : null}
-              {Anggota === true ? (
+              {Anggota === "true" ? (
                 <TouchableOpacity
                   style={{
                     marginVertical: 5,

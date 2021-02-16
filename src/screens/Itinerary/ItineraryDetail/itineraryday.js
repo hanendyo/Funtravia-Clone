@@ -247,7 +247,7 @@ export default function ItineraryDay({
         keyExtractor={(item, index) => index + ""}
         data={dataDay}
         ListFooterComponent={
-          status === "notsaved" && Anggota === true ? (
+          status === "edit" && Anggota === "true" ? (
             <Ripple
               onPress={() => addButton()}
               style={{
