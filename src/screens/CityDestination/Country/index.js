@@ -613,11 +613,15 @@ export default function Country(props) {
                     renderItem={({ item, index }) => {
                       return (
                         <Ripple
-                          onPress={() => {
-                            props.navigation.navigate("DetailJournal", {
-                              dataPopuler: item,
-                            });
-                          }}
+                          onPress={props.navigation.navigate(
+                            "JournalStackNavigation",
+                            {
+                              screen: "Journal",
+                              params: {
+                                dataPopuler: item,
+                              },
+                            }
+                          )}
                           style={{
                             flexDirection: "row",
                             width: width - 80,

@@ -36,6 +36,23 @@ import Ripple from "react-native-material-ripple";
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
   let { width, height } = Dimensions.get("screen");
+  const { t } = useTranslation();
+  let [token, setToken] = useState("");
+  let [setting, setSetting] = useState();
+  let [search, setSearch] = useState({
+    keyword: "",
+    type: null,
+    cities: null,
+    countries: null,
+    orderby: null,
+    rating: null,
+  });
+  const arrayShadow = {
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+    shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+    elevation: Platform.OS == "ios" ? 3 : 3.5,
+  };
 
   const HeaderComponent = {
     headerShown: true,
@@ -87,24 +104,6 @@ export default function ItineraryPopuler(props) {
         <SearchWhite height={20} width={20}></SearchWhite>
       </Button>
     ),
-  };
-
-  const { t } = useTranslation();
-  let [token, setToken] = useState("");
-  let [setting, setSetting] = useState();
-  let [search, setSearch] = useState({
-    keyword: "",
-    type: null,
-    cities: null,
-    countries: null,
-    orderby: null,
-    rating: null,
-  });
-  const arrayShadow = {
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-    shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-    elevation: Platform.OS == "ios" ? 3 : 3.5,
   };
 
   const loadAsync = async () => {
@@ -268,9 +267,9 @@ export default function ItineraryPopuler(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
-        feed_post_pageing[index].liked = false;
-        feed_post_pageing[index].response_count =
-          feed_post_pageing[index].response_count + 1;
+        list_populer[index].liked = false;
+        list_populer[index].response_count =
+          list_populer[index].response_count + 1;
         Alert.alert("" + error);
       }
     } else {
@@ -736,6 +735,13 @@ export default function ItineraryPopuler(props) {
                 elevation: arrayShadow.elevation,
                 paddingVertical: 2,
               }}
+              onPress={() =>
+                props.navigation.navigate("ItineraryCategory", {
+                  dataPopuler: dataPopuler,
+                  typeOrder: "new",
+                  typeCategory: [],
+                })
+              }
             >
               <Image
                 source={itinerary_1}
@@ -777,6 +783,13 @@ export default function ItineraryPopuler(props) {
                 elevation: arrayShadow.elevation,
                 paddingVertical: 2,
               }}
+              onPress={() =>
+                props.navigation.navigate("ItineraryCategory", {
+                  dataPopuler: dataPopuler,
+                  typeOrder: "populer",
+                  typeCategory: [],
+                })
+              }
             >
               <Image
                 source={itinerary_2}
@@ -819,7 +832,6 @@ export default function ItineraryPopuler(props) {
         </View>
         <View
           style={{
-            paddingHorizontal: 15,
             marginTop: 5,
             flexDirection: "row",
             height: Dimensions.get("screen").width * 0.24,
@@ -829,6 +841,7 @@ export default function ItineraryPopuler(props) {
             data={dataCategory?.category_journal}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 15 }}
             renderItem={({ item, index }) => {
               return (
                 <Ripple
@@ -853,6 +866,7 @@ export default function ItineraryPopuler(props) {
                     props.navigation.navigate("ItineraryCategory", {
                       dataPopuler: dataPopuler,
                       typeCategory: item.id,
+                      typeOrder: "new",
                     })
                   }
                 >
