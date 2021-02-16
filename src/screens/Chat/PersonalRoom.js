@@ -149,17 +149,11 @@ export default function Room({ navigation, route }) {
 			await setMessage(responseJson.data);
 			await setTimeout(function () {
 				flatListRef.current.scrollToEnd({ animated: true });
-			}, 1000);
+			}, 250);
 		}
 	};
 
 	const submitChatMessage = async () => {
-		let d = new Date();
-		let date = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/");
-		let time = [
-			d.getHours(),
-			d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes(),
-		].join(":");
 		if (button) {
 			if (chat && chat !== "") {
 				await setButton(false);
@@ -167,8 +161,6 @@ export default function Room({ navigation, route }) {
 					room: room,
 					text: chat,
 					user_id: user.id,
-					date: date,
-					time: time,
 				};
 				await fetch(`${CHATSERVER}/api/personal/send`, {
 					method: "POST",
@@ -176,13 +168,13 @@ export default function Room({ navigation, route }) {
 						Authorization: `Bearer ${token}`,
 						"Content-Type": "application/x-www-form-urlencoded",
 					},
-					body: `room=${room}&text=${chat}&user_id=${user.id}&date=${date}&time=${time}`,
+					body: `room=${room}&text=${chat}&user_id=${user.id}`,
 				});
 				await socket.emit("message", chatData);
 				await setChat("");
 				await setTimeout(function () {
 					flatListRef.current.scrollToEnd({ animated: true });
-				}, 1000);
+				}, 250);
 				await setButton(true);
 			}
 		}
@@ -190,6 +182,7 @@ export default function Room({ navigation, route }) {
 
 	let tmpRChat = null;
 	const RenderChat = ({ item, index }) => {
+		let timeChat = new Date(item.time).toTimeString();
 		if (item.user_id !== tmpRChat) {
 			tmpRChat = item.user_id;
 			return (
@@ -216,7 +209,7 @@ export default function Room({ navigation, route }) {
 					>
 						{user.id == item.user_id ? (
 							<Text size="small" style={{ marginRight: 5 }}>
-								{item.time}
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
 							</Text>
 						) : null}
 						<View
@@ -287,7 +280,7 @@ export default function Room({ navigation, route }) {
 						</View>
 						{user.id !== item.user_id ? (
 							<Text size="small" style={{ marginLeft: 5 }}>
-								{item.time}
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
 							</Text>
 						) : null}
 					</View>
@@ -305,7 +298,7 @@ export default function Room({ navigation, route }) {
 					>
 						{user.id == item.user_id ? (
 							<Text size="small" style={{ marginRight: 5 }}>
-								{item.time}
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
 							</Text>
 						) : null}
 						<View
@@ -336,7 +329,7 @@ export default function Room({ navigation, route }) {
 						</View>
 						{user.id !== item.user_id ? (
 							<Text size="small" style={{ marginLeft: 5 }}>
-								{item.time}
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
 							</Text>
 						) : null}
 					</View>
@@ -357,7 +350,7 @@ export default function Room({ navigation, route }) {
 			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={80}
+				keyboardVerticalOffset={65}
 			>
 				<View
 					style={{
@@ -375,7 +368,6 @@ export default function Room({ navigation, route }) {
 						size="medium"
 						variant="transparent"
 						onPress={() => Alert.alert("Sticker Cooming Soon")}
-						style={{ marginHorizontal: 5 }}
 					>
 						<Smile height={25} width={25} />
 					</Button>
