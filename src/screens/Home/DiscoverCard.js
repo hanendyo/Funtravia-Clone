@@ -118,9 +118,11 @@ export default function DiscoverCard({ props }) {
 
       <TouchableOpacity
         key={discoverCardsData[2].id}
-        onPress={props.navigation.navigate("JournalStackNavigation", {
-          screen: "Journal",
-        })}
+        onPress={() =>
+          props.navigation.navigate("JournalStackNavigation", {
+            screen: "Journal",
+          })
+        }
       >
         <ImageBackground
           source={discoverCardsData[2].background_image}
