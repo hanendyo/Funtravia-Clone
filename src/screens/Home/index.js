@@ -4,10 +4,10 @@ import {
 	Dimensions,
 	TouchableOpacity,
 	ImageBackground,
-	Platform,
 	Animated,
 	SafeAreaView,
 	StatusBar,
+	RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, CustomImage } from "../../component";
@@ -28,6 +28,7 @@ export default function Home(props) {
 	let [token, setToken] = useState("");
 	let [searchBg, setSearchBg] = useState("transparent");
 	let [searchElevation, setSearchElevation] = useState(0);
+	let [refresh, setRefresh] = useState(false);
 
 	const [LoadUserProfile, { data, loading }] = useLazyQuery(Account, {
 		fetchPolicy: "network-only",
@@ -78,11 +79,18 @@ export default function Home(props) {
 	};
 
 	useEffect(() => {
-		const unsubscribe = props.navigation.addListener("focus", (data) => {
-			loadAsync();
-		});
-		return unsubscribe;
-	}, [props.navigation]);
+		loadAsync();
+	}, []);
+
+	const wait = (timeout) => {
+		return new Promise((resolve) => setTimeout(resolve, timeout));
+	};
+
+	const onRefresh = React.useCallback(() => {
+		setRefresh(true);
+		loadAsync();
+		wait(1000).then(() => setRefresh(false));
+	}, []);
 
 	function HomeTitle({ title, label, seeAll }) {
 		return (
@@ -164,6 +172,9 @@ export default function Home(props) {
 				onScroll={Animated.event([
 					{ nativeEvent: { contentOffset: { y: scrollY } } },
 				])}
+				refreshControl={
+					<RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+				}
 			>
 				<ImageBackground
 					source={sampul2}

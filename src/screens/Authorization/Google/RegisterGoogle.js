@@ -8,6 +8,7 @@ import {
 	Dimensions,
 	KeyboardAvoidingView,
 	Alert,
+	Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { google_vektor } from "../../../assets/png";
@@ -16,6 +17,7 @@ import Googlegql from "../../../graphQL/Mutation/Register/Google";
 import { Text, CustomImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { GoogleSignin } from "@react-native-community/google-signin";
+import { loading_intertwine } from "../../../assets/gif";
 
 export default function RegisterGoogle({ navigation }) {
 	const { t, i18n } = useTranslation();
@@ -140,16 +142,10 @@ export default function RegisterGoogle({ navigation }) {
 						>
 							{t("pleaseWait")}
 						</Text>
-						<Text
-							numberOfLines={2}
-							type="regular"
-							size="small"
-							style={{
-								textAlign: "center",
-							}}
-						>
-							{/* Click next to continue */}
-						</Text>
+						<Image
+							source={loading_intertwine}
+							style={{ alignSelf: "center", width: 100, height: 100 }}
+						/>
 					</View>
 					<View
 						style={{

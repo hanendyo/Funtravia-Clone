@@ -469,8 +469,8 @@ PODS:
     - TOCropViewController
   - RNPermissions (3.0.0):
     - React-Core
-  - RNReanimated (1.13.2):
-    - React-Core
+  - RNReanimated (1.13.0):
+    - React
   - RNScreens (2.17.1):
     - React-Core
   - RNSVG (12.1.0):
@@ -804,7 +804,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNImageCropPicker: 08ba3a2e2f4f8833d606f01906c371e382c4dea9
   RNPermissions: 99dd8d4a30ff13509b949ca63cd1f69edc461775
-  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
+  RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
   RNScreens: b6c9607e6fe47c1b6e2f1910d2acd46dd7ecea3a
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   TOCropViewController: 20a14b6a7a098308bf369e7c8d700dc983a974e6

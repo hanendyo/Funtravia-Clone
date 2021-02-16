@@ -11,7 +11,7 @@ import {
 	Alert,
 	StatusBar,
 } from "react-native";
-import { Delete, Magnifying, NewChat } from "../../assets/svg";
+import { Delete, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { Text, Button, Truncate } from "../../component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
@@ -53,12 +53,6 @@ export default function Message({ navigation }) {
 			},
 		});
 		let dataResponse = await response.json();
-		for (let i in dataResponse) {
-			let recent = JSON.parse(
-				await AsyncStorage.getItem("history_" + dataResponse[i].id)
-			);
-			dataResponse[i]["recent"] = recent ? recent[recent.length - 1] : null;
-		}
 		await setData(dataResponse);
 		await setDataRes(dataResponse);
 	};
@@ -73,12 +67,6 @@ export default function Message({ navigation }) {
 			},
 		});
 		let dataResponse = await response.json();
-		for (let i in dataResponse) {
-			let recent = JSON.parse(
-				await AsyncStorage.getItem("history_" + dataResponse[i].itinerary_id)
-			);
-			dataResponse[i]["recent"] = recent ? recent[recent.length - 1] : null;
-		}
 		await setDataGroup(dataResponse);
 		await setDataGroupRes(dataResponse);
 	};
@@ -135,9 +123,10 @@ export default function Message({ navigation }) {
 	};
 
 	const renderItem = ({ item }) => {
-		let d = new Date();
-		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
-		let change = item.sender_id == user.id ? item.receiver : item.sender;
+		let timeChat = new Date(item.recent?.time).toTimeString();
+		let dateChat = new Date(item.recent?.time).toLocaleDateString();
+		let date = new Date().toLocaleDateString();
+		let change = item.sender_id === user.id ? item.receiver : item.sender;
 		return (
 			<Swipeout right={swipeoutBtn(item.id)} key={`${item.id}_child`}>
 				<Ripple
@@ -193,7 +182,11 @@ export default function Message({ navigation }) {
 							style={{ width: 100, alignItems: "flex-end", paddingRight: 10 }}
 						>
 							<Text size="small">
-								{item.recent.date == date ? item.recent.time : item.recent.date}
+								{timeChat
+									? dateChat == date
+										? timeChat.substring(0, 5)
+										: dateChat
+									: null}
 							</Text>
 						</View>
 					) : null}
@@ -203,8 +196,9 @@ export default function Message({ navigation }) {
 	};
 
 	const renderItemGroup = ({ item }) => {
-		let d = new Date();
-		let date = [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/");
+		let timeChat = new Date(item.recent?.time).toTimeString();
+		let dateChat = new Date(item.recent?.time).toLocaleDateString();
+		let date = new Date().toLocaleDateString();
 		return (
 			<Swipeout right={swipeoutBtn(item.id)} key={`${item.id}_child`}>
 				<Ripple
@@ -254,7 +248,11 @@ export default function Message({ navigation }) {
 							style={{ width: 100, alignItems: "flex-end", paddingRight: 10 }}
 						>
 							<Text size="small">
-								{item.recent.date == date ? item.recent.time : item.recent.date}
+								{timeChat
+									? dateChat == date
+										? timeChat.substring(0, 5)
+										: dateChat
+									: null}
 							</Text>
 						</View>
 					) : null}
@@ -264,128 +262,130 @@ export default function Message({ navigation }) {
 	};
 
 	const _searchHandle = (text) => {
-		if (active == "personal") {
-			let newData = data.filter(function (str) {
-				let strData = str.sender.id === user.id ? str.receiver : str.sender;
-				return strData.first_name.toLowerCase().includes(text.toLowerCase());
-			});
-			setDataRes(newData);
-		}
+		// if (active == "personal") {
+		let newData = data.filter(function (str) {
+			let strData = str.sender.id === user.id ? str.receiver : str.sender;
+			return strData.first_name.toLowerCase().includes(text.toLowerCase());
+		});
+		setDataRes(newData);
+		// }
 
-		if (active == "group") {
-			let newDataGroup = dataGroup.filter(function (str) {
-				return str.itinerary.name.toLowerCase().includes(text.toLowerCase());
-			});
-			setDataGroupRes(newDataGroup);
-		}
+		// if (active == "group") {
+		let newDataGroup = dataGroup.filter(function (str) {
+			return str.itinerary.name.toLowerCase().includes(text.toLowerCase());
+		});
+		setDataGroupRes(newDataGroup);
+		// }
 	};
 
+	const renderData = active == "personal" ? dataRes : dataGroupRes;
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<StatusBar barStyle="dark-content" />
-			<FlatList
-				data={active == "personal" ? dataRes : dataGroupRes}
-				renderItem={active == "personal" ? renderItem : renderItemGroup}
-				keyExtractor={(item) => item.id}
-				stickyHeaderIndices={[0]}
-				ListHeaderComponent={
-					<View style={{ backgroundColor: "#209FAE" }}>
-						<View
+			<View style={{ backgroundColor: "#209FAE" }}>
+				<View
+					style={{
+						margin: 15,
+						backgroundColor: "#FFFFFF",
+						flexDirection: "row",
+						borderRadius: 3,
+						alignContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
+					<TextInput
+						onChangeText={(e) => _searchHandle(e)}
+						placeholder="Search Chat"
+						style={{
+							color: "#464646",
+							height: 40,
+							width: "100%",
+						}}
+					/>
+				</View>
+				<View
+					style={{
+						flexDirection: "row",
+						backgroundColor: "#fff",
+						borderWidth: 1,
+						borderColor: "#EEEEEE",
+					}}
+				>
+					<Ripple
+						onPress={() => {
+							setActive("personal");
+						}}
+						style={{
+							// width: width / 2,
+							alignContent: "center",
+							alignItems: "center",
+							borderBottomWidth: active == "personal" ? 3 : 1,
+							borderBottomColor: active == "personal" ? "#209FAE" : "#EEEEEE",
+							paddingVertical: 15,
+							backgroundColor: "#FFFFFF",
+							paddingHorizontal: 25,
+						}}
+					>
+						<Text
+							size="description"
+							type={active == "personal" ? "bold" : "bold"}
 							style={{
-								margin: 15,
-								backgroundColor: "#FFFFFF",
-								flexDirection: "row",
-								borderRadius: 3,
-								alignContent: "center",
-								alignItems: "center",
+								color: active == "personal" ? "#209FAE" : "#464646",
 							}}
 						>
-							<Magnifying
-								width="20"
-								height="20"
-								style={{ marginHorizontal: 10 }}
-							/>
-							<TextInput
-								onChangeText={(e) => _searchHandle(e)}
-								placeholder="Search Chat"
-								style={{
-									color: "#464646",
-									height: 40,
-									width: "100%",
-								}}
-							/>
-						</View>
-						<View
+							Personal
+						</Text>
+					</Ripple>
+					<Ripple
+						onPress={() => {
+							setActive("group");
+						}}
+						style={{
+							// width: width / 2,
+							alignContent: "center",
+							alignItems: "center",
+							borderBottomWidth: active == "group" ? 3 : 1,
+							borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
+							paddingVertical: 15,
+							backgroundColor: "#FFFFFF",
+							paddingHorizontal: 25,
+						}}
+					>
+						<Text
+							size="description"
+							type={active == "group" ? "bold" : "bold"}
 							style={{
-								flexDirection: "row",
-								backgroundColor: "#fff",
-								borderWidth: 1,
-								borderColor: "#EEEEEE",
+								color: active == "group" ? "#209FAE" : "#464646",
 							}}
 						>
-							<Ripple
-								onPress={() => {
-									setActive("personal");
-								}}
-								style={{
-									// width: width / 2,
-									alignContent: "center",
-									alignItems: "center",
-									borderBottomWidth: active == "personal" ? 3 : 1,
-									borderBottomColor:
-										active == "personal" ? "#209FAE" : "#EEEEEE",
-									paddingVertical: 15,
-									backgroundColor: "#FFFFFF",
-									paddingHorizontal: 25,
-								}}
-							>
-								<Text
-									size="description"
-									type={active == "personal" ? "bold" : "bold"}
-									style={{
-										color: active == "personal" ? "#209FAE" : "#464646",
-									}}
-								>
-									Personal
-								</Text>
-							</Ripple>
-							<Ripple
-								onPress={() => {
-									setActive("group");
-								}}
-								style={{
-									// width: width / 2,
-									alignContent: "center",
-									alignItems: "center",
-									borderBottomWidth: active == "group" ? 3 : 1,
-									borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
-									paddingVertical: 15,
-									backgroundColor: "#FFFFFF",
-									paddingHorizontal: 25,
-								}}
-							>
-								<Text
-									size="description"
-									type={active == "group" ? "bold" : "bold"}
-									style={{
-										color: active == "group" ? "#209FAE" : "#464646",
-									}}
-								>
-									Trip Group
-								</Text>
-							</Ripple>
-						</View>
-					</View>
-				}
-			/>
-			<Button
-				onPress={() => navigation.navigate("ChatStack", { screen: "NewChat" })}
-				type="circle"
-				size="medium"
-				style={{ position: "absolute", bottom: 20, right: 20, elevation: 5 }}
-			>
-				<NewChat width="20" height="20" />
-			</Button>
+							Trip Group
+						</Text>
+					</Ripple>
+				</View>
+			</View>
+			{renderData && renderData.length ? (
+				<FlatList
+					data={renderData}
+					renderItem={active == "personal" ? renderItem : renderItemGroup}
+					keyExtractor={(item) => item.id}
+					// stickyHeaderIndices={[0]}
+				/>
+			) : (
+				<Kosong width={width} height={width} />
+			)}
+			{active == "personal" ? (
+				<Button
+					onPress={() =>
+						navigation.navigate("ChatStack", { screen: "NewChat" })
+					}
+					type="circle"
+					size="medium"
+					style={{ position: "absolute", bottom: 20, right: 20, elevation: 5 }}
+				>
+					<NewChat width="20" height="20" />
+				</Button>
+			) : null}
 		</SafeAreaView>
 	);
 }
