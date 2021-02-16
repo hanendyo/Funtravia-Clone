@@ -454,5 +454,7 @@
   "location": "Location",
   "region": "Region",
   "verifyOtp": "Please enter 6 digit code sent to",
-  "writeComment" : "Write Comment"
+  "writeComment": "Write Comment",
+  "alertdaynot": "Hari tidak dapat dihapus",
+  "CopyTrip": "Copy Trip"
 }
