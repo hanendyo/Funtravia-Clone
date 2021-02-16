@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 import {
-  StyleSheet,
-  View,
-  Platform,
-  ScrollView,
-  Dimensions,
-  KeyboardAvoidingView,
-  Alert,
+	StyleSheet,
+	View,
+	Platform,
+	ScrollView,
+	Dimensions,
+	KeyboardAvoidingView,
+	Alert,
+	Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { google_vektor } from "../../../assets/png";
@@ -16,6 +17,7 @@ import Googlegql from "../../../graphQL/Mutation/Register/Google";
 import { Text, CustomImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { GoogleSignin } from "@react-native-community/google-signin";
+import { loading_intertwine } from "../../../assets/gif";
 
 export default function RegisterGoogle({ navigation }) {
   const { t, i18n } = useTranslation();
@@ -85,89 +87,83 @@ export default function RegisterGoogle({ navigation }) {
     });
   }, [navigation]);
 
-  return (
-    <KeyboardAvoidingView
-      style={{
-        flex: 1,
-      }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      // keyboardVerticalOffset={30}
-      enabled
-    >
-      <ScrollView
-        style={{
-          paddingTop: 80,
-        }}
-        showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
-      >
-        <View
-          style={{
-            // flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CustomImage
-            customStyle={{
-              alignSelf: "center",
-              width: 200,
-              height: 175,
-            }}
-            source={google_vektor}
-          />
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              marginVertical: 10,
-            }}
-          >
-            <Text size="h5" type="bold">
-              {t("registerUsingGoogle")}
-            </Text>
-          </View>
-          <View
-            style={{
-              alignContent: "center",
-              justifyContent: "space-evenly",
-              marginVertical: 10,
-            }}
-          >
-            <Text
-              numberOfLines={2}
-              type="regular"
-              size="small"
-              style={{
-                textAlign: "center",
-              }}
-            >
-              {t("pleaseWait")}
-            </Text>
-            <Text
-              numberOfLines={2}
-              type="regular"
-              size="small"
-              style={{
-                textAlign: "center",
-              }}
-            >
-              {/* Click next to continue */}
-            </Text>
-          </View>
-          <View
-            style={{
-              marginTop: 40,
-              marginBottom: 80,
-              alignItems: "center",
-            }}
-          >
-            <Text>{`${t("loading")}...`}</Text>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
+	return (
+		<KeyboardAvoidingView
+			style={{
+				flex: 1,
+			}}
+			behavior={Platform.OS === "ios" ? "padding" : null}
+			// keyboardVerticalOffset={30}
+			enabled
+		>
+			<ScrollView
+				style={{
+					paddingTop: 80,
+				}}
+				showsVerticalScrollIndicator={false}
+				stickyHeaderIndices={[1]}
+			>
+				<View
+					style={{
+						// flex: 1,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<CustomImage
+						customStyle={{
+							alignSelf: "center",
+							width: 200,
+							height: 175,
+						}}
+						source={google_vektor}
+					/>
+					<View
+						style={{
+							alignItems: "center",
+							justifyContent: "space-evenly",
+							marginVertical: 10,
+						}}
+					>
+						<Text size="h5" type="bold">
+							{t("registerUsingGoogle")}
+						</Text>
+					</View>
+					<View
+						style={{
+							alignContent: "center",
+							justifyContent: "space-evenly",
+							marginVertical: 10,
+						}}
+					>
+						<Text
+							numberOfLines={2}
+							type="regular"
+							size="small"
+							style={{
+								textAlign: "center",
+							}}
+						>
+							{t("pleaseWait")}
+						</Text>
+						<Image
+							source={loading_intertwine}
+							style={{ alignSelf: "center", width: 100, height: 100 }}
+						/>
+					</View>
+					<View
+						style={{
+							marginTop: 40,
+							marginBottom: 80,
+							alignItems: "center",
+						}}
+					>
+						<Text>{`${t("loading")}...`}</Text>
+					</View>
+				</View>
+			</ScrollView>
+		</KeyboardAvoidingView>
+	);
 }
 
 const styles = StyleSheet.create({

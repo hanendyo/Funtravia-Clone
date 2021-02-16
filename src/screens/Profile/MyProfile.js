@@ -1,35 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
-	StyleSheet,
-	View,
-	Dimensions,
+	ActivityIndicator,
 	Animated,
+	Dimensions,
+	Image,
+	ImageBackground,
 	PanResponder,
 	Platform,
-	TouchableOpacity,
-	StatusBar,
-	ActivityIndicator,
-	Image,
 	SafeAreaView,
-	ImageBackground,
+	StatusBar,
+	StyleSheet,
+	TouchableOpacity,
+	View,
 } from "react-native";
-import { useQuery } from "@apollo/react-hooks";
-import { Akunsaya } from "../../assets/png";
-import { Kosong } from "../../assets/svg";
-import { Button, Text, Truncate } from "../../component";
-import { useTranslation } from "react-i18next";
+import {useQuery} from "@apollo/react-hooks";
+import {Akunsaya, default_image} from "../../assets/png";
+import {Kosong} from "../../assets/svg";
+import {Button, Text, Truncate} from "../../component";
+import {useTranslation} from "react-i18next";
 import Account from "../../graphQL/Query/Home/Account";
 import User_Post from "../../graphQL/Query/Profile/post";
 import Reviews from "../../graphQL/Query/Profile/review";
 import Itinerary from "../../graphQL/Query/Profile/itinerary";
-import { TabView, TabBar } from "react-native-tab-view";
-import { default_image } from "../../assets/png";
-import { set } from "react-native-reanimated";
+import {TabBar, TabView} from "react-native-tab-view";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
-const { width, height } = Dimensions.get("screen");
+const {width, height} = Dimensions.get("screen");
 const TabBarHeight = 50;
-const HeaderHeight = width;
+const HeaderHeight = width + 5;
 const SafeStatusBar = Platform.select({
 	ios: 44,
 	android: StatusBar.currentHeight,
@@ -37,13 +35,12 @@ const SafeStatusBar = Platform.select({
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
-export default function MyProfile({ navigation, route }) {
+export default function MyProfile({navigation, route}) {
 	let [token, setToken] = useState(route.params.token);
 	let [canScroll, setCanScroll] = useState(true);
-	const { t } = useTranslation();
+	const {t} = useTranslation();
 	const HeaderComponent = {
 		title: null,
-		headerTransparent: true,
 		headerTintColor: "white",
 		headerTitleStyle: {
 			fontFamily: "Lato-Bold",
@@ -56,9 +53,9 @@ export default function MyProfile({ navigation, route }) {
 	 */
 	const [tabIndex, setIndex] = useState(0);
 	const [routes] = useState([
-		{ key: "post", title: "Post" },
-		{ key: "review", title: "Review" },
-		{ key: "mytrip", title: "My Trip" },
+		{key: "post", title: "Post"},
+		{key: "review", title: "Review"},
+		{key: "mytrip", title: "My Trip"},
 	]);
 
 	/**
@@ -153,12 +150,12 @@ export default function MyProfile({ navigation, route }) {
 	 */
 	useEffect(() => {
 		navigation.setOptions(HeaderComponent);
-		scrollY.addListener(({ value }) => {
+		scrollY.addListener(({value}) => {
 			const curRoute = routes[tabIndex].key;
 			listOffset.current[curRoute] = value;
 		});
 
-		headerScrollY.addListener(({ value }) => {
+		headerScrollY.addListener(({value}) => {
 			listRefArr.current.forEach((item) => {
 				if (item.key !== routes[tabIndex].key) {
 					return;
@@ -336,7 +333,7 @@ export default function MyProfile({ navigation, route }) {
 	 * render Helper
 	 */
 
-	const { data, loading, error } = useQuery(Account, {
+	const {data, loading, error} = useQuery(Account, {
 		context: {
 			headers: {
 				"Content-Type": "application/json",
@@ -345,7 +342,7 @@ export default function MyProfile({ navigation, route }) {
 		},
 	});
 
-	const { data: dataPost, loading: loadingPost, error: errorPost } = useQuery(
+	const {data: dataPost, loading: loadingPost, error: errorPost} = useQuery(
 		User_Post,
 		{
 			context: {
@@ -370,7 +367,7 @@ export default function MyProfile({ navigation, route }) {
 		},
 	});
 
-	const { data: dataTrip, loading: loadingTrip, error: errorTrip } = useQuery(
+	const {data: dataTrip, loading: loadingTrip, error: errorTrip} = useQuery(
 		Itinerary,
 		{
 			context: {
@@ -393,18 +390,18 @@ export default function MyProfile({ navigation, route }) {
 		return (
 			<Animated.View
 				{...headerPanResponder.panHandlers}
-				style={[styles.header, { transform: [{ translateY: y }] }]}
+				style={[styles.header, {transform: [{translateY: y}]}]}
 			>
 				<View>
 					<Image
 						source={Akunsaya}
-						style={{ width: width, height: HeaderHeight - 125 }}
+						style={{width: width, height: HeaderHeight - 125}}
 					/>
 				</View>
 				<View>
 					<View>
 						<Image
-							source={{ uri: rData.picture }}
+							source={{uri: rData.picture}}
 							style={{
 								position: "absolute",
 								top: -50,
@@ -449,11 +446,11 @@ export default function MyProfile({ navigation, route }) {
 						>
 							<Text size="label" type="bold">
 								{rData.first_name +
-									(rData.last_name ? " " + rData.last_name : "")}
+								(rData.last_name ? " " + rData.last_name : "")}
 							</Text>
 							<Text size="label">{"@" + rData.username}</Text>
 						</View>
-						<View style={{ flexDirection: "row", width: width / 2 }}>
+						<View style={{flexDirection: "row", width: width / 2}}>
 							<TouchableOpacity
 								style={{
 									alignItems: "center",
@@ -500,8 +497,8 @@ export default function MyProfile({ navigation, route }) {
 								paddingBottom: 25,
 							}}
 						>
-							<Text size="description" style={{ textAlign: "justify" }}>
-								<Truncate text={rData.bio} length={250} ending="..." />
+							<Text size="description" style={{textAlign: "justify"}}>
+								<Truncate text={rData.bio} length={250} ending="..."/>
 							</Text>
 						</View>
 					) : null}
@@ -511,11 +508,11 @@ export default function MyProfile({ navigation, route }) {
 	};
 
 	let grid = 0;
-	const renderPost = ({ item, index }) => {
-		if (grid == 0) {
+	const renderPost = ({item, index}) => {
+		if (grid === 0) {
 			grid++;
 			return (
-				<View style={{ flexDirection: "row" }}>
+				<View style={{flexDirection: "row"}}>
 					<TouchableOpacity
 						key={index + "_1"}
 						onPress={() =>
@@ -535,10 +532,10 @@ export default function MyProfile({ navigation, route }) {
 							}}
 							source={
 								item[0].assets
-									? { uri: item[0].assets[0].filepath }
+									? {uri: item[0].assets[0].filepath}
 									: default_image
 							}
-						></Image>
+						/>
 					</TouchableOpacity>
 					<View>
 						<TouchableOpacity
@@ -560,10 +557,10 @@ export default function MyProfile({ navigation, route }) {
 								}}
 								source={
 									item[1].assets
-										? { uri: item[1].assets[0].filepath }
+										? {uri: item[1].assets[0].filepath}
 										: default_image
 								}
-							></Image>
+							/>
 						</TouchableOpacity>
 						<TouchableOpacity
 							key={index + "_3"}
@@ -584,19 +581,19 @@ export default function MyProfile({ navigation, route }) {
 								}}
 								source={
 									item[2].assets
-										? { uri: item[2].assets[0].filepath }
+										? {uri: item[2].assets[0].filepath}
 										: default_image
 								}
-							></Image>
+							/>
 						</TouchableOpacity>
 					</View>
 				</View>
 			);
 		}
-		if (grid == 1) {
+		if (grid === 1) {
 			grid++;
 			return (
-				<View style={{ flexDirection: "row" }}>
+				<View style={{flexDirection: "row"}}>
 					<TouchableOpacity
 						key={index + "_1"}
 						onPress={() =>
@@ -616,10 +613,10 @@ export default function MyProfile({ navigation, route }) {
 							}}
 							source={
 								item[0].assets
-									? { uri: item[0].assets[0].filepath }
+									? {uri: item[0].assets[0].filepath}
 									: default_image
 							}
-						></Image>
+						/>
 					</TouchableOpacity>
 					<TouchableOpacity
 						key={index + "_2"}
@@ -640,10 +637,10 @@ export default function MyProfile({ navigation, route }) {
 							}}
 							source={
 								item[1].assets
-									? { uri: item[1].assets[0].filepath }
+									? {uri: item[1].assets[0].filepath}
 									: default_image
 							}
-						></Image>
+						/>
 					</TouchableOpacity>
 					<TouchableOpacity
 						key={index + "_3"}
@@ -664,18 +661,18 @@ export default function MyProfile({ navigation, route }) {
 							}}
 							source={
 								item[2].assets
-									? { uri: item[2].assets[0].filepath }
+									? {uri: item[2].assets[0].filepath}
 									: default_image
 							}
-						></Image>
+						/>
 					</TouchableOpacity>
 				</View>
 			);
 		}
-		if (grid == 2) {
+		if (grid === 2) {
 			grid = 0;
 			return (
-				<View style={{ flexDirection: "row" }}>
+				<View style={{flexDirection: "row"}}>
 					<View>
 						<TouchableOpacity
 							key={index + "_2"}
@@ -696,10 +693,10 @@ export default function MyProfile({ navigation, route }) {
 								}}
 								source={
 									item[0].assets
-										? { uri: item[0].assets[0].filepath }
+										? {uri: item[0].assets[0].filepath}
 										: default_image
 								}
-							></Image>
+							/>
 						</TouchableOpacity>
 						<TouchableOpacity
 							key={index + "_3"}
@@ -720,10 +717,10 @@ export default function MyProfile({ navigation, route }) {
 								}}
 								source={
 									item[1].assets
-										? { uri: item[1].assets[0].filepath }
+										? {uri: item[1].assets[0].filepath}
 										: default_image
 								}
-							></Image>
+							/>
 						</TouchableOpacity>
 					</View>
 					<TouchableOpacity
@@ -745,17 +742,17 @@ export default function MyProfile({ navigation, route }) {
 							}}
 							source={
 								item[2].assets
-									? { uri: item[2].assets[0].filepath }
+									? {uri: item[2].assets[0].filepath}
 									: default_image
 							}
-						></Image>
+						/>
 					</TouchableOpacity>
 				</View>
 			);
 		}
 	};
 
-	const renderReview = ({ item, index }) => {
+	const renderReview = ({item, index}) => {
 		return (
 			<View
 				style={{
@@ -773,12 +770,12 @@ export default function MyProfile({ navigation, route }) {
 		);
 	};
 
-	const renderLabel = ({ route, focused }) => {
+	const renderLabel = ({route, focused}) => {
 		return (
 			<Text
 				style={[
 					focused ? styles.labelActive : styles.label,
-					{ opacity: focused ? 1 : 0.7 },
+					{opacity: focused ? 1 : 0.7},
 				]}
 			>
 				{route.title}
@@ -786,7 +783,7 @@ export default function MyProfile({ navigation, route }) {
 		);
 	};
 
-	const RenderBuddy = ({ databuddy }) => {
+	const RenderBuddy = ({databuddy}) => {
 		return (
 			<View
 				style={{
@@ -800,7 +797,7 @@ export default function MyProfile({ navigation, route }) {
 								<Image
 									source={
 										value.user && value.user.picture
-											? { uri: value.user.picture }
+											? {uri: value.user.picture}
 											: default_image
 									}
 									style={{
@@ -867,7 +864,7 @@ export default function MyProfile({ navigation, route }) {
 		var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
 		return (
-			<View style={{ flexDirection: "row" }}>
+			<View style={{flexDirection: "row"}}>
 				<Text
 					style={{
 						fontFamily: "Lato-Regular",
@@ -888,7 +885,7 @@ export default function MyProfile({ navigation, route }) {
 		);
 	};
 
-	const renderTrip = ({ item, index }) => {
+	const renderTrip = ({item, index}) => {
 		return (
 			<TouchableOpacity
 				onPress={() =>
@@ -904,7 +901,7 @@ export default function MyProfile({ navigation, route }) {
 				}}
 			>
 				<ImageBackground
-					source={item.cover ? { uri: item.cover } : default_image}
+					source={item.cover ? {uri: item.cover} : default_image}
 					style={[
 						{
 							borderRadius: 5,
@@ -932,7 +929,7 @@ export default function MyProfile({ navigation, route }) {
 									color: "white",
 								}}
 							>
-								<Truncate text={item.name} length={17} />
+								<Truncate text={item.name} length={17}/>
 							</Text>
 						</View>
 						<View
@@ -948,7 +945,7 @@ export default function MyProfile({ navigation, route }) {
 									color: "white",
 								}}
 							>
-								<Truncate text={item.city ? item.city.name : ""} length={7} />,{" "}
+								<Truncate text={item.city ? item.city.name : ""} length={7}/>,{" "}
 							</Text>
 							{item.start_date && item.end_date
 								? getDN(item.start_date, item.end_date)
@@ -963,7 +960,7 @@ export default function MyProfile({ navigation, route }) {
 							}}
 						>
 							{item.buddy.length ? (
-								<RenderBuddy databuddy={item.buddy} />
+								<RenderBuddy databuddy={item.buddy}/>
 							) : null}
 						</View>
 					</View>
@@ -990,7 +987,7 @@ export default function MyProfile({ navigation, route }) {
 		return tmpData;
 	};
 
-	const renderScene = ({ route }) => {
+	const renderScene = ({route}) => {
 		const focused = route.key === routes[tabIndex].key;
 		let numCols;
 		let dataR;
@@ -1040,13 +1037,13 @@ export default function MyProfile({ navigation, route }) {
 					onScroll={
 						focused
 							? Animated.event(
-									[
-										{
-											nativeEvent: { contentOffset: { y: scrollY } },
-										},
-									],
-									{ useNativeDriver: true }
-							  )
+							[
+								{
+									nativeEvent: {contentOffset: {y: scrollY}},
+								},
+							],
+							{useNativeDriver: true}
+							)
 							: null
 					}
 					onMomentumScrollBegin={onMomentumScrollBegin}
@@ -1075,7 +1072,7 @@ export default function MyProfile({ navigation, route }) {
 						minHeight: height - SafeStatusBar + HeaderHeight,
 					}}
 				>
-					<Kosong height={width} width={width} />
+					<Kosong height={width} width={width}/>
 				</View>
 			);
 		}
@@ -1094,13 +1091,13 @@ export default function MyProfile({ navigation, route }) {
 					top: 0,
 					zIndex: 1,
 					position: "absolute",
-					transform: [{ translateY: y }],
+					transform: [{translateY: y}],
 					width: "100%",
 				}}
 			>
 				<TabBar
 					{...props}
-					onTabPress={({ route, preventDefault }) => {
+					onTabPress={({route, preventDefault}) => {
 						if (isListGliding.current) {
 							preventDefault();
 						}
@@ -1122,7 +1119,7 @@ export default function MyProfile({ navigation, route }) {
 					_tabIndex.current = id;
 					setIndex(id);
 				}}
-				navigationState={{ index: tabIndex, routes }}
+				navigationState={{index: tabIndex, routes}}
 				renderScene={renderScene}
 				renderTabBar={renderTabBar}
 				initialLayout={{
@@ -1172,7 +1169,7 @@ export default function MyProfile({ navigation, route }) {
 						width: 38,
 						borderRadius: 19,
 						borderWidth: 2,
-						borderColor: "#ddd",
+						borderColor: "#209FAE",
 						justifyContent: "center",
 						alignItems: "center",
 						alignSelf: "center",
@@ -1180,7 +1177,7 @@ export default function MyProfile({ navigation, route }) {
 						position: "absolute",
 					}}
 				>
-					<ActivityIndicator animating />
+					<ActivityIndicator animating/>
 				</Animated.View>
 			),
 		});
@@ -1220,13 +1217,13 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		backgroundColor: "#FFF",
 	},
-	label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },
-	labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
+	label: {fontSize: 14, color: "#464646", fontFamily: "Lato-Bold"},
+	labelActive: {fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold"},
 	tab: {
 		elevation: 1,
 		shadowOpacity: 0.5,
 		backgroundColor: "#FFF",
 		height: TabBarHeight,
 	},
-	indicator: { backgroundColor: "#FFF", height: 3 },
+	indicator: {backgroundColor: "#209FAE", height: 3},
 });

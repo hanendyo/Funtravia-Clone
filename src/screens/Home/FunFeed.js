@@ -197,7 +197,7 @@ export default function SearchFeed({ props }) {
 							width: "100%",
 							borderRadius: 5,
 							paddingLeft: 10,
-							paddingTop: 15,
+							paddingTop: 5,
 						}}
 						start={{ x: 0, y: 1 }}
 						end={{ x: 0, y: 0 }}
@@ -212,7 +212,7 @@ export default function SearchFeed({ props }) {
 								justifyContent: "flex-end",
 							}}
 						>
-							{caption ? <Truncate text={caption} length={50} /> : null}
+							{caption ? <Truncate text={caption} length={45} /> : null}
 						</Text>
 						<View
 							style={{
