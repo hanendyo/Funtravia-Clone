@@ -663,15 +663,14 @@ export default function CityDetail(props) {
                   renderItem={({ item, index }) => {
                     return (
                       <Ripple
-                        onPress={props.navigation.navigate(
-                          "JournalStackNavigation",
-                          {
+                        onPress={() =>
+                          props.navigation.navigate("JournalStackNavigation", {
                             screen: "Journal",
                             params: {
                               dataPopuler: item,
                             },
-                          }
-                        )}
+                          })
+                        }
                         style={{
                           flexDirection: "row",
                           // borderWidth: 1,
