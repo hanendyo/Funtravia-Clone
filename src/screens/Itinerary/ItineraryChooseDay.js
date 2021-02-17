@@ -68,7 +68,6 @@ export default function ItineraryChooseday(props) {
   let [loading, setLoading] = useState(false);
   let [ArrayDay, setArrayDay] = useState([]);
 
-  console.log(Kiriman);
   const [
     GetListEvent,
     { data: dataItinerary, loading: loadingdetail, error: errordetail },
@@ -265,7 +264,7 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.navigate("ItineraryStack", {
+                  ? props.navigation.push("ItineraryStack", {
                       screen: "itindetail",
                       params: {
                         itintitle: dataItinerary.itinerary_detail.name,
@@ -282,6 +281,7 @@ export default function ItineraryChooseday(props) {
                             : null,
                         token: token,
                         datadayaktif: dataSelected[0],
+                        status: "edit",
                       },
                     })
                   : null;
@@ -324,15 +324,13 @@ export default function ItineraryChooseday(props) {
               throw new Error("Error Input");
             }
 
-            // console.log(responsegoogle);
-
             if (responsegoogle.data) {
               if (responsegoogle.data.add_google.code !== 200) {
                 throw new Error(responsegoogle.data.add_google.message);
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.navigate("ItineraryStack", {
+                  ? props.navigation.push("ItineraryStack", {
                       screen: "itindetail",
                       params: {
                         itintitle: dataItinerary.itinerary_detail.name,
@@ -349,6 +347,7 @@ export default function ItineraryChooseday(props) {
                             : null,
                         token: token,
                         datadayaktif: dataSelected[0],
+                        status: "edit",
                       },
                     })
                   : null;
@@ -389,7 +388,7 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.navigate("ItineraryStack", {
+                  ? props.navigation.push("ItineraryStack", {
                       screen: "itindetail",
                       params: {
                         itintitle: dataItinerary.itinerary_detail.name,
@@ -406,6 +405,7 @@ export default function ItineraryChooseday(props) {
                             : null,
                         token: token,
                         datadayaktif: dataSelected[0],
+                        status: "edit",
                       },
                     })
                   : null;
@@ -420,7 +420,6 @@ export default function ItineraryChooseday(props) {
       } else {
         Alert.alert("Fungsi belum ada untuk type" + Position);
 
-        console.log(Position);
         setLoading(false);
       }
     } else {

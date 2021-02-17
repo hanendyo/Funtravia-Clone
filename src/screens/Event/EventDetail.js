@@ -113,13 +113,24 @@ export default function EventDetail(props) {
   }, []);
 
   const addToPlan = () => {
-    props.navigation.navigate("ItineraryStack", {
-      screen: "ItineraryPlaning",
-      params: {
-        idkiriman: event_id,
-        Position: "Event",
-      },
-    });
+    props.route.params && props.route.params.iditinerary
+      ? props.navigation.push("ItineraryStack", {
+          screen: "ItineraryChooseday",
+          params: {
+            Iditinerary: props.route.params.iditinerary,
+            Kiriman: event_id,
+            token: token,
+            Position: "Event",
+            datadayaktif: props.route.params.datadayaktif,
+          },
+        })
+      : props.navigation.navigate("ItineraryStack", {
+          screen: "ItineraryPlaning",
+          params: {
+            idkiriman: event_id,
+            Position: "Event",
+          },
+        });
   };
 
   const toggleModal = () => {

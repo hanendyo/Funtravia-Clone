@@ -658,7 +658,7 @@ export default function ChoosePosition(props) {
                     throw new Error(responsed.data.update_timeline.message);
                   }
 
-                  props.navigation.navigate("ItineraryStack", {
+                  props.navigation.push("ItineraryStack", {
                     screen: "itindetail",
                     params: {
                       country: idItin,
@@ -666,6 +666,7 @@ export default function ChoosePosition(props) {
                       itintitle: itintitle,
                       dateitin: dateitin,
                       datadayaktif: datadayaktif,
+                      status: "edit",
                     },
                   });
                 }
@@ -1093,7 +1094,7 @@ export default function ChoosePosition(props) {
         >
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate("ItineraryStack", {
+              props.navigation.push("ItineraryStack", {
                 screen: "itindetail",
                 params: {
                   country: idItin,
@@ -1101,7 +1102,7 @@ export default function ChoosePosition(props) {
                   itintitle: itintitle,
                   dateitin: dateitin,
                   datadayaktif: datadayaktif,
-                  // status: 'saved',
+                  status: "edit",
                 },
               });
             }}
