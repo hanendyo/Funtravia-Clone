@@ -14,7 +14,7 @@ export default function AddCommentLike({
   data,
   token,
   fetchData,
-  listComment,
+  listComments,
 }) {
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
@@ -56,6 +56,8 @@ export default function AddCommentLike({
   });
 
   const comment = async (id, text) => {
+    console.log(id, text);
+
     Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
       try {
@@ -77,7 +79,7 @@ export default function AddCommentLike({
             response.data.comment_journal.code === "200"
           ) {
             setText("");
-            listComment();
+            listComments();
           } else {
             throw new Error(response.data.comment_journal.message);
           }
