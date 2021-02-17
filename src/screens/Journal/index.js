@@ -1,5 +1,5 @@
 import { Thumbnail, View } from "native-base";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Dimensions,
   TouchableOpacity,
@@ -9,19 +9,28 @@ import {
   FlatList,
   Pressable,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { Loading, Truncate } from "../../component";
 import { dateFormatMonthYears } from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 
 export default function Journal(props) {
+  let [search, setSearch] = useState({
+    category_id: null,
+    order_by: null,
+    limit: null,
+    offset: null,
+    keyword: null,
+  });
+  let { width, height } = Dimensions.get("screen");
   const HeaderComponent = {
     headerShown: true,
     title: "Journal",
@@ -70,18 +79,79 @@ export default function Journal(props) {
     },
   });
 
-  const [fetchDataList, { data: dataList }] = useLazyQuery(JournalList, {
+  const {
+    data: dataList,
+    loading: loadingList,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(JournalList, {
     variables: {
       category_id: null,
-      order: "",
+      order_by: null,
+      limit: 10,
+      offset: 0,
+      keyword: null,
     },
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
+
+  let list = [];
+  if (dataList && "datas" in dataList.journal_list) {
+    list = dataList.journal_list.datas;
+  }
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const Refresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.journal_list;
+    const datas = [
+      ...prev.journal_list.datas,
+      ...fetchMoreResult.journal_list.datas,
+    ];
+
+    return Object.assign({}, prev, {
+      list: {
+        __typename: prev.journal_list.__typename,
+        page_info,
+        datas,
+      },
+    });
+  };
+
+  const handleOnEndReached = () => {
+    if (dataList.journal_list.page_info.hasNextPage) {
+      return fetchMore({
+        variables: {
+          category_id: null,
+          keyword: search.keyword,
+          orderby: null,
+          limit: 10,
+          offset: dataList.journal_list.page_info.offset,
+        },
+        updateQuery: onUpdate,
+      });
+    }
+  };
 
   const [
     fetchCategory,
@@ -105,103 +175,11 @@ export default function Journal(props) {
     });
   };
 
-  const refresh = () => {
-    fetchDataPopuler();
-    fetchDataList();
-  };
-
-  const renderList = ({ item, index }) => {
-    return (
-      <View>
-        <Pressable
-          style={{ flexDirection: "row" }}
-          onPress={() => JournalDetail(item)}
-        >
-          <Image
-            source={item.firstimg ? { uri: item.firstimg } : default_image}
-            style={{
-              width: "21%",
-              height: 110,
-              borderRadius: 10,
-            }}
-          />
-          <View
-            style={{
-              width: "79%",
-              marginVertical: 5,
-              paddingLeft: 10,
-              justifyContent: "space-between",
-            }}
-          >
-            <View>
-              <Text style={{ color: "#209FAE" }} size={"small"} type={"bold"}>
-                #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
-              </Text>
-              <Text
-                size={"label"}
-                type={"bold"}
-                style={{ color: "#3E3E3E", marginTop: 5 }}
-              >
-                <Truncate text={item.title ? item.title : ""} length={40} />
-              </Text>
-              <Text
-                size={"small"}
-                type={"regular"}
-                style={{ textAlign: "justify", marginTop: 5, lineHeight: 16 }}
-              >
-                <Truncate
-                  text={item.firsttxt ? item.firsttxt : ""}
-                  length={110}
-                />
-              </Text>
-            </View>
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text size={"small"} type={"regular"}>
-                  {dateFormatMonthYears(item.date)}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <LikeEmpty width={10} height={10} />
-                  <Text
-                    style={{ marginLeft: 5 }}
-                    size={"small"}
-                    type={"regular"}
-                  >
-                    {item.article_response_count > 0
-                      ? item.article_response_count + " " + t("likeMany")
-                      : item.article_response_count + " " + t("like")}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </Pressable>
-        <View
-          style={{
-            margin: 10,
-            borderBottomColor: "#f6f6f6",
-            borderBottomWidth: 0.9,
-          }}
-        />
-      </View>
-    );
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      refresh();
       fetchCategory();
+      fetchDataPopuler();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -317,21 +295,6 @@ export default function Journal(props) {
           />
         </View>
       ) : null}
-      {/* {dataCategory && dataCategory.category_journal ? (
-          <FlatList
-            data={dataCategory.category_journal}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <View>
-                <Text>{item.name}</Text>
-              </View>
-            )}
-          />
-        ) : (
-          <View>
-            <Text>test</Text>
-          </View>
-        )} */}
 
       {/* ============================== Top Contributor ====================================================*/}
 
@@ -413,7 +376,7 @@ export default function Journal(props) {
 
       {/* ============================== List Journal ====================================================*/}
 
-      {dataList && dataList.journal_list.length > 0 ? (
+      {list.length > 0 ? (
         <View
           style={{
             flex: 1,
@@ -423,11 +386,133 @@ export default function Journal(props) {
           }}
         >
           <FlatList
-            data={dataList.journal_list}
-            renderItem={renderList}
-            keyExtractor={(data) => data.id}
+            data={list}
+            renderItem={({ item, index }) => (
+              <View>
+                <Pressable
+                  style={{ flexDirection: "row" }}
+                  onPress={() => JournalDetail(item)}
+                >
+                  <Image
+                    source={
+                      item.firstimg ? { uri: item.firstimg } : default_image
+                    }
+                    style={{
+                      width: "21%",
+                      height: 110,
+                      borderRadius: 10,
+                    }}
+                  />
+                  <View
+                    style={{
+                      width: "79%",
+                      marginVertical: 5,
+                      paddingLeft: 10,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{ color: "#209FAE" }}
+                        size={"small"}
+                        type={"bold"}
+                      >
+                        #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                      </Text>
+                      <Text
+                        size={"label"}
+                        type={"bold"}
+                        style={{ color: "#3E3E3E", marginTop: 5 }}
+                      >
+                        <Truncate
+                          text={item.title ? item.title : ""}
+                          length={40}
+                        />
+                      </Text>
+                      <Text
+                        size={"small"}
+                        type={"regular"}
+                        style={{
+                          textAlign: "justify",
+                          marginTop: 5,
+                          lineHeight: 16,
+                        }}
+                      >
+                        <Truncate
+                          text={item.firsttxt ? item.firsttxt : ""}
+                          length={110}
+                        />
+                      </Text>
+                    </View>
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text size={"small"} type={"regular"}>
+                          {dateFormatMonthYears(item.date)}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <LikeEmpty width={10} height={10} />
+                          <Text
+                            style={{ marginLeft: 5 }}
+                            size={"small"}
+                            type={"regular"}
+                          >
+                            {item.article_response_count > 0
+                              ? item.article_response_count +
+                                " " +
+                                t("likeMany")
+                              : item.article_response_count + " " + t("like")}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </Pressable>
+                <View
+                  style={{
+                    margin: 10,
+                    borderBottomColor: "#f6f6f6",
+                    borderBottomWidth: 0.9,
+                  }}
+                />
+              </View>
+            )}
+            keyExtractor={(item) => item.id}
             nestedScrollEnabled
             showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => Refresh()}
+              />
+            }
+            ListFooterComponent={
+              loadingList ? (
+                <View
+                  style={{
+                    width: width,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text size="title" type="bold">
+                    Loading...
+                  </Text>
+                </View>
+              ) : null
+            }
+            onEndReachedThreshold={1}
+            onEndReached={handleOnEndReached}
           />
         </View>
       ) : null}

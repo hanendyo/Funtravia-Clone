@@ -1,13 +1,19 @@
 import { Thumbnail, View } from "native-base";
-import { Dimensions, Image, FlatList, Alert } from "react-native";
+import {
+  Dimensions,
+  Image,
+  FlatList,
+  Alert,
+  RefreshControl,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Truncate, Loading } from "../../component";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
 import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
 import {
@@ -60,6 +66,7 @@ export default function DetailJournal(props) {
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();
   let slider = useRef();
+  let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
 
   const { t } = useTranslation();
@@ -75,23 +82,74 @@ export default function DetailJournal(props) {
   });
 
   const afterComment = async () => {
-    await fetchDataComment();
+    await refetch();
     await scroll_to();
   };
 
-  const [
-    fetchDataComment,
-    { data: dataComment, loading: loadingComment },
-  ] = useLazyQuery(JournalCommentList, {
-    variables: { id: dataPopuler.id },
-    fetchPolicy: "network-only",
+  const {
+    data: dataComment,
+    loading: loadingComment,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(JournalCommentList, {
+    variables: {
+      id: dataPopuler.id,
+      limit: 10,
+      offset: 0,
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
+
+  let listComment = [];
+  if (dataComment && "datas" in dataComment.comment_journal_list) {
+    listComment = dataComment.comment_journal_list.datas;
+  }
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const Refresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.comment_journal_list;
+    const datas = [
+      ...prev.comment_journal_list.datas,
+      ...fetchMoreResult.comment_journal_list.datas,
+    ];
+
+    return Object.assign({}, prev, {
+      listComment: {
+        __typename: prev.comment_journal_list.__typename,
+        page_info,
+        datas,
+      },
+    });
+  };
+
+  const handleOnEndReached = () => {
+    if (dataComment.comment_journal_list.page_info.hasNextPage) {
+      return fetchMore({
+        variables: {
+          id: dataPopuler.id,
+          limit: 10,
+          offset: dataComment.comment_journal_list.page_info.offset,
+        },
+        updateQuery: onUpdate,
+      });
+    }
+  };
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -100,7 +158,7 @@ export default function DetailJournal(props) {
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     await fetchData();
-    await fetchDataComment();
+    // await fetchDataComment();
   };
 
   useEffect(() => {
@@ -151,112 +209,17 @@ export default function DetailJournal(props) {
     }
   };
 
-  const renderComment = ({ item, index }) => {
+  {
+    /* ==================================== Render All ============================================== */
+  }
+  if (loading) {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginHorizontal: 20,
-          marginVertical: 5,
-          width: Dimensions.get("window").width * 0.9,
-          justifyContent: "space-between",
-        }}
-      >
-        <Loading show={loadingComment} />
-        <View
-          style={{
-            flexDirection: "row",
-            marginVertical: 2,
-            minHeight: Dimensions.get("window").width * 0.05,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              item && item.user && item.user.id !== null
-                ? item?.user?.id !== setting?.user?.id
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "otherprofile",
-                      params: {
-                        idUser: item.user.id,
-                      },
-                    })
-                  : props.navigation.push("ProfileStack", {
-                      screen: "ProfileTab",
-                    })
-                : Alert.alert("User has been deleted");
-            }}
-          >
-            <Thumbnail
-              source={
-                item.user && item.user.picture
-                  ? { uri: item.user.picture }
-                  : default_image
-              }
-              style={{
-                height: 35,
-                width: 35,
-              }}
-            />
-          </TouchableOpacity>
-          <View style={{ marginLeft: 15 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                size={"description"}
-                type={"bold"}
-                onPress={() => {
-                  item && item.user && item.user.id !== null
-                    ? item.user.id !== setting?.user?.id
-                      ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: item.user.id,
-                          },
-                        })
-                      : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                        })
-                    : Alert.alert("User has been deleted");
-                }}
-              >
-                {item && item.user && item.user.first_name
-                  ? item.user.first_name
-                  : "user_deleted"}
-              </Text>
-              {item && item.created_at ? (
-                <Text size={"small"} type={"light"} style={{ marginLeft: 10 }}>
-                  {duration(item.created_at)}
-                </Text>
-              ) : null}
-            </View>
-            <View
-              style={{
-                marginTop: 5,
-                alignSelf: "center",
-                width: Dimensions.get("window").width * 0.7,
-              }}
-            >
-              <Text
-                size={"description"}
-                type={"regular"}
-                style={{ textAlign: "justify" }}
-              >
-                {item.text}
-              </Text>
-            </View>
-          </View>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <View style={{ borderWidth: 1, backgroundColor: "#d1d1d1" }}>
+          <Text>test</Text>
         </View>
       </View>
     );
-  };
-
-  {
-    /* ==================================== Render All ============================================== */
   }
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -273,7 +236,13 @@ export default function DetailJournal(props) {
               justifyContent: "space-between",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 10,
+              }}
+            >
               <TouchableOpacity
                 onPress={() => {
                   data.journal_byid.userby
@@ -292,8 +261,8 @@ export default function DetailJournal(props) {
               >
                 <Thumbnail
                   style={{
-                    height: 30,
-                    width: 30,
+                    height: 35,
+                    width: 35,
                   }}
                   source={
                     data.journal_byid.userby
@@ -377,14 +346,11 @@ export default function DetailJournal(props) {
           </View>
           <View style={{ marginHorizontal: 20 }}>
             <View>
-              <Text size={"title"} type={"bold"} style={{ lineHeight: 25 }}>
-                <Truncate
-                  text={data.journal_byid ? data.journal_byid.title : "Title"}
-                  length={80}
-                />
+              <Text size={"title"} type={"bold"} style={{ lineHeight: 22 }}>
+                {data.journal_byid ? data.journal_byid.title : "Title"}
               </Text>
             </View>
-            <View style={{ marginTop: 7 }}>
+            <View style={{ marginTop: 10 }}>
               <View
                 style={{
                   justifyContent: "space-between",
@@ -392,9 +358,8 @@ export default function DetailJournal(props) {
                 }}
               >
                 {data && data.journal_byid && data.journal_byid.created_at ? (
-                  <Text size={"small"} type={"light"}>
+                  <Text size={"small"} type={"regular"}>
                     {duration(data.journal_byid.created_at)}
-                    {/* {data.journal_byid.created_at} */}
                   </Text>
                 ) : null}
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -422,13 +387,13 @@ export default function DetailJournal(props) {
                 if (item.type === "image") {
                   return (
                     <View key={index}>
-                      <View style={{ marginTop: 20 }}>
+                      <View style={{ marginTop: 30 }}>
                         {item.image ? (
                           <Image
                             source={item.image ? { uri: item.image } : null}
                             style={{
                               width: Dimensions.get("window").width,
-                              height: Dimensions.get("window").width * 0.7,
+                              height: Dimensions.get("window").height * 0.3,
                             }}
                           />
                         ) : null}
@@ -579,16 +544,138 @@ export default function DetailJournal(props) {
               </Text>
             </View>
           </View>
-          {dataComment &&
-          dataComment.comment_journal_list &&
-          dataComment.comment_journal_list.length ? (
+          {listComment.length ? (
             <FlatList
-              renderItem={renderComment}
-              data={dataComment.comment_journal_list}
-              keyExtractor={(dataComment) => dataComment.id}
-              nestedScrollEnabled
-              ListHeaderComponent={null}
-              ListFooterComponent={null}
+              data={listComment}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginHorizontal: 20,
+                    marginVertical: 5,
+                    width: Dimensions.get("window").width * 0.9,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginVertical: 2,
+                      minHeight: Dimensions.get("window").width * 0.05,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        item && item.user && item.user.id !== null
+                          ? item?.user?.id !== setting?.user?.id
+                            ? props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.user.id,
+                                },
+                              })
+                            : props.navigation.push("ProfileStack", {
+                                screen: "ProfileTab",
+                              })
+                          : Alert.alert("User has been deleted");
+                      }}
+                    >
+                      <Thumbnail
+                        source={
+                          item.user && item.user.picture
+                            ? { uri: item.user.picture }
+                            : default_image
+                        }
+                        style={{
+                          height: 35,
+                          width: 35,
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <View style={{ marginLeft: 15 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text
+                          size={"description"}
+                          type={"bold"}
+                          onPress={() => {
+                            item && item.user && item.user.id !== null
+                              ? item.user.id !== setting?.user?.id
+                                ? props.navigation.push("ProfileStack", {
+                                    screen: "otherprofile",
+                                    params: {
+                                      idUser: item.user.id,
+                                    },
+                                  })
+                                : props.navigation.push("ProfileStack", {
+                                    screen: "ProfileTab",
+                                  })
+                              : Alert.alert("User has been deleted");
+                          }}
+                        >
+                          {item && item.user && item.user.first_name
+                            ? item.user.first_name
+                            : "user_deleted"}
+                        </Text>
+                        {item && item.created_at ? (
+                          <Text
+                            size={"small"}
+                            type={"light"}
+                            style={{ marginLeft: 10 }}
+                          >
+                            {duration(item.created_at)}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View
+                        style={{
+                          marginTop: 5,
+                          alignSelf: "center",
+                          width: Dimensions.get("window").width * 0.7,
+                        }}
+                      >
+                        <Text
+                          size={"description"}
+                          type={"regular"}
+                          style={{ textAlign: "justify" }}
+                        >
+                          {item.text}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(listComment) => listComment.id}
+              refreshing={refreshing}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => Refresh()}
+                />
+              }
+              ListFooterComponent={
+                loadingComment ? (
+                  <View
+                    style={{
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text size="title" type="bold">
+                      Loading...
+                    </Text>
+                  </View>
+                ) : null
+              }
+              onEndReachedThreshold={1}
+              onEndReached={handleOnEndReached}
             />
           ) : (
             <View
@@ -601,30 +688,6 @@ export default function DetailJournal(props) {
               <Text>{`${t("NoComment")}`}</Text>
             </View>
           )}
-          {dataComment &&
-          dataComment.comment_journal_list &&
-          dataComment.comment_journal_list.length > 100 ? (
-            <TouchableOpacity>
-              <View
-                style={{
-                  marginVertical: 20,
-                  marginHorizontal: 20,
-                }}
-              >
-                <Button
-                  text={"Load More Comments"}
-                  size="medium"
-                  type="box"
-                  color="black"
-                  variant="bordered"
-                  onPress={() => props.navigation.goBack()}
-                  style={{
-                    borderColor: "#464646",
-                  }}
-                />
-              </View>
-            </TouchableOpacity>
-          ) : null}
         </ScrollView>
       ) : null}
       {/* ==================================== Add Comment, Like and Unlike ============================================== */}
@@ -633,7 +696,7 @@ export default function DetailJournal(props) {
           data={data.journal_byid}
           token={token}
           fetchData={(e) => fetchData(e)}
-          listComment={() => afterComment()}
+          listComments={() => afterComment()}
         />
       ) : null}
     </View>
