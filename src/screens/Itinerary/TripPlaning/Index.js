@@ -14,7 +14,7 @@ import ActivePlan from "./ActivePlan";
 import FinishTrip from "./FinishTrip";
 import PlanList from "./PlanList";
 import { Arrowbackwhite } from "../../../assets/svg";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import listitinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import { useTranslation } from "react-i18next";
 import { Button, Loading } from "../../../component";
@@ -72,9 +72,9 @@ export default function TripPlaning(props) {
       props.navigation.navigate("HomeScreen");
     } else {
       console.log(tkn);
-      await GetListitinplan();
-      await GetListitinaktif();
-      await GetListitinfinish();
+      // await GetListitinplan();
+      // await GetListitinaktif();
+      // await GetListitinfinish();
     }
     await setloading(false);
   };
@@ -87,51 +87,53 @@ export default function TripPlaning(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const [
-    GetListitinplan,
-    { data: datalistplan, loading: loadinglistplan, error: errorlistplan },
-  ] = useLazyQuery(listitinerary, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: { status: "D" },
-  });
+  // const {
+  //   data: datalistplan,
+  //   loading: loadinglistplan,
+  //   error: errorlistplan,
+  //   refetch: GetListitinplan,
+  // } = useQuery(listitinerary, {
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  //   variables: { status: "D" },
+  // });
 
-  const [
-    GetListitinaktif,
-    { data: datalistaktif, loading: loadinglistaktif, error: errorlistaktif },
-  ] = useLazyQuery(listitinerary, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: { status: "A" },
-  });
+  // const {
+  //   data: datalistaktif,
+  //   loading: loadinglistaktif,
+  //   error: errorlistaktif,
+  //   refetch: GetListitinaktif,
+  // } = useQuery(listitinerary, {
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  //   variables: { status: "A" },
+  // });
 
-  const [
-    GetListitinfinish,
-    {
-      data: datalistfinish,
-      loading: loadinglistfinish,
-      error: errorlistfinish,
-    },
-  ] = useLazyQuery(listitinerary, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    variables: { status: "F" },
-  });
+  // const {
+  //   data: datalistfinish,
+  //   loading: loadinglistfinish,
+  //   error: errorlistfinish,
+  //   refetch: GetListitinfinish,
+  // } = useQuery(listitinerary, {
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  //   variables: { status: "F" },
+  // });
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -166,14 +168,15 @@ export default function TripPlaning(props) {
                 )}
               >
                 <Tab
-                  heading={
-                    (datalistplan &&
-                    datalistplan.itinerary_list_bystatus.length > 0
-                      ? "" + datalistplan.itinerary_list_bystatus.length
-                      : "0") +
-                    " " +
-                    t("planList")
-                  }
+                  // heading={
+                  //   (datalistplan &&
+                  //   datalistplan.itinerary_list_bystatus.length > 0
+                  //     ? "" + datalistplan.itinerary_list_bystatus.length
+                  //     : "0") +
+                  //   " " +
+                  //   t("planList")
+                  // }
+                  heading={t("planList")}
                   tabStyle={{ backgroundColor: "white" }}
                   activeTabStyle={{ backgroundColor: "white" }}
                   textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
@@ -182,25 +185,26 @@ export default function TripPlaning(props) {
                     color: "#209FAE",
                   }}
                 >
-                  {datalistplan && datalistplan.itinerary_list_bystatus ? (
-                    <PlanList
-                      props={props}
-                      token={token}
-                      jumlah={(e) => setDataPlan(e)}
-                      data={datalistplan}
-                      GetListitinplan={(e) => loadAsync(e)}
-                    />
-                  ) : null}
+                  {/* {datalistplan && datalistplan.itinerary_list_bystatus ? ( */}
+                  <PlanList
+                    props={props}
+                    token={token}
+                    jumlah={(e) => setDataPlan(e)}
+                    // data={datalistplan}
+                    GetListitinplan={(e) => loadAsync(e)}
+                  />
+                  {/* ) : null} */}
                 </Tab>
                 <Tab
-                  heading={
-                    (datalistaktif &&
-                    datalistaktif.itinerary_list_bystatus.length > 0
-                      ? "" + datalistaktif.itinerary_list_bystatus.length
-                      : "0") +
-                    " " +
-                    t("activePlan")
-                  }
+                  // heading={
+                  //   (datalistaktif &&
+                  //   datalistaktif.itinerary_list_bystatus.length > 0
+                  //     ? "" + datalistaktif.itinerary_list_bystatus.length
+                  //     : "0") +
+                  //   " " +
+                  //   t("activePlan")
+                  // }
+                  heading={t("activePlan")}
                   tabStyle={{
                     backgroundColor: "white",
                     flexDirection: "column",
@@ -212,25 +216,27 @@ export default function TripPlaning(props) {
                     color: "#209FAE",
                   }}
                 >
-                  {datalistaktif && datalistaktif.itinerary_list_bystatus ? (
-                    <ActivePlan
-                      props={props}
-                      token={token}
-                      jumlah={(e) => setDataActive(e)}
-                      data={datalistaktif}
-                      GetListitinaktif={(e) => loadAsync(e)}
-                    />
-                  ) : null}
+                  {/* {datalistaktif && datalistaktif.itinerary_list_bystatus ? ( */}
+                  <ActivePlan
+                    props={props}
+                    token={token}
+                    jumlah={(e) => setDataActive(e)}
+                    // data={datalistaktif}
+                    GetListitinaktif={(e) => loadAsync(e)}
+                  />
+                  {/* ) : null} */}
                 </Tab>
+
                 <Tab
-                  heading={
-                    (datalistfinish &&
-                    datalistfinish.itinerary_list_bystatus.length > 0
-                      ? "" + datalistfinish.itinerary_list_bystatus.length
-                      : "0") +
-                    " " +
-                    t("finishTrip")
-                  }
+                  // heading={
+                  //   (datalistfinish &&
+                  //     datalistfinish.itinerary_list_bystatus.length > 0
+                  //     ? "" + datalistfinish.itinerary_list_bystatus.length
+                  //     : "0") +
+                  //     " " +
+                  //     t("finishTrip")
+                  //   }
+                  heading={t("finishTrip")}
                   tabStyle={{ backgroundColor: "white" }}
                   activeTabStyle={{ backgroundColor: "white" }}
                   textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
@@ -239,15 +245,15 @@ export default function TripPlaning(props) {
                     color: "#209FAE",
                   }}
                 >
-                  {datalistfinish && datalistfinish.itinerary_list_bystatus ? (
-                    <FinishTrip
-                      props={props}
-                      token={token}
-                      jumlah={(e) => setDataFinish(e)}
-                      data={datalistfinish}
-                      GetListitinfinish={(e) => loadAsync(e)}
-                    />
-                  ) : null}
+                  {/* {datalistfinish && datalistfinish.itinerary_list_bystatus ? ( */}
+                  <FinishTrip
+                    props={props}
+                    token={token}
+                    jumlah={(e) => setDataFinish(e)}
+                    // data={datalistfinish}
+                    GetListitinfinish={(e) => loadAsync(e)}
+                  />
+                  {/* ) : null} */}
                 </Tab>
               </Tabs>
             ) : null}

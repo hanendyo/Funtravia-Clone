@@ -459,7 +459,11 @@
   "writeComment": "Komentar",
   "alertdaynot": "Hari tidak dapat dihapus",
   "CopyTrip": "Salin Trip",
+<<<<<<< Updated upstream
   "Discover": "Discover the",
   "BestTravelIdea": "Best Travel Idea",
   "LetsGovisit": "Let’s go visit the iconic place around the world"
+=======
+  "person": "Orang"
+>>>>>>> Stashed changes
 }
