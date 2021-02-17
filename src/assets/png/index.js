@@ -141,3 +141,4 @@ export const sampul2 = require("./files/sampul2.png");
 export const logo_funtravia = require("./files/logo_funtravia.png");
 export const itinerary_1 = require("./files/itinerary_image2.png");
 export const itinerary_2 = require("./files/itinerary_image1.png");
+export const travel_idea_ilust = require("./files/travel_idea_ilust.png");
