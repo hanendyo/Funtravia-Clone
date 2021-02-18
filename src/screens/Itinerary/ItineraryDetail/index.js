@@ -71,6 +71,7 @@ import Updatecover from "../../../graphQL/Mutation/Itinerary/Updatecover";
 import ChangeStatus from "../../../graphQL/Mutation/Itinerary/ChangeStatus";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import Ripple from "react-native-material-ripple";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -90,7 +91,9 @@ export default function ItineraryDetail(props) {
    */
   const { t, i18n } = useTranslation();
   let [Cover, setCover] = useState(null);
-  const [tabIndex, setIndex] = useState(0);
+  const [tabIndex, setIndex] = useState(
+    props.route.params.index ? props.route.params.index : 0
+  );
   const [routes] = useState([
     { key: "tab1", title: "Itinerary" },
     { key: "tab2", title: "Travel Picture" },
@@ -412,7 +415,7 @@ export default function ItineraryDetail(props) {
         if (response.data.update_cover_itinerary.code !== 200) {
           throw new Error(response.data.update_cover_itinerary.message);
         } else {
-          Refresh();
+          _Refresh();
         }
       }
       setloading(false);
@@ -889,17 +892,18 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    if (
-      statusKiriman !== "saved" &&
-      statusKiriman !== "edit" &&
-      statusKiriman !== "finish"
-    ) {
-      props.navigation.goBack();
-    } else {
-      props.navigation.navigate("TripPlaning", {
-        index: status === "saved" ? 1 : 0,
-      });
-    }
+    // if (
+    //   statusKiriman !== "saved" &&
+    //   statusKiriman !== "edit" &&
+    //   statusKiriman !== "finish"
+    // ) {
+    props.navigation.goBack();
+    // } else {
+    //   props.navigation.push("TripPlaning", {
+    //     index:
+    //       statusKiriman === "saved" ? 1 : statusKiriman === "finish" ? 2 : 0,
+    //   });
+    // }
   };
 
   const [
@@ -2199,7 +2203,7 @@ export default function ItineraryDetail(props) {
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <View
+      <Ripple
         style={{
           alignContent: "center",
           alignItems: "center",
@@ -2220,7 +2224,7 @@ export default function ItineraryDetail(props) {
         >
           {route.title}
         </Text>
-      </View>
+      </Ripple>
     );
   };
 
@@ -2963,7 +2967,7 @@ export default function ItineraryDetail(props) {
                 color="tertiary"
                 type="circle"
                 style={{
-                  backgroundColor: "#f2dae5",
+                  backgroundColor: "#d3d3d3",
                   borderRadius: 5,
                   marginVertical: 10,
                   marginRight: 10,

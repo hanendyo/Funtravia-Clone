@@ -11,20 +11,65 @@ import {
 } from "react-native";
 import { default_image, imgPrivate } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
-import { LikeRed, LikeEmpty, Kosong } from "../../../assets/svg";
+import {
+  LikeRed,
+  LikeEmpty,
+  Kosong,
+  PinHijau,
+  Calendargrey,
+  User,
+  TravelAlbum,
+  TravelStories,
+} from "../../../assets/svg";
 import { Truncate, Text } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { useMutation, useQuery } from "@apollo/client";
+import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
+import Ripple from "react-native-material-ripple";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
+
+const arrayShadow = {
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+  shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+  elevation: Platform.OS == "ios" ? 3 : 3,
+};
 
 export default function FinishTrip({
   token,
   props,
   jumlah,
-  data,
-  GetListitinfinish,
+  // data,
+  // GetListitinfinish,
 }) {
   const { t, i18n } = useTranslation();
   let [tok, settok] = useState(token);
-  let [datalistaktif, setdatalistaktif] = useState(data);
+  let datalistaktif = {};
+
+  const {
+    data: datalistplan,
+    loading: loadinglistplan,
+    error: errorlistplan,
+    refetch: GetListitinplan,
+  } = useQuery(ListItinerary, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: { status: "A" },
+  });
+
+  {
+    datalistplan &&
+    datalistplan.itinerary_list_bystatus &&
+    datalistplan.itinerary_list_bystatus.length > 0
+      ? (datalistaktif = datalistplan)
+      : null;
+  }
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -74,7 +119,6 @@ export default function FinishTrip({
                     width: 30,
                     borderRadius: 15,
                     marginLeft: -10,
-
                   }}
                 />
               </View>
@@ -126,115 +170,129 @@ export default function FinishTrip({
         <Text
           size="description"
           type={"regular"}
-          style={{
-            color: "white",
-          }}
+          style={
+            {
+              // color: "white",
+            }
+          }
         >
-          {Difference_In_Days + 1}D
+          {Difference_In_Days + 1} {t("days")}
+          {", "}
         </Text>
         <Text
           size="description"
           type={"regular"}
-          style={{
-            color: "white",
-          }}
+          style={
+            {
+              // color: "white",
+            }
+          }
         >
-          {Difference_In_Days}N
-        </Text>
-        <Text
-          size="description"
-          type={"regular"}
-          style={{
-            color: "white",
-          }}
-        >
-          {" ("}
-          {getdate(x, y)}
-          {")"}
+          {Difference_In_Days} {t("nights")}
         </Text>
       </View>
     );
   };
 
-  const RenderActive = ({ data }) => {
+  const RenderActive = ({ data, index }) => {
     return (
-      <View>
-        <TouchableOpacity
-          onPress={() =>
-            props.navigation.push("ItineraryStack", {
-              screen: "itindetail",
-              params: {
-                itintitle: data.name,
-                country: data.id,
-                dateitin: getdate(data.start_date, data.end_date),
-                token: tok,
-                status: "saved",
-              },
-            })
-          }
+      <View
+        style={{
+          height: 150,
+          marginTop: 10,
+          borderRadius: 5,
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: arrayShadow.shadowOpacity,
+          shadowRadius: arrayShadow.shadowRadius,
+          elevation: arrayShadow.elevation,
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
+          overflow: "hidden",
+        }}
+      >
+        <View
           style={{
-            // width: (110),
-            width: Dimensions.get("window").width - 20,
-            // marginTop: (3),
-            // marginBottom: (5),
+            backgroundColor: "#FFFFFF",
+            height: "75%",
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+            flexDirection: "row",
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
           }}
         >
           <ImageBackground
-            // key={value.id}
-            source={data.cover ? { uri: data.cover } : default_image}
-            style={[
-              styles.ImageView,
-              {
-                width: Dimensions.get("window").width - 20,
-                height: Dimensions.get("window").width * 0.35,
-                borderRadius: 10,
-                marginVertical: 3,
-                // padding: (20),
-              },
-            ]}
-            imageStyle={[
-              styles.Image,
-              {
-                width: Dimensions.get("window").width - 20,
-                height: Dimensions.get("window").width * 0.35,
-                borderRadius: 10,
-              },
-            ]}
+            source={data && data.cover ? { uri: data.cover } : default_image}
+            style={{
+              height: "100%",
+              width: "35%",
+              borderTopLeftRadius: 5,
+            }}
+            imageStyle={{
+              borderTopLeftRadius: 5,
+              borderWidth: 0.2,
+              borderColor: "#d3d3d3",
+              height: "100%",
+              width: "100%",
+            }}
           >
-            <View
+            <Ripple
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.38)",
-                width: Dimensions.get("window").width - 20,
-                height: Dimensions.get("window").width * 0.35,
-                borderRadius: 10,
+                width: "100%",
+                height: "100%",
                 padding: 10,
               }}
+              onPress={() =>
+                props.navigation.push("ItineraryStack", {
+                  screen: "itindetail",
+                  params: {
+                    itintitle: data.name,
+                    country: data.id,
+                    dateitin: getdate(data.start_date, data.end_date),
+                    token: tok,
+                    status: "finish",
+                  },
+                })
+              }
             >
-              {data.isprivate == true ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={
+                    data.user_created
+                      ? { uri: data.user_created.picture }
+                      : default_image
+                  }
+                  style={{
+                    zIndex: 2,
+                    backgroundColor: "#ffff",
+                    borderRadius: 15,
+                    width: 30,
+                    height: 30,
+                    borderWidth: 1,
+                    borderColor: "#ffff",
+                  }}
+                ></Image>
                 <View
                   style={{
+                    position: "relative",
+                    marginLeft: -5,
+                    zIndex: 1,
                     flexDirection: "row",
-                    position: "absolute",
-                    right: 0,
-                    top: 10,
-                    zIndex: 999,
-                    backgroundColor: "rgba(255, 255, 255, 0.39)",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
                     paddingVertical: 3,
                     paddingHorizontal: 10,
-                    borderTopStartRadius: 10,
-                    borderBottomStartRadius: 10,
+                    borderRadius: 3,
                     overflow: "hidden",
-                    alignItems: "center",
                   }}
                 >
-                  <Image
-                    source={imgPrivate}
-                    customStyle={{
-                      height: 10,
-                      width: 10,
-                      marginRight: 5,
-                    }}
-                  />
                   <Text
                     size="small"
                     type={"regular"}
@@ -242,67 +300,126 @@ export default function FinishTrip({
                       color: "white",
                     }}
                   >
-                    {t("private")}
+                    {data.user_created
+                      ? data.user_created.first_name
+                      : "User_Funtravia"}
                   </Text>
                 </View>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => handler_liked(data.id)}
-                  style={{
-                    flexDirection: "row",
-                    position: "absolute",
-                    right: 10,
-                    top: 10,
-                    zIndex: 999,
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type={"regular"}
-                    style={{
-                      color: "white",
-                    }}
-                  >
-                    {data.likers}{" "}
-                  </Text>
-                  <View>
-                    {data.liked == true ? (
-                      <LikeRed height={20} width={20} />
-                    ) : (
-                      <LikeEmpty height={20} width={20} />
-                    )}
-                  </View>
-                </TouchableOpacity>
-              )}
-              <View>
-                <Text
-                  size="label"
-                  type={"bold"}
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  {data.name}
-                </Text>
               </View>
+            </Ripple>
+          </ImageBackground>
+
+          <View
+            style={{
+              width: "65%",
+              height: "100%",
+              paddingHorizontal: 10,
+              backgroundColor: "#FFFFFF",
+              paddingVertical: 10,
+              overflow: "hidden",
+              justifyContent: "space-between",
+            }}
+          >
+            <View>
               <View
                 style={{
                   flexDirection: "row",
+                  justifyContent: "space-between",
+                  aligndatas: "center",
                 }}
               >
-                <Text
-                  size="description"
-                  type={"regular"}
+                <View
                   style={{
-                    color: "white",
+                    backgroundColor: "#DAF0F2",
+                    borderWidth: 1,
+                    borderRadius: 3,
+                    borderColor: "#209FAE",
+                    paddingHorizontal: 5,
                   }}
                 >
-                  <Truncate
-                    text={data.city ? data.city.name : null}
-                    length={10}
-                  />
-                  ,{" "}
+                  <Text
+                    type="bold"
+                    size="description"
+                    style={{ color: "#209FAE" }}
+                  >
+                    {data?.categori?.name
+                      ? data?.categori?.name
+                      : "No Category"}
+                  </Text>
+                </View>
+                <View>
+                  {data.isprivate == true ? (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        paddingVertical: 3,
+                        paddingHorizontal: 10,
+                        borderRadius: 3,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <Image
+                        source={imgPrivate}
+                        style={{
+                          height: 10,
+                          width: 10,
+                          marginRight: 5,
+                        }}
+                      />
+                      <Text
+                        size="small"
+                        type={"regular"}
+                        style={{
+                          color: "white",
+                        }}
+                      >
+                        {t("private")}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+              <Text size="label" type="black" style={{ marginTop: 5 }}>
+                <Truncate text={data.name} length={40} />
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 5,
+                }}
+              >
+                <PinHijau width={15} height={15} />
+                <Text style={{ marginLeft: 5 }} size="small" type="regular">
+                  {data?.country?.name}
                 </Text>
+                <Text>,</Text>
+                <Text size="small" type="regular" style={{ marginLeft: 3 }}>
+                  {data?.city?.name}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                // borderWidth: 1,
+                width: "100%",
+                flexDirection: "row",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 3,
+                }}
+              >
+                <Calendargrey
+                  width={10}
+                  height={10}
+                  style={{ marginRight: 5 }}
+                />
                 {data.start_date && data.end_date
                   ? getDN(data.start_date, data.end_date)
                   : null}
@@ -310,23 +427,92 @@ export default function FinishTrip({
               <View
                 style={{
                   flexDirection: "row",
-                  // marginTop: (70),
-                  position: "absolute",
-                  bottom: 10,
-                  left: 20,
+                  alignItems: "center",
+                  marginLeft: 15,
                 }}
               >
-                {data.buddy.length ? (
-                  <RenderBuddy databuddy={data.buddy} />
-                ) : null}
+                <User width={10} height={10} style={{ marginRight: 5 }} />
+                <Text size="small" type="regular">
+                  {(data && data.buddy.length ? data.buddy.length : null) + " "}
+                  {t("person")}
+                </Text>
               </View>
             </View>
-          </ImageBackground>
-        </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            paddingVertical: 3,
+            height: "25%",
+            flexDirection: "row",
+            backgroundColor: "#FFFFFF",
+            borderBottomLeftRadius: 5,
+            borderBottomRightRadius: 5,
+            justifyContent: "space-between",
+          }}
+        >
+          <Ripple
+            onPress={() =>
+              props.navigation.push("ItineraryStack", {
+                screen: "itindetail",
+                params: {
+                  itintitle: data.name,
+                  country: data.id,
+                  dateitin: getdate(data.start_date, data.end_date),
+                  token: tok,
+                  status: "finish",
+                  index: 1,
+                },
+              })
+            }
+            style={{
+              width: "50%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRightWidth: 1,
+              borderColor: "#d3d3d3",
+              paddingVertical: 5,
+            }}
+          >
+            <TravelAlbum height={15} width={15} style={{ marginRight: 5 }} />
+            <Text size="small" type="bold" style={{ color: "#209fae" }}>
+              Travel Album
+            </Text>
+          </Ripple>
+          <Ripple
+            onPress={() =>
+              props.navigation.push("ItineraryStack", {
+                screen: "itindetail",
+                params: {
+                  itintitle: data.name,
+                  country: data.id,
+                  dateitin: getdate(data.start_date, data.end_date),
+                  token: tok,
+                  status: "finish",
+                  index: 2,
+                },
+              })
+            }
+            style={{
+              width: "50%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TravelStories height={15} width={15} style={{ marginRight: 5 }} />
+            <Text size="small" type="bold" style={{ color: "#209fae" }}>
+              Travel Stories
+            </Text>
+          </Ripple>
+        </View>
       </View>
     );
   };
-
+  if (loadinglistplan) {
+    return null;
+  }
   return (
     <View style={{ flex: 1 }}>
       {/* <NavigationEvents onDidFocus={() => _Refresh()} /> */}
@@ -352,7 +538,9 @@ export default function FinishTrip({
                   ? datalistaktif.itinerary_list_bystatus
                   : null
               }
-              renderItem={({ item }) => <RenderActive data={item} />}
+              renderItem={({ item, index }) => (
+                <RenderActive data={item} index={index} />
+              )}
               // keyExtractor={(item) => item.id}
               showsHorizontalScrollIndicator={false}
               // extraData={selected}
