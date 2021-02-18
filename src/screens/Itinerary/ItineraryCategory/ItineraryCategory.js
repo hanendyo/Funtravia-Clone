@@ -105,20 +105,24 @@ export default function ItineraryCategory(props) {
     ),
   };
 
-  const [
-    fetchCategory,
-    { data: dataCategory, loading: loadingCategory, error: errorCategory },
-  ] = useLazyQuery(Category, {
+  const {
+    data: dataCategory,
+    loading: loadingCategory,
+    error: errorCategory,
+    fetchMore: fetchMoreCategory,
+    refetch : refetchCategory,
+    networkStatus : networkStatusCategory,
+  } = useQuery(Category, {
     variables: {
       category_id: null,
       order_by: null,
     },
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
@@ -206,7 +210,7 @@ export default function ItineraryCategory(props) {
     await setToken(tkn);
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
-    await fetchCategory();
+    // await fetchCategory();
   };
 
   const arrayShadow = {
@@ -561,6 +565,11 @@ export default function ItineraryCategory(props) {
   }, [props.navigation]);
 
   const RenderUtama = ({ aktif }) => {
+    if (loadingPopuler) {
+      <View>
+        <Text>Loading ...</Text>
+      </View>;
+    }
     if (aktif == "Itinerary") {
       return (
         <FlatList
@@ -580,45 +589,69 @@ export default function ItineraryCategory(props) {
             />
           }
           ListHeaderComponent={
-            <View
-              style={{
-                height: Dimensions.get("screen").width * 0.13,
-                paddingHorizontal: 15,
-                paddingVertical: 5,
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                flexDirection: "row",
-              }}
-            >
-              <View style={{ flexDirection: "row" }}>
-                <Text size="description" type="bold" style={{ marginRight: 5 }}>
-                  Show Result
-                </Text>
-                <Text size="description" type="bold">
-                  {list_populer?.length}
-                </Text>
-              </View>
+            <>
               <View
                 style={{
-                  width: Dimensions.get("screen").width * 0.35,
-                  height: "100%",
-                  elevation: 20,
-                  justifyContent: "center",
-                  backgroundColor: "white",
-                  borderRadius: 2,
+                  height: Dimensions.get("screen").height * 0.05,
+                  paddingHorizontal: 15,
+                  paddingVertical: 5,
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  flexDirection: "row",
                 }}
               >
-                <Picker
-                  mode="dropdown"
-                  selectedValue={order}
-                  onValueChange={(x) => setOrder(x)}
+                <View style={{ flexDirection: "row" }}>
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginRight: 5 }}
+                  >
+                    Show Result
+                  </Text>
+                  <Text size="description" type="bold">
+                    {list_populer?.length}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width * 0.35,
+                    height: "100%",
+                    elevation: 20,
+                    justifyContent: "center",
+                    backgroundColor: "white",
+                    borderRadius: 2,
+                  }}
                 >
-                  <Picker.Item label="New Post" value="new" />
-                  <Picker.Item label="Populer" value="populer" />
-                </Picker>
+                  <Picker
+                    mode="dropdown"
+                    selectedValue={order}
+                    onValueChange={(x) => setOrder(x)}
+                  >
+                    <Picker.Item label="New Post" value="new" />
+                    <Picker.Item label="Populer" value="populer" />
+                  </Picker>
+                </View>
               </View>
-            </View>
+              <View>
+                {loadingPopuler ? (
+                  <View style={{ paddingVertical: 20, alignItems: "center" }}>
+                    <Text size="title" type="bold">
+                      Loading ...
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+              {/* <View>
+                {list_populer?.length === 0 ? (
+                  <View style={{ paddingVertical: 20, alignItems: "center" }}>
+                    <Text size="title" type="bold">
+                      Tidak ada Data
+                    </Text>
+                  </View>
+                ) : null}
+              </View> */}
+            </>
           }
           onEndReachedThreshold={1}
           onEndReached={handleOnEndReached}
@@ -685,6 +718,22 @@ export default function ItineraryCategory(props) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 15 }}
+            ListHeaderComponent={
+              loadingCategory ? (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: "white",
+                    width: Dimensions.get("screen").height * 0.23,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text size="title" type="bold">
+                    Loading ...
+                  </Text>
+                </View>
+              ) : null
+            }
             renderItem={({ item, index }) => {
               return (
                 <Ripple

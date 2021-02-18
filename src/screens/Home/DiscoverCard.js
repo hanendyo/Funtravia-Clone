@@ -3,7 +3,7 @@ import {
   View,
   ImageBackground,
   Dimensions,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
 } from "react-native";
 import {
@@ -48,7 +48,7 @@ export default function DiscoverCard({ props }) {
         elevation: 2,
       }}
     >
-      <TouchableOpacity
+      <Pressable
         key={discoverCardsData[0].id}
         onPress={() =>
           props.navigation.navigate("TravelIdeaStack", {
@@ -80,9 +80,9 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[0].text}
           </Text>
         </ImageBackground>
-      </TouchableOpacity>
+      </Pressable>
 
-      <TouchableOpacity
+      <Pressable
         key={discoverCardsData[1].id}
         onPress={() =>
           props.navigation.navigate("ItineraryStack", {
@@ -114,9 +114,8 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[1].text}
           </Text>
         </ImageBackground>
-      </TouchableOpacity>
-
-      <TouchableOpacity
+      </Pressable>
+      <Pressable
         key={discoverCardsData[2].id}
         onPress={() =>
           props.navigation.navigate("JournalStackNavigation", {
@@ -148,7 +147,7 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[2].text}
           </Text>
         </ImageBackground>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
