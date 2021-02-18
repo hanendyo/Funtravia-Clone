@@ -334,246 +334,6 @@ export default function ItineraryPopuler(props) {
     );
   };
 
-  const renderPopuler = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          height: 145,
-          paddingHorizontal: 15,
-          marginTop: 5,
-        }}
-      >
-        <View
-          style={{
-            borderRadius: 5,
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
-            justifyContent: "space-between",
-            backgroundColor: "#F7F7F7",
-            overflow: "hidden",
-          }}
-        >
-          <View
-            // onPress={() =>
-            //   props.navigation.navigate("ItineraryStack", {
-            //     screen: "itindetail",
-            //     params: {
-            //       itintitle: item.name,
-            //       country: item.id,
-            //       token: token,
-            //       status: "favorite",
-            //     },
-            //   })
-            // }
-            style={{
-              backgroundColor: "#FFFFFF",
-              height: "77%",
-              borderTopLeftRadius: 5,
-              borderTopRightRadius: 5,
-              flexDirection: "row",
-            }}
-          >
-            <Ripple
-              onPress={() =>
-                props.navigation.navigate("ItineraryStack", {
-                  screen: "itindetail",
-                  params: {
-                    itintitle: item.name,
-                    country: item.id,
-                    token: token,
-                    status: "favorite",
-                  },
-                })
-              }
-            >
-              <Image
-                source={
-                  item && item.cover ? { uri: item.cover } : default_image
-                }
-                style={{
-                  height: "100%",
-                  width: Dimensions.get("screen").width * 0.33,
-                  borderTopLeftRadius: 5,
-                }}
-              />
-            </Ripple>
-            <View
-              style={{
-                width: Dimensions.get("screen").width * 0.58,
-                paddingHorizontal: 10,
-                backgroundColor: "#FFFFFF",
-                marginVertical: 5,
-                overflow: "hidden",
-              }}
-            >
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "#DAF0F2",
-                      borderWidth: 1,
-                      borderRadius: 3,
-                      borderColor: "#209FAE",
-                      paddingHorizontal: 5,
-                    }}
-                  >
-                    <Text
-                      type="bold"
-                      size="description"
-                      style={{ color: "#209FAE" }}
-                    >
-                      {item?.categori?.name
-                        ? item?.categori?.name
-                        : "No Category"}
-                    </Text>
-                  </View>
-                  <View>
-                    {item.liked === false ? (
-                      <Ripple onPress={() => _liked(item.id, index)}>
-                        <LikeEmpty height={15} width={15} />
-                      </Ripple>
-                    ) : (
-                      <Ripple onPress={() => _unliked(item.id, index)}>
-                        <LikeRed height={15} width={15} />
-                      </Ripple>
-                    )}
-                  </View>
-                </View>
-                <Text size="label" type="black" style={{ marginTop: 5 }}>
-                  <Truncate text={item.name} length={40} />
-                </Text>
-                <View></View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 5,
-                  }}
-                >
-                  <PinHijau width={15} height={15} />
-                  <Text style={{ marginLeft: 5 }} size="small" type="regular">
-                    {item?.country?.name}
-                  </Text>
-                  <Text>,</Text>
-                  <Text size="small" type="regular" style={{ marginLeft: 3 }}>
-                    {item?.city?.name}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 20,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginLeft: 3,
-                    }}
-                  >
-                    <Calendargrey
-                      width={10}
-                      height={10}
-                      style={{ marginRight: 5 }}
-                    />
-                    <Text style={{ marginLeft: 3 }} size="small" type="regular">
-                      {item.start_date && item.end_date
-                        ? getDN(item.start_date, item.end_date)
-                        : null}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginLeft: 15,
-                    }}
-                  >
-                    <User width={10} height={10} style={{ marginRight: 5 }} />
-                    <Text size="small" type="regular">
-                      {(item && item.buddy_count ? item.buddy_count : null) +
-                        " " +
-                        "Person"}
-                    </Text>
-                  </View>
-                </View>
-                {/* <View
-                  style={{
-                    marginTop: 3,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Star height={15} width={15} style={{}} />
-                  <Text
-                    style={{ marginLeft: 5, color: "#249FAE" }}
-                    size="small"
-                    type="bold"
-                  >
-                    4,1
-                  </Text>
-                  <Text style={{ marginLeft: 5 }} size="small" type="regular">
-                    (283 reviews)
-                  </Text>
-                </View> */}
-              </View>
-            </View>
-          </View>
-          <View
-            style={{
-              // borderWidth: 1,
-              height: "20%",
-              flexDirection: "row",
-              backgroundColor: "#FFFFFF",
-              borderBottomLeftRadius: 10,
-              borderBottomRightRadius: 10,
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                width: "50%",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRightWidth: 1,
-                borderColor: "#D1D1D1",
-                paddingVertical: 5,
-              }}
-            >
-              <TravelAlbum style={{ marginRight: 5 }} />
-              <Text size="small" type="bold" style={{ color: "#209FAE" }}>
-                Travel Album
-              </Text>
-            </View>
-            <View
-              style={{
-                width: "50%",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TravelStories style={{ marginRight: 5 }} />
-              <Text size="small" type="bold" style={{ color: "#209FAE" }}>
-                Travel Stories
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -593,8 +353,276 @@ export default function ItineraryPopuler(props) {
         >
           <FlatList
             data={list_populer}
-            renderItem={renderPopuler}
             keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <View
+                style={{
+                  height: 145,
+                  paddingHorizontal: 15,
+                  marginTop: 5,
+                }}
+              >
+                <View
+                  style={{
+                    borderRadius: 5,
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: arrayShadow.shadowOpacity,
+                    shadowRadius: arrayShadow.shadowRadius,
+                    elevation: arrayShadow.elevation,
+                    justifyContent: "space-between",
+                    backgroundColor: "#F7F7F7",
+                    overflow: "hidden",
+                  }}
+                >
+                  <View
+                    // onPress={() =>
+                    //   props.navigation.navigate("ItineraryStack", {
+                    //     screen: "itindetail",
+                    //     params: {
+                    //       itintitle: item.name,
+                    //       country: item.id,
+                    //       token: token,
+                    //       status: "favorite",
+                    //     },
+                    //   })
+                    // }
+                    style={{
+                      backgroundColor: "#FFFFFF",
+                      height: "77%",
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Ripple
+                      onPress={() =>
+                        props.navigation.navigate("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: item.name,
+                            country: item.id,
+                            token: token,
+                            status: "favorite",
+                          },
+                        })
+                      }
+                    >
+                      <Image
+                        source={
+                          item && item.cover
+                            ? { uri: item.cover }
+                            : default_image
+                        }
+                        style={{
+                          height: "100%",
+                          width: Dimensions.get("screen").width * 0.33,
+                          borderTopLeftRadius: 5,
+                        }}
+                      />
+                    </Ripple>
+                    <View
+                      style={{
+                        width: Dimensions.get("screen").width * 0.58,
+                        paddingHorizontal: 10,
+                        backgroundColor: "#FFFFFF",
+                        marginVertical: 5,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <View
+                            style={{
+                              backgroundColor: "#DAF0F2",
+                              borderWidth: 1,
+                              borderRadius: 3,
+                              borderColor: "#209FAE",
+                              paddingHorizontal: 5,
+                            }}
+                          >
+                            <Text
+                              type="bold"
+                              size="description"
+                              style={{ color: "#209FAE" }}
+                            >
+                              {item?.categori?.name
+                                ? item?.categori?.name
+                                : "No Category"}
+                            </Text>
+                          </View>
+                          <View>
+                            {item.liked === false ? (
+                              <Ripple onPress={() => _liked(item.id, index)}>
+                                <LikeEmpty height={15} width={15} />
+                              </Ripple>
+                            ) : (
+                              <Ripple onPress={() => _unliked(item.id, index)}>
+                                <LikeRed height={15} width={15} />
+                              </Ripple>
+                            )}
+                          </View>
+                        </View>
+                        <Text
+                          size="label"
+                          type="black"
+                          style={{ marginTop: 5 }}
+                        >
+                          <Truncate text={item.name} length={40} />
+                        </Text>
+                        <View></View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginTop: 5,
+                          }}
+                        >
+                          <PinHijau width={15} height={15} />
+                          <Text
+                            style={{ marginLeft: 5 }}
+                            size="small"
+                            type="regular"
+                          >
+                            {item?.country?.name}
+                          </Text>
+                          <Text>,</Text>
+                          <Text
+                            size="small"
+                            type="regular"
+                            style={{ marginLeft: 3 }}
+                          >
+                            {item?.city?.name}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            marginTop: 20,
+                          }}
+                        >
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              marginLeft: 3,
+                            }}
+                          >
+                            <Calendargrey
+                              width={10}
+                              height={10}
+                              style={{ marginRight: 5 }}
+                            />
+                            <Text
+                              style={{ marginLeft: 3 }}
+                              size="small"
+                              type="regular"
+                            >
+                              {item.start_date && item.end_date
+                                ? getDN(item.start_date, item.end_date)
+                                : null}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              marginLeft: 15,
+                            }}
+                          >
+                            <User
+                              width={10}
+                              height={10}
+                              style={{ marginRight: 5 }}
+                            />
+                            <Text size="small" type="regular">
+                              {(item && item.buddy_count
+                                ? item.buddy_count
+                                : null) +
+                                " " +
+                                "Person"}
+                            </Text>
+                          </View>
+                        </View>
+                        {/* <View
+                            style={{
+                              marginTop: 3,
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Star height={15} width={15} style={{}} />
+                            <Text
+                              style={{ marginLeft: 5, color: "#249FAE" }}
+                              size="small"
+                              type="bold"
+                            >
+                              4,1
+                            </Text>
+                            <Text style={{ marginLeft: 5 }} size="small" type="regular">
+                              (283 reviews)
+                            </Text>
+                          </View> */}
+                      </View>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      // borderWidth: 1,
+                      height: "20%",
+                      flexDirection: "row",
+                      backgroundColor: "#FFFFFF",
+                      borderBottomLeftRadius: 10,
+                      borderBottomRightRadius: 10,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: "50%",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRightWidth: 1,
+                        borderColor: "#D1D1D1",
+                        paddingVertical: 5,
+                      }}
+                    >
+                      <TravelAlbum style={{ marginRight: 5 }} />
+                      <Text
+                        size="small"
+                        type="bold"
+                        style={{ color: "#209FAE" }}
+                      >
+                        Travel Album
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        width: "50%",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <TravelStories style={{ marginRight: 5 }} />
+                      <Text
+                        size="small"
+                        type="bold"
+                        style={{ color: "#209FAE" }}
+                      >
+                        Travel Stories
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
             showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             showsVerticalScrollIndicator={false}
@@ -637,44 +665,13 @@ export default function ItineraryPopuler(props) {
             flex: 1,
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
+            height: "100%",
+            paddingVertical: 20,
           }}
         >
-          {loadingPopuler ? (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                height: "100%",
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Loading...
-              </Text>
-            </View>
-          ) : dataPopuler && dataPopuler.itinerary_list_populer ? (
-            <FlatList
-              data={dataPopuler.itinerary_list_populer}
-              renderItem={renderPopuler}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View
-              style={{
-                paddingHorizontal: 15,
-                marginTop: 20,
-                flex: 1,
-                backgroundColor: "white",
-                alignItems: "center",
-              }}
-            >
-              <Text size="label" type="bold" style={{ textAlign: "center" }}>
-                Tidak ada Travel Album
-              </Text>
-            </View>
-          )}
+          <Text size="label" type="bold" style={{ textAlign: "center" }}>
+            Tidak ada Travel Album
+          </Text>
         </View>
       );
     } else if (aktif == "Stories") {
@@ -699,6 +696,21 @@ export default function ItineraryPopuler(props) {
 
   {
     /* ======================================= Render All ====================================================*/
+  }
+  console.log("dataPopuler :", dataCategory);
+  console.log("dataCategory :", loadingCategory);
+
+  if (loadingPopuler) {
+    <View>
+      <Text>Loading ...</Text>
+    </View>;
+  }
+  if (loadingCategory) {
+    <View>
+      <Text size="title" type="bold">
+        Loading ...
+      </Text>
+    </View>;
   }
   return (
     <ScrollView
@@ -852,7 +864,6 @@ export default function ItineraryPopuler(props) {
                     backgroundColor: "white",
                     marginRight: 5,
                     shadowColor: "gray",
-                    // shadowOffset: { width: 0, height: 1 },
                     shadowOpacity: arrayShadow.shadowOpacity,
                     shadowRadius: arrayShadow.shadowRadius,
                     elevation: arrayShadow.elevation,

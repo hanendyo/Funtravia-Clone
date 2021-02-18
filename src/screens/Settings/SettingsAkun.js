@@ -46,13 +46,15 @@ export default function SettingsAkun(props) {
   let [modalCity, setModalCity] = useState(false);
   let [modalCity1, setModalCity1] = useState(false);
   let [city, setCity] = useState("");
-  let [genders, setGender] = useState("");
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
+  let [genders, setGender] = useState(setting?.user.gender);
   let [date, setDate] = useState(setting?.user?.birth_date);
   let [cityName, setCityName] = useState(setting?.cities?.name);
   let [cityId, setCityId] = useState(setting?.cities?.id);
+
+  console.log("setting:", setting);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -180,6 +182,11 @@ export default function SettingsAkun(props) {
   };
 
   const hasilGender = async (x) => {
+    console.log("gender :", x);
+    if (x === null || x === "") {
+      x = "F";
+    }
+    console.log("x", x);
     try {
       let response = await mutationGender({
         variables: {

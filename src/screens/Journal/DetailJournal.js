@@ -24,6 +24,15 @@ import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
 
 export default function DetailJournal(props) {
+  let [dataPopuler] = useState(props.route.params.dataPopuler);
+  let [token, setToken] = useState(props.route.params.token);
+  let [setting, setSetting] = useState();
+  let slider = useRef();
+  let { width, height } = Dimensions.get("screen");
+  let [y, setY] = useState(0);
+  const { t } = useTranslation();
+  let title = dataPopuler?.title.substring(0, 40) + "...";
+
   const HeaderComponent = {
     headerShown: true,
     title: "Journal Detail",
@@ -62,14 +71,6 @@ export default function DetailJournal(props) {
     ),
   };
 
-  let [dataPopuler] = useState(props.route.params.dataPopuler);
-  let [token, setToken] = useState(props.route.params.token);
-  let [setting, setSetting] = useState();
-  let slider = useRef();
-  let { width, height } = Dimensions.get("screen");
-  let [y, setY] = useState(0);
-
-  const { t } = useTranslation();
   const [fetchData, { data, loading }] = useLazyQuery(JournalById, {
     variables: { id: dataPopuler.id },
     fetchPolicy: "network-only",
@@ -163,6 +164,7 @@ export default function DetailJournal(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    props.navigation.setOptions({ headerTitle: title });
     loadAsync();
   }, []);
 
@@ -215,8 +217,16 @@ export default function DetailJournal(props) {
   if (loading) {
     return (
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        <View style={{ borderWidth: 1, backgroundColor: "#d1d1d1" }}>
-          <Text>test</Text>
+        <View
+          style={{
+            backgroundColor: "white",
+            alignItems: "center",
+            paddingVertical: 20,
+          }}
+        >
+          <Text type="bold" size="title">
+            Loading ...
+          </Text>
         </View>
       </View>
     );
