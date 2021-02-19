@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
   Alert,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Tab, Tabs, ScrollableTab } from "native-base";
 import ActivePlan from "./ActivePlan";
 import FinishTrip from "./FinishTrip";
 import PlanList from "./PlanList";
@@ -17,7 +16,12 @@ import { Arrowbackwhite } from "../../../assets/svg";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import listitinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import { useTranslation } from "react-i18next";
-import { Button, Loading } from "../../../component";
+import { Button, Loading, Text } from "../../../component";
+import Animated from "react-native-reanimated";
+import Ripple from "react-native-material-ripple";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function TripPlaning(props) {
   const HeaderComponent = {
@@ -58,7 +62,7 @@ export default function TripPlaning(props) {
   };
 
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(null);
   let [DataPlan, setDataPlan] = useState(0);
   let [DataActive, setDataActive] = useState(0);
   let [DataFinish, setDataFinish] = useState(0);
@@ -71,10 +75,7 @@ export default function TripPlaning(props) {
       Alert.alert("Silahkan Login terlebih dahulu");
       props.navigation.navigate("HomeScreen");
     } else {
-      console.log(tkn);
-      // await GetListitinplan();
-      // await GetListitinaktif();
-      // await GetListitinfinish();
+      null;
     }
     await setloading(false);
   };
@@ -87,181 +88,152 @@ export default function TripPlaning(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  // const {
-  //   data: datalistplan,
-  //   loading: loadinglistplan,
-  //   error: errorlistplan,
-  //   refetch: GetListitinplan,
-  // } = useQuery(listitinerary, {
-  //   fetchPolicy: "network-only",
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  //   variables: { status: "D" },
-  // });
-
-  // const {
-  //   data: datalistaktif,
-  //   loading: loadinglistaktif,
-  //   error: errorlistaktif,
-  //   refetch: GetListitinaktif,
-  // } = useQuery(listitinerary, {
-  //   fetchPolicy: "network-only",
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  //   variables: { status: "A" },
-  // });
-
-  // const {
-  //   data: datalistfinish,
-  //   loading: loadinglistfinish,
-  //   error: errorlistfinish,
-  //   refetch: GetListitinfinish,
-  // } = useQuery(listitinerary, {
-  //   fetchPolicy: "network-only",
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  //   variables: { status: "F" },
-  // });
-
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
+  const renderPlan = () => {
+    return <PlanList props={props} token={token} />;
   };
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Loading show={loading} />
-      {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
+  const renderActive = () => {
+    return <ActivePlan props={props} token={token} />;
+  };
 
-      <View>
-        <View
-          style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View>
-            {token ? (
-              <Tabs
-                // initialPage={
-                //   props.route.params.index!==undefined ? props.route.params.index : 0
-                // }
-                tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
-                tabContainerStyle={{ borderWidth: 0, backgroundColor: "white" }}
-                locked={false}
-                renderTabBar={() => (
-                  <ScrollableTab style={{ backgroundColor: "white" }} />
-                )}
+  const renderFinish = () => {
+    return <FinishTrip props={props} token={token} />;
+  };
+
+  function MyTabBar({ state, descriptors, navigation, position }) {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          borderBottomWidth: 1,
+          borderBottomColor: "#d3d3d3",
+        }}
+      >
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const label =
+            options.tabBarLabel !== undefined
+              ? options.tabBarLabel
+              : options.title !== undefined
+              ? options.title
+              : route.name;
+
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
+          const onLongPress = () => {
+            navigation.emit({
+              type: "tabLongPress",
+              target: route.key,
+            });
+          };
+          // modify inputRange for custom behavior
+          const inputRange = state.routes.map((_, i) => i);
+          const opacity = Animated.interpolate(position, {
+            inputRange,
+            outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
+          });
+
+          return (
+            <Ripple
+              accessibilityRole="button"
+              accessibilityState={isFocused ? { selected: true } : {}}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+              testID={options.tabBarTestID}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              style={{
+                borderBottomWidth: isFocused ? 2 : 0,
+                paddingVertical: 10,
+                borderBottomColor: "#209fae",
+                flex: 1,
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                type={isFocused ? "bold" : "regular"}
+                size="label"
+                style={{
+                  color: isFocused ? "#209fae" : "#646464",
+                }}
               >
-                <Tab
-                  // heading={
-                  //   (datalistplan &&
-                  //   datalistplan.itinerary_list_bystatus.length > 0
-                  //     ? "" + datalistplan.itinerary_list_bystatus.length
-                  //     : "0") +
-                  //   " " +
-                  //   t("planList")
-                  // }
-                  heading={t("planList")}
-                  tabStyle={{ backgroundColor: "white" }}
-                  activeTabStyle={{ backgroundColor: "white" }}
-                  textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
-                  activeTextStyle={{
-                    fontFamily: "Lato-Bold",
-                    color: "#209FAE",
-                  }}
-                >
-                  {/* {datalistplan && datalistplan.itinerary_list_bystatus ? ( */}
-                  <PlanList
-                    props={props}
-                    token={token}
-                    jumlah={(e) => setDataPlan(e)}
-                    // data={datalistplan}
-                    GetListitinplan={(e) => loadAsync(e)}
-                  />
-                  {/* ) : null} */}
-                </Tab>
-                <Tab
-                  // heading={
-                  //   (datalistaktif &&
-                  //   datalistaktif.itinerary_list_bystatus.length > 0
-                  //     ? "" + datalistaktif.itinerary_list_bystatus.length
-                  //     : "0") +
-                  //   " " +
-                  //   t("activePlan")
-                  // }
-                  heading={t("activePlan")}
-                  tabStyle={{
-                    backgroundColor: "white",
-                    flexDirection: "column",
-                  }}
-                  activeTabStyle={{ backgroundColor: "white" }}
-                  textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
-                  activeTextStyle={{
-                    fontFamily: "Lato-Bold",
-                    color: "#209FAE",
-                  }}
-                >
-                  {/* {datalistaktif && datalistaktif.itinerary_list_bystatus ? ( */}
-                  <ActivePlan
-                    props={props}
-                    token={token}
-                    jumlah={(e) => setDataActive(e)}
-                    // data={datalistaktif}
-                    GetListitinaktif={(e) => loadAsync(e)}
-                  />
-                  {/* ) : null} */}
-                </Tab>
-
-                <Tab
-                  // heading={
-                  //   (datalistfinish &&
-                  //     datalistfinish.itinerary_list_bystatus.length > 0
-                  //     ? "" + datalistfinish.itinerary_list_bystatus.length
-                  //     : "0") +
-                  //     " " +
-                  //     t("finishTrip")
-                  //   }
-                  heading={t("finishTrip")}
-                  tabStyle={{ backgroundColor: "white" }}
-                  activeTabStyle={{ backgroundColor: "white" }}
-                  textStyle={{ fontFamily: "Lato-Bold", color: "#6C6C6C" }}
-                  activeTextStyle={{
-                    fontFamily: "Lato-Bold",
-                    color: "#209FAE",
-                  }}
-                >
-                  {/* {datalistfinish && datalistfinish.itinerary_list_bystatus ? ( */}
-                  <FinishTrip
-                    props={props}
-                    token={token}
-                    jumlah={(e) => setDataFinish(e)}
-                    // data={datalistfinish}
-                    GetListitinfinish={(e) => loadAsync(e)}
-                  />
-                  {/* ) : null} */}
-                </Tab>
-              </Tabs>
-            ) : null}
-          </View>
-        </View>
+                1
+              </Text>
+              <Text
+                type={isFocused ? "bold" : "regular"}
+                size="label"
+                style={{
+                  color: isFocused ? "#209fae" : "#646464",
+                }}
+              >
+                {label}
+              </Text>
+            </Ripple>
+          );
+        })}
       </View>
-    </SafeAreaView>
-  );
+    );
+  }
+
+  if (token !== null) {
+    return (
+      <Tab.Navigator
+        backBehavior="none"
+        initialRouteName="Edit"
+        // tabBarOptions={{
+        //   activeTintColor: "#209fae",
+        //   labelStyle: {
+        //     fontFamily: "Lato-Bold",
+        //   },
+        //   style: {
+        //     backgroundColor: "#ffff",
+        //   },
+        // }}
+        tabBar={(props) => <MyTabBar {...props} />}
+      >
+        <Tab.Screen
+          name="Edit"
+          component={renderPlan}
+          options={{ tabBarLabel: "Plan" }}
+        />
+        <Tab.Screen
+          name="Save"
+          component={renderActive}
+          options={{ tabBarLabel: "Ongoing" }}
+        />
+        <Tab.Screen
+          name="Finish"
+          component={renderFinish}
+          options={{ tabBarLabel: "Finish" }}
+        />
+      </Tab.Navigator>
+    );
+  } else {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({});

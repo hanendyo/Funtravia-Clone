@@ -2,7 +2,7 @@ import { gql } from "apollo-boost";
 const ListItinerary = gql`
   query {
     #   status : A/D/F
-    itinerary_list_draf {
+    itinerary_list_finish {
       id
       name
       cover

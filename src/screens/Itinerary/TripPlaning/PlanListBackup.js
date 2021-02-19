@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   RefreshControl,
   Image,
-  ActivityIndicator,
 } from "react-native";
 import { default_image, imgPrivate } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
@@ -21,12 +20,16 @@ import {
   User,
   TravelAlbum,
   TravelStories,
+  TravelAlbumdis,
+  TravelStoriesdis,
 } from "../../../assets/svg";
-import { Truncate, Text } from "../../../component";
+import { Truncate, Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { useMutation, useQuery } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
-import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryF";
+import { useMutation, useQuery } from "@apollo/client";
+import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
+import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
@@ -35,31 +38,55 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function ActivePlan({ token, props }) {
+export default function PlanList({
+  token,
+  props,
+  jumlah,
+  data,
+  // GetListitinplan,
+}) {
   const { t, i18n } = useTranslation();
-  let datalistaktif = [];
+  let [tok, settok] = useState(token);
+  let datalistaktif = {};
 
   const {
-    data: datadetail,
+    data: datalistplan,
     loading: loadinglistplan,
     error: errorlistplan,
     refetch: GetListitinplan,
   } = useQuery(ListItinerary, {
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
-    // variables: { status: "F" },
+    variables: { status: "D" },
+  });
+
+  const {
+    data: datalistactives,
+    loading: loadinglistactive,
+    error: errorlistactive,
+    refetch: GetListitinactive,
+  } = useQuery(ListItinerary, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: { status: "A" },
   });
 
   {
-    datadetail && datadetail.itinerary_list_finish.length
-      ? (datalistaktif = datadetail.itinerary_list_finish)
+    datalistplan &&
+    datalistplan.itinerary_list_bystatus &&
+    datalistplan.itinerary_list_bystatus.length > 0
+      ? (datalistaktif = datalistplan)
       : null;
   }
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -76,77 +103,16 @@ export default function ActivePlan({ token, props }) {
     });
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      GetListitinplan();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
+  const dateFormatr = (date) => {
+    var x = date.split(" ");
+    return dateFormat(x[0]);
+  };
 
   const getdate = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");
 
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
-  };
-
-  const RenderBuddy = ({ databuddy }) => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        {databuddy.map((value, i) => {
-          if (i < 3) {
-            return (
-              <View key={i}>
-                <Image
-                  source={
-                    value.user && value.user.picture
-                      ? { uri: value.user.picture }
-                      : default_image
-                  }
-                  style={{
-                    resizeMode: "cover",
-                    height: 30,
-                    width: 30,
-                    borderRadius: 15,
-                    marginLeft: -10,
-                  }}
-                />
-              </View>
-            );
-          }
-        })}
-
-        {databuddy.length > 1 ? (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              size="small"
-              type={"regular"}
-              style={{
-                color: "white",
-              }}
-            >
-              {"    "}
-              {t("with")}{" "}
-              {databuddy[1].user && databuddy[1].user.first_name
-                ? databuddy[1].user.first_name
-                : ""}
-              {databuddy.length > 2
-                ? " + " + (databuddy.length - 2) + " Others"
-                : " "}
-            </Text>
-          </View>
-        ) : null}
-      </View>
-    );
   };
 
   const getDN = (start, end) => {
@@ -244,8 +210,8 @@ export default function ActivePlan({ token, props }) {
                     itintitle: data.name,
                     country: data.id,
                     dateitin: getdate(data.start_date, data.end_date),
-                    token: token,
-                    status: "saved",
+                    token: tok,
+                    status: "edit",
                   },
                 })
               }
@@ -445,20 +411,7 @@ export default function ActivePlan({ token, props }) {
             justifyContent: "space-between",
           }}
         >
-          <Ripple
-            onPress={() =>
-              props.navigation.push("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  itintitle: data.name,
-                  country: data.id,
-                  dateitin: getdate(data.start_date, data.end_date),
-                  token: tok,
-                  status: "saved",
-                  index: 1,
-                },
-              })
-            }
+          <View
             style={{
               width: "50%",
               flexDirection: "row",
@@ -469,25 +422,12 @@ export default function ActivePlan({ token, props }) {
               paddingVertical: 5,
             }}
           >
-            <TravelAlbum height={15} width={15} style={{ marginRight: 5 }} />
-            <Text size="small" type="bold" style={{ color: "#209fae" }}>
+            <TravelAlbumdis height={15} width={15} style={{ marginRight: 5 }} />
+            <Text size="small" type="bold" style={{ color: "#d3d3d3" }}>
               Travel Album
             </Text>
-          </Ripple>
-          <Ripple
-            onPress={() =>
-              props.navigation.push("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  itintitle: data.name,
-                  country: data.id,
-                  dateitin: getdate(data.start_date, data.end_date),
-                  token: tok,
-                  status: "saved",
-                  index: 2,
-                },
-              })
-            }
+          </View>
+          <View
             style={{
               width: "50%",
               flexDirection: "row",
@@ -495,72 +435,121 @@ export default function ActivePlan({ token, props }) {
               justifyContent: "center",
             }}
           >
-            <TravelStories height={15} width={15} style={{ marginRight: 5 }} />
-            <Text size="small" type="bold" style={{ color: "#209fae" }}>
+            <TravelStoriesdis
+              height={15}
+              width={15}
+              style={{ marginRight: 5 }}
+            />
+            <Text size="small" type="bold" style={{ color: "#d3d3d3" }}>
               Travel Stories
             </Text>
-          </Ripple>
+          </View>
         </View>
       </View>
     );
   };
   if (loadinglistplan) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-        }}
-      >
-        <ActivityIndicator animating={true} color="#209fae" size="large" />
-      </View>
-    );
+    return null;
   }
   return (
     <View style={{ flex: 1 }}>
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
-        }
-        contentContainerStyle={{
-          marginTop: 5,
-          justifyContent: "space-evenly",
-          paddingStart: 10,
-          paddingEnd: 10,
-          paddingBottom: 100,
-        }}
-        horizontal={false}
-        data={datalistaktif}
-        renderItem={({ item }) => <RenderActive data={item} />}
-        // keyExtractor={(item) => item.id}
-        showsHorizontalScrollIndicator={false}
-        ListFooterComponent={() => {
-          return datalistaktif.length == 0 ? (
+      {datalistaktif && datalistaktif.itinerary_list_bystatus.length ? (
+        (jumlah(datalistaktif.itinerary_list_bystatus.length),
+        (
+          <View
+            style={{ flex: 1, height: Dimensions.get("screen").height - 120 }}
+          >
+            <FlatList
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+              }
+              contentContainerStyle={{
+                marginTop: 5,
+                justifyContent: "space-evenly",
+                paddingStart: 10,
+                paddingEnd: 10,
+                paddingBottom: 100,
+              }}
+              horizontal={false}
+              data={
+                datalistaktif && datalistaktif.itinerary_list_bystatus.length
+                  ? datalistaktif.itinerary_list_bystatus
+                  : null
+              }
+              renderItem={({ item }) => <RenderActive data={item} />}
+              // keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
+              // extraData={selected}
+            />
+
             <View
               style={{
-                justifyContent: "center",
+                zIndex: 999,
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                height: 60,
+                width: Dimensions.get("window").width,
+                backgroundColor: "white",
+                paddingVertical: 10,
+                borderTopWidth: 1,
+                borderColor: "#F0F0F0",
+                shadowColor: "#F0F0F0",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 2,
+                elevation: 3,
                 alignItems: "center",
-                alignContent: "center",
-                height: Dimensions.get("screen").height - 300,
+                justifyContent: "center",
               }}
             >
-              <Text
-                size="title"
-                type={"bold"}
-                style={{ width: "70%", textAlign: "center" }}
-              >
-                {t("empty")}
-              </Text>
-              <Kosong
-                height={Dimensions.get("screen").width * 0.6}
-                width={Dimensions.get("screen").width}
+              <Button
+                color="secondary"
+                onPress={() =>
+                  props.navigation.push("ItineraryStack", { screen: "Trip" })
+                }
+                style={{
+                  width: Dimensions.get("screen").width - 40,
+                  height: 40,
+                }}
+                text={t("CreateNewPlan")}
               />
             </View>
-          ) : null;
-        }}
-      />
+          </View>
+        ))
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignContent: "center",
+            height: "100%",
+          }}
+        >
+          <Text
+            size="title"
+            type={"bold"}
+            style={{ width: "70%", textAlign: "center" }}
+          >
+            {t("empty")}
+          </Text>
+          <Kosong
+            height={Dimensions.get("screen").width * 0.6}
+            width={Dimensions.get("screen").width}
+          />
+          <Button
+            color="secondary"
+            onPress={() =>
+              props.navigation.push("ItineraryStack", { screen: "Trip" })
+            }
+            style={{
+              width: Dimensions.get("screen").width - 40,
+              height: 40,
+            }}
+            text={t("CreateNewPlan")}
+          />
+        </View>
+      )}
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 // import Animated, { Easing } from "react-native-reanimated";
@@ -42,6 +42,8 @@ import {
   Plusgrey,
   Sharegreen,
   Xhitam,
+  LikeEmptynew,
+  LikeEmpty,
 } from "../../../assets/svg";
 import {
   Button,
@@ -219,12 +221,26 @@ export default function ItineraryDetail(props) {
     await GetTimelin();
   };
 
-  const {
-    data: datatimeline,
-    loading: loadingtimeline,
-    error: errortimeline,
-    refetch: GetTimelin,
-  } = useQuery(Timeline, {
+  // const {
+  //   data: datatimeline,
+  //   loading: loadingtimeline,
+  //   error: errortimeline,
+  //   refetch: GetTimelin,
+  // } = useQuery(Timeline, {
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  //   variables: { id: idDay },
+  // });
+
+  const [
+    GetTimelin,
+    { data: datatimeline, loading: loadingtimeline, error: errortimeline },
+  ] = useLazyQuery(Timeline, {
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -233,6 +249,7 @@ export default function ItineraryDetail(props) {
     },
     variables: { id: idDay },
   });
+
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
     props.navigation.setParams({ datadayaktif: data });
@@ -431,6 +448,7 @@ export default function ItineraryDetail(props) {
           dataList[0].images !== null ? dataList[0].images : dataList[0].icon
         )
       : setCover(datadetail.itinerary_detail.cover);
+    return <View></View>;
   };
 
   const getcity = (data) => {
@@ -892,6 +910,7 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
+    // console.log(status);
     // if (
     //   statusKiriman !== "saved" &&
     //   statusKiriman !== "edit" &&
@@ -899,9 +918,8 @@ export default function ItineraryDetail(props) {
     // ) {
     props.navigation.goBack();
     // } else {
-    //   props.navigation.push("TripPlaning", {
-    //     index:
-    //       statusKiriman === "saved" ? 1 : statusKiriman === "finish" ? 2 : 0,
+    //   props.navigation.navigate("TripPlaning", {
+    //     render: status,
     //   });
     // }
   };
@@ -950,6 +968,8 @@ export default function ItineraryDetail(props) {
         if (response.data.change_status.code !== 200) {
           throw new Error(response.data.change_status.message);
         }
+
+        console.log(response);
         setStatus("saved");
       }
       setloading(false);
@@ -2302,11 +2322,15 @@ export default function ItineraryDetail(props) {
             }}
           >
             {loadingtimeline ? (
-              <Text>Loading...</Text>
+              <ActivityIndicator
+                animating={true}
+                color="#209fae"
+                size="large"
+              />
             ) : dataList.length == 0 ? (
               <Text>No data</Text>
             ) : (
-              handlecover()
+              <View onLayout={() => handlecover()}></View>
             )}
           </View>
         )}
@@ -2605,7 +2629,11 @@ export default function ItineraryDetail(props) {
                 alignItems: "center",
               }}
             >
-              <Text>Loading...</Text>
+              <ActivityIndicator
+                animating={true}
+                color="#209fae"
+                size="large"
+              />
             </View>
           ) : (
             <ItineraryDay
@@ -2960,21 +2988,41 @@ export default function ItineraryDetail(props) {
                 paddingHorizontal: 20,
               }}
             >
-              <Button
-                onPress={() => _liked()}
-                text=""
-                size="medium"
-                color="tertiary"
-                type="circle"
-                style={{
-                  backgroundColor: "#d3d3d3",
-                  borderRadius: 5,
-                  marginVertical: 10,
-                  marginRight: 10,
-                }}
-              >
-                <Love width={20} height={20} />
-              </Button>
+              {datadetail && datadetail.itinerary_detail ? (
+                datadetail.itinerary_detail.liked == true ? (
+                  <Button
+                    onPress={() => _unliked()}
+                    text=""
+                    size="medium"
+                    color="tertiary"
+                    type="circle"
+                    style={{
+                      backgroundColor: "#d3d3d3",
+                      borderRadius: 5,
+                      marginVertical: 10,
+                      marginRight: 10,
+                    }}
+                  >
+                    <LikeEmptynew width={20} height={20} />
+                  </Button>
+                ) : (
+                  <Button
+                    onPress={() => _liked()}
+                    text=""
+                    size="medium"
+                    color="tertiary"
+                    type="circle"
+                    style={{
+                      backgroundColor: "#f2dae5",
+                      borderRadius: 5,
+                      marginVertical: 10,
+                      marginRight: 10,
+                    }}
+                  >
+                    <Love width={20} height={20} />
+                  </Button>
+                )
+              ) : null}
               <Button
                 onPress={() => Alert.alert("Coming soon")}
                 text={t("CopyTrip")}
@@ -3034,6 +3082,7 @@ export default function ItineraryDetail(props) {
               >
                 <Love width={20} height={20} />
               </Button>
+              <Text>test</Text>
               <Button
                 onPress={() => Alert.alert("Coming soon")}
                 text={t("CopyTrip")}
@@ -3052,6 +3101,8 @@ export default function ItineraryDetail(props) {
     }
   };
 
+  console.log(datadetail);
+
   // ============================== RRRR   EEEE  N     N DDD   EEEEE RRRR   ===============
   // ============================== R   R  E     N N   N D  D  E     R   R  ===============
   // ============================== RRRR   EEE   N  N  N D   D EEE   RRRR   ===============
@@ -3059,7 +3110,18 @@ export default function ItineraryDetail(props) {
   // ============================== R   R  EEEE  N     N DDD   EEEEE R   R  ===============
 
   if (loadingdetail) {
-    return null;
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </View>
+    );
   } else {
     return (
       <View onLayout={() => cekAnggota()} style={styles.container}>
