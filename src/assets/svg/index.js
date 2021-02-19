@@ -175,6 +175,7 @@ import Movie from "./files/movie.svg";
 import TravelAlbumdis from "./files/travelalbumdisable.svg";
 import TravelStoriesdis from "./files/travelstoriesdisable.svg";
 import Select from "./files/select.svg";
+import LocationBlack from "./files/location_black.svg";
 
 export {
   LikeWhite,
@@ -354,4 +355,5 @@ export {
   TravelAlbumdis,
   TravelStoriesdis,
   Select,
+  LocationBlack,
 };

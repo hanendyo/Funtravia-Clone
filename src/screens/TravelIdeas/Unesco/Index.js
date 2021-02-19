@@ -31,10 +31,6 @@ import {
 import { Kosong, Select } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import Account from "../../../graphQL/Query/Home/Account";
-import User_Post from "../../../graphQL/Query/Profile/post";
-import Reviews from "../../../graphQL/Query/Profile/review";
-import Itinerary from "../../../graphQL/Query/Profile/itinerary";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 
@@ -510,52 +506,6 @@ export default function Unesco({ navigation, route }) {
    * render Helper
    */
 
-  const { data, loading, error } = useQuery(Account, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const { data: dataPost, loading: loadingPost, error: errorPost } = useQuery(
-    User_Post,
-    {
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    }
-  );
-
-  const {
-    data: dataReview,
-    loading: loadingReview,
-    error: errorReview,
-  } = useQuery(Reviews, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const { data: dataTrip, loading: loadingTrip, error: errorTrip } = useQuery(
-    Itinerary,
-    {
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    }
-  );
-
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -909,18 +859,6 @@ export default function Unesco({ navigation, route }) {
       ),
     });
   };
-
-  if ((loading && loadingPost && loadingReview, loadingTrip)) {
-    console.log("loading");
-  }
-
-  if ((error && errorPost && errorReview, errorTrip)) {
-    console.log("Error");
-  }
-
-  if (data && dataPost && dataReview && dataTrip) {
-    // console.log(data, dataPost, dataReview, dataTrip);
-  }
 
   return (
     <SafeAreaView style={styles.container}>
