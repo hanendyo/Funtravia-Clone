@@ -367,16 +367,16 @@ export default function Room({ navigation, route }) {
 						type="circle"
 						size="medium"
 						variant="transparent"
+						style={{ width: 50, height: 50 }}
 						onPress={() => Alert.alert("Sticker Cooming Soon")}
 					>
-						<Smile height={25} width={25} />
+						<Smile height={35} width={35} />
 					</Button>
 					<View
 						style={{
 							borderColor: "#D1D1D1",
 							borderWidth: 1,
-							width: "75%",
-							paddingHorizontal: 10,
+							width: width - 120,
 							alignSelf: "center",
 							backgroundColor: "#FFFFFF",
 						}}
@@ -404,7 +404,7 @@ export default function Room({ navigation, route }) {
 						size="medium"
 						variant="transparent"
 						onPress={() => submitChatMessage()}
-						style={{ marginHorizontal: 5 }}
+						style={{ width: 50, height: 50 }}
 					>
 						<Send height={35} width={35} />
 					</Button>
