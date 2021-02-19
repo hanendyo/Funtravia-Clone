@@ -14,7 +14,20 @@ import {
   View,
 } from "react-native";
 import { useQuery } from "@apollo/react-hooks";
-import { Akunsaya, default_image, unesco } from "../../../assets/png";
+import {
+  Akunsaya,
+  default_image,
+  unesco,
+  tropical_rainforest,
+  badak_jawa,
+  lorenz,
+  comodo,
+  sangiran,
+  prambanan,
+  ombilin,
+  cultural_lanscape,
+  borobudur,
+} from "../../../assets/png";
 import { Kosong, Select } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -28,7 +41,7 @@ import Ripple from "react-native-material-ripple";
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
-const HeaderHeight = width - 80;
+const HeaderHeight = width - 100;
 const SafeStatusBar = Platform.select({
   ios: 44,
   android: StatusBar.currentHeight,
@@ -43,7 +56,7 @@ const data_unesco = [
     year: "1991",
     address: "Magelang, Central Java",
     type: "culture",
-    cover: "",
+    cover: borobudur,
   },
   {
     id: "2",
@@ -51,6 +64,7 @@ const data_unesco = [
     year: "2012",
     address: "East Nusa Tenggara Province",
     type: "culture",
+    cover: cultural_lanscape,
   },
   {
     id: "3",
@@ -58,6 +72,7 @@ const data_unesco = [
     year: "2019",
     address: "Kota Sawahlunto, Sumatera Barat",
     type: "culture",
+    cover: ombilin,
   },
   {
     id: "4",
@@ -65,6 +80,7 @@ const data_unesco = [
     year: "1991",
     address: "Magelang, Central Java",
     type: "culture",
+    cover: prambanan,
   },
   {
     id: "5",
@@ -72,6 +88,7 @@ const data_unesco = [
     year: "1996",
     address: "Magelang, Central Java",
     type: "culture",
+    cover: sangiran,
   },
   {
     id: "6",
@@ -79,6 +96,7 @@ const data_unesco = [
     year: "1991",
     address: "East Nusa Tenggara Province",
     type: "natural",
+    cover: comodo,
   },
   {
     id: "7",
@@ -86,6 +104,7 @@ const data_unesco = [
     year: "1999",
     address: "Kota Sawahlunto, Sumatera Barat",
     type: "natural",
+    cover: lorenz,
   },
   {
     id: "8",
@@ -93,6 +112,7 @@ const data_unesco = [
     year: "2004",
     address: "West Sumatera",
     type: "natural",
+    cover: tropical_rainforest,
   },
   {
     id: "9",
@@ -100,6 +120,85 @@ const data_unesco = [
     year: "1991",
     address: "Banten",
     type: "natural",
+    cover: badak_jawa,
+  },
+];
+
+const data_unesco_nature = [
+  {
+    id: "6",
+    name: "Komodo National Park",
+    year: "1991",
+    address: "East Nusa Tenggara Province",
+    type: "natural",
+    cover: comodo,
+  },
+  {
+    id: "7",
+    name: "Lorentz National Park ",
+    year: "1999",
+    address: "Kota Sawahlunto, Sumatera Barat",
+    type: "natural",
+    cover: lorenz,
+  },
+  {
+    id: "8",
+    name: "Tropical Rainforest Heritage of Sumatra",
+    year: "2004",
+    address: "West Sumatera",
+    type: "natural",
+    cover: tropical_rainforest,
+  },
+  {
+    id: "9",
+    name: "Ujung Kulon National Park",
+    year: "1991",
+    address: "Banten",
+    type: "natural",
+    cover: badak_jawa,
+  },
+];
+
+const data_unesco_culture = [
+  {
+    id: "1",
+    name: "Borobudur Temple Compounds",
+    year: "1991",
+    address: "Magelang, Central Java",
+    type: "culture",
+    cover: borobudur,
+  },
+  {
+    id: "2",
+    name: "Cultural Landscape of Bali Province: the Subak System ",
+    year: "2012",
+    address: "East Nusa Tenggara Province",
+    type: "culture",
+    cover: cultural_lanscape,
+  },
+  {
+    id: "3",
+    name: "Ombilin Coal Mining",
+    year: "2019",
+    address: "Kota Sawahlunto, Sumatera Barat",
+    type: "culture",
+    cover: ombilin,
+  },
+  {
+    id: "4",
+    name: "Prambanan Temple",
+    year: "1991",
+    address: "Magelang, Central Java",
+    type: "culture",
+    cover: prambanan,
+  },
+  {
+    id: "5",
+    name: "Sangiran Early Man Site",
+    year: "1996",
+    address: "Magelang, Central Java",
+    type: "culture",
+    cover: sangiran,
   },
 ];
 
@@ -474,13 +573,15 @@ export default function Unesco({ navigation, route }) {
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - 120,
-            borderWidth: 1,
+            height: HeaderHeight - 100,
           }}
         >
           <Image
             source={unesco}
-            style={{ width: width, height: HeaderHeight - 120 }}
+            style={{
+              width: width,
+              height: HeaderHeight - 100,
+            }}
             resizeMode="cover"
           />
           <Ripple
@@ -524,11 +625,11 @@ export default function Unesco({ navigation, route }) {
         <View
           style={{
             flex: 1,
-            marginTop: 40,
+            marginTop: 35,
             paddingHorizontal: 20,
           }}
         >
-          <Text size="label" type="bold">
+          <Text size="label" type="bold" style={{ marginBottom: 5 }}>
             UNESCO World Heritage Centre
           </Text>
           <Text
@@ -552,18 +653,27 @@ export default function Unesco({ navigation, route }) {
           flexDirection: "row",
           paddingHorizontal: 10,
           marginVertical: 5,
+          flex: 1,
+          // borderWidth: 1,
         }}
       >
-        <View style={{ width: 120, height: 100 }}>
+        <View style={{ width: "35%", height: 85 }}>
           <Image
-            source={unesco}
-            style={{ width: 120, height: 100, borderRadius: 5 }}
+            source={item.cover}
+            style={{ width: "100%", height: 85, borderRadius: 5 }}
             resizeMode="cover"
           />
         </View>
-        <View>
+        <View
+          style={{
+            marginHorizontal: 10,
+            marginVertical: 5,
+            width: "65%",
+            justifyContent: "space-between",
+          }}
+        >
           <View>
-            <Text>{item.name}</Text>
+            <Text type="bold">{item.name}</Text>
             <Text>
               {"("}
               {item.year}
@@ -574,24 +684,6 @@ export default function Unesco({ navigation, route }) {
             <Text>{item.address}</Text>
           </View>
         </View>
-      </View>
-    );
-  };
-
-  const renderReview = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          marginLeft: index % 3 === 0 ? 0 : 10,
-          borderRadius: 16,
-          width: tab2ItemSize,
-          height: tab2ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
       </View>
     );
   };
@@ -609,210 +701,6 @@ export default function Unesco({ navigation, route }) {
     );
   };
 
-  const RenderBuddy = ({ databuddy }) => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        {databuddy.map((value, i) => {
-          if (i < 3) {
-            return (
-              <View key={i}>
-                <Image
-                  source={
-                    value.user && value.user.picture
-                      ? { uri: value.user.picture }
-                      : default_image
-                  }
-                  style={{
-                    resizeMode: "cover",
-                    height: 20,
-                    width: 20,
-                    borderRadius: 15,
-                  }}
-                  // customStyle={{
-                  // 	height: 20,
-                  // 	width: 20,
-                  // 	borderRadius: 15,
-                  // 	marginLeft: -10,
-                  // }}
-                />
-              </View>
-            );
-          }
-        })}
-
-        {databuddy.length > 1 ? (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 12,
-                color: "white",
-              }}
-            >
-              {" "}
-              {/* {t('with')}{' '} */}
-              With{" "}
-              <Truncate
-                text={
-                  databuddy[1].user && databuddy[1].user.first_name
-                    ? databuddy[1].user.first_name
-                    : ""
-                }
-                length={5}
-              />
-              {databuddy.length > 2
-                ? " + " + (databuddy.length - 2) + " Others"
-                : " "}
-            </Text>
-          </View>
-        ) : null}
-      </View>
-    );
-  };
-
-  const getDN = (start, end) => {
-    var x = start;
-    var y = end,
-      start = start.split(" ");
-    end = end.split(" ");
-    var date1 = new Date(start[0]);
-    var date2 = new Date(end[0]);
-    var Difference_In_Time = date2.getTime() - date1.getTime();
-    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-
-    return (
-      <View style={{ flexDirection: "row" }}>
-        <Text
-          style={{
-            fontFamily: "Lato-Regular",
-            color: "white",
-          }}
-        >
-          {Difference_In_Days + 1} days{" "}
-        </Text>
-        <Text
-          style={{
-            fontFamily: "Lato-Regular",
-            color: "white",
-          }}
-        >
-          {Difference_In_Days} night
-        </Text>
-      </View>
-    );
-  };
-
-  const renderTrip = ({ item, index }) => {
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.push("tripalbum", {
-            iditinerary: item.id,
-            token: token,
-            position: "profile",
-          })
-        }
-        style={{
-          width: (Dimensions.get("screen").width - 15) * 0.5,
-          margin: 2,
-        }}
-      >
-        <ImageBackground
-          source={item.cover ? { uri: item.cover } : default_image}
-          style={[
-            {
-              borderRadius: 5,
-            },
-          ]}
-          imageStyle={[
-            {
-              borderRadius: 5,
-            },
-          ]}
-        >
-          <View
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.38)",
-              height: Dimensions.get("window").width * 0.25,
-              borderRadius: 5,
-              padding: 10,
-            }}
-          >
-            <View>
-              <Text
-                style={{
-                  fontFamily: "Lato-Bold",
-                  fontSize: 16,
-                  color: "white",
-                }}
-              >
-                <Truncate text={item.name} length={17} />
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <Text
-                // {...props}
-                style={{
-                  fontFamily: "Lato-Regular",
-                  fontSize: 14,
-                  color: "white",
-                }}
-              >
-                <Truncate text={item.city ? item.city.name : ""} length={7} />,{" "}
-              </Text>
-              {item.start_date && item.end_date
-                ? getDN(item.start_date, item.end_date)
-                : null}
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                position: "absolute",
-                bottom: 10,
-                left: 20,
-              }}
-            >
-              {item.buddy.length ? (
-                <RenderBuddy databuddy={item.buddy} />
-              ) : null}
-            </View>
-          </View>
-        </ImageBackground>
-      </TouchableOpacity>
-    );
-  };
-
-  const spreadData = (data) => {
-    let tmpData = [];
-    let count = 1;
-    let tmpArray = [];
-    for (let val of data) {
-      if (count < 3) {
-        tmpArray.push(val);
-        count++;
-      } else {
-        tmpArray.push(val);
-        tmpData.push(tmpArray);
-        count = 1;
-        tmpArray = [];
-      }
-    }
-    return tmpData;
-  };
-
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
     let numCols;
@@ -823,13 +711,13 @@ export default function Unesco({ navigation, route }) {
       case "culture":
         numCols = null;
         flex = null;
-        dataR = data_unesco;
+        dataR = data_unesco_culture;
         renderItem = renderCulture;
         break;
       case "natural":
         numCols = null;
         flex = null;
-        dataR = data_unesco;
+        dataR = data_unesco_nature;
         renderItem = renderCulture;
         break;
       case "mix":
@@ -886,6 +774,18 @@ export default function Unesco({ navigation, route }) {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponent={() => (
+            <View
+              style={{
+                marginVertical: 5,
+                marginHorizontal: 10,
+              }}
+            >
+              <Text size="label" type="bold">
+                {dataR.length} sites
+              </Text>
+            </View>
+          )}
         />
       );
     } else {
