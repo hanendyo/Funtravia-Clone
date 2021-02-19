@@ -146,6 +146,7 @@ export default function TripPlaning(props) {
 
           return (
             <Ripple
+              key
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
