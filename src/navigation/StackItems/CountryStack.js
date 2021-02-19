@@ -8,33 +8,53 @@ import PracticalInformation from "../../screens/CityDestination/PracticalInforma
 
 const CountryStack = createStackNavigator();
 export default function CountryStackNavigation() {
-  return (
-    <CountryStack.Navigator>
-      <CountryStack.Screen
-        name="AllDestination"
-        component={AllDestination}
-        options={{ headerShown: false }}
-      />
-      <CountryStack.Screen
-        name="CityDetail"
-        component={CityDetail}
-        options={{ headerShown: false }}
-      />
-      <CountryStack.Screen
-        name="Country"
-        component={Country}
-        options={{ headerShown: false }}
-      />
-      <CountryStack.Screen
-        name="PracticalInformation"
-        component={PracticalInformation}
-        options={{ headerShown: false }}
-      />
-      <CountryStack.Screen
-        name="Abouts"
-        component={Abouts}
-        options={{ headerShown: false }}
-      />
-    </CountryStack.Navigator>
-  );
+	return (
+		<CountryStack.Navigator>
+			<CountryStack.Screen
+				name="AllDestination"
+				component={AllDestination}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<CountryStack.Screen
+				name="CityDetail"
+				component={CityDetail}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<CountryStack.Screen
+				name="Country"
+				component={Country}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<CountryStack.Screen
+				name="PracticalInformation"
+				component={PracticalInformation}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<CountryStack.Screen
+				name="Abouts"
+				component={Abouts}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+		</CountryStack.Navigator>
+	);
 }

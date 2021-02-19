@@ -28,6 +28,8 @@ export default function AuthStackNavigation() {
 				name="SplashScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={SplashScreen}
 			/>
@@ -35,6 +37,7 @@ export default function AuthStackNavigation() {
 				name="LoginScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
 					headerBackTitleVisible: false,
 				}}
 				component={LoginScreen}
@@ -43,6 +46,7 @@ export default function AuthStackNavigation() {
 				name="RegisterScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
 					headerBackTitleVisible: false,
 				}}
 				component={RegisterScreen}
@@ -51,6 +55,8 @@ export default function AuthStackNavigation() {
 				name="LoginGoogleScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={LoginGoogleScreen}
 			/>
@@ -58,6 +64,8 @@ export default function AuthStackNavigation() {
 				name="RegisterGoogleScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={RegisterGoogleScreen}
 			/>
@@ -65,6 +73,8 @@ export default function AuthStackNavigation() {
 				name="LoginFacebookScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={LoginFacebookScreen}
 			/>
@@ -72,6 +82,8 @@ export default function AuthStackNavigation() {
 				name="RegisterFacebookScreen"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={RegisterFacebookScreen}
 			/>
@@ -80,6 +92,8 @@ export default function AuthStackNavigation() {
 				name="otp"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={otp}
 			/>
@@ -87,6 +101,8 @@ export default function AuthStackNavigation() {
 				name="otppass"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={otppass}
 			/>
@@ -94,6 +110,8 @@ export default function AuthStackNavigation() {
 				name="forgotpwd"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={forgotpwd}
 			/>
@@ -101,6 +119,8 @@ export default function AuthStackNavigation() {
 				name="resetpwd"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={resetpwd}
 			/>
@@ -108,6 +128,8 @@ export default function AuthStackNavigation() {
 				name="LoginPhone"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={LoginPhone}
 			/>
@@ -115,6 +137,8 @@ export default function AuthStackNavigation() {
 				name="ConfirmNumber"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={ConfirmNumber}
 			/>
@@ -122,6 +146,8 @@ export default function AuthStackNavigation() {
 				name="ConfirmNumberLogin"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={ConfirmNumberLogin}
 			/>
@@ -129,6 +155,8 @@ export default function AuthStackNavigation() {
 				name="OtpPhone"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={OtpPhone}
 			/>
@@ -136,6 +164,8 @@ export default function AuthStackNavigation() {
 				name="OtpLoginPhone"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={OtpLoginPhone}
 			/>
@@ -143,6 +173,8 @@ export default function AuthStackNavigation() {
 				name="RegisterPhone"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={RegisterPhone}
 			/>
@@ -150,6 +182,8 @@ export default function AuthStackNavigation() {
 				name="ConfirmRegNumber"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={ConfirmRegNumber}
 			/>
@@ -157,6 +191,8 @@ export default function AuthStackNavigation() {
 				name="OtpRegPhone"
 				options={{
 					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
 				}}
 				component={OtpRegPhone}
 			/>

@@ -68,12 +68,12 @@ export default function Login({ navigation }) {
 					});
 				}
 			}
-		} catch (error) {
+		} catch (err) {
 			showAlert({
 				...aler,
 				show: true,
-				judul: "Login Failed",
-				detail: "Check your Email/Password",
+				judul: "Login failed",
+				detail: "Please check your email or password",
 			});
 		}
 	};

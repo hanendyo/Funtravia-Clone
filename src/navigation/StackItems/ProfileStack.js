@@ -22,6 +22,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -29,6 +31,8 @@ export default function ProfileStackNavigation(props) {
 				component={ProfileTab}
 				options={{
 					headerTransparent: true,
+					headerBackTitleVisible: false,
+					headerTintColor: "white",
 					headerBackTitleVisible: false,
 				}}
 			/>
@@ -38,6 +42,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -46,6 +52,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -54,6 +62,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -62,6 +72,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -70,6 +82,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -78,6 +92,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -86,6 +102,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -94,6 +112,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 			<ProfileStack.Screen
@@ -102,6 +122,8 @@ export default function ProfileStackNavigation(props) {
 				options={{
 					headerTitle: "",
 					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
 				}}
 			/>
 		</ProfileStack.Navigator>
