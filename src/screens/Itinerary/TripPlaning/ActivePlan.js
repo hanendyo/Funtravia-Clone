@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { default_image, imgPrivate } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
@@ -24,10 +25,8 @@ import {
 import { Truncate, Text } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/client";
-import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
-import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import Ripple from "react-native-material-ripple";
-import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryA";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
@@ -36,19 +35,12 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function ActivePlan({
-  token,
-  props,
-  jumlah,
-  // data,
-  // GetListitinaktif,
-}) {
+export default function ActivePlan({ token, props }) {
   const { t, i18n } = useTranslation();
-  let [tok, settok] = useState(token);
-  let datalistaktif = {};
+  let datalistaktif = [];
 
   const {
-    data: datalistplan,
+    data: datadetail,
     loading: loadinglistplan,
     error: errorlistplan,
     refetch: GetListitinplan,
@@ -60,16 +52,15 @@ export default function ActivePlan({
         Authorization: `Bearer ${token}`,
       },
     },
-    variables: { status: "A" },
+    // variables: { status: "A" },
   });
 
   {
-    datalistplan &&
-    datalistplan.itinerary_list_bystatus &&
-    datalistplan.itinerary_list_bystatus.length > 0
-      ? (datalistaktif = datalistplan)
+    datadetail && datadetail.itinerary_list_active.length
+      ? (datalistaktif = datadetail.itinerary_list_active)
       : null;
   }
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -80,13 +71,18 @@ export default function ActivePlan({
 
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
-    GetListitinaktif();
+    GetListitinplan();
     wait(2000).then(() => {
       setRefreshing(false);
     });
   }, []);
 
-  const handler_liked = (id) => {};
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      GetListitinplan();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   const getdate = (start, end) => {
     start = start.split(" ");
@@ -249,7 +245,7 @@ export default function ActivePlan({
                     itintitle: data.name,
                     country: data.id,
                     dateitin: getdate(data.start_date, data.end_date),
-                    token: tok,
+                    token: token,
                     status: "saved",
                   },
                 })
@@ -510,62 +506,62 @@ export default function ActivePlan({
     );
   };
   if (loadinglistplan) {
-    return null;
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </View>
+    );
   }
   return (
     <View style={{ flex: 1 }}>
-      {/* <NavigationEvents onDidFocus={() => _Refresh()} /> */}
-
-      {datalistaktif && datalistaktif.itinerary_list_bystatus.length ? (
-        (jumlah(datalistaktif.itinerary_list_bystatus.length),
-        (
-          <View>
-            <FlatList
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
-              }
-              contentContainerStyle={{
-                marginTop: 5,
-                justifyContent: "space-evenly",
-                paddingStart: 10,
-                paddingEnd: 10,
-                paddingBottom: 100,
+      <FlatList
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+        }
+        contentContainerStyle={{
+          marginTop: 5,
+          justifyContent: "space-evenly",
+          paddingStart: 10,
+          paddingEnd: 10,
+          paddingBottom: 100,
+        }}
+        horizontal={false}
+        data={datalistaktif}
+        renderItem={({ item }) => <RenderActive data={item} />}
+        // keyExtractor={(item) => item.id}
+        showsHorizontalScrollIndicator={false}
+        ListFooterComponent={() => {
+          return datalistaktif.length == 0 ? (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                alignContent: "center",
+                height: Dimensions.get("screen").height - 300,
               }}
-              horizontal={false}
-              data={
-                datalistaktif && datalistaktif.itinerary_list_bystatus.length
-                  ? datalistaktif.itinerary_list_bystatus
-                  : null
-              }
-              renderItem={({ item }) => <RenderActive data={item} />}
-              // keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-              // extraData={selected}
-            />
-          </View>
-        ))
-      ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignContent: "center",
-            height: "100%",
-          }}
-        >
-          <Text
-            size="title"
-            type={"bold"}
-            style={{ width: "70%", textAlign: "center" }}
-          >
-            {t("empty")}
-          </Text>
-          <Kosong
-            height={Dimensions.get("screen").width * 0.6}
-            width={Dimensions.get("screen").width}
-          />
-        </View>
-      )}
+            >
+              <Text
+                size="title"
+                type={"bold"}
+                style={{ width: "70%", textAlign: "center" }}
+              >
+                {t("empty")}
+              </Text>
+              <Kosong
+                height={Dimensions.get("screen").width * 0.6}
+                width={Dimensions.get("screen").width}
+              />
+            </View>
+          ) : null;
+        }}
+      />
     </View>
   );
 }
