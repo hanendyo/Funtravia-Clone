@@ -6,6 +6,7 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image } from "../../assets/png";
@@ -363,9 +364,7 @@ export default function JournalCategory(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Text size="title" type="bold">
-                    Loading...
-                  </Text>
+                  <ActivityIndicator color="#209FAE" animating={true} />
                 </View>
               ) : null
             }
@@ -374,8 +373,33 @@ export default function JournalCategory(props) {
           />
         </View>
       ) : (
-        <View style={{ alignItems: "center", marginTop: 10 }}>
-          <Text>Tidak Ada Data</Text>
+        <View
+          style={{
+            backgroundColor: "white",
+            alignItems: "center",
+            paddingTop: 10,
+            flex: 1,
+          }}
+        >
+          {loadingList ? (
+            <View
+              style={{
+                width: width,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator color="#209FAE" animating={true} />
+            </View>
+          ) : (
+            <View
+              style={{ backgroundColor: "white", paddingVertical: 20, flex: 1 }}
+            >
+              <Text size="label" type="bold">
+                Tidak Ada Data
+              </Text>
+            </View>
+          )}
         </View>
       )}
     </View>
