@@ -140,7 +140,6 @@ export default function CreatePost(props) {
           assets: "data:image/png;base64," + chosenPictureBase64,
         },
       });
-      console.log(response);
       if (response.data) {
         if (response.data.create_post.code === 200) {
           setLoading(false);
@@ -337,7 +336,7 @@ export default function CreatePost(props) {
                 <TextInput
                   multiline
                   placeholder={"Write a caption.."}
-                  maxLength={255}
+                  maxLength={1000}
                   style={
                     Platform.OS == "ios"
                       ? {

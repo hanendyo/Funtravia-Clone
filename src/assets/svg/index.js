@@ -174,6 +174,7 @@ import Unesco from "./files/unesco.svg";
 import Movie from "./files/movie.svg";
 import TravelAlbumdis from "./files/travelalbumdisable.svg";
 import TravelStoriesdis from "./files/travelstoriesdisable.svg";
+import Select from "./files/select.svg";
 
 export {
   LikeWhite,
@@ -352,4 +353,5 @@ export {
   Movie,
   TravelAlbumdis,
   TravelStoriesdis,
+  Select,
 };
