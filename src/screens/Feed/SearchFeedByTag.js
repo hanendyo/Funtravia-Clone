@@ -140,7 +140,7 @@ export default function Feed(props) {
   //     ? dataPost.feed_search_bytag_paging.datas
   //     : null
   // );
-  console.log(feed_search_bytag_paging);
+  // console.log(feed_search_bytag_paging);
 
   useEffect(() => {
     loadAsync();

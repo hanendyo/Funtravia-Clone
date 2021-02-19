@@ -20,6 +20,7 @@ export default function TravelIdeaStackNavigation() {
         component={Unesco}
         options={{
           headerTitle: "",
+          headerShown: true,
           headerTransparent: false,
         }}
       />
