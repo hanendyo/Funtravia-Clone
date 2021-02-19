@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, FunIcon, Text } from "../../../component";
@@ -346,7 +347,7 @@ export default function ItineraryPopuler(props) {
     if (aktif == "Itinerary") {
       if (loadingPopuler) {
         <View>
-          <ActivityIndicator animating={true} color="black" />
+          <ActivityIndicator animating={true} color="#209FAE" />
         </View>;
       }
       return (
