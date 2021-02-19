@@ -11,6 +11,7 @@ import {
 	SafeAreaView,
 	StatusBar,
 	Alert,
+	Dimensions,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
@@ -20,6 +21,7 @@ import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 export default function Room({ navigation, route }) {
+	const { width, height } = Dimensions.get("screen");
 	const [room, setRoom] = useState(route.params.room_id);
 	const [user, setUser] = useState({});
 	const [init, setInit] = useState(true);
@@ -369,14 +371,15 @@ export default function Room({ navigation, route }) {
 						size="medium"
 						variant="transparent"
 						onPress={() => Alert.alert("Sticker Cooming Soon")}
+						style={{ width: 50, height: 50 }}
 					>
-						<Smile height={25} width={25} />
+						<Smile height={35} width={35} />
 					</Button>
 					<View
 						style={{
 							borderColor: "#D1D1D1",
 							borderWidth: 1,
-							width: "75%",
+							width: width - 120,
 							paddingHorizontal: 10,
 							alignSelf: "center",
 							backgroundColor: "#FFFFFF",
@@ -405,7 +408,7 @@ export default function Room({ navigation, route }) {
 						size="medium"
 						variant="transparent"
 						onPress={() => submitChatMessage()}
-						style={{ marginHorizontal: 5 }}
+						style={{ width: 50, height: 50 }}
 					>
 						<Send height={35} width={35} />
 					</Button>

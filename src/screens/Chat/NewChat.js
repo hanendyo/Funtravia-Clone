@@ -202,7 +202,7 @@ export default function NewChat({ navigation }) {
 								</View>
 							</View>
 							<Button
-								onPress={}
+								onPress={() => _sendMessage(value.id)}
 								text=""
 								size="medium"
 								color="primary"
