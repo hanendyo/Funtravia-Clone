@@ -5,24 +5,28 @@ import Unesco from "../../screens/TravelIdeas/Unesco/Index";
 
 const TravelIdeaStack = createStackNavigator();
 export default function TravelIdeaStackNavigation() {
-  return (
-    <TravelIdeaStack.Navigator>
-      <TravelIdeaStack.Screen
-        name="TravelIdeas"
-        component={TravelIdeas}
-        options={{
-          headerTitle: "",
-          headerTransparent: false,
-        }}
-      />
-      <TravelIdeaStack.Screen
-        name="Unesco"
-        component={Unesco}
-        options={{
-          headerTitle: "",
-          headerTransparent: false,
-        }}
-      />
-    </TravelIdeaStack.Navigator>
-  );
+	return (
+		<TravelIdeaStack.Navigator>
+			<TravelIdeaStack.Screen
+				name="TravelIdeas"
+				component={TravelIdeas}
+				options={{
+					headerTitle: "",
+					headerTransparent: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<TravelIdeaStack.Screen
+				name="Unesco"
+				component={Unesco}
+				options={{
+					headerTitle: "",
+					headerTransparent: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+		</TravelIdeaStack.Navigator>
+	);
 }

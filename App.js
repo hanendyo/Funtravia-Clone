@@ -8,9 +8,36 @@ import SplashScreen from "react-native-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API, END_POINT_NOTIFY, END_POINT_INFO } from "./src/config";
 import { mascot_black } from "./src/assets/png";
-import { SafeAreaView, Image, Dimensions } from "react-native";
+import { SafeAreaView, Image, Dimensions, Alert } from "react-native";
 import "./src/i18n";
 import { useTranslation } from "react-i18next";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification from "react-native-push-notification";
+import { not } from "react-native-reanimated";
+
+PushNotification.configure({
+	onRegister: function (token) {
+		console.log("TOKEN:", token);
+	},
+	onNotification: function (notification) {
+		console.log("NOTIFICATION:", notification);
+		notification.finish(PushNotificationIOS.FetchResult.NoData);
+	},
+	onAction: function (notification) {
+		console.log("ACTION:", notification.action);
+		console.log("NOTIFICATION:", notification);
+	},
+	onRegistrationError: function (err) {
+		console.error(err.message, err);
+	},
+	permissions: {
+		alert: true,
+		badge: true,
+		sound: true,
+	},
+	popInitialNotification: true,
+	requestPermissions: true,
+});
 
 function App() {
 	const { t, i18n } = useTranslation();
@@ -84,8 +111,20 @@ function App() {
 	useEffect(() => {
 		checkPermission();
 		initializeFunction();
-		messaging().onMessage((notification) => {
-			console.log("FG_NF", notification);
+		messaging().onMessage((dNotify) => {
+			let { notification, data } = dNotify;
+			PushNotification.localNotification({
+				channelId: "default",
+				id: 0,
+				title: notification.title,
+				message: notification.body,
+				smallIcon: "ic_notification",
+				largeIcon: "ic_notification",
+				color: "red",
+				playSound: true,
+				soundName: "default",
+				number: 1,
+			});
 		});
 
 		messaging().setBackgroundMessageHandler(async (remoteMessage) => {

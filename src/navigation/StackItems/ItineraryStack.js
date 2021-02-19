@@ -18,86 +18,139 @@ import ItineraryCategory from "../../screens/Itinerary/ItineraryCategory/Itinera
 
 const ItineraryStack = createStackNavigator();
 export default function ItineraryStackNavigation() {
-  return (
-    <ItineraryStack.Navigator>
-      <ItineraryStack.Screen name="Trip" component={Trip} />
-      <ItineraryStack.Screen
-        name="itindetail"
-        component={itindetail}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="ItinGoogle"
-        component={ItinGoogle}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="SettingItin"
-        component={SettingItin}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="ItineraryBuddy"
-        component={ItineraryBuddy}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="AddBuddy"
-        component={AddBuddy}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="CustomItinerary"
-        component={CustomItinerary}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="CreateCustom"
-        component={CreateCustom}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="ChoosePosition"
-        component={ChoosePosition}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="itindest"
-        component={itindest}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="ItineraryChooseday"
-        component={ItineraryChooseday}
-        options={{ headerShown: false }}
-      />
+	return (
+		<ItineraryStack.Navigator>
+			<ItineraryStack.Screen name="Trip" component={Trip} />
+			<ItineraryStack.Screen
+				name="itindetail"
+				component={itindetail}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ItinGoogle"
+				component={ItinGoogle}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="SettingItin"
+				component={SettingItin}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ItineraryBuddy"
+				component={ItineraryBuddy}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="AddBuddy"
+				component={AddBuddy}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="CustomItinerary"
+				component={CustomItinerary}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="CreateCustom"
+				component={CreateCustom}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ChoosePosition"
+				component={ChoosePosition}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="itindest"
+				component={itindest}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ItineraryChooseday"
+				component={ItineraryChooseday}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
 
-      <ItineraryStack.Screen
-        name="ItineraryPopuler"
-        component={ItineraryPopuler}
-        options={{
-          headerTitle: "",
-          headerTransparent: true,
-        }}
-      />
-      <ItineraryStack.Screen
-        name="ItineraryFavorite"
-        component={ItineraryFavorite}
-        options={{
-          headerTitle: "",
-          headerTransparent: true,
-        }}
-      />
-      <ItineraryStack.Screen
-        name="ItineraryPlaning"
-        component={ItineraryPlaning}
-        options={{ headerShown: false }}
-      />
-      <ItineraryStack.Screen
-        name="ItineraryCategory"
-        component={ItineraryCategory}
-        options={{ headerTitle: "", headerTransparent: true }}
-      />
-    </ItineraryStack.Navigator>
-  );
+			<ItineraryStack.Screen
+				name="ItineraryPopuler"
+				component={ItineraryPopuler}
+				options={{
+					headerTitle: "",
+					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ItineraryFavorite"
+				component={ItineraryFavorite}
+				options={{
+					headerTitle: "",
+					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ItineraryPlaning"
+				component={ItineraryPlaning}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ItineraryStack.Screen
+				name="ItineraryCategory"
+				component={ItineraryCategory}
+				options={{
+					headerTitle: "",
+					headerTransparent: true,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+		</ItineraryStack.Navigator>
+	);
 }

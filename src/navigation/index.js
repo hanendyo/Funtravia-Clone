@@ -49,7 +49,11 @@ export default function MainStackNavigator({ authorizeStatus }) {
 				<Tab.Screen
 					name="AuthStack"
 					component={AuthStack}
-					options={{ headerShown: false }}
+					options={{
+						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
+					}}
 				/>
 				<Tab.Screen
 					name="BottomStack"
@@ -57,6 +61,7 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					options={{
 						headerShown: false,
 						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -64,6 +69,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={ItineraryStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -71,6 +78,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={ProfileStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -78,6 +87,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={CountryStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -85,6 +96,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={AccountStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -92,6 +105,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={ChatStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -99,6 +114,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={FeedStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -106,6 +123,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={TravelIdeaStack}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -113,6 +132,8 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					component={JournalStackNavigation}
 					options={{
 						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
 					}}
 				/>
 				<Tab.Screen
@@ -128,7 +149,11 @@ export default function MainStackNavigator({ authorizeStatus }) {
 				<Tab.Screen
 					name="Notification"
 					component={Notification}
-					options={{ headerShown: false }}
+					options={{
+						headerShown: false,
+						headerBackTitleVisible: false,
+						headerTintColor: "white",
+					}}
 				/>
 				<Tab.Screen
 					name="SearchPage"

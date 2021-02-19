@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
 	View,
 	StyleSheet,
@@ -14,9 +14,8 @@ import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 
 export default function SplashScreen(props) {
-	let height = Dimensions.get("screen").height;
+	const { height, width } = Dimensions.get("screen");
 	const { t } = useTranslation();
-	let width = Dimensions.get("screen").width;
 	const imageScroll = useRef();
 
 	useEffect(() => {
@@ -24,6 +23,16 @@ export default function SplashScreen(props) {
 			headerShown: false,
 		});
 	}, []);
+
+	let currentIndex = 1;
+	setInterval(() => {
+		imageScroll.current.scrollTo({
+			animated: true,
+			x: width * currentIndex,
+			y: 0,
+		});
+		currentIndex = currentIndex >= 2 ? 0 : currentIndex + 1;
+	}, 5000);
 
 	return (
 		<SafeAreaView style={styles.main}>
