@@ -65,7 +65,15 @@ export default function TravelIdeas(props) {
   const { width, height } = Dimensions.get("screen");
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    loadAsync();
   }, []);
+
+  const [token, setToken] = useState();
+  // console.log(token);
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    setToken(tkn);
+  };
 
   return (
     <View
@@ -163,7 +171,12 @@ export default function TravelIdeas(props) {
         </Text>
         <Ripple
           onPress={() => {
-            props.navigation.dispatch(StackActions.replace("Unesco"));
+            props.navigation.navigate("TravelIdeaStack", {
+              screen: "Unesco",
+              params: {
+                token: token,
+              },
+            });
           }}
           style={{
             borderWidth: 1,
@@ -263,9 +276,9 @@ export default function TravelIdeas(props) {
             </View>
             <View>
               <Text type="bold" size="label">
-                Unesco World Heritage
+                Filming Location
               </Text>
-              <Text>Must visit destination</Text>
+              <Text>Pick some locations you are interested in</Text>
             </View>
           </View>
 

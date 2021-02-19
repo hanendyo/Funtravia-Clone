@@ -59,7 +59,7 @@ export default function Feed(props) {
 
   let latitude = props.route.params.latitude;
   let longitude = props.route.params.longitude;
-  console.log(latitude, longitude);
+  // console.log(latitude, longitude);
   // let [token, setToken] = useState(props.route.params.token);
   let [token, setToken] = useState("");
   const default_image =
@@ -146,7 +146,7 @@ export default function Feed(props) {
   //     ? dataPost.feed_search_bylocation_paging.datas
   //     : null
   // );
-  console.log(feed_search_bylocation_paging);
+  // console.log(feed_search_bylocation_paging);
 
   useEffect(() => {
     loadAsync();
