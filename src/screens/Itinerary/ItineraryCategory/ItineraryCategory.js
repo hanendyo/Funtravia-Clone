@@ -572,7 +572,7 @@ export default function ItineraryCategory(props) {
   const RenderUtama = ({ aktif }) => {
     if (loadingPopuler) {
       <View>
-        <Text>Loading ...</Text>
+        <ActivityIndicator animating={true} color="#209FAE" />
       </View>;
     }
     if (aktif == "Itinerary") {
@@ -641,9 +641,7 @@ export default function ItineraryCategory(props) {
               <View>
                 {loadingPopuler ? (
                   <View style={{ paddingVertical: 20, alignItems: "center" }}>
-                    <Text size="title" type="bold">
-                      Loading ...
-                    </Text>
+                    <ActivityIndicator animating={true} color="#209FAE" />
                   </View>
                 ) : null}
               </View>
@@ -733,10 +731,7 @@ export default function ItineraryCategory(props) {
                     alignItems: "center",
                   }}
                 >
-                  <ActivityIndicator animating={true} color="#000" />
-                  <Text size="title" type="bold">
-                    Loading ...
-                  </Text>
+                  <ActivityIndicator animating={true} color="#209FAE" />
                 </View>
               ) : null
             }
