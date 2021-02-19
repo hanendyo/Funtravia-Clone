@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
+import Ripple from "react-native-material-ripple";
 import {
   Travel_Ideas,
   Travel_Itinerary,
@@ -48,7 +49,7 @@ export default function DiscoverCard({ props }) {
         elevation: 2,
       }}
     >
-      <Pressable
+      <Ripple
         key={discoverCardsData[0].id}
         onPress={() =>
           props.navigation.navigate("TravelIdeaStack", {
@@ -80,9 +81,9 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[0].text}
           </Text>
         </ImageBackground>
-      </Pressable>
+      </Ripple>
 
-      <Pressable
+      <Ripple
         key={discoverCardsData[1].id}
         onPress={() =>
           props.navigation.navigate("ItineraryStack", {
@@ -114,8 +115,8 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[1].text}
           </Text>
         </ImageBackground>
-      </Pressable>
-      <Pressable
+      </Ripple>
+      <Ripple
         key={discoverCardsData[2].id}
         onPress={() =>
           props.navigation.navigate("JournalStackNavigation", {
@@ -147,7 +148,7 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[2].text}
           </Text>
         </ImageBackground>
-      </Pressable>
+      </Ripple>
     </View>
   );
 }

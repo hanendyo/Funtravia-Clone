@@ -344,6 +344,11 @@ export default function ItineraryPopuler(props) {
 
   const RenderUtama = ({ aktif }) => {
     if (aktif == "Itinerary") {
+      if (loadingPopuler) {
+        <View>
+          <ActivityIndicator animating={true} color="black" />
+        </View>;
+      }
       return (
         <View
           style={{
@@ -631,27 +636,6 @@ export default function ItineraryPopuler(props) {
                 refreshing={refreshing}
                 onRefresh={() => Refresh()}
               />
-            }
-            ListFooterComponent={
-              loadingPopuler ? (
-                <View
-                  style={{
-                    // position: 'absolute',
-                    // bottom:0,
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    size="title"
-                    type="bold"
-                    // style={{ color:'#209fae'}}
-                  >
-                    Loading...
-                  </Text>
-                </View>
-              ) : null
             }
             onEndReachedThreshold={1}
             onEndReached={handleOnEndReached}

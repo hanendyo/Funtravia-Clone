@@ -5,6 +5,7 @@ import {
   FlatList,
   Alert,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
@@ -96,7 +97,7 @@ export default function DetailJournal(props) {
   } = useQuery(JournalCommentList, {
     variables: {
       id: dataPopuler.id,
-      limit: 10,
+      limit: 20,
       offset: 0,
     },
     context: {
@@ -144,7 +145,7 @@ export default function DetailJournal(props) {
       return fetchMore({
         variables: {
           id: dataPopuler.id,
-          limit: 10,
+          limit: 20,
           offset: dataComment.comment_journal_list.page_info.offset,
         },
         updateQuery: onUpdate,
@@ -192,7 +193,6 @@ export default function DetailJournal(props) {
     mins = mins % 60;
     hrs = hrs % 24;
     if (days > 1) {
-      // dateFormat(datetime);
       return dateFormatForNotif(
         datetime.slice(0, 10),
         datenow.toISOString().slice(0, 10)
@@ -224,16 +224,13 @@ export default function DetailJournal(props) {
             paddingVertical: 20,
           }}
         >
-          <Text type="bold" size="title">
-            Loading ...
-          </Text>
+          <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       </View>
     );
   }
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Loading show={loading} />
       {data && data.journal_byid ? (
         <ScrollView ref={slider} showsVerticalScrollIndicator={false}>
           <View
@@ -554,139 +551,275 @@ export default function DetailJournal(props) {
               </Text>
             </View>
           </View>
+          {console.log("jumlah comment :", listComment.length)}
           {listComment.length ? (
-            <FlatList
-              data={listComment}
-              renderItem={({ item, index }) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginHorizontal: 20,
-                    marginVertical: 5,
-                    width: Dimensions.get("window").width * 0.9,
-                    justifyContent: "space-between",
-                  }}
-                >
+            listComment.length < 5 ? (
+              <FlatList
+                data={listComment}
+                renderItem={({ item, index }) => (
                   <View
                     style={{
                       flexDirection: "row",
-                      marginVertical: 2,
-                      minHeight: Dimensions.get("window").width * 0.05,
+                      alignItems: "center",
+                      marginHorizontal: 20,
+                      marginVertical: 5,
+                      width: Dimensions.get("window").width * 0.9,
+                      justifyContent: "space-between",
                     }}
                   >
-                    <TouchableOpacity
-                      onPress={() => {
-                        item && item.user && item.user.id !== null
-                          ? item?.user?.id !== setting?.user?.id
-                            ? props.navigation.push("ProfileStack", {
-                                screen: "otherprofile",
-                                params: {
-                                  idUser: item.user.id,
-                                },
-                              })
-                            : props.navigation.push("ProfileStack", {
-                                screen: "ProfileTab",
-                              })
-                          : Alert.alert("User has been deleted");
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginVertical: 2,
+                        minHeight: Dimensions.get("window").width * 0.05,
                       }}
                     >
-                      <Thumbnail
-                        source={
-                          item.user && item.user.picture
-                            ? { uri: item.user.picture }
-                            : default_image
-                        }
-                        style={{
-                          height: 35,
-                          width: 35,
-                        }}
-                      />
-                    </TouchableOpacity>
-                    <View style={{ marginLeft: 15 }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                      <TouchableOpacity
+                        onPress={() => {
+                          item && item.user && item.user.id !== null
+                            ? item?.user?.id !== setting?.user?.id
+                              ? props.navigation.push("ProfileStack", {
+                                  screen: "otherprofile",
+                                  params: {
+                                    idUser: item.user.id,
+                                  },
+                                })
+                              : props.navigation.push("ProfileStack", {
+                                  screen: "ProfileTab",
+                                })
+                            : Alert.alert("User has been deleted");
                         }}
                       >
-                        <Text
-                          size={"description"}
-                          type={"bold"}
-                          onPress={() => {
-                            item && item.user && item.user.id !== null
-                              ? item.user.id !== setting?.user?.id
-                                ? props.navigation.push("ProfileStack", {
-                                    screen: "otherprofile",
-                                    params: {
-                                      idUser: item.user.id,
-                                    },
-                                  })
-                                : props.navigation.push("ProfileStack", {
-                                    screen: "ProfileTab",
-                                  })
-                              : Alert.alert("User has been deleted");
+                        <Thumbnail
+                          source={
+                            item.user && item.user.picture
+                              ? { uri: item.user.picture }
+                              : default_image
+                          }
+                          style={{
+                            height: 35,
+                            width: 35,
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <View style={{ marginLeft: 15 }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
                           }}
                         >
-                          {item && item.user && item.user.first_name
-                            ? item.user.first_name
-                            : "user_deleted"}
-                        </Text>
-                        {item && item.created_at ? (
                           <Text
-                            size={"small"}
-                            type={"light"}
-                            style={{ marginLeft: 10 }}
+                            size={"description"}
+                            type={"bold"}
+                            onPress={() => {
+                              item && item.user && item.user.id !== null
+                                ? item.user.id !== setting?.user?.id
+                                  ? props.navigation.push("ProfileStack", {
+                                      screen: "otherprofile",
+                                      params: {
+                                        idUser: item.user.id,
+                                      },
+                                    })
+                                  : props.navigation.push("ProfileStack", {
+                                      screen: "ProfileTab",
+                                    })
+                                : Alert.alert("User has been deleted");
+                            }}
                           >
-                            {duration(item.created_at)}
+                            {item && item.user && item.user.first_name
+                              ? item.user.first_name
+                              : "user_deleted"}
                           </Text>
-                        ) : null}
-                      </View>
-                      <View
-                        style={{
-                          marginTop: 5,
-                          alignSelf: "center",
-                          width: Dimensions.get("window").width * 0.7,
-                        }}
-                      >
-                        <Text
-                          size={"description"}
-                          type={"regular"}
-                          style={{ textAlign: "justify" }}
+                          {item && item.created_at ? (
+                            <Text
+                              size={"small"}
+                              type={"light"}
+                              style={{ marginLeft: 10 }}
+                            >
+                              {duration(item.created_at)}
+                            </Text>
+                          ) : null}
+                        </View>
+                        <View
+                          style={{
+                            marginTop: 5,
+                            alignSelf: "center",
+                            width: Dimensions.get("window").width * 0.7,
+                          }}
                         >
-                          {item.text}
-                        </Text>
+                          <Text
+                            size={"description"}
+                            type={"regular"}
+                            style={{ textAlign: "justify" }}
+                          >
+                            {item.text}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              )}
-              keyExtractor={(listComment) => listComment.id}
-              refreshing={refreshing}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={() => Refresh()}
-                />
-              }
-              ListFooterComponent={
-                loadingComment ? (
+                )}
+                keyExtractor={(listComment) => listComment.id}
+                refreshing={refreshing}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => Refresh()}
+                  />
+                }
+                ListFooterComponent={
+                  loadingComment ? (
+                    <View
+                      style={{
+                        width: width,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ActivityIndicator color="#209FAE" animating />
+                    </View>
+                  ) : null
+                }
+                onEndReachedThreshold={1}
+                onEndReached={handleOnEndReached}
+              />
+            ) : (
+              <FlatList
+                data={listComment}
+                renderItem={({ item, index }) => (
                   <View
                     style={{
-                      width: width,
-                      justifyContent: "center",
+                      flexDirection: "row",
                       alignItems: "center",
+                      marginHorizontal: 20,
+                      marginVertical: 5,
+                      width: Dimensions.get("window").width * 0.9,
+                      justifyContent: "space-between",
                     }}
                   >
-                    <Text size="title" type="bold">
-                      Loading...
-                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginVertical: 2,
+                        minHeight: Dimensions.get("window").width * 0.05,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => {
+                          item && item.user && item.user.id !== null
+                            ? item?.user?.id !== setting?.user?.id
+                              ? props.navigation.push("ProfileStack", {
+                                  screen: "otherprofile",
+                                  params: {
+                                    idUser: item.user.id,
+                                  },
+                                })
+                              : props.navigation.push("ProfileStack", {
+                                  screen: "ProfileTab",
+                                })
+                            : Alert.alert("User has been deleted");
+                        }}
+                      >
+                        <Thumbnail
+                          source={
+                            item.user && item.user.picture
+                              ? { uri: item.user.picture }
+                              : default_image
+                          }
+                          style={{
+                            height: 35,
+                            width: 35,
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <View style={{ marginLeft: 15 }}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text
+                            size={"description"}
+                            type={"bold"}
+                            onPress={() => {
+                              item && item.user && item.user.id !== null
+                                ? item.user.id !== setting?.user?.id
+                                  ? props.navigation.push("ProfileStack", {
+                                      screen: "otherprofile",
+                                      params: {
+                                        idUser: item.user.id,
+                                      },
+                                    })
+                                  : props.navigation.push("ProfileStack", {
+                                      screen: "ProfileTab",
+                                    })
+                                : Alert.alert("User has been deleted");
+                            }}
+                          >
+                            {item && item.user && item.user.first_name
+                              ? item.user.first_name
+                              : "user_deleted"}
+                          </Text>
+                          {item && item.created_at ? (
+                            <Text
+                              size={"small"}
+                              type={"light"}
+                              style={{ marginLeft: 10 }}
+                            >
+                              {duration(item.created_at)}
+                            </Text>
+                          ) : null}
+                        </View>
+                        <View
+                          style={{
+                            marginTop: 5,
+                            alignSelf: "center",
+                            width: Dimensions.get("window").width * 0.7,
+                          }}
+                        >
+                          <Text
+                            size={"description"}
+                            type={"regular"}
+                            style={{ textAlign: "justify" }}
+                          >
+                            {item.text}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
                   </View>
-                ) : null
-              }
-              onEndReachedThreshold={1}
-              onEndReached={handleOnEndReached}
-            />
+                )}
+                keyExtractor={(listComment) => listComment.id}
+                refreshing={refreshing}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => Refresh()}
+                  />
+                }
+                ListFooterComponent={
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      paddingHorizontal: 15,
+                      marginVertical: 10,
+                    }}
+                  >
+                    <Button
+                      text={"View All Comment"}
+                      type="box"
+                      variant="bordered"
+                      color="black"
+                      style={{ borderColor: "black" }}
+                    ></Button>
+                  </View>
+                }
+                onEndReachedThreshold={1}
+                onEndReached={handleOnEndReached}
+              />
+            )
           ) : (
             <View
               style={{

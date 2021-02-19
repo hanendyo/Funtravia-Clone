@@ -11,6 +11,7 @@ import {
   Picker,
   RefreshControl,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -41,10 +42,7 @@ export default function ItineraryCategory(props) {
   let [dataType, setDataType] = useState(props.route.params.typeCategory);
   let [actives, setActives] = useState("Itinerary");
   let [order, setOrder] = useState(props.route.params.typeOrder);
-
-  console.log("order", order);
-  console.log("category", dataType);
-
+  let [touch, setTouch] = useState(false);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -53,6 +51,13 @@ export default function ItineraryCategory(props) {
     orderby: null,
     rating: null,
   });
+
+  const unSelect = (id) => {
+    setDataType("");
+  };
+  const select = (id) => {
+    setDataType(id);
+  };
 
   const HeaderComponent = {
     headerShown: true,
@@ -110,8 +115,8 @@ export default function ItineraryCategory(props) {
     loading: loadingCategory,
     error: errorCategory,
     fetchMore: fetchMoreCategory,
-    refetch : refetchCategory,
-    networkStatus : networkStatusCategory,
+    refetch: refetchCategory,
+    networkStatus: networkStatusCategory,
   } = useQuery(Category, {
     variables: {
       category_id: null,
@@ -728,6 +733,7 @@ export default function ItineraryCategory(props) {
                     alignItems: "center",
                   }}
                 >
+                  <ActivityIndicator animating={true} color="#000" />
                   <Text size="title" type="bold">
                     Loading ...
                   </Text>
@@ -735,7 +741,7 @@ export default function ItineraryCategory(props) {
               ) : null
             }
             renderItem={({ item, index }) => {
-              return (
+              return dataType === item.id ? (
                 <Ripple
                   style={{
                     overflow: "hidden",
@@ -746,20 +752,20 @@ export default function ItineraryCategory(props) {
                     borderRadius: 5,
                     marginTop: 1,
                     marginLeft: 1,
-                    backgroundColor: dataType === item.id ? "#209FAE" : "white",
+                    backgroundColor: "#209FAE",
                     borderColor: "#209FAE",
                     paddingHorizontal: 5,
                     marginVertical: 4,
                     borderWidth: 1,
                     flexDirection: "row",
                   }}
-                  onPress={() => setDataType(item.id)}
+                  onPress={() => unSelect(item.id)}
                 >
                   <FunIcon
                     icon={item.icon}
                     height={30}
                     width={30}
-                    fill={dataType === item.id ? "white" : "black"}
+                    fill={"white"}
                     style={{ marginRight: 5 }}
                   />
                   <Text
@@ -767,7 +773,45 @@ export default function ItineraryCategory(props) {
                     type="bold"
                     style={{
                       textAlign: "center",
-                      color: dataType === item.id ? "white" : "#209FAE",
+                      color: "white",
+                    }}
+                  >
+                    {item?.name}
+                  </Text>
+                </Ripple>
+              ) : (
+                <Ripple
+                  style={{
+                    overflow: "hidden",
+                    height: "95%",
+                    marginRight: 5,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 5,
+                    marginTop: 1,
+                    marginLeft: 1,
+                    backgroundColor: "white",
+                    borderColor: "#209FAE",
+                    paddingHorizontal: 5,
+                    marginVertical: 4,
+                    borderWidth: 1,
+                    flexDirection: "row",
+                  }}
+                  onPress={() => select(item.id)}
+                >
+                  <FunIcon
+                    icon={item.icon}
+                    height={30}
+                    width={30}
+                    fill={"black"}
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{
+                      textAlign: "center",
+                      color: "#209FAE",
                     }}
                   >
                     {item?.name}

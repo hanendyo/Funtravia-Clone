@@ -1,6 +1,13 @@
 import { Thumbnail, View } from "native-base";
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, FlatList, Image, Platform } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  FlatList,
+  Image,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   ScrollView,
@@ -71,6 +78,7 @@ export default function ItineraryFavorite(props) {
   let [setting, setSetting] = useState();
   let [textInput, setTextInput] = useState("");
   let [text, setText] = useState("");
+  let { width, height } = Dimensions.get("screen");
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
@@ -272,26 +280,9 @@ export default function ItineraryFavorite(props) {
             </View>
           </View>
         </View>
-        <FlatList
-          ListHeaderComponent={() =>
-            loadingPopuler ? (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: "white",
-                  height: Dimensions.get("screen").height,
-                  alignItems: "center",
-                  paddingVertical: 20,
-                }}
-              >
-                <Text size="title" type="bold">
-                  Loading ...
-                </Text>
-              </View>
-            ) : null
-          }
-          renderItem={({ item, index }) =>
-            data?.itinerary_list_favorite.length ? (
+        {data?.itinerary_list_favorite.length > 0 ? (
+          <FlatList
+            renderItem={({ item, index }) => (
               <View
                 style={{
                   height: 145,
@@ -312,17 +303,6 @@ export default function ItineraryFavorite(props) {
                   }}
                 >
                   <View
-                    // onPress={() =>
-                    //   props.navigation.navigate("ItineraryStack", {
-                    //     screen: "itindetail",
-                    //     params: {
-                    //       itintitle: item.name,
-                    //       country: item.id,
-                    //       token: token,
-                    //       status: "favorite",
-                    //     },
-                    //   })
-                    // }
                     style={{
                       backgroundColor: "#FFFFFF",
                       height: "77%",
@@ -559,30 +539,65 @@ export default function ItineraryFavorite(props) {
                   </View>
                 </View>
               </View>
+            )}
+            ListFooterComponent={
+              loadingPopuler ? (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: "white",
+                    height: Dimensions.get("screen").height,
+                    alignItems: "center",
+                    paddingVertical: 20,
+                  }}
+                >
+                  <ActivityIndicator
+                    animating={true}
+                    size="small"
+                    color="#209FAE"
+                  />
+                </View>
+              ) : null
+            }
+            data={data?.itinerary_list_favorite}
+            keyExtractor={(data) => data.id}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View
+            style={{
+              backgroundColor: "white",
+              alignItems: "center",
+              paddingTop: 10,
+              flex: 1,
+            }}
+          >
+            {loadingPopuler ? (
+              <View
+                style={{
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator color="#209FAE" animating={true} />
+              </View>
             ) : (
               <View
                 style={{
-                  height: Dimensions.get("screen").height,
                   backgroundColor: "white",
-                  zIndex: 99,
+                  paddingVertical: 20,
+                  flex: 1,
                 }}
               >
-                <Text>tidak ada data</Text>
+                <Text size="label" type="bold">
+                  Tidak Ada Data
+                </Text>
               </View>
-            )
-          }
-          ListFooterComponent={
-            data === null ? (
-              <View>
-                <Text>Tidak ada data</Text>
-              </View>
-            ) : null
-          }
-          data={data?.itinerary_list_favorite}
-          keyExtractor={(data) => data.id}
-          nestedScrollEnabled
-          showsVerticalScrollIndicator={false}
-        />
+            )}
+          </View>
+        )}
       </View>
     </View>
   );

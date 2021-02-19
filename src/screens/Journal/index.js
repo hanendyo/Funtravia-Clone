@@ -2,7 +2,6 @@ import { Thumbnail, View } from "native-base";
 import React, { useEffect, useState, useCallback } from "react";
 import {
   Dimensions,
-  TouchableOpacity,
   Image,
   StyleSheet,
   ScrollView,
@@ -10,6 +9,7 @@ import {
   Pressable,
   Alert,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
@@ -70,13 +70,13 @@ export default function Journal(props) {
   };
 
   const { t } = useTranslation();
-  const [fetchDataPopuler, { data, loading }] = useLazyQuery(PopularJournal, {
-    fetchPolicy: "network-only",
+  const { data, loading } = useQuery(PopularJournal, {
     context: {
       headers: {
         "Content-Type": "application/json",
       },
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
@@ -89,7 +89,7 @@ export default function Journal(props) {
     variables: {
       category_id: null,
       order_by: null,
-      limit: 10,
+      limit: 20,
       offset: 0,
       keyword: null,
     },
@@ -101,10 +101,12 @@ export default function Journal(props) {
     notifyOnNetworkStatusChange: true,
   });
 
-  let list = [];
+  let journal_list = [];
   if (dataList && "datas" in dataList.journal_list) {
-    list = dataList.journal_list.datas;
+    journal_list = dataList.journal_list.datas;
   }
+
+  console.log("journal_list :", journal_list);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -130,7 +132,7 @@ export default function Journal(props) {
     ];
 
     return Object.assign({}, prev, {
-      list: {
+      journal_list: {
         __typename: prev.journal_list.__typename,
         page_info,
         datas,
@@ -145,7 +147,7 @@ export default function Journal(props) {
           category_id: null,
           keyword: search.keyword,
           orderby: null,
-          limit: 10,
+          limit: 20,
           offset: dataList.journal_list.page_info.offset,
         },
         updateQuery: onUpdate,
@@ -179,7 +181,6 @@ export default function Journal(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       fetchCategory();
-      fetchDataPopuler();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -187,10 +188,42 @@ export default function Journal(props) {
   {
     /* ======================================= Render All ====================================================*/
   }
+  if (loading) {
+    <View
+      style={{
+        backgroundColor: "white",
+        paddingVertical: 20,
+        height: Dimensions.get("screen").height,
+      }}
+    >
+      <ActivityIndicator animating={true} color="#209FAE" />
+    </View>;
+  }
+  if (loadingCategory) {
+    <View
+      style={{
+        backgroundColor: "white",
+        paddingVertical: 20,
+        height: Dimensions.get("screen").height,
+      }}
+    >
+      <ActivityIndicator animating={true} color="#209FAE" />
+    </View>;
+  }
+  if (loadingList) {
+    <View
+      style={{
+        backgroundColor: "white",
+        paddingVertical: 20,
+        height: Dimensions.get("screen").height,
+      }}
+    >
+      <ActivityIndicator animating={true} color="#209FAE" />
+    </View>;
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Loading show={loading} />
       {/* ============================== Populer Journal ====================================================*/}
 
       {data && data.journal_most_populer ? (
@@ -253,7 +286,13 @@ export default function Journal(props) {
             </View>
           </Pressable>
         </View>
-      ) : null}
+      ) : (
+        <View
+          style={{ backgroundColor: "white", paddingVertical: 20, height: 150 }}
+        >
+          <ActivityIndicator animating={true} color="#209FAE" />
+        </View>
+      )}
       {dataCategory && dataCategory.category_journal ? (
         <View
           style={{
@@ -294,7 +333,11 @@ export default function Journal(props) {
             )}
           />
         </View>
-      ) : null}
+      ) : (
+        <View style={{ backgroundColor: "white", paddingVertical: 20 }}>
+          <ActivityIndicator animating={true} color="#209FAE" />
+        </View>
+      )}
 
       {/* ============================== Top Contributor ====================================================*/}
 
@@ -376,7 +419,7 @@ export default function Journal(props) {
 
       {/* ============================== List Journal ====================================================*/}
 
-      {list.length > 0 ? (
+      {journal_list.length > 0 ? (
         <View
           style={{
             flex: 1,
@@ -386,7 +429,7 @@ export default function Journal(props) {
           }}
         >
           <FlatList
-            data={list}
+            data={journal_list}
             renderItem={({ item, index }) => (
               <View>
                 <Pressable
@@ -487,7 +530,6 @@ export default function Journal(props) {
               </View>
             )}
             keyExtractor={(item) => item.id}
-            nestedScrollEnabled
             showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             refreshControl={
@@ -505,9 +547,7 @@ export default function Journal(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Text size="title" type="bold">
-                    Loading...
-                  </Text>
+                  <ActivityIndicator color="#209FAE" animating={true} />
                 </View>
               ) : null
             }
@@ -515,7 +555,11 @@ export default function Journal(props) {
             onEndReached={handleOnEndReached}
           />
         </View>
-      ) : null}
+      ) : (
+        <View style={{ backgroundColor: "white", paddingVertical: 20 }}>
+          <ActivityIndicator animating={true} color="#209FAE" />
+        </View>
+      )}
     </View>
   );
 }
