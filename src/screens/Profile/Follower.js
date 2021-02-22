@@ -186,7 +186,11 @@ export default function Follower(props) {
 					onPress={() =>
 						props.navigation.push("ProfileStack", {
 							screen: "otherprofile",
+<<<<<<< Updated upstream
 							params: { idUser: idUser, token: token },
+=======
+							params: { idUser: idUser },
+>>>>>>> Stashed changes
 						})
 					}
 					style={{ flexDirection: "row" }}

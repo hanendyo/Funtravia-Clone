@@ -202,7 +202,11 @@ export default function NewChat({ navigation }) {
 								</View>
 							</View>
 							<Button
+<<<<<<< Updated upstream
 								onPress={() => _sendMessage(value.id)}
+=======
+								onPress={}
+>>>>>>> Stashed changes
 								text=""
 								size="medium"
 								color="primary"
