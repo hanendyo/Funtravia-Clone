@@ -152,3 +152,5 @@ export const prambanan = require("./files/prambanan.png");
 export const ombilin = require("./files/ombilin.png");
 export const cultural_lanscape = require("./files/cultural_lanscape.png");
 export const borobudur = require("./files/borobudur.png");
+export const bg_movielocation = require("./files/bg_movielocation.png");
+export const laskar_pelangi = require("./files/laskar_pelangi.png");

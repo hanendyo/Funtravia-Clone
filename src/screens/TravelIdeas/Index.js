@@ -231,7 +231,13 @@ export default function TravelIdeas(props) {
         </Ripple>
         <Ripple
           onPress={() => {
-            props.navigation.dispatch(StackActions.replace("Unesco"));
+            // props.navigation.dispatch(StackActions.replace("Unesco"));
+            props.navigation.navigate("TravelIdeaStack", {
+              screen: "MovieLocation",
+              params: {
+                token: token,
+              },
+            });
           }}
           style={{
             borderWidth: 1,
