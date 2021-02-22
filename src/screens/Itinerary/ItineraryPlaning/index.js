@@ -73,7 +73,7 @@ export default function listItinPlaning(props) {
         Authorization: `Bearer ${token}`,
       },
     },
-    variables: { status: "D" },
+    // variables: { status: "D" },
   });
 
   const getdate = (start, end) => {
@@ -360,7 +360,7 @@ export default function listItinPlaning(props) {
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-end" }}>
-      {datalistaktif && datalistaktif.itinerary_list_bystatus.length > 0 ? (
+      {datalistaktif && datalistaktif.itinerary_list_draf.length > 0 ? (
         <FlatList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
@@ -374,8 +374,8 @@ export default function listItinPlaning(props) {
           }}
           horizontal={false}
           data={
-            datalistaktif && datalistaktif.itinerary_list_bystatus.length
-              ? datalistaktif.itinerary_list_bystatus
+            datalistaktif && datalistaktif.itinerary_list_draf.length
+              ? datalistaktif.itinerary_list_draf
               : null
           }
           renderItem={({ item }) => <RenderActive data={item} />}
