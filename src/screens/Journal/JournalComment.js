@@ -1,24 +1,29 @@
 import { useQuery, useLazyQuery } from "@apollo/client";
+import { Thumbnail } from "native-base";
 import {
   View,
   Dimensions,
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { dateFormatForNotif } from "../../component/src/dateformatter";
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Arrowbackwhite } from "../../assets/svg";
 import { Text, Button } from "../../component";
 import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
-import AddCommentLike from "./AddCommentLike";
+import AddComment from "./AddComment";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
 
 export default function JournalComment(props) {
   const [dataById] = useState(props.route.params.dataJournalById);
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState("");
+  const { t } = useTranslation();
   let slider = useRef();
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
@@ -82,6 +87,13 @@ export default function JournalComment(props) {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
   }, []);
+
+  const scroll_to = () => {
+    wait(1000).then(() => {
+      // slider.current.scrollTo({ y: y });
+      scrollToEnd();
+    });
+  };
 
   const afterComment = async () => {
     await refetch();
@@ -154,8 +166,39 @@ export default function JournalComment(props) {
       });
     }
   };
+
+  const duration = (datetime) => {
+    var date1 = new Date(datetime).getTime();
+    var datenow = new Date();
+    var date2 = datenow.getTime();
+    var msec = date2 - date1;
+    var mins = Math.floor(msec / 60000);
+    var hrs = Math.floor(mins / 60);
+    var days = Math.floor(hrs / 24);
+    var yrs = Math.floor(days / 365);
+    mins = mins % 60;
+    hrs = hrs % 24;
+    if (days > 1) {
+      return dateFormatForNotif(
+        datetime.slice(0, 10),
+        datenow.toISOString().slice(0, 10)
+      );
+    }
+    if (days > 0) {
+      return days + " " + t("daysAgo");
+    }
+    if (hrs > 0) {
+      return hrs + " " + t("hoursAgo");
+    }
+    if (mins > 0) {
+      return mins + " " + t("minutesAgo");
+    } else {
+      return t("justNow");
+    }
+  };
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <FlatList
         data={listComment}
         renderItem={({ item, index }) => (
@@ -286,11 +329,12 @@ export default function JournalComment(props) {
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
       />
-      <AddCommentLike
+      <AddComment
         data={data?.journal_byid}
         token={token}
         fetchData={(e) => fetchData(e)}
         listComments={() => afterComment()}
+        setting={setting}
       />
     </View>
   );

@@ -3,7 +3,7 @@ import { Dimensions, Alert, Keyboard } from "react-native";
 import React, { useState } from "react";
 import { LikeJournal, Shareout, CommentChat, LikeRed } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Loading } from "../../component";
+import { Loading, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import Liked from "../../graphQL/Mutation/Journal/likedJournal";
 import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
@@ -15,6 +15,7 @@ export default function AddCommentLike({
   token,
   fetchData,
   listComments,
+  setting,
 }) {
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
@@ -188,7 +189,6 @@ export default function AddCommentLike({
           alignSelf: "center",
         }}
       >
-        <CommentChat width={20} height={20} style={{ flex: 1 }} />
         <TextInput
           style={{
             flex: 1,
@@ -200,7 +200,15 @@ export default function AddCommentLike({
           }}
           onChangeText={(text) => setText(text)}
           value={text}
-          placeholder={t("writeComment")}
+          placeholder={Truncate({
+            text:
+              t("commentAs") +
+              " " +
+              setting?.user?.first_name +
+              " " +
+              setting?.user?.last_name,
+            length: 25,
+          })}
           returnKeyType="default"
           onSubmitEditing={() => comment(dataList.id, text)}
         />
