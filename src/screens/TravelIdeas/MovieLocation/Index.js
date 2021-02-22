@@ -14,23 +14,21 @@ import {
   View,
   ScrollView,
   FlatList,
+  Pressable,
 } from "react-native";
 import { useQuery } from "@apollo/react-hooks";
 import {
-  Akunsaya,
-  default_image,
-  unesco,
-  tropical_rainforest,
-  badak_jawa,
-  lorenz,
-  comodo,
-  sangiran,
-  prambanan,
-  ombilin,
-  cultural_lanscape,
-  borobudur,
   bg_movielocation,
   laskar_pelangi,
+  hit_n_run,
+  serigala_terakhir,
+  night_bus,
+  gundala,
+  headshot,
+  wiro_sableng,
+  the_raid_2,
+  merantau,
+  the_raid,
 } from "../../../assets/png";
 import { Kosong, Select, LocationBlack } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
@@ -53,69 +51,76 @@ const SafeStatusBar = Platform.select({
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
+const data_movielocation_utama = {
+  id: "1",
+  judul: "Laskar Pelangi",
+  sinopsis:
+    "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+  cover: laskar_pelangi,
+};
 const data_film = [
   {
     id: "1",
-    judul: "Borobudur Temple Compounds",
+    judul: "The Raid",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: the_raid,
   },
   {
     id: "2",
-    judul: "Borobudur Temple Compounds",
+    judul: "Merantau",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: merantau,
   },
   {
     id: "3",
-    judul: "Borobudur Temple Compounds",
+    judul: "The Raid 2",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: the_raid_2,
   },
   {
     id: "4",
-    judul: "Borobudur Temple Compounds",
+    judul: "Wiro Sableng",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: wiro_sableng,
   },
   {
     id: "5",
-    judul: "Borobudur Temple Compounds",
+    judul: "Headshot",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: headshot,
   },
   {
     id: "6",
-    judul: "Borobudur Temple Compounds",
+    judul: "Gundala",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: gundala,
   },
   {
     id: "7",
-    judul: "Borobudur Temple Compounds",
+    judul: "Night Bus",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: night_bus,
   },
   {
     id: "8",
-    judul: "Borobudur Temple Compounds",
+    judul: "Serigala Terakhir",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: serigala_terakhir,
   },
   {
     id: "9",
-    judul: "Borobudur Temple Compounds",
+    judul: "Hit & Run",
     sinopsis:
       "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: borobudur,
+    cover: hit_n_run,
   },
 ];
 
@@ -269,7 +274,15 @@ export default function MovieLocation({ navigation, route }) {
           <Text size="title" type="black">
             Top Movie Location
           </Text>
-          <View
+          <Pressable
+            onPress={() => {
+              navigation.navigate("TravelIdeaStack", {
+                screen: "Detail_movie",
+                params: {
+                  data: data_movielocation_utama,
+                },
+              });
+            }}
             style={{
               flexDirection: "row",
               marginVertical: 15,
@@ -333,7 +346,7 @@ export default function MovieLocation({ navigation, route }) {
                 </View>
               </View>
             </View>
-          </View>
+          </Pressable>
         </View>
       </View>
       <View
@@ -363,18 +376,27 @@ export default function MovieLocation({ navigation, route }) {
         <FlatList
           data={data_film}
           renderItem={({ item, index }) => (
-            <View
+            <Pressable
+              onPress={() => {
+                navigation.navigate("TravelIdeaStack", {
+                  screen: "Detail_movie",
+                  params: {
+                    data: item,
+                  },
+                });
+              }}
               style={{
-                width: "33%",
+                width: "33.3333%",
+                paddingBottom: 15,
               }}
             >
               <Image
-                source={laskar_pelangi}
-                style={{ width: "95%", height: 140 }}
+                source={item.cover}
+                style={{ width: "92%", height: 150, borderRadius: 10 }}
                 resizeMode="cover"
               />
-              <Text>{item.judul}</Text>
-            </View>
+              <Text type="bold">{item.judul}</Text>
+            </Pressable>
           )}
           keyExtractor={(item) => item.id}
           numColumns={3}
