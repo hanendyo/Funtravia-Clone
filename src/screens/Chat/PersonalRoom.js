@@ -186,7 +186,7 @@ export default function Room({ navigation, route }) {
 		if (item.user_id !== tmpRChat) {
 			tmpRChat = item.user_id;
 			return (
-				<View style={{ marginTop: 20 }}>
+				<View>
 					{user.id !== item.user_id ? (
 						<Text
 							size="description"
@@ -347,6 +347,7 @@ export default function Room({ navigation, route }) {
 				keyExtractor={(item, index) => `render_${index}`}
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={{ paddingTop: 10 }}
 			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}
