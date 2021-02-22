@@ -75,6 +75,7 @@ import ChangeStatus from "../../../graphQL/Mutation/Itinerary/ChangeStatus";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import Ripple from "react-native-material-ripple";
+import album from "../../../graphQL/Query/Itinerary/album";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -104,32 +105,7 @@ export default function ItineraryDetail(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let dataList = [];
-  const [tab2Data] = useState([
-    {
-      id: 1,
-      picture: default_image,
-    },
-    {
-      id: 1,
-      picture: default_image,
-    },
-    {
-      id: 2,
-      picture: default_image,
-    },
-    {
-      id: 3,
-      picture: default_image,
-    },
-    {
-      id: 4,
-      picture: default_image,
-    },
-    {
-      id: 5,
-      picture: default_image,
-    },
-  ]);
+  let dataListAlbum = [];
   const [tab3Data] = useState([]);
   let itincountries = props.route.params.country;
   let token = props.route.params.token;
@@ -242,6 +218,30 @@ export default function ItineraryDetail(props) {
     variables: { id: itincountries },
   });
 
+  const {
+    data: dataAlbum,
+    loading: loadingAlbum,
+    error: errorAlbum,
+    refetch: GetAlbum,
+  } = useQuery(album, {
+    // fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: { itinerary_id: itincountries },
+  });
+
+  {
+    dataAlbum &&
+    dataAlbum.itinerary_album_list &&
+    dataAlbum.itinerary_album_list.day_album
+      ? (dataListAlbum = dataAlbum.itinerary_album_list.day_album)
+      : null;
+  }
+
   const GetTimeline = async (id) => {
     await setidDay(id ? id : idDay);
     await GetTimelin();
@@ -276,17 +276,17 @@ export default function ItineraryDetail(props) {
     variables: { id: idDay },
   });
 
-  const setdatadayaktif = (data) => {
-    setdatadayaktifs(data);
-    props.navigation.setParams({ datadayaktif: data });
-  };
-
   if (datatimeline && datatimeline.day_timeline.length) {
     dataList = datatimeline.day_timeline;
   }
 
   const setDataList = (tmpdata) => {
     dataList = tmpdata;
+  };
+
+  const setdatadayaktif = (data) => {
+    setdatadayaktifs(data);
+    props.navigation.setParams({ datadayaktif: data });
   };
 
   const GetStartTime = ({ startt }) => {
@@ -2214,7 +2214,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const rednerTab2Item = ({ item, index }) => {
+  const renderAlbum = ({ item, index }) => {
     return grid == 4 ? (
       <ImageBackground
         source={item.picture}
@@ -2242,83 +2242,48 @@ export default function ItineraryDetail(props) {
           width: "100%",
         }}
       >
-        <Text>{index}</Text>
+        <Text type="bold" style={{ paddingVertical: 10 }}>
+          {t("Day")} {item.day}
+        </Text>
 
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
-          <Image
-            source={item.picture}
-            style={{
-              width: tab2ItemSize,
-              height: tab2ItemSize,
-              marginRight: 2.5,
-              marginBottom: 2.5,
-            }}
-          ></Image>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            width: "102%",
+            paddingBottom: 10,
+          }}
+        >
+          {item.album.length > 0 ? (
+            item.album.map((data, i) => {
+              return (
+                <ImageBackground
+                  source={data.assets ? { uri: data.assets } : default_image}
+                  style={{
+                    width: tab2ItemSize,
+                    height: tab2ItemSize,
+                    marginRight: 2.5,
+                    marginBottom: 2.5,
+                    backgroundColor: "#aaa",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    resizeMode: "cover",
+                  }}
+                >
+                  <Ripple
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  ></Ripple>
+                </ImageBackground>
+              );
+            })
+          ) : (
+            <View>
+              <Text>Kosong</Text>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -2369,7 +2334,12 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  let [grid, setgrid] = useState(4);
+  let [grid, setgrids] = useState(4);
+  let [indexalbum, setindexalbum] = useState(0);
+
+  const setgrid = async (e) => {
+    await setgrids(e);
+  };
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -2384,12 +2354,12 @@ export default function ItineraryDetail(props) {
         break;
       case "tab2":
         numCols = grid;
-        data = tab2Data;
-        renderItem = rednerTab2Item;
+        data = dataListAlbum;
+        renderItem = renderAlbum;
         break;
       case "tab3":
         numCols = 3;
-        data = tab2Data;
+        data = tab3Data;
         renderItem = rednerTab3Item;
         break;
       default:
@@ -2430,7 +2400,6 @@ export default function ItineraryDetail(props) {
         onScrollEndDrag={onScrollEndDrag}
         onMomentumScrollEnd={onMomentumScrollEnd}
         // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight + 60,
           paddingHorizontal: tabIndex == 1 ? 5 : 15,
@@ -2693,6 +2662,64 @@ export default function ItineraryDetail(props) {
                   ) : null}
                 </View>
               ) : null}
+            </View>
+          ) : tabIndex == 1 && grid !== 1 ? (
+            <View>
+              <Text type="bold" style={{ paddingVertical: 10 }}>
+                Posted on Fun Feed
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  width: "102%",
+                  paddingBottom: 10,
+                }}
+              >
+                {dataListAlbum.length > 0
+                  ? dataListAlbum.map((item, index) => {
+                      return item.id === datadayaktif.id ? (
+                        item.album.length > 0 ? (
+                          item.album.map((data, i) => {
+                            return (
+                              <ImageBackground
+                                source={
+                                  data.assets
+                                    ? { uri: data.assets }
+                                    : default_image
+                                }
+                                style={{
+                                  width: tab2ItemSize,
+                                  height: tab2ItemSize,
+                                  marginRight: 2.5,
+                                  marginBottom: 2.5,
+                                  backgroundColor: "#aaa",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  resizeMode: "cover",
+                                }}
+                              >
+                                <Ripple
+                                  style={{
+                                    height: "100%",
+                                    width: "100%",
+                                  }}
+                                ></Ripple>
+                              </ImageBackground>
+                            );
+                          })
+                        ) : (
+                          <View>
+                            <Text>Kosong</Text>
+                          </View>
+                        )
+                      ) : null;
+                    })
+                  : null}
+              </View>
+              <Text type="bold" style={{ paddingVertical: 10 }}>
+                Unposted on Fun Feed
+              </Text>
             </View>
           ) : null
         }

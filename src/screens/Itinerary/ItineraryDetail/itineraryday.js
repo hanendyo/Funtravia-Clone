@@ -308,7 +308,7 @@ export default function ItineraryDay({
           paddingVertical: 10,
         }}
         renderItem={({ item, index }) => {
-          return (
+          return grid === 4 ? (
             <Button
               onPress={() => setaktip(item, index)}
               text={t("day") + " " + item.day}
@@ -319,7 +319,28 @@ export default function ItineraryDay({
                 marginHorizontal: 2.5,
               }}
             ></Button>
-          );
+          ) : index == 0 ? (
+            <View
+              style={{
+                paddingVertical: 7.5,
+                paddingHorizontal: 10,
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: "#209fae",
+                backgroundColor: "#209fae",
+                marginHorizontal: 2.5,
+                borderRadius: 5,
+                flexDirection: "row",
+              }}
+              onPress={() => {
+                grid === 1 ? setgrid(4) : setgrid(1);
+              }}
+            >
+              <Text style={{ color: "#fff" }}>View All day</Text>
+            </View>
+          ) : null;
         }}
       />
 
