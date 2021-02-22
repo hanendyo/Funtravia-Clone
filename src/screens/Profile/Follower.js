@@ -186,7 +186,7 @@ export default function Follower(props) {
 					onPress={() =>
 						props.navigation.push("ProfileStack", {
 							screen: "otherprofile",
-							params: { idUser: idUser },
+							params: { idUser: idUser, token: token },
 						})
 					}
 					style={{ flexDirection: "row" }}
