@@ -16,6 +16,7 @@ import {
   Image,
   ScrollView,
   Picker,
+  ImageBackground,
 } from "react-native";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import LinearGradient from "react-native-linear-gradient";
@@ -84,7 +85,7 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 const tab1ItemSize = (width - 30) / 2;
-const tab2ItemSize = (width - 40) / 3;
+const tab2ItemSize = (width - 17.5) / 4;
 const PullToRefreshDist = 150;
 
 export default function ItineraryDetail(props) {
@@ -103,7 +104,32 @@ export default function ItineraryDetail(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let dataList = [];
-  const [tab2Data] = useState([]);
+  const [tab2Data] = useState([
+    {
+      id: 1,
+      picture: default_image,
+    },
+    {
+      id: 1,
+      picture: default_image,
+    },
+    {
+      id: 2,
+      picture: default_image,
+    },
+    {
+      id: 3,
+      picture: default_image,
+    },
+    {
+      id: 4,
+      picture: default_image,
+    },
+    {
+      id: 5,
+      picture: default_image,
+    },
+  ]);
   const [tab3Data] = useState([]);
   let itincountries = props.route.params.country;
   let token = props.route.params.token;
@@ -969,7 +995,6 @@ export default function ItineraryDetail(props) {
           throw new Error(response.data.change_status.message);
         }
 
-        console.log(response);
         setStatus("saved");
       }
       setloading(false);
@@ -1367,6 +1392,8 @@ export default function ItineraryDetail(props) {
       if (scrollY._value < 0) {
         if (scrollY._value < -PullToRefreshDist && !refreshStatusRef.current) {
           startRefreshAction();
+          _Refresh();
+          GetTimelin();
         } else {
           // should bounce back
           listRefArr.current.forEach((listRef) => {
@@ -1393,6 +1420,8 @@ export default function ItineraryDetail(props) {
         headerMoveScrollY._value / 1.5 < -PullToRefreshDist
       ) {
         startRefreshAction();
+        _Refresh();
+        GetTimelin();
       } else {
         Animated.timing(headerMoveScrollY, {
           toValue: 0,
@@ -2186,19 +2215,111 @@ export default function ItineraryDetail(props) {
   };
 
   const rednerTab2Item = ({ item, index }) => {
-    return (
-      <View
+    return grid == 4 ? (
+      <ImageBackground
+        source={item.picture}
         style={{
-          marginLeft: index % 3 === 0 ? 0 : 10,
-          borderRadius: 16,
           width: tab2ItemSize,
           height: tab2ItemSize,
+          marginRight: 2.5,
+          marginBottom: 2.5,
           backgroundColor: "#aaa",
           justifyContent: "center",
           alignItems: "center",
+          resizeMode: "cover",
+        }}
+      >
+        <Ripple
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
+        ></Ripple>
+      </ImageBackground>
+    ) : (
+      <View
+        style={{
+          width: "100%",
         }}
       >
         <Text>{index}</Text>
+
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+        </View>
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+          <Image
+            source={item.picture}
+            style={{
+              width: tab2ItemSize,
+              height: tab2ItemSize,
+              marginRight: 2.5,
+              marginBottom: 2.5,
+            }}
+          ></Image>
+        </View>
       </View>
     );
   };
@@ -2248,6 +2369,8 @@ export default function ItineraryDetail(props) {
     );
   };
 
+  let [grid, setgrid] = useState(4);
+
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
     let numCols;
@@ -2260,7 +2383,7 @@ export default function ItineraryDetail(props) {
         renderItem = rednerTab1Item;
         break;
       case "tab2":
-        numCols = 3;
+        numCols = grid;
         data = tab2Data;
         renderItem = rednerTab2Item;
         break;
@@ -2278,6 +2401,7 @@ export default function ItineraryDetail(props) {
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
         numColumns={numCols}
+        key={numCols}
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);
@@ -2309,7 +2433,7 @@ export default function ItineraryDetail(props) {
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight + 60,
-          paddingHorizontal: 15,
+          paddingHorizontal: tabIndex == 1 ? 5 : 15,
           minHeight: height - SafeStatusBar + HeaderHeight + 60,
           paddingBottom: 70,
         }}
@@ -2660,6 +2784,9 @@ export default function ItineraryDetail(props) {
               indexnya={indexnya}
               setIndex={(e) => setIndexnya(e)}
               Anggota={Anggota}
+              tabIndex={tabIndex}
+              grid={grid}
+              setgrid={(e) => setgrid(e)}
             />
           )}
         </View>
@@ -2712,7 +2839,8 @@ export default function ItineraryDetail(props) {
               },
             ],
           }}
-          animating
+          color="#209fae"
+          animating={true}
         />
       ),
       android: (
@@ -2740,7 +2868,7 @@ export default function ItineraryDetail(props) {
             position: "absolute",
           }}
         >
-          <ActivityIndicator animating />
+          <ActivityIndicator animating={true} color="#209fae" />
         </Animated.View>
       ),
     });
@@ -3101,8 +3229,6 @@ export default function ItineraryDetail(props) {
     }
   };
 
-  console.log(datadetail);
-
   // ============================== RRRR   EEEE  N     N DDD   EEEEE RRRR   ===============
   // ============================== R   R  E     N N   N D  D  E     R   R  ===============
   // ============================== RRRR   EEE   N  N  N D   D EEE   RRRR   ===============
@@ -3112,6 +3238,9 @@ export default function ItineraryDetail(props) {
   if (loadingdetail) {
     return (
       <View
+        // onLayout={() => {
+        //   dataList = [];
+        // }}
         style={{
           flex: 1,
           alignItems: "center",

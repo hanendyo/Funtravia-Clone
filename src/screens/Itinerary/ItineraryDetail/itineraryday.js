@@ -47,6 +47,9 @@ export default function ItineraryDay({
   indexnya,
   setIndex,
   Anggota,
+  tabIndex,
+  grid,
+  setgrid,
 }) {
   const { t, i18n } = useTranslation();
   let [modalmenu, setModalmenu] = useState(false);
@@ -246,6 +249,38 @@ export default function ItineraryDay({
         horizontal={true}
         keyExtractor={(item, index) => index + ""}
         data={dataDay}
+        ListHeaderComponent={
+          tabIndex === 1 ? (
+            <Ripple
+              style={{
+                paddingVertical: 7.5,
+                paddingHorizontal: 10,
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: "#d3d3d3",
+                backgroundColor: "#f6f6f6",
+                marginHorizontal: 2.5,
+                borderRadius: 5,
+                flexDirection: "row",
+              }}
+              onPress={() => {
+                grid === 1 ? setgrid(4) : setgrid(1);
+              }}
+            >
+              {/* <PlusBlack
+                width={15}
+                height={15}
+                style={{
+                  marginRight: 10,
+                }}
+              />
+              <PlusBlack width={10} height={10} /> */}
+              <Text>{grid}</Text>
+            </Ripple>
+          ) : null
+        }
         ListFooterComponent={
           status === "edit" && Anggota === "true" ? (
             <Ripple
