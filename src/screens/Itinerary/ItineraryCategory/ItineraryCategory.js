@@ -577,88 +577,127 @@ export default function ItineraryCategory(props) {
     }
     if (aktif == "Itinerary") {
       return (
-        <FlatList
-          data={list_populer}
-          renderItem={renderPopuler}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingVertical: 5,
-          }}
-          refreshing={refreshing}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
+        <>
+          {list_populer.length > 0 ? (
+            <FlatList
+              data={list_populer}
+              renderItem={renderPopuler}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingVertical: 5,
+              }}
               refreshing={refreshing}
-              onRefresh={() => Refresh()}
-            />
-          }
-          ListHeaderComponent={
-            <>
-              <View
-                style={{
-                  height: Dimensions.get("screen").height * 0.05,
-                  paddingHorizontal: 15,
-                  paddingVertical: 5,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  flexDirection: "row",
-                }}
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginRight: 5 }}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => Refresh()}
+                />
+              }
+              ListHeaderComponent={
+                <>
+                  <View
+                    style={{
+                      height: Dimensions.get("screen").height * 0.05,
+                      paddingHorizontal: 15,
+                      paddingVertical: 5,
+                      alignItems: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                    }}
                   >
-                    Show Result
-                  </Text>
-                  <Text size="description" type="bold">
-                    {list_populer?.length}
-                  </Text>
-                </View>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text
+                        size="description"
+                        type="bold"
+                        style={{ marginRight: 5 }}
+                      >
+                        Show Result
+                      </Text>
+                      <Text size="description" type="bold">
+                        {list_populer?.length}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        width: Dimensions.get("screen").width * 0.35,
+                        height: "100%",
+                        elevation: 20,
+                        justifyContent: "center",
+                        backgroundColor: "white",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Picker
+                        mode="dropdown"
+                        selectedValue={order}
+                        onValueChange={(x) => setOrder(x)}
+                      >
+                        <Picker.Item label="New Post" value="new" />
+                        <Picker.Item label="Populer" value="populer" />
+                      </Picker>
+                    </View>
+                  </View>
+                  <View>
+                    {loadingPopuler ? (
+                      <View
+                        style={{ paddingVertical: 20, alignItems: "center" }}
+                      >
+                        <ActivityIndicator animating={true} color="#209FAE" />
+                      </View>
+                    ) : null}
+                  </View>
+                  {/* <View>
+            {list_populer?.length === 0 ? (
+              <View style={{ paddingVertical: 20, alignItems: "center" }}>
+                <Text size="title" type="bold">
+                  Tidak ada Data
+                </Text>
+              </View>
+            ) : null}
+          </View> */}
+                </>
+              }
+              onEndReachedThreshold={1}
+              onEndReached={handleOnEndReached}
+            />
+          ) : (
+            <View
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                paddingTop: 10,
+                flex: 1,
+              }}
+            >
+              {loadingPopuler ? (
                 <View
                   style={{
-                    width: Dimensions.get("screen").width * 0.35,
-                    height: "100%",
-                    elevation: 20,
+                    width: width,
                     justifyContent: "center",
-                    backgroundColor: "white",
-                    borderRadius: 2,
+                    alignItems: "center",
                   }}
                 >
-                  <Picker
-                    mode="dropdown"
-                    selectedValue={order}
-                    onValueChange={(x) => setOrder(x)}
-                  >
-                    <Picker.Item label="New Post" value="new" />
-                    <Picker.Item label="Populer" value="populer" />
-                  </Picker>
+                  <ActivityIndicator color="#209FAE" animating={true} />
                 </View>
-              </View>
-              <View>
-                {loadingPopuler ? (
-                  <View style={{ paddingVertical: 20, alignItems: "center" }}>
-                    <ActivityIndicator animating={true} color="#209FAE" />
-                  </View>
-                ) : null}
-              </View>
-              {/* <View>
-                {list_populer?.length === 0 ? (
-                  <View style={{ paddingVertical: 20, alignItems: "center" }}>
-                    <Text size="title" type="bold">
-                      Tidak ada Data
-                    </Text>
-                  </View>
-                ) : null}
-              </View> */}
-            </>
-          }
-          onEndReachedThreshold={1}
-          onEndReached={handleOnEndReached}
-        />
+              ) : (
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    paddingVertical: 20,
+                    flex: 1,
+                  }}
+                >
+                  <Text size="label" type="bold">
+                    Tidak Ada Data
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+        </>
       );
     } else if (aktif == "Album") {
       return (

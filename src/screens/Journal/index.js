@@ -288,7 +288,11 @@ export default function Journal(props) {
         </View>
       ) : (
         <View
-          style={{ backgroundColor: "white", paddingVertical: 20, height: 150 }}
+          style={{
+            backgroundColor: "white",
+            paddingVertical: 20,
+            height: Dimensions.get("screen").height,
+          }}
         >
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
@@ -334,7 +338,13 @@ export default function Journal(props) {
           />
         </View>
       ) : (
-        <View style={{ backgroundColor: "white", paddingVertical: 20 }}>
+        <View
+          style={{
+            backgroundColor: "white",
+            paddingVertical: 20,
+            height: Dimensions.get("screen").height,
+          }}
+        >
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       )}
@@ -556,7 +566,13 @@ export default function Journal(props) {
           />
         </View>
       ) : (
-        <View style={{ backgroundColor: "white", paddingVertical: 20 }}>
+        <View
+          style={{
+            backgroundColor: "white",
+            paddingVertical: 20,
+            height: Dimensions.get("screen").height,
+          }}
+        >
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       )}
