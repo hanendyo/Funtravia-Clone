@@ -348,22 +348,13 @@ export default function ItineraryDetail(props) {
     return dateFormats(x[0]);
   };
 
-  const cekAnggota = async () => {
-    await setStatus(
-      datadetail.itinerary_detail.status === "D"
-        ? "edit"
-        : datadetail.itinerary_detail.status === "F"
-        ? "finish"
-        : "saved"
+  const cekAnggota = (dta) => {
+    console.log("ANGGOTA", dta);
+    setStatus(
+      dta.status === "D" ? "edit" : dta.status === "F" ? "finish" : "saved"
     );
-    let datX = [...datadetail.itinerary_detail.buddy];
-    let anggota = datX.findIndex((k) => k["user_id"] === users.id);
-    if (anggota !== -1) {
-      await setAnggota("true");
-    } else {
-      await setAnggota("false");
-    }
-    await props.navigation.setOptions({
+    let anggota = dta.buddy.findIndex((k) => k["user_id"] === users.id);
+    props.navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: "row" }}>
           {/* <Button
@@ -400,10 +391,7 @@ export default function ItineraryDetail(props) {
                   screen: "GroupRoom",
                   params: {
                     room_id: itincountries,
-                    name:
-                      datadetail && datadetail.itinerary_detail
-                        ? datadetail.itinerary_detail.name
-                        : null,
+                    name: dta ? dta.name : null,
                     picture: Cover,
                   },
                 })
@@ -427,6 +415,13 @@ export default function ItineraryDetail(props) {
         </View>
       ),
     });
+    if (anggota !== -1) {
+      setAnggota("true");
+      return true;
+    } else {
+      setAnggota("false");
+      return false;
+    }
   };
 
   const [
@@ -1459,6 +1454,7 @@ export default function ItineraryDetail(props) {
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       _Refresh();
+      GetAlbum();
       setTimeout(() => {
         resolve("done");
       }, 2000);
@@ -2215,27 +2211,57 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
-    return grid == 4 ? (
-      <ImageBackground
-        source={item.picture}
-        style={{
-          width: tab2ItemSize,
-          height: tab2ItemSize,
-          marginRight: 2.5,
-          marginBottom: 2.5,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-          resizeMode: "cover",
-        }}
-      >
-        <Ripple
+    return grid !== 1 ? (
+      item.id === datadayaktif.id ? (
+        <View
           style={{
-            height: "100%",
             width: "100%",
           }}
-        ></Ripple>
-      </ImageBackground>
+        >
+          <Text type="bold" style={{ paddingVertical: 10 }}>
+            Unposted on Fun Feed
+          </Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              width: "102%",
+              paddingBottom: 10,
+            }}
+          >
+            {item.album.length > 0 ? (
+              item.album.map((data, i) => {
+                return data.is_posted !== true ? (
+                  <ImageBackground
+                    key={"posted" + data.id}
+                    source={data.assets ? { uri: data.assets } : default_image}
+                    style={{
+                      width: tab2ItemSize,
+                      height: tab2ItemSize,
+                      marginRight: 2.5,
+                      marginBottom: 2.5,
+                      backgroundColor: "#aaa",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      resizeMode: "cover",
+                    }}
+                  >
+                    <Ripple
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    ></Ripple>
+                  </ImageBackground>
+                ) : null;
+              })
+            ) : (
+              <View>{/* <Text>Kosong</Text> */}</View>
+            )}
+          </View>
+        </View>
+      ) : null
     ) : (
       <View
         style={{
@@ -2258,6 +2284,7 @@ export default function ItineraryDetail(props) {
             item.album.map((data, i) => {
               return (
                 <ImageBackground
+                  key={"perday" + data.id}
                   source={data.assets ? { uri: data.assets } : default_image}
                   style={{
                     width: tab2ItemSize,
@@ -2280,9 +2307,7 @@ export default function ItineraryDetail(props) {
               );
             })
           ) : (
-            <View>
-              <Text>Kosong</Text>
-            </View>
+            <View>{/* <Text>Kosong</Text> */}</View>
           )}
         </View>
       </View>
@@ -2334,12 +2359,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  let [grid, setgrids] = useState(4);
-  let [indexalbum, setindexalbum] = useState(0);
-
-  const setgrid = async (e) => {
-    await setgrids(e);
-  };
+  let [grid, setgrid] = useState(1);
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -2353,7 +2373,7 @@ export default function ItineraryDetail(props) {
         renderItem = rednerTab1Item;
         break;
       case "tab2":
-        numCols = grid;
+        numCols = 1;
         data = dataListAlbum;
         renderItem = renderAlbum;
         break;
@@ -2681,8 +2701,9 @@ export default function ItineraryDetail(props) {
                       return item.id === datadayaktif.id ? (
                         item.album.length > 0 ? (
                           item.album.map((data, i) => {
-                            return (
+                            return data.is_posted == true ? (
                               <ImageBackground
+                                key={"Unposted" + data.id}
                                 source={
                                   data.assets
                                     ? { uri: data.assets }
@@ -2706,20 +2727,15 @@ export default function ItineraryDetail(props) {
                                   }}
                                 ></Ripple>
                               </ImageBackground>
-                            );
+                            ) : null;
                           })
                         ) : (
-                          <View>
-                            <Text>Kosong</Text>
-                          </View>
+                          <View>{/* <Text>Kosong</Text> */}</View>
                         )
                       ) : null;
                     })
                   : null}
               </View>
-              <Text type="bold" style={{ paddingVertical: 10 }}>
-                Unposted on Fun Feed
-              </Text>
             </View>
           ) : null
         }
@@ -3265,9 +3281,6 @@ export default function ItineraryDetail(props) {
   if (loadingdetail) {
     return (
       <View
-        // onLayout={() => {
-        //   dataList = [];
-        // }}
         style={{
           flex: 1,
           alignItems: "center",
@@ -3278,9 +3291,12 @@ export default function ItineraryDetail(props) {
         <ActivityIndicator animating={true} color="#209fae" size="large" />
       </View>
     );
-  } else {
+  }
+
+  if (datadetail) {
+    let rData = datadetail.itinerary_detail;
     return (
-      <View onLayout={() => cekAnggota()} style={styles.container}>
+      <View onLayout={() => cekAnggota(rData)} style={styles.container}>
         {renderTabView()}
         {renderHeader()}
         {renderCustomRefresh()}
@@ -4068,6 +4084,11 @@ export default function ItineraryDetail(props) {
       </View>
     );
   }
+  return (
+    <View>
+      <Text>test............</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
