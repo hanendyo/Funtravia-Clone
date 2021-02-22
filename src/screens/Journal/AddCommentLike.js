@@ -220,7 +220,7 @@ export default function AddCommentLike({
           <Shareout width={20} height={20} />
         </View>
       </TouchableOpacity>
-      {data.liked === false ? (
+      {data?.liked === false ? (
         <TouchableOpacity onPress={() => _liked(dataList.id)}>
           <View
             style={{

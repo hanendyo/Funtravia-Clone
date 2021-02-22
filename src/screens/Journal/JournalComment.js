@@ -1,0 +1,297 @@
+import { useQuery, useLazyQuery } from "@apollo/client";
+import {
+  View,
+  Dimensions,
+  RefreshControl,
+  ActivityIndicator,
+} from "react-native";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Arrowbackwhite } from "../../assets/svg";
+import { Text, Button } from "../../component";
+import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
+import AddCommentLike from "./AddCommentLike";
+import JournalById from "../../graphQL/Query/Journal/JournalById";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export default function JournalComment(props) {
+  const [dataById] = useState(props.route.params.dataJournalById);
+  const [setting, setSetting] = useState("");
+  const [token, setToken] = useState("");
+  let slider = useRef();
+  let { width, height } = Dimensions.get("screen");
+  let [y, setY] = useState(0);
+
+  const HeaderComponent = {
+    headerShown: true,
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "Comment",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
+  const [fetchData, { data, loading }] = useLazyQuery(JournalById, {
+    variables: { id: dataById },
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+    let setsetting = await AsyncStorage.getItem("setting");
+    await setSetting(JSON.parse(setsetting));
+    await fetchData();
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    loadAsync();
+  }, []);
+
+  const afterComment = async () => {
+    await refetch();
+    await scroll_to();
+  };
+
+  const {
+    data: dataComment,
+    loading: loadingComment,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(JournalCommentList, {
+    variables: {
+      id: dataById,
+      limit: 100,
+      offset: 0,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  console.log(dataComment);
+
+  let listComment = [];
+  if (dataComment && "datas" in dataComment.comment_journal_list) {
+    listComment = dataComment.comment_journal_list.datas;
+  }
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const Refresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.comment_journal_list;
+    const datas = [
+      ...prev.comment_journal_list.datas,
+      ...fetchMoreResult.comment_journal_list.datas,
+    ];
+
+    return Object.assign({}, prev, {
+      listComment: {
+        __typename: prev.comment_journal_list.__typename,
+        page_info,
+        datas,
+      },
+    });
+  };
+
+  const handleOnEndReached = () => {
+    if (dataComment.comment_journal_list.page_info.hasNextPage) {
+      return fetchMore({
+        variables: {
+          id: dataById,
+          limit: 20,
+          offset: dataComment.comment_journal_list.page_info.offset,
+        },
+        updateQuery: onUpdate,
+      });
+    }
+  };
+  return (
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={listComment}
+        renderItem={({ item, index }) => (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginHorizontal: 20,
+              marginVertical: 5,
+              width: Dimensions.get("window").width * 0.9,
+              justifyContent: "space-between",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                marginVertical: 2,
+                minHeight: Dimensions.get("window").width * 0.05,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  item && item.user && item.user.id !== null
+                    ? item?.user?.id !== setting?.user?.id
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: item.user.id,
+                          },
+                        })
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                          params: {
+                            token: token,
+                          },
+                        })
+                    : Alert.alert("User has been deleted");
+                }}
+              >
+                <Thumbnail
+                  source={
+                    item.user && item.user.picture
+                      ? { uri: item.user.picture }
+                      : default_image
+                  }
+                  style={{
+                    height: 35,
+                    width: 35,
+                  }}
+                />
+              </TouchableOpacity>
+              <View style={{ marginLeft: 15 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    size={"description"}
+                    type={"bold"}
+                    onPress={() => {
+                      item && item.user && item.user.id !== null
+                        ? item.user.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.user.id,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                            })
+                        : Alert.alert("User has been deleted");
+                    }}
+                  >
+                    {item && item.user && item.user.first_name
+                      ? item.user.first_name
+                      : "user_deleted"}
+                  </Text>
+                  {item && item.created_at ? (
+                    <Text
+                      size={"small"}
+                      type={"light"}
+                      style={{ marginLeft: 10 }}
+                    >
+                      {duration(item.created_at)}
+                    </Text>
+                  ) : null}
+                </View>
+                <View
+                  style={{
+                    marginTop: 5,
+                    alignSelf: "center",
+                    width: Dimensions.get("window").width * 0.7,
+                  }}
+                >
+                  <Text
+                    size={"description"}
+                    type={"regular"}
+                    style={{ textAlign: "justify" }}
+                  >
+                    {item.text}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+        keyExtractor={(listComment) => listComment.id}
+        refreshing={refreshing}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        }
+        ListFooterComponent={
+          loadingComment ? (
+            <View
+              style={{
+                width: width,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator color="#209FAE" animating />
+            </View>
+          ) : null
+        }
+        onEndReachedThreshold={1}
+        onEndReached={handleOnEndReached}
+      />
+      <AddCommentLike
+        data={data?.journal_byid}
+        token={token}
+        fetchData={(e) => fetchData(e)}
+        listComments={() => afterComment()}
+      />
+    </View>
+  );
+}

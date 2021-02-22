@@ -682,21 +682,6 @@ export default function ItineraryPopuler(props) {
   {
     /* ======================================= Render All ====================================================*/
   }
-  console.log("dataPopuler :", dataCategory);
-  console.log("dataCategory :", loadingCategory);
-
-  if (loadingPopuler) {
-    <View>
-      <Text>Loading ...</Text>
-    </View>;
-  }
-  if (loadingCategory) {
-    <View>
-      <Text size="title" type="bold">
-        Loading ...
-      </Text>
-    </View>;
-  }
   return (
     <ScrollView
       style={{ flex: 1 }}
@@ -834,63 +819,98 @@ export default function ItineraryPopuler(props) {
             height: Dimensions.get("screen").width * 0.24,
           }}
         >
-          <FlatList
-            data={dataCategory?.category_journal}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-            renderItem={({ item, index }) => {
-              return (
-                <Ripple
+          {dataCategory?.category_journal.length < 0 ||
+          dataCategory?.category_journal === "undefined" ||
+          dataCategory?.category_journal === undefined ? (
+            <View
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                paddingTop: 10,
+                flex: 1,
+              }}
+            >
+              {loadingCategory ? (
+                <View
                   style={{
-                    overflow: "hidden",
-                    width: Dimensions.get("screen").width * 0.23,
-                    height: Dimensions.get("screen").width * 0.23,
-                    backgroundColor: "white",
-                    marginRight: 5,
-                    shadowColor: "gray",
-                    shadowOpacity: arrayShadow.shadowOpacity,
-                    shadowRadius: arrayShadow.shadowRadius,
-                    elevation: arrayShadow.elevation,
-                    alignItems: "center",
+                    width: width,
                     justifyContent: "center",
-                    borderRadius: 5,
-                    marginTop: 1,
-                    marginLeft: 1,
+                    alignItems: "center",
                   }}
-                  onPress={() =>
-                    props.navigation.navigate("ItineraryCategory", {
-                      dataPopuler: dataPopuler,
-                      typeCategory: item.id,
-                      typeOrder: "new",
-                    })
-                  }
                 >
-                  <View
+                  <ActivityIndicator color="#209FAE" animating={true} />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    width: width,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Tidak ada Data</Text>
+                </View>
+              )}
+            </View>
+          ) : (
+            <FlatList
+              data={dataCategory?.category_journal}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 15 }}
+              renderItem={({ item, index }) => {
+                return (
+                  <Ripple
                     style={{
-                      backgroundColor: "#f6f6f6",
-                      height: 50,
-                      width: 50,
-                      borderRadius: 50,
+                      overflow: "hidden",
+                      width: Dimensions.get("screen").width * 0.23,
+                      height: Dimensions.get("screen").width * 0.23,
+                      backgroundColor: "white",
+                      marginRight: 5,
+                      shadowColor: "gray",
+                      shadowOpacity: arrayShadow.shadowOpacity,
+                      shadowRadius: arrayShadow.shadowRadius,
+                      elevation: arrayShadow.elevation,
                       alignItems: "center",
                       justifyContent: "center",
+                      borderRadius: 5,
+                      marginTop: 1,
+                      marginLeft: 1,
                     }}
+                    onPress={() =>
+                      props.navigation.navigate("ItineraryCategory", {
+                        dataPopuler: dataPopuler,
+                        typeCategory: item.id,
+                        typeOrder: "new",
+                      })
+                    }
                   >
-                    <FunIcon icon={item.icon} />
-                  </View>
-                  <Text
-                    size="small"
-                    type="regular"
-                    style={{ textAlign: "center" }}
-                  >
-                    {item?.name}
-                  </Text>
-                </Ripple>
-              );
-            }}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-          />
+                    <View
+                      style={{
+                        backgroundColor: "#f6f6f6",
+                        height: 50,
+                        width: 50,
+                        borderRadius: 50,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <FunIcon icon={item.icon} />
+                    </View>
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{ textAlign: "center" }}
+                    >
+                      {item?.name}
+                    </Text>
+                  </Ripple>
+                );
+              }}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </View>
         <View
           style={{
@@ -974,7 +994,6 @@ export default function ItineraryPopuler(props) {
       <View>
         <RenderUtama aktif={actives} />
       </View>
-      {/* ) : null} */}
     </ScrollView>
   );
 }
