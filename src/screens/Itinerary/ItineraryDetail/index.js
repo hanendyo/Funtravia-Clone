@@ -1034,7 +1034,8 @@ export default function ItineraryDetail(props) {
           response.data.setItineraryFavorit.code === 200 ||
           response.data.setItineraryFavorit.code === "200"
         ) {
-          Alert.alert("succes");
+          // Alert.alert("succes");
+          _Refresh();
         } else {
           throw new Error(response.data.setItineraryFavorit.message);
         }
@@ -1063,7 +1064,8 @@ export default function ItineraryDetail(props) {
           response.data.unsetItineraryFavorit.code === 200 ||
           response.data.unsetItineraryFavorit.code === "200"
         ) {
-          Alert.alert("succes");
+          // Alert.alert("succes");
+          _Refresh();
         } else {
           throw new Error(response.data.unsetItineraryFavorit.message);
         }
@@ -1137,6 +1139,17 @@ export default function ItineraryDetail(props) {
     outputRange: [1, 0.5, 0],
     extrapolate: "clamp",
   });
+  const textOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0, 0],
+    extrapolate: "clamp",
+  });
+  const textOpacitys = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, 1],
+    extrapolate: "clamp",
+  });
+
   const imageTranslate = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [0, -50],
@@ -1174,7 +1187,7 @@ export default function ItineraryDetail(props) {
 
   const textLefts = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [23, 0, 0],
+    outputRange: [27, 0, 0],
     extrapolate: "clamp",
   });
 
@@ -1186,7 +1199,7 @@ export default function ItineraryDetail(props) {
 
   const textTops = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [-4, -2, 0],
+    outputRange: [-15, -10, -15],
     extrapolate: "clamp",
   });
 
@@ -1518,20 +1531,30 @@ export default function ItineraryDetail(props) {
             left: 15,
             transform: [{ translateY: textTop }, { translateX: textLeft }],
             zIndex: 9,
+            width: 250,
           }}
         >
           <Animated.Text
             allowFontScaling={false}
             style={{
-              transform: [
-                { translateX: textLefts },
-                { translateY: textTops },
-                {
-                  scale: textSize,
-                },
-              ],
+              opacity: textOpacity,
+              fontSize: 18,
               fontFamily: "Lato-Bold",
-              // color: warna,
+              color: "#464646",
+              textAlign: "left",
+            }}
+          >
+            {datadetail && datadetail.itinerary_detail ? (
+              <Truncate text={datadetail.itinerary_detail.name} length={30} />
+            ) : null}
+          </Animated.Text>
+          <Animated.Text
+            style={{
+              opacity: textOpacitys,
+              position: "absolute",
+              fontFamily: "Lato-Bold",
+              color: "#ffff",
+              textAlign: "left",
             }}
           >
             {datadetail && datadetail.itinerary_detail ? (
@@ -1550,6 +1573,25 @@ export default function ItineraryDetail(props) {
               type="bold"
               style={{
                 // color: warna2,
+                opacity: textOpacity,
+                fontFamily: "Lato-Bold",
+                fontSize: 12,
+              }}
+            >
+              {/* {t("dates")} :{" "} */}
+              {datadetail && datadetail.itinerary_detail
+                ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                  "  -  " +
+                  dateFormatr(datadetail.itinerary_detail.end_date)
+                : null}
+            </Animated.Text>
+            <Animated.Text
+              size="small"
+              type="bold"
+              style={{
+                position: "absolute",
+                color: "#fff",
+                opacity: textOpacitys,
                 fontFamily: "Lato-Bold",
                 fontSize: 12,
               }}
@@ -1689,6 +1731,7 @@ export default function ItineraryDetail(props) {
                               ? { uri: value.user.picture }
                               : default_image
                           }
+                          defaultSource={default_image}
                           style={{
                             resizeMode: "cover",
                             height: 30,
@@ -1954,6 +1997,7 @@ export default function ItineraryDetail(props) {
                     source={
                       item.images ? { uri: item.images } : { uri: item.icon }
                     }
+                    defaultSource={default_image}
                     style={{
                       height: 30,
                       width: 30,
@@ -2228,6 +2272,7 @@ export default function ItineraryDetail(props) {
                   <ImageBackground
                     key={"posted" + data.id}
                     source={data.assets ? { uri: data.assets } : default_image}
+                    defaultSource={default_image}
                     style={{
                       width: tab2ItemSize,
                       height: tab2ItemSize,
@@ -2273,6 +2318,7 @@ export default function ItineraryDetail(props) {
                   <ImageBackground
                     key={"posted" + data.id}
                     source={data.assets ? { uri: data.assets } : default_image}
+                    defaultSource={default_image}
                     style={{
                       width: tab2ItemSize,
                       height: tab2ItemSize,
@@ -2325,6 +2371,7 @@ export default function ItineraryDetail(props) {
                 <ImageBackground
                   key={"perday" + data.id}
                   source={data.assets ? { uri: data.assets } : default_image}
+                  defaultSource={default_image}
                   style={{
                     width: tab2ItemSize,
                     height: tab2ItemSize,
@@ -3176,13 +3223,13 @@ export default function ItineraryDetail(props) {
                     color="tertiary"
                     type="circle"
                     style={{
-                      backgroundColor: "#d3d3d3",
                       borderRadius: 5,
+                      backgroundColor: "#f2dae5",
                       marginVertical: 10,
                       marginRight: 10,
                     }}
                   >
-                    <LikeEmptynew width={20} height={20} />
+                    <Love width={20} height={20} />
                   </Button>
                 ) : (
                   <Button
@@ -3192,13 +3239,13 @@ export default function ItineraryDetail(props) {
                     color="tertiary"
                     type="circle"
                     style={{
-                      backgroundColor: "#f2dae5",
+                      backgroundColor: "#d3d3d3",
                       borderRadius: 5,
                       marginVertical: 10,
                       marginRight: 10,
                     }}
                   >
-                    <Love width={20} height={20} />
+                    <LikeEmptynew width={20} height={20} />
                   </Button>
                 )
               ) : null}
@@ -3246,22 +3293,41 @@ export default function ItineraryDetail(props) {
                 paddingHorizontal: 20,
               }}
             >
-              <Button
-                onPress={() => _liked()}
-                text=""
-                size="medium"
-                color="tertiary"
-                type="circle"
-                style={{
-                  backgroundColor: "#f2dae5",
-                  borderRadius: 5,
-                  marginVertical: 10,
-                  marginRight: 10,
-                }}
-              >
-                <Love width={20} height={20} />
-              </Button>
-              <Text>test</Text>
+              {datadetail && datadetail.itinerary_detail ? (
+                datadetail.itinerary_detail.liked == true ? (
+                  <Button
+                    onPress={() => _unliked()}
+                    text=""
+                    size="medium"
+                    color="tertiary"
+                    type="circle"
+                    style={{
+                      backgroundColor: "#f2dae5",
+                      borderRadius: 5,
+                      marginVertical: 10,
+                      marginRight: 10,
+                    }}
+                  >
+                    <Love width={20} height={20} />
+                  </Button>
+                ) : (
+                  <Button
+                    onPress={() => _liked()}
+                    text=""
+                    size="medium"
+                    color="tertiary"
+                    type="circle"
+                    style={{
+                      backgroundColor: "#d3d3d3",
+                      borderRadius: 5,
+                      marginVertical: 10,
+                      marginRight: 10,
+                    }}
+                  >
+                    <LikeEmptynew width={20} height={20} />
+                  </Button>
+                )
+              ) : null}
               <Button
                 onPress={() => Alert.alert("Coming soon")}
                 text={t("CopyTrip")}

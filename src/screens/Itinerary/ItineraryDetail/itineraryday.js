@@ -273,14 +273,14 @@ export default function ItineraryDay({
                   onSelect={() => setgrid(4)}
                 >
                   <GridAll width={15} height={15} />
-                  <Text style={{ marginLeft: 5 }}>per Day</Text>
+                  <Text style={{ marginLeft: 5 }}>View per day</Text>
                 </MenuOption>
                 <MenuOption
                   style={{ flexDirection: "row" }}
                   onSelect={() => setgrid(1)}
                 >
                   <GridDay width={15} height={15} />
-                  <Text style={{ marginLeft: 5 }}>View All Day</Text>
+                  <Text style={{ marginLeft: 5 }}>View all day</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
