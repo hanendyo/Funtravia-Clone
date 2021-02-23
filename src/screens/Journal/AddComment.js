@@ -1,20 +1,27 @@
 import { View } from "native-base";
 import { Dimensions, Alert, Keyboard } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LikeJournal, Shareout, CommentChat, LikeRed } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Loading } from "../../component";
+import { Loading, Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import Liked from "../../graphQL/Mutation/Journal/likedJournal";
 import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
 import AddCommentJournal from "../../graphQL/Mutation/Journal/AddCommentJournal";
 import { useMutation } from "@apollo/react-hooks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ripple from "react-native-material-ripple";
 
-export default function AddComment({ data, token, fetchData, listComments }) {
+export default function AddComment({
+  data,
+  token,
+  fetchData,
+  listComments,
+  setting,
+}) {
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
-  const [setting, setSetting] = useState("");
   const [
     mutationliked,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -63,10 +70,11 @@ export default function AddComment({ data, token, fetchData, listComments }) {
             text: text,
           },
         });
-        if (loadingLike) {
+        console.log("response :", response);
+        if (loadingComment) {
           Alert.alert("Loading!!");
         }
-        if (errorLike) {
+        if (errorComment) {
           throw new Error("Error Input");
         }
         if (response.data) {
@@ -165,13 +173,6 @@ export default function AddComment({ data, token, fetchData, listComments }) {
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
 
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
-  };
-
   return (
     <View
       style={{
@@ -199,10 +200,9 @@ export default function AddComment({ data, token, fetchData, listComments }) {
           width: "100%",
           height: Dimensions.get("window").width * 0.13,
           flexDirection: "row",
-          alignItems: "center",
           paddingHorizontal: 10,
           paddingVertical: 5,
-          alignSelf: "center",
+          justifyContent: "space-between",
         }}
       >
         <TextInput
@@ -210,16 +210,37 @@ export default function AddComment({ data, token, fetchData, listComments }) {
             flex: 1,
             fontWeight: "bold",
             marginLeft: 5,
-            width: "90%",
+            width: "40%",
             flexWrap: "wrap",
             color: "#2c2c2c",
           }}
           onChangeText={(text) => setText(text)}
           value={text}
-          placeholder={t("writeComment")}
-          returnKeyType="default"
-          onSubmitEditing={() => comment(dataList.id, text)}
+          placeholder={Truncate({
+            text:
+              t("commentAs") +
+              " " +
+              setting?.user?.first_name +
+              " " +
+              setting?.user?.last_name,
+            length: 35,
+          })}
+          // returnKeyType="default"
+          // onSubmitEditing={() => comment(dataList.id, text)}
         />
+        <Ripple
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            borderRadius: 15,
+          }}
+          onPress={() => comment(data.id, text)}
+        >
+          <Text type="bold" size="description" style={{ color: "#209FAE" }}>
+            {t("Send")}
+          </Text>
+        </Ripple>
       </View>
       {/* <TouchableOpacity onPress={() => Alert.alert("Comming Soon")}>
         <View

@@ -7,6 +7,7 @@ import {
   Image,
   Platform,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -302,7 +303,7 @@ export default function ItineraryFavorite(props) {
                     overflow: "hidden",
                   }}
                 >
-                  <View
+                  <Pressable
                     style={{
                       backgroundColor: "#FFFFFF",
                       height: "77%",
@@ -310,6 +311,17 @@ export default function ItineraryFavorite(props) {
                       borderTopRightRadius: 5,
                       flexDirection: "row",
                     }}
+                    onPress={() =>
+                      props.navigation.navigate("ItineraryStack", {
+                        screen: "itindetail",
+                        params: {
+                          itintitle: item.name,
+                          country: item.id,
+                          token: token,
+                          status: "favorite",
+                        },
+                      })
+                    }
                   >
                     <Ripple
                       onPress={() =>
@@ -336,6 +348,54 @@ export default function ItineraryFavorite(props) {
                           borderTopLeftRadius: 5,
                         }}
                       />
+                      <View
+                        style={{
+                          position: "absolute",
+                          height: 30,
+                          marginTop: 10,
+                          margin: 5,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Image
+                          style={{
+                            height: 32,
+                            width: 32,
+                            borderRadius: 16,
+                            borderWidth: 1,
+                            borderColor: "rgba(52, 52, 52, 0.8)",
+                            zIndex: 1,
+                          }}
+                          source={
+                            item &&
+                            item.user_created &&
+                            item.user_created.picture
+                              ? { uri: item.user_created.picture }
+                              : default_image
+                          }
+                        />
+                        <Text
+                          size="small"
+                          type="bold"
+                          style={{
+                            zIndex: 0,
+                            paddingLeft: 5,
+                            backgroundColor: "rgba(52, 52, 52, 0.8)",
+                            borderRadius: 2,
+                            color: "white",
+                            marginLeft: -5,
+                            padding: 2,
+                          }}
+                        >
+                          {Truncate({
+                            text: item?.user_created?.first_name
+                              ? item?.user_created?.first_name
+                              : "user_deleted",
+                            length: 13,
+                          })}
+                        </Text>
+                      </View>
                     </Ripple>
                     <View
                       style={{
@@ -487,7 +547,7 @@ export default function ItineraryFavorite(props) {
                         </View> */}
                       </View>
                     </View>
-                  </View>
+                  </Pressable>
                   <View
                     style={{
                       // borderWidth: 1,
@@ -499,7 +559,7 @@ export default function ItineraryFavorite(props) {
                       justifyContent: "space-between",
                     }}
                   >
-                    <View
+                    <Ripple
                       style={{
                         width: "50%",
                         flexDirection: "row",
@@ -507,7 +567,7 @@ export default function ItineraryFavorite(props) {
                         justifyContent: "center",
                         borderRightWidth: 1,
                         borderColor: "#D1D1D1",
-                        paddingVertical: 5,
+                        marginBottom: 5,
                       }}
                     >
                       <TravelAlbum style={{ marginRight: 5 }} />
@@ -518,13 +578,14 @@ export default function ItineraryFavorite(props) {
                       >
                         Travel Album
                       </Text>
-                    </View>
-                    <View
+                    </Ripple>
+                    <Ripple
                       style={{
                         width: "50%",
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "center",
+                        marginBottom: 5,
                       }}
                     >
                       <TravelStories style={{ marginRight: 5 }} />
@@ -535,7 +596,7 @@ export default function ItineraryFavorite(props) {
                       >
                         Travel Stories
                       </Text>
-                    </View>
+                    </Ripple>
                   </View>
                 </View>
               </View>

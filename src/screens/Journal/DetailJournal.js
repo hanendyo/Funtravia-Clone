@@ -109,8 +109,8 @@ export default function DetailJournal(props) {
   });
 
   let listComment = [];
-  if (dataComment && "datas" in dataComment.comment_journal_list) {
-    listComment = dataComment.comment_journal_list.datas;
+  if (dataComment && "datas" in dataComment?.comment_journal_list) {
+    listComment = dataComment?.comment_journal_list.datas;
   }
 
   const [refreshing, setRefreshing] = useState(false);
@@ -125,15 +125,15 @@ export default function DetailJournal(props) {
 
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.comment_journal_list;
+    const { page_info } = fetchMoreResult?.comment_journal_list;
     const datas = [
-      ...prev.comment_journal_list.datas,
-      ...fetchMoreResult.comment_journal_list.datas,
+      ...prev?.comment_journal_list.datas,
+      ...fetchMoreResult?.comment_journal_list.datas,
     ];
 
     return Object.assign({}, prev, {
       listComment: {
-        __typename: prev.comment_journal_list.__typename,
+        __typename: prev?.comment_journal_list.__typename,
         page_info,
         datas,
       },
@@ -141,17 +141,18 @@ export default function DetailJournal(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataComment.comment_journal_list.page_info.hasNextPage) {
+    if (dataComment?.comment_journal_list.page_info.hasNextPage) {
       return fetchMore({
         variables: {
           id: dataPopuler.id,
           limit: 20,
-          offset: dataComment.comment_journal_list.page_info.offset,
+          offset: dataComment?.comment_journal_list.page_info.offset,
         },
         updateQuery: onUpdate,
       });
     }
   };
+  console.log(dataComment?.comment_journal_list.page_info.hasNextPage);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -552,156 +553,150 @@ export default function DetailJournal(props) {
             </View>
           </View>
           {listComment.length ? (
-            listComment.length < 4 ? (
-              <FlatList
-                data={listComment}
-                renderItem={({ item, index }) => (
+            <FlatList
+              data={listComment}
+              renderItem={({ item, index }) => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginHorizontal: 20,
+                    marginVertical: 5,
+                    width: Dimensions.get("window").width * 0.9,
+                    justifyContent: "space-between",
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
-                      alignItems: "center",
-                      marginHorizontal: 20,
-                      marginVertical: 5,
-                      width: Dimensions.get("window").width * 0.9,
-                      justifyContent: "space-between",
+                      marginVertical: 2,
+                      minHeight: Dimensions.get("window").width * 0.05,
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        marginVertical: 2,
-                        minHeight: Dimensions.get("window").width * 0.05,
+                    <TouchableOpacity
+                      onPress={() => {
+                        item && item.user && item.user.id !== null
+                          ? item?.user?.id !== setting?.user?.id
+                            ? props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.user.id,
+                                },
+                              })
+                            : props.navigation.push("ProfileStack", {
+                                screen: "ProfileTab",
+                                params: {
+                                  token: token,
+                                },
+                              })
+                          : Alert.alert("User has been deleted");
                       }}
                     >
-                      <TouchableOpacity
-                        onPress={() => {
-                          item && item.user && item.user.id !== null
-                            ? item?.user?.id !== setting?.user?.id
-                              ? props.navigation.push("ProfileStack", {
-                                  screen: "otherprofile",
-                                  params: {
-                                    idUser: item.user.id,
-                                  },
-                                })
-                              : props.navigation.push("ProfileStack", {
-                                  screen: "ProfileTab",
-                                  params: {
-                                    token: token,
-                                  },
-                                })
-                            : Alert.alert("User has been deleted");
+                      <Thumbnail
+                        source={
+                          item.user && item.user.picture
+                            ? { uri: item.user.picture }
+                            : default_image
+                        }
+                        style={{
+                          height: 35,
+                          width: 35,
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <View style={{ marginLeft: 15 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
                         }}
                       >
-                        <Thumbnail
-                          source={
-                            item.user && item.user.picture
-                              ? { uri: item.user.picture }
-                              : default_image
-                          }
-                          style={{
-                            height: 35,
-                            width: 35,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <View style={{ marginLeft: 15 }}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text
-                            size={"description"}
-                            type={"bold"}
-                            onPress={() => {
-                              item && item.user && item.user.id !== null
-                                ? item.user.id !== setting?.user?.id
-                                  ? props.navigation.push("ProfileStack", {
-                                      screen: "otherprofile",
-                                      params: {
-                                        idUser: item.user.id,
-                                      },
-                                    })
-                                  : props.navigation.push("ProfileStack", {
-                                      screen: "ProfileTab",
-                                    })
-                                : Alert.alert("User has been deleted");
-                            }}
-                          >
-                            {item && item.user && item.user.first_name
-                              ? item.user.first_name
-                              : "user_deleted"}
-                          </Text>
-                          {item && item.created_at ? (
-                            <Text
-                              size={"small"}
-                              type={"light"}
-                              style={{ marginLeft: 10 }}
-                            >
-                              {duration(item.created_at)}
-                            </Text>
-                          ) : null}
-                        </View>
-                        <View
-                          style={{
-                            marginTop: 5,
-                            alignSelf: "center",
-                            width: Dimensions.get("window").width * 0.7,
+                        <Text
+                          size={"description"}
+                          type={"bold"}
+                          onPress={() => {
+                            item && item.user && item.user.id !== null
+                              ? item.user.id !== setting?.user?.id
+                                ? props.navigation.push("ProfileStack", {
+                                    screen: "otherprofile",
+                                    params: {
+                                      idUser: item.user.id,
+                                    },
+                                  })
+                                : props.navigation.push("ProfileStack", {
+                                    screen: "ProfileTab",
+                                  })
+                              : Alert.alert("User has been deleted");
                           }}
                         >
+                          {item && item.user && item.user.first_name
+                            ? item.user.first_name
+                            : "user_deleted"}
+                        </Text>
+                        {item && item.created_at ? (
                           <Text
-                            size={"description"}
-                            type={"regular"}
-                            style={{ textAlign: "justify" }}
+                            size={"small"}
+                            type={"light"}
+                            style={{ marginLeft: 10 }}
                           >
-                            {item.text}
+                            {duration(item.created_at)}
                           </Text>
-                        </View>
+                        ) : null}
+                      </View>
+                      <View
+                        style={{
+                          marginTop: 5,
+                          alignSelf: "center",
+                          width: Dimensions.get("window").width * 0.7,
+                        }}
+                      >
+                        <Text
+                          size={"description"}
+                          type={"regular"}
+                          style={{ textAlign: "justify" }}
+                        >
+                          {item.text}
+                        </Text>
                       </View>
                     </View>
                   </View>
-                )}
-                keyExtractor={(listComment) => listComment.id}
-                refreshing={refreshing}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={() => Refresh()}
-                  />
-                }
-                ListFooterComponent={
-                  loadingComment ? (
-                    <View
-                      style={{
-                        width: width,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <ActivityIndicator color="#209FAE" animating />
-                    </View>
-                  ) : null
-                }
-                onEndReachedThreshold={1}
-                onEndReached={handleOnEndReached}
-              />
-            ) : (
-              <View>
-                <Button
-                  onPress={() =>
-                    props.navigation.navigate("JournalComment", {
-                      dataJournalById: dataPopuler.id,
-                    })
-                  }
-                  text={"View All"}
-                  type="box"
-                  size="large"
-                  variant="transparent"
-                  style={{ borderColor: "#000" }}
-                ></Button>
-              </View>
-            )
+                </View>
+              )}
+              keyExtractor={(listComment) => listComment.id}
+              refreshing={refreshing}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => Refresh()}
+                />
+              }
+              ListFooterComponent={
+                dataComment?.comment_journal_list?.page_info.hasNextPage ===
+                true ? (
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      paddingHorizontal: 15,
+                    }}
+                  >
+                    <Button
+                      onPress={() =>
+                        props.navigation.navigate("JournalComment", {
+                          dataJournalById: dataPopuler.id,
+                        })
+                      }
+                      text={"View All"}
+                      type="box"
+                      size="medium"
+                      variant="transparent"
+                      style={{ borderColor: "#000", borderWidth: 1 }}
+                    ></Button>
+                  </View>
+                ) : null
+              }
+              // onEndReachedThreshold={1}
+              // onEndReached={handleOnEndReached}
+            />
           ) : (
             <View
               style={{
@@ -722,6 +717,7 @@ export default function DetailJournal(props) {
           token={token}
           fetchData={(e) => fetchData(e)}
           listComments={() => afterComment()}
+          setting={setting}
         />
       ) : null}
     </View>
