@@ -76,6 +76,8 @@ import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import Ripple from "react-native-material-ripple";
 import album from "../../../graphQL/Query/Itinerary/album";
+import { MenuProvider } from "react-native-popup-menu";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -105,7 +107,6 @@ export default function ItineraryDetail(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let dataList = [];
-  let dataListAlbum = [];
   const [tab3Data] = useState([]);
   let itincountries = props.route.params.country;
   let token = props.route.params.token;
@@ -234,14 +235,6 @@ export default function ItineraryDetail(props) {
     variables: { itinerary_id: itincountries },
   });
 
-  {
-    dataAlbum &&
-    dataAlbum.itinerary_album_list &&
-    dataAlbum.itinerary_album_list.day_album
-      ? (dataListAlbum = dataAlbum.itinerary_album_list.day_album)
-      : null;
-  }
-
   const GetTimeline = async (id) => {
     await setidDay(id ? id : idDay);
     await GetTimelin();
@@ -349,7 +342,6 @@ export default function ItineraryDetail(props) {
   };
 
   const cekAnggota = (dta) => {
-    console.log("ANGGOTA", dta);
     setStatus(
       dta.status === "D" ? "edit" : dta.status === "F" ? "finish" : "saved"
     );
@@ -1466,7 +1458,7 @@ export default function ItineraryDetail(props) {
   /**
    * render Helper
    */
-  const renderHeader = () => {
+  const renderHeader = (rD) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [0, -HeaderHeight + 60],
@@ -1475,6 +1467,7 @@ export default function ItineraryDetail(props) {
     });
     return (
       <Animated.View
+        onLayout={() => cekAnggota(rD)}
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
@@ -2219,6 +2212,50 @@ export default function ItineraryDetail(props) {
           }}
         >
           <Text type="bold" style={{ paddingVertical: 10 }}>
+            Posted on Fun Feed
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              width: "102%",
+              paddingBottom: 10,
+            }}
+          >
+            {item.posted.length > 0 ? (
+              item.posted.map((data, i) => {
+                return data.is_posted === true ? (
+                  <ImageBackground
+                    key={"posted" + data.id}
+                    source={data.assets ? { uri: data.assets } : default_image}
+                    style={{
+                      width: tab2ItemSize,
+                      height: tab2ItemSize,
+                      marginRight: 2.5,
+                      marginBottom: 2.5,
+                      backgroundColor: "#aaa",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      resizeMode: "cover",
+                    }}
+                  >
+                    <Ripple
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    ></Ripple>
+                  </ImageBackground>
+                ) : null;
+              })
+            ) : (
+              <View>
+                <Text>Kosong</Text>
+              </View>
+            )}
+          </View>
+
+          <Text type="bold" style={{ paddingVertical: 10 }}>
             Unposted on Fun Feed
           </Text>
 
@@ -2230,8 +2267,8 @@ export default function ItineraryDetail(props) {
               paddingBottom: 10,
             }}
           >
-            {item.album.length > 0 ? (
-              item.album.map((data, i) => {
+            {item.unposted.length > 0 ? (
+              item.unposted.map((data, i) => {
                 return data.is_posted !== true ? (
                   <ImageBackground
                     key={"posted" + data.id}
@@ -2257,7 +2294,9 @@ export default function ItineraryDetail(props) {
                 ) : null;
               })
             ) : (
-              <View>{/* <Text>Kosong</Text> */}</View>
+              <View>
+                <Text>Kosong</Text>
+              </View>
             )}
           </View>
         </View>
@@ -2307,7 +2346,9 @@ export default function ItineraryDetail(props) {
               );
             })
           ) : (
-            <View>{/* <Text>Kosong</Text> */}</View>
+            <View>
+              <Text>Kosong</Text>
+            </View>
           )}
         </View>
       </View>
@@ -2359,7 +2400,28 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  let [grid, setgrid] = useState(1);
+  let [grid, setgrid] = useState(4);
+
+  const spreadData = (rData) => {
+    let result = [];
+    rData.itinerary_album_list.day_album.map((dataS, index) => {
+      let tempdata = { posted: [], unposted: [], album: [], day: "", id: "" };
+      tempdata["day"] = dataS.day;
+      tempdata["id"] = dataS.id;
+      if (dataS.album.length > 0) {
+        dataS.album.map((item, ind) => {
+          if (item.is_posted === true) {
+            tempdata["posted"].push(item);
+          } else {
+            tempdata["unposted"].push(item);
+          }
+          tempdata["album"].push(item);
+        });
+      }
+      result.push(tempdata);
+    });
+    return result;
+  };
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -2374,7 +2436,7 @@ export default function ItineraryDetail(props) {
         break;
       case "tab2":
         numCols = 1;
-        data = dataListAlbum;
+        data = dataAlbum ? spreadData(dataAlbum) : null;
         renderItem = renderAlbum;
         break;
       case "tab3":
@@ -2440,7 +2502,7 @@ export default function ItineraryDetail(props) {
                 color="#209fae"
                 size="large"
               />
-            ) : dataList.length == 0 ? (
+            ) : dataList.length == 0 && tabIndex == 0 ? (
               <Text>No data</Text>
             ) : (
               <View onLayout={() => handlecover()}></View>
@@ -2682,60 +2744,6 @@ export default function ItineraryDetail(props) {
                   ) : null}
                 </View>
               ) : null}
-            </View>
-          ) : tabIndex == 1 && grid !== 1 ? (
-            <View>
-              <Text type="bold" style={{ paddingVertical: 10 }}>
-                Posted on Fun Feed
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  width: "102%",
-                  paddingBottom: 10,
-                }}
-              >
-                {dataListAlbum.length > 0
-                  ? dataListAlbum.map((item, index) => {
-                      return item.id === datadayaktif.id ? (
-                        item.album.length > 0 ? (
-                          item.album.map((data, i) => {
-                            return data.is_posted == true ? (
-                              <ImageBackground
-                                key={"Unposted" + data.id}
-                                source={
-                                  data.assets
-                                    ? { uri: data.assets }
-                                    : default_image
-                                }
-                                style={{
-                                  width: tab2ItemSize,
-                                  height: tab2ItemSize,
-                                  marginRight: 2.5,
-                                  marginBottom: 2.5,
-                                  backgroundColor: "#aaa",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  resizeMode: "cover",
-                                }}
-                              >
-                                <Ripple
-                                  style={{
-                                    height: "100%",
-                                    width: "100%",
-                                  }}
-                                ></Ripple>
-                              </ImageBackground>
-                            ) : null;
-                          })
-                        ) : (
-                          <View>{/* <Text>Kosong</Text> */}</View>
-                        )
-                      ) : null;
-                    })
-                  : null}
-              </View>
             </View>
           ) : null
         }
@@ -3296,12 +3304,13 @@ export default function ItineraryDetail(props) {
   if (datadetail) {
     let rData = datadetail.itinerary_detail;
     return (
-      <View onLayout={() => cekAnggota(rData)} style={styles.container}>
-        {renderTabView()}
-        {renderHeader()}
-        {renderCustomRefresh()}
-        {renderMenuBottom()}
-
+      <SafeAreaView style={styles.container}>
+        <MenuProvider>
+          {renderTabView()}
+          {renderHeader(rData)}
+          {renderCustomRefresh()}
+          {renderMenuBottom()}
+        </MenuProvider>
         <Modal
           onBackdropPress={() => {
             setModalmenuday(false);
@@ -4081,7 +4090,7 @@ export default function ItineraryDetail(props) {
           }}
           setClose={(e) => setshowside(false)}
         />
-      </View>
+      </SafeAreaView>
     );
   }
   return (

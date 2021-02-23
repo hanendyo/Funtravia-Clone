@@ -176,6 +176,8 @@ import TravelAlbumdis from "./files/travelalbumdisable.svg";
 import TravelStoriesdis from "./files/travelstoriesdisable.svg";
 import Select from "./files/select.svg";
 import LocationBlack from "./files/location_black.svg";
+import GridAll from "./files/perday.svg";
+import GridDay from "./files/perall.svg";
 
 export {
   LikeWhite,
@@ -356,4 +358,6 @@ export {
   TravelStoriesdis,
   Select,
   LocationBlack,
+  GridAll,
+  GridDay,
 };
