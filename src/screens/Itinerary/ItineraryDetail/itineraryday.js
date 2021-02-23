@@ -6,29 +6,24 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { FunIcon } from "../../../component";
 import { Text } from "../../../component";
 import { Button } from "../../../component";
 import Modal from "react-native-modal";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
-import {
-  Add,
-  Hotel,
-  Car,
-  Service,
-  OptionsVertBlack,
-  Plus,
-  Plusgrey,
-  PlusBlack,
-} from "../../../assets/svg";
+import { PlusBlack, GridAll, GridDay } from "../../../assets/svg";
 import { FlatList } from "react-native-gesture-handler";
-import ItinDrag from "./ItinDrag";
 import AddDay from "../../../graphQL/Mutation/Itinerary/AddDay";
-import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
 import DeleteDay from "../../../graphQL/Mutation/Itinerary/DeleteDay";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
+import {
+  MenuProvider,
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
 
 export default function ItineraryDay({
   dataDay,
@@ -217,15 +212,6 @@ export default function ItineraryDay({
     await GetTimeline(idDay);
   };
 
-  // useEffect(() => {
-  //   console.log("masuk paji :", datadayaktif);
-  //   {
-  //     datadayaktif && datadayaktif.day
-  //       ? setaktip(datadayaktif, parseInt(datadayaktif.day) - 1)
-  //       : setdata(dataDay && dataDay.length ? dataDay : []);
-  //   }
-  // }, []);
-
   return (
     <View
       onLayout={() => {
@@ -251,34 +237,53 @@ export default function ItineraryDay({
         data={dataDay}
         ListHeaderComponent={
           tabIndex === 1 ? (
-            <Ripple
-              style={{
-                paddingVertical: 7.5,
-                paddingHorizontal: 10,
-                alignContent: "center",
-                justifyContent: "center",
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: "#d3d3d3",
-                backgroundColor: "#f6f6f6",
-                marginHorizontal: 2.5,
-                borderRadius: 5,
-                flexDirection: "row",
-              }}
-              onPress={() => {
-                grid === 1 ? setgrid(4) : setgrid(1);
-              }}
-            >
-              {/* <PlusBlack
-                width={15}
-                height={15}
+            <Menu>
+              <MenuTrigger
                 style={{
-                  marginRight: 10,
+                  paddingVertical: 7.5,
+                  paddingHorizontal: 10,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: "#d3d3d3",
+                  backgroundColor: "#f6f6f6",
+                  marginHorizontal: 2.5,
+                  borderRadius: 5,
+                  flexDirection: "row",
                 }}
-              />
-              <PlusBlack width={10} height={10} /> */}
-              <Text>{grid}</Text>
-            </Ripple>
+              >
+                {/* <PlusBlack
+              width={15}
+              height={15}
+              style={{
+                marginRight: 10,
+              }}
+            />
+            <PlusBlack width={10} height={10} /> */}
+                {grid === 1 ? (
+                  <GridDay width={15} height={15} />
+                ) : (
+                  <GridAll width={15} height={15} />
+                )}
+              </MenuTrigger>
+              <MenuOptions>
+                <MenuOption
+                  style={{ flexDirection: "row" }}
+                  onSelect={() => setgrid(4)}
+                >
+                  <GridAll width={15} height={15} />
+                  <Text style={{ marginLeft: 5 }}>per Day</Text>
+                </MenuOption>
+                <MenuOption
+                  style={{ flexDirection: "row" }}
+                  onSelect={() => setgrid(1)}
+                >
+                  <GridDay width={15} height={15} />
+                  <Text style={{ marginLeft: 5 }}>View All Day</Text>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
           ) : null
         }
         ListFooterComponent={

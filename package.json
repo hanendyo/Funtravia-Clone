@@ -52,6 +52,7 @@
     "react-native-modal": "^11.6.1",
     "react-native-modern-datepicker": "^1.0.0-beta.91",
     "react-native-permissions": "^3.0.0",
+    "react-native-popup-menu": "^0.15.10",
     "react-native-push-notification": "^7.2.1",
     "react-native-ratings": "^7.3.0",
     "react-native-read-more-text": "^1.1.2",
