@@ -18,7 +18,10 @@ import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { Loading, Truncate } from "../../component";
-import { dateFormatMonthYears } from "../../component/src/dateformatter";
+import {
+  dateFormatMonthYears,
+  dateFormatShortMonth,
+} from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 
@@ -278,7 +281,7 @@ export default function Journal(props) {
                     style={{ marginTop: -2 }}
                   >
                     {data.journal_most_populer.date
-                      ? dateFormatMonthYears(data.journal_most_populer.date)
+                      ? dateFormatShortMonth(data.journal_most_populer.date)
                       : null}
                   </Text>
                 </View>
@@ -479,7 +482,7 @@ export default function Journal(props) {
                       >
                         <Truncate
                           text={item.title ? item.title : ""}
-                          length={40}
+                          length={35}
                         />
                       </Text>
                       <Text

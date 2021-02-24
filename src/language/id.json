@@ -465,5 +465,13 @@
   "person": "Orang",
   "Following": "Mengikuti",
   "Followers": "Pengikut",
-  "Send": "kirim"
+  "Send": "kirim",
+  "Security": "Kemanan",
+  "AddPassword": "Tambah Kata Sandi",
+  "CurrentPassword": "kata sandi saat ini",
+  "NewPassword": "kata sandi baru",
+  "ConfirmPassword": "konfirmasi kata sandi baru",
+  "UpdatePassword": "Ganti Kata Sandi",
+  "EnterPassword": "kata sandi",
+  "ConfirmPasswords": "konfirmasi kata sandi"
 }
