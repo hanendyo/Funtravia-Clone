@@ -1,7 +1,13 @@
 import { View } from "native-base";
 import { Dimensions, Alert, Keyboard } from "react-native";
 import React, { useState } from "react";
-import { LikeJournal, Shareout, CommentChat, LikeRed } from "../../assets/svg";
+import {
+  LikeJournal,
+  Shareout,
+  CommentChat,
+  LikeRed,
+  LikeEmpty,
+} from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Loading, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -241,7 +247,7 @@ export default function AddCommentLike({
               justifyContent: "center",
             }}
           >
-            <LikeJournal width={20} height={20} />
+            <LikeEmpty width={20} height={20} />
           </View>
         </TouchableOpacity>
       ) : (
