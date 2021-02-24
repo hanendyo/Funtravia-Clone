@@ -186,15 +186,16 @@ export default function Detail_movie({ navigation, route }) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    console.log("tkn", tkn);
+    await setToken(tkn);
+    await refetch();
   };
+  console.log("tkn", token);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    console.log("test");
-    loadAsync();
+    // console.log("test");
+    // loadAsync();
     navigation.setOptions(HeaderComponent);
   }, []);
 
@@ -221,7 +222,7 @@ export default function Detail_movie({ navigation, route }) {
       },
     },
   });
-  // console.log(token);
+
   const _liked = async (id, index) => {
     if (token || token !== "") {
       destinationList_v2[index].liked = true;
@@ -347,6 +348,9 @@ export default function Detail_movie({ navigation, route }) {
           }}
         >
           <Ripple
+            onPress={() => {
+              refetch();
+            }}
             style={{
               height: 44,
               borderRadius: 20,
@@ -432,197 +436,199 @@ export default function Detail_movie({ navigation, route }) {
             Shooting Location
           </Text>
         </View>
-        <FlatList
-          data={destinationList_v2}
-          renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() => {
-                navigation.navigate("detailStack", {
-                  id: item.id,
-                  name: item.name,
-                });
-              }}
-              style={{
-                width: "100%",
-                padding: 10,
-                backgroundColor: "#FFFFFF",
-                marginBottom: 10,
-                borderRadius: 10,
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                source={{ uri: item.images.image }}
-                style={{ width: "40%", height: 145, borderRadius: 10 }}
-                resizeMode="cover"
-              />
-              <View
+        {token ? (
+          <FlatList
+            data={destinationList_v2}
+            renderItem={({ item, index }) => (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("detailStack", {
+                    id: item.id,
+                    name: item.name,
+                  });
+                }}
                 style={{
-                  paddingLeft: 10,
-                  paddingVertical: 5,
-                  width: "60%",
-                  justifyContent: "space-between",
+                  width: "100%",
+                  padding: 10,
+                  backgroundColor: "#FFFFFF",
+                  marginBottom: 10,
+                  borderRadius: 10,
+                  flexDirection: "row",
                 }}
               >
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#F4F4F4",
-                        borderRadius: 4,
-                        paddingHorizontal: 8,
-                        paddingVertical: 3,
-                        flexDirection: "row",
-                      }}
-                    >
-                      <Star width={15} height={15} />
-                      <Text style={{ paddingLeft: 5 }} type="bold">
-                        {item.rating}
-                      </Text>
-                    </View>
-                    {item.liked === false ? (
-                      <Button
-                        onPress={() => _liked(item.id, index)}
-                        type="circle"
-                        style={{
-                          width: 25,
-                          borderRadius: 19,
-                          height: 25,
-                          justifyContent: "center",
-                          alignContent: "center",
-                          alignItems: "center",
-                          backgroundColor: "#EEEEEE",
-                          zIndex: 999,
-                        }}
-                      >
-                        <LikeEmptynew width={15} height={15} />
-                      </Button>
-                    ) : (
-                      <Button
-                        onPress={() => _unliked(item.id, index)}
-                        type="circle"
-                        style={{
-                          width: 25,
-                          borderRadius: 17.5,
-                          height: 25,
-                          justifyContent: "center",
-                          alignContent: "center",
-                          alignItems: "center",
-                          backgroundColor: "#EEEEEE",
-                          zIndex: 999,
-                        }}
-                      >
-                        <LikeRed width={15} height={15} />
-                      </Button>
-                    )}
-                  </View>
-                  <Text size="label" type="bold" style={{ marginBottom: 5 }}>
-                    {item.name}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignContent: "center",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <PinHijau width={15} height={15} />
-                    <Text
-                      type="regular"
-                      size="description"
-                      style={{ color: "#464646", marginLeft: 5 }}
-                    >
-                      {item.cities.name && item.countries.name
-                        ? `${item.cities.name}`
-                        : ""}
-                    </Text>
-                  </View>
-                </View>
+                <Image
+                  source={{ uri: item.images.image }}
+                  style={{ width: "40%", height: 145, borderRadius: 10 }}
+                  resizeMode="cover"
+                />
                 <View
                   style={{
-                    marginTop: 10,
-                    flexDirection: "row",
+                    paddingLeft: 10,
+                    paddingVertical: 5,
+                    width: "60%",
                     justifyContent: "space-between",
                   }}
                 >
-                  {item.greatfor && item.greatfor.length ? (
+                  <View>
                     <View
                       style={{
-                        justifyContent: "flex-start",
-                        alignContent: "flex-start",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: 5,
                       }}
                     >
-                      <Text
-                        size="description"
-                        type="bold"
-                        style={{
-                          color: "#464646",
-                        }}
-                      >
-                        {t("greatFor")}:
-                      </Text>
                       <View
                         style={{
+                          backgroundColor: "#F4F4F4",
+                          borderRadius: 4,
+                          paddingHorizontal: 8,
+                          paddingVertical: 3,
                           flexDirection: "row",
-                          justifyContent: "space-evenly",
-                          alignContent: "space-between",
-                          alignItems: "stretch",
-                          alignSelf: "flex-start",
                         }}
                       >
-                        {item.greatfor.map((item, index) => {
-                          return (
-                            <FunIcon
-                              icon={item.icon}
-                              fill="#464646"
-                              height={42}
-                              width={42}
-                              style={{}}
-                            />
-                          );
-                        })}
+                        <Star width={15} height={15} />
+                        <Text style={{ paddingLeft: 5 }} type="bold">
+                          {item.rating}
+                        </Text>
                       </View>
+                      {item.liked === false ? (
+                        <Button
+                          onPress={() => _liked(item.id, index)}
+                          type="circle"
+                          style={{
+                            width: 25,
+                            borderRadius: 19,
+                            height: 25,
+                            justifyContent: "center",
+                            alignContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#EEEEEE",
+                            zIndex: 999,
+                          }}
+                        >
+                          <LikeEmptynew width={15} height={15} />
+                        </Button>
+                      ) : (
+                        <Button
+                          onPress={() => _unliked(item.id, index)}
+                          type="circle"
+                          style={{
+                            width: 25,
+                            borderRadius: 17.5,
+                            height: 25,
+                            justifyContent: "center",
+                            alignContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#EEEEEE",
+                            zIndex: 999,
+                          }}
+                        >
+                          <LikeRed width={15} height={15} />
+                        </Button>
+                      )}
                     </View>
-                  ) : (
+                    <Text size="label" type="bold" style={{ marginBottom: 5 }}>
+                      {item.name}
+                    </Text>
                     <View
                       style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        alignContent: "center",
                         justifyContent: "flex-start",
-                        alignContent: "flex-start",
                       }}
-                    ></View>
-                  )}
-                  <Button
-                    size="small"
-                    text={t("addToPlan")}
-                    color="primary"
-                    onPress={() => {
-                      navigation.navigate("ItineraryStack", {
-                        screen: "ItineraryPlaning",
-                        params: {
-                          idkiriman: item.id,
-                          Position: "destination",
-                        },
-                      });
+                    >
+                      <PinHijau width={15} height={15} />
+                      <Text
+                        type="regular"
+                        size="description"
+                        style={{ color: "#464646", marginLeft: 5 }}
+                      >
+                        {item.cities.name && item.countries.name
+                          ? `${item.cities.name}`
+                          : ""}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
                     }}
-                  />
+                  >
+                    {item.greatfor && item.greatfor.length ? (
+                      <View
+                        style={{
+                          justifyContent: "flex-start",
+                          alignContent: "flex-start",
+                        }}
+                      >
+                        <Text
+                          size="description"
+                          type="bold"
+                          style={{
+                            color: "#464646",
+                          }}
+                        >
+                          {t("greatFor")}:
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                            alignContent: "space-between",
+                            alignItems: "stretch",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {item.greatfor.map((item, index) => {
+                            return (
+                              <FunIcon
+                                icon={item.icon}
+                                fill="#464646"
+                                height={42}
+                                width={42}
+                                style={{}}
+                              />
+                            );
+                          })}
+                        </View>
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          justifyContent: "flex-start",
+                          alignContent: "flex-start",
+                        }}
+                      ></View>
+                    )}
+                    <Button
+                      size="small"
+                      text={t("addToPlan")}
+                      color="primary"
+                      onPress={() => {
+                        navigation.navigate("ItineraryStack", {
+                          screen: "ItineraryPlaning",
+                          params: {
+                            idkiriman: item.id,
+                            Position: "destination",
+                          },
+                        });
+                      }}
+                    />
+                  </View>
                 </View>
-              </View>
-            </Pressable>
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{
-            // borderWidth: 1,
-            paddingVertical: 10,
-          }}
-        />
+              </Pressable>
+            )}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{
+              // borderWidth: 1,
+              paddingVertical: 10,
+            }}
+          />
+        ) : null}
       </View>
     </ScrollView>
   );

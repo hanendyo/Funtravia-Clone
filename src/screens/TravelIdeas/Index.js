@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TextInput,
-  SafeAreaView,
-} from "react-native";
-import { StackActions } from "@react-navigation/native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, CustomImage, Text, Truncate } from "../../component";
+import { Button, Text, Truncate } from "../../component";
 import { travel_idea_ilust } from "../../assets/png";
 import { Right, Unesco, Movie } from "../../assets/svg";
-import { default_image } from "../../assets/png";
-import { useLazyQuery } from "@apollo/react-hooks";
-import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite } from "../../assets/svg";
 import { Image } from "react-native";
-import { ImageBackground } from "react-native";
-import { ScrollView } from "react-native";
-import { FlatList } from "react-native";
 import Ripple from "react-native-material-ripple";
+import { Shadow } from "react-native-neomorph-shadows";
 
 export default function TravelIdeas(props) {
   const { t } = useTranslation();
@@ -69,7 +57,6 @@ export default function TravelIdeas(props) {
   }, []);
 
   const [token, setToken] = useState();
-  // console.log(token);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
@@ -86,12 +73,13 @@ export default function TravelIdeas(props) {
         style={{
           justifyContent: "center",
           alignItems: "center",
+          // borderWidth: 1,
         }}
       >
         <View
           style={{
             width: width,
-            height: 200,
+            height: width - 220,
             backgroundColor: "#209fae",
             // borderBottomRightRadius: width / 5.5,
             // borderBottomLeftRadius: width / 5.5,
@@ -110,16 +98,64 @@ export default function TravelIdeas(props) {
             alignItems: "center",
           }}
         ></View>
-        <View
+        {/* <Shadow
           style={{
-            marginTop: 10,
+            // marginTop: 10,
             width: width - 40,
-            height: 430,
+            // height: 430,
             padding: 30,
+            paddingTop: 50,
             borderRadius: 10,
             backgroundColor: "#FFFFFF",
             position: "absolute",
-            bottom: -80,
+            // bottom: -80,
+            top: 0,
+            // justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: "#d3d3d3",
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.4,
+            shadowColor: "#d3d3d3",
+            shadowRadius: 10,
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <Text size="title" style={{}}>
+              {t("Discover")}
+            </Text>
+            <Text size="title" type="bold">
+              {t("BestTravelIdea")}
+            </Text>
+          </View>
+          <Image
+            source={travel_idea_ilust}
+            style={{
+              width: width - 130,
+              height: width - 130,
+            }}
+            resizeMode="contain"
+          />
+        </Shadow> */}
+        <View
+          style={{
+            // marginTop: 10,
+            width: width - 40,
+            // height: 430,
+            padding: 30,
+            paddingTop: 50,
+            borderRadius: 10,
+            backgroundColor: "#FFFFFF",
+            position: "absolute",
+            // bottom: -80,
+            top: 0,
             // justifyContent: "center",
             alignItems: "center",
             // borderWidth: 1,
@@ -138,20 +174,21 @@ export default function TravelIdeas(props) {
           <View
             style={{
               alignItems: "center",
+              marginBottom: 10,
             }}
           >
-            <Text size="h5" style={{}}>
+            <Text size="title" style={{}}>
               {t("Discover")}
             </Text>
-            <Text size="h5" type="bold">
+            <Text size="title" type="bold">
               {t("BestTravelIdea")}
             </Text>
           </View>
           <Image
             source={travel_idea_ilust}
             style={{
-              width: width - 90,
-              height: width - 90,
+              width: width - 130,
+              height: width - 130,
             }}
             resizeMode="contain"
           />
@@ -169,6 +206,7 @@ export default function TravelIdeas(props) {
         <Text size="label" type="bold" style={{ marginBottom: 15 }}>
           {t("LetsGovisit")}
         </Text>
+
         <Ripple
           onPress={() => {
             props.navigation.navigate("TravelIdeaStack", {
@@ -179,7 +217,6 @@ export default function TravelIdeas(props) {
             });
           }}
           style={{
-            borderWidth: 1,
             borderColor: "#DFDFDF",
             borderRadius: 5,
             width: width - 40,
@@ -193,7 +230,7 @@ export default function TravelIdeas(props) {
             },
             shadowOpacity: 0.25,
             shadowRadius: 2.84,
-            elevation: 3,
+            elevation: 2,
             backgroundColor: "#FFFFFF",
             flexDirection: "row",
             alignItems: "center",
@@ -229,6 +266,7 @@ export default function TravelIdeas(props) {
 
           <Right width={25} height={25} />
         </Ripple>
+
         <Ripple
           onPress={() => {
             // props.navigation.dispatch(StackActions.replace("Unesco"));
@@ -240,7 +278,6 @@ export default function TravelIdeas(props) {
             });
           }}
           style={{
-            borderWidth: 1,
             borderColor: "#DFDFDF",
             borderRadius: 5,
             width: width - 40,
@@ -254,7 +291,7 @@ export default function TravelIdeas(props) {
             },
             shadowOpacity: 0.25,
             shadowRadius: 2.84,
-            elevation: 3,
+            elevation: 2,
             backgroundColor: "#FFFFFF",
             flexDirection: "row",
             alignItems: "center",
@@ -265,6 +302,7 @@ export default function TravelIdeas(props) {
             style={{
               flexDirection: "row",
               alignItems: "center",
+              width: "90%",
             }}
           >
             <View
@@ -276,15 +314,20 @@ export default function TravelIdeas(props) {
                 backgroundColor: "#209fae",
                 alignItems: "center",
                 justifyContent: "center",
+                width: "20%",
               }}
             >
               <Movie width={25} height={25} />
             </View>
-            <View>
+            <View
+              style={{
+                width: "75%",
+              }}
+            >
               <Text type="bold" size="label">
                 Filming Location
               </Text>
-              <Text>Pick some locations you are interested in</Text>
+              <Text>Pick some places you are interested in</Text>
             </View>
           </View>
 

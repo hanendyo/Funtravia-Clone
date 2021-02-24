@@ -9,7 +9,7 @@ export default function FunIcon({
   height = null,
   fill = null,
 }) {
-  const variant = { i: "icon", g: "icon", w: "weather", f: "flag" };
+  const variant = { i: "icon", g: "icon", w: "weather", f: "flag", m: "map" };
   const url = `${ICONSERVER}${variant[icon.charAt(0)]}/${
     icon.split("-")[1]
   }.svg`;

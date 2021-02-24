@@ -118,6 +118,8 @@ export default function SettingsAkun(props) {
     },
   });
 
+  // console.log("country", setting.countries.id);
+  // console.log("city", datacity);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
@@ -185,6 +187,7 @@ export default function SettingsAkun(props) {
 
   const searchcity = (text) => {
     setCity(text);
+    console.log(text);
     querycity();
   };
 
