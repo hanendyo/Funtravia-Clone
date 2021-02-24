@@ -118,22 +118,22 @@ export default function ItineraryDay({
           throw new Error(response.data.add_dayitinerary.message);
         }
 
-        const xX = {
-          ...response.data.add_dayitinerary.dataday[
-            response.data.add_dayitinerary.dataday.length - 1
-          ],
-        };
+        // const xX = {
+        //   ...response.data.add_dayitinerary.dataday[
+        //     response.data.add_dayitinerary.dataday.length - 1
+        //   ],
+        // };
 
-        xX["total_hours"] = "00:00";
-        // setDataday(response.data.add_dayitinerary.dataday);
-        await setIndex(response.data.add_dayitinerary.dataday.length - 1);
-        await setdatadayaktif(xX);
-        await setIdDay(
-          response.data.add_dayitinerary.dataday[
-            response.data.add_dayitinerary.dataday.length - 1
-          ].id
-        );
-        await slider.current.scrollToEnd();
+        // xX["total_hours"] = "00:00";
+        // // setDataday(response.data.add_dayitinerary.dataday);
+        // await setIndex(response.data.add_dayitinerary.dataday.length - 1);
+        // await setdatadayaktif(xX);
+        // await setIdDay(
+        //   response.data.add_dayitinerary.dataday[
+        //     response.data.add_dayitinerary.dataday.length - 1
+        //   ].id
+        // );
+        // await slider.current.scrollToEnd();
         await Refresh();
       }
     } catch (error) {

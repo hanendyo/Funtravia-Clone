@@ -9,6 +9,7 @@ import {
   ScrollView,
   FlatList,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -1279,7 +1280,7 @@ export default function CityDetail(props) {
     await setToken(tkn);
     await getPackageDetail();
     // await _fetchItem();
-    await setloadings(false);
+    // await setloadings(false);
   };
 
   const Renderheader = ({ dataheader, actives }) => {
@@ -1323,6 +1324,21 @@ export default function CityDetail(props) {
     refresh();
   }, []);
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </View>
+    );
+  }
+
   return (
     <View
       style={{
@@ -1330,7 +1346,7 @@ export default function CityDetail(props) {
         backgroundColor: "white",
       }}
     >
-      <Loading show={loadings} />
+      {/* <Loading show={loadings} /> */}
       {/* <NavigationEvents onDidFocus={() => refresh()} /> */}
       <View style={{ height: 55 }}></View>
       {data && data.CitiesInformation ? (
