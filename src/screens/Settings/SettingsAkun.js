@@ -15,7 +15,12 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { OptionsVertBlack, Arrowbackwhite, Xhitam } from "../../assets/svg";
+import {
+  OptionsVertBlack,
+  Arrowbackwhite,
+  Xhitam,
+  Nextpremier,
+} from "../../assets/svg";
 import { calendar_blue } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
@@ -35,6 +40,7 @@ import { useMutation } from "@apollo/react-hooks";
 import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
 import Date from "../../graphQL/Mutation/Setting/dateSettingAkun";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
+import HasPassword from "../../graphQL/Query/Settings/HasPassword";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -53,8 +59,6 @@ export default function SettingsAkun(props) {
   let [date, setDate] = useState(setting?.user?.birth_date);
   let [cityName, setCityName] = useState(setting?.cities?.name);
   let [cityId, setCityId] = useState(setting?.cities?.id);
-
-  console.log("setting:", setting);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -105,17 +109,33 @@ export default function SettingsAkun(props) {
     querycity,
     { loading: loadingcity, data: datacity, error: errorcity },
   ] = useLazyQuery(City, {
+    fetchPolicy: "network-only",
     variables: {
-      fetchPolicy: "network-only",
       keyword: city,
-      countries_id: setting.countries.id,
+      countries_id: setting?.countries?.id,
     },
   });
 
+  const [
+    passwords,
+    { data: dataPassword, loading: loadingPassword, error: errorPassword },
+  ] = useLazyQuery(HasPassword, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  // console.log("country", setting.countries.id);
+  // console.log("city", datacity);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await querycity();
+    await passwords();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -178,15 +198,14 @@ export default function SettingsAkun(props) {
 
   const searchcity = (text) => {
     setCity(text);
+    console.log(text);
     querycity();
   };
 
   const hasilGender = async (x) => {
-    console.log("gender :", x);
     if (x === null || x === "") {
       x = "F";
     }
-    console.log("x", x);
     try {
       let response = await mutationGender({
         variables: {
@@ -269,6 +288,33 @@ export default function SettingsAkun(props) {
     }
   };
 
+  console.log("data : ", dataPassword);
+  console.log("token : ", token);
+  console.log("setting : ", setting);
+
+  const hasPassword = () => {
+    console.log("status", dataPassword?.cek_haspassword?.ishasPassword);
+    if (dataPassword?.cek_haspassword?.ishasPassword === false) {
+      props.navigation.navigate("AddPassword");
+    } else {
+      props.navigation.navigate("HasPassword");
+    }
+  };
+
+  const emailChange = async () => {
+    await (setModalEmail(false), 3000);
+    console.log("status :", dataPassword?.cek_haspassword?.ishasPassword);
+    if (dataPassword?.cek_haspassword?.ishasPassword === false) {
+      return await props.navigation.navigate("AddPasswordEmail");
+    } else {
+      return await props.navigation.navigate("SettingEmailChange", {
+        setting: setting,
+      });
+    }
+  };
+
+  // Render all
+
   return (
     <ScrollView
       style={{
@@ -292,12 +338,13 @@ export default function SettingsAkun(props) {
               <Text
                 type="bold"
                 size="label"
-                onPress={() => {
-                  setModalEmail(false),
-                    props.navigation.navigate("SettingEmailChange", {
-                      setting: setting,
-                    });
-                }}
+                onPress={() => emailChange()}
+                // onPress={() => {
+                //   setModalEmail(false),
+                //     props.navigation.navigate("SettingEmailChange", {
+                //       setting: setting,
+                //     });
+                // }}
               >
                 Change Email
               </Text>
@@ -1050,7 +1097,10 @@ export default function SettingsAkun(props) {
       <View
         style={{
           flexDirection: "column",
-          marginTop: 4,
+          // marginTop: 4,
+          borderWidth: 1,
+          borderTopWidth: 1,
+          borderColor: "#D1D1D1",
           paddingHorizontal: 15,
           paddingVertical: 13,
           backgroundColor: "#FFFFFF",
@@ -1113,15 +1163,93 @@ export default function SettingsAkun(props) {
             />
           </View>
         ) : (
-          <Button
-            type="box"
-            size="medium"
-            color="tertiary"
-            text={t("addPhoneNumber")}
-            onPress={() => props.navigation.navigate("SettingPhone")}
-          />
+          <>
+            <Button
+              type="box"
+              size="medium"
+              color="tertiary"
+              text={t("addPhoneNumber")}
+              onPress={() => props.navigation.navigate("SettingPhone")}
+            />
+            {/* <View
+              style={{
+                alignContent: "flex-start",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Text
+                type="regular"
+                size="description"
+                style={{
+                  alignSelf: "flex-start",
+                }}
+              >
+                {setting.user.phone}
+              </Text>
+              <Text type="regular" size="small">
+                {t("phoneUsed")}
+              </Text>
+            </View> */}
+          </>
         )}
       </View>
+      <Ripple
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 4,
+          paddingHorizontal: 15,
+          paddingVertical: 13,
+          backgroundColor: "#FFFFFF",
+          shadowColor: "gray",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: arrayShadow.shadowOpacity,
+          shadowRadius: arrayShadow.shadowRadius,
+          elevation: arrayShadow.elevation,
+        }}
+        onPress={(x) => hasPassword(x)}
+      >
+        <Text
+          size="label"
+          type="regular"
+          style={{
+            marginBottom: 5,
+          }}
+        >
+          {t("password")}
+        </Text>
+        <Nextpremier width={20} height={20} />
+      </Ripple>
+      <Ripple
+        onPress={() => null}
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // marginTop: 4,
+          borderWidth: 1,
+          borderTopWidth: 1,
+          borderColor: "#D1D1D1",
+          paddingHorizontal: 15,
+          paddingVertical: 13,
+          backgroundColor: "#FFFFFF",
+          shadowColor: "gray",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: arrayShadow.shadowOpacity,
+          shadowRadius: arrayShadow.shadowRadius,
+          elevation: arrayShadow.elevation,
+        }}
+      >
+        <Text
+          size="label"
+          type="regular"
+          style={{
+            marginBottom: 5,
+          }}
+        >
+          {t("Security")}
+        </Text>
+        <Nextpremier width={20} height={20} />
+      </Ripple>
     </ScrollView>
   );
 }

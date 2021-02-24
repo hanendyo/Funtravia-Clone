@@ -463,5 +463,15 @@
   "person": "Person",
   "Following": "Following",
   "Followers": "Followers",
-  "Send": "send"
+  "Send": "send",
+  "Security": "Security",
+  "AddPassword": "Add Password",
+  "CurrentPassword": "Current Password",
+  "NewPassword": "New Password",
+  "ConfirmPassword": "Confirm Password",
+  "UpdatePassword": "Update Password",
+  "EnterPassword": "Enter Password",
+  "ConfirmPasswords": "Confirm Password",
+  "SetPassword": "Set Password",
+  "WordChangeEmail": "Please set password to your account before you change email."
 }

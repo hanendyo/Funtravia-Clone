@@ -84,6 +84,7 @@ export default function DetailJournal(props) {
   });
 
   const afterComment = async () => {
+    console.log(refetch);
     await refetch();
     await scroll_to();
   };
@@ -645,7 +646,7 @@ export default function DetailJournal(props) {
                       </View>
                       <View
                         style={{
-                          marginTop: 5,
+                          // marginTop: 5,
                           alignSelf: "center",
                           width: Dimensions.get("window").width * 0.7,
                         }}
@@ -653,9 +654,9 @@ export default function DetailJournal(props) {
                         <Text
                           size={"description"}
                           type={"regular"}
-                          style={{ textAlign: "justify" }}
+                          style={{ textAlign: "left" }}
                         >
-                          {item.text}
+                          {item?.text}
                         </Text>
                       </View>
                     </View>

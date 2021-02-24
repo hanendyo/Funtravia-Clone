@@ -120,6 +120,29 @@ export const dateFormats = (date) => {
 
   return newDate;
 };
+export const dateFormatShortMonth = (date) => {
+  let monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  let formattedDate = new Date(date);
+  let newDate =
+    monthNames[formattedDate.getMonth()] +
+    " " +
+    formattedDate.getFullYear().toString();
+
+  return newDate;
+};
 
 export const dateMountFormats = (date) => {
   let monthNames = [

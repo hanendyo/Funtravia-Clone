@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet, Dimensions, Image, Pressable } from "react-native";
-import { default_image } from "../../assets/png";
+import { default_image, DefaultProfileSquare } from "../../assets/png";
 import { NotificationBlue } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Text, Button } from "../../component";
@@ -124,10 +124,11 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 									borderColor: "#fff",
 									resizeMode: "cover",
 								}}
+								defaultSource={DefaultProfileSquare}
 								source={
 									data && data.user_profile.picture
 										? { uri: data.user_profile.picture }
-										: default_image
+										: DefaultProfileSquare
 								}
 							/>
 						</TouchableOpacity>
@@ -151,7 +152,8 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 									borderWidth: 3,
 									borderColor: "white",
 								}}
-								source={default_image}
+								defaultSource={DefaultProfileSquare}
+								source={DefaultProfileSquare}
 							/>
 						</TouchableOpacity>
 					)}
@@ -325,10 +327,9 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 							alignItems: "flex-start",
 							justifyContent: "flex-start",
 							paddingLeft: 12,
-							// paddingTop: 15,
+							paddingTop: 5,
 							height: "100%",
 							width: "100%",
-							// borderWidth: 1,
 						}}
 					>
 						<Text size="description" type="bold">
@@ -344,26 +345,24 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 								flexDirection: "row",
 								alignItems: "center",
 								justifyContent: "flex-start",
-								// flexWrap: "wrap",
-								// borderWidth: 1,
 								width: "100%",
 							}}
 						>
-							<TouchableOpacity
+							<Button
 								onPress={() => signUp()}
+								size="small"
+								text={t("signUp")}
 								style={{
 									paddingVertical: 7,
 									paddingHorizontal: 17,
 									borderRadius: 5,
 									backgroundColor: "#209fae",
 								}}
-							>
-								<Text type="bold" size="small" style={{ color: "white" }}>
-									{t("signUp")}
-								</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
+							/>
+							<Button
 								onPress={() => login()}
+								size="small"
+								text={t("signIn")}
 								style={{
 									marginLeft: 10,
 									paddingVertical: 7,
@@ -371,11 +370,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 									borderRadius: 5,
 									backgroundColor: "#D75995",
 								}}
-							>
-								<Text type="bold" size="small" style={{ color: "white" }}>
-									{t("signIn")}
-								</Text>
-							</TouchableOpacity>
+							/>
 						</View>
 					</View>
 				)}

@@ -80,38 +80,34 @@ export default function SettingEmailChange(props) {
     if (setting.user.email === newEmail) {
       alert("Email lama dan email baru tidak boleh sama");
     }
-    if (setting.user.email !== oldEmail) {
-      alert("Email lama tidak sama");
-    } else {
-      if (token || token !== "") {
-        try {
-          let response = await mutationChangeEmail({
-            variables: {
-              oldEmail: oldEmail,
-              newEmail: newEmail,
-            },
-          });
-          if (loadingEmail) {
-            Alert.alert("Loading!!");
-          }
-          if (errorMutationEmail) {
-            throw new Error("Email change failed");
-          }
-          if (response.data) {
-            if (response.data.changemail.code !== 200) {
-              throw new Error(response.data.changemail.message);
-            }
-            await props.navigation.navigate("SettingEmailVerify", {
-              emailNew: newEmail,
-              emailOld: oldEmail,
-            });
-          }
-        } catch (error) {
-          alert("" + error);
+    if (token || token !== "") {
+      try {
+        let response = await mutationChangeEmail({
+          variables: {
+            oldEmail: oldEmail,
+            newEmail: newEmail,
+          },
+        });
+        if (loadingEmail) {
+          Alert.alert("Loading!!");
         }
-      } else {
-        alert("Please Insert a Text");
+        if (errorMutationEmail) {
+          throw new Error("Email change failed");
+        }
+        if (response.data) {
+          if (response.data.changemail.code !== 200) {
+            throw new Error(response.data.changemail.message);
+          }
+          await props.navigation.navigate("SettingEmailVerify", {
+            emailNew: newEmail,
+            emailOld: oldEmail,
+          });
+        }
+      } catch (error) {
+        alert("" + error);
       }
+    } else {
+      alert("Please Insert a Text");
     }
   };
   return (

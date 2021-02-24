@@ -10,6 +10,9 @@ import SettingEmailChange from "./ChangeEmail/SettingEmailChange";
 import SettingEmailVerify from "./ChangeEmail/SettingEmailVerify";
 import SettingPhone from "./ChangePhone/SettingPhone";
 import SettingPhoneChange from "./ChangePhone/SettingPhoneChange";
+import AddPassword from "./Password/AddPassword";
+import AddPasswordEmail from "./Password/AddPasswordEmail";
+import HasPassword from "./Password/HasPassword";
 
 export {
   NotificationSettings,
@@ -24,4 +27,7 @@ export {
   SettingPhone,
   SettingPhoneChange,
   SettingEmailVerify,
+  AddPassword,
+  HasPassword,
+  AddPasswordEmail,
 };
