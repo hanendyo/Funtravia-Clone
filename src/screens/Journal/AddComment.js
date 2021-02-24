@@ -59,8 +59,6 @@ export default function AddComment({
   });
 
   const comment = async (id, text) => {
-    console.log(id, text);
-
     Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
       try {
@@ -70,7 +68,6 @@ export default function AddComment({
             text: text,
           },
         });
-        console.log("response :", response);
         if (loadingComment) {
           Alert.alert("Loading!!");
         }
