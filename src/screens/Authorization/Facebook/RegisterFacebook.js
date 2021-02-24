@@ -49,7 +49,15 @@ export default function RegisterFacebook({ navigation }) {
 				"setting",
 				JSON.stringify(response.data.register_facebook.data_setting)
 			);
-			navigation.navigate("BottomStack", { screen: "HomeScreen" });
+			navigation.reset({
+				index: 0,
+				routes: [
+					{
+						name: "BottomStack",
+						routes: [{ name: "HomeScreen" }],
+					},
+				],
+			});
 		} else if (
 			(response.data.register_facebook.code === "400" ||
 				response.data.register_facebook.code === 400) &&

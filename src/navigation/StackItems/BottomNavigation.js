@@ -96,6 +96,7 @@ export default function BottomNavigationItems() {
 			tabBarOptions={{
 				activeTintColor: "#209FAE",
 				inactiveTintColor: "#4E4E4E",
+				headerTransparent: true,
 				labelStyle: {
 					fontFamily: "Lato-Regular",
 					fontSize: 12,

@@ -15,7 +15,7 @@ import {
 	Alert,
 } from "react-native";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { Akunsaya, default_image } from "../../assets/png";
+import { Akunsaya, default_image, DefaultProfile } from "../../assets/png";
 import { Kosong } from "../../assets/svg";
 import { Button, Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -31,7 +31,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
-const HeaderHeight = height / 2 - TabBarHeight;
+const HeaderHeight = width + 5;
 const SafeStatusBar = Platform.select({
 	ios: 44,
 	android: StatusBar.currentHeight,
@@ -551,6 +551,7 @@ export default function MyProfile({ navigation, route }) {
 				<View>
 					<View>
 						<Image
+							defaultSource={DefaultProfile}
 							source={{ uri: rData.picture }}
 							style={{
 								position: "absolute",
@@ -1364,15 +1365,30 @@ export default function MyProfile({ navigation, route }) {
 	};
 
 	if (loading && loadingPost && loadingReview && loadingTrip) {
-		console.log("loading");
+		console.log({
+			LOADING: loading,
+			POST: loadingPost,
+			REVIEW: loadingReview,
+			TRIP: loadingTrip,
+		});
 	}
 
 	if (error && errorPost && errorReview && errorTrip) {
-		console.log("Error");
+		console.log({
+			ERROR: error,
+			POST: errorPost,
+			REVIEW: errorReview,
+			TRIP: errorTrip,
+		});
 	}
 
 	if (data && dataPost && dataReview && dataTrip) {
-		// console.log(data, dataPost, dataReview, dataTrip);
+		console.log({
+			DATA: data,
+			POST: dataPost,
+			REVIEW: dataReview,
+			TRIP: dataTrip,
+		});
 		return (
 			<SafeAreaView style={styles.container}>
 				{renderTabView()}

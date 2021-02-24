@@ -12,6 +12,7 @@ import {
 	StatusBar,
 } from "react-native";
 import { Delete, Magnifying, NewChat, Kosong } from "../../assets/svg";
+import { DefaultProfile } from "../../assets/png";
 import { Text, Button, Truncate } from "../../component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
@@ -157,6 +158,7 @@ export default function Message({ navigation }) {
 				>
 					<Image
 						source={{ uri: change.picture }}
+						defaultSource={DefaultProfile}
 						style={{
 							width: 50,
 							height: 50,
