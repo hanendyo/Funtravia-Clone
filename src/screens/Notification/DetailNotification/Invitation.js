@@ -296,12 +296,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
           notif_id: notif_id,
         },
       });
-      // if (dataInvit) {
-      //   // Alert.alert('Loading!!');
-      // }
-      // if (errorInvit) {
-      //   throw new Error("Error Input");
-      // }
+
       console.log(response);
       if (response.data) {
         if (response.data.update_read.code !== 200) {
@@ -326,45 +321,41 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     }
   };
 
-  const handle_areaklik_comment = async (data) => {
-    if (data.isread == false) {
-      await updateisread(data.ids);
-    }
+  const handle_areaklik_comment = (data) => {
     navigation.push("FeedStack", {
       screen: "CommentsById",
       params: {
         post_id: data.comment_feed.post_id,
       },
     });
-  };
-  const handle_areaklik_like = async (data) => {
     if (data.isread == false) {
-      await updateisread(data.ids);
+      updateisread(data.ids);
     }
-
+  };
+  const handle_areaklik_like = (data) => {
     navigation.navigate("FeedStack", {
       screen: "CommentsById",
       params: {
         post_id: data.like_feed.post_id,
       },
     });
+    if (data.isread == false) {
+      updateisread(data.ids);
+    }
   };
 
-  const handle_areaklik_follow = async (data) => {
-    if (data.isread == false) {
-      await updateisread(data.ids);
-    }
+  const handle_areaklik_follow = (data) => {
     navigation.push("ProfileStack", {
       screen: "otherprofile",
       params: {
         idUser: data.follow_user.user.id,
       },
     });
-  };
-  const handle_areaklik_buddy = async (data) => {
     if (data.isread == false) {
-      await updateisread(data.ids);
+      updateisread(data.ids);
     }
+  };
+  const handle_areaklik_buddy = (data) => {
     data.itinerary_buddy.isconfrim == true &&
     data.itinerary_buddy.accepted_at != null
       ? navigation.navigate("ItineraryStack", {
@@ -378,6 +369,9 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
           },
         })
       : "";
+    if (data.isread == false) {
+      updateisread(data.ids);
+    }
   };
   // console.log(token);
   const [GetListInvitation, { data, loading, error }] = useLazyQuery(

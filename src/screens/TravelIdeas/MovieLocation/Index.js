@@ -134,7 +134,7 @@ export default function MovieLocation({ navigation, route }) {
     tabBarVisble: false,
     tabBarLabel: "Unesco",
     headerTintColor: "white",
-    headerTitle: "UNESCO World Heritage",
+    headerTitle: "Movie Location",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -154,11 +154,16 @@ export default function MovieLocation({ navigation, route }) {
    * ref
    */
   const scrollY = useRef(new Animated.Value(0)).current;
+  console.log("initkn " + token);
 
   useEffect(() => {
+    loadAsync();
     navigation.setOptions(HeaderComponent);
   }, [route]);
-
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    setToken(tkn);
+  };
   return (
     <ScrollView
       style={{
@@ -382,6 +387,7 @@ export default function MovieLocation({ navigation, route }) {
                   screen: "Detail_movie",
                   params: {
                     data: item,
+                    token: token,
                   },
                 });
               }}
