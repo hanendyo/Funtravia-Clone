@@ -58,7 +58,15 @@ export default function Login({ navigation }) {
 						"setting",
 						JSON.stringify(response.data.login.data_setting)
 					);
-					navigation.navigate("BottomStack", { screen: "HomeScreen" });
+					navigation.reset({
+						index: 0,
+						routes: [
+							{
+								name: "BottomStack",
+								routes: [{ name: "HomeScreen" }],
+							},
+						],
+					});
 				} catch (error) {
 					showAlert({
 						...aler,

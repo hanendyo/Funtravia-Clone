@@ -62,24 +62,14 @@ export default function Home(props) {
 		await LoadUserProfile();
 	};
 
-	console.log(token);
-
-	const onScrollSearch = (e) => {
-		if (e.nativeEvent.contentOffset.y <= 230) {
-			setSearchBg("transparent");
-			setSearchElevation(0);
-		} else {
-			setSearchBg("#209FAE");
-			setSearchElevation(10);
-		}
-	};
-
-	const searchpage = () => {
+	const searchPage = () => {
 		props.navigation.navigate("SearchPage");
 	};
 
 	useEffect(() => {
-		loadAsync();
+		props.navigation.addListener("focus", () => {
+			loadAsync();
+		});
 	}, []);
 
 	const wait = (timeout) => {
@@ -153,12 +143,9 @@ export default function Home(props) {
 	}
 
 	let [scrollY] = useState(new Animated.Value(0));
-	const HEADER_MAX_HEIGHT = height;
-	const HEADER_MIN_HEIGHT = 60;
-	const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 	const searchBG = scrollY.interpolate({
-		inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+		inputRange: [0, height / 2, height],
 		outputRange: [0, 1, 1],
 		extrapolate: "clamp",
 	});
@@ -195,92 +182,78 @@ export default function Home(props) {
 				/>
 				<View
 					style={{
-						shadowColor: "#6F7273",
+						shadowColor: "#FFF",
 						shadowOffset: { width: 0, height: 1 },
 						shadowOpacity: 1,
 						shadowRadius: 1,
-						marginTop: 5,
+						marginTop: 10,
 						elevation: 2,
 					}}
 				>
 					<Animated.View
 						style={{
 							opacity: searchBG,
-							backgroundColor: "#209FAE",
+							backgroundColor: "#FFF",
 							width: width,
-							paddingVertical: 10,
-							height: 65,
+							paddingVertical: 5,
+							height: 58,
 							position: "absolute",
+							shadowColor: "#464646",
+							shadowOffset: { width: 1, height: 1 },
+							shadowOpacity: 0.5,
+							elevation: 3,
 						}}
-					></Animated.View>
-					<View
+					/>
+					<TouchableOpacity
+						onPress={() => searchPage()}
 						style={{
-							paddingVertical: 10,
-							width: width,
-							justifyContent: "center",
 							alignItems: "center",
-							alignContent: "center",
+							justifyContent: "flex-start",
+							height: 45,
+							flexDirection: "row",
+							backgroundColor: "#FFF",
+							borderRadius: 5,
+							borderWidth: 0.5,
+							borderColor: "#FFF",
 							alignSelf: "center",
-							borderColor: "white",
+							paddingHorizontal: 20,
+							marginVertical: 5,
+							width: width * 0.9,
+							shadowColor: "#464646",
+							shadowOffset: { width: 0.5, height: 1 },
+							shadowOpacity: 0.5,
+							shadowRadius: 2,
+							elevation: 4,
 						}}
 					>
-						<TouchableOpacity
-							onPress={searchpage}
+						<View
 							style={{
-								width: width,
-								alignSelf: "center",
-								flex: 1,
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "center",
+								marginRight: 10,
 							}}
 						>
-							<View
-								style={{
-									alignItems: "center",
-									justifyContent: "flex-start",
-									height: 45,
-									flexDirection: "row",
-									backgroundColor: "white",
-									borderRadius: 5,
-									borderWidth: 0.5,
-									borderColor: "#6F7273",
+							<CustomImage
+								source={search_black}
+								customImageStyle={{ resizeMode: "cover" }}
+								customStyle={{
+									height: 15,
+									width: 15,
 									alignSelf: "center",
-									paddingHorizontal: 20,
-									width: width * 0.9,
-									elevation: 3,
+									zIndex: 100,
+								}}
+							/>
+						</View>
+						<View>
+							<Text
+								size="small"
+								type="bold"
+								style={{
+									color: "#464646",
 								}}
 							>
-								<View
-									style={{
-										marginRight: 10,
-									}}
-								>
-									<CustomImage
-										source={search_black}
-										customImageStyle={{ resizeMode: "cover" }}
-										customStyle={{
-											height: 15,
-											width: 15,
-											alignSelf: "center",
-											zIndex: 100,
-										}}
-									/>
-								</View>
-								<View>
-									<Text
-										size="small"
-										type="bold"
-										style={{
-											color: "#464646",
-										}}
-									>
-										{t("searchHome")}
-									</Text>
-								</View>
-							</View>
-						</TouchableOpacity>
-					</View>
+								{t("searchHome")}
+							</Text>
+						</View>
+					</TouchableOpacity>
 				</View>
 				<MenuNew props={props} />
 				<HomeTitle

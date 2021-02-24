@@ -361,7 +361,7 @@ export default function Room({ navigation, route }) {
 						paddingHorizontal: 10,
 						alignContent: "center",
 						alignItems: "center",
-						paddingVertical: 10,
+						paddingVertical: 2,
 						backgroundColor: "#F6F6F6",
 					}}
 				>

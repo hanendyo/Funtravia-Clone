@@ -163,3 +163,5 @@ export const wiro_sableng = require("./files/wiro_sableng.png");
 export const the_raid_2 = require("./files/the_raid_2.png");
 export const merantau = require("./files/merantau.png");
 export const the_raid = require("./files/the_raid.png");
+export const DefaultProfile = require("./files/default_profile.png");
+export const DefaultProfileSquare = require("./files/default_profile_square.png");
