@@ -60,8 +60,6 @@ export default function SettingsAkun(props) {
   let [cityName, setCityName] = useState(setting?.cities?.name);
   let [cityId, setCityId] = useState(setting?.cities?.id);
 
-  console.log("setting:", setting);
-
   const closeBirth = () => {
     setModalBirth(false);
     setModalBirth1(true);
@@ -114,7 +112,20 @@ export default function SettingsAkun(props) {
     fetchPolicy: "network-only",
     variables: {
       keyword: city,
-      countries_id: setting.countries.id,
+      countries_id: setting?.countries?.id,
+    },
+  });
+
+  const [
+    passwords,
+    { data: dataPassword, loading: loadingPassword, error: errorPassword },
+  ] = useLazyQuery(HasPassword, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     },
   });
 
@@ -192,11 +203,9 @@ export default function SettingsAkun(props) {
   };
 
   const hasilGender = async (x) => {
-    console.log("gender :", x);
     if (x === null || x === "") {
       x = "F";
     }
-    console.log("x", x);
     try {
       let response = await mutationGender({
         variables: {
@@ -279,26 +288,28 @@ export default function SettingsAkun(props) {
     }
   };
 
-  console.log("token :", token);
-  const [
-    passwords,
-    { data: dataPassword, loading: loadingPassword, error: errorPassword },
-  ] = useLazyQuery(HasPassword, {
-    // fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
+  console.log("data : ", dataPassword);
+  console.log("token : ", token);
+  console.log("setting : ", setting);
 
   const hasPassword = () => {
-    console.log("has", dataPassword?.cek_haspassword?.ishasPassword);
-    if (dataPassword?.cek_haspassword?.ishasPassword === true) {
+    console.log("status", dataPassword?.cek_haspassword?.ishasPassword);
+    if (dataPassword?.cek_haspassword?.ishasPassword === false) {
       props.navigation.navigate("AddPassword");
     } else {
       props.navigation.navigate("HasPassword");
+    }
+  };
+
+  const emailChange = async () => {
+    await (setModalEmail(false), 3000);
+    console.log("status :", dataPassword?.cek_haspassword?.ishasPassword);
+    if (dataPassword?.cek_haspassword?.ishasPassword === false) {
+      return await props.navigation.navigate("AddPasswordEmail");
+    } else {
+      return await props.navigation.navigate("SettingEmailChange", {
+        setting: setting,
+      });
     }
   };
 
@@ -327,12 +338,13 @@ export default function SettingsAkun(props) {
               <Text
                 type="bold"
                 size="label"
-                onPress={() => {
-                  setModalEmail(false),
-                    props.navigation.navigate("SettingEmailChange", {
-                      setting: setting,
-                    });
-                }}
+                onPress={() => emailChange()}
+                // onPress={() => {
+                //   setModalEmail(false),
+                //     props.navigation.navigate("SettingEmailChange", {
+                //       setting: setting,
+                //     });
+                // }}
               >
                 Change Email
               </Text>

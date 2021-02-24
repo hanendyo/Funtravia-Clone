@@ -11,6 +11,7 @@ import SettingEmailVerify from "./ChangeEmail/SettingEmailVerify";
 import SettingPhone from "./ChangePhone/SettingPhone";
 import SettingPhoneChange from "./ChangePhone/SettingPhoneChange";
 import AddPassword from "./Password/AddPassword";
+import AddPasswordEmail from "./Password/AddPasswordEmail";
 import HasPassword from "./Password/HasPassword";
 
 export {
@@ -28,4 +29,5 @@ export {
   SettingEmailVerify,
   AddPassword,
   HasPassword,
+  AddPasswordEmail,
 };

@@ -11,6 +11,26 @@ export default function HasPassword(props) {
   const [token, setToken] = useState("");
   const [setting, setSetting] = useState("");
   let { t, i18n } = useTranslation();
+  let [text1, setText1] = useState("");
+  let [text2, setText2] = useState("");
+
+  const [error, setError] = useState({
+    password1: false,
+    password2: false,
+  });
+
+  const handleError1 = (e) => {
+    setText1(e);
+    if (e && e.length <= 8) {
+      setError({ ...error, password1: true });
+    }
+  };
+  const handleError2 = (e) => {
+    setText2(e);
+    if (e && e.length <= 8 && text2 !== text1) {
+      setError({ ...error, password2: true });
+    }
+  };
 
   const HeaderComponent = {
     headerTitle: t("UpdatePassword"),
@@ -77,6 +97,7 @@ export default function HasPassword(props) {
           {t("CurrentPassword")}
         </Label>
         <Input
+          secureTextEntry={true}
           style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
           // value={data.first_name ? data.first_name : ""}
           // onChangeText={(text) => _handleOnChange(text, "first_name")}
@@ -94,12 +115,20 @@ export default function HasPassword(props) {
           {t("NewPassword")}
         </Label>
         <Input
+          secureTextEntry={true}
           style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
           // value={data.first_name ? data.first_name : ""}
-          // onChangeText={(text) => _handleOnChange(text, "first_name")}
+          onChangeText={(e) => handleError1(e)}
           keyboardType="default"
         />
       </Item>
+      {text1 && text1.length < 8 ? (
+        <Label>
+          <Text type="light" size="small" style={{ color: "#209FAE" }}>
+            {t("inputWarningPassword")}
+          </Text>
+        </Label>
+      ) : null}
       <Item floatingLabel>
         <Label
           style={{
@@ -111,12 +140,20 @@ export default function HasPassword(props) {
           {t("ConfirmPassword")}
         </Label>
         <Input
+          secureTextEntry={true}
           style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
           // value={data.first_name ? data.first_name : ""}
-          // onChangeText={(text) => _handleOnChange(text, "first_name")}
+          onChangeText={(e) => handleError2(e)}
           keyboardType="default"
         />
       </Item>
+      {text2 !== text1 ? (
+        <Label>
+          <Text type="light" size="small" style={{ color: "#209FAE" }}>
+            {t("inputWarningRepeatPassword")}
+          </Text>
+        </Label>
+      ) : null}
       <View style={{ marginTop: 30 }}>
         <Button color="secondary" text={"Submit"}></Button>
       </View>

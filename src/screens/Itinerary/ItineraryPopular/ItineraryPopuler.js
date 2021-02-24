@@ -444,7 +444,7 @@ export default function ItineraryPopuler(props) {
                               width: 32,
                               borderRadius: 16,
                               borderWidth: 1,
-                              borderColor: "rgba(52, 52, 52, 0.8)",
+                              borderColor: "rgba(52, 52, 52, 0.75)",
                               zIndex: 1,
                             }}
                             source={

@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Text, Button } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../../assets/svg";
-import { Dimensions, Alert } from "react-native";
+import { Arrowbackwhite, SetPass } from "../../../assets/svg";
+import {
+  Dimensions,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdatePassword";
@@ -11,7 +16,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { show_password, hide_password } from "../../../assets/png";
 import { CustomImage } from "../../../component";
 
-export default function AddPassword(props) {
+export default function AddPasswordEmail(props) {
   const [token, setToken] = useState("");
   const [setting, setSetting] = useState("");
   let { t, i18n } = useTranslation();
@@ -37,7 +42,7 @@ export default function AddPassword(props) {
   };
 
   const HeaderComponent = {
-    headerTitle: t("AddPassword"),
+    headerTitle: t("SetPassword"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -125,7 +130,9 @@ export default function AddPassword(props) {
             response.data.update_password_settings.code === "200"
           ) {
             await Alert.alert("Password berhasil di simpan");
-            await props.navigation.navigate("SettingsAkun");
+            await props.navigation.navigate("SettingEmailChange", {
+              setting: setting,
+            });
           } else {
             throw new Error(response.data.update_password_settings.message);
           }
@@ -139,31 +146,50 @@ export default function AddPassword(props) {
   };
 
   return (
-    <View
-      style={{
-        width: Dimensions.get("screen").width * 0.9,
-        marginHorizontal: 20,
-        marginTop: 20,
-      }}
-    >
-      <Item floatingLabel>
-        <Label
-          style={{
-            fontFamily: "Lato-Regular",
-            fontSize: 14,
-            marginTop: 10,
-          }}
-        >
-          {t("EnterPassword")}
-        </Label>
-        <Input
-          secureTextEntry={true}
-          style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-          // value={data.first_name ? data.first_name : ""}
-          onChangeText={(e) => handleError1(e)}
-          keyboardType="default"
-        />
-        {/* <CustomImage
+    <ScrollView style={{ backgroundColor: "white", flex: 1 }}>
+      <KeyboardAvoidingView
+        style={{
+          width: Dimensions.get("screen").width * 0.9,
+          marginHorizontal: 20,
+          marginTop: 20,
+        }}
+      >
+        <View style={{ alignItems: "center" }}>
+          <SetPass height={200} width={200} />
+        </View>
+        <View style={{ alignItems: "center" }}>
+          <Text size="description" type="bold">
+            {t("SetPassword")}
+          </Text>
+          <Text
+            size="small"
+            type="regular"
+            style={{
+              textAlign: "center",
+              width: Dimensions.get("screen").width * 0.55,
+            }}
+          >
+            {t("WordChangeEmail")}
+          </Text>
+        </View>
+        <Item floatingLabel>
+          <Label
+            style={{
+              fontFamily: "Lato-Regular",
+              fontSize: 14,
+              marginTop: 10,
+            }}
+          >
+            {t("EnterPassword")}
+          </Label>
+          <Input
+            secureTextEntry={true}
+            style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+            // value={data.first_name ? data.first_name : ""}
+            onChangeText={(e) => handleError1(e)}
+            keyboardType="default"
+          />
+          {/* <CustomImage
           source={hidePasswd ? show_password : hide_password}
           isTouchable={true}
           onPress={togglePassword}
@@ -175,47 +201,48 @@ export default function AddPassword(props) {
             right: 0,
           }}
         /> */}
-      </Item>
-      {text1 && text1.length < 8 ? (
-        <Label>
-          <Text type="light" size="small" style={{ color: "#209FAE" }}>
-            {t("inputWarningPassword")}
-          </Text>
-        </Label>
-      ) : null}
-      <Item floatingLabel>
-        <Label
-          style={{
-            fontFamily: "Lato-Regular",
-            fontSize: 14,
-            marginTop: 10,
-          }}
-        >
-          {t("ConfirmPasswords")}
-        </Label>
-        <Input
-          secureTextEntry={true}
-          style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-          // value={data.first_name ? data.first_name : ""}
-          onChangeText={(e) => handleError2(e)}
-          keyboardType="default"
-        />
-      </Item>
-      {text2 !== text1 ? (
-        <Label>
-          <Text type="light" size="small" style={{ color: "#209FAE" }}>
-            {t("inputWarningRepeatPassword")}
-          </Text>
-        </Label>
-      ) : null}
-      <View style={{ marginTop: 30 }}>
-        <Button
-          disable={false}
-          color="secondary"
-          text={"Submit"}
-          onPress={() => onSubmit(text1, text2)}
-        ></Button>
-      </View>
-    </View>
+        </Item>
+        {text1 && text1.length < 8 ? (
+          <Label>
+            <Text type="light" size="small" style={{ color: "#209FAE" }}>
+              {t("inputWarningPassword")}
+            </Text>
+          </Label>
+        ) : null}
+        <Item floatingLabel>
+          <Label
+            style={{
+              fontFamily: "Lato-Regular",
+              fontSize: 14,
+              marginTop: 10,
+            }}
+          >
+            {t("ConfirmPasswords")}
+          </Label>
+          <Input
+            secureTextEntry={true}
+            style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+            // value={data.first_name ? data.first_name : ""}
+            onChangeText={(e) => handleError2(e)}
+            keyboardType="default"
+          />
+        </Item>
+        {text2 !== text1 ? (
+          <Label>
+            <Text type="light" size="small" style={{ color: "#209FAE" }}>
+              {t("inputWarningRepeatPassword")}
+            </Text>
+          </Label>
+        ) : null}
+        <View style={{ marginTop: 30, marginBottom: 10 }}>
+          <Button
+            disable={false}
+            color="secondary"
+            text={"Submit"}
+            onPress={() => onSubmit(text1, text2)}
+          ></Button>
+        </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }

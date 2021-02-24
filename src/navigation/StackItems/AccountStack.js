@@ -15,6 +15,7 @@ import {
   SettingEmailVerify,
   AddPassword,
   HasPassword,
+  AddPasswordEmail,
 } from "../../screens/Settings";
 import Wishlist from "../../screens/Wishlist/Index";
 
@@ -155,6 +156,16 @@ export default function AccountStackNavigation() {
       <AccountStack.Screen
         name="AddPassword"
         component={AddPassword}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="AddPasswordEmail"
+        component={AddPasswordEmail}
         options={{
           headerTitle: "",
           headerTransparent: false,

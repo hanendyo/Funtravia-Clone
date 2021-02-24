@@ -473,5 +473,7 @@
   "ConfirmPassword": "konfirmasi kata sandi baru",
   "UpdatePassword": "Ganti Kata Sandi",
   "EnterPassword": "kata sandi",
-  "ConfirmPasswords": "konfirmasi kata sandi"
+  "ConfirmPasswords": "konfirmasi kata sandi",
+  "SetPassword": "Atur kata sandi",
+  "WordChangeEmail": "Harap setel kata sandi ke akun Anda sebelum Anda mengubah email."
 }
