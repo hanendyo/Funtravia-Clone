@@ -92,7 +92,7 @@ export default function Journal(props) {
     variables: {
       category_id: null,
       order_by: null,
-      limit: 20,
+      limit: 14,
       offset: 0,
       keyword: null,
     },
@@ -127,20 +127,25 @@ export default function Journal(props) {
   };
 
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.journal_list;
-    const datas = [
-      ...prev.journal_list.datas,
-      ...fetchMoreResult.journal_list.datas,
-    ];
+    if (
+      prev.journal_list.datas.length !==
+      fetchMoreResult.journal_list.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult.journal_list;
+      const datas = [
+        ...prev.journal_list.datas,
+        ...fetchMoreResult.journal_list.datas,
+      ];
 
-    return Object.assign({}, prev, {
-      journal_list: {
-        __typename: prev.journal_list.__typename,
-        page_info,
-        datas,
-      },
-    });
+      return Object.assign({}, prev, {
+        journal_list: {
+          __typename: prev.journal_list.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
 
   const handleOnEndReached = () => {
@@ -150,7 +155,7 @@ export default function Journal(props) {
           category_id: null,
           keyword: search.keyword,
           orderby: null,
-          limit: 20,
+          limit: 14,
           offset: dataList.journal_list.page_info.offset,
         },
         updateQuery: onUpdate,
