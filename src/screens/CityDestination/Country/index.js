@@ -9,10 +9,11 @@ import {
   ScrollView,
   FlatList,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
   OptionsVertWhite,
@@ -38,6 +39,8 @@ import { FunIcon, Loading } from "../../../component";
 import Sidebar from "../../../component/src/Sidebar";
 import CountrisInformation from "../../../graphQL/Query/Countries/Countrydetail";
 import { useTranslation } from "react-i18next";
+import ImageSlider from "react-native-image-slider";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 const screenHeight = Dimensions.get("window").height;
 let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
@@ -50,7 +53,7 @@ export default function Country(props) {
   const [active, setActive] = useState("Map");
   const [actives, setActives] = useState("General");
   const [actived, setActived] = useState("About");
-  const [loadings, setloadings] = useState(true);
+  // const [loadings, setloadings] = useState(true);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
 
@@ -73,7 +76,7 @@ export default function Country(props) {
     extrapolate: "clamp",
   });
 
-  const [getPackageDetail, { loading, data, error }] = useLazyQuery(
+  const { loading, data, error, refetch: getPackageDetail } = useQuery(
     CountrisInformation,
     {
       variables: {
@@ -83,8 +86,8 @@ export default function Country(props) {
   );
 
   const refresh = async () => {
-    await getPackageDetail();
-    await setloadings(false);
+    // await getPackageDetail();
+    // await setloadings(false);
   };
 
   useEffect(() => {
@@ -436,6 +439,28 @@ export default function Country(props) {
     );
   };
 
+  const spreadData = (data) => {
+    let tmpData = [];
+    let count = 1;
+    let tmpArray = [];
+    for (let val of data) {
+      if (count < 3) {
+        tmpArray.push(val);
+        // console.log("masuk", tmpArray);
+        count++;
+      } else {
+        tmpArray.push(val);
+        tmpData.push(tmpArray);
+        count = 1;
+        tmpArray = [];
+      }
+    }
+    if (tmpArray.length) {
+      tmpData.push(tmpArray);
+    }
+    return tmpData;
+  };
+
   const RenderUtama = ({ aktif, render }) => {
     if (aktif === "General") {
       return (
@@ -717,109 +742,167 @@ export default function Country(props) {
                     padding: 10,
                   }}
                 >
-                  {render.city ? (
-                    <View>
-                      <Text
-                        size="label"
-                        type="bold"
-                        style={{ textAlign: "center", marginTop: 3 }}
-                      >
-                        <Capital text={render.city[0].name} />
-                      </Text>
-                      <Ripple
-                        onPress={() => {
-                          props.navigation.navigate("CountryStack", {
-                            screen: "CityDetail",
-                            params: {
-                              data: {
-                                city_id: render.city[0].id,
-                                city_name: render.city[0].name,
-                              },
-                              exParam: true,
-                            },
-                          });
-                        }}
-                        style={{
-                          height: width * 0.4,
-                          width: "100%",
-                          borderRadius: 10,
-                          marginVertical: 5,
-                        }}
-                      >
-                        <Image
-                          style={{
-                            height: "100%",
-                            width: "100%",
-                            borderRadius: 10,
-                          }}
-                          source={
-                            render.city[0].image
-                              ? { uri: render.city[0].image }
-                              : default_image
-                          }
-                        ></Image>
-                      </Ripple>
-                    </View>
-                  ) : null}
-                  <View
+                  <ImageSlider
+                    images={render.city ? render.city : []}
                     style={{
-                      width: "100%",
-                      flexWrap: "wrap",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      backgroundColor: "#white",
+                      // width: Dimensions.get('screen').width - 40,
                     }}
-                  >
-                    {render.city && render.city.length > 0
-                      ? render.city.map((item, index) => {
-                          return index > 0 ? (
-                            <Ripple
-                              onPress={() => {
-                                props.navigation.navigate("CountryStack", {
-                                  screen: "CityDetail",
-                                  params: {
-                                    data: {
-                                      city_id: item.id,
-                                      city_name: item.name,
-                                    },
-                                    exParam: true,
-                                  },
-                                });
-                              }}
-                              style={{
-                                width: (width - 60) / 4,
-                                alignContent: "center",
-                                alignItems: "center",
-                                padding: 2,
-                                borderColor: "#209fae",
-                              }}
-                            >
-                              <Image
-                                style={{
-                                  borderRadius: 10,
-                                  height: (width - 75) / 4,
-                                  width: (width - 75) / 4,
-                                }}
-                                source={
-                                  item.image
-                                    ? { uri: item.image }
-                                    : default_image
-                                }
-                              ></Image>
-                              <Text
-                                size="small"
-                                type="bold"
-                                style={{ textAlign: "center", marginTop: 3 }}
+                    customSlide={({ index, item, style, width }) => (
+                      <View
+                        key={"kota" + item.id}
+                        style={{
+                          width: width - 60,
+                        }}
+                      >
+                        <Text
+                          size="label"
+                          type="bold"
+                          style={{ textAlign: "center", marginTop: 3 }}
+                        >
+                          <Capital text={item.name} />
+                        </Text>
+                        <Ripple
+                          onPress={() => {
+                            props.navigation.navigate("CountryStack", {
+                              screen: "CityDetail",
+                              params: {
+                                data: {
+                                  city_id: item.id,
+                                  city_name: item.name,
+                                },
+                                exParam: true,
+                              },
+                            });
+                          }}
+                          style={{
+                            height: width * 0.4,
+                            width: "99%",
+                            borderRadius: 10,
+                            marginVertical: 5,
+                          }}
+                        >
+                          <Image
+                            style={{
+                              height: "100%",
+                              width: "100%",
+                              borderRadius: 10,
+                            }}
+                            source={
+                              item.image ? { uri: item.image } : default_image
+                            }
+                          ></Image>
+                        </Ripple>
+                        <View
+                          style={{
+                            width: "100%",
+                            flexWrap: "wrap",
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          {render.city && render.city.length > 0
+                            ? render.city.map((item, index) => {
+                                return index > 0 ? (
+                                  <Ripple
+                                    onPress={() => {
+                                      props.navigation.navigate(
+                                        "CountryStack",
+                                        {
+                                          screen: "CityDetail",
+                                          params: {
+                                            data: {
+                                              city_id: item.id,
+                                              city_name: item.name,
+                                            },
+                                            exParam: true,
+                                          },
+                                        }
+                                      );
+                                    }}
+                                    style={{
+                                      width: (width - 60) / 4,
+                                      alignContent: "center",
+                                      alignItems: "center",
+                                      padding: 2,
+                                      borderColor: "#209fae",
+                                    }}
+                                  >
+                                    <Image
+                                      style={{
+                                        borderRadius: 10,
+                                        height: (width - 75) / 4,
+                                        width: (width - 75) / 4,
+                                      }}
+                                      source={
+                                        item.image
+                                          ? { uri: item.image }
+                                          : default_image
+                                      }
+                                    ></Image>
+                                    <Text
+                                      size="small"
+                                      type="bold"
+                                      style={{
+                                        textAlign: "center",
+                                        marginTop: 3,
+                                      }}
+                                    >
+                                      <Truncate
+                                        text={Capital({ text: item.name })}
+                                        length={16}
+                                      />
+                                    </Text>
+                                  </Ripple>
+                                ) : null;
+                              })
+                            : null}
+                        </View>
+                      </View>
+                    )}
+                    customButtons={(position, move) => (
+                      <View
+                        style={{
+                          // width: width - 40,
+                          // position: "absolute",
+                          // bottom: 10,
+                          // left: 0,
+                          paddingVertical: 10,
+                          alignContent: "center",
+                          alignItems: "center",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {(render.city.length > 0 ? render.city : []).map(
+                          (image, index) => {
+                            return (
+                              <TouchableHighlight
+                                key={index}
+                                underlayColor="#f7f7f700"
+                                onPress={() => move(index)}
                               >
-                                <Truncate
-                                  text={Capital({ text: item.name })}
-                                  length={16}
-                                />
-                              </Text>
-                            </Ripple>
-                          ) : null;
-                        })
-                      : null}
-                  </View>
+                                <View
+                                  style={{
+                                    height: position === index ? 5 : 5,
+                                    width: position === index ? 15 : 5,
+                                    borderRadius: position === index ? 7 : 3,
+                                    backgroundColor:
+                                      position === index
+                                        ? "#209fae"
+                                        : "#d3d3d3",
+                                    marginHorizontal: 3,
+                                  }}
+                                ></View>
+                              </TouchableHighlight>
+                            );
+                          }
+                        )}
+                      </View>
+                    )}
+                  />
                 </View>
               </View>
             </View>
@@ -990,6 +1073,21 @@ export default function Country(props) {
     }
   };
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </View>
+    );
+  }
+
   return (
     <View
       style={{
@@ -997,7 +1095,7 @@ export default function Country(props) {
         backgroundColor: "white",
       }}
     >
-      <Loading show={loadings} />
+      {/* <Loading show={loadings} /> */}
       <View style={{ height: 55 }}></View>
       {data && data.country_detail ? (
         <ScrollView

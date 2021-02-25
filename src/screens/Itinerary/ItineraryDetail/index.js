@@ -78,6 +78,7 @@ import Ripple from "react-native-material-ripple";
 import album from "../../../graphQL/Query/Itinerary/album";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ImagePicker from "react-native-image-crop-picker";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -417,6 +418,72 @@ export default function ItineraryDetail(props) {
   };
 
   const [
+    mutationUpload,
+    { loading: loadingupload, data: dataupload, error: errorupload },
+  ] = useMutation(Updatecover, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const upload = async (data) => {
+    setloading(true);
+
+    if (data) {
+      try {
+        let response = await mutationUpload({
+          variables: {
+            itinerary_id: itincountries,
+            cover: "data:image/jpeg;base64," + data,
+          },
+        });
+        if (errorupload) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (response.data.upload_cover_itinerary.code !== 200) {
+            throw new Error(response.data.upload_cover_itinerary.message);
+          }
+          // Alert.alert(t('success'));
+          _Refresh();
+          // props.navigation.goBack();
+        }
+        setloading(false);
+      } catch (error) {
+        Alert.alert("" + error);
+        setloading(false);
+      }
+    }
+  };
+
+  const pickcamera = async () => {
+    ImagePicker.openCamera({
+      width: 600,
+      height: 400,
+      cropping: true,
+      // freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
+    });
+  };
+
+  const pickGallery = async () => {
+    ImagePicker.openPicker({
+      width: 600,
+      height: 400,
+      cropping: true,
+      // freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      upload(image.data);
+    });
+  };
+
+  const [
     mutationUpdateCover,
     { loading: loadingcover, data: datacover, error: errorcover },
   ] = useMutation(Updatecover, {
@@ -457,7 +524,7 @@ export default function ItineraryDetail(props) {
 
   const handlecover = () => {
     dataList.length > 0 && datadetail.itinerary_detail.cover === null
-      ? Updatecovers(
+      ? setCover(
           dataList[0].images !== null ? dataList[0].images : dataList[0].icon
         )
       : setCover(datadetail.itinerary_detail.cover);
@@ -2255,54 +2322,60 @@ export default function ItineraryDetail(props) {
             width: "100%",
           }}
         >
-          <Text type="bold" style={{ paddingVertical: 10 }}>
-            Posted on Fun Feed
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              width: "102%",
-              paddingBottom: 10,
-            }}
-          >
-            {item.posted.length > 0 ? (
-              item.posted.map((data, i) => {
-                return data.is_posted === true ? (
-                  <ImageBackground
-                    key={"posted" + data.id}
-                    source={data.assets ? { uri: data.assets } : default_image}
-                    defaultSource={default_image}
-                    style={{
-                      width: tab2ItemSize,
-                      height: tab2ItemSize,
-                      marginRight: 2.5,
-                      marginBottom: 2.5,
-                      backgroundColor: "#aaa",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      resizeMode: "cover",
-                    }}
-                  >
-                    <Ripple
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    ></Ripple>
-                  </ImageBackground>
-                ) : null;
-              })
-            ) : (
-              <View>
-                <Text>Kosong</Text>
+          {item.posted.length > 0 ? (
+            <>
+              <Text type="bold" style={{ paddingVertical: 10 }}>
+                Posted on Fun Feed
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  width: "102%",
+                  paddingBottom: 10,
+                }}
+              >
+                {item.posted.length > 0 ? (
+                  item.posted.map((data, i) => {
+                    return data.is_posted === true ? (
+                      <ImageBackground
+                        key={"posted" + data.id}
+                        source={
+                          data.assets ? { uri: data.assets } : default_image
+                        }
+                        defaultSource={default_image}
+                        style={{
+                          width: tab2ItemSize,
+                          height: tab2ItemSize,
+                          marginRight: 2.5,
+                          marginBottom: 2.5,
+                          backgroundColor: "#aaa",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          resizeMode: "cover",
+                        }}
+                      >
+                        <Ripple
+                          style={{
+                            height: "100%",
+                            width: "100%",
+                          }}
+                        ></Ripple>
+                      </ImageBackground>
+                    ) : null;
+                  })
+                ) : (
+                  <View>
+                    <Text>Kosong</Text>
+                  </View>
+                )}
               </View>
-            )}
-          </View>
 
-          <Text type="bold" style={{ paddingVertical: 10 }}>
-            Unposted on Fun Feed
-          </Text>
+              <Text type="bold" style={{ paddingVertical: 10 }}>
+                Unposted on Fun Feed
+              </Text>
+            </>
+          ) : null}
 
           <View
             style={{
@@ -2976,214 +3049,218 @@ export default function ItineraryDetail(props) {
     switch (Anggota) {
       case "true":
         return status && status === "saved" ? (
-          <View
-            style={{
-              zIndex: 999999,
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              width: Dimensions.get("window").width,
-              backgroundColor: "white",
-              borderTopWidth: 1,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-              elevation: 3,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Button
-              disabled
-              text={t("addDestination")}
-              size="large"
-              style={{
-                backgroundColor: "#d3d3d3",
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            ></Button>
-
+          tabIndex == 0 ? (
             <View
               style={{
-                height: "100%",
-                width: "50%",
+                zIndex: 999999,
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                width: Dimensions.get("window").width,
+                backgroundColor: "white",
+                borderTopWidth: 1,
+                borderColor: "#F0F0F0",
+                shadowColor: "#F0F0F0",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 2,
+                elevation: 3,
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
               }}
             >
               <Button
                 disabled
-                text=""
+                text={t("addDestination")}
                 size="large"
-                color="tertiary"
-                type="circle"
                 style={{
-                  backgroundColor: "#f3f3f3",
+                  backgroundColor: "#d3d3d3",
                   borderRadius: 0,
                   width: "50%",
                   height: 56,
                   fontSize: 18,
                 }}
-              >
-                <Plusgrey width={20} height={20} />
-                <Text size="small" style={{ color: "#d3d3d3" }}>
-                  {t("addOption")}
-                </Text>
-              </Button>
-              <Button
-                onPress={() => {
-                  setStatus("edit"), setshowside(false);
-                }}
-                text=""
-                size="large"
-                variant="transparent"
-                type="circle"
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: 0,
-                  width: "50%",
-                  height: 56,
-                  fontSize: 18,
-                }}
-              >
-                <Create width={20} height={20} />
-                <Text
-                  size="small"
-                  style={
-                    {
-                      // color: '#d75995'
-                    }
-                  }
-                >
-                  {t("edit")}
-                </Text>
-              </Button>
-            </View>
-          </View>
-        ) : status == "edit" ? (
-          <View
-            style={{
-              zIndex: 999999,
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              width: Dimensions.get("window").width,
-              backgroundColor: "white",
-              borderTopWidth: 1,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-              elevation: 3,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Button
-              onPress={() => {
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itincountries,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itincountries,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              text={t("addDestination")}
-              size="large"
-              style={{
-                borderRadius: 0,
-                width: "50%",
-                height: 56,
-                fontSize: 18,
-              }}
-            ></Button>
+              ></Button>
 
+              <View
+                style={{
+                  height: "100%",
+                  width: "50%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  disabled
+                  text=""
+                  size="large"
+                  color="tertiary"
+                  type="circle"
+                  style={{
+                    backgroundColor: "#f3f3f3",
+                    borderRadius: 0,
+                    width: "50%",
+                    height: 56,
+                    fontSize: 18,
+                  }}
+                >
+                  <Plusgrey width={20} height={20} />
+                  <Text size="small" style={{ color: "#d3d3d3" }}>
+                    {t("addOption")}
+                  </Text>
+                </Button>
+                <Button
+                  onPress={() => {
+                    setStatus("edit"), setshowside(false);
+                  }}
+                  text=""
+                  size="large"
+                  variant="transparent"
+                  type="circle"
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 0,
+                    width: "50%",
+                    height: 56,
+                    fontSize: 18,
+                  }}
+                >
+                  <Create width={20} height={20} />
+                  <Text
+                    size="small"
+                    style={
+                      {
+                        // color: '#d75995'
+                      }
+                    }
+                  >
+                    {t("edit")}
+                  </Text>
+                </Button>
+              </View>
+            </View>
+          ) : null //tab bukan 0 status saved
+        ) : status == "edit" ? (
+          tabIndex == 0 ? (
             <View
               style={{
-                height: "100%",
-                width: "50%",
+                zIndex: 999999,
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                width: Dimensions.get("window").width,
+                backgroundColor: "white",
+                borderTopWidth: 1,
+                borderColor: "#F0F0F0",
+                shadowColor: "#F0F0F0",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 2,
+                elevation: 3,
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
               }}
             >
               <Button
                 onPress={() => {
-                  setModalcustom(true);
+                  let maxjam = datadayaktif.total_hours.split(":");
+                  let jam = parseFloat(maxjam[0]);
+                  let menit = parseFloat(maxjam[1]);
+                  if (jam < 24) {
+                    if (jam < 23) {
+                      props.navigation.push("itindest", {
+                        IdItinerary: itincountries,
+                        token: token,
+                        datadayaktif: datadayaktif,
+                        dataDes:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail
+                            : null,
+                        lat: datadetail.itinerary_detail.city.latitude,
+                        long: datadetail.itinerary_detail.city.longitude,
+                      });
+                    } else if (jam === 23 && menit === 0) {
+                      props.navigation.push("itindest", {
+                        IdItinerary: itincountries,
+                        token: token,
+                        datadayaktif: datadayaktif,
+                        dataDes:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail
+                            : null,
+                        lat: datadetail.itinerary_detail.city.latitude,
+                        long: datadetail.itinerary_detail.city.longitude,
+                      });
+                    } else {
+                      Alert.alert(t("alertjam"));
+                    }
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
                 }}
-                text=""
+                text={t("addDestination")}
                 size="large"
-                color="tertiary"
-                type="circle"
                 style={{
                   borderRadius: 0,
                   width: "50%",
                   height: 56,
                   fontSize: 18,
                 }}
-              >
-                <Plus width={20} height={20} />
-                <Text size="small" style={{ color: "#209fae" }}>
-                  {t("addOption")}
-                </Text>
-              </Button>
-              <Button
-                onPress={() => {
-                  completePlan();
-                }}
-                text=""
-                size="large"
-                variant="transparent"
-                type="circle"
+              ></Button>
+
+              <View
                 style={{
-                  borderRadius: 0,
+                  height: "100%",
                   width: "50%",
-                  height: 56,
-                  fontSize: 18,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <Disketpink width={20} height={20} />
-                <Text size="small" style={{ color: "#d75995" }}>
-                  {t("completePlan")}
-                </Text>
-              </Button>
+                <Button
+                  onPress={() => {
+                    setModalcustom(true);
+                  }}
+                  text=""
+                  size="large"
+                  color="tertiary"
+                  type="circle"
+                  style={{
+                    borderRadius: 0,
+                    width: "50%",
+                    height: 56,
+                    fontSize: 18,
+                  }}
+                >
+                  <Plus width={20} height={20} />
+                  <Text size="small" style={{ color: "#209fae" }}>
+                    {t("addOption")}
+                  </Text>
+                </Button>
+                <Button
+                  onPress={() => {
+                    completePlan();
+                  }}
+                  text=""
+                  size="large"
+                  variant="transparent"
+                  type="circle"
+                  style={{
+                    borderRadius: 0,
+                    width: "50%",
+                    height: 56,
+                    fontSize: 18,
+                  }}
+                >
+                  <Disketpink width={20} height={20} />
+                  <Text size="small" style={{ color: "#d75995" }}>
+                    {t("completePlan")}
+                  </Text>
+                </Button>
+              </View>
             </View>
-          </View>
+          ) : null //tab bukan 0 status edit
         ) : (
           <View
             style={{
@@ -4049,6 +4126,60 @@ export default function ItineraryDetail(props) {
             >
               <Text size="description" type="regular" style={{}}>
                 Add Activity to Itinerary
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          onBackdropPress={() => {
+            setmodalcover(false);
+          }}
+          onRequestClose={() => setmodalcover(false)}
+          onDismiss={() => setmodalcover(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalcover}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              padding: 20,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setmodalcover(false), pickcamera();
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ color: "#d75995" }}
+              >
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setmodalcover(false), pickGallery();
+              }}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenGallery")}
               </Text>
             </TouchableOpacity>
           </View>

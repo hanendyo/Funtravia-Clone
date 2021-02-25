@@ -314,15 +314,7 @@ export const dateFormatMDY = (date) => {
 // from 22-01-2020 00:00:00 to Hari
 export const dateFormatHari = (date) => {
   date = date.split(" ");
-  var days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let formattedDate = new Date(date[0]);
   let newDate = days[formattedDate.getDay()];
   return newDate;
