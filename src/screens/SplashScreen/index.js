@@ -12,36 +12,46 @@ import { SlideSatu, SlideDua, SlideTiga, WhiteMascot } from "../../assets/png";
 import { Xgray } from "../../assets/svg";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
+import { FlatList } from "react-native-gesture-handler";
 
 export default function SplashScreen(props) {
 	const { height, width } = Dimensions.get("screen");
 	const { t } = useTranslation();
-	const imageScroll = useRef();
+	const imageCarousel = [SlideSatu, SlideDua, SlideTiga];
+	var imageScroll = useRef();
+	let maxSlider = 2;
+	let index = 0;
 
 	useEffect(() => {
 		props.navigation.setOptions({
 			headerShown: false,
 		});
+		if (imageScroll.current) {
+			setInterval(() => {
+				let nextIndex = 0;
+				if (index < maxSlider) {
+					nextIndex = index + 1;
+				}
+				imageScroll.current.scrollToIndex({ animated: true, index: nextIndex });
+				index = nextIndex;
+			}, 3000);
+		}
 	}, []);
-
-	let currentIndex = 1;
-	setInterval(() => {
-		imageScroll.current.scrollTo({
-			animated: true,
-			x: width * currentIndex,
-			y: 0,
-		});
-		currentIndex = currentIndex >= 2 ? 0 : currentIndex + 1;
-	}, 5000);
 
 	return (
 		<SafeAreaView style={styles.main}>
 			<StatusBar backgroundColor="#14646E" />
-			<ScrollView ref={imageScroll} horizontal={true} pagingEnabled={true}>
-				<Image source={SlideSatu} style={{ height: height, width: width }} />
-				<Image source={SlideDua} style={{ height: height, width: width }} />
-				<Image source={SlideTiga} style={{ height: height, width: width }} />
-			</ScrollView>
+			<FlatList
+				ref={imageScroll}
+				horizontal={true}
+				pagingEnabled={true}
+				data={imageCarousel}
+				renderItem={({ item }) => {
+					return (
+						<Image source={item} style={{ height: height, width: width }} />
+					);
+				}}
+			/>
 			<View
 				style={{
 					position: "absolute",
