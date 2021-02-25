@@ -8,10 +8,11 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
-  // Image,
+  Image,
 } from "react-native";
+// import { OptimizedFlatList as FlatList } from "react-native-optimized-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Image from "react-native-auto-scale-image";
+import { Image as Imagescale } from "react-native-auto-scale-image";
 import Modal from "react-native-modal";
 import { CustomImage } from "../../component";
 import {
@@ -35,6 +36,7 @@ import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import ReadMore from "react-native-read-more-text";
 
+import { NetworkStatus } from "@apollo/client";
 const deletepost = gql`
   mutation($post_id: ID!) {
     delete_post(post_id: $post_id) {
@@ -197,7 +199,7 @@ export default function FeedList({ props, token }) {
     networkStatus,
   } = useQuery(FeedPageing, {
     variables: {
-      limit: 3,
+      limit: 10,
       offset: 0,
     },
     context: {
@@ -214,10 +216,10 @@ export default function FeedList({ props, token }) {
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
     feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
-  // console.log(feed_post_pageing);
+  console.log(feed_post_pageing);
 
-  const [refreshing, setRefreshing] = React.useState(false);
-
+  const [refreshing, setRefreshing] = useState(false);
+  const refresstatus = networkStatus === NetworkStatus.refetch;
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
     refetch();
@@ -230,28 +232,39 @@ export default function FeedList({ props, token }) {
       setTimeout(resolve, timeout);
     });
   };
-
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.feed_post_pageing;
-    const datas = [
-      ...prev.feed_post_pageing.datas,
-      ...fetchMoreResult.feed_post_pageing.datas,
-    ];
-    return Object.assign({}, prev, {
-      feed_post_pageing: {
-        __typename: prev.feed_post_pageing.__typename,
-        page_info,
-        datas,
-      },
-    });
+    console.log("length_prev", prev.feed_post_pageing.datas.length);
+    console.log("offset", fetchMoreResult.feed_post_pageing.page_info.offset);
+    if (
+      prev.feed_post_pageing.datas.length !==
+        fetchMoreResult.feed_post_pageing.page_info.offset &&
+      prev.feed_post_pageing.datas.length <
+        fetchMoreResult.feed_post_pageing.page_info.offset
+    ) {
+      console.log("masuk");
+      if (!fetchMoreResult) return prev;
+      // console.log("fatchmore", fetchMoreResult.feed_post_pageing.datas);
+      const { page_info } = fetchMoreResult.feed_post_pageing;
+      const datas = [
+        ...prev.feed_post_pageing.datas,
+        ...fetchMoreResult.feed_post_pageing.datas,
+      ];
+      // no == 1;
+      // console.log(datas);
+      return Object.assign({}, prev, {
+        feed_post_pageing: {
+          __typename: prev.feed_post_pageing.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
-
   const handleOnEndReached = () => {
     if (dataPost.feed_post_pageing.page_info.hasNextPage) {
       return fetchMore({
         variables: {
-          limit: 3,
+          limit: 10,
           offset: dataPost.feed_post_pageing.page_info.offset,
         },
         updateQuery: onUpdate,
@@ -333,11 +346,6 @@ export default function FeedList({ props, token }) {
   };
 
   const loadAsync = async () => {
-    // await GetDataSetting();
-    // if (datas && datas.setting_data) {
-    // 	await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
-    // }
-
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -778,23 +786,23 @@ export default function FeedList({ props, token }) {
               }}
             >
               {/* {item && item.assets && item.assets[0].filepath ? ( */}
-              <Image
+              {/* <Imagescale
                 style={{
                   width: Dimensions.get("window").width - 40,
                   borderRadius: 15,
                   alignSelf: "center",
                 }}
                 uri={item.assets[0].filepath}
+              /> */}
+              <Image
+                style={{
+                  width: Dimensions.get("window").width - 40,
+                  height: Dimensions.get("window").width - 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                }}
+                source={{ uri: item.assets[0].filepath }}
               />
-              {/* <Image
-                    style={{
-                      width: Dimensions.get("window").width - 40,
-                      height: Dimensions.get("window").width - 40,
-                      borderRadius: 15,
-                      alignSelf: "center",
-                    }}
-                    source={{uri:item.assets[0].filepath}}
-                  /> */}
               {/* ) : null} */}
             </View>
 
@@ -968,9 +976,9 @@ export default function FeedList({ props, token }) {
         style={{
           paddingVertical: 7,
         }}
-        initialNumToRender={7}
-        keyExtractor={(item) => item.id_post}
-        extraData={liked}
+        // initialNumToRender={7}
+        keyExtractor={(item) => item.id}
+        // extraData={liked}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -996,8 +1004,10 @@ export default function FeedList({ props, token }) {
             </View>
           ) : null
         }
+        // initialNumToRender={1}
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
+        onEndThreshold={3000}
       />
     </View>
   );

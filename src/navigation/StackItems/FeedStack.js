@@ -12,90 +12,91 @@ import SearchFeedByLocation from "../../screens/Feed/SearchFeedByLocation";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
-	return (
-		<FeedStack.Navigator>
-			<FeedStack.Screen
-				name="Post"
-				component={Postscreen}
-				options={{
-					headerShown: false,
-					headerBackTitleVisible: false,
+  return (
+    <FeedStack.Navigator>
+      <FeedStack.Screen
+        name="Post"
+        component={Postscreen}
+        options={{
+          headerShown: false,
+          headerBackTitleVisible: false,
 
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen
-				name="CommentPost"
-				component={CommentPost}
-				options={{
-					headerShown: false,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen
-				name="EditPost"
-				component={EditPost}
-				options={{
-					headerShown: false,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen
-				name="SinglePost"
-				component={SinglePost}
-				options={{
-					headerShown: false,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen name="CreatePostScreen" component={CreatePostScreen} />
-			<FeedStack.Screen
-				name="CommentsById"
-				component={CommentsById}
-				options={{
-					headerTitle: "",
-					headerTransparent: false,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen
-				name="SearchPageFeed"
-				component={SearchPageFeed}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="CommentPost"
+        component={CommentPost}
+        options={{
+          headerShown: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="EditPost"
+        component={EditPost}
+        options={{
+          headerShown: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="SinglePost"
+        component={SinglePost}
+        options={{
+          headerShown: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen name="CreatePostScreen" component={CreatePostScreen} />
+      <FeedStack.Screen
+        name="CommentsById"
+        component={CommentsById}
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="SearchPageFeed"
+        component={SearchPageFeed}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
 
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen
-				name="SearchFeedByTag"
-				component={SearchFeedByTag}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+        backBehavior={"Post"}
+      />
+      <FeedStack.Screen
+        name="SearchFeedByTag"
+        component={SearchFeedByTag}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
 
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<FeedStack.Screen
-				name="SearchFeedByLocation"
-				component={SearchFeedByLocation}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="SearchFeedByLocation"
+        component={SearchFeedByLocation}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
 
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-		</FeedStack.Navigator>
-	);
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+    </FeedStack.Navigator>
+  );
 }
