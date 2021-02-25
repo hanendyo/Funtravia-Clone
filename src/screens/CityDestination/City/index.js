@@ -648,72 +648,122 @@ export default function CityDetail(props) {
                   padding: 20,
                 }}
               >
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  scrollEnabled
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                  }}
-                  contentContainerStyle={{
-                    flexDirection: "column",
-                    flexWrap: "wrap",
-                  }}
-                  data={render.journal}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <Ripple
-                        onPress={() =>
-                          props.navigation.navigate("JournalStackNavigation", {
-                            screen: "Journal",
-                            params: {
-                              dataPopuler: item,
-                            },
-                          })
-                        }
+                {render.journal ? (
+                  <ImageSlider
+                    images={render.journal ? spreadData(render.journal) : []}
+                    style={{
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      backgroundColor: "#white",
+                    }}
+                    customSlide={({ index, item, style, width }) => (
+                      <View key={"ky" + index}>
+                        {item.map((dataX, inde) => {
+                          // console.log(dataX);
+                          return (
+                            <Ripple
+                              onPress={() =>
+                                props.navigation.push(
+                                  "JournalStackNavigation",
+                                  {
+                                    screen: "DetailJournal",
+                                    params: {
+                                      dataPopuler: dataX,
+                                    },
+                                  }
+                                )
+                              }
+                              style={{
+                                flexDirection: "row",
+                                width: width - 80,
+                                height: width * 0.2,
+                              }}
+                            >
+                              <Image
+                                source={
+                                  item.picture
+                                    ? { uri: dataX.picture }
+                                    : default_image
+                                }
+                                style={{
+                                  height: width * 0.15,
+                                  width: width * 0.15,
+                                  borderRadius: 5,
+                                }}
+                              ></Image>
+                              <View
+                                style={{
+                                  paddingHorizontal: 10,
+                                  width: width - (100 + width * 0.15),
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <View style={{ width: "100%" }}>
+                                  <Text style={{ width: "80%" }} type="bold">
+                                    {dataX.title}
+                                  </Text>
+                                  <Text>
+                                    <Truncate text={dataX.text} length={30} />
+                                  </Text>
+                                </View>
+                                {/* <Love height={15} width={15} /> */}
+                              </View>
+                            </Ripple>
+                          );
+                        })}
+                      </View>
+                    )}
+                    customButtons={(position, move) => (
+                      <View
                         style={{
+                          paddingTop: 10,
+                          alignContent: "center",
+                          alignItems: "center",
                           flexDirection: "row",
-                          // borderWidth: 1,
-                          width: width - 80,
-                          height: width * 0.2,
+                          justifyContent: "center",
                         }}
                       >
-                        <Image
-                          source={
-                            item.picture ? { uri: item.picture } : default_image
+                        {(render.journal ? spreadData(render.journal) : []).map(
+                          (image, index) => {
+                            return (
+                              <TouchableHighlight
+                                key={"keys" + index}
+                                underlayColor="#f7f7f700"
+                                // onPress={() => move(index)}
+                              >
+                                <View
+                                  style={{
+                                    height: position === index ? 5 : 5,
+                                    width: position === index ? 15 : 5,
+                                    borderRadius: position === index ? 7 : 3,
+                                    backgroundColor:
+                                      position === index
+                                        ? "#209fae"
+                                        : "#d3d3d3",
+                                    marginHorizontal: 3,
+                                  }}
+                                ></View>
+                              </TouchableHighlight>
+                            );
                           }
-                          style={{
-                            height: width * 0.15,
-                            width: width * 0.15,
-                            borderRadius: 5,
-                          }}
-                        ></Image>
-                        <View style={{ width: "100%", paddingHorizontal: 10 }}>
-                          <Text type="bold">{item.title}</Text>
-                          <View
-                            style={{
-                              width: width - (100 + width * 0.15),
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              alignContent: "center",
-                            }}
-                          >
-                            <Text>
-                              <Truncate text={item.text} length={30} />
-                            </Text>
-                            {item.liked === true ? (
-                              <Love height={15} width={15} />
-                            ) : (
-                              <LikeEmpty height={15} width={15} />
-                            )}
-                          </View>
-                        </View>
-                      </Ripple>
-                    );
-                  }}
-                />
+                        )}
+                      </View>
+                    )}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>Travel Journal Empty</Text>
+                  </View>
+                )}
               </View>
             </View>
           ) : null}
@@ -1281,6 +1331,28 @@ export default function CityDetail(props) {
     await getPackageDetail();
     // await _fetchItem();
     // await setloadings(false);
+  };
+
+  const spreadData = (data) => {
+    let tmpData = [];
+    let count = 1;
+    let tmpArray = [];
+    for (let val of data) {
+      if (count < 2) {
+        tmpArray.push(val);
+        // console.log("masuk", tmpArray);
+        count++;
+      } else {
+        tmpArray.push(val);
+        tmpData.push(tmpArray);
+        count = 1;
+        tmpArray = [];
+      }
+    }
+    if (tmpArray.length) {
+      tmpData.push(tmpArray);
+    }
+    return tmpData;
   };
 
   const Renderheader = ({ dataheader, actives }) => {
