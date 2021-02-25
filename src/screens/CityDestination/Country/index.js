@@ -385,7 +385,7 @@ export default function Country(props) {
     }
   };
 
-  const Renderfact = ({ data }) => {
+  const Renderfact = ({ data, header, country }) => {
     var y = data.length;
     var x = 2;
     var z = 3;
@@ -405,7 +405,11 @@ export default function Country(props) {
           return (
             <Ripple
               onPress={() => {
-                Alert.alert("coming soon");
+                props.navigation.push("ArticelCategory", {
+                  id: item.id,
+                  header: header,
+                  country: country,
+                });
               }}
               style={{
                 width:
@@ -444,7 +448,7 @@ export default function Country(props) {
     let count = 1;
     let tmpArray = [];
     for (let val of data) {
-      if (count < 3) {
+      if (count < 2) {
         tmpArray.push(val);
         // console.log("masuk", tmpArray);
         count++;
@@ -622,73 +626,107 @@ export default function Country(props) {
                 }}
               >
                 {render.journal ? (
-                  <FlatList
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                    scrollEnabled
+                  <ImageSlider
+                    images={render.journal ? spreadData(render.journal) : []}
                     style={{
-                      height: "100%",
-                      width: "100%",
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      backgroundColor: "#white",
                     }}
-                    contentContainerStyle={{
-                      flexDirection: "column",
-                      flexWrap: "wrap",
-                    }}
-                    data={render.journal}
-                    renderItem={({ item, index }) => {
-                      return (
-                        <Ripple
-                          onPress={() =>
-                            props.navigation.navigate(
-                              "JournalStackNavigation",
-                              {
-                                screen: "Journal",
-                                params: {
-                                  dataPopuler: item,
-                                },
+                    customSlide={({ index, item, style, width }) => (
+                      <View>
+                        {item.map((dataX, inde) => {
+                          // console.log(dataX);
+                          return (
+                            <Ripple
+                              onPress={() =>
+                                props.navigation.push(
+                                  "JournalStackNavigation",
+                                  {
+                                    screen: "DetailJournal",
+                                    params: {
+                                      dataPopuler: dataX,
+                                    },
+                                  }
+                                )
                               }
-                            )
-                          }
-                          style={{
-                            flexDirection: "row",
-                            width: width - 80,
-                            height: width * 0.2,
-                          }}
-                        >
-                          <Image
-                            source={
-                              item.picture
-                                ? { uri: item.picture }
-                                : default_image
-                            }
-                            style={{
-                              height: width * 0.15,
-                              width: width * 0.15,
-                              borderRadius: 5,
-                            }}
-                          ></Image>
-                          <View
-                            style={{ width: "100%", paddingHorizontal: 10 }}
-                          >
-                            <Text type="bold">{item.title}</Text>
-                            <View
                               style={{
-                                width: width - (100 + width * 0.15),
                                 flexDirection: "row",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                alignContent: "center",
+                                width: width - 80,
+                                height: width * 0.2,
                               }}
                             >
-                              <Text>
-                                <Truncate text={item.text} length={30} />
-                              </Text>
-                              <Love height={15} width={15} />
-                            </View>
-                          </View>
-                        </Ripple>
-                      );
-                    }}
+                              <Image
+                                source={
+                                  item.picture
+                                    ? { uri: dataX.picture }
+                                    : default_image
+                                }
+                                style={{
+                                  height: width * 0.15,
+                                  width: width * 0.15,
+                                  borderRadius: 5,
+                                }}
+                              ></Image>
+                              <View
+                                style={{
+                                  paddingHorizontal: 10,
+                                  width: width - (100 + width * 0.15),
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <View style={{ width: "100%" }}>
+                                  <Text style={{ width: "80%" }} type="bold">
+                                    {dataX.title}
+                                  </Text>
+                                  <Text>
+                                    <Truncate text={dataX.text} length={30} />
+                                  </Text>
+                                </View>
+                                {/* <Love height={15} width={15} /> */}
+                              </View>
+                            </Ripple>
+                          );
+                        })}
+                      </View>
+                    )}
+                    customButtons={(position, move) => (
+                      <View
+                        style={{
+                          paddingTop: 10,
+                          alignContent: "center",
+                          alignItems: "center",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {(render.journal ? spreadData(render.journal) : []).map(
+                          (image, index) => {
+                            return (
+                              <TouchableHighlight
+                                key={index}
+                                underlayColor="#f7f7f700"
+                                // onPress={() => move(index)}
+                              >
+                                <View
+                                  style={{
+                                    height: position === index ? 5 : 5,
+                                    width: position === index ? 15 : 5,
+                                    borderRadius: position === index ? 7 : 3,
+                                    backgroundColor:
+                                      position === index
+                                        ? "#209fae"
+                                        : "#d3d3d3",
+                                    marginHorizontal: 3,
+                                  }}
+                                ></View>
+                              </TouchableHighlight>
+                            );
+                          }
+                        )}
+                      </View>
+                    )}
                   />
                 ) : (
                   <View
@@ -748,13 +786,15 @@ export default function Country(props) {
                       borderTopLeftRadius: 5,
                       borderTopRightRadius: 5,
                       backgroundColor: "#white",
-                      // width: Dimensions.get('screen').width - 40,
+                      width: Dimensions.get("screen").width - 60,
                     }}
                     customSlide={({ index, item, style, width }) => (
                       <View
-                        key={"kota" + item.id}
+                        key={"kota=" + item.id}
                         style={{
-                          width: width - 60,
+                          width: Dimensions.get("screen").width - 60,
+                          alignItems: "center",
+                          alignContent: "center",
                         }}
                       >
                         <Text
@@ -781,7 +821,7 @@ export default function Country(props) {
                             height: width * 0.4,
                             width: "99%",
                             borderRadius: 10,
-                            marginVertical: 5,
+                            marginVertical: 2,
                           }}
                         >
                           <Image
@@ -803,62 +843,66 @@ export default function Country(props) {
                             justifyContent: "flex-start",
                           }}
                         >
-                          {render.city && render.city.length > 0
-                            ? render.city.map((item, index) => {
-                                return index > 0 ? (
-                                  <Ripple
-                                    onPress={() => {
-                                      props.navigation.navigate(
-                                        "CountryStack",
-                                        {
-                                          screen: "CityDetail",
-                                          params: {
-                                            data: {
-                                              city_id: item.id,
-                                              city_name: item.name,
-                                            },
-                                            exParam: true,
-                                          },
-                                        }
-                                      );
-                                    }}
+                          {item.destination && item.destination.length > 0 ? (
+                            <FlatList
+                              data={item.destination}
+                              numColumns={4}
+                              renderItem={({ item, index }) => (
+                                <Ripple
+                                  onPress={() => {
+                                    props.navigation.navigate("detailStack", {
+                                      id: item.id,
+                                      name: item.name,
+                                    });
+                                  }}
+                                  style={{
+                                    // width: (width - 60) / 4,
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    borderColor: "#209fae",
+                                    padding: 2,
+                                  }}
+                                >
+                                  <Image
                                     style={{
-                                      width: (width - 60) / 4,
-                                      alignContent: "center",
-                                      alignItems: "center",
-                                      padding: 2,
-                                      borderColor: "#209fae",
+                                      borderRadius: 10,
+                                      height: (width - 80) / 4,
+                                      width: (width - 80) / 4,
+                                    }}
+                                    source={
+                                      item.images
+                                        ? { uri: item.images[0].image }
+                                        : default_image
+                                    }
+                                  ></Image>
+                                  <Text
+                                    size="small"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                      marginTop: 3,
                                     }}
                                   >
-                                    <Image
-                                      style={{
-                                        borderRadius: 10,
-                                        height: (width - 75) / 4,
-                                        width: (width - 75) / 4,
-                                      }}
-                                      source={
-                                        item.image
-                                          ? { uri: item.image }
-                                          : default_image
-                                      }
-                                    ></Image>
-                                    <Text
-                                      size="small"
-                                      type="bold"
-                                      style={{
-                                        textAlign: "center",
-                                        marginTop: 3,
-                                      }}
-                                    >
-                                      <Truncate
-                                        text={Capital({ text: item.name })}
-                                        length={16}
-                                      />
-                                    </Text>
-                                  </Ripple>
-                                ) : null;
-                              })
-                            : null}
+                                    <Truncate
+                                      text={Capital({ text: item.name })}
+                                      length={13}
+                                    />
+                                  </Text>
+                                </Ripple>
+                              )}
+                            />
+                          ) : (
+                            <View
+                              style={{
+                                flex: 1,
+                                paddingTop: 100,
+                                alignContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text>No Popular Destintation</Text>
+                            </View>
+                          )}
                         </View>
                       </View>
                     )}
@@ -876,13 +920,13 @@ export default function Country(props) {
                           justifyContent: "center",
                         }}
                       >
-                        {(render.city.length > 0 ? render.city : []).map(
+                        {(render.city.length ? render.city : []).map(
                           (image, index) => {
                             return (
                               <TouchableHighlight
-                                key={index}
+                                key={"lol" + index}
                                 underlayColor="#f7f7f700"
-                                onPress={() => move(index)}
+                                // onPress={() => move(index)}
                               >
                                 <View
                                   style={{
@@ -981,6 +1025,8 @@ export default function Country(props) {
                           ? render.article_type
                           : []
                       }
+                      header={render.name + " " + t("unique facts")}
+                      country={props.route.params.data.id}
                     />
                   </View>
                 </View>
