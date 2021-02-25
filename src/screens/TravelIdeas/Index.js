@@ -80,9 +80,8 @@ export default function TravelIdeas(props) {
           style={{
             width: width,
             height: width - 220,
+            marginTop: -1,
             backgroundColor: "#209fae",
-            // borderBottomRightRadius: width / 5.5,
-            // borderBottomLeftRadius: width / 5.5,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -155,7 +154,7 @@ export default function TravelIdeas(props) {
             backgroundColor: "#FFFFFF",
             position: "absolute",
             // bottom: -80,
-            top: 0,
+            top: 2,
             // justifyContent: "center",
             alignItems: "center",
             // borderWidth: 1,
