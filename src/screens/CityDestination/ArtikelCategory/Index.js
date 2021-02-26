@@ -11,17 +11,16 @@ import {
 import { Text, Button } from "../../../component";
 import { default_image } from "../../../assets/png";
 import { Arrowbackwhite, LikeEmpty, Search } from "../../../assets/svg";
-import PopularJournal from "../../../graphQL/Query/Journal/PopularJournal";
-import JournalList from "../../../graphQL/Query/Journal/JournalList";
+import ArtikelList from "../../../graphQL/Query/Countries/Articlelist";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { Truncate } from "../../../component";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
-import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
+import Category from "../../../graphQL/Query/Countries/Articlecategory";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function ArtikelCategory(props) {
-  let [category, setCategory] = useState(props.route.params.category);
+  let [category, setCategory] = useState(props.route.params.id);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
   const HeaderComponent = {
@@ -62,14 +61,6 @@ export default function ArtikelCategory(props) {
   };
 
   const { t } = useTranslation();
-  const [fetchDataPopuler, { data, loading }] = useLazyQuery(PopularJournal, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  });
 
   const {
     data: dataList,
@@ -77,10 +68,10 @@ export default function ArtikelCategory(props) {
     fetchMore,
     refetch,
     networkStatus,
-  } = useQuery(JournalList, {
+  } = useQuery(ArtikelList, {
     variables: {
       category_id: category,
-      order_by: null,
+      country_id: props.route.params.country,
       limit: 10,
       offset: 0,
       keyword: search,
@@ -94,8 +85,8 @@ export default function ArtikelCategory(props) {
   });
 
   let list = [];
-  if (dataList && "datas" in dataList.journal_list) {
-    list = dataList.journal_list.datas;
+  if (dataList && "datas" in dataList.list_articel_country_category) {
+    list = dataList.list_articel_country_category.datas;
   }
 
   const [refreshing, setRefreshing] = useState(false);
@@ -115,15 +106,15 @@ export default function ArtikelCategory(props) {
 
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.journal_list;
+    const { page_info } = fetchMoreResult.list_articel_country_category;
     const datas = [
-      ...prev.journal_list.datas,
-      ...fetchMoreResult.journal_list.datas,
+      ...prev.list_articel_country_category.datas,
+      ...fetchMoreResult.list_articel_country_category.datas,
     ];
 
     return Object.assign({}, prev, {
       list: {
-        __typename: prev.journal_list.__typename,
+        __typename: prev.list_articel_country_category.__typename,
         page_info,
         datas,
       },
@@ -131,27 +122,28 @@ export default function ArtikelCategory(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataList.journal_list.page_info.hasNextPage) {
+    if (dataList.list_articel_country_category.page_info.hasNextPage) {
       return fetchMore({
         variables: {
           category_id: null,
-          keyword: search.keyword,
+          keyword: search,
           orderby: null,
           limit: 10,
-          offset: dataList.journal_list.page_info.offset,
+          offset: dataList.list_articel_country_category.page_info.offset,
         },
         updateQuery: onUpdate,
       });
     }
   };
 
-  const [
-    fetchCategory,
-    { data: dataCategory, loading: loadingCategory, error: errorCategory },
-  ] = useLazyQuery(Category, {
+  const {
+    data: dataCategory,
+    loading: loadingCategory,
+    error: errorCategory,
+    refetch: fetchCategory,
+  } = useQuery(Category, {
     variables: {
-      category_id: null,
-      order_by: null,
+      id: props.route.params.country,
     },
     fetchPolicy: "network-only",
     context: {
@@ -161,20 +153,16 @@ export default function ArtikelCategory(props) {
     },
   });
 
-  const JournalDetail = (data) => {
-    props.navigation.push("JournalStackNavigation", {
-      screen: "DetailJournal",
-      params: {
-        dataPopuler: data,
-      },
+  const ArticelDetail = (data) => {
+    props.navigation.push("ArticelDetail", {
+      id: data.id,
     });
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      fetchCategory();
-      fetchDataPopuler();
+      // fetchCategory();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -182,6 +170,8 @@ export default function ArtikelCategory(props) {
   {
     /* ======================================= Render All ====================================================*/
   }
+
+  console.log(list);
 
   return (
     <View style={{ flex: 1 }}>
@@ -211,7 +201,7 @@ export default function ArtikelCategory(props) {
           />
         </View>
         <FlatList
-          data={dataCategory?.category_journal}
+          data={dataCategory?.category_article_bycountry}
           contentContainerStyle={{
             flexDirection: "row",
             paddingRight: 10,
@@ -250,73 +240,76 @@ export default function ArtikelCategory(props) {
           <FlatList
             data={list}
             renderItem={({ item, index }) => (
-              <View>
-                <Pressable
-                  style={{ flexDirection: "row" }}
-                  onPress={() => JournalDetail(item)}
+              <Pressable
+                style={{
+                  flexDirection: "row",
+                  padding: 2,
+                }}
+                onPress={() => ArticelDetail(item)}
+              >
+                <Image
+                  source={
+                    item.firstimg ? { uri: item.firstimg } : default_image
+                  }
+                  style={{
+                    width: "21%",
+                    height: 110,
+                    borderRadius: 10,
+                  }}
+                />
+                <View
+                  style={{
+                    width: "79%",
+                    marginVertical: 5,
+                    paddingLeft: 10,
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <Image
-                    source={
-                      item.firstimg ? { uri: item.firstimg } : default_image
-                    }
-                    style={{
-                      width: "21%",
-                      height: 110,
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      width: "79%",
-                      marginVertical: 5,
-                      paddingLeft: 10,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{ color: "#209FAE" }}
-                        size={"small"}
-                        type={"bold"}
-                      >
-                        #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                  <View>
+                    <Text
+                      style={{ color: "#209FAE" }}
+                      size={"small"}
+                      type={"bold"}
+                    >
+                      #{item?.countries?.name.toLowerCase().replace(/ /g, "")} #
+                      {item?.category?.name.toLowerCase().replace(/ /g, "")}
+                    </Text>
+                    <Text
+                      size={"label"}
+                      type={"bold"}
+                      style={{ color: "#3E3E3E", marginTop: 5 }}
+                    >
+                      <Truncate
+                        text={item.title ? item.title : ""}
+                        length={40}
+                      />
+                    </Text>
+                    <Text
+                      size={"small"}
+                      type={"regular"}
+                      style={{
+                        textAlign: "justify",
+                        marginTop: 5,
+                        lineHeight: 16,
+                      }}
+                    >
+                      <Truncate
+                        text={item.firsttxt ? item.firsttxt : ""}
+                        length={100}
+                      />
+                    </Text>
+                  </View>
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text size={"small"} type={"regular"}>
+                        {dateFormatMonthYears(item.date)}
                       </Text>
-                      <Text
-                        size={"label"}
-                        type={"bold"}
-                        style={{ color: "#3E3E3E", marginTop: 5 }}
-                      >
-                        <Truncate
-                          text={item.title ? item.title : ""}
-                          length={40}
-                        />
-                      </Text>
-                      <Text
-                        size={"small"}
-                        type={"regular"}
-                        style={{
-                          textAlign: "justify",
-                          marginTop: 5,
-                          lineHeight: 16,
-                        }}
-                      >
-                        <Truncate
-                          text={item.firsttxt ? item.firsttxt : ""}
-                          length={110}
-                        />
-                      </Text>
-                    </View>
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Text size={"small"} type={"regular"}>
-                          {dateFormatMonthYears(item.date)}
-                        </Text>
-                        <View
+                      {/* <View
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
@@ -334,20 +327,28 @@ export default function ArtikelCategory(props) {
                                 t("likeMany")
                               : item.article_response_count + " " + t("like")}
                           </Text>
-                        </View>
-                      </View>
+                        </View> */}
                     </View>
                   </View>
-                </Pressable>
+                </View>
+              </Pressable>
+            )}
+            ItemSeparatorComponent={() => {
+              return (
                 <View
                   style={{
-                    margin: 10,
-                    borderBottomColor: "#f6f6f6",
-                    borderBottomWidth: 0.9,
+                    height: 2,
+                    backgroundColor: "#f6f6f6",
                   }}
-                />
-              </View>
-            )}
+                ></View>
+              );
+            }}
+            contentContainerStyle={
+              {
+                // paddingTop: 10,
+                // backgroundColor: "#f3f3f3",
+              }
+            }
             keyExtractor={(item) => item.id}
             nestedScrollEnabled
             showsVerticalScrollIndicator={false}
