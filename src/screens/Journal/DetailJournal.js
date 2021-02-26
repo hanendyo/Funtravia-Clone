@@ -125,20 +125,25 @@ export default function DetailJournal(props) {
   }, []);
 
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult?.comment_journal_list;
-    const datas = [
-      ...prev?.comment_journal_list.datas,
-      ...fetchMoreResult?.comment_journal_list.datas,
-    ];
+    if (
+      prev.journal_list.datas.length <
+      fetchMoreResult.journal_list.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult?.comment_journal_list;
+      const datas = [
+        ...prev?.comment_journal_list.datas,
+        ...fetchMoreResult?.comment_journal_list.datas,
+      ];
 
-    return Object.assign({}, prev, {
-      listComment: {
-        __typename: prev?.comment_journal_list.__typename,
-        page_info,
-        datas,
-      },
-    });
+      return Object.assign({}, prev, {
+        listComment: {
+          __typename: prev?.comment_journal_list.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
 
   const handleOnEndReached = () => {

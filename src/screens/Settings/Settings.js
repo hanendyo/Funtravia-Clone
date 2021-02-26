@@ -20,7 +20,7 @@ export default function Settings(props) {
   let [language, setLanguage] = useState(i18n.language);
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
-  let [setting, setSetting] = useState();
+  let [setting, setSetting] = useState("");
 
   const HeaderComponent = {
     headerTitle: t("setting"),
@@ -623,7 +623,7 @@ export default function Settings(props) {
           </View>
         </Ripple>
       </View>
-      {data && data.country_list.length ? (
+      {data && data.country_list ? (
         <SettingNegara
           modals={modsettingnegara}
           setModelSetNegara={(e) => setModelSetNegara(e)}
