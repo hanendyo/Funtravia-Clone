@@ -8,11 +8,12 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
-  Image,
+  // Image,
 } from "react-native";
 // import { OptimizedFlatList as FlatList } from "react-native-optimized-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Image as Imagescale } from "react-native-auto-scale-image";
+import Image from "react-native-auto-scale-image";
+// import Image from "react-native-scalable-image";
 import Modal from "react-native-modal";
 import { CustomImage } from "../../component";
 import {
@@ -25,6 +26,7 @@ import {
   LikeBlack,
   CommentBlack,
 } from "../../assets/svg";
+import { default_image } from "../../assets/png";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -216,7 +218,7 @@ export default function FeedList({ props, token }) {
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
     feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
-  console.log(feed_post_pageing);
+  // console.log(feed_post_pageing);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -233,15 +235,13 @@ export default function FeedList({ props, token }) {
     });
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
-    console.log("length_prev", prev.feed_post_pageing.datas.length);
-    console.log("offset", fetchMoreResult.feed_post_pageing.page_info.offset);
+    // console.log("length_prev", prev.feed_post_pageing.datas.length);
+    // console.log("offset", fetchMoreResult.feed_post_pageing.page_info.offset);
     if (
-      prev.feed_post_pageing.datas.length !==
-        fetchMoreResult.feed_post_pageing.page_info.offset &&
       prev.feed_post_pageing.datas.length <
-        fetchMoreResult.feed_post_pageing.page_info.offset
+      fetchMoreResult.feed_post_pageing.page_info.offset
     ) {
-      console.log("masuk");
+      // console.log("masuk");
       if (!fetchMoreResult) return prev;
       // console.log("fatchmore", fetchMoreResult.feed_post_pageing.datas);
       const { page_info } = fetchMoreResult.feed_post_pageing;
@@ -785,25 +785,26 @@ export default function FeedList({ props, token }) {
                 borderRadius: 15,
               }}
             >
-              {/* {item && item.assets && item.assets[0].filepath ? ( */}
-              {/* <Imagescale
-                style={{
-                  width: Dimensions.get("window").width - 40,
-                  borderRadius: 15,
-                  alignSelf: "center",
-                }}
-                uri={item.assets[0].filepath}
-              /> */}
               <Image
                 style={{
                   width: Dimensions.get("window").width - 40,
-                  height: Dimensions.get("window").width - 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                  // height: Dimensions.get("window").width - 40,
+                }}
+                uri={item.assets[0].filepath}
+              />
+              {/* <Image
+                style={{
+                  // width: Dimensions.get("window").width - 40,
+                  // height: Dimensions.get("window").width - 40,
                   borderRadius: 15,
                   alignSelf: "center",
                 }}
+                width={Dimensions.get("window").width - 40}
                 source={{ uri: item.assets[0].filepath }}
-              />
-              {/* ) : null} */}
+                defaultSource={default_image}
+              /> */}
             </View>
 
             <View
