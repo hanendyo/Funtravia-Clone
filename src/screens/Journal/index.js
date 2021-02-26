@@ -128,7 +128,7 @@ export default function Journal(props) {
 
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (
-      prev.journal_list.datas.length !==
+      prev.journal_list.datas.length <
       fetchMoreResult.journal_list.page_info.offset
     ) {
       if (!fetchMoreResult) return prev;
@@ -231,7 +231,10 @@ export default function Journal(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "white" }}
+      stickyHeaderIndices={[1]}
+    >
       {/* ============================== Populer Journal ====================================================*/}
 
       {data && data.journal_most_populer ? (
@@ -309,7 +312,8 @@ export default function Journal(props) {
         <View
           style={{
             height: 50,
-            marginTop: 15,
+            marginTop: 5,
+            backgroundColor: "white",
           }}
         >
           <FlatList
@@ -317,6 +321,8 @@ export default function Journal(props) {
             contentContainerStyle={{
               flexDirection: "row",
               paddingHorizontal: 5,
+              marginTop: 5,
+              borderWidth: 1,
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -584,7 +590,7 @@ export default function Journal(props) {
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
 

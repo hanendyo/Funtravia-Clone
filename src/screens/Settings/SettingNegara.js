@@ -47,8 +47,6 @@ export default function SettingNegara({
   });
 
   const hasil = async (detail, selected) => {
-    console.log("detail :", detail);
-    console.log("selected :", selected);
     if (token || token !== "") {
       try {
         let response = await MutationsetCountry({
@@ -56,20 +54,15 @@ export default function SettingNegara({
             countries_id: detail.id,
           },
         });
-        // if (loadingLike) {
-        // 	Alert.alert('Loading!!');
-        // }
-        // if (errorLike) {
-        // 	throw new Error('Error Input');
-        // }
-
-        // console.log(response);
         if (response.data) {
           if (
             response.data.update_country_settings.code === 200 ||
             response.data.update_country_settings.code === "200"
           ) {
             selected.countries = detail;
+            let tempSetting = { ...selected };
+            tempSetting.cities = null;
+            console.log("setCity:", tempSetting);
             await AsyncStorage.setItem("setting", JSON.stringify(selected));
             var tempData = [...datacountry];
             for (var i in tempData) {
@@ -78,6 +71,7 @@ export default function SettingNegara({
             var index = tempData.findIndex((k) => k["id"] === detail.id);
             tempData[index].selected = true;
             setdataCountry(tempData);
+
             masukan(selected);
           } else {
             throw new Error(response.data.update_country_settings.message);

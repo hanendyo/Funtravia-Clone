@@ -7,37 +7,40 @@ import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@apollo/react-hooks";
-import setCountry from "../../graphQL/Mutation/Setting/setCountry";
+// import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 import { FunIcon } from "../../component";
+import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
+import { TextInput } from "react-native-gesture-handler";
 
-export default function SettingNegara({
+export default function SettingCity({
   modals,
-  setModelSetNegara,
+  setModalCity,
   masukan,
   data,
   selected,
   token,
 }) {
   const { t } = useTranslation();
-  let [datacountry, setdataCountry] = useState(data);
+  let [datacity, setdataCity] = useState(data);
+  // let [search, setSearch] = useState(selected.cities.name);
   let slider = useRef();
   const pushselected = () => {
-    if (selected?.countries) {
-      var tempData = [...datacountry];
+    console.log("selected.cities", selected.cities);
+    if (selected?.cities !== null) {
+      var tempData = [...datacity];
       for (var i of tempData) {
         i.selected = false;
       }
-      var index = tempData.findIndex(
-        (k) => k["id"] === selected?.countries?.id
-      );
+      var index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
       tempData[index].selected = true;
-      setdataCountry(tempData);
+      setdataCity(tempData);
     }
   };
+
   const [
-    MutationsetCountry,
-    { loading: loadingSet, data: dataSet, error: errorSet },
-  ] = useMutation(setCountry, {
+    mutationCity,
+    { data: dataCity, loading: loadingCity, error: errorCity },
+  ] = useMutation(CityMutation, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -47,40 +50,30 @@ export default function SettingNegara({
   });
 
   const hasil = async (detail, selected) => {
-    console.log("detail :", detail);
-    console.log("selected :", selected);
     if (token || token !== "") {
       try {
-        let response = await MutationsetCountry({
+        let response = await mutationCity({
           variables: {
-            countries_id: detail.id,
+            id: detail.id,
           },
         });
-        // if (loadingLike) {
-        // 	Alert.alert('Loading!!');
-        // }
-        // if (errorLike) {
-        // 	throw new Error('Error Input');
-        // }
-
-        // console.log(response);
         if (response.data) {
           if (
-            response.data.update_country_settings.code === 200 ||
-            response.data.update_country_settings.code === "200"
+            response.data.update_city_settings.code === 200 ||
+            response.data.update_city_settings.code === "200"
           ) {
-            selected.countries = detail;
+            selected.cities = detail;
             await AsyncStorage.setItem("setting", JSON.stringify(selected));
-            var tempData = [...datacountry];
+            var tempData = [...datacity];
             for (var i in tempData) {
               tempData[i].selected = false;
             }
             var index = tempData.findIndex((k) => k["id"] === detail.id);
             tempData[index].selected = true;
-            setdataCountry(tempData);
+            setdataCity(tempData);
             masukan(selected);
           } else {
-            throw new Error(response.data.update_country_settings.message);
+            throw new Error(response.data.update_city_settings.message);
           }
         }
       } catch (error) {
@@ -98,7 +91,7 @@ export default function SettingNegara({
   return (
     <Modal
       onRequestClose={() => {
-        setModelSetNegara(false);
+        setModalCity(false);
       }}
       animationIn="slideInRight"
       animationOut="slideOutRight"
@@ -134,7 +127,7 @@ export default function SettingNegara({
             color="tertiary"
             size="large"
             variant="transparent"
-            onPress={() => setModelSetNegara(false)}
+            onPress={() => setModalCity(false)}
           >
             <Arrowbackwhite width={20} height={20} />
           </Button>
@@ -144,7 +137,7 @@ export default function SettingNegara({
               color: "white",
             }}
           >
-            {t("country")}
+            {t("City")}
           </Text>
         </View>
         <View
@@ -155,9 +148,51 @@ export default function SettingNegara({
             paddingBottom: 20,
           }}
         >
+          <View style={{ height: 50, width: "100%", elevation: 1 }}>
+            <TextInput
+              style={{
+                backgroundColor: "#F1F1F1",
+                height: "70%",
+                width: Dimensions.get("screen").width * 0.9,
+                marginHorizontal: 15,
+                marginTop: 5,
+                borderRadius: 5,
+                paddingLeft: 20,
+              }}
+              placeholder={t("Search")}
+            />
+          </View>
           <FlatList
             ref={slider}
-            data={datacountry}
+            data={datacity}
+            stickyHeaderIndices={[0]}
+            ListHeaderComponent={
+              <View
+                style={{
+                  height: 40,
+                  width: "100%",
+                  backgroundColor: "white",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  elevation: 1,
+                }}
+              >
+                {selected?.cities?.name ? (
+                  <>
+                    <Text
+                      style={{
+                        color: "#209FAE",
+                        marginHorizontal: 30,
+                        width: Dimensions.get("screen").width * 0.7,
+                      }}
+                    >
+                      {selected?.cities?.name}
+                    </Text>
+                    <Check width={20} height={15} />
+                  </>
+                ) : null}
+              </View>
+            }
             renderItem={({ item }) => {
               return (
                 <Ripple
@@ -184,15 +219,22 @@ export default function SettingNegara({
                         elevation: 1,
                       }}
                     >
-                      <FunIcon
+                      {/* <FunIcon
                         icon={item.flag}
                         height={30}
                         width={42}
                         style={{}}
                         variant="f"
-                      />
+                      /> */}
                     </View>
-                    <Text size="description">{item.name}</Text>
+                    <Text size="description">
+                      {item.name
+                        .toString()
+                        .toLowerCase()
+                        .replace(/\b[a-z]/g, function (letter) {
+                          return letter.toUpperCase();
+                        })}
+                    </Text>
                   </View>
                   <View>
                     {item.selected && item.selected == true ? (

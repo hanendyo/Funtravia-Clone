@@ -170,19 +170,24 @@ export default function ItineraryPopuler(props) {
   };
 
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.itinerary_list_populer;
-    const datas = [
-      ...prev.itinerary_list_populer.datas,
-      ...fetchMoreResult.itinerary_list_populer.datas,
-    ];
-    return Object.assign({}, prev, {
-      list_populer: {
-        __typename: prev.itinerary_list_populer.__typename,
-        page_info,
-        datas,
-      },
-    });
+    if (
+      prev.journal_list.datas.length <
+      fetchMoreResult.journal_list.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult.itinerary_list_populer;
+      const datas = [
+        ...prev.itinerary_list_populer.datas,
+        ...fetchMoreResult.itinerary_list_populer.datas,
+      ];
+      return Object.assign({}, prev, {
+        list_populer: {
+          __typename: prev.itinerary_list_populer.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
 
   const handleOnEndReached = () => {
@@ -755,11 +760,7 @@ export default function ItineraryPopuler(props) {
           paddingVertical: 15,
         }}
       >
-        <ScrollView
-          style={{ flex: 1 }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View
             style={{
               height: Dimensions.get("screen").width * 0.3,
@@ -885,8 +886,9 @@ export default function ItineraryPopuler(props) {
         </View>
         <View
           style={{
+            marginVertical: 10,
             flexDirection: "row",
-            height: Dimensions.get("screen").width * 0.24,
+            height: Dimensions.get("screen").width * 0.09,
           }}
         >
           {dataCategory?.category_journal.length < 0 ||
@@ -933,30 +935,36 @@ export default function ItineraryPopuler(props) {
                   <Ripple
                     style={{
                       overflow: "hidden",
-                      width: Dimensions.get("screen").width * 0.19,
-                      height: Dimensions.get("screen").width * 0.19,
-                      backgroundColor: "white",
+                      height: "95%",
+                      marginRight: 5,
                       alignItems: "center",
-                      marginTop: 5,
+                      justifyContent: "center",
+                      borderRadius: 5,
+                      marginTop: 1,
+                      marginLeft: 1,
+                      backgroundColor: "#209FAE",
+                      borderColor: "#209FAE",
+                      paddingHorizontal: 5,
+                      marginVertical: 4,
+                      borderWidth: 1,
+                      flexDirection: "row",
                     }}
-                    onPress={() =>
-                      props.navigation.navigate("ItineraryCategory", {
-                        dataPopuler: dataPopuler,
-                        typeCategory: item.id,
-                        typeOrder: "new",
-                      })
-                    }
+                    onPress={() => unSelect(item.id)}
                   >
                     <FunIcon
                       icon={item.icon}
-                      style={{ marginTop: 3 }}
-                      height={35}
-                      width={35}
+                      height={30}
+                      width={30}
+                      fill={"white"}
+                      style={{ marginRight: 5 }}
                     />
                     <Text
-                      size="small"
-                      type="regular"
-                      style={{ textAlign: "center" }}
+                      size="label"
+                      type="bold"
+                      style={{
+                        textAlign: "center",
+                        color: "white",
+                      }}
                     >
                       {item?.name}
                     </Text>

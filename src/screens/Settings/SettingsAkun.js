@@ -41,6 +41,8 @@ import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
 import Date from "../../graphQL/Mutation/Setting/dateSettingAkun";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import HasPassword from "../../graphQL/Query/Settings/HasPassword";
+import CityInformation from "../../graphQL/Query/Cities/CitiesInformation";
+import SettingCity from "./SettingCity";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -50,7 +52,6 @@ export default function SettingsAkun(props) {
   let [modalBirth1, setModalBirth1] = useState(false);
   let [modalGender, setModalGender] = useState(false);
   let [modalCity, setModalCity] = useState(false);
-  let [modalCity1, setModalCity1] = useState(false);
   let [city, setCity] = useState("");
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
@@ -111,10 +112,13 @@ export default function SettingsAkun(props) {
   ] = useLazyQuery(City, {
     fetchPolicy: "network-only",
     variables: {
-      keyword: city,
+      keyword: "",
       countries_id: setting?.countries?.id,
     },
   });
+
+  console.log("setting", setting);
+  console.log("datacity", datacity);
 
   const [
     passwords,
@@ -129,8 +133,6 @@ export default function SettingsAkun(props) {
     },
   });
 
-  // console.log("country", setting.countries.id);
-  // console.log("city", datacity);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
@@ -188,7 +190,7 @@ export default function SettingsAkun(props) {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-    elevation: Platform.OS == "ios" ? 3 : 1.5,
+    elevation: Platform.OS == "ios" ? 3 : 1,
   };
 
   const modalBirth1Close = (x) => {
@@ -198,7 +200,6 @@ export default function SettingsAkun(props) {
 
   const searchcity = (text) => {
     setCity(text);
-    console.log(text);
     querycity();
   };
 
@@ -259,7 +260,6 @@ export default function SettingsAkun(props) {
   const onCity = async (id, name) => {
     await setCityId(id);
     await setCityName(name);
-    await setModalCity1(false);
   };
 
   const hasilCity = async (id, name) => {
@@ -288,12 +288,7 @@ export default function SettingsAkun(props) {
     }
   };
 
-  console.log("data : ", dataPassword);
-  console.log("token : ", token);
-  console.log("setting : ", setting);
-
   const hasPassword = () => {
-    console.log("status", dataPassword?.cek_haspassword?.ishasPassword);
     if (dataPassword?.cek_haspassword?.ishasPassword === false) {
       props.navigation.navigate("AddPassword");
     } else {
@@ -303,7 +298,6 @@ export default function SettingsAkun(props) {
 
   const emailChange = async () => {
     await (setModalEmail(false), 3000);
-    console.log("status :", dataPassword?.cek_haspassword?.ishasPassword);
     if (dataPassword?.cek_haspassword?.ishasPassword === false) {
       return await props.navigation.navigate("AddPasswordEmail");
     } else {
@@ -614,201 +608,6 @@ export default function SettingsAkun(props) {
           </View>
         </View>
       </Modal>
-
-      {/* Modal City */}
-
-      <Modal
-        onRequestClose={() => setModalCity(false)}
-        onBackdropPress={() => setModalCity(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        isVisible={modalCity}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-            width: Dimensions.get("screen").width - 40,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#fff",
-              width: Dimensions.get("screen").width - 40,
-              paddingVertical: 40,
-              paddingHorizontal: 50,
-              borderRadius: 5,
-            }}
-          >
-            <Text size="description" type="bold">
-              {t("cityOfRecidence")}
-            </Text>
-            <Pressable onPress={() => setModalCity1(true)}>
-              <Text style={{ borderBottomWidth: 1, marginTop: 20 }}>
-                {cityName
-                  ? cityName
-                      .toString()
-                      .toLowerCase()
-                      .replace(/\b[a-z]/g, function (letter) {
-                        return letter.toUpperCase();
-                      })
-                  : t("cityOfRecidence")}
-              </Text>
-            </Pressable>
-            <View
-              style={{
-                marginTop: 20,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Button
-                size="medium"
-                style={{ width: "48%" }}
-                color="tertiary"
-                text="Cancel"
-                onPress={() => setModalCity(false)}
-              ></Button>
-              <Button
-                size="medium"
-                style={{ width: "48%" }}
-                text="Save"
-                onPress={() => hasilCity(cityId, cityName)}
-              ></Button>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* modal city */}
-      <Modal
-        onRequestClose={() => setModalCity1(false)}
-        onBackdropPress={() => setModalCity1(false)}
-        onSwipeComplete={() => setModalCity1(false)}
-        swipeDirection="down"
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        isVisible={modalCity1}
-        style={{
-          marginBottom: -10,
-          justifyContent: "flex-end",
-          alignItems: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            // height: 15,
-            padding: 5,
-            backgroundColor: "#209fae",
-            borderTopEndRadius: 5,
-            borderTopLeftRadius: 5,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              alignSelf: "flex-end",
-              height: 30,
-              width: 30,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => setModalCity1(false)}
-          >
-            <Xhitam height={15} width={15} />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            minHeight: Dimensions.get("screen").height * 0.5,
-            backgroundColor: "white",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-            paddingHorizontal: 20,
-          }}
-        >
-          <Item
-            floatingLabel
-            style={{
-              marginVertical: 10,
-            }}
-          >
-            <Label
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-            >
-              {t("SearchCity")}
-            </Label>
-            <Input
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 16,
-              }}
-              returnKeyType="search"
-              autoCorrect={false}
-              onChangeText={(x) => {
-                searchcity(x);
-              }}
-              // onSubmitEditing={}
-              keyboardType="default"
-            />
-          </Item>
-          {datacity && datacity.cities_search.length > 0 ? (
-            <FlatList
-              style={{
-                position: "absolute",
-                top: 60,
-                width: "100%",
-                maxHeight: Dimensions.get("screen").width - 40,
-
-                height: "100%",
-              }}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => `${index}`}
-              data={datacity.cities_search}
-              renderItem={({ item }) => (
-                <Pressable
-                  style={{
-                    backgroundColor: "white",
-                    width: "100%",
-                    padding: 10,
-                  }}
-                  onPress={() => onCity(item.id, item?.name)}
-                >
-                  <Text size="description" type="regular" style={{}}>
-                    {item?.name
-                      .toString()
-                      .toLowerCase()
-                      .replace(/\b[a-z]/g, function (letter) {
-                        return letter.toUpperCase();
-                      })}
-                  </Text>
-                </Pressable>
-              )}
-            />
-          ) : null}
-        </View>
-      </Modal>
-
       {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
       <View
         style={{
@@ -1000,7 +799,10 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting?.cities?.name
+                {setting &&
+                setting.cities &&
+                setting?.cities?.id &&
+                setting?.cities?.name
                   ? setting?.cities?.name
                       .toString()
                       .toLowerCase()
@@ -1098,9 +900,9 @@ export default function SettingsAkun(props) {
         style={{
           flexDirection: "column",
           // marginTop: 4,
-          borderWidth: 1,
+          // borderWidth: 1,
           borderTopWidth: 1,
-          borderColor: "#D1D1D1",
+          borderTopColor: "#D1D1D1",
           paddingHorizontal: 15,
           paddingVertical: 13,
           backgroundColor: "#FFFFFF",
@@ -1201,6 +1003,8 @@ export default function SettingsAkun(props) {
           paddingHorizontal: 15,
           paddingVertical: 13,
           backgroundColor: "#FFFFFF",
+          borderBottomWidth: 1,
+          borderBottomColor: "#D1D1D1",
           shadowColor: "gray",
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: arrayShadow.shadowOpacity,
@@ -1218,9 +1022,9 @@ export default function SettingsAkun(props) {
         >
           {t("password")}
         </Text>
-        <Nextpremier width={20} height={20} />
+        <Nextpremier width={15} height={15} />
       </Ripple>
-      <Ripple
+      {/* <Ripple
         onPress={() => null}
         style={{
           flexDirection: "row",
@@ -1248,8 +1052,18 @@ export default function SettingsAkun(props) {
         >
           {t("Security")}
         </Text>
-        <Nextpremier width={20} height={20} />
-      </Ripple>
+        <Nextpremier width={15} height={15} />
+      </Ripple> */}
+      {datacity && datacity?.cities_search.length > 0 ? (
+        <SettingCity
+          modals={modalCity}
+          setModalCity={(e) => setModalCity(e)}
+          masukan={(e) => setSetting(e)}
+          data={datacity?.cities_search}
+          selected={setting}
+          token={token}
+        />
+      ) : null}
     </ScrollView>
   );
 }
