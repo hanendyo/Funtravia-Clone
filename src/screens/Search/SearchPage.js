@@ -308,6 +308,54 @@ export default function SearchPage(props, { navigation, route }) {
             justifyContent: "space-evenly",
           }}
         >
+          {/* <View
+            style={{
+              alignContent: "center",
+              alignItems: "flex-end",
+              backgroundColor: "#F1F1F1",
+            }}
+          >
+            <View
+              style={{
+                marginTop: 10,
+                width: Dimensions.get("screen").width * 0.9,
+                flexDirection: "row",
+                borderBottomWidth: 2,
+                borderBottomColor: "#209FAE",
+                justifyContent: "flex-start",
+                alignSelf: "center",
+              }}
+            >
+              <Image
+                source={search_button}
+                imageStyle={{ resizeMode: "cover" }}
+                style={{
+                  height: 15,
+                  width: 15,
+                  alignSelf: "center",
+                  zIndex: 100,
+                }}
+              />
+              <TextInput
+                value={input}
+                style={{
+                  height: 38,
+                  width: Dimensions.get("window").width * 0.9,
+                  paddingLeft: 5,
+                  textAlign: "left",
+                  fontSize: 10,
+                }}
+                underlineColorAndroid="transparent"
+                onKeyPress={(e) => {
+                  e.key === "Backspace" ? searchInput("") : null;
+                }}
+                enablesReturnKeyAutomatically={true}
+                onChangeText={(text) => {}}
+                // onSubmitEditing={goSearchTab}
+                placeholder={t("searchHome")}
+              />
+            </View>
+          </View> */}
           <SearchBar
             // props={{ route }}
             route={route}
