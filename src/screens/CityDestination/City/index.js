@@ -29,7 +29,11 @@ import {
   PinWhite,
   LikeEmpty,
 } from "../../../assets/svg";
-import { default_image, search_button } from "../../../assets/png";
+import {
+  default_image,
+  search_button,
+  logo_funtravia,
+} from "../../../assets/png";
 import { Input } from "native-base";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
 import LinearGradient from "react-native-linear-gradient";
@@ -683,7 +687,7 @@ export default function CityDetail(props) {
                                 source={
                                   item.picture
                                     ? { uri: dataX.picture }
-                                    : default_image
+                                    : logo_funtravia
                                 }
                                 style={{
                                   height: width * 0.15,
@@ -701,7 +705,7 @@ export default function CityDetail(props) {
                               >
                                 <View style={{ width: "100%" }}>
                                   <Text style={{ width: "80%" }} type="bold">
-                                    {dataX.title}
+                                    <Truncate text={dataX.title} length={30} />
                                   </Text>
                                   <Text>
                                     <Truncate text={dataX.text} length={30} />

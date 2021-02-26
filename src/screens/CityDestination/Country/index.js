@@ -29,7 +29,11 @@ import {
   PinWhite,
   LikeEmpty,
 } from "../../../assets/svg";
-import { default_image, search_button } from "../../../assets/png";
+import {
+  default_image,
+  search_button,
+  logo_funtravia,
+} from "../../../assets/png";
 import { Input } from "native-base";
 import { Capital, Truncate } from "../../../component";
 import Ripple from "react-native-material-ripple";
@@ -660,7 +664,7 @@ export default function Country(props) {
                                 source={
                                   item.picture
                                     ? { uri: dataX.picture }
-                                    : default_image
+                                    : logo_funtravia
                                 }
                                 style={{
                                   height: width * 0.15,
@@ -678,7 +682,7 @@ export default function Country(props) {
                               >
                                 <View style={{ width: "100%" }}>
                                   <Text style={{ width: "80%" }} type="bold">
-                                    {dataX.title}
+                                    <Truncate text={dataX.title} length={40} />
                                   </Text>
                                   <Text>
                                     <Truncate text={dataX.text} length={30} />
