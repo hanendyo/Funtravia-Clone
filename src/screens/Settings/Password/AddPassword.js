@@ -3,7 +3,7 @@ import { Text, Button } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite } from "../../../assets/svg";
-import { Dimensions, Alert } from "react-native";
+import { Dimensions, Alert, Image } from "react-native";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdatePassword";
@@ -146,7 +146,7 @@ export default function AddPassword(props) {
         marginTop: 20,
       }}
     >
-      <Item floatingLabel>
+      <Item floatingLabel style={{ flexDirection: "row" }}>
         <Label
           style={{
             fontFamily: "Lato-Regular",
@@ -154,7 +154,7 @@ export default function AddPassword(props) {
             marginTop: 10,
           }}
         >
-          {t("EnterPassword")}
+          <Text size="description">{t("EnterPassword")}</Text>
         </Label>
         <Input
           secureTextEntry={true}
@@ -191,7 +191,7 @@ export default function AddPassword(props) {
             marginTop: 10,
           }}
         >
-          {t("ConfirmPasswords")}
+          <Text size="description">{t("ConfirmPasswords")}</Text>
         </Label>
         <Input
           secureTextEntry={true}

@@ -52,14 +52,12 @@ export default function SettingsAkun(props) {
   let [modalBirth1, setModalBirth1] = useState(false);
   let [modalGender, setModalGender] = useState(false);
   let [modalCity, setModalCity] = useState(false);
-  let [city, setCity] = useState("");
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(setting?.user.gender);
   let [date, setDate] = useState(setting?.user?.birth_date);
-  let [cityName, setCityName] = useState(setting?.cities?.name);
-  let [cityId, setCityId] = useState(setting?.cities?.id);
+  let [searchCity, setSearchCity] = useState("");
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -112,13 +110,15 @@ export default function SettingsAkun(props) {
   ] = useLazyQuery(City, {
     fetchPolicy: "network-only",
     variables: {
-      keyword: "",
+      keyword: searchCity,
       countries_id: setting?.countries?.id,
     },
   });
 
-  console.log("setting", setting);
-  console.log("datacity", datacity);
+  const resultSearch = async (x) => {
+    await setSearchCity(x);
+    await querycity();
+  };
 
   const [
     passwords,
@@ -166,18 +166,6 @@ export default function SettingsAkun(props) {
     },
   });
 
-  const [
-    mutationCity,
-    { data: dataCity, loading: loadingCity, error: errorCity },
-  ] = useMutation(CityMutation, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -196,11 +184,6 @@ export default function SettingsAkun(props) {
   const modalBirth1Close = (x) => {
     setDate(x);
     closeBirth1();
-  };
-
-  const searchcity = (text) => {
-    setCity(text);
-    querycity();
   };
 
   const hasilGender = async (x) => {
@@ -257,53 +240,22 @@ export default function SettingsAkun(props) {
     }
   };
 
-  const onCity = async (id, name) => {
-    await setCityId(id);
-    await setCityName(name);
-  };
-
-  const hasilCity = async (id, name) => {
-    try {
-      let response = await mutationCity({
-        variables: {
-          id: id,
-        },
-      });
-      if (errorCity) {
-        throw new Error("Error Input");
-      }
-      if (response.data) {
-        if (response.data.update_city_settings.code !== 200) {
-          throw new Error(response.data.update_city.message);
-        }
-        let tmp_data = { ...setting };
-        tmp_data.cities.id = id;
-        tmp_data.cities.name = name;
-        await setSetting(tmp_data);
-        await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
-        setModalCity(false);
-      }
-    } catch (error) {
-      Alert.alert("" + error);
-    }
-  };
-
-  const hasPassword = () => {
-    if (dataPassword?.cek_haspassword?.ishasPassword === false) {
-      props.navigation.navigate("AddPassword");
-    } else {
+  const hasPassword = async () => {
+    if (dataPassword?.cek_haspassword?.ishasPassword === true) {
       props.navigation.navigate("HasPassword");
+    } else {
+      props.navigation.navigate("AddPassword");
     }
   };
 
   const emailChange = async () => {
     await (setModalEmail(false), 3000);
-    if (dataPassword?.cek_haspassword?.ishasPassword === false) {
-      return await props.navigation.navigate("AddPasswordEmail");
-    } else {
+    if (dataPassword?.cek_haspassword?.ishasPassword === true) {
       return await props.navigation.navigate("SettingEmailChange", {
         setting: setting,
       });
+    } else {
+      return await props.navigation.navigate("AddPasswordEmail");
     }
   };
 
@@ -1062,6 +1014,8 @@ export default function SettingsAkun(props) {
           data={datacity?.cities_search}
           selected={setting}
           token={token}
+          setSearchCity={(e) => resultSearch(e)}
+          searchCity={searchCity}
         />
       ) : null}
     </ScrollView>

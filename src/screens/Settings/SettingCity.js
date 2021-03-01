@@ -1,16 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Dimensions, FlatList, Alert, Platform } from "react-native";
+import {
+  View,
+  Dimensions,
+  FlatList,
+  Alert,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Arrowbackwhite, IdFlag, Check } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 // import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 import { FunIcon } from "../../component";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import { TextInput } from "react-native-gesture-handler";
+import City from "../../graphQL/Query/Itinerary/City";
 
 export default function SettingCity({
   modals,
@@ -19,23 +27,36 @@ export default function SettingCity({
   data,
   selected,
   token,
+  setSearchCity,
 }) {
   const { t } = useTranslation();
   let [datacity, setdataCity] = useState(data);
-  // let [search, setSearch] = useState(selected.cities.name);
+  let [city, setCity] = useState("");
   let slider = useRef();
   const pushselected = () => {
-    console.log("selected.cities", selected.cities);
     if (selected?.cities !== null) {
       var tempData = [...datacity];
       for (var i of tempData) {
         i.selected = false;
       }
       var index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
-      tempData[index].selected = true;
+      if (index >= 0) {
+        tempData[index].selected = true;
+      }
       setdataCity(tempData);
     }
   };
+
+  const [
+    querycity,
+    { loading: loadingKota, data: dataKota, error: errorKota },
+  ] = useLazyQuery(City, {
+    fetchPolicy: "network-only",
+    variables: {
+      keyword: city,
+      countries_id: selected?.countries?.id,
+    },
+  });
 
   const [
     mutationCity,
@@ -72,6 +93,7 @@ export default function SettingCity({
             tempData[index].selected = true;
             setdataCity(tempData);
             masukan(selected);
+            setCity(null);
           } else {
             throw new Error(response.data.update_city_settings.message);
           }
@@ -86,6 +108,7 @@ export default function SettingCity({
 
   useEffect(() => {
     pushselected();
+    querycity();
   }, []);
 
   return (
@@ -150,6 +173,7 @@ export default function SettingCity({
         >
           <View style={{ height: 50, width: "100%", elevation: 1 }}>
             <TextInput
+              id="search"
               style={{
                 backgroundColor: "#F1F1F1",
                 height: "70%",
@@ -159,42 +183,49 @@ export default function SettingCity({
                 borderRadius: 5,
                 paddingLeft: 20,
               }}
+              onChangeText={(e) => setCity(e)}
               placeholder={t("Search")}
             />
           </View>
-          <FlatList
-            ref={slider}
-            data={datacity}
-            stickyHeaderIndices={[0]}
-            ListHeaderComponent={
-              <View
-                style={{
-                  height: 40,
-                  width: "100%",
-                  backgroundColor: "white",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  elevation: 1,
-                }}
-              >
-                {selected?.cities?.name ? (
-                  <>
-                    <Text
-                      style={{
-                        color: "#209FAE",
-                        marginHorizontal: 30,
-                        width: Dimensions.get("screen").width * 0.7,
-                      }}
-                    >
-                      {selected?.cities?.name}
-                    </Text>
-                    <Check width={20} height={15} />
-                  </>
-                ) : null}
-              </View>
-            }
-            renderItem={({ item }) => {
-              return (
+          <View
+            style={{
+              height: 40,
+              width: "100%",
+              backgroundColor: "white",
+              flexDirection: "row",
+              alignItems: "center",
+              elevation: 1,
+            }}
+          >
+            {selected?.cities?.name ? (
+              <>
+                <Text
+                  style={{
+                    color: "#209FAE",
+                    marginHorizontal: 15,
+                    width: Dimensions.get("screen").width * 0.7,
+                  }}
+                >
+                  {selected?.cities?.name}
+                </Text>
+                <Check width={20} height={15} />
+              </>
+            ) : null}
+          </View>
+          {loadingKota ? (
+            <View style={{ paddingVertical: 20 }}>
+              <ActivityIndicator
+                animating={true}
+                color="#209FAE"
+                size="large"
+              />
+            </View>
+          ) : dataKota?.cities_search.length > 0 ? (
+            <FlatList
+              ref={slider}
+              data={dataKota?.cities_search}
+              stickyHeaderIndices={[0]}
+              renderItem={({ item }) => (
                 <Ripple
                   onPress={() => hasil(item, selected)}
                   style={{
@@ -210,23 +241,10 @@ export default function SettingCity({
                 >
                   <View
                     style={{
-                      flexDirection: "row",
+                      marginRight: 15,
+                      elevation: 1,
                     }}
                   >
-                    <View
-                      style={{
-                        marginRight: 15,
-                        elevation: 1,
-                      }}
-                    >
-                      {/* <FunIcon
-                        icon={item.flag}
-                        height={30}
-                        width={42}
-                        style={{}}
-                        variant="f"
-                      /> */}
-                    </View>
                     <Text size="description">
                       {item.name
                         .toString()
@@ -242,10 +260,16 @@ export default function SettingCity({
                     ) : null}
                   </View>
                 </Ripple>
-              );
-            }}
-            keyExtractor={(item) => item.id}
-          />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          ) : (
+            <View style={{ marginVertical: 20, alignItems: "center" }}>
+              <Text size="description" type="bold">
+                Tidak ada data
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </Modal>
