@@ -11,6 +11,7 @@ import {
   StatusBar,
   Pressable,
   Button as ButtonRn,
+  ActivityIndicator,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -54,6 +55,7 @@ export default function Post(props) {
   const [imageRoll, setImageRoll] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingNext, setLoadingNext] = useState(false);
   const [ratio, setRatio] = useState({ width: 1, height: 1, index: 0 });
   const [ratioindex, setRatioIndex] = useState([
     { width: 1, height: 1, index: 0 },
@@ -95,21 +97,22 @@ export default function Post(props) {
         setRecent({ image: { uri: image.path }, location: {} });
     });
   };
-  const nextFunction = async () => {
-    let result = await ImagePicker.openCropper({
+  const nextFunction = () => {
+    // setLoadingNext(true);
+    let result = ImagePicker.openCropper({
       path: recent.image.uri,
       width: ratio.width * 1000,
       height: ratio.height * 1000,
       includeBase64: true,
       compressImageQuality: 0.7,
     });
+    // console.log(result);
     props.navigation.navigate("CreatePostScreen", {
       location: recent.location,
       base64: result.data,
       image: result,
     });
   };
-
   useEffect(() => {
     (async () => {
       await getAlbumRoll();
@@ -387,8 +390,11 @@ export default function Post(props) {
               }}
             />
             <TouchableOpacity
-              onPress={() =>
-                setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+              onPress={
+                () => {
+                  console.log("test");
+                }
+                // setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
               }
               style={{
                 backgroundColor: "#B2B2B2",
