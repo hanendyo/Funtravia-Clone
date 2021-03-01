@@ -156,6 +156,9 @@ export default function ArtikelCategory(props) {
   const ArticelDetail = (data) => {
     props.navigation.push("ArticelDetail", {
       id: data.id,
+      category_id: category,
+      country_id: props.route.params.country,
+      title: data.title,
     });
   };
 
@@ -170,8 +173,6 @@ export default function ArtikelCategory(props) {
   {
     /* ======================================= Render All ====================================================*/
   }
-
-  console.log(list);
 
   return (
     <View style={{ flex: 1 }}>

@@ -475,5 +475,6 @@
   "EnterPassword": "kata sandi",
   "ConfirmPasswords": "konfirmasi kata sandi",
   "SetPassword": "Atur kata sandi",
-  "WordChangeEmail": "Harap setel kata sandi ke akun Anda sebelum Anda mengubah email."
+  "WordChangeEmail": "Harap setel kata sandi ke akun Anda sebelum Anda mengubah email.",
+  "monthAgo": "bulan yang lalu"
 }
