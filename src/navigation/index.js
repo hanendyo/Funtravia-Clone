@@ -11,7 +11,13 @@ import ChatStack from "./StackItems/ChatStack";
 import FeedStack from "./StackItems/FeedStack";
 import TravelIdeaStack from "./StackItems/TravelIdeaStack";
 import JournalStackNavigation from "./StackItems/JournalStackNavigation";
-import DestinationList from "../screens/Destination/DestinationList";
+import DestinationList from "../screens/Maps";
+import Europe from "../screens/Maps/src/continent/Europe";
+import Asia from "../screens/Maps/src/continent/Asia";
+import Australia from "../screens/Maps/src/continent/Australia";
+import NorthAmerica from "../screens/Maps/src/continent/NorthAmerica";
+import SouthAmerica from "../screens/Maps/src/continent/SouthAmerica";
+import Africa from "../screens/Maps/src/continent/Africa";
 import listevent from "../screens/Event/ListEvent";
 import eventdetail from "../screens/Event/EventDetail";
 import { SearchPage, SearchTab } from "../screens/Search";
@@ -139,7 +145,13 @@ export default function MainStackNavigator({ authorizeStatus }) {
 				<Tab.Screen
 					name="DestinationList"
 					component={DestinationList}
-					options={{ headerShown: false }}
+					options={{
+						headerShown: true,
+						headerTitle: "Destination",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
+					}}
 				/>
 				<Tab.Screen
 					name="detailStack"
@@ -195,6 +207,72 @@ export default function MainStackNavigator({ authorizeStatus }) {
 					options={{
 						headerTitle: "",
 						headerTransparent: false,
+					}}
+				/>
+				<Tab.Screen
+					name="Europe"
+					component={Europe}
+					options={{
+						headerShown: true,
+						headerTitle: "Europe",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
+					}}
+				/>
+				<Tab.Screen
+					name="Asia"
+					component={Asia}
+					options={{
+						headerShown: true,
+						headerTitle: "Asia",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
+					}}
+				/>
+				<Tab.Screen
+					name="Australia"
+					component={Australia}
+					options={{
+						headerShown: true,
+						headerTitle: "Australia",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
+					}}
+				/>
+				<Tab.Screen
+					name="NorthAmerica"
+					component={NorthAmerica}
+					options={{
+						headerShown: true,
+						headerTitle: "NorthAmerica",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
+					}}
+				/>
+				<Tab.Screen
+					name="SouthAmerica"
+					component={SouthAmerica}
+					options={{
+						headerShown: true,
+						headerTitle: "SouthAmerica",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
+					}}
+				/>
+				<Tab.Screen
+					name="Africa"
+					component={Africa}
+					options={{
+						headerShown: true,
+						headerTitle: "Africa",
+						headerBackTitleVisible: false,
+						headerTintColor: "#FFF",
+						headerStyle: { backgroundColor: "#209FAE" },
 					}}
 				/>
 			</Tab.Navigator>

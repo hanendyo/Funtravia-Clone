@@ -132,8 +132,8 @@ android {
         applicationId "com.funtravia.apps"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
-        versionName "1.0.7  "
+        versionCode 22
+        versionName "1.0.9"
     }
     splits {
         abi {
