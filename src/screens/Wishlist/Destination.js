@@ -15,6 +15,7 @@ import { useMutation } from "@apollo/react-hooks";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
+import { StackActions } from "@react-navigation/native";
 
 export default function Destination({
   props,
@@ -266,16 +267,18 @@ export default function Destination({
                 <TouchableOpacity
                   onPress={() => {
                     props.route.params && props.route.params.iditinerary
-                      ? props.navigation.push("ItineraryStack", {
-                          screen: "ItineraryChooseday",
-                          params: {
-                            Iditinerary: props.route.params.iditinerary,
-                            Kiriman: data.id,
-                            token: token,
-                            Position: "destination",
-                            datadayaktif: props.route.params.datadayaktif,
-                          },
-                        })
+                      ? props.navigation.dispatch(
+                          StackActions.replace("ItineraryStack", {
+                            screen: "ItineraryChooseday",
+                            params: {
+                              Iditinerary: props.route.params.iditinerary,
+                              Kiriman: data.id,
+                              token: token,
+                              Position: "destination",
+                              datadayaktif: props.route.params.datadayaktif,
+                            },
+                          })
+                        )
                       : props.navigation.push("ItineraryStack", {
                           screen: "ItineraryPlaning",
                           params: {

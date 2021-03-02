@@ -29,6 +29,7 @@ import {
   User,
 } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
+import { StackActions } from "@react-navigation/native";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
@@ -488,17 +489,20 @@ export default function listItinPlaning(props) {
       Alert.alert("Silahkan Login terlebih dahulu");
       props.navigation.navigate("HomeScreen");
     } else {
-      props.navigation.push("ItineraryStack", {
-        screen: "ItineraryChooseday",
-        params: {
-          itintitle: data.name,
-          Iditinerary: data.id,
-          dateitin: getdate(data.start_date, data.end_date),
-          token: token,
-          Kiriman: idkiriman,
-          Position: props.route.params.Position,
-        },
-      });
+      props.navigation.dispatch(
+        StackActions.replace("ItineraryStack", {
+          screen: "ItineraryChooseday",
+          params: {
+            itintitle: data.name,
+            Iditinerary: data.id,
+            dateitin: getdate(data.start_date, data.end_date),
+            token: token,
+            Kiriman: idkiriman,
+            Position: props.route.params.Position,
+            sebelum: true,
+          },
+        })
+      );
     }
   };
   const wait = (timeout) => {
