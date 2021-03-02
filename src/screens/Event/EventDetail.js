@@ -42,6 +42,7 @@ import {
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
+import { StackActions } from "@react-navigation/native";
 export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
   const HeaderComponent = {
@@ -114,16 +115,18 @@ export default function EventDetail(props) {
 
   const addToPlan = () => {
     props.route.params && props.route.params.iditinerary
-      ? props.navigation.push("ItineraryStack", {
-          screen: "ItineraryChooseday",
-          params: {
-            Iditinerary: props.route.params.iditinerary,
-            Kiriman: event_id,
-            token: token,
-            Position: "Event",
-            datadayaktif: props.route.params.datadayaktif,
-          },
-        })
+      ? props.navigation.dispatch(
+          StackActions.replace("ItineraryStack", {
+            screen: "ItineraryChooseday",
+            params: {
+              Iditinerary: props.route.params.iditinerary,
+              Kiriman: event_id,
+              token: token,
+              Position: "Event",
+              datadayaktif: props.route.params.datadayaktif,
+            },
+          })
+        )
       : props.navigation.navigate("ItineraryStack", {
           screen: "ItineraryPlaning",
           params: {

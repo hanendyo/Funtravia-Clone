@@ -193,7 +193,19 @@ export default function ActivePlan({ token, props }) {
           overflow: "hidden",
         }}
       >
-        <View
+        <Ripple
+          onPress={() =>
+            props.navigation.push("ItineraryStack", {
+              screen: "itindetail",
+              params: {
+                itintitle: data.name,
+                country: data.id,
+                dateitin: getdate(data.start_date, data.end_date),
+                token: token,
+                status: "edit",
+              },
+            })
+          }
           style={{
             backgroundColor: "#FFFFFF",
             height: "75%",
@@ -422,7 +434,7 @@ export default function ActivePlan({ token, props }) {
               </View>
             </View>
           </View>
-        </View>
+        </Ripple>
         <View
           style={{
             paddingVertical: 3,

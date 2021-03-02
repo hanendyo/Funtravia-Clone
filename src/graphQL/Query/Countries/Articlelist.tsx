@@ -13,7 +13,7 @@ const categoryArticle = gql`
       keyword: $keyword
       limit: $limit
       offset: $offset
-      withheader: false
+      withheader: true
     ) {
       page_info {
         hasNextPage

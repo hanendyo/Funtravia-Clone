@@ -6,6 +6,7 @@ import {
   TextInput,
   SafeAreaView,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, CustomImage, Text, Truncate } from "../../../component";
@@ -282,9 +283,10 @@ export default function ArticelDetail(props) {
               alignSelf: "center",
               flexDirection: "row",
             }}
+            onPress={() => Alert.alert("coming soon!")}
           >
             <SharePutih height={20} width={20} />
-            <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text>
+            <Text style={{ color: "#fff", marginLeft: 10 }}>{t("share")}</Text>
           </Button>
         </View>
         {/* detail */}
@@ -397,7 +399,11 @@ export default function ArticelDetail(props) {
                   }}
                 >
                   <Image
-                    source={default_image}
+                    source={
+                      item.firstimg !== null
+                        ? { uri: item.firstimg }
+                        : default_image
+                    }
                     style={{
                       height: (Dimensions.get("screen").width - 60) * 0.25,
                       width: (Dimensions.get("screen").width - 60) * 0.25,

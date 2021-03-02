@@ -20,6 +20,7 @@ import AddEvent from "../../graphQL/Mutation/Itinerary/AddEvent";
 import { Button, Text, Truncate, Loading } from "../../component";
 import { Arrowbackwhite } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
+import { StackActions } from "@react-navigation/native";
 
 export default function ItineraryChooseday(props) {
   const HeaderComponent = {
@@ -264,26 +265,78 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.push("ItineraryStack", {
-                      screen: "itindetail",
-                      params: {
-                        itintitle: dataItinerary.itinerary_detail.name,
-                        country: Iditinerary,
-                        dateitin:
-                          dataItinerary && dataItinerary.itinerary_detail
-                            ? dateFormatr(
-                                dataItinerary.itinerary_detail.start_date
-                              ) +
-                              "  -  " +
-                              dateFormatr(
-                                dataItinerary.itinerary_detail.end_date
-                              )
-                            : null,
-                        token: token,
-                        datadayaktif: dataSelected[0],
-                        status: "edit",
-                      },
-                    })
+                  ? props.route.params.sebelum
+                    ? props.navigation.dispatch(
+                        StackActions.replace("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: dataItinerary.itinerary_detail.name,
+                            country: Iditinerary,
+                            dateitin:
+                              dataItinerary && dataItinerary.itinerary_detail
+                                ? dateFormatr(
+                                    dataItinerary.itinerary_detail.start_date
+                                  ) +
+                                  "  -  " +
+                                  dateFormatr(
+                                    dataItinerary.itinerary_detail.end_date
+                                  )
+                                : null,
+                            token: token,
+                            datadayaktif: dataSelected[0],
+                            status: "edit",
+                          },
+                        })
+                      )
+                    : props.navigation.reset({
+                        index: 2,
+                        routes: [
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "HomeScreen" }],
+                            },
+                          },
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "TripPlaning" }],
+                            },
+                          },
+                          {
+                            name: "ItineraryStack",
+                            state: {
+                              routes: [
+                                {
+                                  name: "itindetail",
+                                  params: {
+                                    itintitle:
+                                      dataItinerary.itinerary_detail.name,
+                                    country: Iditinerary,
+                                    dateitin:
+                                      dataItinerary &&
+                                      dataItinerary.itinerary_detail
+                                        ? dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .start_date
+                                          ) +
+                                          "  -  " +
+                                          dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .end_date
+                                          )
+                                        : null,
+                                    token: token,
+                                    datadayaktif: dataSelected[0],
+                                    status: "edit",
+                                    index: 0,
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      })
                   : null;
               }
             }
@@ -330,26 +383,78 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.push("ItineraryStack", {
-                      screen: "itindetail",
-                      params: {
-                        itintitle: dataItinerary.itinerary_detail.name,
-                        country: Iditinerary,
-                        dateitin:
-                          dataItinerary && dataItinerary.itinerary_detail
-                            ? dateFormatr(
-                                dataItinerary.itinerary_detail.start_date
-                              ) +
-                              "  -  " +
-                              dateFormatr(
-                                dataItinerary.itinerary_detail.end_date
-                              )
-                            : null,
-                        token: token,
-                        datadayaktif: dataSelected[0],
-                        status: "edit",
-                      },
-                    })
+                  ? props.route.params.sebelum
+                    ? props.navigation.dispatch(
+                        StackActions.replace("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: dataItinerary.itinerary_detail.name,
+                            country: Iditinerary,
+                            dateitin:
+                              dataItinerary && dataItinerary.itinerary_detail
+                                ? dateFormatr(
+                                    dataItinerary.itinerary_detail.start_date
+                                  ) +
+                                  "  -  " +
+                                  dateFormatr(
+                                    dataItinerary.itinerary_detail.end_date
+                                  )
+                                : null,
+                            token: token,
+                            datadayaktif: dataSelected[0],
+                            status: "edit",
+                          },
+                        })
+                      )
+                    : props.navigation.reset({
+                        index: 2,
+                        routes: [
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "HomeScreen" }],
+                            },
+                          },
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "TripPlaning" }],
+                            },
+                          },
+                          {
+                            name: "ItineraryStack",
+                            state: {
+                              routes: [
+                                {
+                                  name: "itindetail",
+                                  params: {
+                                    itintitle:
+                                      dataItinerary.itinerary_detail.name,
+                                    country: Iditinerary,
+                                    dateitin:
+                                      dataItinerary &&
+                                      dataItinerary.itinerary_detail
+                                        ? dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .start_date
+                                          ) +
+                                          "  -  " +
+                                          dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .end_date
+                                          )
+                                        : null,
+                                    token: token,
+                                    datadayaktif: dataSelected[0],
+                                    status: "edit",
+                                    index: 0,
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      })
                   : null;
               }
             }
@@ -388,26 +493,78 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.navigation.push("ItineraryStack", {
-                      screen: "itindetail",
-                      params: {
-                        itintitle: dataItinerary.itinerary_detail.name,
-                        country: Iditinerary,
-                        dateitin:
-                          dataItinerary && dataItinerary.itinerary_detail
-                            ? dateFormatr(
-                                dataItinerary.itinerary_detail.start_date
-                              ) +
-                              "  -  " +
-                              dateFormatr(
-                                dataItinerary.itinerary_detail.end_date
-                              )
-                            : null,
-                        token: token,
-                        datadayaktif: dataSelected[0],
-                        status: "edit",
-                      },
-                    })
+                  ? props.route.params.sebelum
+                    ? props.navigation.dispatch(
+                        StackActions.replace("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: dataItinerary.itinerary_detail.name,
+                            country: Iditinerary,
+                            dateitin:
+                              dataItinerary && dataItinerary.itinerary_detail
+                                ? dateFormatr(
+                                    dataItinerary.itinerary_detail.start_date
+                                  ) +
+                                  "  -  " +
+                                  dateFormatr(
+                                    dataItinerary.itinerary_detail.end_date
+                                  )
+                                : null,
+                            token: token,
+                            datadayaktif: dataSelected[0],
+                            status: "edit",
+                          },
+                        })
+                      )
+                    : props.navigation.reset({
+                        index: 2,
+                        routes: [
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "HomeScreen" }],
+                            },
+                          },
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "TripPlaning" }],
+                            },
+                          },
+                          {
+                            name: "ItineraryStack",
+                            state: {
+                              routes: [
+                                {
+                                  name: "itindetail",
+                                  params: {
+                                    itintitle:
+                                      dataItinerary.itinerary_detail.name,
+                                    country: Iditinerary,
+                                    dateitin:
+                                      dataItinerary &&
+                                      dataItinerary.itinerary_detail
+                                        ? dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .start_date
+                                          ) +
+                                          "  -  " +
+                                          dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .end_date
+                                          )
+                                        : null,
+                                    token: token,
+                                    datadayaktif: dataSelected[0],
+                                    status: "edit",
+                                    index: 0,
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      })
                   : null;
               }
             }
