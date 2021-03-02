@@ -49,7 +49,7 @@ export default function DiscoverCard({ props }) {
         elevation: 2,
       }}
     >
-      <Ripple
+      <Pressable
         key={discoverCardsData[0].id}
         onPress={() =>
           props.navigation.navigate("TravelIdeaStack", {
@@ -81,9 +81,9 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[0].text}
           </Text>
         </ImageBackground>
-      </Ripple>
+      </Pressable>
 
-      <Ripple
+      <Pressable
         key={discoverCardsData[1].id}
         onPress={() =>
           props.navigation.navigate("ItineraryStack", {
@@ -115,8 +115,8 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[1].text}
           </Text>
         </ImageBackground>
-      </Ripple>
-      <Ripple
+      </Pressable>
+      <Pressable
         key={discoverCardsData[2].id}
         onPress={() =>
           props.navigation.navigate("JournalStackNavigation", {
@@ -148,7 +148,7 @@ export default function DiscoverCard({ props }) {
             {discoverCardsData[2].text}
           </Text>
         </ImageBackground>
-      </Ripple>
+      </Pressable>
     </View>
   );
 }

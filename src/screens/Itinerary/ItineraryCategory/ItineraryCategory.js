@@ -42,7 +42,6 @@ export default function ItineraryCategory(props) {
   let [dataType, setDataType] = useState(props.route.params.typeCategory);
   let [actives, setActives] = useState("Itinerary");
   let [order, setOrder] = useState(props.route.params.typeOrder);
-  let [touch, setTouch] = useState(false);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -618,14 +617,18 @@ export default function ItineraryCategory(props) {
 
   const RenderUtama = ({ aktif }) => {
     if (loadingPopuler) {
-      <View>
+      <View style={{ flex: 1, backgroundColor: "#FFF" }}>
         <ActivityIndicator animating={true} color="#209FAE" />
       </View>;
     }
-    if (aktif == "Itinerary") {
+    if (aktif === "Itinerary") {
       return (
         <>
-          {list_populer.length > 0 ? (
+          {loadingPopuler ? (
+            <View style={{ marginVertical: 20 }}>
+              <ActivityIndicator animating={true} color="#209FAE" />
+            </View>
+          ) : list_populer.length > 0 ? (
             <FlatList
               data={list_populer}
               renderItem={renderPopuler}
@@ -687,24 +690,6 @@ export default function ItineraryCategory(props) {
                       </Picker>
                     </View>
                   </View>
-                  <View>
-                    {loadingPopuler ? (
-                      <View
-                        style={{ paddingVertical: 20, alignItems: "center" }}
-                      >
-                        <ActivityIndicator animating={true} color="#209FAE" />
-                      </View>
-                    ) : null}
-                  </View>
-                  {/* <View>
-            {list_populer?.length === 0 ? (
-              <View style={{ paddingVertical: 20, alignItems: "center" }}>
-                <Text size="title" type="bold">
-                  Tidak ada Data
-                </Text>
-              </View>
-            ) : null}
-          </View> */}
                 </>
               }
               onEndReachedThreshold={1}
@@ -713,35 +698,65 @@ export default function ItineraryCategory(props) {
           ) : (
             <View
               style={{
-                backgroundColor: "white",
                 alignItems: "center",
                 paddingTop: 10,
                 flex: 1,
               }}
             >
-              {loadingPopuler ? (
-                <View
-                  style={{
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ActivityIndicator color="#209FAE" animating={true} />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    paddingVertical: 20,
-                    flex: 1,
-                  }}
-                >
-                  <Text size="label" type="bold">
-                    Tidak Ada Data
+              <View
+                style={{
+                  height: Dimensions.get("screen").height * 0.05,
+                  paddingHorizontal: 15,
+                  paddingVertical: 5,
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width,
+                }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginRight: 5 }}
+                  >
+                    Show Result
+                  </Text>
+                  <Text size="description" type="bold">
+                    {list_populer?.length}
                   </Text>
                 </View>
-              )}
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width * 0.35,
+                    height: "100%",
+                    elevation: 20,
+                    justifyContent: "center",
+                    backgroundColor: "white",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Picker
+                    mode="dropdown"
+                    selectedValue={order}
+                    onValueChange={(x) => setOrder(x)}
+                  >
+                    <Picker.Item label="New Post" value="new" />
+                    <Picker.Item label="Populer" value="populer" />
+                  </Picker>
+                </View>
+              </View>
+              <View
+                style={{
+                  paddingVertical: 20,
+                  flex: 1,
+                }}
+              >
+                <Text size="label" type="bold">
+                  Tidak Ada Data
+                </Text>
+              </View>
             </View>
           )}
         </>

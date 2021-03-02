@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Text, Button } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../../assets/svg";
-import { Dimensions, Alert } from "react-native";
+import { Arrowbackwhite, WhiteCheck, Xgray } from "../../../assets/svg";
+import { Dimensions, Alert, Pressable } from "react-native";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdateKataSandi";
 import { useMutation } from "@apollo/react-hooks";
+import Modal from "react-native-modal";
 
 export default function HasPassword(props) {
   const [token, setToken] = useState("");
@@ -93,9 +94,22 @@ export default function HasPassword(props) {
     },
   });
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [errors, setErrors] = useState("");
+
   const onSubmit = async (text, text1) => {
-    if (text1 === "" || text1 === null) {
-      return Alert.alert("Password Wajib Di isi");
+    if (text === "") {
+      setModalVisible2(true);
+      return setErrors("Passwords cannot be empty");
+    }
+    if (text1 === "") {
+      setModalVisible2(true);
+      return setErrors("Passwords cannot be empty");
+    }
+
+    if (text1 !== text2) {
+      return (error["password2"] = true);
     }
     if (token || token !== "") {
       try {
@@ -118,17 +132,21 @@ export default function HasPassword(props) {
             response.data.change_password_settings.code === 200 ||
             response.data.change_password_settings.code === "200"
           ) {
-            await Alert.alert("Password berhasil di simpan");
-            await props.navigation.navigate("SettingsAkun");
+            setModalVisible(!modalVisible);
+            await setTimeout(() => {
+              props.navigation.navigate("SettingsAkun");
+            }, 3000);
           } else {
             throw new Error(response.data.change_password_settings.message);
           }
         }
-      } catch (error) {
-        Alert.alert("" + error);
+      } catch (errors) {
+        setModalVisible2(true);
+        return setErrors(errors);
       }
     } else {
-      Alert.alert("Please Login");
+      setModalVisible2(true);
+      return setErrors("Please Login");
     }
   };
 
@@ -222,6 +240,78 @@ export default function HasPassword(props) {
           text={"Submit"}
         ></Button>
       </View>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
+        <View
+          style={{
+            justifyContent: "flex-end",
+            flex: 1,
+          }}
+        >
+          <Pressable
+            onPress={() => setModalVisible(!modalVisible)}
+            style={{
+              backgroundColor: "#209FAE",
+              alignItems: "center",
+              borderRadius: 5,
+              height: 40,
+              justifyContent: "space-between",
+              paddingHorizontal: 10,
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              size="label"
+              type="bold"
+              style={{ color: "#FFF", marginRight: 10 }}
+            >
+              Successfully updated password
+            </Text>
+            <WhiteCheck height={20} width={20} />
+          </Pressable>
+        </View>
+      </Modal>
+      <Modal animationType="fade" transparent={true} visible={modalVisible2}>
+        <View
+          style={{
+            justifyContent: "flex-end",
+            flex: 1,
+          }}
+        >
+          <Pressable
+            onPress={() => setModalVisible2(!modalVisible2)}
+            style={{
+              backgroundColor: "#D75995",
+              alignItems: "center",
+              borderRadius: 5,
+              height: 40,
+              justifyContent: "space-between",
+              paddingHorizontal: 10,
+              flexDirection: "row",
+            }}
+          >
+            {errors ? (
+              <Text
+                size="label"
+                type="regular"
+                style={{ color: "#FFF", marginRight: 10 }}
+              >
+                {"Failed" +
+                  " " +
+                  errors.toString().replace("Error", "").replace(":", "")}
+              </Text>
+            ) : (
+              <Text
+                size="label"
+                type="regular"
+                style={{ color: "#FFF", marginRight: 10 }}
+              >
+                Failed updated password
+              </Text>
+            )}
+            <Xgray height={20} width={20} />
+          </Pressable>
+        </View>
+      </Modal>
     </View>
   );
 }

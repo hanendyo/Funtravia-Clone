@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Text, Button } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../../assets/svg";
-import { Dimensions, Alert, Image } from "react-native";
+import { Arrowbackwhite, WhiteCheck, Xgray } from "../../../assets/svg";
+import { Dimensions, Alert, Pressable } from "react-native";
+import Modal from "react-native-modal";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdatePassword";
@@ -25,14 +26,18 @@ export default function AddPassword(props) {
 
   const handleError1 = (e) => {
     setText1(e);
-    if (e && e.length <= 8) {
-      setError({ ...error, password1: true });
+    if (e && e.length < 8) {
+      return setError({ ...error, password1: true });
+    } else {
+      return setError({ ...error, password1: false });
     }
   };
-  const handleError2 = (e) => {
+  const handleError2 = (e, text1) => {
     setText2(e);
-    if (e && e.length <= 8 && text2 !== text1) {
+    if (e !== text1) {
       setError({ ...error, password2: true });
+    } else {
+      setError({ ...error, password2: false });
     }
   };
 
@@ -95,13 +100,16 @@ export default function AddPassword(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const onSubmit = async (text1, text2) => {
-    if (text1 !== text2) {
-      return Alert.alert("Password tidak sama");
-    }
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [errors, setErrors] = useState("");
 
-    if (text1 === "" || text1 === null) {
-      return Alert.alert("Password Wajib Di isi");
+  const onSubmit = async (text1, text2) => {
+    if (text1 === "") {
+      return setModalVisible2(true);
+    }
+    if (text1 !== text2) {
+      return (error["password2"] = true);
     }
 
     if (token || token !== "") {
@@ -124,26 +132,29 @@ export default function AddPassword(props) {
             response.data.update_password_settings.code === 200 ||
             response.data.update_password_settings.code === "200"
           ) {
-            await Alert.alert("Password berhasil di simpan");
-            await props.navigation.navigate("SettingsAkun");
+            await setModalVisible(!modalVisible);
+            await setTimeout(() => {
+              props.navigation.navigate("SettingsAkun");
+            }, 3000);
           } else {
             throw new Error(response.data.update_password_settings.message);
           }
         }
-      } catch (error) {
-        Alert.alert("" + error);
+      } catch (errors) {
+        setModalVisible2(true);
+        return setErrors(errors);
       }
     } else {
-      Alert.alert("Please Login");
+      setModalVisible2(true);
+      return setErrors("Please Login");
     }
   };
 
   return (
     <View
       style={{
-        width: Dimensions.get("screen").width * 0.9,
-        marginHorizontal: 20,
-        marginTop: 20,
+        paddingHorizontal: 20,
+        flex: 1,
       }}
     >
       <Item floatingLabel style={{ flexDirection: "row" }}>
@@ -159,24 +170,11 @@ export default function AddPassword(props) {
         <Input
           secureTextEntry={true}
           style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-          // value={data.first_name ? data.first_name : ""}
           onChangeText={(e) => handleError1(e)}
           keyboardType="default"
         />
-        {/* <CustomImage
-          source={hidePasswd ? show_password : hide_password}
-          isTouchable={true}
-          onPress={togglePassword}
-          customStyle={{
-            height: 25,
-            width: 25,
-            position: "absolute",
-            top: 25,
-            right: 0,
-          }}
-        /> */}
       </Item>
-      {text1 && text1.length < 8 ? (
+      {error["password1"] === true ? (
         <Label>
           <Text type="light" size="small" style={{ color: "#209FAE" }}>
             {t("inputWarningPassword")}
@@ -196,12 +194,11 @@ export default function AddPassword(props) {
         <Input
           secureTextEntry={true}
           style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-          // value={data.first_name ? data.first_name : ""}
-          onChangeText={(e) => handleError2(e)}
+          onChangeText={(e) => handleError2(e, text1)}
           keyboardType="default"
         />
       </Item>
-      {text2 !== text1 ? (
+      {error["password2"] === true ? (
         <Label>
           <Text type="light" size="small" style={{ color: "#209FAE" }}>
             {t("inputWarningRepeatPassword")}
@@ -216,6 +213,64 @@ export default function AddPassword(props) {
           onPress={() => onSubmit(text1, text2)}
         ></Button>
       </View>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
+        <View
+          style={{
+            justifyContent: "flex-end",
+            flex: 1,
+          }}
+        >
+          <Pressable
+            onPress={() => setModalVisible(!modalVisible)}
+            style={{
+              backgroundColor: "#209FAE",
+              alignItems: "center",
+              borderRadius: 5,
+              height: 40,
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              size="label"
+              type="regular"
+              style={{ color: "#FFF", marginRight: 10 }}
+            >
+              Successfully created a password
+            </Text>
+            <WhiteCheck height={20} width={20} />
+          </Pressable>
+        </View>
+      </Modal>
+      <Modal animationType="fade" transparent={true} visible={modalVisible2}>
+        <View
+          style={{
+            justifyContent: "flex-end",
+            flex: 1,
+          }}
+        >
+          <Pressable
+            onPress={() => setModalVisible2(!modalVisible2)}
+            style={{
+              backgroundColor: "#D75995",
+              alignItems: "center",
+              borderRadius: 5,
+              height: 40,
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              size="label"
+              type="regular"
+              style={{ color: "#FFF", marginRight: 10 }}
+            >
+              Failed
+            </Text>
+            <Xgray height={20} width={20} />
+          </Pressable>
+        </View>
+      </Modal>
     </View>
   );
 }
