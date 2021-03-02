@@ -51,7 +51,7 @@ export default function SettingNegara({
       try {
         let response = await MutationsetCountry({
           variables: {
-            countries_id: detail.id,
+            countries_id: detail?.id,
           },
         });
         if (response.data) {
@@ -61,9 +61,14 @@ export default function SettingNegara({
           ) {
             selected.countries = detail;
             let tempSetting = { ...selected };
-            tempSetting.cities = null;
-            console.log("setCity:", tempSetting);
-            await AsyncStorage.setItem("setting", JSON.stringify(selected));
+            if (
+              selected?.countries?.id === tempSetting?.cities?.countries?.id
+            ) {
+              tempSetting.cities = selected.cities;
+            } else {
+              tempSetting.cities = null;
+            }
+            await AsyncStorage.setItem("setting", JSON.stringify(tempSetting));
             var tempData = [...datacountry];
             for (var i in tempData) {
               tempData[i].selected = false;
@@ -71,7 +76,6 @@ export default function SettingNegara({
             var index = tempData.findIndex((k) => k["id"] === detail.id);
             tempData[index].selected = true;
             setdataCountry(tempData);
-
             masukan(selected);
           } else {
             throw new Error(response.data.update_country_settings.message);
