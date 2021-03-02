@@ -351,11 +351,6 @@ export default function ItineraryPopuler(props) {
 
   const RenderUtama = ({ aktif }) => {
     if (aktif == "Itinerary") {
-      if (loadingPopuler) {
-        <View>
-          <ActivityIndicator animating={true} color="#209FAE" />
-        </View>;
-      }
       return (
         <View
           style={{
@@ -363,12 +358,15 @@ export default function ItineraryPopuler(props) {
             width: Dimensions.get("screen").width,
           }}
         >
-          <FlatList
-            data={list_populer}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              console.log("item :", item),
-              (
+          {loadingPopuler ? (
+            <View style={{ marginVertical: 20 }}>
+              <ActivityIndicator animating={true} color="#209FAE" />
+            </View>
+          ) : list_populer.length > 0 ? (
+            <FlatList
+              data={list_populer}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
                 <View
                   style={{
                     height: 145,
@@ -397,6 +395,7 @@ export default function ItineraryPopuler(props) {
                             country: item.id,
                             token: token,
                             status: "favorite",
+                            index: 0,
                           },
                         })
                       }
@@ -638,7 +637,6 @@ export default function ItineraryPopuler(props) {
                     </Pressable>
                     <View
                       style={{
-                        // borderWidth: 1,
                         height: "20%",
                         flexDirection: "row",
                         backgroundColor: "#FFFFFF",
@@ -647,7 +645,19 @@ export default function ItineraryPopuler(props) {
                         justifyContent: "space-between",
                       }}
                     >
-                      <View
+                      <Pressable
+                        onPress={() =>
+                          props.navigation.navigate("ItineraryStack", {
+                            screen: "itindetail",
+                            params: {
+                              itintitle: item.name,
+                              country: item.id,
+                              token: token,
+                              status: "favorite",
+                              index: 1,
+                            },
+                          })
+                        }
                         style={{
                           width: "50%",
                           flexDirection: "row",
@@ -666,8 +676,20 @@ export default function ItineraryPopuler(props) {
                         >
                           Travel Album
                         </Text>
-                      </View>
-                      <View
+                      </Pressable>
+                      <Pressable
+                        onPress={() =>
+                          props.navigation.navigate("ItineraryStack", {
+                            screen: "itindetail",
+                            params: {
+                              itintitle: item.name,
+                              country: item.id,
+                              token: token,
+                              status: "favorite",
+                              index: 2,
+                            },
+                          })
+                        }
                         style={{
                           width: "50%",
                           flexDirection: "row",
@@ -684,24 +706,35 @@ export default function ItineraryPopuler(props) {
                         >
                           Travel Stories
                         </Text>
-                      </View>
+                      </Pressable>
                     </View>
                   </View>
                 </View>
-              )
-            )}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => Refresh()}
-              />
-            }
-            onEndReachedThreshold={1}
-            onEndReached={handleOnEndReached}
-          />
+              )}
+              showsVerticalScrollIndicator={false}
+              refreshing={refreshing}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => Refresh()}
+                />
+              }
+              onEndReachedThreshold={1}
+              onEndReached={handleOnEndReached}
+            />
+          ) : (
+            <View
+              style={{
+                marginVertical: 20,
+                alignItems: "center",
+              }}
+            >
+              <Text size="label" type="bold">
+                Tidak Ada Data
+              </Text>
+            </View>
+          )}
         </View>
       );
     } else if (aktif == "Album") {
@@ -870,193 +903,193 @@ export default function ItineraryPopuler(props) {
       </View>
       <View
         style={{
-          backgroundColor: "white",
-          marginVertical: 5,
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 15,
+          backgroundColor: "#FFF",
+          marginTop: 5,
         }}
       >
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            paddingHorizontal: 15,
-          }}
-        >
-          <Text size="label" type="bold">
-            Category Itinerary
-          </Text>
-        </View>
-        <View
-          style={{
-            marginVertical: 10,
-            flexDirection: "row",
-            height: Dimensions.get("screen").width * 0.09,
-          }}
-        >
-          {dataCategory?.category_journal.length < 0 ||
-          dataCategory?.category_journal === "undefined" ||
-          dataCategory?.category_journal === undefined ? (
-            <View
-              style={{
-                backgroundColor: "white",
-                alignItems: "center",
-                paddingTop: 10,
-                flex: 1,
-              }}
-            >
-              {loadingCategory ? (
-                <View
-                  style={{
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ActivityIndicator color="#209FAE" animating={true} />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>Tidak ada Data</Text>
-                </View>
-              )}
-            </View>
-          ) : (
-            <FlatList
-              data={dataCategory?.category_journal}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 15 }}
-              renderItem={({ item, index }) => {
-                return (
-                  <Ripple
-                    style={{
-                      overflow: "hidden",
-                      height: "95%",
-                      marginRight: 5,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 5,
-                      marginTop: 1,
-                      marginLeft: 1,
-                      backgroundColor: "#209FAE",
-                      borderColor: "#209FAE",
-                      paddingHorizontal: 5,
-                      marginVertical: 4,
-                      borderWidth: 1,
-                      flexDirection: "row",
-                    }}
-                    onPress={() => unSelect(item.id)}
-                  >
-                    <FunIcon
-                      icon={item.icon}
-                      height={30}
-                      width={30}
-                      fill={"white"}
-                      style={{ marginRight: 5 }}
-                    />
-                    <Text
-                      size="label"
-                      type="bold"
-                      style={{
-                        textAlign: "center",
-                        color: "white",
-                      }}
-                    >
-                      {item?.name}
-                    </Text>
-                  </Ripple>
-                );
-              }}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-            />
-          )}
-        </View>
+        <Text size="label" type="bold">
+          Category Itinerary
+        </Text>
       </View>
       <View>
         <View
           style={{
-            width: Dimensions.get("screen").width,
+            backgroundColor: "#F6F6F6",
             flexDirection: "row",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
-            backgroundColor: "white",
-            justifyContent: "space-around",
+            // borderWidth: 1,
+            height: 50,
           }}
         >
-          <Ripple
-            onPress={() => setActives("Itinerary")}
+          <View
             style={{
-              width: Dimensions.get("screen").width * 0.32,
+              backgroundColor: "white",
               alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: actives == "Itinerary" ? 2 : 0,
-              borderBottomColor: actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
-              paddingVertical: 10,
+              flex: 1,
+              marginBottom: 5,
             }}
           >
-            <Text
-              size="description"
-              type={actives == "Itinerary" ? "bold" : "regular"}
-              style={{
-                color: actives == "Itinerary" ? "#209FAE" : "#464646",
-              }}
-            >
-              Itinerary
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => setActives("Album")}
+            {loadingCategory ? (
+              <View
+                style={{
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator color="#209FAE" animating={true} />
+              </View>
+            ) : dataCategory?.category_journal.length > 0 ? (
+              <FlatList
+                data={dataCategory?.category_journal}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: 15 }}
+                renderItem={({ item, index }) => {
+                  return (
+                    <Ripple
+                      style={{
+                        overflow: "hidden",
+                        height: "70%",
+                        marginRight: 5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 5,
+                        marginTop: 7,
+                        marginLeft: 1,
+                        backgroundColor: "#FFF",
+                        paddingHorizontal: 5,
+                        marginVertical: 4,
+                        borderWidth: 1,
+                        borderColor: "#D1D1D1",
+                        flexDirection: "row",
+                      }}
+                      onPress={() =>
+                        props.navigation.navigate("ItineraryCategory", {
+                          typeCategory: item.id,
+                          typeOrder: "new",
+                        })
+                      }
+                    >
+                      {loadingCategory ? (
+                        <ActivityIndicator animating={true} color="#209FAE" />
+                      ) : (
+                        <>
+                          <FunIcon
+                            icon={item.icon}
+                            height={30}
+                            width={30}
+                            // fill={"white"}
+                            style={{ marginRight: 5 }}
+                          />
+
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{
+                              textAlign: "center",
+                            }}
+                          >
+                            {item?.name}
+                          </Text>
+                        </>
+                      )}
+                    </Ripple>
+                  );
+                }}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : (
+              <View>
+                <Text>Tidak Ada Data</Text>
+              </View>
+            )}
+          </View>
+        </View>
+        <View>
+          <View
             style={{
-              width: Dimensions.get("screen").width * 0.32,
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: actives == "Album" ? 2 : 0,
-              borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
-              paddingVertical: 10,
+              width: Dimensions.get("screen").width,
+              flexDirection: "row",
+              shadowColor: "gray",
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: arrayShadow.shadowOpacity,
+              shadowRadius: arrayShadow.shadowRadius,
+              elevation: arrayShadow.elevation,
+              backgroundColor: "white",
+              // borderWidth: 1,
+              justifyContent: "space-around",
             }}
           >
-            <Text
-              size="description"
-              type={actives == "Album" ? "bold" : "reguler"}
+            <Ripple
+              onPress={() => setActives("Itinerary")}
               style={{
-                color: actives == "Album" ? "#209FAE" : "#464646",
+                width: Dimensions.get("screen").width * 0.32,
+                alignItems: "center",
+                justifyContent: "center",
+                borderBottomWidth: actives == "Itinerary" ? 2 : 0,
+                borderBottomColor:
+                  actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
+                paddingVertical: 10,
               }}
             >
-              Travel Album
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => setActives("Stories")}
-            style={{
-              width: Dimensions.get("screen").width * 0.32,
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: actives == "Stories" ? 2 : 0,
-              borderBottomColor: actives == "Stories" ? "#249FAE" : "#EEEEEE",
-              paddingVertical: 10,
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Stories" ? "bold" : "reguler"}
+              <Text
+                size="description"
+                type={actives == "Itinerary" ? "bold" : "regular"}
+                style={{
+                  color: actives == "Itinerary" ? "#209FAE" : "#464646",
+                }}
+              >
+                Itinerary
+              </Text>
+            </Ripple>
+            <Ripple
+              onPress={() => setActives("Album")}
               style={{
-                color: actives == "Stories" ? "#209FAE" : "#464646",
+                width: Dimensions.get("screen").width * 0.32,
+                alignItems: "center",
+                justifyContent: "center",
+                borderBottomWidth: actives == "Album" ? 2 : 0,
+                borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
+                paddingVertical: 10,
               }}
             >
-              Travel Stories
-            </Text>
-          </Ripple>
+              <Text
+                size="description"
+                type={actives == "Album" ? "bold" : "reguler"}
+                style={{
+                  color: actives == "Album" ? "#209FAE" : "#464646",
+                }}
+              >
+                Travel Album
+              </Text>
+            </Ripple>
+            <Ripple
+              onPress={() => setActives("Stories")}
+              style={{
+                width: Dimensions.get("screen").width * 0.32,
+                alignItems: "center",
+                justifyContent: "center",
+                borderBottomWidth: actives == "Stories" ? 2 : 0,
+                borderBottomColor: actives == "Stories" ? "#249FAE" : "#EEEEEE",
+                paddingVertical: 10,
+              }}
+            >
+              <Text
+                size="description"
+                type={actives == "Stories" ? "bold" : "reguler"}
+                style={{
+                  color: actives == "Stories" ? "#209FAE" : "#464646",
+                }}
+              >
+                Travel Stories
+              </Text>
+            </Ripple>
+          </View>
         </View>
       </View>
-      {/* </View> */}
       <View>
         <RenderUtama aktif={actives} />
       </View>

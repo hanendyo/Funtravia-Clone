@@ -4,6 +4,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import {
   View,
@@ -240,11 +241,13 @@ export default function SettingsAkun(props) {
     }
   };
 
-  const hasPassword = async () => {
-    if (dataPassword?.cek_haspassword?.ishasPassword === true) {
-      props.navigation.navigate("HasPassword");
-    } else {
-      props.navigation.navigate("AddPassword");
+  const hasPassword = () => {
+    if (dataPassword && dataPassword.cek_haspassword) {
+      if (dataPassword?.cek_haspassword?.ishasPassword === true) {
+        props.navigation.navigate("HasPassword");
+      } else {
+        props.navigation.navigate("AddPassword");
+      }
     }
   };
 
@@ -947,7 +950,7 @@ export default function SettingsAkun(props) {
           </>
         )}
       </View>
-      <Ripple
+      <Pressable
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
@@ -975,7 +978,7 @@ export default function SettingsAkun(props) {
           {t("password")}
         </Text>
         <Nextpremier width={15} height={15} />
-      </Ripple>
+      </Pressable>
       {/* <Ripple
         onPress={() => null}
         style={{
