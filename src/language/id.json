@@ -463,6 +463,7 @@
   "BestTravelIdea": "Best Travel Idea",
   "LetsGovisit": "Let’s go visit the iconic place around the world",
   "person": "Orang",
+  "persons": "Orang",
   "Following": "Mengikuti",
   "Followers": "Pengikut",
   "Send": "kirim",
@@ -475,6 +476,6 @@
   "EnterPassword": "kata sandi",
   "ConfirmPasswords": "konfirmasi kata sandi",
   "SetPassword": "Atur kata sandi",
-  "WordChangeEmail": "Harap setel kata sandi ke akun Anda sebelum Anda mengubah email.",
+  "WordChangeEmail": "Harap atur kata sandi ke akun Anda sebelum Anda mengubah email.",
   "monthAgo": "bulan yang lalu"
 }

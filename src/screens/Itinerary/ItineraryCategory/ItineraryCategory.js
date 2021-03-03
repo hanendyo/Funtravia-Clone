@@ -309,14 +309,16 @@ export default function ItineraryCategory(props) {
     var Difference_In_Time = date2.getTime() - date1.getTime();
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
     return (
-      Difference_In_Days +
-      1 +
-      " " +
-      "Day" +
-      " " +
-      Difference_In_Days +
-      " " +
-      "Night"
+      <View style={{ flexDirection: "row" }}>
+        <Text size="small">
+          {Difference_In_Days + 1 > 1
+            ? Difference_In_Days + 1 + " " + t("days")
+            : Difference_In_Days + 1 + " " + t("day")}{" "}
+          {Difference_In_Days > 1
+            ? Difference_In_Days + " " + t("nights")
+            : Difference_In_Days + " " + t("night")}
+        </Text>
+      </View>
     );
   };
 
@@ -531,11 +533,19 @@ export default function ItineraryCategory(props) {
                     }}
                   >
                     <User width={10} height={10} style={{ marginRight: 5 }} />
-                    <Text size="small" type="regular">
-                      {(item && item.buddy_count ? item.buddy_count : null) +
-                        " " +
-                        "Person"}
-                    </Text>
+                    {item.buddy_count > 1 ? (
+                      <Text size="small" type="regular">
+                        {(item && item.buddy_count ? item.buddy_count : null) +
+                          " " +
+                          t("persons")}
+                      </Text>
+                    ) : (
+                      <Text size="small" type="regular">
+                        {(item && item.buddy_count ? item.buddy_count : null) +
+                          " " +
+                          t("person")}
+                      </Text>
+                    )}
                   </View>
                 </View>
                 {/* <View
@@ -582,7 +592,7 @@ export default function ItineraryCategory(props) {
                 marginBottom: 5,
               }}
             >
-              <TravelAlbum style={{ marginRight: 5 }} />
+              <TravelAlbum style={{ marginRight: 5 }} height={10} width={10} />
               <Text size="small" type="bold" style={{ color: "#209FAE" }}>
                 Travel Album
               </Text>
@@ -596,7 +606,11 @@ export default function ItineraryCategory(props) {
                 marginBottom: 5,
               }}
             >
-              <TravelStories style={{ marginRight: 5 }} />
+              <TravelStories
+                style={{ marginRight: 5 }}
+                height={10}
+                width={10}
+              />
               <Text size="small" type="bold" style={{ color: "#209FAE" }}>
                 Travel Stories
               </Text>
