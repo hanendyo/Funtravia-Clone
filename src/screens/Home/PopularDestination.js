@@ -109,7 +109,7 @@ export default function PopularDestination({ props }) {
             shadowOffset: { width: 0.5, height: 0.5 },
             shadowRadius: 0.5,
             shadowOpacity: 0.5,
-            elevation: 2,
+            // elevation: 2,
           }}
           onPress={() =>
             onSelect(
