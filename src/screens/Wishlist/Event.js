@@ -287,6 +287,38 @@ export default function Event({
               // borderColor: 'grey',
             }}
           >
+           
+            <View
+              style={{
+                // flex: 1,
+                flexDirection: "row",
+                width: "100%",
+                borderColor: "grey",
+                // marginBottom: (5),
+              }}
+            >
+              <CustomImage
+                customStyle={{
+                  width: 15,
+                  height: 15,
+                  marginRight: 5,
+                }}
+                customImageStyle={{
+                  width: 15,
+                  height: 15,
+                  resizeMode: "contain",
+                }}
+                source={MapIconGrey}
+              />
+              <Text
+                size="small"
+                style={{
+                  width: "100%",
+                }}
+              >
+                {item.city && item.city.name ? item.city.name : "-"}
+              </Text>
+            </View>
             <View
               style={{
                 // flex: 1,
@@ -325,37 +357,6 @@ export default function Event({
               </Text>
             </View>
 
-            <View
-              style={{
-                // flex: 1,
-                flexDirection: "row",
-                width: "100%",
-                borderColor: "grey",
-                // marginBottom: (5),
-              }}
-            >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={MapIconGrey}
-              />
-              <Text
-                size="small"
-                style={{
-                  width: "100%",
-                }}
-              >
-                {item.city && item.city.name ? item.city.name : "-"}
-              </Text>
-            </View>
           </View>
         </View>
       </View>
