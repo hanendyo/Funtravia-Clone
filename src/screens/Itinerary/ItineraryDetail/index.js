@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 // import Animated, { Easing } from "react-native-reanimated";
 import {
@@ -18,7 +18,6 @@ import {
   Picker,
   ImageBackground,
 } from "react-native";
-import DraggableFlatList from "react-native-draggable-flatlist";
 import LinearGradient from "react-native-linear-gradient";
 import { TabView, TabBar } from "react-native-tab-view";
 import { default_image } from "../../../assets/png";
@@ -79,6 +78,7 @@ import album from "../../../graphQL/Query/Itinerary/album";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
+import { AutoDragSortableView } from "react-native-drag-sort";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -91,6 +91,10 @@ const SafeStatusBar = Platform.select({
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 17.5) / 4;
 const PullToRefreshDist = 150;
+
+const parentWidth = width;
+const childrenWidth = width - 40;
+const childrenHeight = 60;
 
 export default function ItineraryDetail(props) {
   /**
@@ -3428,6 +3432,62 @@ export default function ItineraryDetail(props) {
   // ============================== RRRR   EEE   N  N  N D   D EEE   RRRR   ===============
   // ============================== R   R  E     N   N N D  D  E     R   R  ===============
   // ============================== R   R  EEEE  N     N DDD   EEEEE R   R  ===============
+  let [modalDrag, setMOdalDrag] = useState(true);
+
+  let [data, setDatas] = useState([
+    {
+      image: "https://placekitten.com/200/240",
+      text: "Chloe",
+    },
+    {
+      image: "https://placekitten.com/200/201",
+      text: "Jasper",
+    },
+    {
+      image: "https://placekitten.com/200/202",
+      text: "Pepper",
+    },
+    {
+      image: "https://placekitten.com/200/203",
+      text: "Oscar",
+    },
+    {
+      image: "https://placekitten.com/200/204",
+      text: "Dusty",
+    },
+    {
+      image: "https://placekitten.com/200/205",
+      text: "Spooky",
+    },
+    {
+      image: "https://placekitten.com/200/210",
+      text: "Kiki",
+    },
+    {
+      image: "https://placekitten.com/200/215",
+      text: "Smokey",
+    },
+    {
+      image: "https://placekitten.com/200/220",
+      text: "Gizmo",
+    },
+    {
+      image: "https://placekitten.com/220/239",
+      text: "Kitty",
+    },
+    {
+      image: "https://placekitten.com/220/239",
+      text: "Kitty",
+    },
+    {
+      image: "https://placekitten.com/220/239",
+      text: "Kitty",
+    },
+    {
+      image: "https://placekitten.com/220/239",
+      text: "Kitty",
+    },
+  ]);
 
   if (loadingdetail) {
     return (
@@ -4287,14 +4347,169 @@ export default function ItineraryDetail(props) {
           }}
           setClose={(e) => setshowside(false)}
         />
+        <Modal
+          // onBackdropPress={() => {
+          //   setMOdalDrag(false);
+          // }}
+          onRequestClose={() => setMOdalDrag(false)}
+          onDismiss={() => setMOdalDrag(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={false}
+          backdropColor={"#fff"}
+          hasBackdrop={false}
+          style={{
+            margin: 0,
+            padding: 0,
+            justifyContent: "flex-end",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <SafeAreaView
+            style={{
+              flex: 1,
+              backgroundColor: "#fff",
+            }}
+          >
+            {dataList.length ? (
+              <AutoDragSortableView
+                dataSource={dataList}
+                parentWidth={parentWidth}
+                childrenWidth={childrenWidth}
+                // marginChildrenBottom={20}
+                marginChildrenRight={20}
+                marginChildrenLeft={20}
+                // marginChildrenTop={10}
+                childrenHeight={childrenHeight}
+                onDataChange={(x) => {
+                  if (x.length != dataList.length) {
+                    // console.log(x);
+                    dataList = x;
+                  }
+                }}
+                onDragEnd={(x) => {
+                  if (x.length != dataList.length) {
+                    // console.log(x);
+                    dataList = x;
+                  }
+                }}
+                keyExtractor={(item, index) => item.id} // FlatList作用一样，优化
+                renderItem={(item, index) => {
+                  const x = dataList.length - 1;
+
+                  return (
+                    <View
+                      style={{
+                        width: childrenWidth,
+                        height: childrenHeight,
+                        flexDirection: "row",
+                        paddingLeft: 10,
+                        paddingRight: 2,
+                        paddingBottom: 1,
+                      }}
+                    >
+                      <View
+                        style={{
+                          marginTop: 5,
+                          flex: 1,
+                          borderRadius: 5,
+                          marginBottom: 2,
+                          backgroundColor: "#fff",
+                          elevation: 3,
+                          padding: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            width: "100%",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {item.type !== "custom" ? (
+                            <Image
+                              source={
+                                item.images
+                                  ? { uri: item.images }
+                                  : { uri: item.icon }
+                              }
+                              defaultSource={default_image}
+                              style={{
+                                height: 30,
+                                width: 30,
+                                resizeMode: "cover",
+                                borderRadius: 15,
+                              }}
+                            />
+                          ) : item.icon ? (
+                            <FunIcon
+                              icon={item.icon}
+                              height={30}
+                              width={30}
+                              style={{
+                                borderRadius: 15,
+                              }}
+                            />
+                          ) : (
+                            <FunIcon
+                              icon={"i-tour"}
+                              height={30}
+                              width={30}
+                              style={{
+                                borderRadius: 15,
+                              }}
+                            />
+                          )}
+                          <View
+                            style={{ flex: 1, paddingHorizontal: 10 }}
+                            // onLongPress={status !== "saved" ? drag : null}
+                          >
+                            <Text size="label" type="bold" style={{}}>
+                              {item.name}
+                            </Text>
+                            <Text>
+                              {Capital({
+                                text:
+                                  item.type !== "custom"
+                                    ? item.type !== "google"
+                                      ? item.type
+                                      : "Destination from Google"
+                                    : "Custom Activity",
+                              })}
+
+                              {item.city}
+                            </Text>
+                          </View>
+                          {/* {status !== "saved" && Anggota === "true" ? (
+                            <Button
+                              size="small"
+                              text=""
+                              type="circle"
+                              variant="transparent"
+                              style={{}}
+                              onPress={() => {
+                                bukamodalmenu(item.id, item.type);
+                              }}
+                            >
+                              <More width={15} height={15} />
+                            </Button>
+                          ) : null} */}
+                        </View>
+                      </View>
+                    </View>
+                  );
+                }}
+              />
+            ) : null}
+          </SafeAreaView>
+        </Modal>
       </SafeAreaView>
     );
   }
-  return (
-    <View>
-      <Text>test............</Text>
-    </View>
-  );
+
+  return <View></View>;
 }
 
 const styles = StyleSheet.create({
@@ -4317,6 +4532,10 @@ const styles = StyleSheet.create({
     height: TabBarHeight,
   },
   indicator: { backgroundColor: "#222" },
-});
 
-// export default ItineraryDetail;
+  header_title: {
+    color: "#333",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+});
