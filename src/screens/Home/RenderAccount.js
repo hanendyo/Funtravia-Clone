@@ -16,8 +16,6 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 		LoadPost,
 		{ data: datapost, loading: loadingpost, error: errorpost },
 	] = useLazyQuery(User_Post, {
-		fetchPolicy: "network-only",
-
 		context: {
 			headers: {
 				"Content-Type": "application/json",
@@ -35,19 +33,6 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 		});
 		return unsubscribe;
 	}, [props.navigation]);
-
-	// const [
-	//   NotifCount,
-	//   { data: datanotif, loading: loadingnotif, error: errornotif },
-	// ] = useLazyQuery(CountNotif, {
-	//   fetchPolicy: "network-only",
-	//   context: {
-	//     headers: {
-	//       "Content-Type": "application/json",
-	//       Authorization: `Bearer ${token}`,
-	//     },
-	//   },
-	// });
 
 	const login = () => {
 		props.navigation.navigate("AuthStack", { screen: "LoginScreen" });
@@ -124,7 +109,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 									borderColor: "#fff",
 									resizeMode: "cover",
 								}}
-								defaultSource={DefaultProfileSquare}
+								// defaultSource={DefaultProfileSquare}
 								source={
 									data && data.user_profile.picture
 										? { uri: data.user_profile.picture }
@@ -348,29 +333,33 @@ export default function RenderAccount({ data, token, props, datanotif }) {
 								width: "100%",
 							}}
 						>
-							<Button
+							<TouchableOpacity
 								onPress={() => signUp()}
-								size="small"
-								text={t("signUp")}
 								style={{
 									paddingVertical: 7,
-									paddingHorizontal: 17,
+									paddingHorizontal: 20,
 									borderRadius: 5,
 									backgroundColor: "#209fae",
 								}}
-							/>
-							<Button
+							>
+								<Text type="bold" style={{ color: "#FFF" }}>
+									{t("signUp")}
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
 								onPress={() => login()}
-								size="small"
-								text={t("signIn")}
 								style={{
 									marginLeft: 10,
 									paddingVertical: 7,
-									paddingHorizontal: 17,
+									paddingHorizontal: 20,
 									borderRadius: 5,
 									backgroundColor: "#D75995",
 								}}
-							/>
+							>
+								<Text type="bold" style={{ color: "#FFF" }}>
+									{t("signIn")}
+								</Text>
+							</TouchableOpacity>
 						</View>
 					</View>
 				)}

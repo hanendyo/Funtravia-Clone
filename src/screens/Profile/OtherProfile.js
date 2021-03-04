@@ -14,7 +14,8 @@ import {
 	View,
 	Alert,
 } from "react-native";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/react-hooks";
+// import { gql, useQuery, useMutation } from "@apollo/client";
 import { Akunsaya, default_image, DefaultProfile } from "../../assets/png";
 import { Kosong } from "../../assets/svg";
 import { Button, Text, Truncate } from "../../component";
@@ -38,9 +39,27 @@ const SafeStatusBar = Platform.select({
 });
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
-
-export default function MyProfile({ navigation, route }) {
-	let [token, setToken] = useState(route.params.token);
+export default function Render({ navigation, route }) {
+	const Hello = ({ route }) => {
+		const { data, loading, error } = useQuery(Account, {
+			variables: {
+				id: route.params.idUser,
+			},
+			context: {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${route.params.token}`,
+				},
+			},
+		});
+		if (loading) return <Text>Loading ...</Text>;
+		console.log(data);
+		return <Text>Hello!</Text>;
+	};
+	return <Hello route={route} />;
+}
+export function MyProfile({ navigation, route }) {
+	let [token, setToken] = useState(null);
 	let [canScroll, setCanScroll] = useState(true);
 	let [loadings, setLoading] = useState(false);
 	const { t } = useTranslation();
@@ -177,6 +196,13 @@ export default function MyProfile({ navigation, route }) {
 				}
 			});
 		});
+
+		AsyncStorage.getItem("access_token").then((value) => {
+			if (value) {
+				setToken(value);
+			}
+		});
+
 		return () => {
 			scrollY.removeAllListeners();
 			headerScrollY.removeAllListeners();
@@ -338,20 +364,20 @@ export default function MyProfile({ navigation, route }) {
 	 * render Helper
 	 */
 
-	const { data, loading, error, refetch } = useQuery(Account, {
-		variables: {
-			id: route.params.idUser,
-		},
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
+	function Hello() {
+		const { data, loading, error } = useQuery(Account, {
+			variables: {
+				id: route.params.idUser,
 			},
-		},
-	});
-
-	if (data) {
-		console.log(data);
+			context: {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		});
+		if (loading) return <p>Loading ...</p>;
+		return <h1>Hello {data.greeting.message}!</h1>;
 	}
 
 	const { data: dataPost, loading: loadingPost, error: errorPost } = useQuery(
@@ -1263,7 +1289,6 @@ export default function MyProfile({ navigation, route }) {
 		const y = scrollY.interpolate({
 			inputRange: [0, HeaderHeight],
 			outputRange: [HeaderHeight, 0],
-			// extrapolate: 'clamp',
 			extrapolateRight: "clamp",
 		});
 		return (
@@ -1312,7 +1337,6 @@ export default function MyProfile({ navigation, route }) {
 	};
 
 	const renderCustomRefresh = () => {
-		// headerMoveScrollY
 		return Platform.select({
 			ios: (
 				<AnimatedIndicator
@@ -1365,16 +1389,21 @@ export default function MyProfile({ navigation, route }) {
 	};
 
 	if (loading && loadingPost && loadingReview && loadingTrip) {
-		console.log({
-			LOADING: loading,
-			POST: loadingPost,
-			REVIEW: loadingReview,
-			TRIP: loadingTrip,
-		});
+		<View
+			style={{
+				flex: 1,
+				alignItems: "center",
+				alignContent: "center",
+				justifyContent: "center",
+			}}
+		>
+			<ActivityIndicator animating={true} color="#209fae" size="large" />
+		</View>;
 	}
 
 	if (error && errorPost && errorReview && errorTrip) {
 		console.log({
+			TOKEN: token,
 			ERROR: error,
 			POST: errorPost,
 			REVIEW: errorReview,
@@ -1382,23 +1411,13 @@ export default function MyProfile({ navigation, route }) {
 		});
 	}
 
-	if (data && dataPost && dataReview && dataTrip) {
-		console.log({
-			DATA: data,
-			POST: dataPost,
-			REVIEW: dataReview,
-			TRIP: dataTrip,
-		});
-		return (
-			<SafeAreaView style={styles.container}>
-				{renderTabView()}
-				{renderHeader()}
-				{renderCustomRefresh()}
-			</SafeAreaView>
-		);
-	}
-
-	return <Text>Hello</Text>;
+	return (
+		<View style={styles.container}>
+			{renderTabView()}
+			{renderHeader()}
+			{renderCustomRefresh()}
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({

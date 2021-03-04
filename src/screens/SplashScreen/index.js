@@ -19,8 +19,8 @@ export default function SplashScreen(props) {
 	const { t } = useTranslation();
 	const imageCarousel = [SlideSatu, SlideDua, SlideTiga];
 	var imageScroll = useRef();
-	let maxSlider = 2;
-	let index = 0;
+	const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+	const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
 	useEffect(() => {
 		props.navigation.setOptions({
@@ -29,8 +29,8 @@ export default function SplashScreen(props) {
 	}, []);
 
 	return (
-		<SafeAreaView style={styles.main}>
-			<StatusBar backgroundColor="#14646E" />
+		<View style={styles.main}>
+			<StatusBar barStyle="light-content" />
 			<FlatList
 				ref={imageScroll}
 				horizontal={true}
@@ -127,7 +127,7 @@ export default function SplashScreen(props) {
 					</View>
 				</View>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 }
 

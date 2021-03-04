@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ProfileTab from "../../screens/Profile/MyProfile";
 import FollowerPage from "../../screens/Profile/Follower";
 import FollowingPage from "../../screens/Profile/Following";
-import otherprofile from "../../screens/Profile/OtherProfile";
+import otherprofile from "../../screens/Profile/OtherProfiles";
 import otherFollower from "../../screens/Profile/otherFollower";
 import otherFollowing from "../../screens/Profile/otherFollowing";
 import profilesetting from "../../screens/Profile/ProfileSettings";

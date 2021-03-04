@@ -6,10 +6,9 @@ import {
 	StyleSheet,
 	Dimensions,
 } from "react-native";
-import { ServiceIcon, EventIcon, DestinationIcon } from "../../assets/svg";
+import { TravelJournal, DestinationHome, EventHome } from "../../assets/svg";
 import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
-import Svg, { Use, Image } from "react-native-svg";
 
 export default function MenuNew({ props }) {
 	const { t } = useTranslation();
@@ -27,7 +26,7 @@ export default function MenuNew({ props }) {
 					style={styles.menu}
 					onPress={() => props.navigation.navigate("DestinationList")}
 				>
-					<DestinationIcon width="40" height="40" />
+					<DestinationHome width="65" height="65" />
 				</TouchableOpacity>
 				<Text
 					type="bold"
@@ -51,7 +50,7 @@ export default function MenuNew({ props }) {
 					style={styles.menu}
 					onPress={() => props.navigation.navigate("listevent")}
 				>
-					<EventIcon width="55" height="55" />
+					<EventHome width="65" height="65" />
 				</TouchableOpacity>
 				<Text
 					type="bold"
@@ -75,7 +74,7 @@ export default function MenuNew({ props }) {
 					style={styles.menu}
 					onPress={() => props.navigation.navigate("TravelGoal")}
 				>
-					<ServiceIcon width="50" height="50" />
+					<TravelJournal width="65" height="65" />
 				</TouchableOpacity>
 				<Text
 					type="bold"
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
 	menu: {
 		width: 75,
 		height: 75,
-		backgroundColor: "#daf0f2",
+		// backgroundColor: "#daf0f2",
 		alignItems: "center",
 		justifyContent: "center",
 		alignContent: "center",
