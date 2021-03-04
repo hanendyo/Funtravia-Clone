@@ -1,5 +1,5 @@
 import { useQuery, useLazyQuery } from "@apollo/client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   View,
@@ -625,6 +625,7 @@ export default function ItineraryCategory(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
+      scroll_to();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -812,6 +813,16 @@ export default function ItineraryCategory(props) {
     }
   };
 
+  let slider = useRef();
+
+  let [y, setY] = useState(0);
+  console.log("y :", y);
+
+  const scroll_to = () => {
+    // console.log("slider :", scrollById(slider.props.id));
+    // console.log("scroll :", slider.current.props.id.scrollTo({ width: y }));
+  };
+
   return (
     <View
       style={{
@@ -834,6 +845,7 @@ export default function ItineraryCategory(props) {
           <FlatList
             data={dataCategory?.category_journal}
             horizontal={true}
+            initialScrollIndex={props.route.params.index}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 15 }}
             ListHeaderComponent={
@@ -853,6 +865,13 @@ export default function ItineraryCategory(props) {
             renderItem={({ item, index }) => {
               return dataType === item.id ? (
                 <Ripple
+                  id={item.name}
+                  onLayout={(event) => {
+                    const layout = event.nativeEvent;
+                    console.log("layout :", event);
+                    console.log("layout asli :", layout);
+                    setY(layout);
+                  }}
                   style={{
                     overflow: "hidden",
                     height: "95%",
@@ -871,13 +890,15 @@ export default function ItineraryCategory(props) {
                   }}
                   onPress={() => unSelect(item.id)}
                 >
-                  <FunIcon
-                    icon={item.icon}
-                    height={30}
-                    width={30}
-                    fill={"white"}
-                    style={{ marginRight: 5 }}
-                  />
+                  <View style={{ width: 30, height: 30, marginRight: 5 }}>
+                    <FunIcon
+                      icon={item.icon}
+                      height={30}
+                      width={30}
+                      fill={"white"}
+                      // style={{ marginRight: 5 }}
+                    />
+                  </View>
                   <Text
                     size="label"
                     type="bold"
@@ -909,13 +930,14 @@ export default function ItineraryCategory(props) {
                   }}
                   onPress={() => select(item.id)}
                 >
-                  <FunIcon
-                    icon={item.icon}
-                    height={30}
-                    width={30}
-                    fill={"black"}
-                    style={{ marginRight: 5 }}
-                  />
+                  <View style={{ width: 30, height: 30, marginRight: 5 }}>
+                    <FunIcon
+                      icon={item.icon}
+                      height={30}
+                      width={30}
+                      // style={{ marginRight: 5 }}
+                    />
+                  </View>
                   <Text
                     size="label"
                     type="bold"

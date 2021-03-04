@@ -14,7 +14,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { Akunsaya, default_image, SettingPutih } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
-import { Next, Help, Arrowbackwhite } from "../../assets/svg";
+import { Next, Help, SettingsPutih } from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
 import { useTranslation } from "react-i18next";
 import { Button, Text, Truncate } from "../../component";
@@ -77,7 +77,14 @@ export default function MyAccount(props) {
             marginHorizontal: 10,
           }}
         >
-          <Image
+          <SettingsPutih
+            height={25}
+            width={25}
+            style={{
+              marginHorizontal: 10,
+            }}
+          />
+          {/* <Image
             style={{
               width: 25,
               height: 25,
@@ -88,8 +95,8 @@ export default function MyAccount(props) {
               height: 25,
               resizeMode: "contain",
             }}
-            source={SettingPutih}
-          />
+            source={SettinxgPutih}
+          /> */}
         </Pressable>
       </View>
     ),

@@ -139,6 +139,7 @@ export const Akunsaya = require("./files/Akunsaya.png");
 export const Emptys = require("./files/empty.png");
 export const sampul2 = require("./files/sampul2.png");
 export const logo_funtravia = require("./files/logo_funtravia.png");
+<<<<<<< Updated upstream
 export const itinerary_1 = require("./files/itinerary_image2.png");
 export const itinerary_2 = require("./files/itinerary_image1.png");
 export const travel_idea_ilust = require("./files/travel_idea_ilust.png");
@@ -165,3 +166,7 @@ export const merantau = require("./files/merantau.png");
 export const the_raid = require("./files/the_raid.png");
 export const DefaultProfile = require("./files/default_profile.png");
 export const DefaultProfileSquare = require("./files/default_profile_square.png");
+=======
+export const itinerary_1 = require("./files/itinerary_image_1.png");
+export const itinerary_2 = require("./files/itinerary_image_2.png");
+>>>>>>> Stashed changes

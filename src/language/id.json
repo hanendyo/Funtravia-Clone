@@ -452,6 +452,7 @@
   "currentEmail": "Masukkan alamat email saat ini",
   "newEmail": "Masukkan alamat email baru",
   "verifyEmail": "Verifikasi email kamu",
+<<<<<<< Updated upstream
   "verifyFail": "Verifikasi email kamu gagal",
   "verifyOtp": "Harap masukkan 6 digit kode yang dikirim ke",
   "location": "Lokasi",
@@ -478,4 +479,8 @@
   "SetPassword": "Atur kata sandi",
   "WordChangeEmail": "Harap atur kata sandi ke akun Anda sebelum Anda mengubah email.",
   "monthAgo": "bulan yang lalu"
+=======
+  "verifyOtp": "Harap masukkan 6 digit kode yang dikirim ke",
+  "writeComment" : "Komentar"
+>>>>>>> Stashed changes
 }

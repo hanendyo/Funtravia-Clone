@@ -31,7 +31,37 @@ export default function NotificationSettings(props) {
   let [selected, setSelected] = useState();
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState(props.route.params.setting);
-  console.log(setting);
+  const HeaderComponent = {
+    headerTitle: t("accountInformation"),
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 16,
+      color: "white",
+    },
+    headerLeft: () => (
+      <Button
+        type="circle"
+        size="small"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+      >
+        <Arrowbackwhite height={20} width={20} />
+      </Button>
+    ),
+    headerLeftContainerStyle: {
+      paddingLeft: 10,
+    },
+
+    headerRight: () => {
+      return null;
+    },
+  };
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
@@ -47,9 +77,14 @@ export default function NotificationSettings(props) {
       },
     },
   });
+
   useEffect(() => {
-    loadAsync();
-  }, []);
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   const Update_setting = async () => {
     if (token || token !== "") {
@@ -71,7 +106,6 @@ export default function NotificationSettings(props) {
         // if (errorLike) {
         // 	throw new Error('Error Input');
         // }
-        // console.log(response);
         if (response.data) {
           if (
             response.data.update_notif_settings.code === 200 ||
@@ -295,7 +329,7 @@ export default function NotificationSettings(props) {
         style={{
           width: width - 80,
           alignSelf: "center",
-          marginBottom: 10,
+          marginBottom: 20,
         }}
         onPress={() => {
           Update_setting();
