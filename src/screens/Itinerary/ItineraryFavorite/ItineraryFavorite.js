@@ -39,7 +39,6 @@ import Ripple from "react-native-material-ripple";
 export default function ItineraryFavorite(props) {
   const HeaderComponent = {
     headerShown: true,
-    title: "Itinerary Favorite",
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: "Itinerary Favorite",
@@ -53,6 +52,7 @@ export default function ItineraryFavorite(props) {
       fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
+      marginLeft: -10,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -217,14 +217,16 @@ export default function ItineraryFavorite(props) {
     var Difference_In_Time = date2.getTime() - date1.getTime();
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
     return (
-      Difference_In_Days +
-      1 +
-      " " +
-      "Day" +
-      " " +
-      Difference_In_Days +
-      " " +
-      "Night"
+      <View style={{ flexDirection: "row" }}>
+        <Text size="small">
+          {Difference_In_Days + 1 > 1
+            ? Difference_In_Days + 1 + " " + t("days")
+            : Difference_In_Days + 1 + " " + t("day")}{" "}
+          {Difference_In_Days > 1
+            ? Difference_In_Days + " " + t("nights")
+            : Difference_In_Days + " " + t("night")}
+        </Text>
+      </View>
     );
   };
 
@@ -412,6 +414,7 @@ export default function ItineraryFavorite(props) {
                             flexDirection: "row",
                             justifyContent: "space-between",
                             alignItems: "center",
+                            marginTop: 5,
                           }}
                         >
                           <View
@@ -452,7 +455,6 @@ export default function ItineraryFavorite(props) {
                         >
                           <Truncate text={item.name} length={40} />
                         </Text>
-                        <View></View>
                         <View
                           style={{
                             flexDirection: "row",
@@ -460,9 +462,9 @@ export default function ItineraryFavorite(props) {
                             marginTop: 5,
                           }}
                         >
-                          <PinHijau width={15} height={15} />
+                          <PinHijau width={12} height={12} />
                           <Text
-                            style={{ marginLeft: 5 }}
+                            style={{ marginLeft: 2 }}
                             size="small"
                             type="regular"
                           >
@@ -480,7 +482,7 @@ export default function ItineraryFavorite(props) {
                         <View
                           style={{
                             flexDirection: "row",
-                            marginTop: 20,
+                            marginTop: 15,
                           }}
                         >
                           <View
@@ -490,11 +492,7 @@ export default function ItineraryFavorite(props) {
                               marginLeft: 3,
                             }}
                           >
-                            <Calendargrey
-                              width={10}
-                              height={10}
-                              style={{ marginRight: 5 }}
-                            />
+                            <Calendargrey width={10} height={10} />
                             <Text
                               style={{ marginLeft: 3 }}
                               size="small"
@@ -517,13 +515,23 @@ export default function ItineraryFavorite(props) {
                               height={10}
                               style={{ marginRight: 5 }}
                             />
-                            <Text size="small" type="regular">
-                              {(item && item.buddy_count
-                                ? item.buddy_count
-                                : null) +
-                                " " +
-                                "Person"}
-                            </Text>
+                            {item.buddy_count > 1 ? (
+                              <Text size="small" type="regular">
+                                {(item && item.buddy_count
+                                  ? item.buddy_count
+                                  : null) +
+                                  " " +
+                                  t("persons")}
+                              </Text>
+                            ) : (
+                              <Text size="small" type="regular">
+                                {(item && item.buddy_count
+                                  ? item.buddy_count
+                                  : null) +
+                                  " " +
+                                  t("person")}
+                              </Text>
+                            )}
                           </View>
                         </View>
                         {/* <View
@@ -570,7 +578,11 @@ export default function ItineraryFavorite(props) {
                         marginBottom: 5,
                       }}
                     >
-                      <TravelAlbum style={{ marginRight: 5 }} />
+                      <TravelAlbum
+                        style={{ marginRight: 5 }}
+                        height={10}
+                        width={10}
+                      />
                       <Text
                         size="small"
                         type="bold"
@@ -588,7 +600,11 @@ export default function ItineraryFavorite(props) {
                         marginBottom: 5,
                       }}
                     >
-                      <TravelStories style={{ marginRight: 5 }} />
+                      <TravelStories
+                        style={{ marginRight: 5 }}
+                        height={10}
+                        width={10}
+                      />
                       <Text
                         size="small"
                         type="bold"

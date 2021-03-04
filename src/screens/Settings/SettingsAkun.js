@@ -242,11 +242,13 @@ export default function SettingsAkun(props) {
   };
 
   const hasPassword = () => {
-    if (dataPassword && dataPassword.cek_haspassword) {
-      if (dataPassword?.cek_haspassword?.ishasPassword === true) {
-        props.navigation.navigate("HasPassword");
-      } else {
-        props.navigation.navigate("AddPassword");
+    if (token !== "" && token !== null) {
+      if (dataPassword && dataPassword.cek_haspassword) {
+        if (dataPassword?.cek_haspassword?.ishasPassword === true) {
+          props.navigation.navigate("HasPassword");
+        } else {
+          props.navigation.navigate("AddPassword");
+        }
       }
     }
   };

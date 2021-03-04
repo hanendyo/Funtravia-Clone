@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Text, Button } from "../../../component";
-import { View } from "native-base";
+import { Text, Button, FloatingInput } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, WhiteCheck, Xgray } from "../../../assets/svg";
-import { Dimensions, Alert, Pressable } from "react-native";
+import { Arrowbackwhite } from "../../../assets/svg";
+import { Pressable, Dimensions, Image } from "react-native";
 import Modal from "react-native-modal";
-import { Input, Item, Label } from "native-base";
+import { Input, Item, Label, View } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdatePassword";
 import { useMutation } from "@apollo/react-hooks";
@@ -106,7 +105,8 @@ export default function AddPassword(props) {
 
   const onSubmit = async (text1, text2) => {
     if (text1 === "") {
-      return setModalVisible2(true);
+      setModalVisible2(true);
+      return setErrors("Passwords cannot be empty");
     }
     if (text1 !== text2) {
       return (error["password2"] = true);
@@ -150,6 +150,16 @@ export default function AddPassword(props) {
     }
   };
 
+  const [hide, setHide] = useState(true);
+  const [hide1, setHide1] = useState(true);
+
+  const toggleOne = () => {
+    setHide(!hide);
+  };
+  const toggleTwo = () => {
+    setHide1(!hide1);
+  };
+
   return (
     <View
       style={{
@@ -157,49 +167,122 @@ export default function AddPassword(props) {
         flex: 1,
       }}
     >
-      <Item floatingLabel style={{ flexDirection: "row" }}>
-        <Label
+      <View style={{ flexDirection: "row" }}>
+        <Item
+          floatingLabel
           style={{
-            fontFamily: "Lato-Regular",
-            fontSize: 14,
-            marginTop: 10,
+            width: Dimensions.get("screen").width * 0.82,
           }}
         >
-          <Text size="description">{t("EnterPassword")}</Text>
-        </Label>
-        <Input
-          secureTextEntry={true}
-          style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-          onChangeText={(e) => handleError1(e)}
-          keyboardType="default"
-        />
-      </Item>
+          <Label
+            style={{
+              fontFamily: "Lato-Regular",
+              fontSize: 14,
+            }}
+          >
+            <Text size="description">{t("EnterPassword")}</Text>
+          </Label>
+          <Input
+            secureTextEntry={hide}
+            style={{
+              fontFamily: "Lato-Regular",
+              fontSize: 14,
+            }}
+            onChangeText={(e) => handleError1(e)}
+            keyboardType="default"
+          />
+        </Item>
+        <Pressable
+          onPress={() => toggleOne()}
+          style={{
+            alignItems: "flex-end",
+            borderBottomWidth: 1,
+            borderBottomColor: "#D1D1D1",
+          }}
+        >
+          {hide ? (
+            <Image
+              source={show_password}
+              style={{
+                height: 20,
+                width: 20,
+                marginTop: 25,
+              }}
+            />
+          ) : (
+            <Image
+              source={hide_password}
+              style={{
+                height: 20,
+                width: 20,
+                marginTop: 25,
+              }}
+            />
+          )}
+        </Pressable>
+      </View>
       {error["password1"] === true ? (
-        <Label>
+        <Label style={{ marginTop: 5 }}>
           <Text type="light" size="small" style={{ color: "#209FAE" }}>
             {t("inputWarningPassword")}
           </Text>
         </Label>
       ) : null}
-      <Item floatingLabel>
-        <Label
+      <View style={{ flexDirection: "row" }}>
+        <Item
+          floatingLabel
           style={{
-            fontFamily: "Lato-Regular",
-            fontSize: 14,
-            marginTop: 10,
+            width: Dimensions.get("screen").width * 0.82,
           }}
         >
-          <Text size="description">{t("ConfirmPasswords")}</Text>
-        </Label>
-        <Input
-          secureTextEntry={true}
-          style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-          onChangeText={(e) => handleError2(e, text1)}
-          keyboardType="default"
-        />
-      </Item>
+          <Label
+            style={{
+              fontFamily: "Lato-Regular",
+              fontSize: 14,
+              marginTop: 10,
+            }}
+          >
+            <Text size="description">{t("ConfirmPasswords")}</Text>
+          </Label>
+          <Input
+            secureTextEntry={hide1}
+            style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+            onChangeText={(e) => handleError2(e, text1)}
+            keyboardType="default"
+          />
+          <Arrowbackwhite height={20} width={20} />
+        </Item>
+        <Pressable
+          onPress={() => toggleTwo()}
+          style={{
+            alignItems: "flex-end",
+            borderBottomWidth: 1,
+            borderBottomColor: "#D1D1D1",
+          }}
+        >
+          {hide1 ? (
+            <Image
+              source={show_password}
+              style={{
+                height: 20,
+                width: 20,
+                marginTop: 25,
+              }}
+            />
+          ) : (
+            <Image
+              source={hide_password}
+              style={{
+                height: 20,
+                width: 20,
+                marginTop: 25,
+              }}
+            />
+          )}
+        </Pressable>
+      </View>
       {error["password2"] === true ? (
-        <Label>
+        <Label style={{ marginTop: 5 }}>
           <Text type="light" size="small" style={{ color: "#209FAE" }}>
             {t("inputWarningRepeatPassword")}
           </Text>
@@ -218,6 +301,8 @@ export default function AddPassword(props) {
           style={{
             justifyContent: "flex-end",
             flex: 1,
+            width: Dimensions.get("screen").width * 0.6,
+            alignSelf: "center",
           }}
         >
           <Pressable
@@ -226,19 +311,16 @@ export default function AddPassword(props) {
               backgroundColor: "#209FAE",
               alignItems: "center",
               borderRadius: 5,
-              height: 40,
+              minHeight: 40,
               justifyContent: "center",
               flexDirection: "row",
+              paddingHorizontal: 5,
+              paddingVertical: 5,
             }}
           >
-            <Text
-              size="label"
-              type="regular"
-              style={{ color: "#FFF", marginRight: 10 }}
-            >
+            <Text size="description" type="regular" style={{ color: "#FFF" }}>
               Successfully created a password
             </Text>
-            <WhiteCheck height={20} width={20} />
           </Pressable>
         </View>
       </Modal>
@@ -247,27 +329,34 @@ export default function AddPassword(props) {
           style={{
             justifyContent: "flex-end",
             flex: 1,
+            width: Dimensions.get("screen").width * 0.6,
+            alignSelf: "center",
           }}
         >
           <Pressable
             onPress={() => setModalVisible2(!modalVisible2)}
             style={{
-              backgroundColor: "#D75995",
+              backgroundColor: "#464646",
               alignItems: "center",
               borderRadius: 5,
-              height: 40,
+              minHeight: 40,
               justifyContent: "center",
               flexDirection: "row",
+              paddingHorizontal: 5,
+              paddingVertical: 5,
             }}
           >
-            <Text
-              size="label"
-              type="regular"
-              style={{ color: "#FFF", marginRight: 10 }}
-            >
-              Failed
-            </Text>
-            <Xgray height={20} width={20} />
+            {errors ? (
+              <Text size="description" type="regular" style={{ color: "#FFF" }}>
+                {"Failed" +
+                  " " +
+                  errors.toString().replace("Error", "").replace(":", "")}
+              </Text>
+            ) : (
+              <Text size="description" type="regular" style={{ color: "#FFF" }}>
+                Failed updated password
+              </Text>
+            )}
           </Pressable>
         </View>
       </Modal>
