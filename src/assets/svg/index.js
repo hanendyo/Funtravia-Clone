@@ -180,6 +180,9 @@ import GridAll from "./files/perday.svg";
 import GridDay from "./files/perall.svg";
 import SetPass from "./files/setpass.svg";
 import DefaultProfile from "./files/default_profile.svg";
+import TravelJournal from "./files/travel_goal.svg";
+import DestinationHome from "./files/destination_home.svg";
+import EventHome from "./files/event_home.svg";
 
 export {
 	LikeWhite,
@@ -364,4 +367,7 @@ export {
 	GridDay,
 	SetPass,
 	DefaultProfile,
+	TravelJournal,
+	DestinationHome,
+	EventHome,
 };

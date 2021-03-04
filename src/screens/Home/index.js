@@ -27,11 +27,9 @@ export default function Home(props) {
 	const { t } = useTranslation();
 	let [token, setToken] = useState("");
 	let [searchBg, setSearchBg] = useState("transparent");
-	let [searchElevation, setSearchElevation] = useState(0);
 	let [refresh, setRefresh] = useState(false);
 
 	const [LoadUserProfile, { data, loading }] = useLazyQuery(Account, {
-		fetchPolicy: "network-only",
 		context: {
 			headers: {
 				"Content-Type": "application/json",
@@ -44,7 +42,6 @@ export default function Home(props) {
 		NotifCount,
 		{ data: datanotif, loading: loadingnotif, error: errornotif },
 	] = useLazyQuery(CountNotif, {
-		fetchPolicy: "network-only",
 		context: {
 			headers: {
 				"Content-Type": "application/json",
@@ -151,11 +148,25 @@ export default function Home(props) {
 	});
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+		<View style={{ flex: 1, backgroundColor: "#fff" }}>
+			<View
+				style={{
+					backgroundColor: "#FFF",
+					height: Platform.OS === "ios" ? 44 : 50,
+				}}
+			>
+				<SafeAreaView>
+					<StatusBar
+						translucent
+						backgroundColor={"#000"}
+						barStyle="light-content"
+					/>
+				</SafeAreaView>
+			</View>
 			<StatusBar backgroundColor="transparent" barStyle="dark-content" />
 			<Animated.ScrollView
 				showsVerticalScrollIndicator={false}
-				stickyHeaderIndices={[2]}
+				stickyHeaderIndices={[1]}
 				onScroll={Animated.event([
 					{ nativeEvent: { contentOffset: { y: scrollY } } },
 				])}
@@ -166,20 +177,24 @@ export default function Home(props) {
 				<ImageBackground
 					source={sampul2}
 					style={{
-						width: "100%",
-						height: 150,
+						width: width,
+						height: width / 2,
 						alignSelf: "flex-start",
-						justifyContent: "flex-start",
+						justifyContent: "flex-end",
 						alignContent: "center",
 						alignItems: "center",
+						marginBottom: 50,
 					}}
-				/>
-				<RenderAccount
-					props={props}
-					data={data ? data : null}
-					token={token}
-					datanotif={datanotif ? datanotif : null}
-				/>
+				>
+					<View style={{ position: "absolute", bottom: -50 }}>
+						<RenderAccount
+							props={props}
+							data={data ? data : null}
+							token={token}
+							datanotif={datanotif ? datanotif : null}
+						/>
+					</View>
+				</ImageBackground>
 				<View
 					style={{
 						shadowColor: "#FFF",
@@ -275,6 +290,6 @@ export default function Home(props) {
 				/>
 				<FunFeed props={props} />
 			</Animated.ScrollView>
-		</SafeAreaView>
+		</View>
 	);
 }

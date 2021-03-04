@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { gql } from "@apollo/client";
 const Other = gql`
 	query($id: ID!) {
 		user_profilebyid(id: $id) {
