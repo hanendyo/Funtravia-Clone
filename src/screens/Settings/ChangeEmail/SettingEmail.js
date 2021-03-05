@@ -118,7 +118,7 @@ export default function SettingEmail(props) {
         <Button
           type="box"
           size="medium"
-            color="secondary"
+          color="secondary"
           text={t("save")}
           onPres={() => null}
           style={{ width: "100%" }}

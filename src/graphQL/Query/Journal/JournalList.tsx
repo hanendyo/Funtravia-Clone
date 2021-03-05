@@ -1,6 +1,5 @@
 import { gql } from "apollo-boost";
 const JournalList = gql`
-<<<<<<< Updated upstream
   query(
     $category_id: [ID]
     $order_by: String
@@ -52,43 +51,6 @@ const JournalList = gql`
           id
           name
           code
-=======
-	query {
-		journal_list {
-			id
-			title
-			date
-			firstimg
-			firsttxt
-			article_comment_count
-			article_response_count
-			created_at
-			updated_at
-			liked
-			article {
-				id
-				type
-				title
-				text
-				image
-				order
-			}
-			userby {
-				id
-				first_name
-				last_name
-				username
-				bio
-				created_at
-				status_follower
-				status_following
-				picture
-			}
-			cities {
-				id
-				name
-				code
->>>>>>> Stashed changes
 
           latitude
           longitude

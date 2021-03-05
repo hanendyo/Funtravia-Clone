@@ -10,11 +10,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
-<<<<<<< Updated upstream
 import React, { useEffect, useRef, useState, useCallback } from "react";
-=======
-import React, { useEffect, useRef, useState } from "react";
->>>>>>> Stashed changes
 import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Truncate, Loading } from "../../component";
@@ -87,7 +83,7 @@ export default function DetailJournal(props) {
     },
   });
 
-  console.log(data)
+  console.log(data);
 
   const afterComment = async () => {
     console.log(refetch);
@@ -176,7 +172,7 @@ export default function DetailJournal(props) {
     // await fetchDataComment();
   };
 
-  console.log("token detail journal", token)
+  console.log("token detail journal", token);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -231,21 +227,7 @@ export default function DetailJournal(props) {
   }
   if (loading) {
     return (
-<<<<<<< Updated upstream
       <View style={{ flex: 1, backgroundColor: "white" }}>
-=======
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginHorizontal: 20,
-          marginVertical: 5,
-          width: Dimensions.get("window").width * 0.9,
-          justifyContent: "space-between",
-        }}
-      >
-        <Loading show={loadingComment} />
->>>>>>> Stashed changes
         <View
           style={{
             backgroundColor: "white",
@@ -253,80 +235,7 @@ export default function DetailJournal(props) {
             paddingVertical: 20,
           }}
         >
-<<<<<<< Updated upstream
           <ActivityIndicator animating={true} color="#209FAE" />
-=======
-          <TouchableOpacity
-            onPress={() => {
-              item.user.id !== setting?.user?.id
-                ? props.navigation.push("ProfileStack", {
-                  screen: "otherprofile",
-                  params: {
-                    idUser: item.user.id,
-                  },
-                })
-                : props.navigation.push("ProfileStack", {
-                  screen: "ProfileTab",
-                });
-            }}
-          >
-            <Thumbnail
-              source={
-                item.user && item.user.picture
-                  ? { uri: item.user.picture }
-                  : default_image
-              }
-              style={{ borderColor: "#fcfcfc", borderWidth: 2 }}
-            />
-          </TouchableOpacity>
-          <View style={{ marginLeft: 15 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                size={"description"}
-                type={"bold"}
-                onPress={() => {
-                  item.user.id !== setting?.user?.id
-                    ? props.navigation.push("ProfileStack", {
-                      screen: "otherprofile",
-                      params: {
-                        idUser: item.user.id,
-                      },
-                    })
-                    : props.navigation.push("ProfileStack", {
-                      screen: "ProfileTab",
-                    });
-                }}
-              >
-                {item.user.first_name}
-              </Text>
-              {item && item.created_at ? (
-                <Text size={"small"} type={"light"} style={{ marginLeft: 10 }}>
-                  {duration(item.created_at)}
-                </Text>
-              ) : null}
-            </View>
-            <View
-              style={{
-                marginTop: 5,
-                alignSelf: "center",
-                width: Dimensions.get("window").width * 0.7,
-              }}
-            >
-              <Text
-                size={"description"}
-                type={"regular"}
-                style={{ textAlign: "justify" }}
-              >
-                {item.text}
-              </Text>
-            </View>
-          </View>
->>>>>>> Stashed changes
         </View>
       </View>
     );
@@ -357,14 +266,14 @@ export default function DetailJournal(props) {
                   data.journal_byid.userby
                     ? data.journal_byid.userby.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: data.journal_byid.userby.id,
-                        },
-                      })
+                          screen: "otherprofile",
+                          params: {
+                            idUser: data.journal_byid.userby.id,
+                          },
+                        })
                       : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                      })
+                          screen: "ProfileTab",
+                        })
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
@@ -388,14 +297,14 @@ export default function DetailJournal(props) {
                     data.journal_byid.userby
                       ? data.journal_byid.userby.id !== setting?.user?.id
                         ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: data.journal_byid.userby.id,
-                          },
-                        })
+                            screen: "otherprofile",
+                            params: {
+                              idUser: data.journal_byid.userby.id,
+                            },
+                          })
                         : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                        })
+                            screen: "ProfileTab",
+                          })
                       : Alert.alert("Journal By Funtravia");
                   }}
                 >
@@ -428,30 +337,30 @@ export default function DetailJournal(props) {
               </View>
             </View>
             {data.journal_byid &&
-              data.journal_byid.userby &&
-              data.journal_byid.userby.id ? (
-                <TouchableOpacity>
-                  <View
+            data.journal_byid.userby &&
+            data.journal_byid.userby.id ? (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    borderColor: "#209FAE",
+                    borderWidth: 1,
+                    borderRadius: 14,
+                  }}
+                >
+                  <Text
+                    size={"small"}
+                    type={"regular"}
                     style={{
-                      borderColor: "#209FAE",
-                      borderWidth: 1,
-                      borderRadius: 14,
+                      paddingHorizontal: 25,
+                      paddingVertical: 6,
+                      color: "#209FAE",
                     }}
                   >
-                    <Text
-                      size={"small"}
-                      type={"regular"}
-                      style={{
-                        paddingHorizontal: 25,
-                        paddingVertical: 6,
-                        color: "#209FAE",
-                      }}
-                    >
-                      {`${t("follow")}`}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ) : null}
+                    {`${t("follow")}`}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
           </View>
           <View style={{ marginHorizontal: 20 }}>
             <View>
@@ -475,13 +384,13 @@ export default function DetailJournal(props) {
                   <LikeEmpty width={10} height={10} />
                   <Text size={"small"} type={"bold"} style={{ marginLeft: 5 }}>
                     {data.journal_byid &&
-                      data.journal_byid.article_response_count > 1
+                    data.journal_byid.article_response_count > 1
                       ? data.journal_byid.article_response_count +
-                      " " +
-                      t("likeMany")
+                        " " +
+                        t("likeMany")
                       : data.journal_byid.article_response_count +
-                      " " +
-                      t("like")}
+                        " " +
+                        t("like")}
                   </Text>
                 </View>
               </View>
@@ -496,28 +405,16 @@ export default function DetailJournal(props) {
                 if (item.type === "image") {
                   return (
                     <View key={index}>
-<<<<<<< Updated upstream
                       <View style={{ marginTop: 30 }}>
                         {item.image ? (
-=======
-                      <View style={{ marginTop: 20 }}>
-                        {item.image ?
->>>>>>> Stashed changes
                           <Image
                             source={item.image ? { uri: item.image } : null}
                             style={{
                               width: Dimensions.get("window").width,
-<<<<<<< Updated upstream
                               height: Dimensions.get("window").height * 0.3,
                             }}
                           />
                         ) : null}
-=======
-                              height: Dimensions.get("window").width * 0.7,
-                            }}
-                          />
-                          : null}
->>>>>>> Stashed changes
                       </View>
                       {item.title ? (
                         <View
@@ -614,14 +511,14 @@ export default function DetailJournal(props) {
                   data.journal_byid.userby
                     ? data.journal_byid.userby.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: data.journal_byid.userby.id,
-                        },
-                      })
+                          screen: "otherprofile",
+                          params: {
+                            idUser: data.journal_byid.userby.id,
+                          },
+                        })
                       : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                      })
+                          screen: "ProfileTab",
+                        })
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
@@ -665,7 +562,6 @@ export default function DetailJournal(props) {
               </Text>
             </View>
           </View>
-<<<<<<< Updated upstream
           {listComment.length ? (
             <FlatList
               data={listComment}
@@ -822,54 +718,6 @@ export default function DetailJournal(props) {
               <Text>{`${t("NoComment")}`}</Text>
             </View>
           )}
-=======
-          {dataComment &&
-            dataComment.comment_journal_list &&
-            dataComment.comment_journal_list.length ? (
-              <FlatList
-                renderItem={renderComment}
-                data={dataComment.comment_journal_list}
-                keyExtractor={(dataComment) => dataComment.id}
-                nestedScrollEnabled
-                ListHeaderComponent={null}
-                ListFooterComponent={null}
-              />
-            ) : (
-              <View
-                style={{
-                  width: Dimensions.get("window").width * 0.9,
-                  marginHorizontal: 20,
-                  alignItems: "center",
-                }}
-              >
-                <Text>{`${t("NoComment")}`}</Text>
-              </View>
-            )}
-          {dataComment &&
-            dataComment.comment_journal_list &&
-            dataComment.comment_journal_list.length > 100 ? (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    marginVertical: 20,
-                    marginHorizontal: 20,
-                  }}
-                >
-                  <Button
-                    text={"Load More Comments"}
-                    size="medium"
-                    type="box"
-                    color="black"
-                    variant="bordered"
-                    onPress={() => props.navigation.goBack()}
-                    style={{
-                      borderColor: "#464646",
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-            ) : null}
->>>>>>> Stashed changes
         </ScrollView>
       ) : null}
       {/* ==================================== Add Comment, Like and Unlike ============================================== */}

@@ -7,13 +7,9 @@ import {
   ScrollView,
   FlatList,
   Pressable,
-<<<<<<< Updated upstream
   Alert,
   RefreshControl,
   ActivityIndicator,
-=======
-  Alert
->>>>>>> Stashed changes
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
@@ -308,7 +304,6 @@ export default function Journal(props) {
             paddingVertical: 20,
             height: Dimensions.get("screen").height,
           }}
-<<<<<<< Updated upstream
         >
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
@@ -367,86 +362,6 @@ export default function Journal(props) {
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       )}
-=======
-        />
-      </View>
-    );
-  };
-
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      refresh();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
-  {
-    /* ======================================= Render All ====================================================*/
-  }
-
-
-  return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Loading show={loading} />
-      {/* <NavigationEvents onDidFocus={() => refresh()} /> */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        style={styles.scroll}
-        stickyHeaderIndices={[2]}
-      >
-        {/* ============================== Populer Journal ====================================================*/}
-
-        {data && data.journal_most_populer ? (
-          <View style={styles.container}>
-            <TouchableOpacity
-              onPress={() => JournalDetail(data.journal_most_populer)}
-            >
-              <Image
-                source={
-                  data.journal_most_populer.firstimg
-                    ? { uri: data.journal_most_populer.firstimg }
-                    : default_image
-                }
-                style={styles.imageTop}
-              />
-              <View style={{ marginHorizontal: 20 }}>
-                <View>
-                  <Text style={styles.title} size={"title"} type={"bold"}>
-                    {data.journal_most_populer
-                      ? data.journal_most_populer.title
-                      : "Title"}
-                  </Text>
-                </View>
-                <View style={styles.editor}>
-                  <Thumbnail
-                    source={
-                      data && data.journal_most_populer
-                        && data.journal_most_populer.userby
-                        && data.journal_most_populer.userby.picture
-                        ? { uri: data.journal_most_populer.userby.picture }
-                        : logo_funtravia
-                    }
-                    style={{ borderColor: "#ffffff", borderWidth: 2 }}
-                  />
-                  <View style={styles.dataEditor}>
-                    <Text size={"label"} type={"bold"}>
-                      {data.journal_most_populer.userby
-                        ? data.journal_most_populer.userby
-                        : "Funtravia"}
-                    </Text>
-                    <Text size={"small"} type={"regular"}>
-                      {data.journal_most_populer.date
-                        ? dateFormatMonthYears(data.journal_most_populer.date)
-                        : null}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        ) : null}
->>>>>>> Stashed changes
 
       {/* ============================== Top Contributor ====================================================*/}
 
@@ -501,13 +416,8 @@ export default function Journal(props) {
 						</TouchableOpacity>
 					</View>
 				</View> */}
-<<<<<<< Updated upstream
       {/* ============================== Type Journal ====================================================*/}
       {/* <View style={styles.filterStyle}>
-=======
-        {/* ============================== Type Journal ====================================================*/}
-        {/* <View style={styles.filterStyle}>
->>>>>>> Stashed changes
           <Pressable onPress={() => alert("Coming Soon")}>
             <View style={styles.contentFilter}>
               <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
@@ -533,7 +443,6 @@ export default function Journal(props) {
 
       {/* ============================== List Journal ====================================================*/}
 
-<<<<<<< Updated upstream
       {journal_list.length > 0 ? (
         <View
           style={{
@@ -682,62 +591,6 @@ export default function Journal(props) {
         </View>
       )}
     </ScrollView>
-=======
-        {dataList && dataList.journal_list.length > 0 ? (
-          <View
-            style={{
-              marginVertical: 10,
-              width: Dimensions.get("window").width,
-              paddingHorizontal: 10,
-              alignContent: "center",
-            }}
-          >
-            <FlatList
-              data={dataList.journal_list}
-              renderItem={renderList}
-              keyExtractor={(data) => data.id}
-              nestedScrollEnabled
-              ListHeaderComponent={
-                <ScrollView>
-                  <View style={styles.filterStyle}>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-                          Family
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-                          Honey Moon
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-                          Solo
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <Pressable onPress={() => Alert.alert("Coming Soon")}>
-                      <View style={styles.contentFilter}>
-                        <Text style={{ padding: 10 }} size={'description'} type={'bold'}>
-                          Bussines
-                        </Text>
-                      </View>
-                    </Pressable>
-                  </View>
-                </ScrollView>
-              }
-              ListFooterComponent={null}
-            />
-          </View>
-        ) : null}
-      </ScrollView>
-    </View>
->>>>>>> Stashed changes
   );
 }
 
@@ -776,15 +629,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   filterStyle: {
-<<<<<<< Updated upstream
     marginBottom: 10,
     marginTop: 10,
     paddingHorizontal: 10,
-=======
-    flexDirection: "row",
-    marginBottom: 10,
-    // paddingHorizontal: 10,
->>>>>>> Stashed changes
   },
   contentFilter: {
     marginRight: 10,
