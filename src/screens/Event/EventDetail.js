@@ -688,7 +688,7 @@ export default function EventDetail(props) {
           style={{
             width: Dimensions.get("screen").width,
             paddingHorizontal: 20,
-            paddingBottom: 20,
+            paddingBottom: 10,
           }}
         >
           <Text
@@ -718,7 +718,7 @@ export default function EventDetail(props) {
           <View
             style={{
               flexDirection: "row",
-              paddingBottom: 17,
+              paddingBottom: 10,
             }}
           >
             <CustomImage
@@ -826,7 +826,7 @@ export default function EventDetail(props) {
           <View
             style={{
               flexDirection: "row",
-              paddingBottom: 14,
+              paddingBottom: 5,
             }}
           >
             {dataevent && dataevent.vendor ? (
@@ -877,6 +877,7 @@ export default function EventDetail(props) {
         >
           <View
             style={{
+              paddingVertical: 20,
               flexDirection: "row",
               paddingBottom: 7,
             }}
@@ -888,7 +889,7 @@ export default function EventDetail(props) {
                 paddingRight: 5,
               }}
             >
-              {t("venueAddress")}
+              {t("address")}
             </Text>
           </View>
           <View
@@ -983,7 +984,7 @@ export default function EventDetail(props) {
             paddingHorizontal: 20,
           }}
         >
-          <Button
+          {/* <Button
             text="Find Ticket"
             size="medium"
             color="primary"
@@ -998,14 +999,14 @@ export default function EventDetail(props) {
                 resizeMode: "contain",
               }}
             />
-          </Button>
+          </Button> */}
           <Button
             text="Add To Plan"
             size="medium"
             color="primary"
             type="box"
             onPress={() => addToPlan()}
-            style={{ width: (Dimensions.get("screen").width - 48) * 0.5 }}
+            style={{ width: (Dimensions.get("screen").width - 40) * 1 }}
           />
         </View>
 

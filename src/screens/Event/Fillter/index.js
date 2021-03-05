@@ -63,10 +63,10 @@ export default function Fillter({ type, country, sendBack, props }) {
     for (let i of dataFillter) {
       i.checked ? tempData.push(i.id) : null;
     }
-    sendBack({ type: null, tag: tempData, keyword: search });
-    setSearch(search);
+    sendBack({ type: null, tag: tempData, keyword: x });
+    setSearch(x);
   };
-
+ 
   const onSelectFilter = (status, id) => {
     const tempDataPg = [...dataFillter];
     let index = tempDataPg.findIndex((x) => x.id === id);
