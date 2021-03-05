@@ -13,21 +13,23 @@ import rupiah from "./src/Rupiah";
 import Capital from "./src/Capital";
 import FTabs from "./src/Tabs";
 import Distance from "./src/Distance";
+import StatusBar from "./src/StatusBar";
 
 export {
-  Text,
-  Button,
-  CustomImage,
-  FloatingInput,
-  Peringatan,
-  DurationSelector,
-  FunIcon,
-  PhoneCodeSelector,
-  Truncate,
-  Loading,
-  Sidebar,
-  rupiah,
-  Capital,
-  FTabs,
-  Distance,
+	Text,
+	Button,
+	CustomImage,
+	FloatingInput,
+	Peringatan,
+	DurationSelector,
+	FunIcon,
+	PhoneCodeSelector,
+	Truncate,
+	Loading,
+	Sidebar,
+	rupiah,
+	Capital,
+	FTabs,
+	Distance,
+	StatusBar,
 };
