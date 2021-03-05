@@ -187,11 +187,11 @@ export default function Home(props) {
               justifyContent: "flex-end",
               alignContent: "center",
               alignItems: "center",
-              marginBottom: 15,
+              marginBottom: 17,
             }}
           >
             <View
-              style={{ position: "absolute", bottom: -15, marginBottom: 5 }}
+              style={{ position: "absolute", bottom: -15, marginBottom: 7 }}
             >
               <RenderAccount
                 props={props}

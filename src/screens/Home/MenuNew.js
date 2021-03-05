@@ -17,7 +17,7 @@ export default function MenuNew({ props }) {
   return (
     // <View style={styles.menuView}>
     <LinearGradient
-      colors={["rgba(0, 0, 0, 0)", "rgba(218, 240, 242, 100)"]}
+      colors={["rgba(255, 255, 255, 0)", "rgba(218, 240, 242, 100)"]}
       start={{ x: 0, y: 1 }}
       end={{ x: 0, y: 0 }}
       style={{

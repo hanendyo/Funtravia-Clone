@@ -24,7 +24,7 @@ export default function AddCommentLike({
   setting,
 }) {
   let [dataList, setDataList] = useState(data);
-  console.log("data :", data)
+  console.log("data :", data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
   const [
@@ -100,10 +100,10 @@ export default function AddCommentLike({
     }
   };
 
-  console.log("token:", token)
+  console.log("token:", token);
   const _liked = async (id) => {
-    console.log("token like:", token)
-    console.log("id like:", id)
+    console.log("token like:", token);
+    console.log("id like:", id);
     if (token || token !== "") {
       try {
         let response = await mutationliked({
@@ -117,10 +117,6 @@ export default function AddCommentLike({
         if (errorLike) {
           throw new Error("Error Input");
         }
-<<<<<<< Updated upstream
-=======
-        console.log(response);
->>>>>>> Stashed changes
         if (response.data) {
           if (
             response.data.like_journal.code === 200 ||
@@ -143,8 +139,8 @@ export default function AddCommentLike({
   };
 
   const _unliked = async (id) => {
-    console.log("token unlike:", token)
-    console.log("id unlike:", id)
+    console.log("token unlike:", token);
+    console.log("id unlike:", id);
     if (token || token !== "") {
       try {
         let response = await mutationUnliked({
@@ -158,10 +154,6 @@ export default function AddCommentLike({
         if (errorUnLike) {
           throw new Error("Error Input");
         }
-<<<<<<< Updated upstream
-=======
-        console.log(response);
->>>>>>> Stashed changes
         if (response.data) {
           if (
             response.data.unlike_journal.code === 200 ||
@@ -189,11 +181,7 @@ export default function AddCommentLike({
         paddingBottom: 10,
         paddingHorizontal: 20,
         width: Dimensions.get("window").width,
-<<<<<<< Updated upstream
         justifyContent: "center",
-=======
-        justifyContent: 'center',
->>>>>>> Stashed changes
         flexDirection: "row",
         backgroundColor: "white",
       }}
@@ -224,7 +212,6 @@ export default function AddCommentLike({
           }}
           onChangeText={(text) => setText(text)}
           value={text}
-<<<<<<< Updated upstream
           placeholder={Truncate({
             text:
               t("commentAs") +
@@ -234,19 +221,12 @@ export default function AddCommentLike({
               setting?.user?.last_name,
             length: 25,
           })}
-=======
-          placeholder={t("writeComment")}
->>>>>>> Stashed changes
           returnKeyType="default"
           onSubmitEditing={() => comment(dataList.id, text)}
         />
       </View>
       <TouchableOpacity onPress={() => Alert.alert("Comming Soon")}>
-<<<<<<< Updated upstream
         <View
-=======
-        < View
->>>>>>> Stashed changes
           style={{
             marginLeft: 10,
             borderRadius: 30,
@@ -258,9 +238,8 @@ export default function AddCommentLike({
           }}
         >
           <Shareout width={20} height={20} />
-        </ View>
+        </View>
       </TouchableOpacity>
-<<<<<<< Updated upstream
       {data?.liked === false ? (
         <TouchableOpacity onPress={() => _liked(dataList.id)}>
           <View
@@ -295,43 +274,5 @@ export default function AddCommentLike({
         </TouchableOpacity>
       )}
     </View>
-=======
-      {
-        data.liked === false ? (
-          <TouchableOpacity onPress={() => _liked(dataList.id)}>
-            <View
-              style={{
-                marginLeft: 10,
-                borderRadius: 30,
-                backgroundColor: "#f6f6f6",
-                width: Dimensions.get("window").width * 0.13,
-                height: Dimensions.get("window").width * 0.13,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <LikeJournal width={20} height={20} />
-            </View>
-          </TouchableOpacity>
-        ) : (
-            <TouchableOpacity onPress={() => _unliked(dataList.id)}>
-              <View
-                style={{
-                  marginLeft: 10,
-                  borderRadius: 30,
-                  backgroundColor: "#f6f6f6",
-                  width: Dimensions.get("window").width * 0.13,
-                  height: Dimensions.get("window").width * 0.13,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <LikeRed width={20} height={20} />
-              </View>
-            </TouchableOpacity>
-          )
-      }
-    </View >
->>>>>>> Stashed changes
   );
 }
