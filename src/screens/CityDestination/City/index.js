@@ -406,6 +406,86 @@ export default function CityDetail(props) {
     return x;
   };
 
+  let [tutup, setTutup] = useState(true); 
+  const RenderType =({item}) => {
+    return tutup == true ? (
+      item.map((item, index) => {
+
+        // console.log(item);
+        return index < 8 ?(
+          <Ripple
+            onPress={() => {
+              props.navigation.push("DestinationList", {
+                idtype: item.id,
+                idcity: render.id,
+              });
+            }}
+            style={{
+              // borderWidth: 1,
+              width: "25%",
+              // justifyContent: '',
+              alignContent: "center",
+              alignItems: "center",
+              padding: 5,
+            }}
+          >
+            <FunIcon
+              icon={item.icon ? item.icon : "w-fog"}
+              height={50}
+              width={50}
+              style={{
+                bottom: -3,
+              }}
+            />
+            <Text
+              size="small"
+              style={{ textAlign: "center", marginTop: 3 }}
+            >
+              {item.name}
+            </Text>
+          </Ripple>
+        ): null;
+      })
+    ):(
+      item.map((item, index) => {
+
+        // console.log(item);
+        return (
+          <Ripple
+            onPress={() => {
+              props.navigation.push("DestinationList", {
+                idtype: item.id,
+                idcity: render.id,
+              });
+            }}
+            style={{
+              // borderWidth: 1,
+              width: "25%",
+              // justifyContent: '',
+              alignContent: "center",
+              alignItems: "center",
+              padding: 5,
+            }}
+          >
+            <FunIcon
+              icon={item.icon ? item.icon : "w-fog"}
+              height={50}
+              width={50}
+              style={{
+                bottom: -3,
+              }}
+            />
+            <Text
+              size="small"
+              style={{ textAlign: "center", marginTop: 3 }}
+            >
+              {item.name}
+            </Text>
+          </Ripple>
+        );
+      })
+    )
+  }
   const Goto = (item) => {
     if (item.id) {
       props.navigation.navigate("eventdetail", {
@@ -480,85 +560,29 @@ export default function CityDetail(props) {
                     flexDirection: "row",
                   }}
                 >
-                  {render.destination_type.map((item, index) => {
-
-                    // console.log(item);
-                    return index < 8 ?(
-                      <Ripple
-                        onPress={() => {
-                          props.navigation.push("DestinationList", {
-                            idtype: item.id,
-                            idcity: render.id,
-                          });
-                        }}
-                        style={{
-                          // borderWidth: 1,
-                          width: "25%",
-                          // justifyContent: '',
-                          alignContent: "center",
-                          alignItems: "center",
-                          padding: 5,
-                        }}
-                      >
-                        <FunIcon
-                          icon={item.icon ? item.icon : "w-fog"}
-                          height={50}
-                          width={50}
-                          style={{
-                            bottom: -3,
-                          }}
-                        />
-                        <Text
-                          size="small"
-                          style={{ textAlign: "center", marginTop: 3 }}
-                        >
-                          {item.name}
-                        </Text>
-                      </Ripple>
-                    ): null;
-                  })}
-
-                  {render.destination_type.map((item, index) => {
-
-                    // console.log(item);
-                    return index < 8 ?(
-                      <Ripple
-                        onPress={() => {
-                          props.navigation.push("DestinationList", {
-                            idtype: item.id,
-                            idcity: render.id,
-                          });
-                        }}
-                        style={{
-                          // borderWidth: 1,
-                          width: "25%",
-                          // justifyContent: '',
-                          alignContent: "center",
-                          alignItems: "center",
-                          padding: 5,
-                        }}
-                      >
-                        <FunIcon
-                          icon={item.icon ? item.icon : "w-fog"}
-                          height={50}
-                          width={50}
-                          style={{
-                            bottom: -3,
-                          }}
-                        />
-                        <Text
-                          size="small"
-                          style={{ textAlign: "center", marginTop: 3 }}
-                        >
-                          {item.name}
-                        </Text>
-                      </Ripple>
-                    ): null;
-                  })}
+                 <RenderType item={render.destination_type}/>
 
                   
-
-                  <Text>textStyle</Text>
+                <View style={{
+                  width:"100%",
+                  marginTop:5,
+                  alignItems:"center",
+                  alignContent:"center"
+              }}>
+               { tutup==true && render.destination_type.length > 7 ?  (
+                
+                <Button
+                      onPress={() => {
+                        setTutup(!tutup)
+                      }}
+                      
+                      text={"Show More"}
+                      type="box"
+                      size="medium"
+                      variant="transparent"
+                     
+                    ></Button>):null } 
+                    </View>
                 </View>
               </View>
             </View>
@@ -1053,8 +1077,8 @@ export default function CityDetail(props) {
                                 height: position === index ? 7 : 5,
                                 width: position === index ? 7 : 5,
                                 borderRadius: position === index ? 7 : 3,
-                                // backgroundColor:
-                                //   position === index ? "#209fae" : "white",
+                                backgroundColor:
+                                  position === index ? "#209fae" : "white",
                                 marginHorizontal: 2,
                               }}
                             ></View>
