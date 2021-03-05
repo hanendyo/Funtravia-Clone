@@ -15,6 +15,7 @@ import {
   Pressable,
   Image,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -167,11 +168,16 @@ export default function SearchPage(props, { navigation, route }) {
   // }
 
   const {
-    data: dataBerandaPopuler,
-    loading: loadingBerandaPopuler,
-    error: errorBerandaPopuler,
+    data: dataCityPopuler,
+    loading: loadingCityPopuler,
+    error: errorCityPopuler,
   } = useQuery(BerandaPopuler);
 
+  let beranda_popularV2 = [];
+  if (dataCityPopuler && dataCityPopuler.beranda_popularV2) {
+    beranda_popularV2 = dataCityPopuler.beranda_popularV2;
+  }
+  console.log(beranda_popularV2);
   const toUser = () => {
     props.navigation.navigate("SearchPeople");
   };
@@ -308,7 +314,7 @@ export default function SearchPage(props, { navigation, route }) {
             justifyContent: "space-evenly",
           }}
         >
-          {/* <View
+          <View
             style={{
               alignContent: "center",
               alignItems: "flex-end",
@@ -355,7 +361,7 @@ export default function SearchPage(props, { navigation, route }) {
                 placeholder={t("searchHome")}
               />
             </View>
-          </View> */}
+          </View>
           <SearchBar
             // props={{ route }}
             route={route}
@@ -429,72 +435,96 @@ export default function SearchPage(props, { navigation, route }) {
                 </ScrollView>
               </View>
             ) : null}
-
             <View>
-              {dataBerandaPopuler ? (
-                <>
-                  <View
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: viewWidth,
+                  justifyContent: "space-between",
+                  alignContent: "flex-end",
+                }}
+              >
+                <Text
+                  // size='description'
+                  type="regular"
+                  style={{
+                    // fontFamily: "Lato-Regular",
+                    textAlign: "left",
+                  }}
+                >
+                  {t("popularDestination")}
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    props.navigation.navigate("CountryStack", {
+                      screen: "AllDestination",
+                    })
+                  }
+                >
+                  <Text
+                    type="bold"
+                    size="small"
                     style={{
-                      flexDirection: "row",
-                      width: viewWidth,
-                      justifyContent: "space-between",
-                      alignContent: "flex-end",
+                      // fontFamily: "Lato-Bold",
+                      textAlign: "right",
+                      color: "#5092D0",
                     }}
                   >
-                    <Text
-                      // size='description'
-                      type="regular"
-                      style={{
-                        // fontFamily: "Lato-Regular",
-                        textAlign: "left",
-                      }}
-                    >
-                      {t("popularDestination")}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() =>
-                        props.navigation.navigate("CountryStack", {
-                          screen: "AllDestination",
-                        })
-                      }
-                    >
-                      <Text
-                        type="bold"
-                        size="small"
-                        style={{
-                          // fontFamily: "Lato-Bold",
-                          textAlign: "right",
-                          color: "#5092D0",
-                        }}
-                      >
-                        {t("others")}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                    {t("others")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-                  <FlatList
-                    contentContainerStyle={{
-                      flexDirection: "row",
+              {loadingCityPopuler ? (
+                <ActivityIndicator
+                  animating={loadingCityPopuler}
+                  size="large"
+                  color="#209fae"
+                />
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    flexWrap: "wrap",
+                    flexDirection: "row",
+                    paddingHorizontal: 10,
+                    borderWidth: 1,
+                  }}
+                >
+                  {beranda_popularV2.map((value, index) => {
+                    <RenderPopularDestination item={value} />;
 
-                      marginTop: 12,
-                      alignItems: "flex-start",
-                    }}
-                    horizontal={true}
-                    data={
-                      dataBerandaPopuler &&
-                      dataBerandaPopuler.beranda_popularV2.length
-                        ? dataBerandaPopuler.beranda_popularV2
-                        : null
-                    }
-                    renderItem={({ item, index }) => (
-                      <RenderPopularDestination item={item} />
-                    )}
-                    keyExtractor={(item) => item.id}
-                    showsHorizontalScrollIndicator={false}
-                    extraData={selected}
-                  />
-                </>
-              ) : null}
+                    // <TouchableOpacity
+                    //   onPress={() => onSelectDestination(item)}
+                    //   style={{
+                    //     backgroundColor: "#f1f1f1",
+                    //     borderRadius: 42,
+                    //     paddingHorizontal: 20,
+                    //     paddingVertical: 5,
+                    //     margin: 2.5,
+                    //   }}
+                    // >
+                    //   <Text size="small">{value.name}</Text>
+                    // </TouchableOpacity>;
+                  })}
+                </View>
+                // <FlatList
+                //   contentContainerStyle={{
+                //     flexDirection: "row",
+
+                //     marginTop: 12,
+                //     alignItems: "flex-start",
+                //   }}
+                //   horizontal={true}
+                //   data={beranda_popularV2}
+                //   renderItem={({ item, index }) => (
+                //     <RenderPopularDestination item={item} />
+                //   )}
+                //   keyExtractor={(item) => item.id}
+                //   showsHorizontalScrollIndicator={false}
+                //   extraData={selected}
+                // />
+              )}
             </View>
           </View>
           <>

@@ -8,7 +8,6 @@ import {
   FlatList,
   SafeAreaView,
   Platform,
-  StatusBar,
   Pressable,
   Button as ButtonRn,
   ActivityIndicator,
@@ -22,10 +21,11 @@ import {
   SizeStrace,
   CameraBlue,
 } from "../../../assets/svg";
+import { Text, Button, StatusBar } from "../../../component";
+
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
-import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import ImagePicker from "react-native-image-crop-picker";
@@ -97,9 +97,9 @@ export default function Post(props) {
         setRecent({ image: { uri: image.path }, location: {} });
     });
   };
-  const nextFunction = () => {
+  const nextFunction = async () => {
     // setLoadingNext(true);
-    let result = ImagePicker.openCropper({
+    let result = await ImagePicker.openCropper({
       path: recent.image.uri,
       width: ratio.width * 1000,
       height: ratio.height * 1000,
@@ -113,6 +113,10 @@ export default function Post(props) {
       image: result,
     });
   };
+  useEffect(() => {
+    // props.navigation.setOptions(HeaderComponent);
+  }, []);
+
   useEffect(() => {
     (async () => {
       await getAlbumRoll();
@@ -304,7 +308,7 @@ export default function Post(props) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar backgroundColor="#209FAE" barStyle="dark-content" />
+      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
       <Loading show={loading} />
       <_modalGalery />
       <View
@@ -315,7 +319,7 @@ export default function Post(props) {
           justifyContent: "space-between",
           alignItems: "center",
           alignContent: "center",
-          paddingLeft: 10,
+          paddingLeft: 5,
         }}
       >
         <View
@@ -390,11 +394,8 @@ export default function Post(props) {
               }}
             />
             <TouchableOpacity
-              onPress={
-                () => {
-                  console.log("test");
-                }
-                // setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+              onPress={() =>
+                setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
               }
               style={{
                 backgroundColor: "#B2B2B2",
