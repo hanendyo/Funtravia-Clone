@@ -56,8 +56,8 @@ export default function SettingsAkun(props) {
   let [token, setToken] = useState("");
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
-  let [genders, setGender] = useState(setting?.user.gender);
-  let [date, setDate] = useState(setting?.user?.birth_date);
+  let [genders, setGender] = useState(props.route.params.setting?.user.gender);
+  let [date, setDate] = useState(props.route.params.setting?.user?.birth_date);
   let [searchCity, setSearchCity] = useState("");
 
   const closeBirth = () => {
@@ -263,6 +263,8 @@ export default function SettingsAkun(props) {
       return await props.navigation.navigate("AddPasswordEmail");
     }
   };
+
+  console.log("setting :", setting);
 
   // Render all
 
@@ -774,7 +776,7 @@ export default function SettingsAkun(props) {
       </View>
       <View
         style={{
-          flexDirection: "column",
+          flexDirection: "row",
           marginTop: 4,
           paddingHorizontal: 15,
           paddingVertical: 13,
@@ -786,76 +788,93 @@ export default function SettingsAkun(props) {
           elevation: arrayShadow.elevation,
         }}
       >
-        <Text
-          size="label"
-          type="bold"
-          style={{
-            marginBottom: 5,
-          }}
-        >
-          {t("email")}
-        </Text>
-        {setting && setting.user && setting.user.email ? (
-          <View
+        <View>
+          <Text
+            size="label"
+            type="bold"
             style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
+              marginBottom: 5,
             }}
           >
+            {t("email")}
+          </Text>
+          {setting && setting.user && setting.user.email ? (
             <View
               style={{
+                justifyContent: "space-between",
                 flexDirection: "row",
-                width: Dimensions.get("screen").width - 50,
+                alignItems: "flex-end",
               }}
             >
               <View
                 style={{
-                  alignContent: "flex-start",
-                  justifyContent: "flex-start",
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width - 50,
                 }}
               >
-                <Text
-                  type="regular"
-                  size="description"
+                <View
                   style={{
-                    alignSelf: "flex-start",
+                    alignContent: "flex-start",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  {setting && setting.user && setting.user.email
-                    ? setting.user.email
-                    : "Not Set"}
-                </Text>
-                <Text type="regular" size="small">
-                  {t("emailUsed")}
-                </Text>
+                  <Text
+                    type="regular"
+                    size="description"
+                    style={{
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    {setting && setting.user && setting.user.email
+                      ? setting.user.email
+                      : "Not Set"}
+                  </Text>
+                  <Text type="regular" size="small">
+                    {t("emailUsed")}
+                  </Text>
+                </View>
               </View>
+              {/* <OptionsVertBlack
+                width={20}
+                height={20}
+                onPress={() => {
+                  setModalEmail(true);
+                }}
+              /> */}
             </View>
+          ) : (
+            <Button
+              style={{
+                width: Dimensions.get("screen").width * 0.9,
+                paddingHorizontal: 10,
+              }}
+              type="box"
+              size="medium"
+              color="tertiary"
+              text={t("AddEmail")}
+              onPress={() =>
+                props.navigation.navigate("SettingEmail", {
+                  dataEmail: setting.user,
+                })
+              }
+            />
+          )}
+        </View>
+        {setting && setting.user && setting.user.email ? (
+          <View style={{ justifyContent: "center" }}>
             <OptionsVertBlack
-              width={20}
-              height={20}
+              width={15}
+              height={15}
               onPress={() => {
                 setModalEmail(true);
               }}
             />
           </View>
-        ) : (
-          <Button
-            type="box"
-            size="medium"
-            color="tertiary"
-            text={t("AddEmail")}
-            onPress={() =>
-              props.navigation.navigate("SettingEmail", {
-                dataEmail: setting.user,
-              })
-            }
-          />
-        )}
+        ) : null}
       </View>
       <View
         style={{
-          flexDirection: "column",
+          flexDirection: "row",
           // marginTop: 4,
           // borderWidth: 1,
           borderTopWidth: 1,
@@ -870,87 +889,76 @@ export default function SettingsAkun(props) {
           elevation: arrayShadow.elevation,
         }}
       >
-        <Text
-          size="label"
-          type="bold"
-          style={{
-            marginBottom: 5,
-          }}
-        >
-          {t("phoneNumber")}
-        </Text>
-        {setting && setting.user && setting.user.phone ? (
-          <View
+        <View>
+          <Text
+            size="label"
+            type="bold"
             style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
+              marginBottom: 5,
             }}
           >
+            {t("phoneNumber")}
+          </Text>
+          {setting && setting.user && setting.user.phone ? (
             <View
               style={{
+                justifyContent: "space-between",
                 flexDirection: "row",
-                width: Dimensions.get("screen").width - 50,
+                alignItems: "center",
               }}
             >
               <View
                 style={{
-                  alignContent: "flex-start",
-                  justifyContent: "flex-start",
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width - 50,
                 }}
               >
-                <Text
-                  type="regular"
-                  size="description"
+                <View
                   style={{
-                    alignSelf: "flex-start",
+                    alignContent: "flex-start",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  {setting.user.phone}
-                </Text>
-                <Text type="regular" size="small">
-                  {t("phoneUsed")}
-                </Text>
+                  <Text
+                    type="regular"
+                    size="description"
+                    style={{
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    {setting.user.phone}
+                  </Text>
+                  <Text type="regular" size="small">
+                    {t("phoneUsed")}
+                  </Text>
+                </View>
               </View>
             </View>
-            <OptionsVertBlack
-              width={20}
-              height={20}
-              onPress={() => {
-                setModalPhone(true);
-              }}
-            />
-          </View>
-        ) : (
-          <>
+          ) : (
             <Button
+              style={{
+                width: Dimensions.get("screen").width * 0.9,
+                paddingHorizontal: 10,
+              }}
               type="box"
               size="medium"
               color="tertiary"
               text={t("addPhoneNumber")}
-              onPress={() => props.navigation.navigate("SettingPhone")}
+              // onPress={() => props.navigation.navigate("SettingPhone")}
             />
-            {/* <View
-              style={{
-                alignContent: "flex-start",
-                justifyContent: "flex-start",
+          )}
+        </View>
+        {setting && setting.user && setting.user.phone ? (
+          <View style={{ justifyContent: "center" }}>
+            <OptionsVertBlack
+              width={15}
+              height={15}
+              onPress={() => {
+                setModalEmail(true);
               }}
-            >
-              <Text
-                type="regular"
-                size="description"
-                style={{
-                  alignSelf: "flex-start",
-                }}
-              >
-                {setting.user.phone}
-              </Text>
-              <Text type="regular" size="small">
-                {t("phoneUsed")}
-              </Text>
-            </View> */}
-          </>
-        )}
+            />
+          </View>
+        ) : null}
       </View>
       <Pressable
         style={{

@@ -126,7 +126,11 @@ export default function SettingEmailChange(props) {
           height: "100%",
         }}
         contentContainerStyle={{
+<<<<<<< Updated upstream
           height: Dimensions.get("screen").height * 0.8,
+=======
+          height: Dimensions.get('screen').height * 0.8,
+>>>>>>> Stashed changes
           paddingBottom: 20,
           justifyContent: "space-between",
           // borderWidth: 1

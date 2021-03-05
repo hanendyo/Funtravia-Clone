@@ -24,6 +24,7 @@ export default function JournalCategory(props) {
   let [category, setCategory] = useState(props.route.params.category);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
+  console.log("index :", props.route.params.index);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -145,10 +146,27 @@ export default function JournalCategory(props) {
     }
   };
 
-  const [
-    fetchCategory,
-    { data: dataCategory, loading: loadingCategory, error: errorCategory },
-  ] = useLazyQuery(Category, {
+  // const [
+  //   fetchCategory,
+  //   { data: dataCategory, loading: loadingCategory, error: errorCategory },
+  // ] = useLazyQuery(Category, {
+  //   variables: {
+  //     category_id: null,
+  //     order_by: null,
+  //   },
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   },
+  // });
+  const {
+    data: dataCategory,
+    loading: loadingCategory,
+    error: errorCategory,
+    refetch: fetchCategory,
+  } = useQuery(Category, {
     variables: {
       category_id: null,
       order_by: null,
@@ -170,7 +188,7 @@ export default function JournalCategory(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      fetchCategory();
+      // fetchCategory();
       fetchDataPopuler();
     });
     return unsubscribe;
@@ -207,33 +225,37 @@ export default function JournalCategory(props) {
             style={{ width: "90%" }}
           />
         </View>
-        <FlatList
-          data={dataCategory?.category_journal}
-          contentContainerStyle={{
-            flexDirection: "row",
-            paddingRight: 10,
-          }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <Pressable onPress={() => setCategory(item.id)}>
-              <Text
-                style={{
-                  padding: 10,
-                  backgroundColor: category === item.id ? "#209FAE" : "#F6F6F6",
-                  marginLeft: 10,
-                  borderRadius: 5,
-                  color: category === item.id ? "white" : "black",
-                }}
-                size={"description"}
-                type={"bold"}
-              >
-                {item.name}
-              </Text>
-            </Pressable>
-          )}
-        />
+        {dataCategory ? (
+          <FlatList
+            data={dataCategory?.category_journal}
+            initialScrollIndex={props.route.params.index}
+            contentContainerStyle={{
+              flexDirection: "row",
+              paddingRight: 10,
+            }}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <Pressable onPress={() => setCategory(item.id)}>
+                <Text
+                  style={{
+                    padding: 10,
+                    backgroundColor:
+                      category === item.id ? "#209FAE" : "#F6F6F6",
+                    marginLeft: 10,
+                    borderRadius: 5,
+                    color: category === item.id ? "white" : "black",
+                  }}
+                  size={"description"}
+                  type={"bold"}
+                >
+                  {item.name}
+                </Text>
+              </Pressable>
+            )}
+          />
+        ) : null}
       </View>
       {list.length > 0 ? (
         <View

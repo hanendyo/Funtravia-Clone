@@ -338,7 +338,7 @@
   "personalData": "Personal Data",
   "gender": "Gender",
   "cityOfRecidence": "City of Residence",
-  "birthdate": "Birthdate",
+  "birthdate": "Date of Birth",
   "emailUsed": "This is email address used for logging in and receiving notifications",
   "phoneUsed": "This is Phone Number address used for logging in and receiving notifications",
   "startFrom": "Start From",
@@ -450,6 +450,7 @@
   "currentEmail": "Enter current email address",
   "newEmail": "Enter new email address",
   "verifyEmail": "Verify your email",
+<<<<<<< Updated upstream
   "verifyFail": "Your email verification failed",
   "location": "Location",
   "region": "Region",
@@ -476,4 +477,8 @@
   "SetPassword": "Set Password",
   "WordChangeEmail": "Please set password to your account before you change email.",
   "monthAgo": "month ago"
+=======
+  "verifyOtp": "Please enter 6 digit code sent to",
+  "writeComment" : "Write Comment"
+>>>>>>> Stashed changes
 }
