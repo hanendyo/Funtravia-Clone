@@ -21,8 +21,8 @@ export default function FeedStackNavigation() {
           headerShown: false,
           headerBackTitleVisible: false,
 
-          headerTintColor: "white",
-          headerBackTitleVisible: false,
+          // headerTintColor: "white",
+          // headerBackTitleVisible: false,
         }}
       />
       <FeedStack.Screen
@@ -52,7 +52,14 @@ export default function FeedStackNavigation() {
           headerBackTitleVisible: false,
         }}
       />
-      <FeedStack.Screen name="CreatePostScreen" component={CreatePostScreen} />
+      <FeedStack.Screen
+        name="CreatePostScreen"
+        component={CreatePostScreen}
+        options={{
+          headerShown: false,
+          headerBackTitleVisible: false,
+        }}
+      />
       <FeedStack.Screen
         name="CommentsById"
         component={CommentsById}

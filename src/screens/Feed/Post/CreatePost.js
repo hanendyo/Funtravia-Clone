@@ -13,13 +13,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
-import { Text, Button, Loading } from "../../../component";
+import { Text, Button, Loading, StatusBar } from "../../../component";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
-import { PinHijau, Xgray } from "../../../assets/svg";
+import { PinHijau, Xgray, Arrowbackwhite } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { ScrollView } from "react-native-gesture-handler";
 import Geolocation from "react-native-geolocation-service";
@@ -52,24 +52,24 @@ const PostMut = gql`
 `;
 
 export default function CreatePost(props) {
-  const HeaderComponent = {
-    title: "New Post",
-    headerTintColor: "white",
-    headerTitle: "",
-    headerTransparent: true,
-    headerShown: true,
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
-  };
+  // const HeaderComponent = {
+  //   title: "New Post",
+  //   headerTintColor: "white",
+  //   headerTitle: "",
+  //   headerTransparent: true,
+  //   headerShown: true,
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 14,
+  //     color: "white",
+  //   },
+  // };
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
   let [Location, setLocation] = useState({
@@ -214,7 +214,7 @@ export default function CreatePost(props) {
         );
       }
     })();
-    props.navigation.setOptions(HeaderComponent);
+    // props.navigation.setOptions(HeaderComponent);
     loadAsync();
   }, []);
   const convertBase64 = () => {
@@ -279,11 +279,30 @@ export default function CreatePost(props) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : null}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={65}
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
+      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
       <SafeAreaView>
-        <View style={{ backgroundColor: "#209FAE", height: 55 }}>
+        <View
+          style={{
+            backgroundColor: "#209FAE",
+            height: 55,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignContent: "center",
+            paddingLeft: 5,
+          }}
+        >
+          <Button
+            onPress={() => props.navigation.goBack()}
+            type="circle"
+            variant="transparent"
+          >
+            <Arrowbackwhite height={20} width={20} />
+          </Button>
           <View
             style={{
               flexDirection: "row",

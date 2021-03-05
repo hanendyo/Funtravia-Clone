@@ -17,6 +17,7 @@ import {
   Linking,
   Image,
   TouchableHighlight,
+  BackHandler,
 } from "react-native";
 
 import { Rating, AirbnbRating } from "react-native-ratings";
@@ -26,7 +27,7 @@ import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../component";
+import { Text, Button } from "..";
 import { default_image } from "../../assets/png";
 
 export default function FriendList({
@@ -35,12 +36,14 @@ export default function FriendList({
   // Refresh,
   // refreshing,
   token,
+  onBackPress,
+  recent_save,
 }) {
   // let [token, setToken] = useState('');
   let [selected] = useState(new Map());
   let [dataUser, setDataUser] = useState(datanya);
+
   const { t, i18n } = useTranslation();
-  // console.log('dataUSER  :', dataUser);
   const [
     FollowMutation,
     { loading: loadFollowMut, data: dataFollowMut, error: errorFollowMut },
@@ -158,7 +161,7 @@ export default function FriendList({
     return (
       <View
         style={{
-          width: "105%",
+          width: "100%",
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
@@ -169,8 +172,22 @@ export default function FriendList({
         }}
       >
         <TouchableOpacity
-          onPress={() =>
-            props.navigation.push("otherprofile", { idUser: item.id })
+          onPress={
+            () => {
+              recent_save();
+              props.navigation.push("ProfileStack", {
+                screen: "otherprofile",
+                params: {
+                  idUser: item.id,
+                  token: token,
+                },
+              });
+              BackHandler.removeEventListener(
+                "hardwareBackPress",
+                onBackPress()
+              );
+            }
+            // props.navigation.push("otherprofile", { idUser: item.id })
           }
           style={{ flexDirection: "row" }}
         >
@@ -233,9 +250,10 @@ export default function FriendList({
   return (
     <FlatList
       contentContainerStyle={{
-        marginTop: 20,
+        marginTop: 5,
         justifyContent: "space-evenly",
         paddingEnd: 20,
+        paddingHorizontal: 10,
       }}
       horizontal={false}
       // data={_FormatData(dataEvent, numColumns)}
