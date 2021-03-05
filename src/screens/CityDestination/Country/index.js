@@ -426,10 +426,12 @@ export default function Country(props) {
                 alignContent: "center",
                 alignItems: "center",
                 padding: 7,
-                borderLeftWidth:
-                  index !== 0 && index !== 3 && index !== 6 && index !== 9
+                borderRightWidth:
+                  index!==8 && index!==5 && index!==2 && index!==data.length
                     ? 0.5
                     : 0,
+                    borderBottomWidth:data.length>3?index!==data.length && index!==data.length-1 && index!==data.length-2? 0.5:0:0,
+                    
                 borderColor: "#209fae",
               }}
             >

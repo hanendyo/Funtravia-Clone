@@ -17,7 +17,7 @@ import {
 } from "../../component/src/dateformatter";
 import { MapSVG, Star, LikeRed, LikeEmpty } from "../../assets/svg";
 import { Truncate } from "../../component";
-import { MapIconGrey, CalenderGrey, default_image } from "../../assets/png";
+import { MapIconGrey,MapIconGreen, CalenderGrey, default_image } from "../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { Text, Button } from "../../component";
@@ -131,11 +131,11 @@ export default function Event({
     return (
       <View
         style={{
-          zIndex: 1,
           justifyContent: "center",
+
           width: Dimensions.get("screen").width * 0.5 - 16,
           height: Dimensions.get("screen").width * 0.7,
-          margin: 5,
+          margin: 6,
           flexDirection: "column",
           backgroundColor: "white",
           borderRadius: 5,
@@ -146,53 +146,6 @@ export default function Event({
           elevation: 3,
         }}
       >
-        <TouchableOpacity
-          onPress={() => eventdetail(item)}
-          style={{
-            height: Dimensions.get("window").width * 0.47 - 16,
-            zIndex: 999,
-          }}
-        >
-          <ImageBackground
-            key={item.id}
-            source={
-              item.images && item.images.length
-                ? { uri: item.images[0].image }
-                : default_image
-            }
-            style={[styles.ImageView]}
-            imageStyle={[styles.Image]}
-          ></ImageBackground>
-          {/* <LinearGradient
-						colors={['#209FAE', 'rgba(0, 0, 0, 0)']}
-						start={{ x: 0.8, y: 1 }}
-						end={{ x: 0.2, y: 1 }}
-						style={{
-							position: 'absolute',
-							// top : (150),
-							bottom: 11,
-							right: 0,
-							height: 27,
-							// width: (150),
-							width: Dimensions.get('screen').width * 0.5 - 16,
-							justifyContent: 'center',
-							alignContent: 'flex-end',
-							alignItems: 'flex-end',
-						}}>
-						<Text
-							type='bold'
-							size='label'
-							style={{
-								color: 'white',
-								textAlign: 'right',
-								marginRight: 10,
-							}}>
-							{item.ticket && item.ticket.length > 0
-								? `IDR ${rupiah(item.ticket[0].price)}`
-								: '-'}
-						</Text>
-					</LinearGradient> */}
-        </TouchableOpacity>
         <View
           style={{
             position: "absolute",
@@ -202,7 +155,7 @@ export default function Event({
             flexDirection: "row",
             justifyContent: "space-between",
             alignContent: "center",
-            zIndex: 999,
+            zIndex: 9999,
           }}
         >
           <View
@@ -210,11 +163,11 @@ export default function Event({
               // bottom: (9),
               height: 21,
               minWidth: 60,
-              paddingHorizontal: 10,
               borderRadius: 11,
               alignSelf: "center",
               justifyContent: "center",
               backgroundColor: "rgba(226, 236, 248, 0.85)",
+              paddingHorizontal: 10,
             }}
           >
             <Text
@@ -223,7 +176,7 @@ export default function Event({
                 textAlign: "center",
               }}
             >
-              {item.category && item.category.name ? item.category.name : "-"}
+              {item.category.name}
             </Text>
           </View>
           <View
@@ -236,46 +189,78 @@ export default function Event({
               alignContent: "center",
               justifyContent: "center",
               backgroundColor: "rgba(226, 236, 248, 0.85)",
-              zIndex: 999,
+              // zIndex: 999,
             }}
           >
-            <TouchableOpacity
-              style={{
-                height: 26,
-                width: 26,
-                borderRadius: 50,
-                alignSelf: "center",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                zIndex: 999,
-              }}
-              onPress={() => _unliked(item.id)}
-            >
-              {item.liked == true ? (
-                <LikeRed height={15} width={15} />
-              ) : (
-                <LikeEmpty height={15} width={15} />
-              )}
-            </TouchableOpacity>
+            {item.liked === false ? (
+              <TouchableOpacity
+                style={{
+                  height: 26,
+                  width: 26,
+                  borderRadius: 50,
+                  alignSelf: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+
+                  zIndex: 9999,
+                }}
+                onPress={() => _liked(item.id)}
+              >
+                <LikeEmpty height={13} width={13} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  height: 26,
+                  width: 26,
+                  borderRadius: 50,
+                  alignSelf: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+
+                  zIndex: 9999,
+                }}
+                onPress={() => _unliked(item.id)}
+              >
+                <LikeRed height={13} width={13} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
+        <TouchableOpacity
+          onPress={() => eventdetail(item)}
+          style={{
+            height: Dimensions.get("window").width * 0.47 - 16,
+          }}
+        >
+          <ImageBackground
+            key={item.id}
+            source={
+              item.images.length ? { uri: item.images[0].image } : default_image
+            }
+            style={[styles.ImageView]}
+            imageStyle={[styles.Image]}
+          ></ImageBackground>
+        </TouchableOpacity>
         <View
           style={{
             flex: 1,
             flexDirection: "column",
             justifyContent: "space-around",
             height: 230,
-            // marginBottom : (5),
-            // marginTop	: (5),
             marginVertical: 5,
             marginHorizontal: 10,
-            // borderWidth: 1,
-            // borderColor: 'grey',
           }}
         >
-          <Text size="label" type="bold" style={{}}>
+          <Text
+            onPress={() => eventdetail(item)}
+            size="label"
+            type="bold"
+            style={{}}
+          >
             <Truncate text={item.name} length={27} />
           </Text>
           <View
@@ -283,18 +268,14 @@ export default function Event({
               height: "50%",
               flexDirection: "column",
               justifyContent: "space-around",
-              // borderWidth: 1,
-              // borderColor: 'grey',
             }}
           >
-           
             <View
               style={{
                 // flex: 1,
                 flexDirection: "row",
                 width: "100%",
                 borderColor: "grey",
-                // marginBottom: (5),
               }}
             >
               <CustomImage
@@ -308,7 +289,7 @@ export default function Event({
                   height: 15,
                   resizeMode: "contain",
                 }}
-                source={MapIconGrey}
+                source={MapIconGreen}
               />
               <Text
                 size="small"
@@ -316,7 +297,7 @@ export default function Event({
                   width: "100%",
                 }}
               >
-                {item.city && item.city.name ? item.city.name : "-"}
+                {item.city.name}
               </Text>
             </View>
             <View
@@ -325,16 +306,12 @@ export default function Event({
                 flexDirection: "row",
                 width: "100%",
                 marginBottom: 3,
-                // borderColor: 'grey',
-                // borderWidth: 1,
               }}
             >
               <CustomImage
                 customStyle={{
                   width: 15,
                   height: 15,
-                  // marginTop: (2),
-                  // marginLeft: (3),
                   marginRight: 5,
                 }}
                 customImageStyle={{
@@ -351,16 +328,14 @@ export default function Event({
                   width: "100%",
                 }}
               >
-                {item.start_date == item.end_date
-                  ? dateFormat(item.start_date)
-                  : dateFormatBetween(item.start_date, item.end_date)}
+                {dateFormatBetween(item.start_date, item.end_date)}
               </Text>
             </View>
-
           </View>
         </View>
       </View>
-    );
+ 
+      );
   };
 
   return (

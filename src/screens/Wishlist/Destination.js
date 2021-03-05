@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { CustomImage } from "../../component";
+import { CustomImage, FunIcon } from "../../component";
 import { LikeRed, LikeEmpty, Star, PinHijau } from "../../assets/svg";
 import { Ticket, MapIconGreen, default_image } from "../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
@@ -79,7 +79,7 @@ export default function Destination({
       Alert.alert("Please Login");
     }
   };
-
+  
   const RenderDes = ({ item,index }) => {
     return (
       <Pressable
@@ -92,11 +92,11 @@ export default function Destination({
       style={{
         width: "100%",
         padding: 10,
-        // borderWidth:1,
         elevation:2,
         backgroundColor: "#FFFFFF",
         marginBottom: 10,
         borderRadius: 10,
+        marginTop:10,
         flexDirection: "row",
       }}
     >
@@ -197,13 +197,73 @@ export default function Destination({
             </Text>
           </View>
         </View>
+        {/* icon great for */}
         <View
           style={{
             marginTop: 10,
             flexDirection: "row",
             justifyContent: "space-between",
+            alignContent:"center",
+            alignItems:"center",
+            width: "100%",
+            padding:0
+            // width: (Dimensions.get("screen").width - 100) * 0.5 ,
+          }}
+
+        >
+          <View>
+          {item.greatfor && item.greatfor.length ? (
+        <View
+          style={{
+            justifyContent: "flex-start",
+            alignContent: "flex-start",
           }}
         >
+          <Text
+            size="description"
+            type="bold"
+            style={{
+              color: "#464646",
+            }}
+          >
+            {t("greatFor")}:
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              alignContent: "space-between",
+              alignItems: "stretch",
+              alignSelf: "flex-start",
+            }}
+          >
+            {item.greatfor.map((item, index) => {
+              return (
+                <FunIcon
+                  icon={item.icon}
+                  fill="#464646"
+                  height={42}
+                  width={42}
+                  style={{}}
+                />
+              );
+            })}
+          </View>
+        </View>
+      ) : (
+        <View
+          style={{
+            justifyContent: "flex-start",
+            alignContent: "flex-start",
+          }}
+        ></View>
+      )}
+      <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+    >
           {item.greatfor && item.greatfor.length ? (
             <View
               style={{
@@ -248,11 +308,50 @@ export default function Destination({
                 justifyContent: "flex-start",
                 alignContent: "flex-start",
               }}
-            ></View>
-          )}
+            >
+              <Text
+            size="description"
+            type="bold"
+            style={{
+              color: "#464646",
+            }}
+          >
+            {t("greatFor")}:
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              alignContent: "space-between",
+              alignItems: "stretch",
+              alignSelf: "flex-start",
+            }}
+          >
+           
+                <FunIcon
+                  icon="i-4wd" 
+                  fill="#464646"
+                  height={42}
+                  width={42}
+                  style={{}} />
+                   <FunIcon
+                  icon="i-family_room" 
+                  fill="#464646"
+                  height={42}
+                  width={42}
+                  style={{}} />
+                  
+              {/* );
+            })} */}
+          </View>
+        </View>
+      )}
+      </View>
+          </View>
+         
           <Button
             size="small"
-            text={t("addToPlan")}
+            text={t("adddeswishlist")}
             color="primary"
             onPress={() => {
               props.route.params && props.route.params.iditinerary
@@ -275,6 +374,9 @@ export default function Destination({
                       Position: "destination",
                     },
                   });
+            }}
+            style={{
+              marginTop:10,
             }}
           />
         </View>
