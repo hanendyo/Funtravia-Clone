@@ -282,7 +282,7 @@ export default function Wishlist(props) {
                 <TextInput
                   value={textc}
                   style={{
-                    height: 38,
+                    height: 40,
                     maxWidth: 250,
                     paddingLeft: 5,
                     textAlign: "left",
@@ -299,7 +299,7 @@ export default function Wishlist(props) {
           </View>
           <View
             style={{
-              paddingVertical: 10,
+              paddingVertical: 5,
             }}
           >
             <Tabs

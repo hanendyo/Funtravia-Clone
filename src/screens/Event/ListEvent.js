@@ -35,7 +35,7 @@ export default function ListEvent(props) {
     title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "List Event",
+    headerTitle: "Event",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -589,7 +589,7 @@ export default function ListEvent(props) {
     await _Refresh();
     // console.log(tkn);
   };
-
+  
   return (
     <View
       style={{

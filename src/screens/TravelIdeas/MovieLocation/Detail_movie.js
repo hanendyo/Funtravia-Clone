@@ -622,6 +622,7 @@ export default function Detail_movie({ navigation, route }) {
                 </View>
               </Pressable>
             )}
+            
             keyExtractor={(item) => item.id}
             contentContainerStyle={{
               // borderWidth: 1,
