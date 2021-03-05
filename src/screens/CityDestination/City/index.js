@@ -456,7 +456,7 @@ export default function CityDetail(props) {
               <Text size="label" type="bold" style={{}}>
                 {t("Activities & Experience")}
               </Text>
-              <Text size="description">Good destination for your trip</Text>
+              <Text size="description">Explore and get inspired for your next trip</Text>
               <View
                 style={{
                   marginTop: 10,
@@ -481,8 +481,9 @@ export default function CityDetail(props) {
                   }}
                 >
                   {render.destination_type.map((item, index) => {
+
                     // console.log(item);
-                    return (
+                    return index < 8 ?(
                       <Ripple
                         onPress={() => {
                           props.navigation.push("DestinationList", {
@@ -514,8 +515,50 @@ export default function CityDetail(props) {
                           {item.name}
                         </Text>
                       </Ripple>
-                    );
+                    ): null;
                   })}
+
+                  {render.destination_type.map((item, index) => {
+
+                    // console.log(item);
+                    return index < 8 ?(
+                      <Ripple
+                        onPress={() => {
+                          props.navigation.push("DestinationList", {
+                            idtype: item.id,
+                            idcity: render.id,
+                          });
+                        }}
+                        style={{
+                          // borderWidth: 1,
+                          width: "25%",
+                          // justifyContent: '',
+                          alignContent: "center",
+                          alignItems: "center",
+                          padding: 5,
+                        }}
+                      >
+                        <FunIcon
+                          icon={item.icon ? item.icon : "w-fog"}
+                          height={50}
+                          width={50}
+                          style={{
+                            bottom: -3,
+                          }}
+                        />
+                        <Text
+                          size="small"
+                          style={{ textAlign: "center", marginTop: 3 }}
+                        >
+                          {item.name}
+                        </Text>
+                      </Ripple>
+                    ): null;
+                  })}
+
+                  
+
+                  <Text>textStyle</Text>
                 </View>
               </View>
             </View>
@@ -1010,8 +1053,8 @@ export default function CityDetail(props) {
                                 height: position === index ? 7 : 5,
                                 width: position === index ? 7 : 5,
                                 borderRadius: position === index ? 7 : 3,
-                                backgroundColor:
-                                  position === index ? "#209fae" : "white",
+                                // backgroundColor:
+                                //   position === index ? "#209fae" : "white",
                                 marginHorizontal: 2,
                               }}
                             ></View>

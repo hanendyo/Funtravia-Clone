@@ -475,5 +475,6 @@
   "ConfirmPasswords": "Confirm Password",
   "SetPassword": "Set Password",
   "WordChangeEmail": "Please set password to your account before you change email.",
-  "monthAgo": "month ago"
+  "monthAgo": "month ago",
+  "adddeswishlist" : "Add"
 }

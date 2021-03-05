@@ -16,6 +16,7 @@ const Event = gql`
 			vendor {
 				id
 				name
+				cover
 			}
 			category {
 				id
