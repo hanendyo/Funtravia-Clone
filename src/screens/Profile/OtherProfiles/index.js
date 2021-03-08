@@ -1,3 +1,5 @@
+import { useQuery } from "@apollo/client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
@@ -11,42 +13,30 @@ import {
   StatusBar,
   ActivityIndicator,
   SafeAreaView,
-  Image,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
-import { Text, CustomImage, StatusBar as Statcom } from "../../../component";
-import { default_image, Akunsaya } from "../../../assets/png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery } from "@apollo/client";
+import { StatusBar as StaBar, Text } from "../../../component";
 import Account from "../../../graphQL/Query/Profile/Other";
-import { useTranslation } from "react-i18next";
 
+const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
-const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: 44,
   android: StatusBar.currentHeight,
 });
+const HeaderHeight = 300 - SafeStatusBar;
+
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
-export default function OtherProfile(props) {
-  const { t, i18n } = useTranslation();
-
+export default function TestProfile(props) {
   let [token, setToken] = useState(null);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
   };
-
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
 
   /**
    * stats
@@ -64,7 +54,6 @@ export default function OtherProfile(props) {
    * ref
    */
   const scrollY = useRef(new Animated.Value(0)).current;
-
   const headerScrollY = useRef(new Animated.Value(0)).current;
   // for capturing header scroll on Android
   const headerMoveScrollY = useRef(new Animated.Value(0)).current;
@@ -74,61 +63,6 @@ export default function OtherProfile(props) {
   const headerScrollStart = useRef(0);
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
-
-  let HEADER_MAX_HEIGHT = HeaderHeight;
-  let HEADER_MIN_HEIGHT = 55;
-  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
-  const imageOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0, 0],
-    extrapolate: "clamp",
-  });
-  const imageTranslate = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -50],
-    extrapolate: "clamp",
-  });
-  const positionImage = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [HEADER_MAX_HEIGHT - 30, 7],
-    extrapolate: "clamp",
-  });
-
-  const borderImage = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [3, 1],
-    extrapolate: "clamp",
-  });
-
-  const positionLeftImage = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [20, 50],
-    extrapolate: "clamp",
-  });
-  const heightImage = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [100, 40],
-    extrapolate: "clamp",
-  });
-
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-    extrapolate: "clamp",
-  });
-
-  const opacityto1 = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
-
-  const opacityfrom1 = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
 
   /**
    * PanResponder for header
@@ -206,7 +140,37 @@ export default function OtherProfile(props) {
   /**
    * effect
    */
+
+  const HeaderComponent = {
+    headerShown: true,
+    title: "",
+    headerTransparent: true,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+
+    headerRightStyle: {},
+  };
+
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    loadAsync();
+
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
@@ -390,10 +354,10 @@ export default function OtherProfile(props) {
   /**
    * render Helper
    */
-  const renderHeader = (item) => {
+  const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 55 + SafeStatusBar],
+      outputRange: [0, -HeaderHeight + 55],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -402,185 +366,14 @@ export default function OtherProfile(props) {
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
-          height: HeaderHeight,
+          height: HeaderHeight + SafeStatusBar,
           width: "100%",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "center",
           position: "absolute",
           backgroundColor: "#209fae",
-          paddingTop: SafeStatusBar,
         }}
-      >
-        {/* <Statcom backgroundColor="red" barStyle="light-content" /> */}
-
-        <Animated.Image
-          style={{
-            // position: "absolute",
-            // top: 0,
-            // left: 0,
-            // right: 0,
-            width: "100%",
-            height: "50%",
-            resizeMode: "cover",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
-          }}
-          source={Akunsaya}
-        />
-        <Animated.View
-          style={{
-            width: "100%",
-            height: "50%",
-            backgroundColor: "#fff",
-            opacity: imageOpacity,
-            // transform: [{ translateY: imageTranslate }],
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              width: Dimensions.get("screen").width,
-              justifyContent: "space-between",
-              paddingHorizontal: 20,
-              alignItems: "center",
-              alignContent: "center",
-              marginTop: 5,
-              // borderWidth: 1,
-            }}
-          >
-            <Animated.View style={{ width: "50%", opacity: opacityfrom1 }}>
-              <Text type="bold" size="label" style={{ marginRight: 10 }}>
-                {`${item.user_profilebyid.firstname} ` +
-                  `${item.user_profilebyid.lastname}`}
-              </Text>
-              <Text
-                type="regular"
-                size="description"
-              >{`@${item.user_profilebyid.username} `}</Text>
-            </Animated.View>
-
-            <View
-              style={{
-                width: "50%",
-                // marginTop: 10,
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                alignItems: "baseline",
-                // width: Dimensions.get('window').width,
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-                onPress={() =>
-                  props.navigation.push("otherFollower", {
-                    idUser: idUser,
-                  })
-                }
-              >
-                <Text type="black" size="label">
-                  {/* {`${data ? data.user_profilebyid.count_follower : 0} `} */}
-                </Text>
-                <Text
-                  type="regular"
-                  size="description"
-                  // style={{ color: '#B0B0B0' }}
-                >
-                  {t("followers")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-                onPress={() =>
-                  props.navigation.push("otherFollowing", {
-                    idUser: idUser,
-                  })
-                }
-              >
-                <Text type="black" size="label">
-                  {/* {`${data ? data.user_profilebyid.count_following : 0} `} */}
-                </Text>
-                <Text
-                  type="regular"
-                  size="description"
-                  // style={{ color: '#B0B0B0' }}
-                >
-                  {t("following")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View
-            style={{
-              marginTop: 15,
-              width: Dimensions.get("screen").width,
-              paddingHorizontal: 20,
-            }}
-          >
-            <Text
-              type="regular"
-              size="description"
-              style={{ textAlign: "justify" }}
-            >
-              {/* {initbio ? initbio : "-"} */}
-            </Text>
-          </View>
-        </Animated.View>
-        <Animated.View
-          style={{
-            width: "100%",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            position: "absolute",
-            // top: positionImage,
-            // left: positionLeftImage,
-            // marginTop: -30,
-            // paddingHorizontal: 20,
-            alignItems: "center",
-            zIndex: 2,
-            top: "45%",
-            left: 25,
-          }}
-        >
-          <Animated.View
-            style={{
-              shadowOpacity: 0.5,
-              shadowColor: "#d3d3d3",
-              elevation: 4,
-              alignSelf: "center",
-              borderColor: "white",
-              borderWidth: 2,
-              backgroundColor: "#B8E0E5",
-              width: width / 4,
-              height: width / 4,
-              borderRadius: width / 8,
-              opacity: imageOpacity,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={
-                item.user_profilebyid.picture
-                  ? { uri: item.user_profilebyid.picture }
-                  : default_image
-              }
-              style={{
-                borderRadius: 60,
-                resizeMode: "cover",
-                height: "100%",
-                width: "100%",
-              }}
-            />
-          </Animated.View>
-        </Animated.View>
-      </Animated.View>
+      ></Animated.View>
     );
   };
 
@@ -685,14 +478,16 @@ export default function OtherProfile(props) {
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
           paddingHorizontal: 10,
-          minHeight: height - SafeStatusBar + HeaderHeight + 55,
-          paddingBottom: 20,
+          minHeight: height - SafeStatusBar + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
+        style={{
+          backgroundColor: "#209fae",
+        }}
       />
     );
   };
@@ -700,7 +495,7 @@ export default function OtherProfile(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 55 + SafeStatusBar],
+      outputRange: [HeaderHeight, 55],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -751,34 +546,55 @@ export default function OtherProfile(props) {
 
   const renderCustomRefresh = () => {
     // headerMoveScrollY
-    return (
-      <Animated.View
-        style={{
-          transform: [
-            {
-              translateY: headerMoveScrollY.interpolate({
-                inputRange: [-300, 0],
-                outputRange: [150, 0],
-                extrapolate: "clamp",
-              }),
-            },
-          ],
-          backgroundColor: "#eee",
-          height: 38,
-          width: 38,
-          borderRadius: 19,
-          borderWidth: 2,
-          borderColor: "#ddd",
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          top: -50,
-          position: "absolute",
-        }}
-      >
-        <ActivityIndicator animating />
-      </Animated.View>
-    );
+    return Platform.select({
+      ios: (
+        <AnimatedIndicator
+          style={{
+            top: -50,
+            position: "absolute",
+            alignSelf: "center",
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [-100, 0],
+                  outputRange: [120, 0],
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
+          }}
+          animating
+        />
+      ),
+      android: (
+        <Animated.View
+          style={{
+            transform: [
+              {
+                translateY: headerMoveScrollY.interpolate({
+                  inputRange: [-300, 0],
+                  outputRange: [150, 0],
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
+            backgroundColor: "#eee",
+            height: 38,
+            width: 38,
+            borderRadius: 19,
+            borderWidth: 2,
+            borderColor: "#ddd",
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            top: -50,
+            position: "absolute",
+          }}
+        >
+          <ActivityIndicator animating />
+        </Animated.View>
+      ),
+    });
   };
 
   const Datauser = () => {
@@ -793,48 +609,29 @@ export default function OtherProfile(props) {
       variables: {
         id: props.route.params.idUser,
       },
+
+      onCompleted: (data) => {},
     });
 
     if (loading) {
-      return (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ActivityIndicator animating={true} color="#209fae" size="large" />
-        </View>
-      );
+      return null;
     }
 
     return (
-      <SafeAreaView style={styles.container}>
-        {renderTabView()}
+      <>
         {renderHeader(data)}
         {renderCustomRefresh()}
-      </SafeAreaView>
+      </>
     );
   };
 
-  if (token) {
-    return <Datauser />;
-  } else {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-        }}
-      >
-        <ActivityIndicator animating={true} color="#209fae" size="large" />
-      </View>
-    );
-  }
+  return (
+    <SafeAreaView style={styles.container}>
+      <StaBar backgroundColor="#14646e" barStyle="light-content" />
+      {renderTabView()}
+      {token ? <Datauser /> : null}
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
