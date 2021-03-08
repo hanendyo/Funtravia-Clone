@@ -11,17 +11,19 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
 import RegionList from "../../graphQL/Query/Countries/RegionList";
+import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/react-hooks";
 import Fillter from "./Fillter/index";
 import { Arrowbackwhite, OptionsVertWhite } from "../../assets/svg";
 import { Button, Text, Truncate, Capital } from "../../component";
 export default function AllDestination(props) {
+  const { t } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
-    title: "Popular City Destination",
+    title: "Popular Destination",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Popular City Destination",
+    headerTitle: "Popular Destination",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -64,7 +66,7 @@ export default function AllDestination(props) {
     },
   });
 
-  //   console.log(search);
+  console.log(search);
 
   const [
     GetContinent,
@@ -235,40 +237,19 @@ export default function AllDestination(props) {
                       }}
                     >
                       <View>
-                        <Text
-                          style={{
-                            letterSpacing: 0.5,
-                            fontFamily: "Lato-Regular",
-                            fontSize: 20,
-                            marginBottom: 2,
-                            color: "#3E3E3E",
-                          }}
-                        >
+                        <Text type="bold" size="title" style={{}}>
                           <Truncate
-                            text={Capital({ text: value.name })}
-                            length={10}
-                          />
+                              text={Capital({ text: value.name })}
+                              length={20}
+                            />
                         </Text>
-                        <Text
-                          style={{
-                            fontFamily: "Lato-Regular",
-                            fontSize: 14,
-                            marginBottom: 2,
-                            color: "#3E3E3E",
-                          }}
-                        >
-                          {rupiah(value.count_destination)} Destination
+                        <Text type="" size="label" style={{}}>
+                            {rupiah(value.count_destination)} {t("destination")}
                         </Text>
-                        <Text
-                          style={{
-                            fontFamily: "Lato-Regular",
-                            color: "#3E3E3E",
-                            marginBottom: 2,
-                            fontSize: 14,
-                          }}
-                        >
-                          {rupiah(value.count_plan_tour)} Trip
+                        <Text type="" size="label" style={{}}>
+                             {rupiah(value.count_plan_tour)} {t("trip")}
                         </Text>
+
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -293,6 +274,7 @@ export default function AllDestination(props) {
           sendBack={(e) => setSearch(e)}
         />
       ) : null}
+      
       <FlatList
         contentContainerStyle={{
           marginTop: 5,
@@ -322,7 +304,7 @@ const styles = StyleSheet.create({
   Image: {
     resizeMode: "cover",
     height: Dimensions.get("window").width * 0.47 - 16,
-
+    borderRadius: 5,
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
     overflow: "hidden",

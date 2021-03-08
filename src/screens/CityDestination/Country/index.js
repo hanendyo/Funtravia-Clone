@@ -309,7 +309,7 @@ export default function Country(props) {
           >
             <Tax width={40} height={40} />
             <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
-              {t("Whentogo")}
+              {t("When to go")}
             </Text>
           </Ripple>
           <Ripple
@@ -327,7 +327,7 @@ export default function Country(props) {
           >
             <Tax width={40} height={40} />
             <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
-              {t("Whentogo")}
+              {t("Local food")}
             </Text>
           </Ripple>
           <Ripple
@@ -512,7 +512,7 @@ export default function Country(props) {
               <Capital text={render.name} />
               {t("atGlance")}
             </Text>
-            <Text size="description">Good destination for your trip</Text>
+            {/* <Text size="description">Good destination for your trip</Text> */}
             <View
               style={{
                 marginTop: 10,
@@ -612,10 +612,10 @@ export default function Country(props) {
                 width: "100%",
               }}
             >
-              <Text size="label" type="bold" style={{}}>
-                {t("TravelJurnal")}
+              <Text size="label" type="bold" style={{}}>Travel Journal
+                {/* {t("TravelJurnal")} */}
               </Text>
-              <Text size="description">Good destination for your trip</Text>
+              <Text size="description">Traveller Adventures, Stories, Memories and Discovery</Text>
               <View
                 style={{
                   marginTop: 10,
@@ -769,7 +769,7 @@ export default function Country(props) {
                     textAlign: "justify",
                   }}
                 >
-                  Bali is an Indonesian island known
+                  {t("Goodplacegoodtrip")}
                 </Text>
                 <View
                   style={{
@@ -968,7 +968,7 @@ export default function Country(props) {
             >
               <View>
                 <Text type="bold" size="label" style={{}}>
-                  {render.name} {t("unique facts")}
+                  {render.name} {t("Unique Facts")}
                 </Text>
                 <Text
                   size="description"
@@ -976,7 +976,7 @@ export default function Country(props) {
                     textAlign: "justify",
                   }}
                 >
-                  Indonesian island known
+                  {t("Explorefindout")}
                 </Text>
                 <View
                   style={{
@@ -1050,7 +1050,7 @@ export default function Country(props) {
             <Text size="label" type="bold" style={{}}>
               {t("Essentials")}
             </Text>
-            <Text size="description">Good destination for your trip</Text>
+            <Text size="description"> {t("infoHelpTrip")} </Text>
             <View
               style={{
                 marginTop: 10,
