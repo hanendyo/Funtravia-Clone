@@ -148,7 +148,7 @@ export default function Home(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
+      <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[1]}
