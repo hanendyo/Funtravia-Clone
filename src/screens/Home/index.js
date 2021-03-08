@@ -59,7 +59,9 @@ export default function Home(props) {
   };
 
   const searchPage = () => {
-    props.navigation.navigate("SearchPg");
+    props.navigation.navigate("SearchPg", {
+      token: token,
+    });
   };
 
   useEffect(() => {
