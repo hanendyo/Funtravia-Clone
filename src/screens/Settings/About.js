@@ -25,7 +25,7 @@ export default function About(props) {
     title: "",
     // headerTransparent: true,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: "About Funtravia",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

@@ -20,7 +20,7 @@
   "electricity": "Supply Listrik",
   "climate": "Cuaca",
   "forUpToDate": "Untuk Informasi Terbaru",
-  "sign in": "Masuk",
+  "signin": "Masuk",
   "create your account": "Create Your Account",
   "forgotYourPass": "Forgot Your Password?",
   "enterEmailPassword": "Enter Your Email To Reset Your Password",
@@ -478,6 +478,6 @@
   "SetPassword": "Atur kata sandi",
   "WordChangeEmail": "Harap atur kata sandi ke akun Anda sebelum Anda mengubah email.",
   "monthAgo": "bulan yang lalu",
-  "adddeswishlist" : "Add"
-  
+  "adddeswishlist": "Add",
+  "RequiredLogin": "email dan password wajib di isi"
 }

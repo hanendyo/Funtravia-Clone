@@ -19,7 +19,7 @@
   "electricity": "Electricity Supply",
   "climate": "Climate",
   "forUpToDate": "For up-to-date information",
-  "sign in": "Sign in",
+  "signin": "Sign in",
   "create your account": "Create Your Account",
   "forgotYourPass": "Forgot Your Password?",
   "enterEmailPassword": "Enter Your Email To Reset Your Password",
@@ -476,5 +476,6 @@
   "SetPassword": "Set Password",
   "WordChangeEmail": "Please set password to your account before you change email.",
   "monthAgo": "month ago",
-  "adddeswishlist" : "Add"
+  "adddeswishlist": "Add",
+  "RequiredLogin": "email and password is required"
 }
