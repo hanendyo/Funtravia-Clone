@@ -16,6 +16,7 @@ import { gql } from "apollo-boost";
 import { Peringatan } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
+import { Arrowbackblack } from "../../../assets/svg";
 
 const CONFIRM = gql`
   mutation($email: String!, $otp: Int!) {
@@ -34,6 +35,22 @@ export default function OtpPassword(props) {
     headerShown: true,
     headerMode: "screen",
     headerTransparent: true,
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+          // borderWidth: 1,
+          marginLeft: 15,
+        }}
+      >
+        <Arrowbackblack height={20} width={20}></Arrowbackblack>
+      </Button>
+    ),
   };
   useEffect(() => {
     props.navigation.setOptions(NavigationComponent);
@@ -196,7 +213,7 @@ export default function OtpPassword(props) {
             }}
           >
             <Text size="h5" type="bold">
-              Please verify your account
+              {t("enterVerificationCode")}
             </Text>
           </View>
           <View
@@ -214,7 +231,7 @@ export default function OtpPassword(props) {
               type="regular"
               size="description"
             >
-              {t("weJustSend")}
+              {t("weJustSendRegister")}
             </Text>
           </View>
           <View
@@ -460,14 +477,35 @@ export default function OtpPassword(props) {
             />
           </View>
 
-          <View style={{ marginTop: 20, flexDirection: "column" }}>
+          <View style={{ flexDirection: "column" }}>
+            <Text size="description" type="regular">
+              {t("didntReceive")}
+            </Text>
             <TouchableOpacity
               onPress={() => resendOTP()}
               disabled={Timer === 0 ? false : true}
             >
-              <Text style={styles.specialTextButton}>
-                {`${t("resend")} ${Timer > 0 ? Timer : ""}`}
-              </Text>
+              {Timer ? (
+                <View
+                  style={{ flexDirection: "row", justifyContent: "center" }}
+                >
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ textAlign: "center", color: "#209FAE" }}
+                  >
+                    {t("resend") + " " + "(" + Timer + ")"}
+                  </Text>
+                </View>
+              ) : (
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ textAlign: "center", color: "#209FAE" }}
+                >
+                  {t("resend")}
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
           {/* </View> */}

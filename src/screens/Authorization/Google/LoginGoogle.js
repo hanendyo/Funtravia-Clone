@@ -16,7 +16,10 @@ import { useMutation } from "@apollo/react-hooks";
 import GoogleGraph from "../../../graphQL/Mutation/Login/Google";
 import { useTranslation } from "react-i18next";
 import { Text, CustomImage, Peringatan, Errors } from "../../../component";
-import { GoogleSignin } from "@react-native-community/google-signin";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-community/google-signin";
 
 export default function LoginGoogle({ navigation }) {
   const { t, i18n } = useTranslation();
@@ -25,71 +28,91 @@ export default function LoginGoogle({ navigation }) {
   const [mutation, { loading, data, error }] = useMutation(GoogleGraph);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   const signInWithGoogle = async () => {
-    await GoogleSignin.configure({
-      iosClientId:
-        "292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com",
-      offlineAccess: false,
-    });
-    let data = await GoogleSignin.getCurrentUser();
-    if (data) {
-      await GoogleSignin.revokeAccess();
-    }
-    await GoogleSignin.hasPlayServices();
-    await GoogleSignin.signIn();
-    const result = await GoogleSignin.getTokens();
-    let response;
-    let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
-    if (result) {
-      response = await mutation({
-        variables: {
-          token: result.accessToken,
-          pushtoken: FCM_TOKEN,
-        },
+    try {
+      await GoogleSignin.configure({
+        iosClientId:
+          "292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com",
+        offlineAccess: false,
       });
-    }
-    console.log("respon :", response);
-    if (
-      response.data.login_google.code === 200 ||
-      response.data.login_google.code === "200"
-    ) {
-      await AsyncStorage.setItem(
-        "access_token",
-        response.data.login_google.access_token
-      );
-      await AsyncStorage.setItem(
-        "user",
-        JSON.stringify(response.data.login_google.user)
-      );
-      await AsyncStorage.setItem(
-        "setting",
-        JSON.stringify(response.data.login_google.data_setting)
-      );
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: "BottomStack",
-            routes: [{ name: "HomeScreen" }],
+      let data = await GoogleSignin.getCurrentUser();
+      if (data) {
+        await GoogleSignin.revokeAccess();
+      }
+      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signIn();
+      const result = await GoogleSignin.getTokens();
+      let response;
+      let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
+      if (result) {
+        response = await mutation({
+          variables: {
+            token: result.accessToken,
+            pushtoken: FCM_TOKEN,
           },
-        ],
-      });
-    } else if (
-      response.data.login_google.code === 400 ||
-      response.data.login_google.code === "400"
-    ) {
-      // await GoogleSignin.revokeAccess();
-      setModalError(true);
-      setMessage(response.data.login_google.message);
-      setTimeout(() => {
-        navigation.navigate("LoginScreen");
-      }, 5000);
-    } else {
-      // await GoogleSignin.revokeAccess();
-      setModalError(true);
-      setMessage("Login With Facebook");
-      setTimeout(() => {
-        navigation.navigate("LoginScreen");
-      }, 5000);
+        });
+      }
+      if (
+        response.data.login_google.code === 200 ||
+        response.data.login_google.code === "200"
+      ) {
+        await AsyncStorage.setItem(
+          "access_token",
+          response.data.login_google.access_token
+        );
+        await AsyncStorage.setItem(
+          "user",
+          JSON.stringify(response.data.login_google.user)
+        );
+        await AsyncStorage.setItem(
+          "setting",
+          JSON.stringify(response.data.login_google.data_setting)
+        );
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "BottomStack",
+              routes: [{ name: "HomeScreen" }],
+            },
+          ],
+        });
+      } else if (
+        response.data.login_google.code === 400 ||
+        response.data.login_google.code === "400"
+      ) {
+        // await GoogleSignin.revokeAccess();
+        setModalError(true);
+        setMessage(response.data.login_google.message);
+        setTimeout(() => {
+          navigation.navigate("LoginScreen");
+        }, 5000);
+      } else {
+        // await GoogleSignin.revokeAccess();
+        setModalError(true);
+        setMessage("Login With Google is Failed");
+        setTimeout(() => {
+          navigation.navigate("LoginScreen");
+        }, 5000);
+      }
+    } catch {
+      if (error?.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log("error");
+        setModalError(true);
+        setMessage("Google sign in has been canceled");
+        return setTimeout(() => {
+          navigation.navigate("LoginScreen");
+        }, 3000);
+      } else if (error?.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error?.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        setModalError(true);
+        setMessage("Login With Google is Failed");
+        setTimeout(() => {
+          navigation.navigate("LoginScreen");
+        }, 10000);
+      }
     }
   };
   const NavigationComponent = {
