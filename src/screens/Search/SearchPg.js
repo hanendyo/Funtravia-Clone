@@ -48,7 +48,11 @@ import {
   Calendargrey,
   Xhitam,
 } from "../../assets/svg";
-import { search_button, back_arrow_white } from "../../assets/png";
+import {
+  search_button,
+  back_arrow_white,
+  DefaultProfile,
+} from "../../assets/png";
 import { gql } from "apollo-boost";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
 import FriendList from "../../component/src/FriendList";
@@ -81,7 +85,7 @@ const dataUser = [
     picture: null,
   },
 ];
-export default function SearchPg(props, { navigation, routes }) {
+export default function SearchPg(props, { navigation, route }) {
   const { t, i18n } = useTranslation();
   const [active, setActive] = useState("personal");
   const [active_src, setActiveSrc] = useState("destination");
@@ -112,7 +116,7 @@ export default function SearchPg(props, { navigation, routes }) {
     headerRight: null,
   };
 
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
   let [recent, setRecent] = useState([]);
   const default_image =
     "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
@@ -172,6 +176,7 @@ export default function SearchPg(props, { navigation, routes }) {
 
   useEffect(() => {
     props.navigation.addListener("focus", () => {
+      refetchRekomendasi();
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
     });
 
@@ -581,6 +586,7 @@ export default function SearchPg(props, { navigation, routes }) {
           // Alert.alert('Succes');
         }
       } catch (error) {
+        refetchSrcuser();
         Alert.alert("" + error);
         user_search[index].status = "1";
       }
@@ -614,8 +620,6 @@ export default function SearchPg(props, { navigation, routes }) {
           </Text>
         </View>;
 
-        console.log("for Follow:" + response.data.follow_user.message);
-
         if (response.data) {
           if (
             response.data.follow_user.code === 200 ||
@@ -626,6 +630,7 @@ export default function SearchPg(props, { navigation, routes }) {
           }
         }
       } catch (error) {
+        refetchSrcuser();
         user_search[index].status = "0";
         Alert.alert("" + error);
       }
@@ -634,233 +639,99 @@ export default function SearchPg(props, { navigation, routes }) {
     }
   };
 
-  const RekomendasiUser = (token) => {
-    console.log(token.token);
-    const {
-      loading: loadingRekomendasi,
-      data: dataRekomendasi,
-      error: errorRekomendasi,
-      refetch: refetchRekomendasi,
-      networkStatus: networkStatusRekomendasi,
-    } = useQuery(RekomendasiPeople, {
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token.token}`,
-        },
+  const {
+    loading: loadingRekomendasi,
+    data: dataRekomendasi,
+    error: errorRekomendasi,
+    refetch: refetchRekomendasi,
+    networkStatus: networkStatusRekomendasi,
+  } = useQuery(RekomendasiPeople, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      notifyOnNetworkStatusChange: true,
-    });
+    },
+    notifyOnNetworkStatusChange: true,
+  });
 
-    if (loadingRekomendasi)
-      return (
-        <ActivityIndicator
-          animating={loadingRekomendasi}
-          size="large"
-          color="#209fae"
-        />
-      );
-    let list_rekomendasi_user = [];
-    if (dataRekomendasi && dataRekomendasi.list_rekomendasi_user) {
-      list_rekomendasi_user = dataRekomendasi.list_rekomendasi_user;
-    }
-    console.log(list_rekomendasi_user);
-    const _unfollow_rekomendasi = async (id, index) => {
-      // console.log('get rekt' + typeof status);
-      if (token || token !== "") {
-        list_rekomendasi_user[index].status_following = false;
-        try {
-          let response = await UnfollowMutation({
-            variables: {
-              id: id,
-            },
-          });
-          if (loadUnfolMut) {
-            // Alert.alert('Loading!!');
-          }
-          if (errorUnfolMut) {
-            throw new Error("Error Input");
-          }
-
-          console.log("for Unfollow:" + response.data.unfollow_user.message);
-
-          if (response.data) {
-            if (
-              response.data.unfollow_user.code === 200 ||
-              response.data.unfollow_user.code === "200"
-            ) {
-            } else {
-              throw new Error(response.data.unfollow_user.message);
-            }
-
-            // Alert.alert('Succes');
-          }
-        } catch (error) {
-          Alert.alert("" + error);
-          list_rekomendasi_user[index].status_following = true;
+  let list_rekomendasi_user = [];
+  if (dataRekomendasi && dataRekomendasi.list_rekomendasi_user) {
+    list_rekomendasi_user = dataRekomendasi.list_rekomendasi_user;
+  }
+  console.log(list_rekomendasi_user);
+  const _unfollow_rekomendasi = async (id, index) => {
+    // console.log('get rekt' + typeof status);
+    if (token || token !== "") {
+      list_rekomendasi_user[index].status_following = false;
+      try {
+        let response = await UnfollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadUnfolMut) {
+          // Alert.alert('Loading!!');
         }
-      } else {
-        Alert.alert("Please Login");
-      }
-    };
+        if (errorUnfolMut) {
+          throw new Error("Error Input");
+        }
 
-    const _follow_rekomendasi = async (id, index) => {
-      if (token || token !== "") {
+        // console.log("for Unfollow:" + response.data.unfollow_user.message);
+
+        if (response.data) {
+          if (
+            response.data.unfollow_user.code !== 200 ||
+            response.data.unfollow_user.code !== "200"
+          ) {
+            list_rekomendasi_user[index].status_following = true;
+
+            throw new Error(response.data.unfollow_user.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        refetchRekomendasi();
         list_rekomendasi_user[index].status_following = true;
-        try {
-          let response = await FollowMutation({
-            variables: {
-              id: id,
-            },
-          });
-          if (loadFollowMut) {
-            console.log("Loading!!");
-          }
-          <View
-            style={{
-              flexDirection: "row",
-              // width: viewWidth + 10,
-              justifyContent: "space-between",
-              paddingTop: 10,
-            }}
-          >
-            <Text type="bold" style={{ textAlign: "left" }}>
-              {t("people")}
-            </Text>
-          </View>;
-
-          console.log("for Follow:", response);
-
-          if (response.data) {
-            if (
-              response.data.follow_user.code === 200 ||
-              response.data.follow_user.code === "200"
-            ) {
-            } else {
-              throw new Error(response.data.follow_user.message);
-            }
-          }
-        } catch (error) {
-          list_rekomendasi_user[index].status_following = false;
-          Alert.alert("" + error);
-        }
-      } else {
-        Alert.alert("Please Login");
+        Alert.alert("" + error);
       }
-    };
-    return (
-      <View>
-        <View
-          style={{
-            flexDirection: "row",
-            // width: viewWidth + 10,
-            justifyContent: "space-between",
-            paddingTop: 10,
-          }}
-        >
-          <Text type="bold" style={{ textAlign: "left" }}>
-            {t("people")}
-          </Text>
-        </View>
-        <FlatList
-          contentContainerStyle={{
-            marginTop: 5,
-            justifyContent: "space-evenly",
-            paddingEnd: 20,
-            paddingHorizontal: 10,
-          }}
-          data={list_rekomendasi_user}
-          renderItem={({ item, index }) => (
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                alignContent: "center",
-                // paddingRight: 10,
-                // paddingLeft: 20,
-                paddingVertical: 10,
-              }}
-            >
-              <TouchableOpacity
-                onPress={
-                  () => {
-                    BackHandler.removeEventListener(
-                      "hardwareBackPress",
-                      onBackPress
-                    );
-                    props.navigation.push("ProfileStack", {
-                      screen: "otherprofile",
-                      params: {
-                        idUser: item.id,
-                        token: token,
-                      },
-                    });
-                  }
-                  // props.navigation.push("otherprofile", { idUser: item.id })
-                }
-                style={{ flexDirection: "row" }}
-              >
-                <Image
-                  source={item.picture ? { uri: item.picture } : default_image}
-                  style={{
-                    resizeMode: "cover",
-                    height: 50,
-                    width: 50,
-                    borderRadius: 25,
-                  }}
-                />
-                <View style={{ marginLeft: 20, justifyContent: "center" }}>
-                  {item.last_name !== null ? (
-                    <Text size="small" type="regular">
-                      {item.first_name + "" + item.last_name}
-                    </Text>
-                  ) : (
-                    <Text size="small" type="regular">
-                      {item.first_name}
-                    </Text>
-                  )}
-                  <Text style={{ fontSize: 10, fontFamily: "lato-light" }}>
-                    {`@${item.username}`}
-                  </Text>
-                  {/* <Text style={{ fontSize: 10, fontFamily: 'lato-light' }}>
-							{item.bio ? item.bio : 'Funtravia'}
-						</Text> */}
-                </View>
-              </TouchableOpacity>
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
 
-              <View style={{}}>
-                {item.status_following === false ? (
-                  <Button
-                    size="small"
-                    type="circle"
-                    variant="bordered"
-                    style={{ width: 100 }}
-                    text={t("follow")}
-                    onPress={() => {
-                      _follow_rekomendasi(item.id, index);
-                    }}
-                  ></Button>
-                ) : (
-                  <Button
-                    size="small"
-                    type="circle"
-                    style={{ width: 100 }}
-                    onPress={() => {
-                      _unfollow_rekomendasi(item.id, index);
-                    }}
-                    text={t("following")}
-                  ></Button>
-                )}
-              </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    );
+  const _follow_rekomendasi = async (id, index) => {
+    if (token || token !== "") {
+      list_rekomendasi_user[index].status_following = true;
+      try {
+        let response = await FollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadFollowMut) {
+          console.log("Loading!!");
+        }
+
+        if (response.data) {
+          if (
+            response.data.follow_user.code !== 200 ||
+            response.data.follow_user.code !== "200"
+          ) {
+            list_rekomendasi_user[index].status_following = false;
+            throw new Error(response.data.follow_user.message);
+          }
+        }
+      } catch (error) {
+        refetchRekomendasi();
+
+        list_rekomendasi_user[index].status_following = false;
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
   };
 
   return (
@@ -1072,7 +943,7 @@ export default function SearchPg(props, { navigation, routes }) {
                     >
                       <Image
                         source={
-                          item.picture ? { uri: item.picture } : default_image
+                          item.picture ? { uri: item.picture } : DefaultProfile
                         }
                         style={{
                           resizeMode: "cover",
@@ -1811,7 +1682,133 @@ export default function SearchPg(props, { navigation, routes }) {
             </Text>
           </View>
           <FriendList props={props} datanya={dataUser} token={token} /> */}
-          <RekomendasiUser token={token} />
+          {/* <RekomendasiUser token={token} /> */}
+
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                // width: viewWidth + 10,
+                justifyContent: "space-between",
+                paddingTop: 10,
+              }}
+            >
+              <Text type="bold" style={{ textAlign: "left" }}>
+                {t("people")}
+              </Text>
+            </View>
+            {loadingRekomendasi ? (
+              <ActivityIndicator
+                animating={loadingRekomendasi}
+                size="large"
+                color="#209fae"
+              />
+            ) : (
+              <FlatList
+                contentContainerStyle={{
+                  marginTop: 5,
+                  justifyContent: "space-evenly",
+                  paddingEnd: 20,
+                  paddingHorizontal: 10,
+                }}
+                data={list_rekomendasi_user}
+                renderItem={({ item, index }) => (
+                  <View
+                    style={{
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      alignContent: "center",
+                      // paddingRight: 10,
+                      // paddingLeft: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={
+                        () => {
+                          BackHandler.removeEventListener(
+                            "hardwareBackPress",
+                            onBackPress
+                          );
+                          props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: item.id,
+                              token: token,
+                            },
+                          });
+                        }
+                        // props.navigation.push("otherprofile", { idUser: item.id })
+                      }
+                      style={{ flexDirection: "row" }}
+                    >
+                      <Image
+                        source={
+                          item.picture ? { uri: item.picture } : DefaultProfile
+                        }
+                        style={{
+                          resizeMode: "cover",
+                          height: 50,
+                          width: 50,
+                          borderRadius: 25,
+                        }}
+                      />
+                      <View
+                        style={{ marginLeft: 20, justifyContent: "center" }}
+                      >
+                        {item.last_name !== null ? (
+                          <Text size="small" type="regular">
+                            {item.first_name + "" + item.last_name}
+                          </Text>
+                        ) : (
+                          <Text size="small" type="regular">
+                            {item.first_name}
+                          </Text>
+                        )}
+                        <Text
+                          style={{ fontSize: 10, fontFamily: "lato-light" }}
+                        >
+                          {`@${item.username}`}
+                        </Text>
+                        {/* <Text style={{ fontSize: 10, fontFamily: 'lato-light' }}>
+							{item.bio ? item.bio : 'Funtravia'}
+						</Text> */}
+                      </View>
+                    </TouchableOpacity>
+
+                    <View style={{}}>
+                      {item.status_following === false ? (
+                        <Button
+                          size="small"
+                          type="circle"
+                          variant="bordered"
+                          style={{ width: 100 }}
+                          text={t("follow")}
+                          onPress={() => {
+                            _follow_rekomendasi(item.id, index);
+                          }}
+                        ></Button>
+                      ) : (
+                        <Button
+                          size="small"
+                          type="circle"
+                          style={{ width: 100 }}
+                          onPress={() => {
+                            _unfollow_rekomendasi(item.id, index);
+                          }}
+                          text={t("following")}
+                        ></Button>
+                      )}
+                    </View>
+                  </View>
+                )}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            )}
+          </View>
         </View>
       )}
     </SafeAreaView>
