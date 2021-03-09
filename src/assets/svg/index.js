@@ -183,6 +183,7 @@ import DefaultProfile from "./files/default_profile.svg";
 import TravelJournal from "./files/travel_goal.svg";
 import DestinationHome from "./files/destination_home.svg";
 import EventHome from "./files/event_home.svg";
+import Showmore from "./files/Showmore.svg";
 
 export {
   LikeWhite,
@@ -370,4 +371,5 @@ export {
   TravelJournal,
   DestinationHome,
   EventHome,
+  Showmore,
 };
