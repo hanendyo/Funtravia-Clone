@@ -10,6 +10,9 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,6 +31,7 @@ import {
   Tax,
   PinWhite,
   LikeEmpty,
+  Showmore,
 } from "../../../assets/svg";
 import {
   default_image,
@@ -37,7 +41,7 @@ import {
 import { Input } from "native-base";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
 import LinearGradient from "react-native-linear-gradient";
-import { Capital, Truncate } from "../../../component";
+import { Capital, StatusBar as Sb, Truncate } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import ImageSlider from "react-native-image-slider";
 const screenHeight = Dimensions.get("window").height;
@@ -45,12 +49,22 @@ import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 import Article from "./Article";
 import { FunIcon, Loading } from "../../../component";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 import Sidebar from "../../../component/src/Sidebar";
+import { Tabs } from "native-base";
+import { ScrollableTab } from "native-base";
+import { Tab } from "native-base";
 
-let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
+const SafeStatusBar = Platform.select({
+  ios: 44,
+  android: StatusBar.currentHeight,
+});
+
+let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3  ;
 let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+
 
 export default function CityDetail(props) {
   const { t, i18n } = useTranslation();
@@ -77,7 +91,7 @@ export default function CityDetail(props) {
   });
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT] ,
     extrapolate: "clamp",
   });
   const [getPackageDetail, { loading, data, error }] = useLazyQuery(
@@ -110,31 +124,31 @@ export default function CityDetail(props) {
     "Nov",
     "Des",
   ];
-  const RendertabGlace = ({ dataaktif, kiriman }) => {
-    if (dataaktif === "Map") {
-      return (
-        <Image
-          source={kiriman.map ? { uri: kiriman.map } : default_image}
-          style={{
-            width: "100%",
-            height: width * 0.7,
-            resizeMode: "center",
-          }}
-        ></Image>
-      );
-    } else {
-      return (
-        <Image
-          source={default_image}
-          style={{
-            width: "100%",
-            height: width * 0.7,
-            resizeMode: "center",
-          }}
-        ></Image>
-      );
-    }
-  };
+  // const RendertabGlace = ({ dataaktif, kiriman }) => {
+  //   if (dataaktif === "Map") {
+  //     return (
+  //       <Image
+  //         source={kiriman.map ? { uri: kiriman.map } : default_image}
+  //         style={{
+  //           width: "100%",
+  //           height: width * 0.7,
+  //           resizeMode: "center",
+  //         }}
+  //       ></Image>
+  //     );
+  //   } else {
+  //     return (
+  //       <Image
+  //         source={default_image}
+  //         style={{
+  //           width: "100%",
+  //           height: width * 0.7,
+  //           resizeMode: "center",
+  //         }}
+  //       ></Image>
+  //     );
+  //   }
+  // };
 
   const rendertabEssential = (dataaktif, kiriman) => {
     if (dataaktif === "Practical") {
@@ -320,7 +334,7 @@ export default function CityDetail(props) {
           >
             <Tax width={40} height={40} />
             <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
-              {t("Whentogo")}
+              {t("When to go")}
             </Text>
           </Ripple>
           <Ripple
@@ -338,7 +352,7 @@ export default function CityDetail(props) {
           >
             <Tax width={40} height={40} />
             <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
-              {t("LocalFood")}
+              {t("Local Food")}
             </Text>
           </Ripple>
           <Ripple
@@ -429,6 +443,10 @@ export default function CityDetail(props) {
               padding: 5,
             }}
           >
+            <View
+            style={{
+              height:60
+            }}>
             <FunIcon
               icon={item.icon ? item.icon : "w-fog"}
               height={50}
@@ -443,6 +461,7 @@ export default function CityDetail(props) {
             >
               {item.name}
             </Text>
+            </View>
           </Ripple>
         ): null;
       })
@@ -467,6 +486,10 @@ export default function CityDetail(props) {
               padding: 5,
             }}
           >
+          <View
+            style={{
+              height:80
+            }}>
             <FunIcon
               icon={item.icon ? item.icon : "w-fog"}
               height={50}
@@ -481,6 +504,7 @@ export default function CityDetail(props) {
             >
               {item.name}
             </Text>
+            </View>
           </Ripple>
         );
       })
@@ -565,29 +589,30 @@ export default function CityDetail(props) {
                   
                 <View style={{
                   width:"100%",
-                  marginTop:5,
+                  marginTop:10,
                   alignItems:"center",
                   alignContent:"center"
               }}>
                { tutup==true && render.destination_type.length > 7 ?  (
                 
-                <Button
+                <TouchableOpacity
                       onPress={() => {
                         setTutup(!tutup)
                       }}
+                      style={{flexDirection: "row",}}
+                    >
+                      <Text style={{color:"#209FAE"}} >Show More </Text>
+                      <Showmore height={12} width={12} style={{marginTop:3}}/></TouchableOpacity>
+                    ):
+                    null }
                       
-                      text={"Show More"}
-                      type="box"
-                      size="medium"
-                      variant="transparent"
-                     
-                    ></Button>):null } 
                     </View>
+                   
                 </View>
               </View>
             </View>
           ) : null}
-          {/* at Glance */}
+         {/* at Glance with Tabs */}
           <View
             style={{
               paddingVertical: 10,
@@ -596,101 +621,81 @@ export default function CityDetail(props) {
             }}
           >
             <Text size="label" type="bold" style={{}}>
-              <Capital text={render.name} />
-              {t("atGlance")}
+                <Capital text={render.name} />
+                {t("atGlance")}
             </Text>
             <Text size="description">Geography and religion information</Text>
             <View
-              style={{
-                marginTop: 10,
-                backgroundColor: "white",
-                width: "100%",
-                shadowColor: "#d3d3d3",
-                shadowOffset: { width: 2, height: 2 },
-                shadowOpacity: 1,
-                shadowRadius: 2,
-                elevation: 2,
-                borderRadius: 5,
-                padding: 20,
-              }}
+            style={{
+              marginTop: 10,
+              backgroundColor: "white",
+              width: "100%",
+              shadowColor: "#d3d3d3",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+              elevation:2,
+              borderRadius: 5,
+              padding: 20,
+            }}>
+            <Tabs
+              tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
+              tabContainerStyle={{ backgroundColor: "white", elevation:0 }}
+              // locked={false}
             >
-              <View style={{ flexDirection: "row", width: "100%" }}>
-                <Ripple
-                  onPress={() => {
-                    setActive("Map");
-                  }}
+              <Tab
+                heading={t("Map")}
+                tabStyle={{ backgroundColor: "white" , elevation:0}}
+                activeTabStyle={{ backgroundColor: "white" }}
+                textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE" }}
+              > 
+                 <Image
+                  source={render.map ? { uri: render.map } : default_image}
                   style={{
-                    width: "33.333%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active == "Map" ? 3 : 1,
-                    borderBottomColor: active == "Map" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
+                    width: "100%",
+                    height: width * 0.7,
+                    resizeMode: "center",
                   }}
-                >
-                  <Text
-                    size="description"
-                    type={active == "Map" ? "bold" : "regular"}
-                    style={{
-                      color: active == "Map" ? "#209FAE" : "#464646",
-                    }}
-                  >
-                    {t("Map")}
-                  </Text>
-                </Ripple>
-                <Ripple
-                  onPress={() => {
-                    setActive("climate");
-                  }}
+                ></Image>
+              </Tab>
+              <Tab
+								heading={t('Climate')}
+                tabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{ backgroundColor: "white" }}
+                textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE" }}
+                >  
+                <Image
+                  source={default_image}
                   style={{
-                    width: "33.333%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active == "climate" ? 3 : 1,
-                    borderBottomColor:
-                      active == "climate" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
+                    width: "100%",
+                    height: width * 0.7,
+                    resizeMode: "center",
                   }}
-                >
-                  <Text
-                    size="description"
-                    type={active == "climate" ? "bold" : "regular"}
-                    style={{
-                      color: active == "climate" ? "#209FAE" : "#464646",
-                    }}
-                  >
-                    {t("Climate")}
-                  </Text>
-                </Ripple>
-                <Ripple
-                  onPress={() => {
-                    setActive("Religion");
-                  }}
+                ></Image>
+               </Tab> 
+              <Tab
+								heading={t('Religion')}
+								tabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{ backgroundColor: "white" }}
+                textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE"
+								}}>
+                
+							  <Image
+                  source={default_image}
                   style={{
-                    width: "33.333%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active == "Religion" ? 3 : 1,
-                    borderBottomColor:
-                      active == "Religion" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
+                    width: "100%",
+                    height: width * 0.7,
+                    resizeMode: "center",
                   }}
-                >
-                  <Text
-                    size="description"
-                    type={active == "Religion" ? "bold" : "regular"}
-                    style={{
-                      color: active == "Religion" ? "#209FAE" : "#464646",
-                    }}
-                  >
-                    {t("Religion")}
-                  </Text>
-                </Ripple>
-              </View>
-
-              <RendertabGlace dataaktif={active} kiriman={render} />
+                ></Image>
+							</Tab>
+              </Tabs>
             </View>
           </View>
+          
           {/* Travel Jurnal */}
           {render.journal && render.journal.length > 0 ? (
             <View
@@ -838,7 +843,8 @@ export default function CityDetail(props) {
               </View>
             </View>
           ) : null}
-          {/* Essential */}
+          
+          {/* Essential with Tabs */}
           <View
             style={{
               paddingVertical: 10,
@@ -854,69 +860,299 @@ export default function CityDetail(props) {
               style={{
                 marginTop: 10,
                 backgroundColor: "white",
-                // height: 100,
                 width: "100%",
                 shadowColor: "#d3d3d3",
                 shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
                 shadowRadius: 2,
-                elevation: 2,
+                elevation:2,
                 borderRadius: 5,
+                padding: 20,
               }}
             >
-              <View style={{ flexDirection: "row", width: "100%" }}>
-                <Ripple
-                  onPress={() => {
-                    setActived("About");
-                  }}
-                  style={{
-                    width: "50%",
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: actived == "About" ? 3 : 1,
-                    borderBottomColor:
-                      actived == "About" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type={actived == "About" ? "bold" : "regular"}
+            <Tabs
+              tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
+              tabContainerStyle={{ backgroundColor: "white", elevation:0 }}
+              // locked={false}
+            >
+              <Tab
+                heading={t("About")}
+                tabStyle={{ backgroundColor: "white" , elevation:0}}
+                activeTabStyle={{ backgroundColor: "white" }}
+                textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE" }}
+              > 
+                  <View
                     style={{
-                      color: actived == "About" ? "#209FAE" : "#464646",
+                      width: "100%",
+                      paddingVertical: 20,
+                      flexWrap: "wrap",
+                      flexDirection: "row",
                     }}
                   >
-                    {t("About")}
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("Abouts", {
+                          active: "History",
+                        });
+                      }}
+                      style={{
+                        width: "33.333%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        padding: 5,
+                      }}
+                    >
+                      <Tax width={40} height={40} />
+                      <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                        {t("History")}
+                      </Text>
+                    </Ripple>
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("Abouts", {
+                          active: "whentogo",
+                        });
+                      }}
+                      style={{
+                        width: "33.333%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        padding: 5,
+                      }}
+                    >
+                      <Tax width={40} height={40} />
+                      <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                        {t("When to go")}
+                      </Text>
+                    </Ripple>
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("Abouts", {
+                          active: "localfood",
+                        });
+                      }}
+                      style={{
+                        width: "33.333%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        padding: 5,
+                      }}
+                    >
+                      <Tax width={40} height={40} />
+                      <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                        {t("Local Food")}
+                      </Text>
+                    </Ripple>
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("Abouts", {
+                          active: "art",
+                        });
+                      }}
+                      style={{
+                        width: "33.333%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        padding: 5,
+                      }}
+                    >
+                      <Tax width={40} height={40} />
+                      <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                        {t("Art & Culture")}
+                      </Text>
+                    </Ripple>
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("Abouts", {
+                          active: "souvenir",
+                        });
+                      }}
+                      style={{
+                        width: "33.333%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        padding: 5,
+                      }}
+                    >
+                      <Tax width={40} height={40} />
+                      <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                        {t("Souvenir")}
+                      </Text>
+                    </Ripple>
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("Abouts", {
+                          active: "telecomunication",
+                        });
+                      }}
+                      style={{
+                        width: "33.333%",
+                        alignContent: "center",
+                        alignItems: "center",
+                        padding: 5,
+                      }}
+                    >
+                      <Tax width={40} height={40} />
+                      <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                        {t("Telecomunication")}
+                      </Text>
+                    </Ripple>
+                    <Ripple
+                    // onPress={() => {
+                    //   props.navigation.navigate("Abouts");
+                    // }}
+                    style={{
+                      width: "33.333%",
+                      alignContent: "center",
+                      alignItems: "center",
+                      padding: 5,
+                    }}
+                  >
+                    <Time width={40} height={40} />
+                    <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                      {t("Time Zone")}
+                    </Text>
+                  </Ripple>
+                  <Ripple
+                    // onPress={() => {
+                    //   props.navigation.navigate("Abouts");
+                    // }}
+                    style={{
+                      width: "33.333%",
+                      alignContent: "center",
+                      alignItems: "center",
+                      padding: 5,
+                    }}
+                  >
+                    <Tax width={40} height={40} />
+                    <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                      {t("Taxes & Tipping")}
+                    </Text>
+                  </Ripple>
+                  </View>
+     
+              </Tab>
+              <Tab
+								heading={t('Practical')}
+                tabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{ backgroundColor: "white" }}
+                textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
+                activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE" }}
+                >  
+                 <View
+                style={{
+                  width: "100%",
+                  paddingVertical: 20,
+                  flexWrap: "wrap",
+                  flexDirection: "row",
+                }}
+              >
+                <Ripple
+                  onPress={() => {
+                    props.navigation.navigate("PracticalInformation");
+                  }}
+                  style={{
+                    width: "33.333%",
+                    alignContent: "center",
+                    alignItems: "center",
+                    padding: 5,
+                  }}
+                >
+                  <Electric width={40} height={40} />
+                  <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                    {t("Elecricity")}
                   </Text>
                 </Ripple>
                 <Ripple
                   onPress={() => {
-                    setActived("Practical");
+                    props.navigation.navigate("PracticalInformation");
                   }}
                   style={{
-                    width: "50%",
+                    width: "33.333%",
                     alignContent: "center",
                     alignItems: "center",
-                    borderBottomWidth: actived == "Practical" ? 3 : 1,
-                    borderBottomColor:
-                      actived == "Practical" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
+                    padding: 5,
                   }}
                 >
-                  <Text
-                    size="description"
-                    type={actived == "Practical" ? "bold" : "regular"}
-                    style={{
-                      color: actived == "Practical" ? "#209FAE" : "#464646",
-                    }}
-                  >
-                    {t("Practical Information")}
+                  <Emergency width={40} height={40} />
+                  <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                    {t("Emergency no")}
                   </Text>
                 </Ripple>
-              </View>
-              {actived ? rendertabEssential(actived, render) : null}
+                <Ripple
+                  onPress={() => {
+                    props.navigation.navigate("PracticalInformation");
+                  }}
+                  style={{
+                    width: "33.333%",
+                    alignContent: "center",
+                    alignItems: "center",
+                    padding: 5,
+                  }}
+                >
+                  <Health width={40} height={40} />
+                  <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                    {t("Health")}
+                  </Text>
+                </Ripple>
+                <Ripple
+                  onPress={() => {
+                    props.navigation.navigate("PracticalInformation");
+                  }}
+                  style={{
+                    width: "33.333%",
+                    alignContent: "center",
+                    alignItems: "center",
+                    padding: 5,
+                  }}
+                >
+                  <Lang width={40} height={40} />
+                  <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                    {t("Language")}
+                  </Text>
+               </Ripple>
+                  <Ripple
+                    onPress={() => {
+                      props.navigation.navigate("PracticalInformation");
+                    }}
+                    style={{
+                      width: "33.333%",
+                      alignContent: "center",
+                      alignItems: "center",
+                      padding: 5,
+                    }}
+                  >
+                    <Money width={40} height={40} />
+                    <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                      {t("Money")}
+                    </Text>
+                  </Ripple>
+                  <Ripple
+                    onPress={() => {
+                      props.navigation.navigate("PracticalInformation");
+                    }}
+                    style={{
+                      width: "33.333%",
+                      alignContent: "center",
+                      alignItems: "center",
+                      padding: 5,
+                    }}
+                  >
+                    <Passport width={40} height={40} />
+                    <Text size="small" style={{ textAlign: "center", marginTop: 3 }}>
+                      {t("Visa & Passport")}
+                    </Text>
+                  </Ripple>
+                  
+                </View>
+      
+               </Tab> 
+              </Tabs>
+            
             </View>
           </View>
+          
           {/* Event */}
           <View
             style={{
@@ -943,7 +1179,11 @@ export default function CityDetail(props) {
                     textAlign: "justify",
                   }}
                 >
-                  Bali is an Indonesian island known
+                   <Truncate
+                      text={"Explore The Festival or Event That Being Held In This City"}
+                      length={50}
+                    ></Truncate>
+                 
                 </Text>
                 <Ripple
                   onPress={() => {
@@ -1060,7 +1300,9 @@ export default function CityDetail(props) {
                         alignItems: "center",
                         flexDirection: "row",
                         justifyContent: "center",
-                      }}
+                      }} // onPress={() => {
+                        //   props.navigation.navigate("Abouts");
+                        // }}
                     >
                       {(dataevent.event.length > 0
                         ? dataevent.event
@@ -1122,14 +1364,14 @@ export default function CityDetail(props) {
                                   ? "#DAF0F2"
                                   : null,
                               // borderWidth: 1,
-                              width: "25%",
+                              width: "33.3%",
                               // justifyContent: '',
                               alignContent: "center",
                               alignItems: "center",
                               padding: 7,
                               borderTopWidth: 0.5,
                               borderLeftWidth:
-                                index !== 0 && index !== 4 && index !== 8
+                                index !== 0 && index !== 3 && index !== 6 && index !== 9 
                                   ? 0.5
                                   : 0,
                               // borderRightWidth: 0.5,
@@ -1157,13 +1399,13 @@ export default function CityDetail(props) {
                         return (
                           <Ripple
                             style={{
-                              width: "25%",
+                              width: "33.3%",
                               alignContent: "center",
                               alignItems: "center",
                               padding: 7,
                               borderTopWidth: 0.5,
                               borderLeftWidth:
-                                index !== 0 && index !== 4 && index !== 8
+                                index !== 0 && index !== 3 && index !== 7
                                   ? 0.5
                                   : 0,
                               borderColor: "#209fae",
@@ -1462,6 +1704,9 @@ export default function CityDetail(props) {
       : null;
   };
 
+  
+
+
   useEffect(() => {
     // props.navigation.setOptions(HeaderComponent);
     refresh();
@@ -1483,15 +1728,14 @@ export default function CityDetail(props) {
   }
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "white",
       }}
     >
-      {/* <Loading show={loadings} /> */}
-      {/* <NavigationEvents onDidFocus={() => refresh()} /> */}
-      <View style={{ height: 55 }}></View>
+       {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
+      <View style={{ height: 55 + SafeStatusBar}}></View>
       {data && data.CitiesInformation ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -1506,7 +1750,7 @@ export default function CityDetail(props) {
         >
           <View
             style={{
-              height: HEADER_MAX_HEIGHT - 55,
+              height: HEADER_MAX_HEIGHT - 55 ,
               backgroundColor: "#209fae",
             }}
           ></View>
@@ -1773,7 +2017,7 @@ export default function CityDetail(props) {
           </Animated.View>
         </Animated.View>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -1857,7 +2101,7 @@ const styles = StyleSheet.create({
   },
   header: {
     position: "absolute",
-    top: 0,
+    top: SafeStatusBar,
     left: 0,
     right: 0,
     backgroundColor: "#209fae",
@@ -1884,7 +2128,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     width: null,
-    height: HEADER_MAX_HEIGHT + 55,
+    height: HEADER_MAX_HEIGHT + 55  ,
     resizeMode: "cover",
   },
 });
