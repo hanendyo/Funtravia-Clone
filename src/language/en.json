@@ -25,7 +25,7 @@
   "enterEmailPassword": "Enter Your Email To Reset Your Password",
   "verifyAccount": "Please Verify Your Account",
   "weJustSend": "We just sent the verification code to reset your password to",
-  "didntReceive": "Didn't receive the OTP Number?",
+  "didntReceive": "Didn't receive OTP Number?",
   "resend": "Resend Code",
   "resetPassword": "Reset Password",
   "pleaseEnter": "Please enter your new password",
@@ -476,9 +476,13 @@
   "SetPassword": "Set Password",
   "WordChangeEmail": "Please set password to your account before you change email.",
   "monthAgo": "month ago",
-  "adddeswishlist" : "Add",
-  "Goodplacegoodtrip" :"Good place good trip",
+  "adddeswishlist": "Add",
+  "Goodplacegoodtrip": "Good place good trip",
   "Explorefindout": "Explore and find out",
   "infoHelpTrip": "This information might help for your trip",
-  "RequiredLogin": "email and password is required"
+  "RequiredLogin": "email and password is required",
+  "AccountRegister": "Account Already Registered",
+  "RegisterGoogleFailed": "Registrasi With Google is Failed",
+  "weJustSendRegister": "We just sent the verification code to verify your account to",
+  "PasswordReset": "Password Reset"
 }

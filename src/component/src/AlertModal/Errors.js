@@ -5,19 +5,9 @@ import { Pressable, Dimensions, Image } from "react-native";
 import { Text } from "../../index";
 
 export default function Errors({ modals, setModals, message }) {
-  // let [messageError, setMessageError] = useState(message);
-  console.log("modal", modals);
-  console.log("setModal", setModals);
-  console.log("message", message);
-
   setTimeout(() => {
     setModals(false);
   }, 4000);
-  console.log(
-    setTimeout(() => {
-      setModals(false);
-    }, 4000)
-  );
   return (
     <Modal
       animationType="fade"
@@ -48,9 +38,7 @@ export default function Errors({ modals, setModals, message }) {
         >
           {message ? (
             <Text size="description" type="regular" style={{ color: "#FFF" }}>
-              {"Failed" +
-                " " +
-                message.toString().replace("Error", "").replace(":", "")}
+              {message.toString().replace("Error", "").replace(":", "")}
             </Text>
           ) : (
             <Text size="description" type="regular" style={{ color: "#FFF" }}>

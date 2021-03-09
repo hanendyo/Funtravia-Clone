@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { CustomImage, FloatingInput } from "../../../component";
 import { lupass_satu } from "../../../assets/png";
+import { Arrowbackblack } from "../../../assets/svg";
 import { Text, Button } from "../../../component";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -23,11 +24,27 @@ export default function ForgotPassword(props) {
     headerShown: true,
     headerMode: "screen",
     headerTransparent: true,
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+          // borderWidth: 1,
+          marginLeft: 15,
+        }}
+      >
+        <Arrowbackblack height={20} width={20}></Arrowbackblack>
+      </Button>
+    ),
   };
   useEffect(() => {
     props.navigation.setOptions(NavigationComponent);
+    t();
   }, []);
-
   const { t, i18n } = useTranslation();
 
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
@@ -115,10 +132,10 @@ export default function ForgotPassword(props) {
               alignItems: "center",
             }}
           >
-            <Text type="bold" size="h3">
+            <Text type="bold" size="h5">
               {t("forgotPassword")}
             </Text>
-            <View style={{ width: 220 }}>
+            <View style={{ width: 220, marginTop: 5 }}>
               <Text
                 numberOfLines={2}
                 style={{
@@ -127,7 +144,7 @@ export default function ForgotPassword(props) {
                 type="regular"
                 size="description"
               >
-                Enter your email
+                {t("enterEmailPassword")}
               </Text>
             </View>
             <View style={{ marginBottom: 20, marginTop: 20 }}>

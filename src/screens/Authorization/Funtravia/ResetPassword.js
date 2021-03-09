@@ -15,14 +15,31 @@ import { Peringatan } from "../../../component";
 import FORGOT from "../../../graphQL/Mutation/Login/forgotverify";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { Arrowbackblack } from "../../../assets/svg";
+
 export default function ResetPassword(props) {
   const { t, i18n } = useTranslation();
-
   const NavigationComponent = {
     title: "",
     headerShown: true,
     headerMode: "screen",
     headerTransparent: true,
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+          // borderWidth: 1,
+          marginLeft: 15,
+        }}
+      >
+        <Arrowbackblack height={20} width={20}></Arrowbackblack>
+      </Button>
+    ),
   };
   useEffect(() => {
     props.navigation.setOptions(NavigationComponent);
@@ -118,18 +135,16 @@ export default function ResetPassword(props) {
               style={{
                 alignItems: "center",
                 justifyContent: "space-evenly",
-                marginVertical: 10,
               }}
             >
-              <Text size="h5" type="bold">
-                {t("forgotPassword")}
+              <Text size="h5" type="bold" style={{ textAlign: "center" }}>
+                {t("PasswordReset")}
               </Text>
             </View>
             <View
               style={{
                 alignContent: "center",
                 justifyContent: "space-evenly",
-                marginVertical: 10,
               }}
             >
               <Text
