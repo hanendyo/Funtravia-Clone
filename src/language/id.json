@@ -20,7 +20,7 @@
   "electricity": "Supply Listrik",
   "climate": "Cuaca",
   "forUpToDate": "Untuk Informasi Terbaru",
-  "sign in": "Masuk",
+  "signin": "Masuk",
   "create your account": "Create Your Account",
   "forgotYourPass": "Forgot Your Password?",
   "enterEmailPassword": "Enter Your Email To Reset Your Password",
@@ -481,5 +481,6 @@
   "adddeswishlist" : "Add",
   "Goodplacegoodtrip" :"Good place good trip",
   "Explorefindout": "Explore and find out",
-  "infoHelpTrip": "This information might help for your trip"  
+  "infoHelpTrip": "This information might help for your trip",
+  "RequiredLogin": "email dan password wajib di isi"
 }

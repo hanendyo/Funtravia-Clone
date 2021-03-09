@@ -14,22 +14,26 @@ import Capital from "./src/Capital";
 import FTabs from "./src/Tabs";
 import Distance from "./src/Distance";
 import StatusBar from "./src/StatusBar";
+import Errors from "./src/AlertModal/Errors";
+import Success from "./src/AlertModal/Success";
 
 export {
-	Text,
-	Button,
-	CustomImage,
-	FloatingInput,
-	Peringatan,
-	DurationSelector,
-	FunIcon,
-	PhoneCodeSelector,
-	Truncate,
-	Loading,
-	Sidebar,
-	rupiah,
-	Capital,
-	FTabs,
-	Distance,
-	StatusBar,
+  Text,
+  Button,
+  CustomImage,
+  FloatingInput,
+  Peringatan,
+  DurationSelector,
+  FunIcon,
+  PhoneCodeSelector,
+  Truncate,
+  Loading,
+  Sidebar,
+  rupiah,
+  Capital,
+  FTabs,
+  Distance,
+  StatusBar,
+  Errors,
+  Success,
 };
