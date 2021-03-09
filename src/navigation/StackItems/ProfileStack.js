@@ -14,118 +14,117 @@ import tripalbumdetail from "../../screens/Profile/tripalbumdetail";
 
 const ProfileStack = createStackNavigator();
 export default function ProfileStackNavigation(props) {
-	return (
-		<ProfileStack.Navigator>
-			<ProfileStack.Screen
-				name="profilesetting"
-				component={profilesetting}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="ProfileTab"
-				component={ProfileTab}
-				options={{
-					headerTransparent: true,
-					headerBackTitleVisible: false,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="FollowerPage"
-				component={FollowerPage}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="FollowingPage"
-				component={FollowingPage}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="otherprofile"
-				component={otherprofile}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="otherFollower"
-				component={otherFollower}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="otherFollowing"
-				component={otherFollowing}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="myfeed"
-				component={myfeed}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="Comments"
-				component={Comments}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="tripalbum"
-				component={tripalbum}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-			<ProfileStack.Screen
-				name="tripalbumdetail"
-				component={tripalbumdetail}
-				options={{
-					headerTitle: "",
-					headerTransparent: true,
-					headerTintColor: "white",
-					headerBackTitleVisible: false,
-				}}
-			/>
-		</ProfileStack.Navigator>
-	);
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="profilesetting"
+        component={profilesetting}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="ProfileTab"
+        component={ProfileTab}
+        options={{
+          headerTransparent: true,
+          headerBackTitleVisible: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="FollowerPage"
+        component={FollowerPage}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="FollowingPage"
+        component={FollowingPage}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="otherprofile"
+        component={otherprofile}
+        options={{
+          headerShown: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="otherFollower"
+        component={otherFollower}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="otherFollowing"
+        component={otherFollowing}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="myfeed"
+        component={myfeed}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="Comments"
+        component={Comments}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="tripalbum"
+        component={tripalbum}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="tripalbumdetail"
+        component={tripalbumdetail}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+    </ProfileStack.Navigator>
+  );
 }
