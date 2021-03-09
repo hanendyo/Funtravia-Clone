@@ -476,6 +476,9 @@
   "SetPassword": "Set Password",
   "WordChangeEmail": "Please set password to your account before you change email.",
   "monthAgo": "month ago",
-  "adddeswishlist": "Add",
+  "adddeswishlist" : "Add",
+  "Goodplacegoodtrip" :"Good place good trip",
+  "Explorefindout": "Explore and find out",
+  "infoHelpTrip": "This information might help for your trip",
   "RequiredLogin": "email and password is required"
 }

@@ -478,6 +478,9 @@
   "SetPassword": "Atur kata sandi",
   "WordChangeEmail": "Harap atur kata sandi ke akun Anda sebelum Anda mengubah email.",
   "monthAgo": "bulan yang lalu",
-  "adddeswishlist": "Add",
+  "adddeswishlist" : "Add",
+  "Goodplacegoodtrip" :"Good place good trip",
+  "Explorefindout": "Explore and find out",
+  "infoHelpTrip": "This information might help for your trip",
   "RequiredLogin": "email dan password wajib di isi"
 }

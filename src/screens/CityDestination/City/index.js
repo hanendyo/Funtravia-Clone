@@ -599,7 +599,7 @@ export default function CityDetail(props) {
               <Capital text={render.name} />
               {t("atGlance")}
             </Text>
-            <Text size="description">Good destination for your trip</Text>
+            <Text size="description">Geography and religion information</Text>
             <View
               style={{
                 marginTop: 10,
@@ -700,10 +700,10 @@ export default function CityDetail(props) {
                 width: "100%",
               }}
             >
-              <Text size="label" type="bold" style={{}}>
-                {t("TravelJurnal")}
+              <Text size="label" type="bold" style={{}}>Travel Journal
+                {/* {t("TravelJurnal")} */}
               </Text>
-              <Text size="description">Good destination for your trip</Text>
+              <Text size="description">Traveller Adventures, Stories, Memories and Discovery</Text>
               <View
                 style={{
                   marginTop: 10,
@@ -730,7 +730,7 @@ export default function CityDetail(props) {
                     customSlide={({ index, item, style, width }) => (
                       <View key={"ky" + index}>
                         {item.map((dataX, inde) => {
-                          // console.log(dataX);
+                          //  console.log(dataX);
                           return (
                             <Ripple
                               onPress={() =>
@@ -1538,6 +1538,7 @@ export default function CityDetail(props) {
                     flexDirection: "row",
                     alignContent: "center",
                     alignItems: "center",
+                    marginTop: 2,
                   }}
                 >
                   <PinWhite height={15} width={15} />
@@ -1709,6 +1710,7 @@ export default function CityDetail(props) {
               onPress={() => props.navigation.goBack()}
               style={{
                 height: 50,
+                marginLeft:8
               }}
             >
               <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
