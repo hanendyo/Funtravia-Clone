@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -13,10 +13,24 @@ import {
   StatusBar,
   ActivityIndicator,
   SafeAreaView,
+  Image,
+  Pressable,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
-import { StatusBar as StaBar, Text } from "../../../component";
+import { Button, Sidebar, StatusBar as StaBar, Text } from "../../../component";
+import {
+  Akunsaya,
+  default_image,
+  DefaultProfileSquare,
+} from "../../../assets/png";
 import Account from "../../../graphQL/Query/Profile/Other";
+import User_Post from "../../../graphQL/Query/Profile/otherpost";
+
+import { useTranslation } from "react-i18next";
+import { Google, OptionsVertWhite, Sharegreen } from "../../../assets/svg";
+import Post from "./Post";
+import Review from "./Review";
+import Trip from "./Trip";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -25,37 +39,78 @@ const SafeStatusBar = Platform.select({
   ios: 44,
   android: StatusBar.currentHeight,
 });
-const HeaderHeight = 300 - SafeStatusBar;
-
-const tab1ItemSize = (width - 30) / 2;
-const tab2ItemSize = (width - 40) / 3;
+const HeaderHeight = 320 - SafeStatusBar;
 const PullToRefreshDist = 150;
 
-export default function TestProfile(props) {
+export default function OtherProfile(props) {
+  const { t } = useTranslation();
+  let [showside, setshowside] = useState(false);
   let [token, setToken] = useState(null);
+  const [dataPost, setdataPost] = useState([]);
+  const [dataReview, setdataReview] = useState([]);
+  const [dataTrip, setdataTrip] = useState([]);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
+    await LoadUserProfile();
+    await Getdatapost();
   };
 
-  /**
-   * stats
-   */
+  const [
+    Getdatapost,
+    {
+      data: dataposting,
+      loading: loadingpost,
+      error: errorpost,
+      refetch: refetchpost,
+    },
+  ] = useLazyQuery(User_Post, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: {
+      id: props.route.params.idUser,
+    },
+    onCompleted: (data) => {
+      setdataPost(spreadData(data.user_postbyid));
+    },
+  });
+
+  const spreadData = (data) => {
+    let tmpData = [];
+    let count = 1;
+    let tmpArray = [];
+    for (let val of data) {
+      if (count < 3) {
+        tmpArray.push(val);
+        // console.log("masuk", tmpArray);
+        count++;
+      } else {
+        tmpArray.push(val);
+        tmpData.push(tmpArray);
+        count = 1;
+        tmpArray = [];
+      }
+    }
+    if (tmpArray.length) {
+      tmpData.push(tmpArray);
+    }
+    return tmpData;
+  };
+
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "Tab1" },
-    { key: "tab2", title: "Tab2" },
+    { key: "tab1", title: "Post" },
+    { key: "tab2", title: "Review" },
+    { key: "tab3", title: "Trip" },
   ]);
   const [canScroll, setCanScroll] = useState(true);
-  const [tab1Data] = useState(Array(40).fill(0));
-  const [tab2Data] = useState(Array(30).fill(0));
-
-  /**
-   * ref
-   */
   const scrollY = useRef(new Animated.Value(0)).current;
   const headerScrollY = useRef(new Animated.Value(0)).current;
-  // for capturing header scroll on Android
   const headerMoveScrollY = useRef(new Animated.Value(0)).current;
   const listRefArr = useRef([]);
   const listOffset = useRef({});
@@ -63,10 +118,32 @@ export default function TestProfile(props) {
   const headerScrollStart = useRef(0);
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
+  let HEADER_MAX_HEIGHT = HeaderHeight;
+  let HEADER_MIN_HEIGHT = 55;
+  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-  /**
-   * PanResponder for header
-   */
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0.5, 0],
+    extrapolate: "clamp",
+  });
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -50],
+    extrapolate: "clamp",
+  });
+  const opacityto1 = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
+  const opacityfrom1 = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
   const headerPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
@@ -118,9 +195,6 @@ export default function TestProfile(props) {
     })
   ).current;
 
-  /**
-   * PanResponder for list in tab scene
-   */
   const listPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
@@ -136,10 +210,6 @@ export default function TestProfile(props) {
       },
     })
   ).current;
-
-  /**
-   * effect
-   */
 
   const HeaderComponent = {
     headerShown: true,
@@ -164,7 +234,21 @@ export default function TestProfile(props) {
       marginLeft: 10,
     },
 
-    headerRightStyle: {},
+    headerRight: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => setshowside(true)}
+        style={{
+          // backgroundColor: "rgba(0,0,0,0.3)",
+          marginRight: 10,
+        }}
+      >
+        <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
+      </Button>
+    ),
   };
 
   useEffect(() => {
@@ -199,9 +283,6 @@ export default function TestProfile(props) {
     };
   }, [routes, tabIndex]);
 
-  /**
-   *  helper functions
-   */
   const syncScrollOffset = () => {
     const curRouteKey = routes[_tabIndex.current].key;
 
@@ -320,7 +401,6 @@ export default function TestProfile(props) {
   const onMomentumScrollEnd = () => {
     isListGliding.current = false;
     syncScrollOffset();
-    // console.log('onMomentumScrollEnd');
   };
 
   const onScrollEndDrag = (e) => {
@@ -339,22 +419,20 @@ export default function TestProfile(props) {
   };
 
   const refresh = async () => {
-    console.log("-- start refresh");
+    // console.log("-- start refresh");
+    loadAsync();
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      console.log("-- refresh done!");
+      // console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
 
-  /**
-   * render Helper
-   */
-  const renderHeader = () => {
+  const renderHeader = (data) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [0, -HeaderHeight + 55],
@@ -366,58 +444,230 @@ export default function TestProfile(props) {
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
-          height: HeaderHeight + SafeStatusBar,
+          top: SafeStatusBar,
+          height: HeaderHeight,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
           backgroundColor: "#209fae",
         }}
-      ></Animated.View>
-    );
-  };
-
-  const rednerTab1Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          borderRadius: 16,
-          marginLeft: index % 2 === 0 ? 0 : 10,
-          width: tab1ItemSize,
-          height: tab1ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
       >
-        <Text>{index}</Text>
-      </View>
-    );
-  };
+        <Animated.Image
+          style={{
+            // position: "absolute",
+            // top: 0,
+            // left: 0,
+            // right: 0,
+            width: "100%",
+            height: "50%",
+            resizeMode: "cover",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
+          }}
+          source={Akunsaya}
+        />
 
-  const rednerTab2Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          marginLeft: index % 3 === 0 ? 0 : 10,
-          borderRadius: 16,
-          width: tab2ItemSize,
-          height: tab2ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
-      </View>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "space-between",
+            position: "absolute",
+            top: "32%",
+            zIndex: 1,
+            paddingHorizontal: 20,
+          }}
+        >
+          <Image
+            source={data.picture ? { uri: data.picture } : DefaultProfileSquare}
+            style={{
+              width: width / 4,
+              height: width / 4,
+              borderRadius: width / 8,
+              borderWidth: 2,
+              borderColor: "#FFF",
+            }}
+          />
+          <View
+            style={{
+              width: width / 2,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            {data.status_following === true ? (
+              <Button
+                text={t("unfollow")}
+                variant="bordered"
+                size="small"
+                color="black"
+                style={{
+                  width: "48%",
+                  borderColor: "#464646",
+                  alignSelf: "flex-end",
+                  // margin: 15,
+                }}
+              />
+            ) : (
+              <Button
+                text={t("follow")}
+                size="small"
+                color={"secondary"}
+                variant={"normal"}
+                text={t("follow")}
+                style={{
+                  width: "48%",
+                  alignSelf: "flex-end",
+                  // margin: 15,
+                }}
+              />
+            )}
+
+            <Button
+              text={t("Message")}
+              variant="bordered"
+              size="small"
+              color="black"
+              style={{
+                width: "48%",
+                // width: width / 2,
+                borderColor: "#464646",
+                alignSelf: "flex-end",
+                // margin: 15,
+              }}
+            />
+          </View>
+        </View>
+
+        <Animated.View
+          style={{
+            width: "100%",
+            height: "50%",
+            backgroundColor: "#fff",
+            opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
+            paddingTop: 45,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              width: Dimensions.get("screen").width,
+              justifyContent: "space-between",
+              paddingHorizontal: 20,
+              alignItems: "center",
+              alignContent: "center",
+              marginTop: 5,
+              // borderWidth: 1,
+            }}
+          >
+            <Animated.View style={{ width: "50%", opacity: opacityfrom1 }}>
+              <Text type="bold" size="label" style={{ marginRight: 10 }}>
+                {`${data.first_name ? data.first_name : ""} ` +
+                  `${data.last_name ? data.last_name : ""}`}
+              </Text>
+              <Text type="regular" size="description">{`@${
+                data.username ? data.username : ""
+              } `}</Text>
+            </Animated.View>
+
+            <View
+              style={{
+                width: "50%",
+                // marginTop: 10,
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                alignItems: "baseline",
+                // width: Dimensions.get('window').width,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+                onPress={() =>
+                  props.navigation.push("otherFollower", {
+                    idUser: idUser,
+                  })
+                }
+              >
+                <Text type="black" size="label">
+                  {`${data.count_follower ? data.count_follower : ""} `}
+                </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  // style={{ color: '#B0B0B0' }}
+                >
+                  {t("followers")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+                onPress={() =>
+                  props.navigation.push("otherFollowing", {
+                    idUser: idUser,
+                  })
+                }
+              >
+                <Text type="black" size="label">
+                  {`${data.count_following ? data.count_following : ""} `}
+                </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  // style={{ color: '#B0B0B0' }}
+                >
+                  {t("following")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 20,
+            }}
+          >
+            <Text
+              type="regular"
+              size="description"
+              style={{ textAlign: "justify" }}
+            >
+              {data.bio ? data.bio : "-"}
+            </Text>
+          </View>
+        </Animated.View>
+      </Animated.View>
     );
   };
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <Text style={[styles.label, { opacity: focused ? 1 : 0.5 }]}>
-        {route.title}
-      </Text>
+      <View
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          width: Dimensions.get("screen").width / 3,
+        }}
+      >
+        <Text
+          type={focused ? "bold" : "regular"}
+          size="label"
+          style={{
+            color: focused ? "#209FAE" : "#464646",
+          }}
+        >
+          {route.title}
+        </Text>
+      </View>
     );
   };
 
@@ -428,14 +678,19 @@ export default function TestProfile(props) {
     let renderItem;
     switch (route.key) {
       case "tab1":
-        numCols = 2;
-        data = tab1Data;
-        renderItem = rednerTab1Item;
+        numCols = tabPost === 2 ? 3 : 1;
+        data = dataPost;
+        renderItem = Post;
         break;
       case "tab2":
         numCols = 3;
-        data = tab2Data;
-        renderItem = rednerTab2Item;
+        data = dataReview;
+        renderItem = Review;
+        break;
+      case "tab3":
+        numCols = 3;
+        data = dataTrip;
+        renderItem = Trip;
         break;
       default:
         return null;
@@ -445,6 +700,7 @@ export default function TestProfile(props) {
         scrollToOverflowEnabled={true}
         // scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
+        key={"#" + numCols}
         numColumns={numCols}
         ref={(ref) => {
           if (ref) {
@@ -474,9 +730,12 @@ export default function TestProfile(props) {
         onScrollEndDrag={onScrollEndDrag}
         onMomentumScrollEnd={onMomentumScrollEnd}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListHeaderComponent={() => <View style={{ height: 10 }} />}
+        ListHeaderComponent={() => <View style={{ height: 10 }}></View>}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight,
+          paddingTop:
+            tabIndex === 0
+              ? HeaderHeight + TabBarHeight + 55
+              : HeaderHeight + TabBarHeight,
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight,
         }}
@@ -485,12 +744,12 @@ export default function TestProfile(props) {
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
-        style={{
-          backgroundColor: "#209fae",
-        }}
+        style={{}}
       />
     );
   };
+
+  let [tabPost, settabPost] = useState(0);
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
@@ -516,10 +775,91 @@ export default function TestProfile(props) {
               preventDefault();
             }
           }}
-          style={styles.tab}
+          style={{
+            elevation: 0,
+            shadowOpacity: 0,
+            backgroundColor: "white",
+            height: TabBarHeight,
+            borderBottomWidth: 2,
+            borderBottomColor: "#daf0f2",
+          }}
           renderLabel={renderLabel}
-          indicatorStyle={styles.indicator}
+          indicatorStyle={{
+            backgroundColor: "#209fae",
+          }}
         />
+        {tabIndex === 0 ? (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              backgroundColor: "#fff",
+              borderBottomColor: "#d3d3d3",
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                settabPost(0);
+              }}
+              style={{
+                padding: 10,
+                width: "33.3%",
+                alignItems: "center",
+              }}
+            >
+              <Google height={15} width={15} />
+              <Text
+                style={{
+                  marginTop: 3,
+                  color: tabPost === 0 ? "#209fae" : "#464646",
+                }}
+              >
+                All Post
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                settabPost(1);
+              }}
+              style={{
+                padding: 10,
+                width: "33.3%",
+                alignItems: "center",
+              }}
+            >
+              <Google height={15} width={15} />
+              <Text
+                style={{
+                  marginTop: 3,
+                  color: tabPost === 1 ? "#209fae" : "#464646",
+                }}
+              >
+                Album
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                settabPost(2);
+              }}
+              style={{
+                padding: 10,
+                width: "33.3%",
+                alignItems: "center",
+              }}
+            >
+              <Google height={15} width={15} />
+              <Text
+                style={{
+                  marginTop: 3,
+                  color: tabPost === 2 ? "#209fae" : "#464646",
+                }}
+              >
+                Trip
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </Animated.View>
     );
   };
@@ -546,59 +886,41 @@ export default function TestProfile(props) {
 
   const renderCustomRefresh = () => {
     // headerMoveScrollY
-    return Platform.select({
-      ios: (
-        <AnimatedIndicator
-          style={{
-            top: -50,
-            position: "absolute",
-            alignSelf: "center",
-            transform: [
-              {
-                translateY: scrollY.interpolate({
-                  inputRange: [-100, 0],
-                  outputRange: [120, 0],
-                  extrapolate: "clamp",
-                }),
-              },
-            ],
-          }}
-          animating
-        />
-      ),
-      android: (
-        <Animated.View
-          style={{
-            transform: [
-              {
-                translateY: headerMoveScrollY.interpolate({
-                  inputRange: [-300, 0],
-                  outputRange: [150, 0],
-                  extrapolate: "clamp",
-                }),
-              },
-            ],
-            backgroundColor: "#eee",
-            height: 38,
-            width: 38,
-            borderRadius: 19,
-            borderWidth: 2,
-            borderColor: "#ddd",
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            top: -50,
-            position: "absolute",
-          }}
-        >
-          <ActivityIndicator animating />
-        </Animated.View>
-      ),
-    });
+    return (
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateY: headerMoveScrollY.interpolate({
+                inputRange: [-300, 0],
+                outputRange: [150, 0],
+                extrapolate: "clamp",
+              }),
+            },
+          ],
+          backgroundColor: "#eee",
+          height: 38,
+          width: 38,
+          borderRadius: 19,
+          borderWidth: 2,
+          borderColor: "#ddd",
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          top: -50,
+          position: "absolute",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </Animated.View>
+    );
   };
 
-  const Datauser = () => {
-    const { data, loading, error, refetch } = useQuery(Account, {
+  let [dataUser, setDataUser] = useState({});
+
+  const [LoadUserProfile, { data, loading, error, refetch }] = useLazyQuery(
+    Account,
+    {
       fetchPolicy: "network-only",
       context: {
         headers: {
@@ -609,27 +931,58 @@ export default function TestProfile(props) {
       variables: {
         id: props.route.params.idUser,
       },
-
-      onCompleted: (data) => {},
-    });
-
-    if (loading) {
-      return null;
+      onCompleted: (data) => {
+        setDataUser(data.user_profilebyid);
+      },
     }
-
-    return (
-      <>
-        {renderHeader(data)}
-        {renderCustomRefresh()}
-      </>
-    );
-  };
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
       {renderTabView()}
-      {token ? <Datauser /> : null}
+      {renderHeader(dataUser)}
+      {renderCustomRefresh()}
+
+      <Sidebar
+        props={props}
+        show={showside}
+        Data={() => {
+          return (
+            <View
+              style={{
+                padding: 10,
+                width: "100%",
+                justifyContent: "flex-start",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => Alert.alert("coming soon")}
+                style={{
+                  marginVertical: 5,
+                  flexDirection: "row",
+                  width: "100%",
+                  paddingVertical: 2,
+                  alignItems: "center",
+                }}
+              >
+                <Sharegreen height={15} width={15} />
+
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    marginLeft: 10,
+                  }}
+                >
+                  {t("share")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+        setClose={(e) => setshowside(false)}
+      />
     </SafeAreaView>
   );
 }
