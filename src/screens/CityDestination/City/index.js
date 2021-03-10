@@ -425,7 +425,7 @@ export default function CityDetail(props) {
     return tutup == true ? (
       item.map((item, index) => {
 
-        // console.log(item);
+        
         return index < 8 ?(
           <Ripple
             onPress={() => {
@@ -521,6 +521,7 @@ export default function CityDetail(props) {
   };
 
   const RenderUtama = ({ aktif, render }) => {
+    // console.log(render);
     if (aktif === "General") {
       return (
         <View>
@@ -650,6 +651,7 @@ export default function CityDetail(props) {
                 textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
                 activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE" }}
               > 
+              
                  <Image
                   source={render.map ? { uri: render.map } : default_image}
                   style={{
@@ -665,7 +667,8 @@ export default function CityDetail(props) {
                 activeTabStyle={{ backgroundColor: "white" }}
                 textStyle={{ fontFamily: "Lato-Regular",fontSize:14,color: "#6C6C6C" }}
                 activeTextStyle={{ fontFamily: "Lato-Bold", fontSize:14, color: "#209FAE" }}
-                >  
+                > 
+                
                 <Image
                   source={default_image}
                   style={{
@@ -1428,7 +1431,60 @@ export default function CityDetail(props) {
               </View>
             </View>
           </View>
-
+          {/* Itinerary Terbaru */}
+          <View
+          	style={{
+							paddingHorizontal: 20,
+							paddingVertical: 10,
+							flexDirection: 'column',
+						}}>
+              <View
+              style={{
+									flexDirection: 'row',
+									justifyContent: 'space-between',
+								}}>
+								<Text type='bold' size='label' style={{}}>
+									{t("Itinerary")}
+								</Text>
+                <Ripple>
+									<Text
+										type='bold'
+										size='description'
+										style={{
+											color: '#209fae',
+										}}>
+										View All
+									</Text>
+								</Ripple>
+              </View>
+              	<Text
+								size='description'
+								style={{
+									textAlign: 'justify',
+								}}>
+								Bali is an Indonesian island known for its forested volcanic
+								mountains, iconic rice paddies, mountains, iconic rice
+							</Text>
+              <View
+                style={{
+                  marginTop: 10,
+                  backgroundColor: "white",
+                  height: width * 0.52,
+                  width: "100%",
+                  shadowColor: "#d3d3d3",
+                  shadowOffset: { width: 2, height: 2 },
+                  shadowOpacity: 1,
+                  shadowRadius: 2,
+                  elevation: 2,
+                  borderRadius: 5,
+                  padding: 20,
+                }}
+              >
+                <FlatList>
+                    <View></View>
+                </FlatList>
+              </View>
+          </View>
           {/* Itinerary */}
           {/* <View
 						style={{
@@ -1606,37 +1662,38 @@ export default function CityDetail(props) {
     "50n": "w-windy",
   });
 
-  const _fetchItem = async () => {
-    var lat = props.route.params.data.latitude;
-    var long = props.route.params.data.longitude;
-    var kotanya = props.route.params.data.city_name;
+  // const _fetchItem = async () => {
+  //   var lat = props.route.params.data.latitude;
+  //   var long = props.route.params.data.longitude;
+  //   var kotanya = props.route.params.data.city_name;
+    
+  //   try {
+  //     if (lat && long) {
+  //       let response = await fetch(
+  //         "https://api.openweathermap.org/data/2.5/weather?lat=" +
+  //           lat +
+  //           "&lon=" +
+  //           long +
+  //           "&appid=366be4c20ca623155ffc0175772909bf"
+  //       );
+  //       let responseJson = await response.json();
 
-    try {
-      if (lat && long) {
-        let response = await fetch(
-          "https://api.openweathermap.org/data/2.5/weather?lat=" +
-            lat +
-            "&lon=" +
-            long +
-            "&appid=366be4c20ca623155ffc0175772909bf"
-        );
-        let responseJson = await response.json();
+  //       setData(responseJson);
+  //     } else {
+  //       let response = await fetch(
+  //         "https://api.openweathermap.org/data/2.5/weather?q=" +
+  //           kotanya.toLowerCase() +
+  //           "&appid=366be4c20ca623155ffc0175772909bf"
+  //       );
+  //       let responseJson = await response.json();
 
-        setData(responseJson);
-      } else {
-        let response = await fetch(
-          "https://api.openweathermap.org/data/2.5/weather?q=" +
-            kotanya.toLowerCase() +
-            "&appid=366be4c20ca623155ffc0175772909bf"
-        );
-        let responseJson = await response.json();
-
-        setData(responseJson);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //       setData(responseJson);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // console.log(dataweather);
 
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -1797,7 +1854,7 @@ export default function CityDetail(props) {
                   </Text>
                 </View>
               </View>
-              {dataweather && dataweather.weather ? (
+              {/* {dataweather && dataweather.weather ? (
                 <View
                   style={{
                     flexDirection: "row",
@@ -1828,7 +1885,7 @@ export default function CityDetail(props) {
                     }}
                   ></View>
                 </View>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
           <View
