@@ -16,6 +16,7 @@ import Distance from "./src/Distance";
 import StatusBar from "./src/StatusBar";
 import Errors from "./src/AlertModal/Errors";
 import Success from "./src/AlertModal/Success";
+import Drawable from "./src/Drawable";
 
 export {
   Text,
@@ -36,4 +37,5 @@ export {
   StatusBar,
   Errors,
   Success,
+  Drawable,
 };

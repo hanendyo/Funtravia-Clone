@@ -6,7 +6,8 @@ import CommentPost from "../../screens/Feed/Post/Comments";
 import EditPost from "../../screens/Feed/Post/EditPost";
 import SinglePost from "../../screens/Feed/Post/SinglePost";
 import CommentsById from "../../screens/Feed/Post/CommentsById";
-import SearchPageFeed from "../../screens/Feed/SearchPageFeed";
+// import SearchPageFeed from "../../screens/Feed/SearchPageFeed";
+import SearchPageFeed from "../../screens/Feed/SearchPageFeedcopy";
 import SearchFeedByTag from "../../screens/Feed/SearchFeedByTag";
 import SearchFeedByLocation from "../../screens/Feed/SearchFeedByLocation";
 
