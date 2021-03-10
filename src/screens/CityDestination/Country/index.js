@@ -10,6 +10,8 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  StatusBar,
+  SafeAreaView,
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,6 +47,11 @@ import CountrisInformation from "../../../graphQL/Query/Countries/Countrydetail"
 import { useTranslation } from "react-i18next";
 import ImageSlider from "react-native-image-slider";
 import { TouchableHighlight } from "react-native-gesture-handler";
+
+const SafeStatusBar = Platform.select({
+  ios: 44,
+  android: StatusBar.currentHeight,
+});
 
 const screenHeight = Dimensions.get("window").height;
 let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
@@ -1141,14 +1148,14 @@ export default function Country(props) {
   }
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "white",
       }}
     >
       {/* <Loading show={loadings} /> */}
-      <View style={{ height: 55 }}></View>
+      <View style={{ height: 55 + SafeStatusBar}}></View>
       {data && data.country_detail ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -1413,7 +1420,7 @@ export default function Country(props) {
           </Animated.View>
         </Animated.View>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -1496,7 +1503,7 @@ const styles = StyleSheet.create({
   },
   header: {
     position: "absolute",
-    top: 0,
+    top: SafeStatusBar,
     left: 0,
     right: 0,
     backgroundColor: "#209fae",

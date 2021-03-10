@@ -90,6 +90,60 @@ const CitiesInformation = gql`
 					liked
 				}
 			}
+			itinerary_populer{
+				id
+				name
+				country{
+				  id
+				  name
+				}
+				city{
+				  id
+				  name
+				  flag
+				}
+				start_date
+				end_date
+				isprivate
+				status
+				cover
+				buddy_count
+				favorit_count
+				liked
+				categori{
+				  id
+				  name
+				  slug
+				  icon
+				}
+				user_created{
+				  id
+				  username
+				  first_name
+				  last_name
+				  picture
+				}
+			  }
+			  about{
+				id
+				type
+				information_id
+				article_id
+				name
+				label
+				description
+				icon
+			  }
+			  practical{
+				id
+				type
+				information_id
+				article_id
+				name
+				label
+				description
+				icon
+			  }
 		}
 	}
 `;
