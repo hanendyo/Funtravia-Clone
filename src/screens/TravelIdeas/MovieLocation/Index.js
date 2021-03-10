@@ -16,7 +16,6 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import { useQuery } from "@apollo/react-hooks";
 import {
   bg_movielocation,
   laskar_pelangi,
@@ -29,14 +28,16 @@ import {
   the_raid_2,
   merantau,
   the_raid,
+  default_image,
 } from "../../../assets/png";
 import { Kosong, Select, LocationBlack } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import Account from "../../../graphQL/Query/Home/Account";
-import User_Post from "../../../graphQL/Query/Profile/post";
-import Reviews from "../../../graphQL/Query/Profile/review";
-import Itinerary from "../../../graphQL/Query/Profile/itinerary";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import MovieLocationQuery from "../../../graphQL/Query/TravelIdeas/MovieLocation";
+import MovieLocationFirstQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationFirst";
+import CountryListSrc from "../../../graphQL/Query/Countries/CountryListSrc";
+import ContinentList from "../../../graphQL/Query/Countries/ContinentList";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 
@@ -153,8 +154,63 @@ export default function MovieLocation({ navigation, route }) {
   /**
    * ref
    */
+  const {
+    data: datacountry,
+    loading: loadingcountry,
+    error: errorcountry,
+    refetch: refetchcountry,
+  } = useQuery(CountryListSrc, {
+    variables: {
+      countries_id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const { data, loading, error, refetch } = useQuery(MovieLocationQuery, {
+    variables: {
+      countries_id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  let movie_rekomendasi = [];
+  if (data && data.movie_rekomendasi) {
+    movie_rekomendasi = data.movie_rekomendasi;
+  }
+  // console.log(movie_rekomendasi);
+  const {
+    data: datafirst,
+    loading: loadingfirst,
+    error: errorfirst,
+    refetch: refetchfirst,
+  } = useQuery(MovieLocationFirstQuery, {
+    variables: {
+      countries_id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  let movie_most_populer = [];
+  if (datafirst && datafirst.movie_most_populer) {
+    movie_most_populer = datafirst.movie_most_populer;
+  }
+
   const scrollY = useRef(new Animated.Value(0)).current;
-  console.log("initkn " + token);
 
   useEffect(() => {
     loadAsync();
@@ -169,65 +225,58 @@ export default function MovieLocation({ navigation, route }) {
       style={{
         flex: 1,
       }}
+      stickyHeaderIndices={[1]}
     >
       <View
         style={{
-          backgroundColor: "#FFFFFF",
-          paddingBottom: 15,
-          shadowColor: "#DFDFDF",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 2.84,
-          elevation: 3,
+          justifyContent: "center",
+          alignItems: "center",
+          width: width,
+          height: HeaderHeight - 100,
         }}
       >
-        <View
+        <ImageBackground
+          source={bg_movielocation}
           style={{
-            justifyContent: "center",
-            alignItems: "center",
             width: width,
             height: HeaderHeight - 100,
+            justifyContent: "center",
+            padding: 20,
           }}
+          resizeMode="cover"
         >
-          <ImageBackground
-            source={bg_movielocation}
-            style={{
-              width: width,
-              height: HeaderHeight - 100,
-              justifyContent: "center",
-              padding: 20,
-            }}
-            resizeMode="cover"
-          >
-            <Text size="label" style={{ marginBottom: 20 }}>
-              Get inspired #movielocation
-            </Text>
-            <Text size="h5" type="black">
-              Movie Location
-            </Text>
-            <Text size="label">Explore Indonesia Movie Location</Text>
-          </ImageBackground>
-        </View>
-        <View
-          style={{
-            alignItems: "center",
-          }}
-        >
-          <Ripple
-            style={{
+          <Text size="label" style={{ marginBottom: 20 }}>
+            Get inspired #movielocation
+          </Text>
+          <Text size="h5" type="black">
+            Movie Location
+          </Text>
+          <Text size="label">Explore Indonesia Movie Location</Text>
+        </ImageBackground>
+      </View>
+      <View
+        style={{
+          alignItems: "center",
+          alignSelf: "center",
+          // backgroundColor: "#FFFFFF",
+          // paddingBottom: 2,
+          top: HeaderHeight - 130,
+          position: "absolute",
+          paddingTop: 30,
+        }}
+      >
+        <Pressable
+          style={({ pressed }) => [
+            {
               height: 44,
               borderRadius: 20,
-              // borderWidth: 1,
               borderColor: "grey",
               paddingVertical: 20,
               paddingHorizontal: 30,
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
-              backgroundColor: "#FFFFFF",
+              backgroundColor: pressed ? "#F6F6F7" : "white",
               shadowColor: "#DFDFDF",
               shadowOffset: {
                 width: 0,
@@ -238,21 +287,37 @@ export default function MovieLocation({ navigation, route }) {
               elevation: 3,
               flexDirection: "row",
               marginTop: -22,
+            },
+          ]}
+        >
+          <Text
+            size="label"
+            type="bold"
+            style={{
+              color: "",
+              marginRight: 10,
             }}
           >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                color: "",
-                marginRight: 10,
-              }}
-            >
-              Indonesia
-            </Text>
-            <Select height={10} width={10} />
-          </Ripple>
-        </View>
+            Indonesia
+          </Text>
+          <Select height={10} width={10} />
+        </Pressable>
+      </View>
+
+      <View
+        style={{
+          backgroundColor: "#FFFFFF",
+          padding: 15,
+          // shadowColor: "#DFDFDF",
+          // shadowOffset: {
+          //   width: 0,
+          //   height: 1,
+          // },
+          // shadowOpacity: 0.25,
+          // shadowRadius: 2.84,
+          // elevation: 3,
+        }}
+      >
         <View
           style={{
             justifyContent: "flex-start",
@@ -284,7 +349,8 @@ export default function MovieLocation({ navigation, route }) {
               navigation.navigate("TravelIdeaStack", {
                 screen: "Detail_movie",
                 params: {
-                  data: data_movielocation_utama,
+                  movie_id: movie_most_populer.id,
+                  token: token,
                 },
               });
             }}
@@ -296,7 +362,11 @@ export default function MovieLocation({ navigation, route }) {
           >
             <View style={{ width: "30%", height: 140 }}>
               <Image
-                source={laskar_pelangi}
+                source={
+                  movie_most_populer.cover
+                    ? { uri: movie_most_populer?.cover }
+                    : default_image
+                }
                 style={{ width: "100%", height: 140, borderRadius: 10 }}
                 resizeMode="cover"
               />
@@ -317,7 +387,9 @@ export default function MovieLocation({ navigation, route }) {
                     marginBottom: 5,
                   }}
                 >
-                  Laskar Pelangi
+                  {movie_most_populer.title
+                    ? movie_most_populer.title
+                    : "No Movie"}
                 </Text>
                 <Text
                   style={{
@@ -325,8 +397,7 @@ export default function MovieLocation({ navigation, route }) {
                     width: "100%",
                   }}
                 >
-                  In the 1970s, a group of 10 students struggles with poverty
-                  and develop hopes for the future...
+                  {movie_most_populer.description}
                 </Text>
               </View>
               <View
@@ -346,7 +417,10 @@ export default function MovieLocation({ navigation, route }) {
                 >
                   <LocationBlack width={15} height={15} />
                   <Text type="bold" style={{ marginLeft: 5 }}>
-                    7 Locations
+                    {movie_most_populer.destination_count
+                      ? movie_most_populer.destination_count
+                      : 0}
+                    {" Locations"}
                   </Text>
                 </View>
               </View>
@@ -379,14 +453,14 @@ export default function MovieLocation({ navigation, route }) {
           </Text>
         </View>
         <FlatList
-          data={data_film}
+          data={movie_rekomendasi}
           renderItem={({ item, index }) => (
             <Pressable
               onPress={() => {
                 navigation.navigate("TravelIdeaStack", {
                   screen: "Detail_movie",
                   params: {
-                    data: item,
+                    movie_id: item.id,
                     token: token,
                   },
                 });
@@ -397,11 +471,11 @@ export default function MovieLocation({ navigation, route }) {
               }}
             >
               <Image
-                source={item.cover}
+                source={item.cover ? { uri: item.cover } : default_image}
                 style={{ width: "92%", height: 150, borderRadius: 10 }}
                 resizeMode="cover"
               />
-              <Text type="bold">{item.judul}</Text>
+              <Text type="bold">{item.title}</Text>
             </Pressable>
           )}
           keyExtractor={(item) => item.id}

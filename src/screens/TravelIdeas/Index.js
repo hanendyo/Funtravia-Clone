@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Pressable,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text, Truncate } from "../../component";
 import { travel_idea_ilust } from "../../assets/png";
@@ -63,7 +69,7 @@ export default function TravelIdeas(props) {
   };
 
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
         backgroundColor: "#ffffff",
@@ -85,7 +91,7 @@ export default function TravelIdeas(props) {
             justifyContent: "center",
             alignItems: "center",
           }}
-        ></View>
+        />
         <View
           style={{
             width: width + 100,
@@ -96,53 +102,7 @@ export default function TravelIdeas(props) {
             justifyContent: "center",
             alignItems: "center",
           }}
-        ></View>
-        {/* <Shadow
-          style={{
-            // marginTop: 10,
-            width: width - 40,
-            // height: 430,
-            padding: 30,
-            paddingTop: 50,
-            borderRadius: 10,
-            backgroundColor: "#FFFFFF",
-            position: "absolute",
-            // bottom: -80,
-            top: 0,
-            // justifyContent: "center",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: "#d3d3d3",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.4,
-            shadowColor: "#d3d3d3",
-            shadowRadius: 10,
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <View
-            style={{
-              alignItems: "center",
-              marginBottom: 10,
-            }}
-          >
-            <Text size="title" style={{}}>
-              {t("Discover")}
-            </Text>
-            <Text size="title" type="bold">
-              {t("BestTravelIdea")}
-            </Text>
-          </View>
-          <Image
-            source={travel_idea_ilust}
-            style={{
-              width: width - 130,
-              height: width - 130,
-            }}
-            resizeMode="contain"
-          />
-        </Shadow> */}
+        />
         <View
           style={{
             // marginTop: 10,
@@ -200,13 +160,14 @@ export default function TravelIdeas(props) {
           justifyContent: "center",
           alignItems: "center",
           marginTop: 100,
+          // height: height,
         }}
       >
         <Text size="label" type="bold" style={{ marginBottom: 15 }}>
           {t("LetsGovisit")}
         </Text>
 
-        <Ripple
+        <Pressable
           onPress={() => {
             props.navigation.navigate("TravelIdeaStack", {
               screen: "Unesco",
@@ -215,26 +176,28 @@ export default function TravelIdeas(props) {
               },
             });
           }}
-          style={{
-            borderColor: "#DFDFDF",
-            borderRadius: 5,
-            width: width - 40,
-            marginVertical: 10,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            shadowColor: "#DFDFDF",
-            shadowOffset: {
-              width: 0,
-              height: 1,
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed ? "#F6F6F7" : "white",
+              borderColor: "#DFDFDF",
+              borderRadius: 5,
+              width: width - 40,
+              marginVertical: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              shadowColor: "#DFDFDF",
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 2.84,
+              elevation: 2,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
             },
-            shadowOpacity: 0.25,
-            shadowRadius: 2.84,
-            elevation: 2,
-            backgroundColor: "#FFFFFF",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
+          ]}
         >
           <View
             style={{
@@ -264,9 +227,9 @@ export default function TravelIdeas(props) {
           </View>
 
           <Right width={25} height={25} />
-        </Ripple>
+        </Pressable>
 
-        <Ripple
+        <Pressable
           onPress={() => {
             // props.navigation.dispatch(StackActions.replace("Unesco"));
             props.navigation.navigate("TravelIdeaStack", {
@@ -276,26 +239,28 @@ export default function TravelIdeas(props) {
               },
             });
           }}
-          style={{
-            borderColor: "#DFDFDF",
-            borderRadius: 5,
-            width: width - 40,
-            marginVertical: 10,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            shadowColor: "#DFDFDF",
-            shadowOffset: {
-              width: 0,
-              height: 1,
+          style={({ pressed }) => [
+            {
+              borderColor: "#DFDFDF",
+              borderRadius: 5,
+              width: width - 40,
+              marginVertical: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              shadowColor: "#DFDFDF",
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 2.84,
+              elevation: 2,
+              backgroundColor: pressed ? "#F6F6F7" : "white",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
             },
-            shadowOpacity: 0.25,
-            shadowRadius: 2.84,
-            elevation: 2,
-            backgroundColor: "#FFFFFF",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
+          ]}
         >
           <View
             style={{
@@ -331,9 +296,9 @@ export default function TravelIdeas(props) {
           </View>
 
           <Right width={25} height={25} />
-        </Ripple>
+        </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
