@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Pressable,
 } from "react-native";
 import { useQuery } from "@apollo/react-hooks";
 import {
@@ -33,6 +34,7 @@ import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
+import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -201,6 +203,10 @@ const data_unesco_culture = [
 export default function Unesco({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
+  let [selectedCountry, SetselectedCountry] = useState({
+    id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    name: "Indonesia",
+  });
   const { t } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -245,6 +251,33 @@ export default function Unesco({ navigation, route }) {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
+  let HEADER_MAX_HEIGHT = HeaderHeight;
+  let HEADER_MIN_HEIGHT = 55;
+  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  const PosisiCountry = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [HeaderHeight - 125, 50, TabBarHeight + 10],
+    extrapolate: "clamp",
+  });
+
+  const { data, loading, error, refetch } = useQuery(ListDestinationByUnesco, {
+    variables: {
+      countries_id: selectedCountry.id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  let listdestinasi_unesco = [];
+  if (data && data.listdestinasi_unesco) {
+    listdestinasi_unesco = data.listdestinasi_unesco;
+  }
+  console.log(listdestinasi_unesco);
   /**
    * PanResponder for header
    */
@@ -534,43 +567,6 @@ export default function Unesco({ navigation, route }) {
             }}
             resizeMode="cover"
           />
-          <Ripple
-            style={{
-              height: 44,
-              borderRadius: 20,
-              // borderWidth: 1,
-              borderColor: "grey",
-              paddingVertical: 20,
-              paddingHorizontal: 30,
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              bottom: -22,
-              backgroundColor: "#FFFFFF",
-              shadowColor: "#DFDFDF",
-              shadowOffset: {
-                width: 0,
-                height: 1,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 2.84,
-              elevation: 3,
-              flexDirection: "row",
-            }}
-          >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                color: "",
-                marginRight: 10,
-              }}
-            >
-              Indonesia
-            </Text>
-            <Select height={10} width={10} />
-          </Ripple>
         </View>
         <View
           style={{
@@ -598,7 +594,13 @@ export default function Unesco({ navigation, route }) {
 
   const renderCulture = ({ item, index }) => {
     return (
-      <View
+      <Pressable
+        onPress={() => {
+          navigation.navigate("detailStack", {
+            id: item.id,
+            name: item.name,
+          });
+        }}
         style={{
           flexDirection: "row",
           paddingHorizontal: 10,
@@ -609,7 +611,7 @@ export default function Unesco({ navigation, route }) {
       >
         <View style={{ width: "35%", height: 85 }}>
           <Image
-            source={item.cover}
+            source={{ uri: item.images.image }}
             style={{ width: "100%", height: 85, borderRadius: 5 }}
             resizeMode="cover"
           />
@@ -626,15 +628,17 @@ export default function Unesco({ navigation, route }) {
             <Text type="bold">{item.name}</Text>
             <Text>
               {"("}
-              {item.year}
+              {item.description}
               {")"}
             </Text>
           </View>
           <View>
-            <Text>{item.address}</Text>
+            <Text>
+              {item.cities.name}, {item.province.name}
+            </Text>
           </View>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
@@ -661,19 +665,19 @@ export default function Unesco({ navigation, route }) {
       case "culture":
         numCols = null;
         flex = null;
-        dataR = data_unesco_culture;
+        dataR = listdestinasi_unesco;
         renderItem = renderCulture;
         break;
       case "natural":
         numCols = null;
         flex = null;
-        dataR = data_unesco_nature;
+        dataR = listdestinasi_unesco;
         renderItem = renderCulture;
         break;
       case "mix":
         numCols = null;
         flex = null;
-        dataR = data_unesco;
+        dataR = listdestinasi_unesco;
         renderItem = renderCulture;
         break;
       default:
@@ -862,6 +866,60 @@ export default function Unesco({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Animated.View
+        style={{
+          position: "absolute",
+          transform: [{ translateY: PosisiCountry }],
+          alignItems: "center",
+          width: "100%",
+          height: 44,
+          // backgroundColor: "#FFFFFF",
+          zIndex: 100,
+        }}
+      >
+        <Pressable
+          style={({ pressed }) => [
+            {
+              height: 44,
+              borderRadius: 20,
+              // borderWidth: 1,
+              borderColor: "grey",
+              paddingVertical: 20,
+              paddingHorizontal: 30,
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              // bottom: -22,
+              // left: "30%",
+              backgroundColor: pressed ? "#F6F6F7" : "white",
+              shadowColor: "#DFDFDF",
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 2.84,
+              elevation: 3,
+              flexDirection: "row",
+              // position: "absolute",
+              // transform: [{ translateY: PosisiCountry }],
+              // alignItems: "center",
+            },
+          ]}
+        >
+          <Text
+            size="label"
+            type="bold"
+            style={{
+              color: "",
+              marginRight: 10,
+            }}
+          >
+            Indonesia
+          </Text>
+          <Select height={10} width={10} />
+        </Pressable>
+      </Animated.View>
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
