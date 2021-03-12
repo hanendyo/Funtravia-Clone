@@ -7,6 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Button, Text, Truncate, CustomImage, Loading } from "../../component";
 import { default_image, search_button } from "../../assets/png";
@@ -20,7 +21,7 @@ import { CHATSERVER } from "../../config";
 export default function NewChat({ navigation }) {
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
-  let [search, setSearch] = useState(" ");
+  let [search, setSearch] = useState("");
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [
@@ -41,18 +42,18 @@ export default function NewChat({ navigation }) {
 
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "Send New Message",
+    headerTitle: "New Message",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      fontSize: 50,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
+      marginLeft: -10,
     },
     headerLeft: () => (
       <Button
@@ -63,6 +64,7 @@ export default function NewChat({ navigation }) {
         onPress={() => navigation.goBack()}
         style={{
           height: 55,
+          marginLeft: 10,
         }}
       >
         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
@@ -246,7 +248,7 @@ export default function NewChat({ navigation }) {
         >
           <View
             style={{
-              backgroundColor: "#e2ecf8",
+              backgroundColor: "#f1f1f1",
               borderRadius: 5,
               width: "100%",
               height: 40,
@@ -283,9 +285,28 @@ export default function NewChat({ navigation }) {
         </View>
       </View>
       <ScrollView>
-        {DataBuddy && DataBuddy.search_travelwith ? (
+        {loadingwith ? (
+          <View style={{ paddingVertical: 20 }}>
+            <ActivityIndicator animating={true} color="#209FAE" />
+          </View>
+        ) : DataBuddy && DataBuddy.search_travelwith.length > 1 ? (
           <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-        ) : null}
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 20,
+            }}
+          >
+            <Text size="label" type="bold">
+              Tidak ada data
+            </Text>
+          </View>
+        )}
+        {/* {DataBuddy && DataBuddy.search_travelwith ? (
+          <RenderBuddy databuddy={DataBuddy.search_travelwith} />
+        ) : null} */}
       </ScrollView>
     </SafeAreaView>
   );
