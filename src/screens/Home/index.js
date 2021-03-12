@@ -154,9 +154,16 @@ export default function Home(props) {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[1]}
-        onScroll={Animated.event([
-          { nativeEvent: { contentOffset: { y: scrollY } } },
-        ])}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: { y: scrollY },
+              },
+            },
+          ],
+          { useNativeDriver: false }
+        )}
         refreshControl={
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
         }
