@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
-const CountryListSrc = gql`
+const CountryListSrcUnesco = gql`
   query($continent_id: [ID], $keyword: String) {
-    list_country_src(continent_id: $continent_id, keyword: $keyword) {
+    list_country_src_unesco(continent_id: $continent_id, keyword: $keyword) {
       id
       name
       code
@@ -23,4 +23,4 @@ const CountryListSrc = gql`
     }
   }
 `;
-export default CountryListSrc;
+export default CountryListSrcUnesco;
