@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
-const CountryListSrc = gql`
+const CountryListSrcMovie = gql`
   query($continent_id: [ID], $keyword: String) {
-    list_country_src(continent_id: $continent_id, keyword: $keyword) {
+    list_country_src_movie(continent_id: $continent_id, keyword: $keyword) {
       id
       name
       code
@@ -23,4 +23,4 @@ const CountryListSrc = gql`
     }
   }
 `;
-export default CountryListSrc;
+export default CountryListSrcMovie;
