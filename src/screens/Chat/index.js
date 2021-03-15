@@ -9,7 +9,12 @@ import {
   Image,
   ScrollView,
   Alert,
+  ActivityIndicator,
+  StyleSheet,
+  TouchableHighlight,
+  Touchable,
 } from "react-native";
+import Modal from "react-native-modal";
 import { Delete, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile } from "../../assets/png";
 import { Text, Button, Truncate, StatusBar, Errors } from "../../component";
@@ -18,6 +23,7 @@ import Ripple from "react-native-material-ripple";
 import Swipeout from "react-native-swipeout";
 import { useTranslation } from "react-i18next";
 import { CHATSERVER } from "../../config";
+import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 
 export default function Message({ navigation }) {
   const { width, height } = Dimensions.get("screen");
@@ -93,7 +99,6 @@ export default function Message({ navigation }) {
   const [modalError, setModalError] = useState(false);
 
   const modals = () => {
-    console.log("test");
     setModalError(true);
     setMessages("Coming Soon");
   };
@@ -104,7 +109,7 @@ export default function Message({ navigation }) {
         backgroundColor: "#F6F6F6",
         component: (
           <TouchableOpacity
-            onPress={() => modals()}
+            onPress={() => alert(id)}
             // onPress={() => {
             //   console.log(id);
             // }}
@@ -132,8 +137,15 @@ export default function Message({ navigation }) {
     ];
   };
 
+  const [modalDelete, setModalDelete] = useState(false);
+  const [nama, setNama] = useState("");
+  const PressLong = async (item) => {
+    console.log("name :", item);
+    await setNama(item?.name);
+    await setModalDelete(true);
+  };
+
   const renderItem = ({ item }) => {
-    console.log("item :", item);
     let timeChat = new Date(item.recent?.time).toTimeString();
     // let dateChat = new Date(item.recent?.time).toLocaleDateString();
     // let date = new Date().toLocaleDateString();
@@ -144,18 +156,19 @@ export default function Message({ navigation }) {
       .toString()
       .substr(2, 2);
     let dateChat =
-      dateChateMonth + 1 + "/" + dateChateDate + "/" + dateChateYear;
+      dateChateDate + "/" + (dateChateMonth + 1) + "/" + dateChateYear;
     const dates = new Date();
     let day = dates.getDate();
     let month = dates.getMonth();
     let year = dates.getFullYear().toString().substr(2, 2);
-    let date = month + 1 + "/" + day + "/" + year;
+    let date = day + "/" + (month + 1) + "/" + year;
 
     let change = item.sender_id === user.id ? item.receiver : item.sender;
     return (
-      <Swipeout right={swipeoutBtn(item.id)} key={`${item.id}_child`}>
+      <Swipeout openLeft={swipeoutBtn(item.id)} key={`${item.id}_child`}>
         {item?.recent !== null ? (
-          <Ripple
+          <TouchableOpacity
+            onLongPress={() => PressLong(item.name)}
             onPress={() =>
               navigation.navigate("ChatStack", {
                 screen: "RoomChat",
@@ -221,7 +234,7 @@ export default function Message({ navigation }) {
                 </Text>
               </View>
             ) : null}
-          </Ripple>
+          </TouchableOpacity>
         ) : null}
       </Swipeout>
     );
@@ -238,9 +251,9 @@ export default function Message({ navigation }) {
             navigation.navigate("ChatStack", {
               screen: "GroupRoom",
               params: {
-                room_id: item.itinerary.id,
-                name: item.itinerary.name,
-                picture: item.itinerary.cover,
+                room_id: item.itinerary?.id,
+                name: item.itinerary?.name,
+                picture: item.itinerary?.cover,
               },
             })
           }
@@ -256,7 +269,7 @@ export default function Message({ navigation }) {
           }}
         >
           <Image
-            source={{ uri: item.itinerary.cover }}
+            source={{ uri: item.itinerary?.cover }}
             style={{
               width: 50,
               height: 50,
@@ -267,7 +280,7 @@ export default function Message({ navigation }) {
           />
           <View style={{ width: width - 160, paddingHorizontal: 10 }}>
             <Text size="description" type="bold" style={{ paddingVertical: 5 }}>
-              {item.itinerary.name}
+              {item.itinerary?.name}
             </Text>
             {item.recent ? (
               <Text size="small">
@@ -310,10 +323,112 @@ export default function Message({ navigation }) {
     // }
   };
 
-  const renderData = active == "personal" ? dataRes : dataGroupRes;
+  const Personal = () => (
+    <>
+      {dataRes && dataRes.length > 0 ? (
+        <FlatList
+          data={dataRes}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          // stickyHeaderIndices={[0]}
+        />
+      ) : (
+        <Kosong width={width} height={width} />
+      )}
+    </>
+  );
+  const Group = () => (
+    <>
+      {dataGroupRes && dataGroupRes.length > 0 ? (
+        <FlatList
+          data={dataGroupRes}
+          renderItem={renderItemGroup}
+          keyExtractor={(item) => item.id}
+          // stickyHeaderIndices={[0]}
+        />
+      ) : (
+        <Kosong width={width} height={width} />
+      )}
+    </>
+  );
+
+  const HeaderHeight = width + 5;
+
+  const renderLabel = ({ route, focused }) => {
+    return (
+      <Text
+        style={[
+          focused ? styles.labelActive : styles.label,
+          { opacity: focused ? 1 : 0.7 },
+        ]}
+      >
+        {route.title}
+      </Text>
+    );
+  };
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: "personal", title: "Personal" },
+    { key: "group", title: "Group" },
+  ]);
+
+  const renderScene = SceneMap({
+    personal: Personal,
+    group: Group,
+  });
+
+  // const renderData = active == "personal" ? dataRes : dataGroupRes;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
+      <Modal
+        isVisible={modalDelete}
+        transparent={true}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        animationInTiming={2000}
+        animationOutTiming={2000}
+        backdropOpacity={0.7}
+      >
+        <View
+          style={{
+            // flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            width: Dimensions.get("screen").width * 0.6,
+            height: Dimensions.get("screen").height * 0.2,
+            borderRadius: 10,
+            backgroundColor: "#fff",
+            padding: 10,
+          }}
+        >
+          <Delete height={40} width={40} />
+          <Text
+            type="regular"
+            size="label"
+            style={{ textAlign: "center", marginTop: 10 }}
+          >
+            {console.log(nama)} Hapus {nama}?
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              justifyContent: "space-around",
+              marginTop: 15,
+            }}
+          >
+            <Button type="box" color="secondary" text="Hapus" />
+            <Button
+              type="box"
+              text="Cancel"
+              onPress={() => setModalDelete(false)}
+            />
+          </View>
+        </View>
+      </Modal>
       <Errors
         modals={modalError}
         setModals={(e) => setModalError(e)}
@@ -341,7 +456,7 @@ export default function Message({ navigation }) {
             }}
           />
         </View>
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             backgroundColor: "#fff",
@@ -399,9 +514,28 @@ export default function Message({ navigation }) {
               Trip Group
             </Text>
           </Ripple>
-        </View>
+        </View> */}
       </View>
-      {renderData && renderData.length > 0 ? (
+      <TabView
+        lazy={true}
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={(props) => (
+          <TabBar
+            {...props}
+            style={{
+              backgroundColor: "white",
+            }}
+            renderLabel={renderLabel}
+            indicatorStyle={styles.indicator}
+          />
+        )}
+
+        // renderTabBar={() => null}
+        // renderLazyPlaceholder={() => time()}
+      />
+      {/* {renderData && renderData.length > 0 ? (
         <FlatList
           data={renderData}
           renderItem={active == "personal" ? renderItem : renderItemGroup}
@@ -410,7 +544,7 @@ export default function Message({ navigation }) {
         />
       ) : (
         <Kosong width={width} height={width} />
-      )}
+      )} */}
       {active == "personal" ? (
         <Button
           onPress={() =>
@@ -426,3 +560,35 @@ export default function Message({ navigation }) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
+  header: {
+    height: 100,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    backgroundColor: "#FFF",
+  },
+  label: {
+    fontSize: 14,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: 14,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
+  tab: {
+    elevation: 1,
+    shadowOpacity: 0.5,
+    backgroundColor: "#FFF",
+    height: 50,
+  },
+  indicator: { backgroundColor: "#209FAE", height: 3 },
+});
