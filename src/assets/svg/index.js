@@ -184,6 +184,12 @@ import TravelJournal from "./files/travel_goal.svg";
 import DestinationHome from "./files/destination_home.svg";
 import EventHome from "./files/event_home.svg";
 import Showmore from "./files/Showmore.svg";
+import Album from "./files/album.svg";
+import Albumgreen from "./files/album2.svg";
+import Allpost from "./files/allpost.svg";
+import Allpostgreen from "./files/allpost2.svg";
+import Tag from "./files/tag.svg";
+import Taggreen from "./files/tag2.svg";
 
 export {
   LikeWhite,
@@ -372,4 +378,10 @@ export {
   DestinationHome,
   EventHome,
   Showmore,
+  Album,
+  Albumgreen,
+  Allpost,
+  Allpostgreen,
+  Tag,
+  Taggreen,
 };
