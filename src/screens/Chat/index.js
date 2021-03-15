@@ -57,8 +57,6 @@ export default function Message({ navigation }) {
     await setDataRes(dataResponse);
   };
 
-  console.log("getUserAndToken :", getRoom);
-
   const getRoomGroup = async (access_token) => {
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
       method: "GET",
