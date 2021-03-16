@@ -32,6 +32,8 @@ export default function Room({ navigation, route }) {
   let [message, setMessage] = useState([]);
   let flatListRef = useRef();
 
+  console.log(room);
+
   const headerOptions = {
     headerShown: true,
     headerTitle: null,

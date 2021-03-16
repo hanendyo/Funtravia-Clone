@@ -386,6 +386,8 @@ export default function Room({ navigation, route }) {
   const [messages, setMessages] = useState("");
   const [modalError, setModalError] = useState(false);
 
+  console.log(messages);
+
   const modals = () => {
     setModalError(true);
     setMessages("Sticker Coming Soon");

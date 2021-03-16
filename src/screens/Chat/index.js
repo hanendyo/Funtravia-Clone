@@ -140,7 +140,6 @@ export default function Message({ navigation }) {
   const [modalDelete, setModalDelete] = useState(false);
   const [nama, setNama] = useState("");
   const PressLong = async (item) => {
-    console.log("name :", item);
     await setNama(item?.name);
     await setModalDelete(true);
   };
