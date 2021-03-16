@@ -273,7 +273,7 @@ export default function ItineraryDetail(props) {
 		},
 		variables: { id: idDay },
 		onCompleted: (res) => {
-			setDataListItem(res);
+			setDataListItem(res.day_timeline);
 		},
 	});
 
