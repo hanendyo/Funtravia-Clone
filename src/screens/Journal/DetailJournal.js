@@ -442,9 +442,9 @@ export default function DetailJournal(props) {
                           }}
                         >
                           <Text
-                            size={"description"}
-                            type={"regular"}
-                            style={{ textAlign: "justify", lineHeight: 16 }}
+                            size="readable"
+                            type="regular"
+                            style={{ textAlign: "justify", lineHeight: 18 }}
                           >
                             {item.text ? item.text : null}
                           </Text>
@@ -471,9 +471,9 @@ export default function DetailJournal(props) {
                             }}
                           >
                             <Text
-                              size={"description"}
-                              type={"regular"}
-                              style={{ textAlign: "justify", lineHeight: 16 }}
+                              size="readable"
+                              type="regular"
+                              style={{ textAlign: "justify", lineHeight: 18 }}
                             >
                               {item.text ? item.text : null}
                             </Text>

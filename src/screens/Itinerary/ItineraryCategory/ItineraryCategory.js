@@ -33,6 +33,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
 import { Truncate, Loading } from "../../../component";
 import Ripple from "react-native-material-ripple";
+import {
+  renderers,
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  MenuProvider,
+} from "react-native-popup-menu";
+import { Thumbnail } from "native-base";
 
 export default function ItineraryCategory(props) {
   const { t } = useTranslation();
@@ -51,6 +60,7 @@ export default function ItineraryCategory(props) {
     rating: null,
   });
 
+  const { SlideInMenu } = renderers;
   const unSelect = (id) => {
     setDataType("");
   };
@@ -329,6 +339,7 @@ export default function ItineraryCategory(props) {
           height: 145,
           paddingHorizontal: 15,
           marginTop: 5,
+          zIndex: -5,
         }}
       >
         <View
@@ -427,7 +438,7 @@ export default function ItineraryCategory(props) {
                   {Truncate({
                     text: item?.user_created?.first_name
                       ? item?.user_created?.first_name
-                      : "user_deleted",
+                      : "unknown",
                     length: 13,
                   })}
                 </Text>
@@ -662,15 +673,18 @@ export default function ItineraryCategory(props) {
               }
               ListHeaderComponent={
                 <>
-                  <View
+                  <MenuProvider
                     style={{
-                      height: Dimensions.get("screen").height * 0.05,
+                      // height: Dimensions.get("screen").height * 0.1,
+                      height: Dimensions.get("screen").height * 0.06,
                       paddingHorizontal: 15,
                       paddingVertical: 5,
                       alignItems: "center",
                       flexDirection: "row",
                       justifyContent: "space-between",
                       flexDirection: "row",
+                      zIndex: -1,
+                      marginBottom: 2,
                     }}
                   >
                     <View style={{ flexDirection: "row" }}>
@@ -689,22 +703,68 @@ export default function ItineraryCategory(props) {
                       style={{
                         width: Dimensions.get("screen").width * 0.35,
                         height: "100%",
-                        elevation: 20,
+                        elevation: 10,
                         justifyContent: "center",
                         backgroundColor: "white",
-                        borderRadius: 2,
+                        borderRadius: 3,
+                        // borderWidth: 1,
                       }}
                     >
-                      <Picker
+                      <View
+                        style={{
+                          backgroundColor: "#fff",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: 5,
+                          borderRadius: 2,
+                        }}
+                      >
+                        <Menu>
+                          <MenuTrigger>
+                            <Text size="description" type="bold">
+                              {order === "new" ? "New Post" : "Populer"}
+                            </Text>
+                          </MenuTrigger>
+                          <MenuOptions
+                            optionsContainerStyle={{
+                              // alignSelf: "flex-end",
+                              zIndex: 1,
+                              width: Dimensions.get("screen").width * 0.3,
+                              // alignItems: "flex-end",
+                              // alignContent: "flex-end",
+                            }}
+                          >
+                            <MenuOption
+                              // text="New Post"
+                              style={{ paddingBottom: 1 }}
+                              onSelect={() => setOrder("new")}
+                            >
+                              <Text size="description" type="bold">
+                                New Post
+                              </Text>
+                            </MenuOption>
+                            <MenuOption
+                              // text="Populer"
+                              style={{ paddingTop: 1 }}
+                              onSelect={() => setOrder("populer")}
+                            >
+                              <Text size="description" type="bold">
+                                Populer
+                              </Text>
+                            </MenuOption>
+                          </MenuOptions>
+                        </Menu>
+                      </View>
+                      {/* <Picker
                         mode="dropdown"
                         selectedValue={order}
                         onValueChange={(x) => setOrder(x)}
                       >
                         <Picker.Item label="New Post" value="new" />
                         <Picker.Item label="Populer" value="populer" />
-                      </Picker>
+                      </Picker> */}
                     </View>
-                  </View>
+                  </MenuProvider>
                 </>
               }
               onEndReachedThreshold={1}
@@ -746,21 +806,10 @@ export default function ItineraryCategory(props) {
                   style={{
                     width: Dimensions.get("screen").width * 0.35,
                     height: "100%",
-                    elevation: 20,
                     justifyContent: "center",
-                    backgroundColor: "white",
                     borderRadius: 2,
                   }}
-                >
-                  <Picker
-                    mode="dropdown"
-                    selectedValue={order}
-                    onValueChange={(x) => setOrder(x)}
-                  >
-                    <Picker.Item label="New Post" value="new" />
-                    <Picker.Item label="Populer" value="populer" />
-                  </Picker>
-                </View>
+                ></View>
               </View>
               <View
                 style={{
@@ -816,7 +865,6 @@ export default function ItineraryCategory(props) {
   let slider = useRef();
 
   let [y, setY] = useState(0);
-  console.log("y :", y);
 
   const scroll_to = () => {
     // console.log("slider :", scrollById(slider.props.id));
@@ -868,8 +916,6 @@ export default function ItineraryCategory(props) {
                   id={item.name}
                   onLayout={(event) => {
                     const layout = event.nativeEvent;
-                    console.log("layout :", event);
-                    console.log("layout asli :", layout);
                     setY(layout);
                   }}
                   style={{
