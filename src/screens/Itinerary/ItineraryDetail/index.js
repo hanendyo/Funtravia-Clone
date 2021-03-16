@@ -43,7 +43,7 @@ import {
 	Sharegreen,
 	Xhitam,
 	LikeEmptynew,
-	LikeEmpty,
+	Reorder,
 } from "../../../assets/svg";
 import {
 	Button,
@@ -52,6 +52,7 @@ import {
 	FunIcon,
 	Text,
 	Truncate,
+	StatusBar as CustomStatusBar,
 } from "../../../component";
 import Sidebar from "../../../component/src/Sidebar";
 import {
@@ -78,14 +79,11 @@ import album from "../../../graphQL/Query/Itinerary/album";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
-import { AutoDragSortableView } from "react-native-drag-sort";
-import DraggableFlatList from "react-native-draggable-flatlist";
-import Itinerary from "./src/itinerary";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
-const HeaderHeight = Dimensions.get("screen").height * 0.35;
+const HeaderHeight = Dimensions.get("screen").height * 0.3;
 const SafeStatusBar = Platform.select({
 	ios: 44,
 	android: StatusBar.currentHeight,
@@ -275,7 +273,6 @@ export default function ItineraryDetail(props) {
 		},
 		variables: { id: idDay },
 		onCompleted: (res) => {
-			console.log("RESULT");
 			setDataListItem(res);
 		},
 	});
@@ -293,7 +290,7 @@ export default function ItineraryDetail(props) {
 		var starttime = startt.split(":");
 
 		return (
-			<Text size="description" type="regular" style={{}}>
+			<Text size="description" type="bold" style={{}}>
 				{starttime[0]}:{starttime[1]}
 			</Text>
 		);
@@ -311,7 +308,7 @@ export default function ItineraryDetail(props) {
 		}
 
 		return (
-			<Text size="description" type="regular" style={{}}>
+			<Text size="description" type="bold" style={{}}>
 				{jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam}:
 				{menit < 10 ? "0" + menit : menit}
 			</Text>
@@ -1578,7 +1575,7 @@ export default function ItineraryDetail(props) {
 					}}
 				>
 					<LinearGradient
-						colors={["rgba(0, 0, 0, 1)", "rgba(34, 34, 34, 0)"]}
+						colors={["rgba(0, 0, 0, 0.8)", "rgba(34, 34, 34, 0)"]}
 						start={{ x: 1, y: 0 }}
 						end={{ x: 1, y: 1 }}
 						style={{
@@ -1600,11 +1597,11 @@ export default function ItineraryDetail(props) {
 				<Animated.View
 					style={{
 						position: "absolute",
-						bottom: 62,
+						bottom: 65,
 						left: 15,
 						transform: [{ translateY: textTop }, { translateX: textLeft }],
 						zIndex: 9,
-						width: 250,
+						width: 200,
 					}}
 				>
 					<Animated.Text
@@ -1612,7 +1609,7 @@ export default function ItineraryDetail(props) {
 						style={{
 							opacity: textOpacity,
 							fontSize: 18,
-							fontFamily: "Lato-Bold",
+							fontFamily: "Lato-Black",
 							color: "#464646",
 							textAlign: "left",
 						}}
@@ -1622,10 +1619,11 @@ export default function ItineraryDetail(props) {
 						) : null}
 					</Animated.Text>
 					<Animated.Text
+						allowFontScaling={false}
 						style={{
 							opacity: textOpacitys,
 							position: "absolute",
-							fontFamily: "Lato-Bold",
+							fontFamily: "Lato-Black",
 							color: "#ffff",
 							textAlign: "left",
 						}}
@@ -1637,7 +1635,6 @@ export default function ItineraryDetail(props) {
 					<View
 						style={{
 							flexDirection: "row",
-							// paddingVertical: 10,
 							alignItems: "center",
 						}}
 					>
@@ -1645,10 +1642,11 @@ export default function ItineraryDetail(props) {
 							size="small"
 							type="bold"
 							style={{
-								// color: warna2,
+								color: "#838383",
 								opacity: textOpacity,
 								fontFamily: "Lato-Bold",
 								fontSize: 12,
+								marginTop: 5,
 							}}
 						>
 							{/* {t("dates")} :{" "} */}
@@ -1667,6 +1665,7 @@ export default function ItineraryDetail(props) {
 								opacity: textOpacitys,
 								fontFamily: "Lato-Bold",
 								fontSize: 12,
+								marginTop: 0,
 							}}
 						>
 							{/* {t("dates")} :{" "} */}
@@ -1686,7 +1685,7 @@ export default function ItineraryDetail(props) {
 						height: 55,
 						opacity: imageOpacity,
 						paddingHorizontal: 20,
-						paddingVertical: 10,
+						paddingVertical: 15,
 						width: "100%",
 						flexDirection: "row",
 						justifyContent: "space-between",
@@ -1729,7 +1728,7 @@ export default function ItineraryDetail(props) {
 						opacity: imageOpacity,
 						// transform: [{ translateY: contentTranslate }],
 						paddingVertical: 5,
-						paddingHorizontal: 20,
+						paddingHorizontal: 15,
 						width: "100%",
 						height: 55,
 						backgroundColor: "white",
@@ -1761,7 +1760,7 @@ export default function ItineraryDetail(props) {
 							style={{
 								flexDirection: "row",
 								// marginTop: 5,
-								paddingVertical: 7,
+								paddingVertical: 10,
 								paddingHorizontal: 10,
 								alignItems: "center",
 								alignContent: "center",
@@ -1774,8 +1773,8 @@ export default function ItineraryDetail(props) {
 							<View
 								style={{
 									backgroundColor: "#209fae",
-									width: 7,
-									height: 17,
+									width: 5,
+									height: 30,
 									borderRadius: 5,
 									marginRight: 5,
 								}}
@@ -1863,15 +1862,9 @@ export default function ItineraryDetail(props) {
 					marginTop: -1,
 					// height: item.note ? 210 : 170,
 					width: "100%",
-					backgroundColor: "#f6f6f6",
 					flexDirection: "row",
 					alignItems: "flex-start",
 					justifyContent: "flex-start",
-					shadowColor: "#d3d3d3",
-					// shadowOffset: isActive ? { width: 2, height: 2 } : {},
-					// shadowOpacity: isActive ? 1 : 0,
-					// shadowRadius: isActive ? 2 : 0,
-					// elevation: isActive ? 5 : 0,
 				}}
 			>
 				<View
@@ -1902,8 +1895,8 @@ export default function ItineraryDetail(props) {
 								marginRight: 4.2,
 								// borderBottomWidth: 1,
 								// borderRightWidth: index && index > 0 ? 1 : 0,
-								borderRightWidth: index > 0 ? 1 : 0,
-								borderRightColor: "#464646",
+								borderRightWidth: index > 0 ? 0.5 : 0,
+								borderRightColor: "#6C6C6C",
 							}}
 						></View>
 
@@ -1944,7 +1937,7 @@ export default function ItineraryDetail(props) {
 									{item.time ? (
 										<GetStartTime startt={item.time} />
 									) : (
-										<Text size="description" type="regular">
+										<Text size="description" type="bold">
 											00:00
 										</Text>
 									)}
@@ -1968,31 +1961,41 @@ export default function ItineraryDetail(props) {
 											dur={item.duration ? item.duration : "00:00"}
 										/>
 									) : (
-										<Text size="description" type="regular">
+										<Text size="description" type="bold">
 											00:00
 										</Text>
 									)}
 								</TouchableOpacity>
 							</View>
-
-							<View
-								style={{
-									zIndex: 99,
-									height: 10,
-									width: 10,
-									marginLeft: 5,
-									borderRadius: 10,
-									backgroundColor: "#209fae",
-								}}
-							></View>
+							{index > 0 &&
+							dataList[index - 1] &&
+							dataList[index].latitude == dataList[index - 1].latitude &&
+							dataList[index].longitude == dataList[index - 1].longitude ? (
+								<View style={{ width: 10, height: 10, marginLeft: 5 }}></View>
+							) : (
+								<View
+									style={{
+										zIndex: 99,
+										height: 10,
+										width: 10,
+										marginLeft: 5,
+										borderRadius: 10,
+										backgroundColor: "#209fae",
+										elevation: 3,
+										shadowColor: "#d3d3d3",
+										shadowOffset: { width: 2, height: 2 },
+										shadowOpacity: 1,
+										shadowRadius: 2,
+									}}
+								/>
+							)}
 						</View>
-
 						<View
 							style={{
 								flex: 1,
 								marginRight: 4.2,
-								borderRightWidth: index < x ? 1 : 0,
-								borderRightColor: "#464646",
+								borderRightWidth: index < x ? 0.5 : 0,
+								borderRightColor: "#6C6C6C",
 							}}
 						></View>
 					</View>
@@ -2027,23 +2030,40 @@ export default function ItineraryDetail(props) {
 							>
 								<View
 									style={{
-										borderLeftWidth: 1,
-										borderBottomWidth: 1,
-										borderColor: "#464646",
+										borderLeftWidth: 0.5,
+										// borderBottomWidth: 0.5,
+										borderColor: "#6C6C6C",
 										height: 30,
 									}}
-								></View>
+								/>
+								<View
+									style={{
+										position: "absolute",
+										top: 25,
+										zIndex: 99,
+										height: 10,
+										width: 10,
+										left: -5,
+										borderRadius: 10,
+										backgroundColor: "#209fae",
+										elevation: 3,
+										shadowColor: "#d3d3d3",
+										shadowOffset: { width: 2, height: 2 },
+										shadowOpacity: 1,
+										shadowRadius: 2,
+									}}
+								/>
 								{dataList[index + 1] &&
 								dataList[index].latitude == dataList[index + 1].latitude &&
 								dataList[index].longitude == dataList[index + 1].longitude ? (
 									<View
 										style={{
 											marginTop: -1,
-											borderLeftWidth: 1,
-											borderColor: "#464646",
+											borderLeftWidth: 0.5,
+											borderColor: "#6C6C6C",
 											flex: 1,
 										}}
-									></View>
+									/>
 								) : null}
 							</View>
 						) : null}
@@ -2054,8 +2074,12 @@ export default function ItineraryDetail(props) {
 								borderRadius: 5,
 								marginBottom: 2,
 								backgroundColor: "#fff",
-								elevation: 3,
 								padding: 10,
+								elevation: 3,
+								shadowColor: "#d3d3d3",
+								shadowOffset: { width: 2, height: 2 },
+								shadowOpacity: 1,
+								shadowRadius: 2,
 							}}
 						>
 							<View
@@ -2145,10 +2169,10 @@ export default function ItineraryDetail(props) {
 										backgroundColor: "#daf0f2",
 										paddingVertical: 5,
 										paddingHorizontal: 15,
-										borderRadius: 20,
+										borderRadius: 5,
 									}}
 								>
-									<Text>
+									<Text type="bold">
 										{Getdurasi(item.duration ? item.duration : "00:00:00")}
 									</Text>
 								</View>
@@ -2177,11 +2201,13 @@ export default function ItineraryDetail(props) {
 										}
 										style={{ flexDirection: "row", alignItems: "center" }}
 									>
+										<Pencilgreen width={10} height={10} />
 										<Text
 											size="small"
 											type="regular"
 											style={{
 												textAlign: "left",
+												marginLeft: 5,
 											}}
 										>
 											{item.note}
@@ -2228,15 +2254,15 @@ export default function ItineraryDetail(props) {
 							<View
 								style={{
 									width: 15,
-									borderTopWidth: 1,
-									borderTopColor: "#464646",
+									borderTopWidth: 0.5,
+									borderTopColor: "#6C6C6C",
 								}}
 							></View>
 							<ScrollView
 								horizontal={true}
 								showsHorizontalScrollIndicator={false}
 							>
-								<View
+								{/* <View
 									style={{
 										marginRight: 5,
 										borderRadius: 5,
@@ -2273,12 +2299,11 @@ export default function ItineraryDetail(props) {
 										/>
 										{" Jam"}
 									</Text>
-								</View>
+								</View> */}
 								<View
 									style={{
 										marginRight: 5,
 										borderRadius: 5,
-										elevation: 3,
 										marginVertical: 2,
 										marginLeft: 1,
 										backgroundColor: "#fff",
@@ -2286,31 +2311,40 @@ export default function ItineraryDetail(props) {
 										paddingHorizontal: 10,
 										paddingVertical: 10,
 										alignItems: "center",
+										elevation: 3,
+										shadowColor: "#d3d3d3",
+										shadowOffset: { width: 2, height: 2 },
+										shadowOpacity: 1,
+										shadowRadius: 2,
 									}}
 								>
 									<Mobil height={15} width={15} style={{ marginRight: 10 }} />
-									<Text>
+									{/* <Text>{"60Km/h "}</Text> */}
+									<Text type="bold">
 										<Distance
 											lat1={dataList[index].latitude}
 											lon1={dataList[index].longitude}
 											lat2={dataList[index + 1].latitude}
 											lon2={dataList[index + 1].longitude}
 											unit={"km"}
-										/>{" "}
-										Km
+										/>
 									</Text>
-									<Text> - </Text>
-									<Text>
+									<Text>km </Text>
+									<Text>Estimate </Text>
+									<Text type="bold">
 										<HitungWaktu
 											lat1={dataList[index].latitude}
 											lon1={dataList[index].longitude}
 											lat2={dataList[index + 1].latitude}
 											lon2={dataList[index + 1].longitude}
 											unit={"km"}
-											kecepatan={60}
+											kecepatan={50}
 										/>
-										{" Jam"}
 									</Text>
+									<Text>{"h"}</Text>
+									<Text>{" in "}</Text>
+									<Text type="bold">{"50"}</Text>
+									<Text>{"km/h"}</Text>
 								</View>
 							</ScrollView>
 						</View>
@@ -2516,7 +2550,7 @@ export default function ItineraryDetail(props) {
 						color: focused
 							? "#209FAE"
 							: status === "edit"
-							? "#d3d3d3"
+							? "#6c6c6c"
 							: "#464646",
 					}}
 				>
@@ -2557,12 +2591,12 @@ export default function ItineraryDetail(props) {
 		switch (route.key) {
 			case "tab1":
 				numCols = 1;
-				data = dataList;
+				data = dataList ? dataList : [1, 2, 3];
 				renderItem = rednerTab1Item;
 				break;
 			case "tab2":
 				numCols = 1;
-				data = dataAlbum ? spreadData(dataAlbum) : null;
+				data = dataAlbum ? spreadData(dataAlbum) : [];
 				renderItem = renderAlbum;
 				break;
 			case "tab3":
@@ -2573,10 +2607,8 @@ export default function ItineraryDetail(props) {
 			default:
 				return null;
 		}
-		if (route.key === "tab1") {
-			return <Itinerary />;
-		} else {
-			return (
+		return (
+			<View>
 				<Animated.FlatList
 					scrollToOverflowEnabled={true}
 					scrollEnabled={canScroll}
@@ -2685,28 +2717,31 @@ export default function ItineraryDetail(props) {
 										}}
 									>
 										<Text type={"bold"} size="label">
-											{dateFormatHari(datadayaktif.date)}
+											{dateFormatHari(datadayaktif.date).toUpperCase()}
 										</Text>
 										<View
 											style={{
 												marginTop: 3,
 												backgroundColor: "#464646",
-												borderRadius: 5,
-												width: 5,
-												height: 5,
+												borderRadius: 2,
+												width: 4,
+												height: 4,
 												marginHorizontal: 5,
 											}}
-										></View>
+										/>
 										<Text type={"bold"} size="label">
-											{dateFormatMDY(datadayaktif.date)}
+											{dateFormatMDY(datadayaktif.date).toUpperCase()}
 										</Text>
 									</View>
 									<Text>
 										{dataList.length > 0 ? (
-											<Truncate text={getcity(dataList)} length={35} />
+											<Truncate
+												text={getcity(dataList).toUpperCase()}
+												length={35}
+											/>
 										) : (
 											<Capital
-												text={datadetail.itinerary_detail.city.name}
+												text={datadetail.itinerary_detail.city.name.toUpperCase()}
 												length={35}
 											/>
 										)}
@@ -2767,7 +2802,7 @@ export default function ItineraryDetail(props) {
 												</View>
 											</View>
 											<Text size="small" type="regular" style={{}}>
-												{dataweather.weather[0].description}
+												{dataweather.weather[0].description.toUpperCase()}
 											</Text>
 										</View>
 
@@ -2788,7 +2823,7 @@ export default function ItineraryDetail(props) {
 													}}
 												/>
 												<Text size="small" type="regular" style={{}}>
-													Hot
+													HOT
 												</Text>
 											</View>
 										) : null}
@@ -2805,7 +2840,7 @@ export default function ItineraryDetail(props) {
 											>
 												<FunIcon icon={"w-warm"} height={50} width={50} />
 												<Text size="small" type="regular" style={{}}>
-													Warm
+													WARM
 												</Text>
 											</View>
 										) : null}
@@ -2822,7 +2857,7 @@ export default function ItineraryDetail(props) {
 											>
 												<FunIcon icon={"w-humid"} height={50} width={50} />
 												<Text size="small" type="regular" style={{}}>
-													Humid
+													HUMID
 												</Text>
 											</View>
 										) : null}
@@ -2839,7 +2874,7 @@ export default function ItineraryDetail(props) {
 											>
 												<FunIcon icon={"w-cold"} height={50} width={50} />
 												<Text size="small" type="regular" style={{}}>
-													Cold
+													COLD
 												</Text>
 											</View>
 										) : null}
@@ -2855,7 +2890,7 @@ export default function ItineraryDetail(props) {
 											>
 												<FunIcon icon={"w-freezing"} height={50} />
 												<Text size="small" type="regular" style={{}}>
-													Freezing
+													FREEZING
 												</Text>
 											</View>
 										) : null}
@@ -2882,8 +2917,39 @@ export default function ItineraryDetail(props) {
 					keyExtractor={(item, index) => index.toString()}
 					initialScrollIndex={0}
 				/>
-			);
-		}
+				{route.key === "tab1" && status === "edit" && Anggota === "true" ? (
+					<Animated.View
+						style={{
+							zIndex: 99,
+							position: "absolute",
+							right: 10,
+							bottom: 70,
+						}}
+					>
+						<Button
+							onPress={() =>
+								props.navigation.navigate("ReorderDetail", {
+									head: datadetail.itinerary_detail,
+									child: dataList,
+									active: datadayaktif,
+									token: token,
+								})
+							}
+							type="circle"
+							style={{
+								shadowColor: "#464646",
+								shadowOffset: { width: 0, height: 1 },
+								shadowOpacity: 1,
+								shadowRadius: 2,
+								elevation: 3,
+							}}
+						>
+							<Reorder width={20} height={20} />
+						</Button>
+					</Animated.View>
+				) : null}
+			</View>
+		);
 	};
 
 	const renderTabBar = (props) => {
@@ -3439,63 +3505,7 @@ export default function ItineraryDetail(props) {
 	// ============================== R   R  E     N N   N D  D  E     R   R  ===============
 	// ============================== RRRR   EEE   N  N  N D   D EEE   RRRR   ===============
 	// ============================== R   R  E     N   N N D  D  E     R   R  ===============
-	// ============================== R   R  EEEE  N     N DDD   EEEEE R   R  ===============
-	let [modalDrag, setMOdalDrag] = useState(true);
-
-	let [data, setDatas] = useState([
-		{
-			image: "https://placekitten.com/200/240",
-			text: "Chloe",
-		},
-		{
-			image: "https://placekitten.com/200/201",
-			text: "Jasper",
-		},
-		{
-			image: "https://placekitten.com/200/202",
-			text: "Pepper",
-		},
-		{
-			image: "https://placekitten.com/200/203",
-			text: "Oscar",
-		},
-		{
-			image: "https://placekitten.com/200/204",
-			text: "Dusty",
-		},
-		{
-			image: "https://placekitten.com/200/205",
-			text: "Spooky",
-		},
-		{
-			image: "https://placekitten.com/200/210",
-			text: "Kiki",
-		},
-		{
-			image: "https://placekitten.com/200/215",
-			text: "Smokey",
-		},
-		{
-			image: "https://placekitten.com/200/220",
-			text: "Gizmo",
-		},
-		{
-			image: "https://placekitten.com/220/239",
-			text: "Kitty",
-		},
-		{
-			image: "https://placekitten.com/220/239",
-			text: "Kitty",
-		},
-		{
-			image: "https://placekitten.com/220/239",
-			text: "Kitty",
-		},
-		{
-			image: "https://placekitten.com/220/239",
-			text: "Kitty",
-		},
-	]);
+	// ============================== RENDER DATA VIEW  ===============
 
 	if (loadingdetail) {
 		return (
@@ -3515,7 +3525,8 @@ export default function ItineraryDetail(props) {
 	if (datadetail) {
 		let rData = datadetail.itinerary_detail;
 		return (
-			<SafeAreaView style={styles.container}>
+			<View style={styles.container}>
+				<CustomStatusBar backgroundColor="#209FAE" barStyle="light-content" />
 				<MenuProvider>
 					{renderTabView()}
 					{renderHeader(rData)}
@@ -4252,7 +4263,6 @@ export default function ItineraryDetail(props) {
 						</TouchableOpacity>
 					</View>
 				</Modal>
-
 				<Sidebar
 					props={props}
 					show={showside}
@@ -4355,165 +4365,7 @@ export default function ItineraryDetail(props) {
 					}}
 					setClose={(e) => setshowside(false)}
 				/>
-				<Modal
-					// onBackdropPress={() => {
-					//   setMOdalDrag(false);
-					// }}
-					onRequestClose={() => setMOdalDrag(false)}
-					onDismiss={() => setMOdalDrag(false)}
-					animationIn="fadeIn"
-					animationOut="fadeOut"
-					isVisible={false}
-					backdropColor={"#fff"}
-					hasBackdrop={false}
-					style={{
-						margin: 0,
-						padding: 0,
-						justifyContent: "flex-end",
-						alignItems: "center",
-						alignSelf: "center",
-						alignContent: "center",
-					}}
-				>
-					<SafeAreaView
-						style={{
-							flex: 1,
-							backgroundColor: "#fff",
-						}}
-					>
-						{dataList.length ? (
-							<AutoDragSortableView
-								dataSource={dataList}
-								parentWidth={parentWidth}
-								childrenWidth={childrenWidth}
-								// marginChildrenBottom={20}
-								marginChildrenRight={20}
-								marginChildrenLeft={20}
-								// marginChildrenTop={10}
-								childrenHeight={childrenHeight}
-								onDataChange={(x) => {
-									if (x.length != dataList.length) {
-										// console.log(x);
-										dataList = x;
-									}
-								}}
-								onDragEnd={(x) => {
-									if (x.length != dataList.length) {
-										// console.log(x);
-										dataList = x;
-									}
-								}}
-								keyExtractor={(item, index) => item.id} // FlatList作用一样，优化
-								renderItem={(item, index) => {
-									const x = dataList.length - 1;
-
-									return (
-										<View
-											style={{
-												width: childrenWidth,
-												height: childrenHeight,
-												flexDirection: "row",
-												paddingLeft: 10,
-												paddingRight: 2,
-												paddingBottom: 1,
-											}}
-										>
-											<View
-												style={{
-													marginTop: 5,
-													flex: 1,
-													borderRadius: 5,
-													marginBottom: 2,
-													backgroundColor: "#fff",
-													elevation: 3,
-													padding: 10,
-												}}
-											>
-												<View
-													style={{
-														flexDirection: "row",
-														width: "100%",
-														justifyContent: "space-between",
-													}}
-												>
-													{item.type !== "custom" ? (
-														<Image
-															source={
-																item.images
-																	? { uri: item.images }
-																	: { uri: item.icon }
-															}
-															defaultSource={default_image}
-															style={{
-																height: 30,
-																width: 30,
-																resizeMode: "cover",
-																borderRadius: 15,
-															}}
-														/>
-													) : item.icon ? (
-														<FunIcon
-															icon={item.icon}
-															height={30}
-															width={30}
-															style={{
-																borderRadius: 15,
-															}}
-														/>
-													) : (
-														<FunIcon
-															icon={"i-tour"}
-															height={30}
-															width={30}
-															style={{
-																borderRadius: 15,
-															}}
-														/>
-													)}
-													<View
-														style={{ flex: 1, paddingHorizontal: 10 }}
-														// onLongPress={status !== "saved" ? drag : null}
-													>
-														<Text size="label" type="bold" style={{}}>
-															{item.name}
-														</Text>
-														<Text>
-															{Capital({
-																text:
-																	item.type !== "custom"
-																		? item.type !== "google"
-																			? item.type
-																			: "Destination from Google"
-																		: "Custom Activity",
-															})}
-
-															{item.city}
-														</Text>
-													</View>
-													{/* {status !== "saved" && Anggota === "true" ? (
-                            <Button
-                              size="small"
-                              text=""
-                              type="circle"
-                              variant="transparent"
-                              style={{}}
-                              onPress={() => {
-                                bukamodalmenu(item.id, item.type);
-                              }}
-                            >
-                              <More width={15} height={15} />
-                            </Button>
-                          ) : null} */}
-												</View>
-											</View>
-										</View>
-									);
-								}}
-							/>
-						) : null}
-					</SafeAreaView>
-				</Modal>
-			</SafeAreaView>
+			</View>
 		);
 	}
 
