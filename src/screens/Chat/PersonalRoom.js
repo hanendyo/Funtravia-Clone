@@ -12,6 +12,7 @@ import {
 	StatusBar,
 	Alert,
 	Dimensions,
+	ActivityIndicator,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
@@ -149,7 +150,9 @@ export default function Room({ navigation, route }) {
 			);
 			await setMessage(responseJson.data);
 			await setTimeout(function () {
-				flatListRef.current.scrollToEnd({ animated: true });
+				if (flatListRef) {
+					flatListRef.current.scrollToEnd({ animated: true });
+				}
 			}, 250);
 		}
 	};
@@ -174,7 +177,9 @@ export default function Room({ navigation, route }) {
 				await socket.emit("message", chatData);
 				await setChat("");
 				await setTimeout(function () {
-					flatListRef.current.scrollToEnd({ animated: true });
+					if (flatListRef) {
+						flatListRef.current.scrollToEnd({ animated: true });
+					}
 				}, 250);
 				await setButton(true);
 			}
@@ -183,7 +188,11 @@ export default function Room({ navigation, route }) {
 
 	let tmpRChat = null;
 	const RenderChat = ({ item, index }) => {
+		const timeState = new Date().toLocaleDateString();
+		const timeStateChat = new Date(item.time).toLocaleDateString();
+
 		let timeChat = new Date(item.time).toTimeString();
+		console.log("chat", item);
 		if (item.user_id !== tmpRChat) {
 			tmpRChat = item.user_id;
 			return (
@@ -201,6 +210,41 @@ export default function Room({ navigation, route }) {
 							{item.name}
 						</Text>
 					) : null}
+
+					{message[index - 1] &&
+					new Date(message[index - 1].time).toLocaleDateString() ===
+						timeStateChat ? null : timeStateChat === timeState ? (
+						<View style={{ alignItems: "center", marginVertical: 5 }}>
+							<Text
+								size="description"
+								type="regular"
+								style={{
+									padding: 5,
+									borderRadius: 4,
+									backgroundColor: "#F3F3F3",
+									color: "#464646",
+								}}
+							>
+								Hari ini
+							</Text>
+						</View>
+					) : (
+						<View style={{ alignItems: "center", marginVertical: 5 }}>
+							<Text
+								size="description"
+								type="regular"
+								style={{
+									padding: 5,
+									borderRadius: 4,
+									backgroundColor: "#F3F3F3",
+									color: "#464646",
+								}}
+							>
+								{timeStateChat}
+							</Text>
+						</View>
+					)}
+
 					<View
 						key={`chat_${index}`}
 						style={[
@@ -361,7 +405,22 @@ export default function Room({ navigation, route }) {
 				keyExtractor={(item, index) => `render_${index}`}
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={{ paddingTop: 10 }}
+				contentContainerStyle={{ paddingTop: 5 }}
+				// ItemSeparatorComponent={(data) => {
+				//   const timeNow = new Date().toLocaleDateString();
+				//   const timeChat = new Date(data.leadingItem.time).toLocaleDateString();
+				//   console.log("now", timeNow);
+				//   console.log("chst", timeChat);
+				//   if (timeNow !== timeChat) {
+				//     return (
+				//       <View>
+				//         <Text>{timeChat}</Text>
+				//       </View>
+				//     );
+				//   } else {
+				//     return null;
+				//   }
+				// }}
 			/>
 			<KeyboardAvoidingView
 				behavior={Platform.OS == "ios" ? "padding" : "height"}

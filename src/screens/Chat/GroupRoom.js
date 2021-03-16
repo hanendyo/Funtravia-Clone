@@ -149,7 +149,9 @@ export default function Room({ navigation, route }) {
 			);
 			await setMessage(responseJson.data);
 			await setTimeout(function () {
-				flatListRef.current.scrollToEnd({ animated: true });
+				if (flatListRef) {
+					flatListRef.current.scrollToEnd({ animated: true });
+				}
 			}, 250);
 		}
 	};
@@ -175,7 +177,9 @@ export default function Room({ navigation, route }) {
 				await socket.emit("message", chatData);
 				await setChat("");
 				await setTimeout(function () {
-					flatListRef.current.scrollToEnd({ animated: true });
+					if (flatListRef) {
+						flatListRef.current.scrollToEnd({ animated: true });
+					}
 				}, 250);
 				await setButton(true);
 			}
