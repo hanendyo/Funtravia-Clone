@@ -29,19 +29,7 @@ export default function ArticleView({ props, data }) {
                       {i.title}
                     </Text>
                   ) : null}
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{
-                      textAlign: "justify",
-                      lineHeight: 21,
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 13,
-                      color: "#464646",
-                    }}
-                  >
-                    {i.text ? i.text : ""}
-                  </Text>
+
                   <View style={{ alignItems: "center" }}>
                     <Image
                       source={i.image ? { uri: i.image } : default_image}
@@ -55,6 +43,19 @@ export default function ArticleView({ props, data }) {
                       }}
                     />
                   </View>
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      textAlign: "justify",
+                      lineHeight: 21,
+                      // fontFamily: "Lato-Regular",
+                      // fontSize: 13,
+                      color: "#464646",
+                    }}
+                  >
+                    {i.text ? i.text : ""}
+                  </Text>
                 </View>
               ) : (
                 <View>
