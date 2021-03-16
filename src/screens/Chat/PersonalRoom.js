@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
-  FlatList,
-  StatusBar,
-  Alert,
-  Dimensions,
-  ActivityIndicator,
+	View,
+	TextInput,
+	StyleSheet,
+	TouchableOpacity,
+	SafeAreaView,
+	KeyboardAvoidingView,
+	Platform,
+	Image,
+	FlatList,
+	StatusBar,
+	Alert,
+	Dimensions,
+	ActivityIndicator,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
@@ -130,363 +130,363 @@ export default function Room({ navigation, route }) {
 		}
 	};
 
-  const initialHistory = async (access_token) => {
-    let response = await fetch(
-      `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + access_token,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    let responseJson = await response.json();
-    if (responseJson.data) {
-      await AsyncStorage.setItem(
-        "history_" + room,
-        JSON.stringify(responseJson.data)
-      );
-      await setMessage(responseJson.data);
-      await setTimeout(function () {
-        if (flatListRef) {
-          flatListRef.current.scrollToEnd({ animated: true });
-        }
-      }, 250);
-    }
-  };
+	const initialHistory = async (access_token) => {
+		let response = await fetch(
+			`${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
+			{
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					Authorization: "Bearer " + access_token,
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		let responseJson = await response.json();
+		if (responseJson.data) {
+			await AsyncStorage.setItem(
+				"history_" + room,
+				JSON.stringify(responseJson.data)
+			);
+			await setMessage(responseJson.data);
+			await setTimeout(function () {
+				if (flatListRef) {
+					flatListRef.current.scrollToEnd({ animated: true });
+				}
+			}, 250);
+		}
+	};
 
-  const submitChatMessage = async () => {
-    if (button) {
-      if (chat && chat !== "") {
-        await setButton(false);
-        let chatData = {
-          room: room,
-          text: chat,
-          user_id: user.id,
-        };
-        await fetch(`${CHATSERVER}/api/personal/send`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `room=${room}&text=${chat}&user_id=${user.id}`,
-        });
-        await socket.emit("message", chatData);
-        await setChat("");
-        await setTimeout(function () {
-          if (flatListRef) {
-            flatListRef.current.scrollToEnd({ animated: true });
-          }
-        }, 250);
-        await setButton(true);
-      }
-    }
-  };
+	const submitChatMessage = async () => {
+		if (button) {
+			if (chat && chat !== "") {
+				await setButton(false);
+				let chatData = {
+					room: room,
+					text: chat,
+					user_id: user.id,
+				};
+				await fetch(`${CHATSERVER}/api/personal/send`, {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					body: `room=${room}&text=${chat}&user_id=${user.id}`,
+				});
+				await socket.emit("message", chatData);
+				await setChat("");
+				await setTimeout(function () {
+					if (flatListRef) {
+						flatListRef.current.scrollToEnd({ animated: true });
+					}
+				}, 250);
+				await setButton(true);
+			}
+		}
+	};
 
-  let tmpRChat = null;
-  const RenderChat = ({ item, index }) => {
-    const timeState = new Date().toLocaleDateString();
-    const timeStateChat = new Date(item.time).toLocaleDateString();
+	let tmpRChat = null;
+	const RenderChat = ({ item, index }) => {
+		const timeState = new Date().toLocaleDateString();
+		const timeStateChat = new Date(item.time).toLocaleDateString();
 
-    let timeChat = new Date(item.time).toTimeString();
-    console.log("chat", item);
-    if (item.user_id !== tmpRChat) {
-      tmpRChat = item.user_id;
-      return (
-        <View>
-          {user.id !== item.user_id ? (
-            <Text
-              size="description"
-              type="bold"
-              style={{
-                paddingBottom: 5,
-                paddingLeft: 20,
-                color: "#464646",
-              }}
-            >
-              {item.name}
-            </Text>
-          ) : null}
+		let timeChat = new Date(item.time).toTimeString();
+		console.log("chat", item);
+		if (item.user_id !== tmpRChat) {
+			tmpRChat = item.user_id;
+			return (
+				<View>
+					{user.id !== item.user_id ? (
+						<Text
+							size="description"
+							type="bold"
+							style={{
+								paddingBottom: 5,
+								paddingLeft: 20,
+								color: "#464646",
+							}}
+						>
+							{item.name}
+						</Text>
+					) : null}
 
-          {message[index - 1] &&
-          new Date(message[index - 1].time).toLocaleDateString() ===
-            timeStateChat ? null : timeStateChat === timeState ? (
-            <View style={{ alignItems: "center", marginVertical: 5 }}>
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  padding: 5,
-                  borderRadius: 4,
-                  backgroundColor: "#F3F3F3",
-                  color: "#464646",
-                }}
-              >
-                Hari ini
-              </Text>
-            </View>
-          ) : (
-            <View style={{ alignItems: "center", marginVertical: 5 }}>
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  padding: 5,
-                  borderRadius: 4,
-                  backgroundColor: "#F3F3F3",
-                  color: "#464646",
-                }}
-              >
-                {timeStateChat}
-              </Text>
-            </View>
-          )}
+					{message[index - 1] &&
+					new Date(message[index - 1].time).toLocaleDateString() ===
+						timeStateChat ? null : timeStateChat === timeState ? (
+						<View style={{ alignItems: "center", marginVertical: 5 }}>
+							<Text
+								size="description"
+								type="regular"
+								style={{
+									padding: 5,
+									borderRadius: 4,
+									backgroundColor: "#F3F3F3",
+									color: "#464646",
+								}}
+							>
+								Hari ini
+							</Text>
+						</View>
+					) : (
+						<View style={{ alignItems: "center", marginVertical: 5 }}>
+							<Text
+								size="description"
+								type="regular"
+								style={{
+									padding: 5,
+									borderRadius: 4,
+									backgroundColor: "#F3F3F3",
+									color: "#464646",
+								}}
+							>
+								{timeStateChat}
+							</Text>
+						</View>
+					)}
 
-          <View
-            key={`chat_${index}`}
-            style={[
-              styles.item,
-              user.id == item.user_id ? styles.itemOut : styles.itemIn,
-            ]}
-          >
-            {user.id == item.user_id ? (
-              <Text size="small" style={{ marginRight: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-            <View
-              style={[
-                styles.balloon,
-                user.id == item.user_id
-                  ? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
-                  : { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
-              ]}
-            >
-              <Text
-                size="description"
-                style={{
-                  color: "#464646",
-                  lineHeight: 18,
-                }}
-              >
-                {item.text}
-              </Text>
-              <View
-                style={[
-                  styles.arrowContainer,
-                  user.id == item.user_id
-                    ? styles.arrowRightContainer
-                    : styles.arrowLeftContainer,
-                ]}
-              >
-                <Svg
-                  style={
-                    user.id == item.user_id
-                      ? styles.arrowRight
-                      : styles.arrowLeft
-                  }
-                  height="50"
-                  width="50"
-                >
-                  <Polygon
-                    points={
-                      user.id == item.user_id
-                        ? "0,01 15,01 5,12"
-                        : "20,01 0,01 12,12"
-                    }
-                    fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-                    stroke="#209FAE"
-                    strokeWidth={0.7}
-                  />
-                </Svg>
-                <Svg
-                  style={[
-                    { position: "absolute" },
-                    user.id == item.user_id
-                      ? { right: moderateScale(-5, 0.5) }
-                      : { left: moderateScale(-5, 0.5) },
-                  ]}
-                  height="50"
-                  width="50"
-                >
-                  <Polygon
-                    points={
-                      user.id == item.user_id
-                        ? "0,1.3 15,1.1 5,12"
-                        : "20,01 0,01 12,13"
-                    }
-                    fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-                  />
-                </Svg>
-              </View>
-            </View>
-            {user.id !== item.user_id ? (
-              <Text size="small" style={{ marginLeft: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-          </View>
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <View
-            key={`chat_${index}`}
-            style={[
-              styles.item,
-              user.id == item.user_id ? styles.itemOut : styles.itemIn,
-            ]}
-          >
-            {user.id == item.user_id ? (
-              <Text size="small" style={{ marginRight: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-            <View
-              style={[
-                styles.balloon,
-                user.id == item.user_id
-                  ? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
-                  : { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
-              ]}
-            >
-              <Text
-                size="description"
-                style={{
-                  color: "#464646",
-                  lineHeight: 18,
-                }}
-              >
-                {item.text}
-              </Text>
-              <View
-                style={[
-                  styles.arrowContainer,
-                  user.id == item.user_id
-                    ? styles.arrowRightContainer
-                    : styles.arrowLeftContainer,
-                ]}
-              ></View>
-            </View>
-            {user.id !== item.user_id ? (
-              <Text size="small" style={{ marginLeft: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-          </View>
-        </View>
-      );
-    }
-  };
+					<View
+						key={`chat_${index}`}
+						style={[
+							styles.item,
+							user.id == item.user_id ? styles.itemOut : styles.itemIn,
+						]}
+					>
+						{user.id == item.user_id ? (
+							<Text size="small" style={{ marginRight: 5 }}>
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+							</Text>
+						) : null}
+						<View
+							style={[
+								styles.balloon,
+								user.id == item.user_id
+									? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
+									: { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
+							]}
+						>
+							<Text
+								size="description"
+								style={{
+									color: "#464646",
+									lineHeight: 18,
+								}}
+							>
+								{item.text}
+							</Text>
+							<View
+								style={[
+									styles.arrowContainer,
+									user.id == item.user_id
+										? styles.arrowRightContainer
+										: styles.arrowLeftContainer,
+								]}
+							>
+								<Svg
+									style={
+										user.id == item.user_id
+											? styles.arrowRight
+											: styles.arrowLeft
+									}
+									height="50"
+									width="50"
+								>
+									<Polygon
+										points={
+											user.id == item.user_id
+												? "0,01 15,01 5,12"
+												: "20,01 0,01 12,12"
+										}
+										fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+										stroke="#209FAE"
+										strokeWidth={0.7}
+									/>
+								</Svg>
+								<Svg
+									style={[
+										{ position: "absolute" },
+										user.id == item.user_id
+											? { right: moderateScale(-5, 0.5) }
+											: { left: moderateScale(-5, 0.5) },
+									]}
+									height="50"
+									width="50"
+								>
+									<Polygon
+										points={
+											user.id == item.user_id
+												? "0,1.3 15,1.1 5,12"
+												: "20,01 0,01 12,13"
+										}
+										fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+									/>
+								</Svg>
+							</View>
+						</View>
+						{user.id !== item.user_id ? (
+							<Text size="small" style={{ marginLeft: 5 }}>
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+							</Text>
+						) : null}
+					</View>
+				</View>
+			);
+		} else {
+			return (
+				<View>
+					<View
+						key={`chat_${index}`}
+						style={[
+							styles.item,
+							user.id == item.user_id ? styles.itemOut : styles.itemIn,
+						]}
+					>
+						{user.id == item.user_id ? (
+							<Text size="small" style={{ marginRight: 5 }}>
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+							</Text>
+						) : null}
+						<View
+							style={[
+								styles.balloon,
+								user.id == item.user_id
+									? { backgroundColor: "#DAF0F2", borderTopRightRadius: 0 }
+									: { backgroundColor: "#FFFFFF", borderTopLeftRadius: 0 },
+							]}
+						>
+							<Text
+								size="description"
+								style={{
+									color: "#464646",
+									lineHeight: 18,
+								}}
+							>
+								{item.text}
+							</Text>
+							<View
+								style={[
+									styles.arrowContainer,
+									user.id == item.user_id
+										? styles.arrowRightContainer
+										: styles.arrowLeftContainer,
+								]}
+							></View>
+						</View>
+						{user.id !== item.user_id ? (
+							<Text size="small" style={{ marginLeft: 5 }}>
+								{timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+							</Text>
+						) : null}
+					</View>
+				</View>
+			);
+		}
+	};
 
 	const [messages, setMessages] = useState("");
 	const [modalError, setModalError] = useState(false);
 
-  const modals = () => {
-    setModalError(true);
-    setMessages("Sticker Coming Soon");
-  };
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
-      <Errors
-        modals={modalError}
-        setModals={(e) => setModalError(e)}
-        message={messages}
-      />
-      <FlatList
-        ref={flatListRef}
-        data={message}
-        renderItem={RenderChat}
-        keyExtractor={(item, index) => `render_${index}`}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 5 }}
-        // ItemSeparatorComponent={(data) => {
-        //   const timeNow = new Date().toLocaleDateString();
-        //   const timeChat = new Date(data.leadingItem.time).toLocaleDateString();
-        //   console.log("now", timeNow);
-        //   console.log("chst", timeChat);
-        //   if (timeNow !== timeChat) {
-        //     return (
-        //       <View>
-        //         <Text>{timeChat}</Text>
-        //       </View>
-        //     );
-        //   } else {
-        //     return null;
-        //   }
-        // }}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={65}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: 10,
-            alignContent: "center",
-            alignItems: "center",
-            paddingVertical: 2,
-            backgroundColor: "#F6F6F6",
-          }}
-        >
-          <Button
-            text=""
-            type="circle"
-            size="medium"
-            variant="transparent"
-            style={{ width: 50, height: 50 }}
-            // onPress={() => Alert.alert("Sticker Cooming Soon")}
-            onPress={() => modals()}
-          >
-            <Smile height={35} width={35} />
-          </Button>
-          <View
-            style={{
-              borderColor: "#D1D1D1",
-              borderWidth: 1,
-              width: width - 120,
-              alignSelf: "center",
-              backgroundColor: "#FFFFFF",
-            }}
-          >
-            <TextInput
-              value={chat}
-              multiline
-              placeholder="Type a message"
-              onChangeText={(text) => setChat(text)}
-              style={
-                Platform.OS == "ios"
-                  ? { maxHeight: 100, margin: 10 }
-                  : {
-                      maxHeight: 100,
-                      marginVertical: 5,
-                      marginHorizontal: 10,
-                      padding: 0,
-                    }
-              }
-            />
-          </View>
-          <Button
-            text=""
-            type="circle"
-            size="medium"
-            variant="transparent"
-            onPress={() => submitChatMessage()}
-            style={{ width: 50, height: 50 }}
-          >
-            <Send height={35} width={35} />
-          </Button>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+	const modals = () => {
+		setModalError(true);
+		setMessages("Sticker Coming Soon");
+	};
+	return (
+		<SafeAreaView style={styles.container}>
+			<StatusBar backgroundColor="#14646E" barStyle="light-content" />
+			<Errors
+				modals={modalError}
+				setModals={(e) => setModalError(e)}
+				message={messages}
+			/>
+			<FlatList
+				ref={flatListRef}
+				data={message}
+				renderItem={RenderChat}
+				keyExtractor={(item, index) => `render_${index}`}
+				showsVerticalScrollIndicator={false}
+				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={{ paddingTop: 5 }}
+				// ItemSeparatorComponent={(data) => {
+				//   const timeNow = new Date().toLocaleDateString();
+				//   const timeChat = new Date(data.leadingItem.time).toLocaleDateString();
+				//   console.log("now", timeNow);
+				//   console.log("chst", timeChat);
+				//   if (timeNow !== timeChat) {
+				//     return (
+				//       <View>
+				//         <Text>{timeChat}</Text>
+				//       </View>
+				//     );
+				//   } else {
+				//     return null;
+				//   }
+				// }}
+			/>
+			<KeyboardAvoidingView
+				behavior={Platform.OS == "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={65}
+			>
+				<View
+					style={{
+						flexDirection: "row",
+						paddingHorizontal: 10,
+						alignContent: "center",
+						alignItems: "center",
+						paddingVertical: 2,
+						backgroundColor: "#F6F6F6",
+					}}
+				>
+					<Button
+						text=""
+						type="circle"
+						size="medium"
+						variant="transparent"
+						style={{ width: 50, height: 50 }}
+						// onPress={() => Alert.alert("Sticker Cooming Soon")}
+						onPress={() => modals()}
+					>
+						<Smile height={35} width={35} />
+					</Button>
+					<View
+						style={{
+							borderColor: "#D1D1D1",
+							borderWidth: 1,
+							width: width - 120,
+							alignSelf: "center",
+							backgroundColor: "#FFFFFF",
+						}}
+					>
+						<TextInput
+							value={chat}
+							multiline
+							placeholder="Type a message"
+							onChangeText={(text) => setChat(text)}
+							style={
+								Platform.OS == "ios"
+									? { maxHeight: 100, margin: 10 }
+									: {
+											maxHeight: 100,
+											marginVertical: 5,
+											marginHorizontal: 10,
+											padding: 0,
+									  }
+							}
+						/>
+					</View>
+					<Button
+						text=""
+						type="circle"
+						size="medium"
+						variant="transparent"
+						onPress={() => submitChatMessage()}
+						style={{ width: 50, height: 50 }}
+					>
+						<Send height={35} width={35} />
+					</Button>
+				</View>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
