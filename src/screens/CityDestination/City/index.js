@@ -17,19 +17,10 @@ import {
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
   OptionsVertWhite,
-  Love,
-  Electric,
-  Emergency,
-  Health,
-  Lang,
-  Money,
-  Passport,
-  Time,
-  Tax,
   PinWhite,
   LikeEmpty,
   Showmore,
@@ -38,6 +29,7 @@ import {
   User,
   TravelAlbum,
   TravelStories,
+  LikeRed,
 } from "../../../assets/svg";
 import {
   default_image,
@@ -46,6 +38,8 @@ import {
 } from "../../../assets/png";
 import { Input } from "native-base";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
+import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
+import CityItinerary from "../../../graphQL/Query/Cities/ItineraryCity";
 import LinearGradient from "react-native-linear-gradient";
 import { Capital, StatusBar as Sb, Truncate } from "../../../component";
 import Ripple from "react-native-material-ripple";
@@ -63,6 +57,10 @@ import Sidebar from "../../../component/src/Sidebar";
 import { Tabs } from "native-base";
 import { ScrollableTab } from "native-base";
 import { Tab } from "native-base";
+import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
+import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import likedJournal from "../../../graphQL/Mutation/Journal/likedJournal";
+import unlikedJournal from "../../../graphQL/Mutation/Journal/unlikedJournal";
 
 const SafeStatusBar = Platform.select({
   ios: 44,
@@ -99,22 +97,55 @@ export default function CityDetail(props) {
     outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
     extrapolate: "clamp",
   });
-  const [getPackageDetail, { loading, data, error }] = useLazyQuery(
-    CitiesInformation,
-    {
-      fetchPolicy: "network-only",
-      variables: {
-        id: props.route.params.data.city_id,
+  const [
+    getPackageDetail,
+    { loading: loadingCity, data: dataCity, error: errorCity },
+  ] = useLazyQuery(CitiesInformation, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.data.city_id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+    },
+  });
+
+  const [
+    getJournalCity,
+    { loading: loadingjournal, data: dataJournal, error: errorjournal },
+  ] = useLazyQuery(CityJournal, {
+    variables: {
+      id: props.route.params.data.city_id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    }
-  );
-  console.log("Data :", data);
+    },
+  });
+
+  const [
+    getItineraryCity,
+    { loading: loadingitinerary, data: dataItinerary, error: errorItinerary },
+  ] = useLazyQuery(CityItinerary, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.data.city_id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  console.log("DataCity :", dataCity);
+  console.log("DataJournal :", dataJournal);
+  console.log("DataItinerary :", dataItinerary);
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
@@ -161,6 +192,236 @@ export default function CityDetail(props) {
     let x = new Date();
     x = x.getFullYear();
     return x;
+  };
+
+  let list_populer = [];
+  if (dataItinerary && dataItinerary.itinerary_populer_by_city) {
+    list_populer = dataItinerary.itinerary_populer_by_city;
+  }
+
+  let list_journal = [];
+  if (dataJournal && dataJournal.journal_by_city) {
+    list_journal = dataJournal.journal_by_city;
+  }
+  console.log("Jurnal ", list_journal);
+
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(ItineraryLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(ItineraryUnliked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  // mutasi like or unlike journal
+
+  const [
+    mutationlikedJournal,
+    {
+      loading: loadingLikeJournal,
+      data: dataLikeJournal,
+      error: errorLikeJournal,
+    },
+  ] = useMutation(likedJournal, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnlikedJournal,
+    {
+      loading: loadingUnLikeJournal,
+      data: dataUnLikeJournal,
+      error: errorUnLikeJournal,
+    },
+  ] = useMutation(unlikedJournal, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  // liked journal
+  const _likedjournal = async (id, index) => {
+    if (token || token !== "") {
+      list_journal[index].liked = true;
+      list_journal[index].response_count =
+        list_journal[index].response_count - 1;
+      try {
+        let response = await mutationlikedJournal({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLikeJournal) {
+          Alert.alert("Loading!!");
+        }
+        if (errorLikeJournal) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.like_journal.code === 200 ||
+            response.data.like_journal.code === "200"
+          ) {
+            list_journal[index].liked = true;
+          } else {
+            throw new Error(response.data.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        list_journal[index].liked = false;
+        list_journal[index].response_count =
+          list_journal[index].response_count + 1;
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  // unliked journal
+  const _unlikedjournal = async (id, index) => {
+    if (token || token !== "") {
+      list_journal[index].liked = false;
+      list_journal[index].response_count =
+        list_journal[index].response_count + 1;
+      try {
+        let response = await mutationUnlikedJournal({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadingUnLikeJournal) {
+          Alert.alert("Loading!!");
+        }
+        if (errorUnLikeJournal) {
+          throw new Error("Error Input");
+        }
+        console.log("data unlike journal : ", response.data);
+        if (response.data) {
+          if (
+            response.data.unlike_journal.code === 200 ||
+            response.data.unlike_journal.code === "200"
+          ) {
+            list_journal[index].liked = false;
+          } else {
+            throw new Error(response.data.unlike_journal.message);
+          }
+        }
+      } catch (error) {
+        list_journal[index].liked = true;
+        list_journal[index].response_count =
+          list_journal[index].response_count - 1;
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  // Liked Itinerary
+  const _likeditinerary = async (id, index) => {
+    if (token || token !== "") {
+      list_populer[index].liked = true;
+      list_populer[index].response_count =
+        list_populer[index].response_count - 1;
+      try {
+        let response = await mutationliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.setItineraryFavorit.code === 200 ||
+            response.data.setItineraryFavorit.code === "200"
+          ) {
+            list_populer[index].liked = true;
+          } else {
+            throw new Error(response.data.setItineraryFavorit.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        list_populer[index].liked = false;
+        list_populer[index].response_count =
+          list_populer[index].response_count + 1;
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _unlikeditinerary = async (id, index) => {
+    if (token || token !== "") {
+      list_populer[index].liked = false;
+      list_populer[index].response_count =
+        list_populer[index].response_count + 1;
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadingUnLike) {
+          Alert.alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+
+        if (response.data) {
+          if (
+            response.data.unsetItineraryFavorit.code === 200 ||
+            response.data.unsetItineraryFavorit.code === "200"
+          ) {
+            list_populer[index].liked = false;
+          } else {
+            throw new Error(response.data.unsetItineraryFavorit.message);
+          }
+        }
+      } catch (error) {
+        list_populer[index].liked = true;
+        list_populer[index].response_count =
+          list_populer[index].response_count - 1;
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
   };
 
   let [tutup, setTutup] = useState(true);
@@ -259,7 +520,8 @@ export default function CityDetail(props) {
     }
   };
 
-  const RenderUtama = ({ aktif, render }) => {
+  const RenderUtama = ({ aktif, render, renderjournal, renderItinerary }) => {
+    console.log("Render :", renderjournal);
     if (aktif === "General") {
       return (
         <View>
@@ -464,7 +726,7 @@ export default function CityDetail(props) {
           </View>
 
           {/* Travel Jurnal */}
-          {render.journal && render.journal.length > 0 ? (
+          {renderjournal && renderjournal.length > 0 ? (
             <View
               style={{
                 paddingVertical: 10,
@@ -494,9 +756,9 @@ export default function CityDetail(props) {
                   padding: 20,
                 }}
               >
-                {render.journal ? (
+                {renderjournal ? (
                   <ImageSlider
-                    images={render.journal ? spreadData(render.journal) : []}
+                    images={renderjournal ? spreadData(renderjournal) : []}
                     style={{
                       borderTopLeftRadius: 5,
                       borderTopRightRadius: 5,
@@ -504,9 +766,9 @@ export default function CityDetail(props) {
                     }}
                     customSlide={({ index, item, style, width }) => (
                       <View key={"ky" + index}>
-                        {item.map((dataX, inde) => {
+                        {item.map((dataX, index) => {
                           return (
-                            <Ripple
+                            <Pressable
                               onPress={() =>
                                 props.navigation.push(
                                   "JournalStackNavigation",
@@ -552,9 +814,31 @@ export default function CityDetail(props) {
                                     <Truncate text={dataX.text} length={30} />
                                   </Text>
                                 </View>
-                                <Love height={15} width={15} />
+                                <View
+                                  style={{
+                                    zIndex: 900,
+                                  }}
+                                >
+                                  {dataX.liked === false ? (
+                                    <Ripple
+                                      onPress={() =>
+                                        _likedjournal(dataX.id, index)
+                                      }
+                                    >
+                                      <LikeEmpty height={15} width={15} />
+                                    </Ripple>
+                                  ) : (
+                                    <Ripple
+                                      onPress={() =>
+                                        _unlikedjournal(dataX.id, index)
+                                      }
+                                    >
+                                      <LikeRed height={15} width={15} />
+                                    </Ripple>
+                                  )}
+                                </View>
                               </View>
-                            </Ripple>
+                            </Pressable>
                           );
                         })}
                       </View>
@@ -569,7 +853,7 @@ export default function CityDetail(props) {
                           justifyContent: "center",
                         }}
                       >
-                        {(render.journal ? spreadData(render.journal) : []).map(
+                        {(renderjournal ? spreadData(renderjournal) : []).map(
                           (image, index) => {
                             return (
                               <TouchableHighlight
@@ -672,7 +956,8 @@ export default function CityDetail(props) {
                           <Ripple
                             onPress={() => {
                               props.navigation.navigate("Abouts", {
-                                active: item.name,
+                                active: item.id,
+                                city_id: render.id,
                               });
                             }}
                             style={{
@@ -682,15 +967,16 @@ export default function CityDetail(props) {
                               padding: 5,
                             }}
                           >
-                            <FunIcon
-                              icon={item.icon ? item.icon : "w-fog"}
-                              height={50}
-                              width={50}
-                              style={{
-                                bottom: -3,
-                              }}
-                            />
-
+                            <View style={{ height: 55 }}>
+                              <FunIcon
+                                icon={item.icon ? item.icon : "w-fog"}
+                                height={50}
+                                width={50}
+                                style={{
+                                  bottom: -3,
+                                }}
+                              />
+                            </View>
                             <Text
                               size="small"
                               style={{ textAlign: "center", marginTop: 5 }}
@@ -730,7 +1016,13 @@ export default function CityDetail(props) {
                       ? render.practical.map((item, index) => (
                           <Ripple
                             onPress={() => {
-                              props.navigation.navigate("PracticalInformation");
+                              props.navigation.navigate(
+                                "PracticalInformation",
+                                {
+                                  active: item.id,
+                                  city_id: render.id,
+                                }
+                              );
                             }}
                             style={{
                               width: "33.333%",
@@ -739,15 +1031,16 @@ export default function CityDetail(props) {
                               padding: 5,
                             }}
                           >
-                            <FunIcon
-                              icon={item.icon ? item.icon : "w-fog"}
-                              height={50}
-                              width={50}
-                              style={{
-                                bottom: -3,
-                              }}
-                            />
-
+                            <View style={{ height: 55 }}>
+                              <FunIcon
+                                icon={item.icon ? item.icon : "w-fog"}
+                                height={50}
+                                width={50}
+                                style={{
+                                  bottom: -3,
+                                }}
+                              />
+                            </View>
                             <Text
                               size="small"
                               style={{ textAlign: "center", marginTop: 5 }}
@@ -1042,556 +1335,414 @@ export default function CityDetail(props) {
             </View>
           </View>
           {/* Itinerary Terbaru */}
-          <View
-            style={{
-              // paddingHorizontal: 20,
-              paddingVertical: 5,
-              flexDirection: "column",
-            }}
-          >
+          {renderItinerary.length > 0 ? (
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                // borderWidth: 1,
-                paddingHorizontal: 20,
+                // paddingHorizontal: 20,
+                paddingVertical: 5,
+                flexDirection: "column",
               }}
             >
-              <Text type="bold" size="label" style={{}}>
-                {t("Itinerary")}
-              </Text>
-              <Ripple>
-                <Text
-                  type="bold"
-                  size="description"
-                  style={{
-                    color: "#209fae",
-                  }}
-                >
-                  View All
-                </Text>
-              </Ripple>
-            </View>
-            <Text
-              size="description"
-              style={{
-                textAlign: "justify",
-                paddingHorizontal: 20,
-              }}
-            >
-              Bali is an Indonesian island known for its forested volcanic
-              mountains, iconic rice paddies, mountains, iconic rice
-            </Text>
-
-            {loading ? (
-              <View style={{ marginVertical: 20 }}>
-                <ActivityIndicator animating={true} color="#209FAE" />
-              </View>
-            ) : render.itinerary_populer.length > 0 ? (
-              <FlatList
-                data={render.itinerary_populer}
-                keyExtractor={(item) => item.id}
-                horizontal={true}
-                contentContainerStyle={{
-                  paddingLeft: 20,
-                  paddingVertical: 15,
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  // borderWidth: 1,
+                  paddingHorizontal: 20,
                 }}
-                renderItem={({ item, index }) => (
-                  <View
+              >
+                <Text type="bold" size="label" style={{}}>
+                  {t("Itinerary")}
+                </Text>
+                <Ripple>
+                  <Text
+                    type="bold"
+                    size="description"
                     style={{
-                      height: 145,
-                      marginTop: 0,
-                      width: Dimensions.get("screen").width - 40,
-                      marginRight: 10,
+                      color: "#209fae",
                     }}
                   >
+                    View All
+                  </Text>
+                </Ripple>
+              </View>
+              <Text
+                size="description"
+                style={{
+                  textAlign: "justify",
+                  paddingHorizontal: 20,
+                }}
+              >
+                {/* Bali is an Indonesian island known for its forested volcanic
+              mountains, iconic rice paddies, mountains, iconic rice */}
+              </Text>
+
+              {loadingCity ? (
+                <View style={{ marginVertical: 20 }}>
+                  <ActivityIndicator animating={true} color="#209FAE" />
+                </View>
+              ) : renderItinerary.length > 0 ? (
+                <FlatList
+                  initialScrollIndex
+                  data={renderItinerary}
+                  keyExtractor={(item) => item.id}
+                  horizontal={true}
+                  contentContainerStyle={{
+                    paddingLeft: 20,
+                    paddingVertical: 15,
+                  }}
+                  renderItem={({ item, index }) => (
                     <View
                       style={{
-                        borderRadius: 5,
-                        shadowOffset: { width: 0, height: 1 },
-                        shadowOpacity: arrayShadow.shadowOpacity,
-                        shadowRadius: arrayShadow.shadowRadius,
-                        elevation: arrayShadow.elevation,
-                        justifyContent: "space-between",
-                        backgroundColor: "#F7F7F7",
-                        overflow: "hidden",
+                        height: 145,
+                        marginTop: 0,
+                        width: Dimensions.get("screen").width - 40,
+                        marginRight: 10,
                       }}
                     >
-                      <Pressable
-                        onPress={() =>
-                          props.navigation.navigate("ItineraryStack", {
-                            screen: "itindetail",
-                            params: {
-                              itintitle: item.name,
-                              country: item.id,
-                              token: token,
-                              status: "favorite",
-                              index: 0,
-                            },
-                          })
-                        }
+                      <View
                         style={{
-                          backgroundColor: "#FFFFFF",
-                          height: "77%",
-                          borderTopLeftRadius: 5,
-                          borderTopRightRadius: 5,
-                          flexDirection: "row",
-                          zIndex: -1,
-                          // borderWidth: 2,
-                          // widht: Dimensions.get("screen").width * 0.33,
+                          borderRadius: 5,
+                          shadowOffset: { width: 0, height: 1 },
+                          shadowOpacity: arrayShadow.shadowOpacity,
+                          shadowRadius: arrayShadow.shadowRadius,
+                          elevation: arrayShadow.elevation,
+                          justifyContent: "space-between",
+                          backgroundColor: "#F7F7F7",
+                          overflow: "hidden",
                         }}
                       >
-                        <View
+                        <Pressable
+                          onPress={() =>
+                            props.navigation.navigate("ItineraryStack", {
+                              screen: "itindetail",
+                              params: {
+                                itintitle: item.name,
+                                country: item.id,
+                                token: token,
+                                status: "favorite",
+                                index: 0,
+                              },
+                            })
+                          }
                           style={{
-                            width: "35%",
+                            backgroundColor: "#FFFFFF",
+                            height: "77%",
+                            borderTopLeftRadius: 5,
+                            borderTopRightRadius: 5,
+                            flexDirection: "row",
+                            zIndex: -1,
+                            // borderWidth: 2,
+                            // widht: Dimensions.get("screen").width * 0.33,
                           }}
                         >
-                          <Image
-                            source={
-                              item && item.cover
-                                ? { uri: item.cover }
-                                : default_image
-                            }
-                            style={{
-                              height: "100%",
-                              width: "100%",
-                              borderTopLeftRadius: 5,
-                            }}
-                          />
                           <View
                             style={{
-                              position: "absolute",
-                              height: 30,
-                              marginTop: 10,
-                              margin: 5,
-                              flexDirection: "row",
-                              alignItems: "center",
+                              width: "35%",
                             }}
                           >
                             <Image
-                              style={{
-                                height: 32,
-                                width: 32,
-                                borderRadius: 16,
-                                borderColor: "rgba(52, 52, 52, 0.75)",
-                                zIndex: 1,
-                              }}
                               source={
-                                item &&
-                                item.user_created &&
-                                item.user_created.picture
-                                  ? { uri: item.user_created.picture }
+                                item && item.cover
+                                  ? { uri: item.cover }
                                   : default_image
                               }
+                              style={{
+                                height: "100%",
+                                width: "100%",
+                                borderTopLeftRadius: 5,
+                              }}
+                            />
+                            <View
+                              style={{
+                                position: "absolute",
+                                height: 30,
+                                marginTop: 10,
+                                margin: 5,
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Image
+                                style={{
+                                  height: 32,
+                                  width: 32,
+                                  borderRadius: 16,
+                                  borderColor: "rgba(52, 52, 52, 0.75)",
+                                  zIndex: 1,
+                                }}
+                                source={
+                                  item &&
+                                  item.user_created &&
+                                  item.user_created.picture
+                                    ? { uri: item.user_created.picture }
+                                    : default_image
+                                }
+                              />
+                              <Text
+                                size="small"
+                                type="bold"
+                                style={{
+                                  zIndex: 0,
+                                  paddingLeft: 5,
+                                  backgroundColor: "rgba(52, 52, 52, 0.8)",
+                                  borderRadius: 2,
+                                  color: "white",
+                                  marginLeft: -5,
+                                  padding: 2,
+                                }}
+                              >
+                                {Truncate({
+                                  text: item?.user_created?.first_name
+                                    ? item?.user_created?.first_name
+                                    : "user_deleted",
+                                  length: 13,
+                                })}
+                              </Text>
+                            </View>
+                          </View>
+
+                          <View
+                            style={{
+                              width: "65%",
+                              paddingHorizontal: 10,
+                              backgroundColor: "#FFFFFF",
+                              marginVertical: 2,
+                              // borderWidth: 1,
+                              overflow: "hidden",
+                            }}
+                          >
+                            <View>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    backgroundColor: "#DAF0F2",
+                                    borderWidth: 1,
+                                    borderRadius: 3,
+                                    borderColor: "#209FAE",
+                                    paddingHorizontal: 5,
+                                  }}
+                                >
+                                  <Text
+                                    type="bold"
+                                    size="description"
+                                    style={{ color: "#209FAE" }}
+                                  >
+                                    {item?.categori?.name
+                                      ? item?.categori?.name
+                                      : "No Category"}
+                                  </Text>
+                                </View>
+                                <View>
+                                  {item.liked === false ? (
+                                    <Ripple
+                                      onPress={() =>
+                                        _likeditinerary(item.id, index)
+                                      }
+                                    >
+                                      <LikeEmpty height={15} width={15} />
+                                    </Ripple>
+                                  ) : (
+                                    <Ripple
+                                      onPress={() =>
+                                        _unlikeditinerary(item.id, index)
+                                      }
+                                    >
+                                      <LikeRed height={15} width={15} />
+                                    </Ripple>
+                                  )}
+                                </View>
+                              </View>
+                              <Text
+                                size="label"
+                                type="black"
+                                style={{ marginTop: 5 }}
+                              >
+                                <Truncate text={item.name} length={40} />
+                              </Text>
+                              <View></View>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  marginTop: 5,
+                                }}
+                              >
+                                <PinHijau width={15} height={15} />
+                                <Text
+                                  style={{ marginLeft: 5 }}
+                                  size="small"
+                                  type="regular"
+                                >
+                                  {item?.country?.name}
+                                </Text>
+                                <Text>,</Text>
+                                <Text
+                                  size="small"
+                                  type="regular"
+                                  style={{ marginLeft: 3 }}
+                                >
+                                  {item?.city?.name}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  marginTop: 20,
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginLeft: 3,
+                                  }}
+                                >
+                                  <Calendargrey
+                                    width={10}
+                                    height={10}
+                                    style={{ marginRight: 5 }}
+                                  />
+                                  <Text
+                                    style={{ marginLeft: 3 }}
+                                    size="small"
+                                    type="regular"
+                                  >
+                                    {item.start_date && item.end_date
+                                      ? getDN(item.start_date, item.end_date)
+                                      : null}
+                                  </Text>
+                                </View>
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginLeft: 15,
+                                  }}
+                                >
+                                  <User
+                                    width={10}
+                                    height={10}
+                                    style={{ marginRight: 5 }}
+                                  />
+                                  {item.buddy_count > 1 ? (
+                                    <Text size="small" type="regular">
+                                      {(item && item.buddy_count
+                                        ? item.buddy_count
+                                        : null) +
+                                        " " +
+                                        t("persons")}
+                                    </Text>
+                                  ) : (
+                                    <Text size="small" type="regular">
+                                      {(item && item.buddy_count
+                                        ? item.buddy_count
+                                        : null) +
+                                        " " +
+                                        t("person")}
+                                    </Text>
+                                  )}
+                                </View>
+                              </View>
+                            </View>
+                          </View>
+                        </Pressable>
+                        <View
+                          style={{
+                            height: "22%",
+                            width: "100%",
+                            flexDirection: "row",
+                            backgroundColor: "#FFFFFF",
+                            borderBottomLeftRadius: 10,
+                            borderBottomRightRadius: 10,
+                            marginRight: 10,
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Pressable
+                            onPress={() =>
+                              props.navigation.navigate("ItineraryStack", {
+                                screen: "itindetail",
+                                params: {
+                                  itintitle: item.name,
+                                  country: item.id,
+                                  token: token,
+                                  status: "favorite",
+                                  index: 1,
+                                },
+                              })
+                            }
+                            style={{
+                              width: "50%",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRightWidth: 1,
+                              borderColor: "#D1D1D1",
+                              marginBottom: 5,
+                            }}
+                          >
+                            <TravelAlbum
+                              style={{ marginRight: 5 }}
+                              height={10}
+                              width={10}
                             />
                             <Text
                               size="small"
                               type="bold"
-                              style={{
-                                zIndex: 0,
-                                paddingLeft: 5,
-                                backgroundColor: "rgba(52, 52, 52, 0.8)",
-                                borderRadius: 2,
-                                color: "white",
-                                marginLeft: -5,
-                                padding: 2,
-                              }}
+                              style={{ color: "#209FAE" }}
                             >
-                              {Truncate({
-                                text: item?.user_created?.first_name
-                                  ? item?.user_created?.first_name
-                                  : "user_deleted",
-                                length: 13,
-                              })}
+                              Travel Album
                             </Text>
-                          </View>
-                        </View>
-
-                        <View
-                          style={{
-                            width: "65%",
-                            paddingHorizontal: 10,
-                            backgroundColor: "#FFFFFF",
-                            marginVertical: 2,
-                            // borderWidth: 1,
-                            overflow: "hidden",
-                          }}
-                        >
-                          <View>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                              }}
-                            >
-                              <View
-                                style={{
-                                  backgroundColor: "#DAF0F2",
-                                  borderWidth: 1,
-                                  borderRadius: 3,
-                                  borderColor: "#209FAE",
-                                  paddingHorizontal: 5,
-                                }}
-                              >
-                                <Text
-                                  type="bold"
-                                  size="description"
-                                  style={{ color: "#209FAE" }}
-                                >
-                                  {item?.categori?.name
-                                    ? item?.categori?.name
-                                    : "No Category"}
-                                </Text>
-                              </View>
-                              <View>
-                                {item.liked === false ? (
-                                  <Ripple
-                                    onPress={() => _liked(item.id, index)}
-                                  >
-                                    <LikeEmpty height={15} width={15} />
-                                  </Ripple>
-                                ) : (
-                                  <Ripple
-                                    onPress={() => _unliked(item.id, index)}
-                                  >
-                                    <LikeRed height={15} width={15} />
-                                  </Ripple>
-                                )}
-                              </View>
-                            </View>
+                          </Pressable>
+                          <Pressable
+                            onPress={() =>
+                              props.navigation.navigate("ItineraryStack", {
+                                screen: "itindetail",
+                                params: {
+                                  itintitle: item.name,
+                                  country: item.id,
+                                  token: token,
+                                  status: "favorite",
+                                  index: 2,
+                                },
+                              })
+                            }
+                            style={{
+                              width: "50%",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              marginBottom: 5,
+                            }}
+                          >
+                            <TravelStories
+                              style={{ marginRight: 5 }}
+                              height={10}
+                              width={10}
+                            />
                             <Text
-                              size="label"
-                              type="black"
-                              style={{ marginTop: 5 }}
+                              size="small"
+                              type="bold"
+                              style={{ color: "#209FAE" }}
                             >
-                              <Truncate text={item.name} length={40} />
+                              Travel Stories
                             </Text>
-                            <View></View>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginTop: 5,
-                              }}
-                            >
-                              <PinHijau width={15} height={15} />
-                              <Text
-                                style={{ marginLeft: 5 }}
-                                size="small"
-                                type="regular"
-                              >
-                                {item?.country?.name}
-                              </Text>
-                              <Text>,</Text>
-                              <Text
-                                size="small"
-                                type="regular"
-                                style={{ marginLeft: 3 }}
-                              >
-                                {item?.city?.name}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                marginTop: 20,
-                              }}
-                            >
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  marginLeft: 3,
-                                }}
-                              >
-                                <Calendargrey
-                                  width={10}
-                                  height={10}
-                                  style={{ marginRight: 5 }}
-                                />
-                                <Text
-                                  style={{ marginLeft: 3 }}
-                                  size="small"
-                                  type="regular"
-                                >
-                                  {item.start_date && item.end_date
-                                    ? getDN(item.start_date, item.end_date)
-                                    : null}
-                                </Text>
-                              </View>
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  marginLeft: 15,
-                                }}
-                              >
-                                <User
-                                  width={10}
-                                  height={10}
-                                  style={{ marginRight: 5 }}
-                                />
-                                {item.buddy_count > 1 ? (
-                                  <Text size="small" type="regular">
-                                    {(item && item.buddy_count
-                                      ? item.buddy_count
-                                      : null) +
-                                      " " +
-                                      t("persons")}
-                                  </Text>
-                                ) : (
-                                  <Text size="small" type="regular">
-                                    {(item && item.buddy_count
-                                      ? item.buddy_count
-                                      : null) +
-                                      " " +
-                                      t("person")}
-                                  </Text>
-                                )}
-                              </View>
-                            </View>
-                          </View>
+                          </Pressable>
                         </View>
-                      </Pressable>
-                      <View
-                        style={{
-                          height: "22%",
-                          width: "100%",
-                          flexDirection: "row",
-                          backgroundColor: "#FFFFFF",
-                          borderBottomLeftRadius: 10,
-                          borderBottomRightRadius: 10,
-                          marginRight: 10,
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Pressable
-                          onPress={() =>
-                            props.navigation.navigate("ItineraryStack", {
-                              screen: "itindetail",
-                              params: {
-                                itintitle: item.name,
-                                country: item.id,
-                                token: token,
-                                status: "favorite",
-                                index: 1,
-                              },
-                            })
-                          }
-                          style={{
-                            width: "50%",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRightWidth: 1,
-                            borderColor: "#D1D1D1",
-                            marginBottom: 5,
-                          }}
-                        >
-                          <TravelAlbum
-                            style={{ marginRight: 5 }}
-                            height={10}
-                            width={10}
-                          />
-                          <Text
-                            size="small"
-                            type="bold"
-                            style={{ color: "#209FAE" }}
-                          >
-                            Travel Album
-                          </Text>
-                        </Pressable>
-                        <Pressable
-                          onPress={() =>
-                            props.navigation.navigate("ItineraryStack", {
-                              screen: "itindetail",
-                              params: {
-                                itintitle: item.name,
-                                country: item.id,
-                                token: token,
-                                status: "favorite",
-                                index: 2,
-                              },
-                            })
-                          }
-                          style={{
-                            width: "50%",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginBottom: 5,
-                          }}
-                        >
-                          <TravelStories
-                            style={{ marginRight: 5 }}
-                            height={10}
-                            width={10}
-                          />
-                          <Text
-                            size="small"
-                            type="bold"
-                            style={{ color: "#209FAE" }}
-                          >
-                            Travel Stories
-                          </Text>
-                        </Pressable>
                       </View>
                     </View>
-                  </View>
-                )}
-              />
-            ) : null}
-          </View>
-
-          {/* Itinerary */}
-          {/* <View
-						style={{
-							paddingHorizontal: 20,
-							paddingVertical: 10,
-							flexDirection: 'column',
-						}}>
-						<View>
-							<View
-								style={{
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-								}}>
-								<Text type='bold' size='label' style={{}}>
-									{t("Itinerary")}
-								</Text>
-
-								<Ripple>
-									<Text
-										type='bold'
-										size='description'
-										style={{
-											color: '#209fae',
-										}}>
-										View All
-									</Text>
-								</Ripple>
-							</View>
-							<Text
-								size='description'
-								style={{
-									textAlign: 'justify',
-								}}>
-								Bali is an Indonesian island known for its forested volcanic
-								mountains, iconic rice paddies, mountains, iconic rice
-							</Text>
-						</View>
-					</View>
-					<View>
-						<FlatList
-							key={''}
-							style={{
-								marginBottom: 30,
-								// paddingHorizontal: 20,
-							}}
-							contentContainerStyle={{
-								paddingStart: 20,
-								paddingEnd: 20,
-								// justifyContent: 'space-evenly',
-							}}
-							horizontal={true}
-							data={activitas}
-							renderItem={({ item, index }) => (
-								<View
-									style={{
-										// borderWidth: 1,
-										borderRadius: 5,
-										margin: 2.5,
-										width: width - 40,
-										// height: width * 0.5,
-										shadowColor: '#d3d3d3',
-										shadowOffset: { width: 2, height: 2 },
-										shadowOpacity: 1,
-										shadowRadius: 2,
-										elevation: 2,
-									}}>
-									<ImageBackground
-										source={bali2}
-										style={{
-											height: width * 0.3,
-											width: '100%',
-											borderTopLeftRadius: 5,
-											borderTopRightRadius: 5,
-											justifyContent: 'flex-end',
-										}}
-										imageStyle={{
-											height: '100%',
-											width: '100%',
-											borderTopLeftRadius: 5,
-											borderTopRightRadius: 5,
-										}}>
-										<LinearGradient
-											colors={['rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0.7)']}
-											start={{ x: 0, y: 0 }}
-											end={{ x: 0, y: 1 }}
-											style={{
-												width: '100%',
-												flexDirection: 'row',
-											}}>
-											<Text
-												style={{
-													marginHorizontal: 10,
-													marginVertical: 5,
-													color: 'white',
-												}}>
-												Created by : AsepIM
-											</Text>
-										</LinearGradient>
-									</ImageBackground>
-									<View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-										<View
-											style={{
-												flexDirection: 'row',
-												alignContent: 'center',
-												alignItems: 'center',
-												justifyContent: 'space-between',
-											}}>
-											<Text type='bold' size='label'>
-												Sultan jalan-jalan
-											</Text>
-											<View
-												style={{
-													flexDirection: 'row',
-													alignContent: 'center',
-													alignItems: 'center',
-												}}>
-												<Love
-													style={{ marginHorizontal: 2.5 }}
-													height={15}
-													width={15}
-												/>
-												<Shareout
-													style={{ marginHorizontal: 2.5 }}
-													height={15}
-													width={15}
-												/>
-											</View>
-										</View>
-										<Text>4 day, 3 night</Text>
-										<View
-											style={{
-												flexDirection: 'row',
-												alignItems: 'center',
-												alignContent: 'center',
-											}}>
-											<PinWhite height={15} width={15} />
-											<Text style={{ marginLeft: 5 }}>Banten</Text>
-										</View>
-									</View>
-								</View>
-							)}
-							keyExtractor={(item, index) => index.toString()}
-							showsHorizontalScrollIndicator={false}
-							showsVerticalScrollIndicator={false}
-							// extraData={selected}
-						/>
-					</View>
-				 */}
+                  )}
+                />
+              ) : null}
+            </View>
+          ) : null}
         </View>
       );
     } else {
@@ -1625,10 +1776,10 @@ export default function CityDetail(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await getPackageDetail();
-    // await _fetchItem();
-    // await setloadings(false);
+    await getJournalCity();
+    await getItineraryCity();
   };
-  console.log("token :", token);
+  // console.log("token :", token);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -1688,11 +1839,10 @@ export default function CityDetail(props) {
   };
 
   useEffect(() => {
-    // props.navigation.setOptions(HeaderComponent);
     refresh();
   }, []);
 
-  if (loading) {
+  if (loadingCity) {
     return (
       <View
         style={{
@@ -1716,7 +1866,7 @@ export default function CityDetail(props) {
     >
       {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
       <View style={{ height: 55 + SafeStatusBar }}></View>
-      {data && data.CitiesInformation ? (
+      {dataCity && dataCity.CitiesInformation ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
@@ -1750,9 +1900,9 @@ export default function CityDetail(props) {
             >
               <View>
                 <Text size="title" type="black" style={{ color: "white" }}>
-                  {data && data.CitiesInformation ? (
+                  {dataCity && dataCity.CitiesInformation ? (
                     <Truncate
-                      text={Capital({ text: data.CitiesInformation.name })}
+                      text={Capital({ text: dataCity.CitiesInformation.name })}
                       length={20}
                     ></Truncate>
                   ) : null}
@@ -1771,44 +1921,12 @@ export default function CityDetail(props) {
                     type="regular"
                     style={{ marginLeft: 5, color: "white" }}
                   >
-                    {data && data.CitiesInformation
-                      ? data.CitiesInformation.countries.name.toUpperCase()
+                    {dataCity && dataCity.CitiesInformation
+                      ? dataCity.CitiesInformation.countries.name.toUpperCase()
                       : "-"}
                   </Text>
                 </View>
               </View>
-              {/* {dataweather && dataweather.weather ? (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignContent: "center",
-                  }}
-                >
-                  <FunIcon
-                    icon={icons[dataweather.weather[0].icon]}
-                    height={50}
-                    width={50}
-                    style={{
-                      bottom: -3,
-                    }}
-                  />
-                  <Text type="bold" size="h5" style={{ color: "white" }}>
-                    {(dataweather.main.temp / 10).toFixed(1)}
-                  </Text>
-                  <View
-                    style={{
-                      marginTop: 15,
-                      alignSelf: "flex-start",
-                      height: 6,
-                      width: 6,
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      borderColor: "white",
-                    }}
-                  ></View>
-                </View>
-              ) : null} */}
             </View>
           </View>
           <View
@@ -1855,13 +1973,24 @@ export default function CityDetail(props) {
                   {t("General")}
                 </Text>
               </Ripple>
-              <Renderheader dataheader={data ? data : null} actives={actives} />
+              <Renderheader
+                dataheader={dataCity ? dataCity : null}
+                actives={actives}
+              />
             </ScrollView>
           </View>
           <RenderUtama
             aktif={actives}
             render={
-              data && data.CitiesInformation ? data.CitiesInformation : {}
+              dataCity && dataCity.CitiesInformation
+                ? dataCity.CitiesInformation
+                : {}
+            }
+            renderjournal={list_journal}
+            renderItinerary={
+              dataItinerary && dataItinerary.itinerary_populer_by_city
+                ? dataItinerary.itinerary_populer_by_city
+                : {}
             }
           />
         </ScrollView>
@@ -1882,7 +2011,7 @@ export default function CityDetail(props) {
         }}
         setClose={(e) => setshowside(false)}
       />
-      {data && data.CitiesInformation ? (
+      {dataCity && dataCity.CitiesInformation ? (
         <Animated.View style={[styles.header, { height: headerHeight }]}>
           <Animated.Image
             style={[
@@ -1893,8 +2022,8 @@ export default function CityDetail(props) {
               },
             ]}
             source={
-              data && data.CitiesInformation.cover
-                ? { uri: data.CitiesInformation.cover.image }
+              dataCity && dataCity.CitiesInformation.cover
+                ? { uri: dataCity.CitiesInformation.cover.image }
                 : default_image
             }
           />

@@ -1,12 +1,28 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, ScrollView, SafeAreaView } from "react-native";
-import { Arrowbackwhite, TypeC, TypeF } from "../../assets/svg";
-import Ripple from "react-native-material-ripple";
-import { Text, Button } from "../../component";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  View,
+  Dimensions,
+  Image,
+  ScrollView,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
+
+import { Arrowbackwhite, Garuda, Calendargreen } from "../../assets/svg";
+import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
-import { FunIcon } from "../../component";
+import { Text, Button } from "../../component";
+import Ripple from "react-native-material-ripple";
+import { useLazyQuery } from "@apollo/client";
+import Practical from "../../graphQL/Query/Cities/Practical";
 
 export default function PracticalInformation(props) {
+  let [token, setToken] = useState("");
+  const [loadings, setloadings] = useState(true);
+
+  console.log("Prop", props);
+
   const HeaderComponent = {
     headerShown: true,
     title: "Practical Information",
@@ -44,290 +60,196 @@ export default function PracticalInformation(props) {
       </Button>
     ),
   };
-  const [actives, setActives] = useState("Electricity");
+
   const { t, i18n } = useTranslation();
+  const [actives, setActives] = useState(props.route.params.active);
 
-  const Rendercontent = ({ active }) => {
-    if (active === "Electricity") {
-      return (
-        <View
-          style={{
-            paddingHorizontal: 20,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text size="label" type="bold" style={{ marginBottom: 5 }}>
-              {`${t("passport")} ${"&"} ${t("visa")}`}
-            </Text>
-            <Text
-              size="description"
-              type="regular"
-              style={{ color: "#d1d1d1" }}
-            >
-              {t("forUpToDate")}
-            </Text>
-            <Text size="description" type="bold">
-              www.imigrasi.co.id
-            </Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text type="bold" size="label" style={{ marginBottom: 5 }}>
-              {t("currency")}
-            </Text>
-            <Text
-              type="regular"
-              size="description"
-              style={{ color: "#d1d1d1" }}
-            >
-              Indonesia Rupiah (IDR)
-            </Text>
-          </View>
+  // console.log("aktif", props.route.params.active);
 
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text type="bold" size="label" style={{ marginBottom: 5 }}>
-              {t("climate")}
-            </Text>
-            <View
-              style={{
-                width: "100%",
-                justifyContent: "space-between",
-                flexDirection: "row",
-              }}
-            >
-              <FunIcon icon="w-rain_heavy" height={60} width={60} />
-              <Text
-                type="regular"
-                size="description"
-                style={{
-                  width: "80%",
+  useEffect(() => {
+    refresh();
+  }, []);
 
-                  textAlign: "justify",
-                  color: "#6c6c6c",
-                }}
-              >
-                Lorem ipsum adipiscing turpis dolor elit. nunc id sit Tortor nec
-                amet, consectetur varius ermentum ut cursus at. Vitae habitant
-                id lorem amet aliquam
-              </Text>
-            </View>
-            <View
-              style={{
-                width: "100%",
-                justifyContent: "space-between",
-                flexDirection: "row",
-              }}
-            >
-              <FunIcon icon="w-sunny" height={60} width={60} />
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  width: "80%",
-                  // fontFamily: "Lato-Regular",
-                  // fontSize: 14,
-                  textAlign: "justify",
-                  color: "#6c6c6c",
-                }}
-              >
-                Lorem ipsum adipiscing turpis dolor elit. nunc id sit Tortor nec
-                amet, consectetur varius ermentum ut cursus at. Vitae habitant
-                id lorem amet aliquam
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text size="label" type="bold" style={{ marginBottom: 5 }}>
-              {t("electricity")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <TypeC height={60} width={60} />
-
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    // fontFamily: "Lato-Regular",
-                    // fontSize: 14,
-                    color: "#6c6c6c",
-                  }}
-                >
-                  Type C
-                </Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <TypeF height={60} width={60} />
-
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    // fontFamily: "Lato-Regular",
-                    // fontSize: 14,
-                    color: "#6c6c6c",
-                  }}
-                >
-                  Type F
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text type="bold" size="label" style={{ marginBottom: 5 }}>
-              Money
-            </Text>
-            <Text
-              size="description"
-              type="regular"
-              style={{
-                // fontFamily: "Lato-Regular",
-                // fontSize: 14,
-                textAlign: "justify",
-                color: "#6c6c6c",
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tortor
-              varius fermentum turpis nunc id nec ut cursus at. Vitae habitant
-              id lorem amet aliquam.
-            </Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text type="bold" size="label" style={{ marginBottom: 5 }}>
-              Custom informtion
-            </Text>
-            <Text
-              size="description"
-              type="regular"
-              style={{
-                // fontFamily: "Lato-Regular",
-                // fontSize: 14,
-                textAlign: "justify",
-                color: "#6c6c6c",
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tortor
-              varius fermentum turpis nunc id nec ut cursus at. Vitae habitant
-              id lorem amet aliquam.
-            </Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text type="bold" size="label" style={{ marginBottom: 5 }}>
-              {t("smoke")} {"&"} {t("alcohol")}
-            </Text>
-            <Text
-              size="description"
-              type="regular"
-              style={{
-                // fontFamily: "Lato-Regular",
-                // fontSize: 14,
-                textAlign: "justify",
-                color: "#6c6c6c",
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tortor
-              varius fermentum turpis nunc id nec ut cursus at. Vitae habitant
-              id lorem amet aliquam.
-            </Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-              paddingVertical: 10,
-            }}
-          >
-            <Text type="bold" size="label" style={{ marginBottom: 5 }}>
-              {t("accommodation")}
-            </Text>
-            <Text
-              size="description"
-              type="regular"
-              style={{
-                // fontFamily: "Lato-Regular",
-                // fontSize: 14,
-                textAlign: "justify",
-                color: "#6c6c6c",
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tortor
-              varius fermentum turpis nunc id nec ut cursus at. Vitae habitant
-              id lorem amet aliquam.
-            </Text>
-          </View>
-        </View>
-      );
-    } else {
-      return null;
-    }
+  const refresh = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+    await getPracticalDetail();
+    await setloadings(false);
   };
+
+  const [getPracticalDetail, { loading, data, error }] = useLazyQuery(
+    Practical,
+    {
+      fetchPolicy: "network-only",
+      variables: {
+        id: props.route.params.city_id,
+      },
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
+  );
+  let practical = [];
+  if (data && data.list_practical_article_city) {
+    practical = data.list_practical_article_city;
+  }
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, []);
+
+  const RenderUtama = ({ aktif, render }) => {
+    return (
+      <View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{
+            backgroundColor: "#DAF0F2",
+            width: "100%",
+          }}
+          contentContainerStyle={{
+            paddingHorizontal: 10,
+          }}
+        >
+          {render.length > 0 &&
+            render.map((item, index) => (
+              <Ripple
+                onPress={() => {
+                  setActives(item.id);
+                }}
+                style={{
+                  // width: '33.333%',
+                  paddingHorizontal: 10,
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  size="description"
+                  type={actives == item.id ? "bold" : "regular"}
+                  style={{
+                    paddingVertical: 15,
+                    borderBottomWidth: actives == item.id ? 3 : 1,
+                    borderBottomColor:
+                      actives == item.id ? "#14646E" : "#DAF0F2",
+                    color: actives == item.id ? "#14646E" : "#464646",
+                  }}
+                >
+                  {item.name}
+                </Text>
+              </Ripple>
+            ))}
+        </ScrollView>
+      </View>
+    );
+  };
+  const Rendercontent = ({ active, practical }) => {
+    let index = practical.findIndex((k) => k["id"] === actives);
+    let datas = practical ? practical[index] : null;
+
+    return (
+      <View style={{ padding: 20 }}>
+        {
+          datas && datas.information_article_detail.length
+            ? datas.information_article_detail.map((i, index) => {
+                return (
+                  <View key={index}>
+                    {i.type === "image" ? (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
+                        <Text
+                          size="description"
+                          type="regular"
+                          style={{
+                            textAlign: "justify",
+                            lineHeight: 21,
+                            color: "#464646",
+                          }}
+                        >
+                          {i.text ? i.text : ""}
+                        </Text>
+                        <View style={{ alignItems: "center" }}>
+                          <Image
+                            source={i.image ? { uri: i.image } : default_image}
+                            resizeMode={"cover"}
+                            style={{
+                              borderWidth: 0.4,
+                              borderColor: "#d3d3d3",
+                              marginVertical: 10,
+                              height: Dimensions.get("screen").width * 0.8,
+                              width: "100%",
+                            }}
+                          />
+                        </View>
+                      </View>
+                    ) : (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{
+                              marginBottom: 10,
+
+                              // marginVertical: 10,
+
+                              color: "#464646",
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
+                        <Text
+                          size="description"
+                          type="regular"
+                          style={{
+                            lineHeight: 21,
+                            textAlign: "justify",
+                            // fontFamily: "Lato-Regular",
+                            // fontSize: 13,
+                            color: "#464646",
+                          }}
+                        >
+                          {i.text ? i.text : ""}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              })
+            : null
+          //  (
+          //   <View style={{ alignItems: "center" }}>
+          //     <Text
+          //       type="regular"
+          //       size="title"
+          //       style={{
+          //         textAlign: "justify",
+          //         color: "#464646",
+          //       }}
+          //     >
+          //       {t("noArticle")}
+          //     </Text>
+          //   </View>
+          // )
+        }
+      </View>
+    );
+  };
   return (
     <SafeAreaView
       style={{
@@ -355,215 +277,9 @@ export default function PracticalInformation(props) {
           }
         }
       >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{
-            backgroundColor: "#DAF0F2",
-            width: "100%",
-          }}
-          contentContainerStyle={{
-            paddingHorizontal: 10,
-          }}
-        >
-          <Ripple
-            onPress={() => {
-              setActives("Electricity");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Electricity" ? "bold" : "regular"}
-              style={{
-                paddingVertical: 15,
-                borderBottomWidth: actives == "Electricity" ? 3 : 1,
-                borderBottomColor:
-                  actives == "Electricity" ? "#14646E" : "#DAF0F2",
-                color: actives == "Electricity" ? "#14646E" : "#464646",
-              }}
-            >
-              Electricity
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("EmergencyNumber");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "EmergencyNumber" ? "bold" : "regular"}
-              style={{
-                paddingVertical: 15,
-                borderBottomWidth: actives == "EmergencyNumber" ? 3 : 1,
-                borderBottomColor:
-                  actives == "EmergencyNumber" ? "#14646E" : "#DAF0F2",
-                color: actives == "EmergencyNumber" ? "#14646E" : "#464646",
-              }}
-            >
-              Emergency Number
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("Health");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Health" ? "bold" : "regular"}
-              style={{
-                borderBottomWidth: actives == "Health" ? 3 : 1,
-                borderBottomColor: actives == "Health" ? "#14646E" : "#DAF0F2",
-                paddingVertical: 15,
-                color: actives == "Health" ? "#14646E" : "#464646",
-              }}
-            >
-              Health
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("Language");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Language" ? "bold" : "regular"}
-              style={{
-                borderBottomWidth: actives == "Language" ? 3 : 1,
-                borderBottomColor:
-                  actives == "Language" ? "#14646E" : "#DAF0F2",
-                paddingVertical: 15,
-                color: actives == "Language" ? "#14646E" : "#464646",
-              }}
-            >
-              Language
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("Money");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Money" ? "bold" : "regular"}
-              style={{
-                borderBottomWidth: actives == "Money" ? 3 : 1,
-                borderBottomColor: actives == "Money" ? "#14646E" : "#DAF0F2",
-                paddingVertical: 15,
-                color: actives == "Money" ? "#14646E" : "#464646",
-              }}
-            >
-              Money
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("Visa");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Visa" ? "bold" : "regular"}
-              style={{
-                borderBottomWidth: actives == "Visa" ? 3 : 1,
-                borderBottomColor: actives == "Visa" ? "#14646E" : "#DAF0F2",
-                paddingVertical: 15,
-                color: actives == "Visa" ? "#14646E" : "#464646",
-              }}
-            >
-              Visa & Passport
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("TimeZone");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "TimeZone" ? "bold" : "regular"}
-              style={{
-                borderBottomWidth: actives == "TimeZone" ? 3 : 1,
-                borderBottomColor:
-                  actives == "TimeZone" ? "#14646E" : "#DAF0F2",
-                paddingVertical: 15,
-                color: actives == "TimeZone" ? "#14646E" : "#464646",
-              }}
-            >
-              Time Zone
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setActives("Taxes");
-            }}
-            style={{
-              // width: '33.333%',
-              paddingHorizontal: 10,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="description"
-              type={actives == "Taxes" ? "bold" : "regular"}
-              style={{
-                borderBottomWidth: actives == "Taxes" ? 3 : 1,
-                borderBottomColor: actives == "Taxes" ? "#14646E" : "#DAF0F2",
-                paddingVertical: 15,
-                color: actives == "Taxes" ? "#14646E" : "#464646",
-              }}
-            >
-              Taxes & Tipping
-            </Text>
-          </Ripple>
-        </ScrollView>
-        <Rendercontent active={actives} />
+        <RenderUtama aktif={actives} render={practical} />
+
+        <Rendercontent active={actives} practical={practical} />
       </ScrollView>
     </SafeAreaView>
   );
