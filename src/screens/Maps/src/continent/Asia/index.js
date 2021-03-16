@@ -1,21 +1,98 @@
 import React from "react";
 import { useState } from "react";
 import { SafeAreaView, FlatList, TouchableOpacity, View } from "react-native";
-import Maps from "./maps";
+import M035 from "./src/035";
+import M143 from "./src/143";
+import M034 from "./src/034";
+import M030 from "./src/030";
+import M145 from "./src/145";
+import M142 from "./src/142";
 import { Country } from "../../../data/country";
-import { Text } from "../../../../../component";
-export default function Asia() {
+import { Text, StatusBar } from "../../../../../component";
+export default function Asia({ navigation }) {
 	const [changeColor, setChangeColor] = useState("#209FAE");
 	const [defaultColor, setDefaultColor] = useState("#DAF0F2");
-	const [subContinent, setSubContinent] = useState({});
+	const [subContinent, setSubContinent] = useState({
+		id: "142",
+		label: "All",
+	});
 	const subContinentData = [
-		{ id: "035", label: "South-eastern Asia" },
-		{ id: "143", label: "Central Asia" },
-		{ id: "034", label: "Southern Asia" },
-		{ id: "030", label: "Eastern Asia" },
-		{ id: "145", label: "Western Asia" },
-		{ id: "142", label: "All" },
+		{
+			id: "035",
+			label: "South-eastern Asia",
+		},
+		{
+			id: "143",
+			label: "Central Asia",
+		},
+		{
+			id: "034",
+			label: "Southern Asia",
+		},
+		{
+			id: "030",
+			label: "Eastern Asia",
+		},
+		{
+			id: "145",
+			label: "Western Asia",
+		},
+		{
+			id: "142",
+			label: "All",
+		},
 	];
+
+	const Components = {
+		cm035: (
+			<M035
+				subContinent={subContinent}
+				colorChange={changeColor}
+				defaultColor={defaultColor}
+				setChange={(data) => setSubContinent(data)}
+			/>
+		),
+		cm143: (
+			<M143
+				subContinent={subContinent}
+				colorChange={changeColor}
+				defaultColor={defaultColor}
+				setChange={(data) => setSubContinent(data)}
+			/>
+		),
+		cm034: (
+			<M034
+				subContinent={subContinent}
+				colorChange={changeColor}
+				defaultColor={defaultColor}
+				setChange={(data) => setSubContinent(data)}
+			/>
+		),
+		cm030: (
+			<M030
+				subContinent={subContinent}
+				colorChange={changeColor}
+				defaultColor={defaultColor}
+				setChange={(data) => setSubContinent(data)}
+			/>
+		),
+		cm145: (
+			<M145
+				subContinent={subContinent}
+				colorChange={changeColor}
+				defaultColor={defaultColor}
+				setChange={(data) => setSubContinent(data)}
+			/>
+		),
+		cm142: (
+			<M142
+				subContinent={subContinent}
+				colorChange={changeColor}
+				defaultColor={defaultColor}
+				setChange={(data) => setSubContinent(data)}
+			/>
+		),
+	};
 
 	const getCountry = (data) => {
 		if (subContinent.id === "142") {
@@ -27,13 +104,9 @@ export default function Asia() {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<View style={{ backgroundColor: "#FFF" }}>
-				<Maps
-					subContinent={subContinent}
-					colorChange={changeColor}
-					defaultColor={defaultColor}
-					setChange={(data) => setSubContinent(data)}
-				/>
+			<StatusBar backgroundColor="#14646e" barStyle="light-content" />
+			<View style={{ backgroundColor: "#FFF", padding: 15 }}>
+				{Components[`cm${subContinent.id}`]}
 			</View>
 			<View
 				style={{
@@ -47,6 +120,11 @@ export default function Asia() {
 					backgroundColor: "#FFF",
 					borderRadius: 5,
 					margin: 10,
+					elevation: 3,
+					shadowColor: "#d3d3d3",
+					shadowOffset: { width: 2, height: 2 },
+					shadowOpacity: 1,
+					shadowRadius: 2,
 				}}
 			>
 				{subContinentData.map((item, index) => (
@@ -61,6 +139,11 @@ export default function Asia() {
 							paddingHorizontal: 15,
 							borderRadius: 5,
 							margin: 5,
+							elevation: 3,
+							shadowColor: "#d3d3d3",
+							shadowOffset: { width: 2, height: 2 },
+							shadowOpacity: 1,
+							shadowRadius: 2,
 						}}
 					>
 						<Text
@@ -75,18 +158,25 @@ export default function Asia() {
 			</View>
 			<FlatList
 				data={Country.filter(getCountry)}
-				renderItem={({ item }) => (
-					<View
+				renderItem={({ item, index }) => (
+					<TouchableOpacity
+						onPress={() => navigation.navigate("DestinationList")}
+						key={index}
 						style={{
 							paddingVertical: 15,
 							paddingHorizontal: 15,
 							backgroundColor: "#FFF",
 							marginVertical: 5,
 							borderRadius: 5,
+							elevation: 3,
+							shadowColor: "#d3d3d3",
+							shadowOffset: { width: 2, height: 2 },
+							shadowOpacity: 1,
+							shadowRadius: 2,
 						}}
 					>
 						<Text>{item.name}</Text>
-					</View>
+					</TouchableOpacity>
 				)}
 				contentContainerStyle={{ marginHorizontal: 15 }}
 			/>

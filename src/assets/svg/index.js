@@ -190,6 +190,8 @@ import Allpost from "./files/allpost.svg";
 import Allpostgreen from "./files/allpost2.svg";
 import Tag from "./files/tag.svg";
 import Taggreen from "./files/tag2.svg";
+import Reorder from "./files/reorder.svg";
+import DisketWhite from "./files/disketwhite.svg";
 
 export {
   LikeWhite,
@@ -384,4 +386,6 @@ export {
   Allpostgreen,
   Tag,
   Taggreen,
+  Reorder,
+  DisketWhite,
 };

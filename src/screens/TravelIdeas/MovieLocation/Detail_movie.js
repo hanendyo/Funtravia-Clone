@@ -45,12 +45,6 @@ import {
 } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import Account from "../../../graphQL/Query/Home/Account";
-import User_Post from "../../../graphQL/Query/Profile/post";
-import Reviews from "../../../graphQL/Query/Profile/review";
-import Itinerary from "../../../graphQL/Query/Profile/itinerary";
-import { TabBar, TabView } from "react-native-tab-view";
-import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
 import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationByID";
 import ListDestinationByMovie from "../../../graphQL/Query/TravelIdeas/ListDestinationByMovie";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
