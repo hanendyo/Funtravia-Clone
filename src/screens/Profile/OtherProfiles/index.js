@@ -25,12 +25,26 @@ import {
 } from "../../../assets/png";
 import Account from "../../../graphQL/Query/Profile/Other";
 import User_Post from "../../../graphQL/Query/Profile/otherpost";
-
+import Reviews from "../../../graphQL/Query/Profile/otherreview";
+import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
 import { useTranslation } from "react-i18next";
-import { Google, OptionsVertWhite, Sharegreen } from "../../../assets/svg";
-import Post from "./Post";
+import {
+  Album,
+  Albumgreen,
+  Allpost,
+  Allpostgreen,
+  Google,
+  OptionsVertWhite,
+  Sharegreen,
+  Tag,
+  Taggreen,
+} from "../../../assets/svg";
+import Post from "./Posting/Post";
+import Albums from "./Posting/Album";
+import Tags from "./Posting/Tag";
 import Review from "./Review";
 import Trip from "./Trip";
+import ImageSlide from "../../../component/src/ImageSlide";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -54,6 +68,8 @@ export default function OtherProfile(props) {
     await setToken(tkn);
     await LoadUserProfile();
     await Getdatapost();
+    await LoadReview();
+    await LoadTrip();
   };
 
   const [
@@ -80,10 +96,49 @@ export default function OtherProfile(props) {
     },
   });
 
+  const [
+    LoadReview,
+    { data: datareview, loading: loadingreview, error: errorreview },
+  ] = useLazyQuery(Reviews, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.idUser,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: (data) => {
+      setdataReview(data.user_reviewbyid);
+    },
+  });
+
+  const [
+    LoadTrip,
+    { data: datatrip, loading: loadingtrip, error: errortrip },
+  ] = useLazyQuery(Itinerary, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.idUser,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: (data) => {
+      setdataTrip(data.user_tripbyid);
+    },
+  });
+
   const spreadData = (data) => {
     let tmpData = [];
     let count = 1;
     let tmpArray = [];
+    let grid = 1;
     for (let val of data) {
       if (count < 3) {
         tmpArray.push(val);
@@ -91,6 +146,12 @@ export default function OtherProfile(props) {
         count++;
       } else {
         tmpArray.push(val);
+        tmpArray.push({ grid: grid });
+        if (grid == 1) {
+          grid++;
+        } else {
+          grid = 1;
+        }
         tmpData.push(tmpArray);
         count = 1;
         tmpArray = [];
@@ -99,6 +160,7 @@ export default function OtherProfile(props) {
     if (tmpArray.length) {
       tmpData.push(tmpArray);
     }
+
     return tmpData;
   };
 
@@ -589,7 +651,7 @@ export default function OtherProfile(props) {
                 }}
                 onPress={() =>
                   props.navigation.push("otherFollower", {
-                    idUser: idUser,
+                    idUser: props.route.params.idUser,
                   })
                 }
               >
@@ -611,7 +673,7 @@ export default function OtherProfile(props) {
                 }}
                 onPress={() =>
                   props.navigation.push("otherFollowing", {
-                    idUser: idUser,
+                    idUser: props.route.params.idUser,
                   })
                 }
               >
@@ -671,26 +733,49 @@ export default function OtherProfile(props) {
     );
   };
 
+  const renderPost = (tabPost, e) => {
+    if (tabPost === 0) {
+      return Post(e);
+    } else if (tabPost === 1) {
+      return Albums(e);
+    } else {
+      return Tags(e);
+    }
+  };
+  const renderdataPost = (tabPost) => {
+    if (tabPost === 0) {
+      return dataPost;
+    } else if (tabPost === 1) {
+      return dataPost;
+    } else {
+      return dataPost;
+    }
+  };
+
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
     let numCols;
     let data;
     let renderItem;
+    let paddingHorizontal;
     switch (route.key) {
       case "tab1":
         numCols = tabPost === 2 ? 3 : 1;
-        data = dataPost;
-        renderItem = Post;
+        data = renderdataPost(tabPost);
+        renderItem = (e) => renderPost(tabPost, e);
+        paddingHorizontal = tabPost === 2 ? 2.5 : 0;
         break;
       case "tab2":
-        numCols = 3;
+        numCols = 1;
         data = dataReview;
-        renderItem = Review;
+        renderItem = (e) => Review(e);
+        paddingHorizontal = 0;
         break;
       case "tab3":
-        numCols = 3;
+        numCols = 1;
         data = dataTrip;
-        renderItem = Trip;
+        renderItem = (e) => Trip(e);
+        paddingHorizontal = 15;
         break;
       default:
         return null;
@@ -729,19 +814,19 @@ export default function OtherProfile(props) {
         onMomentumScrollBegin={onMomentumScrollBegin}
         onScrollEndDrag={onScrollEndDrag}
         onMomentumScrollEnd={onMomentumScrollEnd}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListHeaderComponent={() => <View style={{ height: 10 }}></View>}
+        // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListHeaderComponent={() => <View style={{ height: 5 }}></View>}
         contentContainerStyle={{
           paddingTop:
             tabIndex === 0
               ? HeaderHeight + TabBarHeight + 55
               : HeaderHeight + TabBarHeight,
-          paddingHorizontal: 10,
+          paddingHorizontal: paddingHorizontal,
           minHeight: height - SafeStatusBar + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
-        renderItem={renderItem}
+        renderItem={({ item, index }) => renderItem({ props, item, index })}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         style={{}}
@@ -808,7 +893,11 @@ export default function OtherProfile(props) {
                 alignItems: "center",
               }}
             >
-              <Google height={15} width={15} />
+              {tabPost === 0 ? (
+                <Allpostgreen height={15} width={15} />
+              ) : (
+                <Allpost height={15} width={15} />
+              )}
               <Text
                 style={{
                   marginTop: 3,
@@ -828,7 +917,11 @@ export default function OtherProfile(props) {
                 alignItems: "center",
               }}
             >
-              <Google height={15} width={15} />
+              {tabPost === 1 ? (
+                <Albumgreen height={15} width={15} />
+              ) : (
+                <Album height={15} width={15} />
+              )}
               <Text
                 style={{
                   marginTop: 3,
@@ -848,14 +941,18 @@ export default function OtherProfile(props) {
                 alignItems: "center",
               }}
             >
-              <Google height={15} width={15} />
+              {tabPost === 2 ? (
+                <Taggreen height={15} width={15} />
+              ) : (
+                <Tag height={15} width={15} />
+              )}
               <Text
                 style={{
                   marginTop: 3,
                   color: tabPost === 2 ? "#209fae" : "#464646",
                 }}
               >
-                Trip
+                Tag
               </Text>
             </TouchableOpacity>
           </View>
@@ -937,13 +1034,43 @@ export default function OtherProfile(props) {
     }
   );
 
+  let [modal, setModal] = useState(false);
+  let [dataImage, setDataImage] = useState();
+
+  const onSelect = async (data) => {
+    var tempdatas = [];
+    var x = 0;
+    for (var i in data) {
+      tempdatas.push({
+        key: i,
+        selected: i === 0 ? true : false,
+        url: data[i] ? data[i] : "",
+        width: Dimensions.get("screen").width,
+        height: 300,
+        props: {
+          source: data[i] ? data[i] : "",
+        },
+      });
+      x++;
+    }
+
+    if (tempdatas.length > 0) {
+      await setDataImage(tempdatas);
+      setModal(true);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
       {renderTabView()}
       {renderHeader(dataUser)}
       {renderCustomRefresh()}
-
+      <ImageSlide
+        show={modal}
+        dataImage={dataImage}
+        setClose={() => setModal(!modal)}
+      />
       <Sidebar
         props={props}
         show={showside}

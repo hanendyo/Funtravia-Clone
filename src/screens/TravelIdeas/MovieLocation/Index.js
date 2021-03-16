@@ -30,16 +30,17 @@ import {
   the_raid,
   default_image,
 } from "../../../assets/png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { Kosong, Select, LocationBlack } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import MovieLocationQuery from "../../../graphQL/Query/TravelIdeas/MovieLocation";
 import MovieLocationFirstQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationFirst";
-import CountryListSrc from "../../../graphQL/Query/Countries/CountryListSrc";
-import ContinentList from "../../../graphQL/Query/Countries/ContinentList";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
+import CountrySrc from "./CountrySrc";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -129,6 +130,11 @@ export default function MovieLocation({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
   const { t } = useTranslation();
+  let [modalcountry, setModelCountry] = useState(false);
+  let [selectedCountry, SetselectedCountry] = useState({
+    id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    name: "Indonesia",
+  });
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -154,26 +160,10 @@ export default function MovieLocation({ navigation, route }) {
   /**
    * ref
    */
-  const {
-    data: datacountry,
-    loading: loadingcountry,
-    error: errorcountry,
-    refetch: refetchcountry,
-  } = useQuery(CountryListSrc, {
-    variables: {
-      countries_id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
 
   const { data, loading, error, refetch } = useQuery(MovieLocationQuery, {
     variables: {
-      countries_id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+      countries_id: selectedCountry.id,
     },
     context: {
       headers: {
@@ -195,7 +185,7 @@ export default function MovieLocation({ navigation, route }) {
     refetch: refetchfirst,
   } = useQuery(MovieLocationFirstQuery, {
     variables: {
-      countries_id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+      countries_id: selectedCountry.id,
     },
     context: {
       headers: {
@@ -225,8 +215,14 @@ export default function MovieLocation({ navigation, route }) {
       style={{
         flex: 1,
       }}
-      stickyHeaderIndices={[1]}
+      stickyHeaderIndices={[2]}
     >
+      <CountrySrc
+        selectedCountry={selectedCountry}
+        SetselectedCountry={(e) => SetselectedCountry(e)}
+        modalshown={modalcountry}
+        setModelCountry={(e) => setModelCountry(e)}
+      />
       <View
         style={{
           justifyContent: "center",
@@ -266,6 +262,7 @@ export default function MovieLocation({ navigation, route }) {
         }}
       >
         <Pressable
+          onPress={() => setModelCountry(true)}
           style={({ pressed }) => [
             {
               height: 44,
@@ -298,7 +295,7 @@ export default function MovieLocation({ navigation, route }) {
               marginRight: 10,
             }}
           >
-            Indonesia
+            {selectedCountry.name}
           </Text>
           <Select height={10} width={10} />
         </Pressable>
@@ -472,6 +469,7 @@ export default function MovieLocation({ navigation, route }) {
             >
               <Image
                 source={item.cover ? { uri: item.cover } : default_image}
+                // source={item.cover}
                 style={{ width: "92%", height: 150, borderRadius: 10 }}
                 resizeMode="cover"
               />

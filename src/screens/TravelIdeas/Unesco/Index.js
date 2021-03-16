@@ -14,7 +14,7 @@ import {
   View,
   Pressable,
 } from "react-native";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import {
   Akunsaya,
   default_image,
@@ -35,6 +35,8 @@ import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
+import CountrySrc from "./CountrySrc";
+import CountryListSrcMovie from "../../../graphQL/Query/Countries/CountryListSrcMovie";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -203,9 +205,10 @@ const data_unesco_culture = [
 export default function Unesco({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
+  let [modalcountry, setModelCountry] = useState(false);
   let [selectedCountry, SetselectedCountry] = useState({
-    id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
-    name: "Indonesia",
+    // id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    // name: "Indonesia",
   });
   const { t } = useTranslation();
   const HeaderComponent = {
@@ -237,6 +240,28 @@ export default function Unesco({ navigation, route }) {
     { key: "mix", title: "Mix" },
   ]);
 
+  const {
+    data: datacountry,
+    loading: loadingcountry,
+    error: errorcountry,
+    refetch: refetchcountry,
+  } = useQuery(CountryListSrcMovie, {
+    variables: {
+      continent_id: null,
+      keyword: "",
+    },
+    onCompleted: () => {
+      SetselectedCountry({
+        id: datacountry.list_country_src_movie[0].id,
+        name: datacountry.list_country_src_movie[0].name,
+      });
+      if (selectedCountry) {
+        getUnesco();
+      }
+    },
+  });
+
+  console.log(selectedCountry);
   /**
    * ref
    */
@@ -261,17 +286,20 @@ export default function Unesco({ navigation, route }) {
     extrapolate: "clamp",
   });
 
-  const { data, loading, error, refetch } = useQuery(ListDestinationByUnesco, {
-    variables: {
-      countries_id: selectedCountry.id,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  const [getUnesco, { data, loading, error, refetch }] = useLazyQuery(
+    ListDestinationByUnesco,
+    {
+      variables: {
+        countries_id: selectedCountry.id,
       },
-    },
-  });
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
+  );
 
   let listdestinasi_unesco = [];
   if (data && data.listdestinasi_unesco) {
@@ -585,7 +613,8 @@ export default function Unesco({ navigation, route }) {
             }}
           >
             The UNESCO (United Nations Educational, Scientific and Cultural
-            Organization) has designated nine World Heritage Sites in Indonesia.
+            Organization) has designated nine World Heritage Sites in{" "}
+            {selectedCountry?.name}.
           </Text>
         </View>
       </Animated.View>
@@ -728,7 +757,25 @@ export default function Unesco({ navigation, route }) {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
-          ListHeaderComponent={() => (
+          ListFooterComponent={
+            loading ? (
+              <View
+                style={{
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 30,
+                }}
+              >
+                <ActivityIndicator
+                  animating={loadingPost}
+                  size="large"
+                  color="#209fae"
+                />
+              </View>
+            ) : null
+          }
+          ListHeaderComponent={
             <View
               style={{
                 marginVertical: 5,
@@ -739,7 +786,7 @@ export default function Unesco({ navigation, route }) {
                 {dataR.length} sites
               </Text>
             </View>
-          )}
+          }
         />
       );
     } else {
@@ -866,6 +913,12 @@ export default function Unesco({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CountrySrc
+        selectedCountry={selectedCountry}
+        SetselectedCountry={(e) => SetselectedCountry(e)}
+        modalshown={modalcountry}
+        setModelCountry={(e) => setModelCountry(e)}
+      />
       <Animated.View
         style={{
           position: "absolute",
@@ -878,6 +931,7 @@ export default function Unesco({ navigation, route }) {
         }}
       >
         <Pressable
+          onPress={() => setModelCountry(true)}
           style={({ pressed }) => [
             {
               height: 44,
@@ -907,16 +961,28 @@ export default function Unesco({ navigation, route }) {
             },
           ]}
         >
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              color: "",
-              marginRight: 10,
-            }}
-          >
-            Indonesia
-          </Text>
+          {loadingcountry ? (
+            <ActivityIndicator
+              animating
+              size="small"
+              color="#209fae"
+              style={{
+                paddingTop: 10,
+                paddingHorizontal: 10,
+              }}
+            />
+          ) : (
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                color: "",
+                marginRight: 10,
+              }}
+            >
+              {selectedCountry?.name}
+            </Text>
+          )}
           <Select height={10} width={10} />
         </Pressable>
       </Animated.View>

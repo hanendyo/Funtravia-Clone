@@ -158,10 +158,11 @@ export default function SearchPg(props, { navigation, route }) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, []);
-  let aktfsrc = false;
+
   const myStateRef = React.useRef(aktifsearch);
+
   const onBackPress = useCallback(() => {
-    console.log(myStateRef.current);
+    // console.log(myStateRef.current);
     if (myStateRef.current == true) {
       setAktifSearch(false);
       myStateRef.current = false;
