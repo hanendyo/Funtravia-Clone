@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -45,6 +45,8 @@ import Tags from "./Posting/Tag";
 import Review from "./Review";
 import Trip from "./Trip";
 import ImageSlide from "../../../component/src/ImageSlide";
+import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
+import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -63,9 +65,28 @@ export default function OtherProfile(props) {
   const [dataPost, setdataPost] = useState([]);
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
+  let [users, setuser] = useState(null);
+  let [position, setposition] = useState(false);
+
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
+
+    let user = await AsyncStorage.getItem("setting");
+    user = JSON.parse(user);
+    setuser(user.user);
+
+    if (!props.route.params.idUser) {
+      await props.navigation.setParams({ idUser: user.user.id });
+      setposition("profile");
+    } else {
+      if (props.route.params.idUser === user.user.id) {
+        setposition("profile");
+      } else {
+        setposition("other");
+      }
+    }
+
     await LoadUserProfile();
     await Getdatapost();
     await LoadReview();
@@ -162,6 +183,146 @@ export default function OtherProfile(props) {
     }
 
     return tmpData;
+  };
+
+  const [
+    FollowMutation,
+    { loading: loadFollowMut, data: dataFollowMut, error: errorFollowMut },
+  ] = useMutation(FollowMut, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    UnfollowMutation,
+    { loading: loadUnfolMut, data: dataUnfolMut, error: errorUnfolMut },
+  ] = useMutation(UnfollowMut, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _unfollow = async (id) => {
+    if (token || token !== "") {
+      try {
+        let response = await UnfollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+
+        if (errorUnfolMut) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.unfollow_user.code === 200 ||
+            response.data.unfollow_user.code === "200"
+          ) {
+            loadAsync();
+          } else {
+            throw new Error(response.data.unfollow_user.message);
+          }
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _follow = async (id) => {
+    if (token || token !== "") {
+      try {
+        let response = await FollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+
+        if (errorFollowMut) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.follow_user.code === 200 ||
+            response.data.follow_user.code === "200"
+          ) {
+            loadAsync();
+          } else {
+            throw new Error(response.data.follow_user.message);
+          }
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _handlemessage = async (id, tokens) => {
+    try {
+      let response = await fetch(
+        "https://scf.funtravia.com/api/personal/chat?receiver_id=" + id,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + tokens,
+            "Content-Type": "application/json",
+          },
+          // body: formBodys,
+        }
+      );
+
+      let responseJson = await response.json();
+
+      if (responseJson) {
+        if (responseJson.sender_id === users.id) {
+          props.navigation.push("ChatStack", {
+            screen: "RoomChat",
+            params: {
+              room_id: responseJson.id,
+              receiver: responseJson.receiver.id,
+              name:
+                responseJson.receiver.first_name +
+                " " +
+                (responseJson.receiver.last_name
+                  ? responseJson.receiver.last_name
+                  : ""),
+              picture: responseJson.receiver.picture,
+            },
+          });
+        } else {
+          props.navigation.push("ChatStack", {
+            screen: "RoomChat",
+            params: {
+              room_id: responseJson.id,
+              receiver: responseJson.sender.id,
+              name:
+                responseJson.sender.first_name +
+                " " +
+                (responseJson.sender.last_name
+                  ? responseJson.sender.last_name
+                  : ""),
+              picture: responseJson.sender.picture,
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      // setLoading(false);
+    }
   };
 
   const [tabIndex, setIndex] = useState(0);
@@ -541,65 +702,124 @@ export default function OtherProfile(props) {
             paddingHorizontal: 20,
           }}
         >
-          <Image
-            source={data.picture ? { uri: data.picture } : DefaultProfileSquare}
-            style={{
-              width: width / 4,
-              height: width / 4,
-              borderRadius: width / 8,
-              borderWidth: 2,
-              borderColor: "#FFF",
-            }}
-          />
-          <View
-            style={{
-              width: width / 2,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            {data.status_following === true ? (
+          {data.picture ? (
+            <Image
+              source={
+                data.picture ? { uri: data.picture } : DefaultProfileSquare
+              }
+              style={{
+                width: width / 4,
+                height: width / 4,
+                borderRadius: width / 8,
+                borderWidth: 2,
+                borderColor: "#FFF",
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                width: width / 4,
+                height: width / 4,
+                borderRadius: width / 8,
+                // borderWidth: 2,
+                // borderColor: "#FFF",
+              }}
+            ></View>
+          )}
+
+          {position && position === "profile" ? (
+            <View
+              style={{
+                width: width / 2,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <Button
-                text={t("unfollow")}
+                text={t("editprofile")}
+                onPress={() =>
+                  navigation.push("profilesetting", {
+                    token: token,
+                    data: data.user_profile,
+                  })
+                }
                 variant="bordered"
                 size="small"
                 color="black"
                 style={{
-                  width: "48%",
+                  width: width / 2,
                   borderColor: "#464646",
                   alignSelf: "flex-end",
                   // margin: 15,
                 }}
               />
-            ) : (
+            </View>
+          ) : null}
+
+          {position && position === "other" ? (
+            <View
+              style={{
+                width: width / 2,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              {data.status_following === true ? (
+                !loadFollowMut && !loadUnfolMut ? (
+                  <Button
+                    onPress={() => {
+                      _unfollow(props.route.params.idUser);
+                    }}
+                    text={t("unfollow")}
+                    variant="bordered"
+                    size="small"
+                    color="black"
+                    style={{
+                      width: "48%",
+                      borderColor: "#464646",
+                      alignSelf: "flex-end",
+                      // margin: 15,
+                    }}
+                  />
+                ) : (
+                  <View style={{ backgroundColor: "#fff" }}></View>
+                )
+              ) : !loadUnfolMut && !loadFollowMut ? (
+                <Button
+                  onPress={() => {
+                    _follow(props.route.params.idUser);
+                  }}
+                  text={t("follow")}
+                  size="small"
+                  color={"secondary"}
+                  variant={"normal"}
+                  text={t("follow")}
+                  style={{
+                    width: "48%",
+                    alignSelf: "flex-end",
+                    // margin: 15,
+                  }}
+                />
+              ) : (
+                <View styl={{ backgroundColor: "#fff" }}></View>
+              )}
+
               <Button
-                text={t("follow")}
+                onPress={() => _handlemessage(props.route.params.idUser, token)}
+                text={t("Message")}
+                variant="bordered"
                 size="small"
-                color={"secondary"}
-                variant={"normal"}
-                text={t("follow")}
+                color="black"
                 style={{
                   width: "48%",
+                  // width: width / 2,
+                  borderColor: "#464646",
                   alignSelf: "flex-end",
                   // margin: 15,
                 }}
               />
-            )}
-
-            <Button
-              text={t("Message")}
-              variant="bordered"
-              size="small"
-              color="black"
-              style={{
-                width: "48%",
-                // width: width / 2,
-                borderColor: "#464646",
-                alignSelf: "flex-end",
-                // margin: 15,
-              }}
-            />
-          </View>
+            </View>
+          ) : null}
         </View>
 
         <Animated.View
@@ -629,8 +849,8 @@ export default function OtherProfile(props) {
                 {`${data.first_name ? data.first_name : ""} ` +
                   `${data.last_name ? data.last_name : ""}`}
               </Text>
-              <Text type="regular" size="description">{`@${
-                data.username ? data.username : ""
+              <Text type="regular" size="description">{`${
+                data.username ? "@" + data.username : ""
               } `}</Text>
             </Animated.View>
 
@@ -658,13 +878,15 @@ export default function OtherProfile(props) {
                 <Text type="black" size="label">
                   {`${data.count_follower ? data.count_follower : ""} `}
                 </Text>
-                <Text
-                  type="regular"
-                  size="description"
-                  // style={{ color: '#B0B0B0' }}
-                >
-                  {t("followers")}
-                </Text>
+                {data.count_follower ? (
+                  <Text
+                    type="regular"
+                    size="description"
+                    // style={{ color: '#B0B0B0' }}
+                  >
+                    {t("followers")}
+                  </Text>
+                ) : null}
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -680,13 +902,15 @@ export default function OtherProfile(props) {
                 <Text type="black" size="label">
                   {`${data.count_following ? data.count_following : ""} `}
                 </Text>
-                <Text
-                  type="regular"
-                  size="description"
-                  // style={{ color: '#B0B0B0' }}
-                >
-                  {t("following")}
-                </Text>
+                {data.count_following ? (
+                  <Text
+                    type="regular"
+                    size="description"
+                    // style={{ color: '#B0B0B0' }}
+                  >
+                    {t("following")}
+                  </Text>
+                ) : null}
               </TouchableOpacity>
             </View>
           </View>
@@ -702,7 +926,7 @@ export default function OtherProfile(props) {
               size="description"
               style={{ textAlign: "justify" }}
             >
-              {data.bio ? data.bio : "-"}
+              {data.bio ? data.bio : ""}
             </Text>
           </View>
         </Animated.View>
@@ -823,10 +1047,13 @@ export default function OtherProfile(props) {
               : HeaderHeight + TabBarHeight,
           paddingHorizontal: paddingHorizontal,
           minHeight: height - SafeStatusBar + HeaderHeight,
+          paddingBottom: 10,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
-        renderItem={({ item, index }) => renderItem({ props, item, index })}
+        renderItem={({ item, index }) =>
+          renderItem({ position, token, props, item, index })
+        }
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         style={{}}
@@ -835,6 +1062,8 @@ export default function OtherProfile(props) {
   };
 
   let [tabPost, settabPost] = useState(0);
+
+  // hhhhh
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({

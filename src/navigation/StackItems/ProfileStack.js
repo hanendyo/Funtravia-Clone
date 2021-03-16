@@ -28,10 +28,10 @@ export default function ProfileStackNavigation(props) {
       />
       <ProfileStack.Screen
         name="ProfileTab"
-        component={ProfileTab}
+        // component={ProfileTab}
+        component={otherprofile}
         options={{
-          headerTransparent: true,
-          headerBackTitleVisible: false,
+          headerShown: false,
           headerTintColor: "white",
           headerBackTitleVisible: false,
         }}

@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { default_image, imgPrivate } from "../../../assets/png";
 
@@ -17,12 +18,14 @@ import {
   PinHijau,
   TravelAlbum,
   TravelStories,
+  TravelStoriesdis,
   User,
 } from "../../../assets/svg";
 import { Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
+import { dateFormats } from "../../../component/src/dateformatter";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
@@ -31,7 +34,7 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function Trip({ item, index, props }) {
+export default function Trips({ item, index, props, token, position }) {
   const getDN = (start, end) => {
     var x = start;
     var y = end,
@@ -71,6 +74,13 @@ export default function Trip({ item, index, props }) {
     );
   };
 
+  const getdate = (start, end) => {
+    start = start.split(" ");
+    end = end.split(" ");
+
+    return dateFormats(start[0]) + " - " + dateFormats(end[0]);
+  };
+
   return (
     <View
       style={{
@@ -86,7 +96,7 @@ export default function Trip({ item, index, props }) {
         overflow: "hidden",
       }}
     >
-      <Ripple
+      <TouchableOpacity
         onPress={() =>
           props.navigation.push("ItineraryStack", {
             screen: "itindetail",
@@ -95,7 +105,7 @@ export default function Trip({ item, index, props }) {
               country: item.id,
               dateitin: getdate(item.start_date, item.end_date),
               token: token,
-              status: "saved",
+              status: "favorite",
             },
           })
         }
@@ -125,7 +135,7 @@ export default function Trip({ item, index, props }) {
             width: "100%",
           }}
         >
-          <Ripple
+          <TouchableOpacity
             style={{
               width: "100%",
               height: "100%",
@@ -139,7 +149,7 @@ export default function Trip({ item, index, props }) {
                   country: item.id,
                   dateitin: getdate(item.start_date, item.end_date),
                   token: token,
-                  status: "saved",
+                  status: "favorite",
                 },
               })
             }
@@ -194,7 +204,7 @@ export default function Trip({ item, index, props }) {
                 </Text>
               </View>
             </View>
-          </Ripple>
+          </TouchableOpacity>
         </ImageBackground>
 
         <View
@@ -321,7 +331,7 @@ export default function Trip({ item, index, props }) {
             </View>
           </View>
         </View>
-      </Ripple>
+      </TouchableOpacity>
       <View
         style={{
           paddingVertical: 3,
@@ -335,16 +345,10 @@ export default function Trip({ item, index, props }) {
       >
         <Ripple
           onPress={() =>
-            props.navigation.push("ItineraryStack", {
-              screen: "itindetail",
-              params: {
-                itintitle: item.name,
-                country: item.id,
-                dateitin: getdate(item.start_date, item.end_date),
-                token: token,
-                status: "saved",
-                index: 1,
-              },
+            props.navigation.push("tripalbum", {
+              iditinerary: item.id,
+              token: token,
+              position: position,
             })
           }
           style={{
@@ -363,19 +367,13 @@ export default function Trip({ item, index, props }) {
           </Text>
         </Ripple>
         <Ripple
-          onPress={() =>
-            props.navigation.push("ItineraryStack", {
-              screen: "itindetail",
-              params: {
-                itintitle: item.name,
-                country: item.id,
-                dateitin: getdate(item.start_date, item.end_date),
-                token: token,
-                status: "saved",
-                index: 2,
-              },
-            })
-          }
+          // onPress={() =>
+          //   props.navigation.push("tripalbum", {
+          //     iditinerary: item.id,
+          //     token: token,
+          //     position: position,
+          //   })
+          // }
           style={{
             width: "50%",
             flexDirection: "row",
@@ -383,8 +381,8 @@ export default function Trip({ item, index, props }) {
             justifyContent: "center",
           }}
         >
-          <TravelStories height={15} width={15} style={{ marginRight: 5 }} />
-          <Text size="small" type="bold" style={{ color: "#209fae" }}>
+          <TravelStoriesdis height={15} width={15} style={{ marginRight: 5 }} />
+          <Text size="small" type="bold" style={{ color: "#d3d3d3" }}>
             Travel Stories
           </Text>
         </Ripple>
