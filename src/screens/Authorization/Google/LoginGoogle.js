@@ -41,6 +41,7 @@ export default function LoginGoogle({ navigation }) {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signIn();
       const result = await GoogleSignin.getTokens();
+      console.log(result);
       let response;
       let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
       if (result) {

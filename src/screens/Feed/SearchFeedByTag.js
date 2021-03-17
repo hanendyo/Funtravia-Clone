@@ -12,6 +12,7 @@ import {
   Image,
   RefreshControl,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,6 +24,7 @@ import {
   Peringatan,
   Loading,
   Truncate,
+  StatusBar,
 } from "../../component";
 import { NetworkStatus } from "@apollo/client";
 import {
@@ -51,7 +53,11 @@ import SearchUserQuery from "../../graphQL/Query/Search/SearchPeopleV2";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import Modal from "react-native-modal";
 import { API_KEY } from "../../config";
+import RenderGrid from "./RenderGrid";
+import { useTranslation } from "react-i18next";
+
 export default function Feed(props) {
+  const { t } = useTranslation();
   const [active, setActive] = useState("personal");
   const [active_src, setActiveSrc] = useState("account");
   const [searchtext, SetSearchtext] = useState("");
@@ -112,13 +118,19 @@ export default function Feed(props) {
     let tmpData = [];
     let count = 1;
     let tmpArray = [];
+    let grid = 1;
     for (let val of data) {
       if (count < 3) {
         tmpArray.push(val);
-        console.log("masuk", tmpArray);
+        // console.log("masuk", tmpArray);
         count++;
       } else {
         tmpArray.push(val);
+        tmpArray.push({ grid: grid });
+        grid++;
+        if (grid == 4) {
+          grid = 1;
+        }
         tmpData.push(tmpArray);
         count = 1;
         tmpArray = [];
@@ -127,6 +139,7 @@ export default function Feed(props) {
     if (tmpArray.length) {
       tmpData.push(tmpArray);
     }
+
     return tmpData;
   };
   let feed_search_bytag_paging = [];
@@ -135,143 +148,10 @@ export default function Feed(props) {
       dataPost.feed_search_bytag_paging.datas
     );
   }
-  // console.log(
-  //   dataPost && dataPost && "datas" in dataPost.feed_search_bytag_paging
-  //     ? dataPost.feed_search_bytag_paging.datas
-  //     : null
-  // );
-  // console.log(feed_search_bytag_paging);
 
   useEffect(() => {
     loadAsync();
   }, []);
-
-  // let dataspred = spreadData(feed_search_bytag_paging);
-
-  // console.log(dataspred);
-
-  if (errorPost) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-        <View style={{ backgroundColor: "#209FAE" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                // borderWidth:1,
-                margin: 15,
-                backgroundColor: "#FFFFFF",
-                flexDirection: "row",
-                borderRadius: 3,
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Magnifying
-                width="20"
-                height="20"
-                style={{ marginHorizontal: 10 }}
-              />
-              <TextInput
-                value={searchtext}
-                onChangeText={(e) => _searchHandle(e)}
-                placeholder="Search Feed"
-                style={{
-                  color: "#464646",
-                  height: 40,
-                  width: "80%",
-                }}
-              />
-            </View>
-            <Pressable
-              style={{
-                height: 70,
-                paddingRight: 5,
-                // borderWidth:1,
-                justifyContent: "center",
-              }}
-            >
-              <OptionsVertWhite width={20} height={20} />
-            </Pressable>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              borderWidth: 1,
-              borderColor: "#EEEEEE",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Ripple
-              onPress={() => {
-                setActive("personal");
-              }}
-              style={{
-                // width: width / 2,
-                alignContent: "center",
-                alignItems: "center",
-                // borderBottomWidth: active == "personal" ? 3 : 1,
-                // borderBottomColor:
-                //   active == "personal" ? "#209FAE" : "#EEEEEE",
-                paddingVertical: 15,
-                backgroundColor: "#FFFFFF",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text
-                size="description"
-                type={active == "personal" ? "bold" : "bold"}
-                style={{
-                  color: active == "personal" ? "#209FAE" : "#D1D1D1",
-                }}
-              >
-                All Post
-              </Text>
-            </Ripple>
-            <Ripple
-              onPress={() => {
-                setActive("group");
-              }}
-              style={{
-                // width: width / 2,
-                alignContent: "center",
-                alignItems: "center",
-                // borderBottomWidth: active == "group" ? 3 : 1,
-                // borderBottomColor: active == "group" ? "#209FAE" : "#EEEEEE",
-                paddingVertical: 15,
-                backgroundColor: "#FFFFFF",
-                paddingHorizontal: 10,
-              }}
-            >
-              <Text
-                size="description"
-                type={active == "group" ? "bold" : "bold"}
-                style={{
-                  color: active == "group" ? "#209FAE" : "#D1D1D1",
-                }}
-              >
-                Travel
-              </Text>
-            </Ripple>
-          </View>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text size="title">Error...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
 
   const refresh = networkStatus === NetworkStatus.refetch;
   const _refresh = async () => {
@@ -717,29 +597,45 @@ export default function Feed(props) {
     }
   };
 
+  console.log(feed_search_bytag_paging);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-      <View style={{ backgroundColor: "#209FAE" }}>
+      <StatusBar backgroundColor="#14646e" barStyle="light-content" />
+      <View
+        style={{
+          backgroundColor: "#209FAE",
+          height: 55,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
             // justifyContent: "center"
-            paddingHorizontal: 10,
+            // paddingHorizontal: 10,
             width: "100%",
             justifyContent: "space-between",
           }}
         >
-          <Ripple
+          <Pressable
             onPress={() => _BackHandler()}
-            style={{
-              height: 70,
-              width: 35,
-              justifyContent: "center",
-            }}
+            style={({ pressed }) => [
+              {
+                height: 40,
+                width: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 20,
+                backgroundColor: pressed ? "#178b99" : "#209FAE",
+                //   borderWidth: 1,
+              },
+            ]}
           >
             <Arrowbackwhite width={20} height={20} />
-          </Ripple>
+          </Pressable>
           <Text
             size="label"
             type="bold"
@@ -747,7 +643,7 @@ export default function Feed(props) {
               color: "#FFFFFF",
             }}
           >
-            Search By Tag
+            Search By Tag : #{keyword}
           </Text>
           <Ripple
             onPress={() => {
@@ -755,7 +651,7 @@ export default function Feed(props) {
               // setAktifSearch(false);
             }}
             style={{
-              height: 70,
+              height: 40,
               width: 35,
               // paddingRight: 5,
               // borderWidth:1,
@@ -763,399 +659,16 @@ export default function Feed(props) {
               alignItems: "center",
             }}
           >
-            <OptionsVertWhite width={20} height={20} />
+            {/* <OptionsVertWhite width={20} height={20} /> */}
           </Ripple>
         </View>
       </View>
 
       <FlatList
         data={feed_search_bytag_paging}
-        renderItem={({ item, index }) => {
-          if (grid == 1 && item.length == 3) {
-            grid++;
-            return (
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CommentsById",
-                      params: {
-                        post_id: item[2].id,
-                      },
-                    })
-                  }
-                  style={
-                    {
-                      // height: (width + width)/3 -15,
-                      // width: (width + width)/3 -20,
-                    }
-                  }
-                >
-                  <Image
-                    source={{
-                      uri: item[2].assets[0].filepath,
-                    }}
-                    style={{
-                      height: (width + width) / 3 - 15,
-                      width: (width + width) / 3 - 20,
-                      borderRadius: 5,
-                      margin: 2,
-                      alignSelf: "center",
-                      resizeMode: "cover",
-                    }}
-                  />
-                </Pressable>
-                <View style={{}}>
-                  <Pressable
-                    onPress={
-                      () =>
-                        props.navigation.navigate("FeedStack", {
-                          screen: "CommentsById",
-                          params: {
-                            post_id: item[0].id,
-                          },
-                        })
-                      // teststate(index-8)
-                    }
-                    style={
-                      {
-                        // height: width/3 - 10,
-                        // width: width/3 - 10,
-                      }
-                    }
-                  >
-                    <Image
-                      source={{
-                        uri: item[0].assets[0].filepath,
-                      }}
-                      style={{
-                        height: width / 3 - 10,
-                        width: width / 3 - 10,
-                        borderRadius: 5,
-                        margin: 2,
-                        alignSelf: "center",
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </Pressable>
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate("FeedStack", {
-                        screen: "CommentsById",
-                        params: {
-                          post_id: item[1].id,
-                        },
-                      })
-                    }
-                    style={
-                      {
-                        // height: width/3 - 10,
-                        // width: width/3 - 10,
-                      }
-                    }
-                  >
-                    <Image
-                      source={{
-                        uri: item[1].assets[0].filepath,
-                      }}
-                      style={{
-                        height: width / 3 - 10,
-                        width: width / 3 - 10,
-                        borderRadius: 5,
-                        margin: 2,
-                        alignSelf: "center",
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </Pressable>
-                </View>
-              </View>
-            );
-          }
-          if (grid == 2 && item.length == 3) {
-            grid++;
-            return (
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <View style={{}}>
-                  <Pressable
-                    onPress={
-                      () =>
-                        props.navigation.navigate("FeedStack", {
-                          screen: "CommentsById",
-                          params: {
-                            post_id: item[0].id,
-                          },
-                        })
-                      // teststate(index-8)
-                    }
-                    style={
-                      {
-                        // height: width/3 - 10,
-                        // width: width/3 - 10,
-                      }
-                    }
-                  >
-                    <Image
-                      source={{
-                        uri: item[0].assets[0].filepath,
-                      }}
-                      style={{
-                        height: width / 3 - 10,
-                        width: width / 3 - 10,
-                        borderRadius: 5,
-                        margin: 2,
-                        alignSelf: "center",
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </Pressable>
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate("FeedStack", {
-                        screen: "CommentsById",
-                        params: {
-                          post_id: item[1].id,
-                        },
-                      })
-                    }
-                    style={
-                      {
-                        // height: width/3 - 10,
-                        // width: width/3 - 10,
-                      }
-                    }
-                  >
-                    <Image
-                      source={{
-                        uri: item[1].assets[0].filepath,
-                      }}
-                      style={{
-                        height: width / 3 - 10,
-                        width: width / 3 - 10,
-                        borderRadius: 5,
-                        margin: 2,
-                        alignSelf: "center",
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </Pressable>
-                </View>
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CommentsById",
-                      params: {
-                        post_id: item[2].id,
-                      },
-                    })
-                  }
-                  style={
-                    {
-                      // height: (width + width)/3 -15,
-                      // width: (width + width)/3 -20,
-                    }
-                  }
-                >
-                  <Image
-                    source={{
-                      uri: item[2].assets[0].filepath,
-                    }}
-                    style={{
-                      height: (width + width) / 3 - 15,
-                      width: (width + width) / 3 - 20,
-                      borderRadius: 5,
-                      margin: 2,
-                      alignSelf: "center",
-                      resizeMode: "cover",
-                    }}
-                  />
-                </Pressable>
-              </View>
-            );
-          }
-          if (grid == 3 && item.length == 3) {
-            grid = 1;
-            return (
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CommentsById",
-                      params: {
-                        post_id: item[0].id,
-                      },
-                    })
-                  }
-                  style={
-                    {
-                      // height: width/3 - 10,
-                      // width: width/3 - 10,
-                    }
-                  }
-                >
-                  <Image
-                    source={{
-                      uri: item[0].assets[0].filepath,
-                    }}
-                    style={{
-                      height: width / 3 - 10,
-                      width: width / 3 - 10,
-                      borderRadius: 5,
-                      margin: 2,
-                      alignSelf: "center",
-                      resizeMode: "cover",
-                    }}
-                  />
-                </Pressable>
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CommentsById",
-                      params: {
-                        post_id: item[1].id,
-                      },
-                    })
-                  }
-                  style={
-                    {
-                      // height: width/3 - 10,
-                      // width: width/3 - 10,
-                    }
-                  }
-                >
-                  <Image
-                    source={{
-                      uri: item[1].assets[0].filepath,
-                    }}
-                    style={{
-                      height: width / 3 - 10,
-                      width: width / 3 - 10,
-                      borderRadius: 5,
-                      margin: 2,
-                      alignSelf: "center",
-                      resizeMode: "cover",
-                    }}
-                  />
-                </Pressable>
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CommentsById",
-                      params: {
-                        post_id: item[2].id,
-                      },
-                    })
-                  }
-                  style={
-                    {
-                      // height: width/3 - 10,
-                      // width: width/3 - 10,
-                    }
-                  }
-                >
-                  <Image
-                    source={{
-                      uri: item[2].assets[0].filepath,
-                    }}
-                    style={{
-                      height: width / 3 - 10,
-                      width: width / 3 - 10,
-                      borderRadius: 5,
-                      margin: 2,
-                      alignSelf: "center",
-                      resizeMode: "cover",
-                    }}
-                  />
-                </Pressable>
-              </View>
-            );
-          }
-          if (item.length < 3) {
-            grid = 1;
-            return (
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CommentsById",
-                      params: {
-                        post_id: item[0].id,
-                      },
-                    })
-                  }
-                  style={
-                    {
-                      // height: width/3 - 10,
-                      // width: width/3 - 10,
-                    }
-                  }
-                >
-                  <Image
-                    source={{
-                      uri: item[0].assets[0].filepath,
-                    }}
-                    style={{
-                      height: width / 3 - 10,
-                      width: width / 3 - 10,
-                      borderRadius: 5,
-                      margin: 2,
-                      alignSelf: "center",
-                      resizeMode: "cover",
-                    }}
-                  />
-                </Pressable>
-                {item[1] ? (
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate("FeedStack", {
-                        screen: "CommentsById",
-                        params: {
-                          post_id: item[1].id,
-                        },
-                      })
-                    }
-                    style={
-                      {
-                        // height: width/3 - 10,
-                        // width: width/3 - 10,
-                      }
-                    }
-                  >
-                    <Image
-                      source={{
-                        uri: item[0].assets[0].filepath,
-                      }}
-                      style={{
-                        height: width / 3 - 10,
-                        width: width / 3 - 10,
-                        borderRadius: 5,
-                        margin: 2,
-                        alignSelf: "center",
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </Pressable>
-                ) : null}
-              </View>
-            );
-          }
-        }}
+        renderItem={({ item, index }) => (
+          <RenderGrid item={item} index={index} props={props} />
+        )}
         style={{
           marginHorizontal: 10,
           // width: '100%',
@@ -1185,20 +698,40 @@ export default function Feed(props) {
               style={{
                 // position: 'absolute',
                 // bottom:0,
-                width: width,
+                // width: width,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Text
+              <ActivityIndicator
+                animating={loadingPost}
+                size="large"
+                color="#209fae"
+              />
+              {/* <Text
                 size="title"
                 type="bold"
                 // style={{ color:'#209fae'}}
               >
                 Loading...
+              </Text> */}
+            </View>
+          ) : (
+            <View
+              style={{
+                // position: 'absolute',
+                // bottom:0,
+                // width: width,
+                justifyContent: "center",
+                alignItems: "center",
+                marginVertical: 20,
+              }}
+            >
+              <Text size="label" type="bold">
+                {t("noData")}
               </Text>
             </View>
-          ) : null
+          )
         }
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}

@@ -488,5 +488,6 @@
   "min6char": "minimal 6 character in lowercase",
   "saved": "save",
   "discard": "discard",
-  "areyousure": "Save changes?"
+  "areyousure": "Save changes?",
+  "noData": "No Data"
 }

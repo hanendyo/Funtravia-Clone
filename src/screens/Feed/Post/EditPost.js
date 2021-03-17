@@ -21,6 +21,7 @@ import {
   Button,
   Loading,
   Truncate,
+  StatusBar,
 } from "../../../component";
 import { default_image, back_arrow_white } from "../../../assets/png";
 import { CheckWhite } from "../../../assets/svg";
@@ -35,6 +36,7 @@ import { OptionsVertBlack } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
+import { StackActions } from "@react-navigation/routers";
 
 const PostEdit = gql`
   mutation($post_id: ID!, $caption: String) {
@@ -179,16 +181,27 @@ export default function EditPost(props) {
           caption: caption,
         },
       });
-      console.log(response);
+      // console.log(response);
       if (response.data) {
         if (response.data.edit_post.code === 200) {
           setLoading(false);
-          props.navigation.navigate("FeedStack", {
-            screen: "SinglePost",
-            params: {
-              post_id: datapost.id,
-            },
-          });
+          // props.navigation.goBack();
+          // props.navigation.navigate("FeedScreen", { isposting: false });
+
+          props.navigation.dispatch(
+            StackActions.replace("FeedStack", {
+              screen: "CommentsById",
+              params: {
+                post_id: datapost.id,
+              },
+            })
+          );
+          // props.navigation.navigate("FeedStack", {
+          //   screen: "CommentsById",
+          //   params: {
+          //     post_id: datapost.id,
+          //   },
+          // });
         } else {
           // console.log('error');
           setLoading(false);
@@ -227,6 +240,8 @@ export default function EditPost(props) {
       behavior={Platform.OS === "ios" ? "padding" : null}
       style={{ flex: 1, backgroundColor: "#FFF" }}
     >
+      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
+
       <View style={{ backgroundColor: "#209FAE", height: 55 }}>
         <View
           style={{
@@ -305,7 +320,7 @@ export default function EditPost(props) {
                   marginLeft: 15,
                   resizeMode: "cover",
                 }}
-                source={{ uri: datapost.user.picture }}
+                source={{ uri: datapost?.user?.picture }}
               />
               <View
                 style={{
@@ -320,8 +335,10 @@ export default function EditPost(props) {
                     // marginTop: 7,
                   }}
                 >
-                  {datapost.user.first_name}{" "}
-                  {datapost.user.first_name ? datapost.user.last_name : null}
+                  {datapost?.user?.first_name}{" "}
+                  {datapost && datapost.user.first_name
+                    ? datapost.user.last_name
+                    : null}
                 </Text>
                 <View
                   style={{
@@ -336,9 +353,9 @@ export default function EditPost(props) {
                       // marginTop: 7,
                     }}
                   >
-                    {duration(datapost.created_at)}
+                    {/* {duration(datapost.created_at)} */}
                   </Text>
-                  {datapost.location_name ? (
+                  {datapost && datapost.location_name ? (
                     <View
                       style={{
                         marginHorizontal: 5,
@@ -349,7 +366,7 @@ export default function EditPost(props) {
                       }}
                     ></View>
                   ) : null}
-                  {datapost.location_name ? (
+                  {datapost && datapost.location_name ? (
                     <Text
                       style={{
                         fontFamily: "Lato-Regular",
@@ -362,7 +379,7 @@ export default function EditPost(props) {
                   ) : null}
                 </View>
               </View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => console.log("datapost")}
                 style={{
                   position: "absolute",
@@ -371,7 +388,7 @@ export default function EditPost(props) {
                 }}
               >
                 <OptionsVertBlack height={20} width={20} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <AutoHeightImage
