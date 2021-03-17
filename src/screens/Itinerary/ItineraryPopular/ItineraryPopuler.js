@@ -478,7 +478,7 @@ export default function ItineraryPopuler(props) {
                             {Truncate({
                               text: item?.user_created?.first_name
                                 ? item?.user_created?.first_name
-                                : "user_deleted",
+                                : "unknown",
                               length: 13,
                             })}
                           </Text>
@@ -781,6 +781,7 @@ export default function ItineraryPopuler(props) {
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
             height: "100%",
+            marginTop: 20,
           }}
         >
           <Text size="label" type="bold" style={{ textAlign: "center" }}>
