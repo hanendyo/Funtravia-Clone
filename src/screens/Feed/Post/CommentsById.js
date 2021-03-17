@@ -193,13 +193,6 @@ export default function CommentsById(props) {
             response.data.delete_post.code === "200"
           ) {
             props.navigation.goBack();
-            // Refresh();
-            // var tempData = [...datafeed.feed_post_byid?];
-            // var index = tempData.findIndex((k) => k['id'] === id);
-            // tempData[index].liked = false;
-            // tempData[index].response_count =
-            // 	response.data.delete_post.count_like;
-            // Setdatafeed.feed_post_byid?(tempData);
           } else {
             throw new Error(response.data.delete_post.message);
           }
@@ -210,9 +203,6 @@ export default function CommentsById(props) {
         Alert.alert("" + error);
       }
     } else {
-      // tempData[index].liked = true;
-      // tempData[index].response_count = tempData[index].response_count + 1;
-      // Setdatafeed.feed_post_byid?(tempData);
       Alert.alert("Please Login");
     }
   };
@@ -397,10 +387,10 @@ export default function CommentsById(props) {
   // if (errorfeed){
   //   return <View></View>
   // }
-  console.log(token);
-  console.log(
-    datafeed && datafeed.feed_post_byid ? datafeed.feed_post_byid : null
-  );
+  // console.log(token);
+  // console.log(
+  //   datafeed && datafeed.feed_post_byid ? datafeed.feed_post_byid : null
+  // );
 
   const scroll_to = () => {
     // GetCommentList();
@@ -483,6 +473,7 @@ export default function CommentsById(props) {
   // 	likeToggle(liked);
   // };
   const OptionOpen = (data) => {
+    console.log("select", data);
     SetOption(data);
     if (datafeed?.feed_post_byid?.user.id == setting?.user?.id) {
       setModalmenu(true);
@@ -649,7 +640,7 @@ export default function CommentsById(props) {
             onPress={() => {
               setModalmenu(false),
                 props.navigation.push("EditPost", {
-                  datafeed: selectedOption,
+                  datapost: selectedOption,
                 });
             }}
           >
@@ -662,7 +653,7 @@ export default function CommentsById(props) {
               paddingVertical: 10,
             }}
             onPress={() => {
-              setModalmenu(false), setModalhapus(true);
+              setModalhapus(true);
             }}
           >
             <Text

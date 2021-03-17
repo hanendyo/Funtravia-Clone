@@ -198,12 +198,15 @@ export default function CreatePost(props) {
         let sLocation = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
         if (sLocation === "denied") {
           granted = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        } else {
+          granted = true;
         }
-        granted = true;
       } else {
         let sLocation = await check(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
         if (sLocation === "denied") {
           granted = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        } else {
+          granted = true;
         }
       }
       if (granted) {
@@ -284,7 +287,7 @@ export default function CreatePost(props) {
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
-      <SafeAreaView>
+      <View>
         <View
           style={{
             backgroundColor: "#209FAE",
@@ -456,7 +459,7 @@ export default function CreatePost(props) {
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
         />
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 }
