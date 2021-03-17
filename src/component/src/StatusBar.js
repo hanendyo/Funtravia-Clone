@@ -9,6 +9,7 @@ import {
 
 const STATUSBAR_HEIGHT = RNStatusBar.currentHeight;
 export default function StatusBar({ backgroundColor, ...props }) {
+	console.log(STATUSBAR_HEIGHT);
 	return (
 		<View
 			style={[

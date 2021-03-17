@@ -7,8 +7,10 @@ import M034 from "./src/034";
 import M030 from "./src/030";
 import M145 from "./src/145";
 import M142 from "./src/142";
-import { Country } from "../../../data/country";
+import { ISO } from "../../../data/iso";
+import Country from "../../../data/country/index.json";
 import { Text, StatusBar } from "../../../../../component";
+import Flag from "../../../data/flag";
 export default function Asia({ navigation }) {
 	const [changeColor, setChangeColor] = useState("#209FAE");
 	const [defaultColor, setDefaultColor] = useState("#DAF0F2");
@@ -17,6 +19,10 @@ export default function Asia({ navigation }) {
 		label: "All",
 	});
 	const subContinentData = [
+		{
+			id: "142",
+			label: "All",
+		},
 		{
 			id: "035",
 			label: "South-eastern Asia",
@@ -36,10 +42,6 @@ export default function Asia({ navigation }) {
 		{
 			id: "145",
 			label: "Western Asia",
-		},
-		{
-			id: "142",
-			label: "All",
 		},
 	];
 
@@ -157,10 +159,17 @@ export default function Asia({ navigation }) {
 				))}
 			</View>
 			<FlatList
-				data={Country.filter(getCountry)}
+				data={ISO.filter(getCountry)}
 				renderItem={({ item, index }) => (
 					<TouchableOpacity
-						onPress={() => navigation.navigate("DestinationList")}
+						onPress={() =>
+							navigation.navigate("CountryStack", {
+								screen: "Country",
+								params: {
+									data: { id: Country[item["alpha-3"]].id },
+								},
+							})
+						}
 						key={index}
 						style={{
 							paddingVertical: 15,
@@ -173,9 +182,16 @@ export default function Asia({ navigation }) {
 							shadowOffset: { width: 2, height: 2 },
 							shadowOpacity: 1,
 							shadowRadius: 2,
+							flexDirection: "row",
+							alignItems: "center",
 						}}
 					>
-						<Text>{item.name}</Text>
+						<View style={{ width: 50, marginRight: 15 }}>
+							<Flag countryid={item["alpha-3"]} />
+						</View>
+						<Text size="label" type="bold">
+							{item.name}
+						</Text>
 					</TouchableOpacity>
 				)}
 				contentContainerStyle={{ marginHorizontal: 15 }}

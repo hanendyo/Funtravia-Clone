@@ -2330,7 +2330,7 @@ export default function ItineraryDetail(props) {
 										/>
 									</Text>
 									<Text>km </Text>
-									<Text>Estimate </Text>
+									<Text>- </Text>
 									<Text type="bold">
 										<HitungWaktu
 											lat1={dataList[index].latitude}
@@ -2342,9 +2342,9 @@ export default function ItineraryDetail(props) {
 										/>
 									</Text>
 									<Text>{"h"}</Text>
-									<Text>{" in "}</Text>
+									{/* <Text>{" in "}</Text>
 									<Text type="bold">{"50"}</Text>
-									<Text>{"km/h"}</Text>
+									<Text>{"km/h"}</Text> */}
 								</View>
 							</ScrollView>
 						</View>

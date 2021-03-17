@@ -81,7 +81,7 @@ export default function World({ navigation }) {
 							Get closer to your perfect destination
 						</Text>
 						<View style={{ marginVertical: 30 }}>
-							<WorldMap width={width - 30} height={width / 2 - 50} />
+							<WorldMap width={width - 30} height={width / 2 - 100} />
 						</View>
 						<Text
 							type="regular"
