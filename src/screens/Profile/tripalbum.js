@@ -65,6 +65,7 @@ export default function tripalbum(props) {
   let [loading, setLoading] = useState(false);
   let [day_id, setday_id] = useState();
   let [modals, setmodal] = useState(false);
+  console.log(position);
 
   const [
     getdataalbum,

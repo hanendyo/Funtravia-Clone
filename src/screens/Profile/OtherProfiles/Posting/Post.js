@@ -6,6 +6,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  Pressable,
 } from "react-native";
 import { default_image } from "../../../../assets/png";
 import User_Post from "../../../../graphQL/Query/Profile/post";
@@ -15,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
-export default function Post({ item, index }) {
+export default function Post({ item, index, props }) {
   if (item.length > 2) {
     if (item[3].grid == 1) {
       return (
@@ -27,7 +28,15 @@ export default function Post({ item, index }) {
             paddingHorizontal: 2.5,
           }}
         >
-          <View
+          <Pressable
+            onPress={() => {
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentsById",
+                params: {
+                  post_id: item[0].id,
+                },
+              });
+            }}
             style={{
               width: ((width - 12) / 3) * 2,
               height: ((width - 12) / 3) * 2,
@@ -45,9 +54,17 @@ export default function Post({ item, index }) {
                   : default_image
               }
             />
-          </View>
+          </Pressable>
           <View>
-            <View
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("FeedStack", {
+                  screen: "CommentsById",
+                  params: {
+                    post_id: item[1].id,
+                  },
+                });
+              }}
               style={{
                 width: (width - 20) / 3,
                 height: (width - 20) / 3,
@@ -65,8 +82,16 @@ export default function Post({ item, index }) {
                     : default_image
                 }
               />
-            </View>
-            <View
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("FeedStack", {
+                  screen: "CommentsById",
+                  params: {
+                    post_id: item[2].id,
+                  },
+                });
+              }}
               style={{
                 width: (width - 20) / 3,
                 height: (width - 20) / 3,
@@ -84,7 +109,7 @@ export default function Post({ item, index }) {
                     : default_image
                 }
               />
-            </View>
+            </Pressable>
           </View>
         </View>
       );
@@ -99,7 +124,15 @@ export default function Post({ item, index }) {
           }}
         >
           <View>
-            <View
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("FeedStack", {
+                  screen: "CommentsById",
+                  params: {
+                    post_id: item[0].id,
+                  },
+                });
+              }}
               style={{
                 width: (width - 20) / 3,
                 height: (width - 20) / 3,
@@ -117,8 +150,16 @@ export default function Post({ item, index }) {
                     : default_image
                 }
               />
-            </View>
-            <View
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("FeedStack", {
+                  screen: "CommentsById",
+                  params: {
+                    post_id: item[1].id,
+                  },
+                });
+              }}
               style={{
                 width: (width - 20) / 3,
                 height: (width - 20) / 3,
@@ -136,9 +177,17 @@ export default function Post({ item, index }) {
                     : default_image
                 }
               />
-            </View>
+            </Pressable>
           </View>
-          <View
+          <Pressable
+            onPress={() => {
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentsById",
+                params: {
+                  post_id: item[2].id,
+                },
+              });
+            }}
             style={{
               width: ((width - 12) / 3) * 2,
               height: ((width - 12) / 3) * 2,
@@ -156,7 +205,7 @@ export default function Post({ item, index }) {
                   : default_image
               }
             />
-          </View>
+          </Pressable>
         </View>
       );
     }
@@ -172,7 +221,15 @@ export default function Post({ item, index }) {
       >
         {item.map((data, index) => {
           return (
-            <View
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("FeedStack", {
+                  screen: "CommentsById",
+                  params: {
+                    post_id: data.id,
+                  },
+                });
+              }}
               style={{
                 width: (width - 20) / 3,
                 height: (width - 20) / 3,
@@ -190,7 +247,7 @@ export default function Post({ item, index }) {
                     : default_image
                 }
               />
-            </View>
+            </Pressable>
           );
         })}
       </View>
