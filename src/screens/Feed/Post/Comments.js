@@ -243,6 +243,7 @@ export default function Comments(props) {
     // SetDataFeed(tempData);
     if (token) {
       dataPost.liked = true;
+      dataPost.response_count = dataPost.response_count + 1;
       try {
         let response = await MutationLike({
           variables: {
@@ -270,6 +271,7 @@ export default function Comments(props) {
         }
       } catch (error) {
         dataPost.liked = false;
+        dataPost.response_count = dataPost.response_count - 1;
         console.log(error);
         // Alert.alert("" + error);
       }
@@ -281,6 +283,7 @@ export default function Comments(props) {
   const _unliked = async (id) => {
     if (token || token !== "") {
       dataPost.liked = false;
+      dataPost.response_count = dataPost.response_count - 1;
       try {
         let response = await MutationunLike({
           variables: {
@@ -308,6 +311,9 @@ export default function Comments(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
+        dataPost.liked = true;
+        dataPost.response_count = dataPost.response_count + 1;
+
         Alert.alert("" + error);
       }
     } else {
@@ -339,6 +345,7 @@ export default function Comments(props) {
             response.data.comment_post.code === "200"
           ) {
             setLoading(false);
+            10;
 
             setStatusText("");
             dataPost.comment_count = dataPost.comment_count + 1;
@@ -807,12 +814,14 @@ export default function Comments(props) {
             // paddingBottom :100,
           }
         }
-        style={{
-          flex: 1,
-
-          // backgroundColor: "#FFF",
-          // height: Dimensions.get('window').height - 100,
-        }}
+        style={
+          {
+            // flex: 1,
+            // marginBottom: 10,
+            // backgroundColor: "#FFF",
+            // height: Dimensions.get('window').height - 100,
+          }
+        }
       >
         <Loading show={loadings} />
         <View
@@ -820,18 +829,22 @@ export default function Comments(props) {
             width: Dimensions.get("window").width - 20,
             backgroundColor: "#FFFFFF",
             // flex: 1,
-            borderBottomWidth: 1,
+            // borderBottomWidth: 1,
             borderBottomColor: "#EEEEEE",
             marginHorizontal: 10,
-            marginVertical: 10,
+            marginTop: 10,
+            // marginBottom: 5,
+            paddingBottom: 60,
+
             // borderWidth:1,
-            borderRadius: 20,
-            paddingBottom: 20,
-            shadowColor: "#464646",
-            shadowOffset: { width: 0, height: 0 },
-            shadowRadius: 0.5,
-            shadowOpacity: 0.5,
-            elevation: 1,
+            borderRadius: 15,
+            // paddingBottom: 20,
+            minHeight: Dimensions.get("window").height - 70,
+            // shadowColor: "#464646",
+            // shadowOffset: { width: 0, height: 0 },
+            // shadowRadius: 0.5,
+            // shadowOpacity: 0.5,
+            // elevation: 1,
           }}
         >
           <View
@@ -1122,78 +1135,98 @@ export default function Comments(props) {
 
           <FlatList
             ref={slider}
+            scrollEnabled={false}
             data={data ? data.comment : null}
             renderItem={({ item }) => {
               return <Item dataComment={item} />;
             }}
             keyExtractor={(item) => item.id}
             extraData={selected}
+            contentContainerStyle={
+              {
+                // minHeight: Dimensions.get("window").height / 2,
+              }
+            }
           />
         </View>
       </ScrollView>
       <View
         style={{
-          flexDirection: "row",
-          marginVertical: 5,
-          marginHorizontal: 10,
-          // position: 'absolute',
-          // bottom: 0,
-          borderRadius: 50,
-          backgroundColor: "#ffffff",
-          // height: 100,
-          width: Dimensions.get("screen").width - 20,
-          // position: 'absolute',
-          // bottom: 0,
-          // borderWidth:1,
-          alignItems: "center",
-          // justifyContent: 'space-around',
+          // borderBottomRightRadius: 15,
+          // borderBottomLeftRadius: 15,
+          borderRadius: 2,
+          backgroundColor: "#FFFFFF",
+          marginHorizontal: 18,
+          // marginBottom: 10,
+          paddingVertical: 10,
+          width: Dimensions.get("screen").width - 37,
+          position: "absolute",
+          bottom: 0,
+          // borderWidth: 1,
         }}
       >
-        <TextInput
-          allowFontScaling={false}
-          multiline
-          placeholder={
-            "Comment as " +
-            setting?.user?.first_name +
-            " " +
-            setting?.user?.last_name +
-            "..."
-          }
-          maxLength={255}
+        <View
           style={{
-            height: 60,
-            width: Dimensions.get("screen").width - 120,
-            // borderBottomColor: '#f0f0f0f0',
-            // borderWidth: 1,
-            marginLeft: 20,
-          }}
-          onChangeText={(text) => setStatusText(text)}
-          value={statusText}
-        />
-        <Pressable
-          onPress={() => comment(dataPost.id, statusText)}
-          style={{
-            flex: 1,
-            // borderWidth: 1,
-            height: 60,
-            // alignSelf: 'center',
+            flexDirection: "row",
+            // marginVertical: 10,
+            marginHorizontal: 10,
+            borderRadius: 50,
+            backgroundColor: "#F6F6F6",
+            // height: 100,
+            width: Dimensions.get("screen").width - 50,
+            // position: 'absolute',
+            // bottom: 0,
+            // borderWidth:1,
             alignItems: "center",
-            justifyContent: "center",
-            paddingRight: 10,
+            // justifyContent: 'space-around',
           }}
         >
-          <Text
+          <TextInput
             allowFontScaling={false}
-            size="label"
-            type="bold"
+            multiline
+            placeholder={
+              "Comment as " +
+              setting?.user?.first_name +
+              " " +
+              setting?.user?.last_name +
+              "..."
+            }
+            maxLength={1000}
             style={{
-              alignSelf: "center",
-              color: "#209fae",
+              height: 50,
+              width: Dimensions.get("screen").width - 130,
+              // borderBottomColor: '#f0f0f0f0',
+              // borderWidth: 1,
+              marginLeft: 20,
+            }}
+            onChangeText={(text) => setStatusText(text)}
+            value={statusText}
+          />
+          <Pressable
+            onPress={() => comment(dataPost.id, statusText)}
+            style={{
+              flex: 1,
+              // borderWidth: 1,
+              height: 50,
+              // alignSelf: 'center',
+              alignItems: "center",
+              justifyContent: "center",
+              paddingRight: 10,
             }}
           >
-            Post
-          </Text>
-        </Pressable>
+            <Text
+              allowFontScaling={false}
+              size="label"
+              type="bold"
+              style={{
+                alignSelf: "center",
+                color: "#209fae",
+              }}
+            >
+              Post
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );

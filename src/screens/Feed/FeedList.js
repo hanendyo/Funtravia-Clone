@@ -37,7 +37,7 @@ import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import ReadMore from "react-native-read-more-text";
-
+import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -51,6 +51,9 @@ const deletepost = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  const ref = React.useRef(null);
+
+  useScrollToTop(ref);
   // let [datafeed, SetDataFeed] = useState(dataRender);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -472,7 +475,7 @@ export default function FeedList({ props, token }) {
               paddingVertical: 10,
             }}
             onPress={() => {
-              setModalmenu(false), setModalhapus(true);
+              setModalhapus(true);
             }}
           >
             <Text
@@ -626,6 +629,7 @@ export default function FeedList({ props, token }) {
       </Modal>
 
       <FlatList
+        ref={ref}
         data={feed_post_pageing}
         renderItem={({ item, index }) => (
           // <Image

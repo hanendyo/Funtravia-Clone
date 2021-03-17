@@ -490,5 +490,6 @@
   "min6char": "minimal 6 character dengan huruf kecil",
   "saved": "simpan",
   "discard": "buang",
-  "areyousure": "Simpan perubahan?"
+  "areyousure": "Simpan perubahan?",
+  "noData": "Tidak ada Data"
 }

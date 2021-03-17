@@ -36,7 +36,7 @@ import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
 import CountrySrc from "./CountrySrc";
-import CountryListSrcMovie from "../../../graphQL/Query/Countries/CountryListSrcMovie";
+import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -245,15 +245,15 @@ export default function Unesco({ navigation, route }) {
     loading: loadingcountry,
     error: errorcountry,
     refetch: refetchcountry,
-  } = useQuery(CountryListSrcMovie, {
+  } = useQuery(CountryListSrcUnesco, {
     variables: {
       continent_id: null,
       keyword: "",
     },
     onCompleted: () => {
       SetselectedCountry({
-        id: datacountry.list_country_src_movie[0].id,
-        name: datacountry.list_country_src_movie[0].name,
+        id: datacountry.list_country_src_unesco[0].id,
+        name: datacountry.list_country_src_unesco[0].name,
       });
       if (selectedCountry) {
         getUnesco();
@@ -261,7 +261,6 @@ export default function Unesco({ navigation, route }) {
     },
   });
 
-  console.log(selectedCountry);
   /**
    * ref
    */

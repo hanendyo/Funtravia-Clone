@@ -30,273 +30,273 @@ import DestinationMaps from "../screens/Maps";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeStatus }) {
-	const config = {
-		screens: {
-			BottomStack: {
-				screens: {
-					ChatScreen: "chat/:id",
-				},
-			},
-			BottomStack: {
-				screens: {
-					SinglePost: "feed/:post_id",
-				},
-			},
-		},
-	};
-	const linking = {
-		prefixes: ["funtravia://", "https://*.funtravia.com"],
-		config,
-	};
+  const config = {
+    screens: {
+      BottomStack: {
+        screens: {
+          ChatScreen: "chat/:id",
+        },
+      },
+      BottomStack: {
+        screens: {
+          SinglePost: "feed/:post_id",
+        },
+      },
+    },
+  };
+  const linking = {
+    prefixes: ["funtravia://", "https://*.funtravia.com"],
+    config,
+  };
 
-	return (
-		<NavigationContainer linking={linking}>
-			<Tab.Navigator
-				initialRouteName={authorizeStatus ? "BottomStack" : "AuthStack"}
-			>
-				<Tab.Screen
-					name="AuthStack"
-					component={AuthStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="BottomStack"
-					component={BottomStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="ItineraryStack"
-					component={ItineraryStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="ProfileStack"
-					component={ProfileStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="CountryStack"
-					component={CountryStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="AccountStack"
-					component={AccountStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="ChatStack"
-					component={ChatStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="FeedStack"
-					component={FeedStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="TravelIdeaStack"
-					component={TravelIdeaStack}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="JournalStackNavigation"
-					component={JournalStackNavigation}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="DestinationList"
-					component={DestinationList}
-					options={{
-						headerShown: true,
-						headerTitle: "Destination",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="detailStack"
-					component={detailStack}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="Notification"
-					component={Notification}
-					options={{
-						headerShown: false,
-						headerBackTitleVisible: false,
-						headerTintColor: "white",
-					}}
-				/>
-				<Tab.Screen
-					name="SearchPage"
-					component={SearchPage}
-					options={{
-						headerTitle: "",
-						headerTransparent: false,
-					}}
-				/>
-				<Tab.Screen
-					name="SearchTab"
-					component={SearchTab}
-					options={{
-						headerTitle: "",
-						headerTransparent: false,
-					}}
-				/>
-				<Tab.Screen
-					name="SearchPg"
-					component={SearchPg}
-					options={{
-						headerTitle: "",
-						headerTransparent: false,
-					}}
-				/>
-				<Tab.Screen
-					name="listevent"
-					component={listevent}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="eventdetail"
-					component={eventdetail}
-					options={{ headerShown: false }}
-				/>
-				<Tab.Screen
-					name="TravelGoal"
-					component={TravelGoal}
-					options={{
-						headerTitle: "",
-						headerTransparent: false,
-					}}
-				/>
-				<Tab.Screen
-					name="TravelGoalDetail"
-					component={TravelGoalDetail}
-					options={{
-						headerTitle: "",
-						headerTransparent: false,
-					}}
-				/>
-				<Tab.Screen
-					name="Europe"
-					component={Europe}
-					options={{
-						headerShown: true,
-						headerTitle: "Europe",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="Asia"
-					component={Asia}
-					options={{
-						headerShown: true,
-						headerTitle: "Asia",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="Australia"
-					component={Australia}
-					options={{
-						headerShown: true,
-						headerTitle: "Australia",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="NorthAmerica"
-					component={NorthAmerica}
-					options={{
-						headerShown: true,
-						headerTitle: "NorthAmerica",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="SouthAmerica"
-					component={SouthAmerica}
-					options={{
-						headerShown: true,
-						headerTitle: "SouthAmerica",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="Africa"
-					component={Africa}
-					options={{
-						headerShown: true,
-						headerTitle: "Africa",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-				<Tab.Screen
-					name="DestinationMaps"
-					component={DestinationMaps}
-					options={{
-						headerShown: true,
-						headerTitle: "Destination",
-						headerBackTitleVisible: false,
-						headerTintColor: "#FFF",
-						headerStyle: { backgroundColor: "#209FAE" },
-					}}
-				/>
-			</Tab.Navigator>
-		</NavigationContainer>
-	);
+  return (
+    <NavigationContainer linking={linking}>
+      <Tab.Navigator
+        initialRouteName={authorizeStatus ? "BottomStack" : "AuthStack"}
+      >
+        <Tab.Screen
+          name="AuthStack"
+          component={AuthStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="BottomStack"
+          component={BottomStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="ItineraryStack"
+          component={ItineraryStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="ProfileStack"
+          component={ProfileStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="CountryStack"
+          component={CountryStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="AccountStack"
+          component={AccountStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="ChatStack"
+          component={ChatStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="FeedStack"
+          component={FeedStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="TravelIdeaStack"
+          component={TravelIdeaStack}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="JournalStackNavigation"
+          component={JournalStackNavigation}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="DestinationList"
+          component={DestinationList}
+          options={{
+            headerShown: true,
+            headerTitle: "Destination",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="detailStack"
+          component={detailStack}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="Notification"
+          component={Notification}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        />
+        <Tab.Screen
+          name="SearchPage"
+          component={SearchPage}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SearchTab"
+          component={SearchTab}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="SearchPg"
+          component={SearchPg}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="listevent"
+          component={listevent}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="eventdetail"
+          component={eventdetail}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="TravelGoal"
+          component={TravelGoal}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="TravelGoalDetail"
+          component={TravelGoalDetail}
+          options={{
+            headerTitle: "",
+            headerTransparent: false,
+          }}
+        />
+        <Tab.Screen
+          name="Europe"
+          component={Europe}
+          options={{
+            headerShown: true,
+            headerTitle: "Europe",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="Asia"
+          component={Asia}
+          options={{
+            headerShown: true,
+            headerTitle: "Asia",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="Australia"
+          component={Australia}
+          options={{
+            headerShown: true,
+            headerTitle: "Australia",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="NorthAmerica"
+          component={NorthAmerica}
+          options={{
+            headerShown: true,
+            headerTitle: "NorthAmerica",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="SouthAmerica"
+          component={SouthAmerica}
+          options={{
+            headerShown: true,
+            headerTitle: "SouthAmerica",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="Africa"
+          component={Africa}
+          options={{
+            headerShown: true,
+            headerTitle: "Africa",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="DestinationMaps"
+          component={DestinationMaps}
+          options={{
+            headerShown: true,
+            headerTitle: "Destination",
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+            headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }

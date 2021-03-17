@@ -307,7 +307,7 @@ export default function Post(props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
       <Loading show={loading} />
       <_modalGalery />
@@ -457,7 +457,7 @@ export default function Post(props) {
         }
         numColumns={4}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

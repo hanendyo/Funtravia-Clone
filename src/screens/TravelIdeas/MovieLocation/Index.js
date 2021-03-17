@@ -35,12 +35,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Kosong, Select, LocationBlack } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/react-hooks";
 import MovieLocationQuery from "../../../graphQL/Query/TravelIdeas/MovieLocation";
 import MovieLocationFirstQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationFirst";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 import CountrySrc from "./CountrySrc";
+import CountryListSrcMovie from "../../../graphQL/Query/Countries/CountryListSrcMovie";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -132,8 +133,8 @@ export default function MovieLocation({ navigation, route }) {
   const { t } = useTranslation();
   let [modalcountry, setModelCountry] = useState(false);
   let [selectedCountry, SetselectedCountry] = useState({
-    id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
-    name: "Indonesia",
+    // id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    // name: "Indonesia",
   });
   const HeaderComponent = {
     headerShown: true,
@@ -161,29 +162,57 @@ export default function MovieLocation({ navigation, route }) {
    * ref
    */
 
-  const { data, loading, error, refetch } = useQuery(MovieLocationQuery, {
+  const {
+    data: datacountry,
+    loading: loadingcountry,
+    error: errorcountry,
+    refetch: refetchcountry,
+  } = useQuery(CountryListSrcMovie, {
     variables: {
-      countries_id: selectedCountry.id,
+      continent_id: null,
+      keyword: "",
     },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    onCompleted: () => {
+      SetselectedCountry({
+        id: datacountry.list_country_src_movie[0].id,
+        name: datacountry.list_country_src_movie[0].name,
+      });
+      if (selectedCountry) {
+        getMovie();
+        getMovie_First();
+      }
     },
   });
+
+  const [getMovie, { data, loading, error, refetch }] = useLazyQuery(
+    MovieLocationQuery,
+    {
+      variables: {
+        countries_id: selectedCountry.id,
+      },
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
+  );
 
   let movie_rekomendasi = [];
   if (data && data.movie_rekomendasi) {
     movie_rekomendasi = data.movie_rekomendasi;
   }
   // console.log(movie_rekomendasi);
-  const {
-    data: datafirst,
-    loading: loadingfirst,
-    error: errorfirst,
-    refetch: refetchfirst,
-  } = useQuery(MovieLocationFirstQuery, {
+  const [
+    getMovie_First,
+    {
+      data: datafirst,
+      loading: loadingfirst,
+      error: errorfirst,
+      refetch: refetchfirst,
+    },
+  ] = useLazyQuery(MovieLocationFirstQuery, {
     variables: {
       countries_id: selectedCountry.id,
     },
@@ -287,16 +316,29 @@ export default function MovieLocation({ navigation, route }) {
             },
           ]}
         >
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              color: "",
-              marginRight: 10,
-            }}
-          >
-            {selectedCountry.name}
-          </Text>
+          {loadingcountry ? (
+            <ActivityIndicator
+              animating
+              size="small"
+              color="#209fae"
+              style={{
+                paddingTop: 10,
+                paddingHorizontal: 10,
+              }}
+            />
+          ) : (
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                color: "",
+                marginRight: 10,
+              }}
+            >
+              {selectedCountry?.name}
+            </Text>
+          )}
+
           <Select height={10} width={10} />
         </Pressable>
       </View>
@@ -341,88 +383,105 @@ export default function MovieLocation({ navigation, route }) {
           <Text size="title" type="black">
             Top Movie Location
           </Text>
-          <Pressable
-            onPress={() => {
-              navigation.navigate("TravelIdeaStack", {
-                screen: "Detail_movie",
-                params: {
-                  movie_id: movie_most_populer.id,
-                  token: token,
-                },
-              });
-            }}
-            style={{
-              flexDirection: "row",
-              marginVertical: 15,
-              width: width - 40,
-            }}
-          >
-            <View style={{ width: "30%", height: 140 }}>
-              <Image
-                source={
-                  movie_most_populer.cover
-                    ? { uri: movie_most_populer?.cover }
-                    : default_image
-                }
-                style={{ width: "100%", height: 140, borderRadius: 10 }}
-                resizeMode="cover"
-              />
-            </View>
+          {loadingfirst ? (
             <View
               style={{
-                paddingLeft: 15,
-                marginVertical: 5,
-                justifyContent: "space-between",
-                width: "70%",
+                width: width,
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 30,
               }}
             >
-              <View>
-                <Text
-                  size="title"
-                  type="bold"
-                  style={{
-                    marginBottom: 5,
-                  }}
-                >
-                  {movie_most_populer.title
-                    ? movie_most_populer.title
-                    : "No Movie"}
-                </Text>
-                <Text
-                  style={{
-                    // textAlign: "justify",
-                    width: "100%",
-                  }}
-                >
-                  {movie_most_populer.description}
-                </Text>
+              <ActivityIndicator
+                animating={loadingfirst}
+                size="large"
+                color="#209fae"
+              />
+            </View>
+          ) : (
+            <Pressable
+              onPress={() => {
+                navigation.navigate("TravelIdeaStack", {
+                  screen: "Detail_movie",
+                  params: {
+                    movie_id: movie_most_populer.id,
+                    token: token,
+                  },
+                });
+              }}
+              style={{
+                flexDirection: "row",
+                marginVertical: 15,
+                width: width - 40,
+              }}
+            >
+              <View style={{ width: "30%", height: 140 }}>
+                <Image
+                  source={
+                    movie_most_populer.cover
+                      ? { uri: movie_most_populer?.cover }
+                      : default_image
+                  }
+                  style={{ width: "100%", height: 140, borderRadius: 10 }}
+                  resizeMode="cover"
+                />
               </View>
               <View
                 style={{
-                  alignItems: "flex-start",
+                  paddingLeft: 15,
+                  marginVertical: 5,
+                  justifyContent: "space-between",
+                  width: "70%",
                 }}
               >
-                <View
-                  style={{
-                    backgroundColor: "#DAF0F2",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    borderRadius: 5,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <LocationBlack width={15} height={15} />
-                  <Text type="bold" style={{ marginLeft: 5 }}>
-                    {movie_most_populer.destination_count
-                      ? movie_most_populer.destination_count
-                      : 0}
-                    {" Locations"}
+                <View>
+                  <Text
+                    size="title"
+                    type="bold"
+                    style={{
+                      marginBottom: 5,
+                    }}
+                  >
+                    {movie_most_populer.title
+                      ? movie_most_populer.title
+                      : "No Movie"}
+                  </Text>
+                  <Text
+                    style={{
+                      // textAlign: "justify",
+                      width: "100%",
+                    }}
+                  >
+                    {movie_most_populer.description}
                   </Text>
                 </View>
+                <View
+                  style={{
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "#DAF0F2",
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      borderRadius: 5,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <LocationBlack width={15} height={15} />
+                    <Text type="bold" style={{ marginLeft: 5 }}>
+                      {movie_most_populer.destination_count
+                        ? movie_most_populer.destination_count
+                        : 0}
+                      {" Locations"}
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </Pressable>
+            </Pressable>
+          )}
         </View>
       </View>
       <View
@@ -479,9 +538,26 @@ export default function MovieLocation({ navigation, route }) {
           keyExtractor={(item) => item.id}
           numColumns={3}
           contentContainerStyle={{
-            // borderWidth: 1,
             paddingVertical: 10,
           }}
+          ListFooterComponent={
+            loading ? (
+              <View
+                style={{
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 30,
+                }}
+              >
+                <ActivityIndicator
+                  animating={loading}
+                  size="large"
+                  color="#209fae"
+                />
+              </View>
+            ) : null
+          }
         />
       </View>
     </ScrollView>
