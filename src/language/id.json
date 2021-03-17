@@ -486,5 +486,9 @@
   "AccountRegister": "Akun Sudah Terdaftar",
   "RegisterGoogleFailed": "Registrasi Dengan Google Gagal",
   "weJustSendRegister": "Kami baru saja mengirimkan kode verifikasi untuk memverifikasi akun Anda ke email",
-  "PasswordReset": "Pengaturan ulang kata sandi"
+  "PasswordReset": "Pengaturan ulang kata sandi",
+  "min6char": "minimal 6 character dengan huruf kecil",
+  "saved": "simpan",
+  "discard": "buang",
+  "areyousure": "Simpan perubahan?"
 }

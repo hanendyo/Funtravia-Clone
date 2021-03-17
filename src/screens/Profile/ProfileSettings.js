@@ -7,6 +7,7 @@ import {
   Alert,
   ImageBackground,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Button, Text, Loading } from "../../component";
@@ -48,7 +49,7 @@ export default function ProfileSettings(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => backAction()}
         style={{
           backgroundColor: "rgba(0,0,0,0.3)",
         }}
@@ -69,9 +70,39 @@ export default function ProfileSettings(props) {
   const token = props.route.params.token;
   let [loading, setLoading] = useState(false);
   const [modals, setmodal] = useState(false);
+  let [dataImage, setdataImage] = useState(null);
+  let [dataImagepatch, setdataImagepatch] = useState(
+    props.route.params.data.picture
+  );
+
+  const backAction = () => {
+    Alert.alert("", t("areyousure"), [
+      {
+        text: t("discard"),
+        onPress: () => {
+          BackHandler.removeEventListener("hardwareBackPress", backAction);
+          props.navigation.goBack();
+        },
+        style: "cancel",
+      },
+      {
+        text: t("saved"),
+        onPress: () => {
+          BackHandler.removeEventListener("hardwareBackPress", backAction);
+          _handlesave();
+        },
+      },
+    ]);
+    return true;
+  };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
   }, []);
 
   const upload = async (data) => {
@@ -111,9 +142,14 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       includeBase64: true,
     }).then((image) => {
-      upload(image.data);
+      console.log(image);
+      setdataImage(image.data);
+      setdataImagepatch(image.path);
+      setmodal(false);
+      // upload(image.data);
     });
   };
+
   const pickGallery = async () => {
     ImagePicker.openPicker({
       width: 500,
@@ -122,12 +158,17 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       includeBase64: true,
     }).then((image) => {
-      upload(image.data);
+      console.log(image);
+      setdataImage(image.data);
+      setdataImagepatch(image.path);
+      setmodal(false);
+      // upload(image.data);
     });
   };
 
   const validation = (name, value) => {
-    let regx = /^\s*\S+\s*$/;
+    // let regx = /^\s*\S+\s*$/;
+    let regx = /^(?=[a-zA-Z0-9._]{6,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
     if (name === "first_name") {
       return value.length <= 2 || value.length > 20 ? false : true;
@@ -135,7 +176,9 @@ export default function ProfileSettings(props) {
       return value.length > 20 ? false : true;
     } else if (name === "username") {
       return value.match(regx)
-        ? value.length <= 2 || value.length > 30
+        ? value.length <= 5 ||
+          value.length > 30 ||
+          value.toLowerCase() !== value
           ? false
           : true
         : false;
@@ -145,16 +188,17 @@ export default function ProfileSettings(props) {
       return true;
     }
   };
-  const _handleOnChange = (value, name) => {
+  const _handleOnChange = async (value, name) => {
     let check = validation(name, value);
-    setdata({ ...data, [name]: value });
+    await setdata({ ...data, [name]: value });
+
     if (!check) {
-      setdataerror({ ...dataerror, [name]: true });
+      await setdataerror({ ...dataerror, [name]: true });
     } else {
-      setdataerror({ ...dataerror, [name]: false });
+      await setdataerror({ ...dataerror, [name]: false });
 
       if (name === "username") {
-        GetUsername();
+        await GetUsername();
       }
     }
   };
@@ -199,6 +243,10 @@ export default function ProfileSettings(props) {
 
   const _handlesave = async () => {
     setLoading(true);
+    if (dataImage) {
+      await upload(dataImage);
+    }
+
     let x = 0;
     for (var i in dataerror) {
       if (dataerror[i] === true) {
@@ -283,7 +331,7 @@ export default function ProfileSettings(props) {
           }}
         >
           <Image
-            source={{ uri: data.picture }}
+            source={{ uri: dataImagepatch }}
             style={{
               borderRadius: 60,
               resizeMode: "cover",
@@ -421,6 +469,8 @@ export default function ProfileSettings(props) {
               style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
               value={data.username ? data.username : ""}
               onChangeText={(text) => _handleOnChange(text, "username")}
+              autoCapitalize="none"
+              autoCorrect={false}
               keyboardType="default"
             />
           </Item>
@@ -432,8 +482,8 @@ export default function ProfileSettings(props) {
                 color: "#D75995",
               }}
             >
-              {t("inputWarningName")}
-              {t("username")}
+              {/* {t("inputWarningName")} */}
+              {t("username")} {t("min6char")}
             </Text>
           ) : null}
           {datausername && datausername.user_check.isused === true ? (
