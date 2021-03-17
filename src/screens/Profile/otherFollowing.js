@@ -7,13 +7,14 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import { Text, Button, Loading } from "../../component";
 import { Arrowbackwhite } from "../../assets/svg";
+import { useTranslation } from "react-i18next";
 
 export default function Following(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
-    headerTransparent: false,
-    title: "Following",
+    title: `${t("Following")}`,
     headerTintColor: "white",
-    headerTitle: "Following",
+    headerTitle: `${t("Following")}`,
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

@@ -75,7 +75,7 @@
   "profile": "Profile",
   "point": "Point",
   "reviews": "Review",
-  "posts": " Post",
+  "posts": " Posts",
   "followers": "Followers",
   "following": "Following",
   "searchHome": "Search People, Destination, Event",
@@ -484,5 +484,9 @@
   "AccountRegister": "Account Already Registered",
   "RegisterGoogleFailed": "Registrasi With Google is Failed",
   "weJustSendRegister": "We just sent the verification code to verify your account to",
-  "PasswordReset": "Password Reset"
+  "PasswordReset": "Password Reset",
+  "min6char": "minimal 6 character in lowercase",
+  "saved": "save",
+  "discard": "discard",
+  "areyousure": "Save changes?"
 }
