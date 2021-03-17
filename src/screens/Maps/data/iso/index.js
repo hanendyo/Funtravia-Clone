@@ -1,4 +1,4 @@
-export const Country = [
+export const ISO = [
 	{
 		name: "Afghanistan",
 		"alpha-2": "AF",
@@ -1586,7 +1586,7 @@ export const Country = [
 		"intermediate-region-code": "",
 	},
 	{
-		name: "Lao People's Democratic Republic",
+		name: "Laos",
 		"alpha-2": "LA",
 		"alpha-3": "LAO",
 		"country-code": "418",

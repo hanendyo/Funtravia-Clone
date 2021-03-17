@@ -1,0 +1,257 @@
+{
+	"IDN": {
+		"id": "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+		"alpha-3": "IDN",
+		"name": "Indonesia"
+	},
+	"AFG": {
+		"id": "417cd79b-fbe5-41a6-99b7-ba340abcd993",
+		"alpha-3": "AFG",
+		"name": "Afghanistan"
+	},
+	"ARM": {
+		"id": "0dbc4767-068d-484f-a99c-ce5ae43dd31b",
+		"alpha-3": "ARM",
+		"name": "Armenia"
+	},
+	"AZE": {
+		"id": "6dc4e02a-4a1d-4ebc-8154-32e88da469e4",
+		"alpha-3": "AZE",
+		"name": "Azerbaijan"
+	},
+	"BHR": {
+		"id": "2ba85040-7682-4b66-a2f1-1048242ca1d1",
+		"alpha-3": "BHR",
+		"name": "Bahrain"
+	},
+	"BGD": {
+		"id": "57c2c734-1c7c-424a-8556-d62ff59f50bc",
+		"alpha-3": "BGD",
+		"name": "Bangladesh"
+	},
+	"BTN": {
+		"id": "cec83799-7d26-4586-953f-39a9f0213929",
+		"alpha-3": "BTN",
+		"name": "Bhutan"
+	},
+	"BRN": {
+		"id": "d7285f1c-338c-460b-8dd4-c2c871452bf0",
+		"alpha-3": "BRN",
+		"name": "Brunei Darussalam"
+	},
+	"KHM": {
+		"id": "72125ef9-fc8d-4e56-8a6e-8a065908f10f",
+		"alpha-3": "KHM",
+		"name": "Cambodia"
+	},
+	"CHN": {
+		"id": "efbc7ec1-fdd3-4ad4-91d6-a7cd1b53c2bf",
+		"alpha-3": "CHN",
+		"name": "China"
+	},
+	"CYP": {
+		"id": "ef90bcbc-5c5a-4652-9d07-e274559ba0ec",
+		"alpha-3": "CYP",
+		"name": "Cyprus"
+	},
+	"GEO": {
+		"id": "5e98489c-026e-4f2d-b5e1-7f36aa3a58e6",
+		"alpha-3": "GEO",
+		"name": "Georgia"
+	},
+	"HKG": {
+		"id": "f7952e78-071f-4311-892a-4e576dceeb45",
+		"alpha-3": "HKG",
+		"name": "Hong Kong"
+	},
+	"IND": {
+		"id": "ce048dde-2c97-466f-851a-d9091a1fc80f",
+		"alpha-3": "IND",
+		"name": "India"
+	},
+	"IRN": {
+		"id": "b47dc59f-dd72-490d-9f56-2923a62ba0c3",
+		"alpha-3": "IRN",
+		"name": "Iran {Islamic Republic of}"
+	},
+	"IRQ": {
+		"id": "f9e5aef1-933a-4e86-9363-a327ebdbfe2f",
+		"alpha-3": "IRQ",
+		"name": "Iraq"
+	},
+	"ISR": {
+		"id": "bd4d180f-8213-491f-97cb-e3fc4e8c6840",
+		"alpha-3": "ISR",
+		"name": "Israel"
+	},
+	"JPN": {
+		"id": "15674590-ddbc-43a4-b7e4-2dab64eed02a",
+		"alpha-3": "JPN",
+		"name": "Japan"
+	},
+	"JOR": {
+		"id": "f4fa44e3-7e7c-4f38-9104-37d303979261",
+		"alpha-3": "JOR",
+		"name": "Jordan"
+	},
+	"KAZ": {
+		"id": "33812696-adc0-457b-ba10-aac7015dc65a",
+		"alpha-3": "KAZ",
+		"name": "Kazakhstan"
+	},
+	"PRK": {
+		"id": "d9d25d0b-cc80-4180-97a3-6ce74fea4996",
+		"alpha-3": "PRK",
+		"name": "Korea Utara"
+	},
+	"KOR": {
+		"id": "0da40e9a-ec5f-49aa-b3f5-dc530b7ffb73",
+		"alpha-3": "KOR",
+		"name": "Korea Selatan"
+	},
+	"KWT": {
+		"id": "d74ebd59-57ca-49b2-961d-f02df1ca58ff",
+		"alpha-3": "KWT",
+		"name": "Kuwait"
+	},
+	"KGZ": {
+		"id": "c0e98405-c81f-4430-b42d-60e2301d89de",
+		"alpha-3": "KGZ",
+		"name": "Kyrgyzstan"
+	},
+	"LAO": {
+		"id": "19e019af-0f80-4fcf-a577-3ede53625fdc",
+		"alpha-3": "LAO",
+		"name": "Laos"
+	},
+	"LBN": {
+		"id": "58d0f638-d626-4d81-941c-66066d020366",
+		"alpha-3": "LBN",
+		"name": "Lebanon"
+	},
+	"MAC": {
+		"id": "d362b00a-0a3f-4d55-9e88-918ceaed63d0",
+		"alpha-3": "MAC",
+		"name": "Macao"
+	},
+	"MYS": {
+		"id": "05a83508-c439-4b39-9daa-268781979085",
+		"alpha-3": "MYS",
+		"name": "Malaysia"
+	},
+	"MDV": {
+		"id": "3232a154-5777-4726-8c97-3af0d61bf2d5",
+		"alpha-3": "MDV",
+		"name": "Maldives"
+	},
+	"MNG": {
+		"id": "d52790dc-6625-4bd8-8117-2a9896e8314b",
+		"alpha-3": "MNG",
+		"name": "Mongolia"
+	},
+	"MMR": {
+		"id": "18170858-3143-4bd7-a968-4f0b80de083f",
+		"alpha-3": "MMR",
+		"name": "Myanmar"
+	},
+	"NPL": {
+		"id": "4f910b01-3c19-43ee-9280-4df865128284",
+		"alpha-3": "NPL",
+		"name": "Nepal"
+	},
+	"OMN": {
+		"id": "50c45658-c1a5-430d-9d60-ef9db4ace13a",
+		"alpha-3": "OMN",
+		"name": "Oman"
+	},
+	"PAK": {
+		"id": "52c3dc70-b53d-466f-8a64-9cd25a3bce5f",
+		"alpha-3": "PAK",
+		"name": "Pakistan"
+	},
+	"PSE": {
+		"id": "73b6c512-879b-4c8b-8bae-af4b6046335f",
+		"alpha-3": "PSE",
+		"name": "Palestine, State of"
+	},
+	"PHL": {
+		"id": "a48628e3-c793-4a6d-ae0e-75e52b3c003d",
+		"alpha-3": "PHL",
+		"name": "Philippines"
+	},
+	"QAT": {
+		"id": "3fac43be-a9bd-4d57-828e-1bbc47d7578c",
+		"alpha-3": "QAT",
+		"name": "Qatar"
+	},
+	"SAU": {
+		"id": "236d2fae-6c82-4d07-886d-cd7aa1037010",
+		"alpha-3": "SAU",
+		"name": "Saudi Arabia"
+	},
+	"SGP": {
+		"id": "7e5e3fe3-79da-40bd-ad16-f658df9e8bca",
+		"alpha-3": "SGP",
+		"name": "Singapore"
+	},
+	"LKA": {
+		"id": "fe357df4-29fe-42ba-b787-1d8e83db8513",
+		"alpha-3": "LKA",
+		"name": "Sri Lanka"
+	},
+	"SYR": {
+		"id": "e110bf0d-4070-4fa6-8964-5143158b7fb0",
+		"alpha-3": "SYR",
+		"name": "Syrian Arab Republic"
+	},
+	"TWN": {
+		"id": "5f17be45-ae50-44c4-bab9-3b225462d125",
+		"alpha-3": "TWN",
+		"name": "Taiwan, Province of China"
+	},
+	"TJK": {
+		"id": "9dece127-4f01-4a90-a983-2b8663d79e1f",
+		"alpha-3": "TJK",
+		"name": "Tajikistan"
+	},
+	"THA": {
+		"id": "9c640df5-1e5f-43cb-a5b7-893667b75da8",
+		"alpha-3": "THA",
+		"name": "Thailand"
+	},
+	"TLS": {
+		"id": "d94b1e68-58bd-4bad-985e-e48f0537f1d2",
+		"alpha-3": "TLS",
+		"name": "Timor-Leste"
+	},
+	"TUR": {
+		"id": "0fb39901-0636-48a7-9bce-276ee42ce1e2",
+		"alpha-3": "TUR",
+		"name": "Turkey"
+	},
+	"TKM": {
+		"id": "3eaf904b-868c-489a-bf5f-ded7d8f1da8d",
+		"alpha-3": "TKM",
+		"name": "Turkmenistan"
+	},
+	"ARE": {
+		"id": "1903a0af-0e18-453a-8ab4-1174028c19b1",
+		"alpha-3": "ARE",
+		"name": "United Arab Emirates"
+	},
+	"UZB": {
+		"id": "c044ff26-d8c6-4bd8-9a3e-4aca1673f082",
+		"alpha-3": "UZB",
+		"name": "Uzbekistan"
+	},
+	"VNM": {
+		"id": "e0d89eb0-5b6d-4794-b750-59bccb1c8d51",
+		"alpha-3": "VNM",
+		"name": "Viet Nam"
+	},
+	"YEM": {
+		"id": "700ec0dd-0c08-4032-b96e-3ed04540cc15",
+		"alpha-3": "YEM",
+		"name": "Yemen"
+	}
+}
