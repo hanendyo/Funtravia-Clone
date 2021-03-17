@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Image, Dimensions } from "react-native";
+import { View, Image, Dimensions, ScrollView } from "react-native";
 import { default_image } from "../../../assets/png";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
@@ -8,11 +8,13 @@ const dimensions = Dimensions.get("screen");
 
 export default function ArticleView({ props, data }) {
   const { t, i18n } = useTranslation();
+  console.log("Article", data);
 
   return (
     <View style={{ padding: 20 }}>
       {data && data.content.length ? (
         data.content.map((i, index) => {
+          console.log("item", i);
           return (
             <View key={index}>
               {i.type === "image" ? (
