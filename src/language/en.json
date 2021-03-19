@@ -489,5 +489,6 @@
   "saved": "save",
   "discard": "discard",
   "areyousure": "Save changes?",
-  "noData": "No Data"
+  "noData": "No Data",
+  "postToFeed": "Post to Feed"
 }
