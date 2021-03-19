@@ -491,5 +491,6 @@
   "saved": "simpan",
   "discard": "buang",
   "areyousure": "Simpan perubahan?",
-  "noData": "Tidak ada Data"
+  "noData": "Tidak ada Data",
+  "postToFeed": "Post to Feed"
 }
