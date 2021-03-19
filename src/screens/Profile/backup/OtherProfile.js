@@ -20,7 +20,7 @@ import {
 } from "../../../assets/svg";
 import { Tab, Tabs, ScrollableTab } from "native-base";
 import MyTrip from "../MyTrip";
-import Review from "../Review";
+import Review from "./Review";
 import Post from "../Post";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import Account from "../../../graphQL/Query/Profile/Other";
