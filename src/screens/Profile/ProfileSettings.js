@@ -20,6 +20,7 @@ import Check from "../../graphQL/Query/Profile/check";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Akunsaya } from "../../assets/png";
 import ImagePicker from "react-native-image-crop-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProfileSettings(props) {
   const HeaderComponent = {
@@ -60,7 +61,6 @@ export default function ProfileSettings(props) {
   };
 
   const { t, i18n } = useTranslation();
-  const [data, setdata] = useState(props.route.params.data);
   const [dataerror, setdataerror] = useState({
     first_name: false,
     last_name: false,
@@ -74,6 +74,17 @@ export default function ProfileSettings(props) {
   let [dataImagepatch, setdataImagepatch] = useState(
     props.route.params.data.picture
   );
+  // let [seting, setSeting] = useState({});
+  // const [data, setdata] = useState(props.route.params.data);
+  let data = React.useRef({ ...props.route.params.data });
+
+  let seting = React.useRef({});
+
+  const loadAsync = async () => {
+    let setting = await AsyncStorage.getItem("setting");
+    setting = JSON.parse(setting);
+    seting.current = setting;
+  };
 
   const backAction = () => {
     Alert.alert("", t("areyousure"), [
@@ -98,6 +109,7 @@ export default function ProfileSettings(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    loadAsync();
 
     BackHandler.addEventListener("hardwareBackPress", backAction);
 
@@ -124,7 +136,11 @@ export default function ProfileSettings(props) {
             throw new Error(response.data.update_fotoprofile.message);
           }
           // Alert.alert(t('success'));
-          props.navigation.goBack();
+          let Xsetting = { ...seting.current };
+          Xsetting.user["picture"] = response.data.update_fotoprofile.message;
+          await AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
+
+          //  await props.navigation.goBack();
         }
         setLoading(false);
       } catch (error) {
@@ -142,7 +158,7 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       includeBase64: true,
     }).then((image) => {
-      console.log(image);
+      // console.log(image);
       setdataImage(image.data);
       setdataImagepatch(image.path);
       setmodal(false);
@@ -158,7 +174,7 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       includeBase64: true,
     }).then((image) => {
-      console.log(image);
+      // console.log(image);
       setdataImage(image.data);
       setdataImagepatch(image.path);
       setmodal(false);
@@ -190,7 +206,8 @@ export default function ProfileSettings(props) {
   };
   const _handleOnChange = async (value, name) => {
     let check = validation(name, value);
-    await setdata({ ...data, [name]: value });
+    // await setdata({ ...data, [name]: value });
+    data.current[name] = value;
 
     if (!check) {
       await setdataerror({ ...dataerror, [name]: true });
@@ -238,7 +255,7 @@ export default function ProfileSettings(props) {
         Authorization: `Bearer ${token}`,
       },
     },
-    variables: { type: "username", key: data.username },
+    variables: { type: "username", key: data.current.username },
   });
 
   const _handlesave = async () => {
@@ -262,10 +279,10 @@ export default function ProfileSettings(props) {
       try {
         let response = await mutationEdit({
           variables: {
-            first_name: data.first_name,
-            last_name: data.last_name,
-            username: data.username,
-            bio: data.bio,
+            first_name: data.current.first_name,
+            last_name: data.current.last_name,
+            username: data.current.username,
+            bio: data.current.bio,
           },
         });
         if (errorEdit) {
@@ -276,6 +293,14 @@ export default function ProfileSettings(props) {
             throw new Error(response.data.update_profile.message);
           }
           // Alert.alert(t('success'));
+
+          let Xsetting = { ...seting.current };
+          console.log(Xsetting.user);
+          Xsetting.user["first_name"] = data.current.first_name;
+          Xsetting.user["last_name"] = data.current.last_name;
+          Xsetting.user["username"] = data.current.username;
+          Xsetting.user["bio"] = data.current.bio;
+          AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
           props.navigation.goBack();
         }
         setLoading(false);
@@ -285,6 +310,8 @@ export default function ProfileSettings(props) {
       }
     }
   };
+
+  console.log(seting.current.user);
 
   return (
     <ScrollView contentContainerStyle={{}} showsVerticalScrollIndicator={false}>
@@ -380,7 +407,7 @@ export default function ProfileSettings(props) {
             <Input
               maxLength={20}
               style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.first_name ? data.first_name : ""}
+              value={data.current.first_name ? data.current.first_name : ""}
               onChangeText={(text) => _handleOnChange(text, "first_name")}
               keyboardType="default"
             />
@@ -418,7 +445,7 @@ export default function ProfileSettings(props) {
             <Input
               maxLength={20}
               style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.last_name ? data.last_name : ""}
+              value={data.current.last_name ? data.current.last_name : ""}
               onChangeText={(text) => _handleOnChange(text, "last_name")}
               keyboardType="default"
             />
@@ -467,7 +494,7 @@ export default function ProfileSettings(props) {
             <Input
               maxLength={30}
               style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.username ? data.username : ""}
+              value={data.current.username ? data.current.username : ""}
               onChangeText={(text) => _handleOnChange(text, "username")}
               autoCapitalize="none"
               autoCorrect={false}
@@ -529,7 +556,7 @@ export default function ProfileSettings(props) {
             <Input
               maxLength={160}
               style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.bio ? data.bio : ""}
+              value={data.current.bio ? data.current.bio : ""}
               onChangeText={(text) => _handleOnChange(text, "bio")}
               keyboardType="default"
             />
@@ -580,7 +607,9 @@ export default function ProfileSettings(props) {
         }}
       >
         <Text style={{ color: "#A6A6A6" }}>{t("emailAddress")}</Text>
-        <Text size="description">{data.email ? data.email : "-"}</Text>
+        <Text size="description">
+          {data.current.email ? data.current.email : "-"}
+        </Text>
       </View>
       <View
         style={{
@@ -593,7 +622,9 @@ export default function ProfileSettings(props) {
         }}
       >
         <Text style={{ color: "#A6A6A6" }}>{t("phoneNumber")}</Text>
-        <Text size="description">{data.phone ? data.phone : "-"}</Text>
+        <Text size="description">
+          {data.current.phone ? data.current.phone : "-"}
+        </Text>
       </View>
       <View
         style={{

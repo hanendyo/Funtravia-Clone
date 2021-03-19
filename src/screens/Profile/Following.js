@@ -37,8 +37,9 @@ export default function Following(props) {
   let [loadin, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  let [data, setdata] = useState(null);
 
-  const [LoadFollowing, { data, loading, error }] = useLazyQuery(
+  const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
     FollowingQuery,
     {
       fetchPolicy: "network-only",
@@ -47,6 +48,9 @@ export default function Following(props) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+      },
+      onCompleted: () => {
+        setdata(dataFollow);
       },
     }
   );

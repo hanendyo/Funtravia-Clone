@@ -1,14 +1,13 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import ProfileTab from "../../screens/Profile/MyProfile";
+import ProfileTab from "../../screens/Profile/backup/MyProfile";
 import FollowerPage from "../../screens/Profile/Follower";
 import FollowingPage from "../../screens/Profile/Following";
-import otherprofile from "../../screens/Profile/OtherProfiles";
+import otherprofile from "../../screens/Profile/ProfileScreen/index";
 import otherFollower from "../../screens/Profile/otherFollower";
 import otherFollowing from "../../screens/Profile/otherFollowing";
 import profilesetting from "../../screens/Profile/ProfileSettings";
 import myfeed from "../../screens/Profile/Feed";
-import Comments from "../../screens/Profile/Comments";
 import tripalbum from "../../screens/Profile/tripalbum";
 import tripalbumdetail from "../../screens/Profile/tripalbumdetail";
 
@@ -88,16 +87,6 @@ export default function ProfileStackNavigation(props) {
       <ProfileStack.Screen
         name="myfeed"
         component={myfeed}
-        options={{
-          headerTitle: "",
-          headerTransparent: true,
-          headerTintColor: "white",
-          headerBackTitleVisible: false,
-        }}
-      />
-      <ProfileStack.Screen
-        name="Comments"
-        component={Comments}
         options={{
           headerTitle: "",
           headerTransparent: true,

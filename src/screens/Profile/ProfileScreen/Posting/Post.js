@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
-export default function Post({ item, index, props }) {
+export default function Posts({ item, index, props }) {
   if (item.length > 2) {
     if (item[3].grid == 1) {
       return (
@@ -30,7 +30,7 @@ export default function Post({ item, index, props }) {
         >
           <Pressable
             onPress={() => {
-              props.navigation.navigate("FeedStack", {
+              props.navigation.push("FeedStack", {
                 screen: "CommentsById",
                 params: {
                   post_id: item[0].id,
@@ -47,6 +47,7 @@ export default function Post({ item, index, props }) {
               style={{
                 width: "100%",
                 height: "100%",
+                borderRadius: 5,
               }}
               source={
                 item[0].assets[0].filepath
@@ -58,7 +59,7 @@ export default function Post({ item, index, props }) {
           <View>
             <Pressable
               onPress={() => {
-                props.navigation.navigate("FeedStack", {
+                props.navigation.push("FeedStack", {
                   screen: "CommentsById",
                   params: {
                     post_id: item[1].id,
@@ -75,6 +76,7 @@ export default function Post({ item, index, props }) {
                 style={{
                   width: "100%",
                   height: "100%",
+                  borderRadius: 5,
                 }}
                 source={
                   item[1].assets[0].filepath
@@ -85,7 +87,7 @@ export default function Post({ item, index, props }) {
             </Pressable>
             <Pressable
               onPress={() => {
-                props.navigation.navigate("FeedStack", {
+                props.navigation.push("FeedStack", {
                   screen: "CommentsById",
                   params: {
                     post_id: item[2].id,
@@ -102,6 +104,7 @@ export default function Post({ item, index, props }) {
                 style={{
                   width: "100%",
                   height: "100%",
+                  borderRadius: 5,
                 }}
                 source={
                   item[2].assets[0].filepath
@@ -113,7 +116,7 @@ export default function Post({ item, index, props }) {
           </View>
         </View>
       );
-    } else {
+    } else if (item[3].grid == 2) {
       return (
         <View
           style={{
@@ -126,7 +129,7 @@ export default function Post({ item, index, props }) {
           <View>
             <Pressable
               onPress={() => {
-                props.navigation.navigate("FeedStack", {
+                props.navigation.push("FeedStack", {
                   screen: "CommentsById",
                   params: {
                     post_id: item[0].id,
@@ -143,6 +146,7 @@ export default function Post({ item, index, props }) {
                 style={{
                   width: "100%",
                   height: "100%",
+                  borderRadius: 5,
                 }}
                 source={
                   item[0].assets[0].filepath
@@ -153,7 +157,7 @@ export default function Post({ item, index, props }) {
             </Pressable>
             <Pressable
               onPress={() => {
-                props.navigation.navigate("FeedStack", {
+                props.navigation.push("FeedStack", {
                   screen: "CommentsById",
                   params: {
                     post_id: item[1].id,
@@ -170,6 +174,7 @@ export default function Post({ item, index, props }) {
                 style={{
                   width: "100%",
                   height: "100%",
+                  borderRadius: 5,
                 }}
                 source={
                   item[1].assets[0].filepath
@@ -181,7 +186,7 @@ export default function Post({ item, index, props }) {
           </View>
           <Pressable
             onPress={() => {
-              props.navigation.navigate("FeedStack", {
+              props.navigation.push("FeedStack", {
                 screen: "CommentsById",
                 params: {
                   post_id: item[2].id,
@@ -198,6 +203,7 @@ export default function Post({ item, index, props }) {
               style={{
                 width: "100%",
                 height: "100%",
+                borderRadius: 5,
               }}
               source={
                 item[2].assets[0].filepath
@@ -206,6 +212,54 @@ export default function Post({ item, index, props }) {
               }
             />
           </Pressable>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            paddingHorizontal: 2.5,
+          }}
+        >
+          {item.map((data, index) => {
+            if (index < 3) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    props.navigation.push("FeedStack", {
+                      screen: "CommentsById",
+                      params: {
+                        post_id: data.id,
+                      },
+                    });
+                  }}
+                  style={{
+                    width: (width - 20) / 3,
+                    height: (width - 20) / 3,
+                    margin: 2.5,
+                  }}
+                >
+                  <Image
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: 5,
+                    }}
+                    source={
+                      data.assets[0].filepath
+                        ? { uri: data.assets[0].filepath }
+                        : default_image
+                    }
+                  />
+                </Pressable>
+              );
+            } else {
+              null;
+            }
+          })}
         </View>
       );
     }
@@ -223,7 +277,7 @@ export default function Post({ item, index, props }) {
           return (
             <Pressable
               onPress={() => {
-                props.navigation.navigate("FeedStack", {
+                props.navigation.push("FeedStack", {
                   screen: "CommentsById",
                   params: {
                     post_id: data.id,
@@ -240,6 +294,7 @@ export default function Post({ item, index, props }) {
                 style={{
                   width: "100%",
                   height: "100%",
+                  borderRadius: 5,
                 }}
                 source={
                   data.assets[0].filepath

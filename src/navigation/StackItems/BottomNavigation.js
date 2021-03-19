@@ -139,11 +139,11 @@ export default function BottomNavigationItems() {
         name="TripPlaning"
         component={TripPlaningscreen}
         options={{
-          tabBarVisible: true,
+          tabBarVisible: false,
           tabBarLabel: "Trip Planner",
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Itinerary width="30" height="30" />
+              <Itinerary width="25" height="25" />
             ) : (
               <View
                 style={{
