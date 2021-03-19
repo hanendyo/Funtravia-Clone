@@ -27,6 +27,7 @@ import Account from "../../../graphQL/Query/Profile/Other";
 import User_Post from "../../../graphQL/Query/Profile/otherpost";
 import Reviews from "../../../graphQL/Query/Profile/otherreview";
 import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
+import Itinerary2 from "../../../graphQL/Query/Profile/itinerary";
 import { useTranslation } from "react-i18next";
 import {
   Album,
@@ -70,31 +71,47 @@ export default function OtherProfile(props) {
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
   let [users, setuser] = useState(null);
+  let [id, seID] = useState(null);
   let [position, setposition] = useState(false);
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     await setuser(user.user);
 
     if (!props.route.params.idUser) {
+      await seID(user.user.id);
+      console.log(user.user.id);
+
       await props.navigation.setParams({ idUser: user.user.id });
       setposition("profile");
     } else {
       if (props.route.params.idUser === user.user.id) {
+        await seID(user.user.id);
+        console.log(user.user.id);
+
         setposition("profile");
       } else {
+        await seID(props.route.params.idUser);
+        console.log(props.route.params.idUser);
+
         setposition("other");
       }
     }
 
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+
+    await Loaddata();
     await LoadUserProfile();
-    await Getdatapost();
-    await LoadReview();
-    await LoadTrip();
+    // await Getdatapost();
+    // await LoadReview();
+    // await LoadTrip();
+  };
+
+  const Loaddata = () => {
+    console.log("hasil", id);
+    console.log("hasil", token);
   };
 
   const [
@@ -114,10 +131,10 @@ export default function OtherProfile(props) {
       },
     },
     variables: {
-      id: props.route.params.idUser,
+      id: id,
     },
-    onCompleted: (data) => {
-      setdataPost(spreadData(data.user_postbyid));
+    onCompleted: () => {
+      setdataPost(spreadData(dataposting.user_postbyid));
     },
   });
 
@@ -127,7 +144,7 @@ export default function OtherProfile(props) {
   ] = useLazyQuery(Reviews, {
     fetchPolicy: "network-only",
     variables: {
-      id: props.route.params.idUser,
+      id: id,
     },
     context: {
       headers: {
@@ -135,8 +152,8 @@ export default function OtherProfile(props) {
         Authorization: `Bearer ${token}`,
       },
     },
-    onCompleted: (data) => {
-      setdataReview(data.user_reviewbyid);
+    onCompleted: () => {
+      setdataReview(datareview.user_reviewbyid);
     },
   });
 
@@ -146,7 +163,7 @@ export default function OtherProfile(props) {
   ] = useLazyQuery(Itinerary, {
     fetchPolicy: "network-only",
     variables: {
-      id: props.route.params.idUser,
+      id: id,
     },
     context: {
       headers: {
@@ -154,10 +171,32 @@ export default function OtherProfile(props) {
         Authorization: `Bearer ${token}`,
       },
     },
-    onCompleted: (data) => {
-      setdataTrip(data.user_tripbyid);
+    onCompleted: () => {
+      setdataTrip(datatrip.user_tripbyid);
     },
   });
+
+  const [
+    LoadTrip2,
+    { data: datatripX, loading: loadingtripX, error: errortripX },
+  ] = useLazyQuery(Itinerary2, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setdataTrip(datatripX.user_trip);
+    },
+  });
+
+  console.log(loadingtripX);
+  console.log(datatripX);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -735,6 +774,16 @@ export default function OtherProfile(props) {
           }}
           source={Akunsaya}
         />
+        {/* <TouchableOpacity
+          onPress={() => {
+            console.log("test", id);
+            console.log("test", token);
+            console.log("test");
+            LoadTrip2();
+          }}
+        >
+          <Text>tesssssssssssssssssssssssssssssssssssss</Text>
+        </TouchableOpacity> */}
         {data.picture ? (
           <Animated.Image
             source={data.picture ? { uri: data.picture } : DefaultProfileSquare}
@@ -1313,10 +1362,18 @@ export default function OtherProfile(props) {
         },
       },
       variables: {
-        id: props.route.params.idUser,
+        id: id,
       },
       onCompleted: (data) => {
         setDataUser(data.user_profilebyid);
+
+        Getdatapost();
+        LoadReview();
+        if (position === "profile") {
+          LoadTrip2();
+        } else {
+          LoadTrip();
+        }
 
         props.navigation.setOptions({
           headerTitle: (

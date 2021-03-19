@@ -70,12 +70,14 @@ export default function ProfileSettings(props) {
   const token = props.route.params.token;
   let [loading, setLoading] = useState(false);
   const [modals, setmodal] = useState(false);
-  let [dataImage, setdataImage] = useState(null);
-  let [dataImagepatch, setdataImagepatch] = useState(
-    props.route.params.data.picture
-  );
+  // let [dataImage, setdataImage] = useState(null);
+  // let [dataImagepatch, setdataImagepatch] = useState(
+  //   props.route.params.data.picture
+  // );
   // let [seting, setSeting] = useState({});
   // const [data, setdata] = useState(props.route.params.data);
+  let dataImage = React.useRef(null);
+  let dataImagepatch = React.useRef(props.route.params.data.picture);
   let data = React.useRef({ ...props.route.params.data });
 
   let seting = React.useRef({});
@@ -136,8 +138,9 @@ export default function ProfileSettings(props) {
             throw new Error(response.data.update_fotoprofile.message);
           }
           // Alert.alert(t('success'));
+
           let Xsetting = { ...seting.current };
-          Xsetting.user["picture"] = response.data.update_fotoprofile.message;
+          Xsetting.user["picture"] = response.data.update_fotoprofile.path;
           await AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
 
           //  await props.navigation.goBack();
@@ -159,8 +162,10 @@ export default function ProfileSettings(props) {
       includeBase64: true,
     }).then((image) => {
       // console.log(image);
-      setdataImage(image.data);
-      setdataImagepatch(image.path);
+      // setdataImage(image.data);
+      dataImage.current = image.data;
+      dataImagepatch.current = image.path;
+      // setdataImagepatch(image.path);
       setmodal(false);
       // upload(image.data);
     });
@@ -175,8 +180,10 @@ export default function ProfileSettings(props) {
       includeBase64: true,
     }).then((image) => {
       // console.log(image);
-      setdataImage(image.data);
-      setdataImagepatch(image.path);
+      dataImage.current = image.data;
+      dataImagepatch.current = image.path;
+      // setdataImage(image.data);
+      // setdataImagepatch(image.path);
       setmodal(false);
       // upload(image.data);
     });
@@ -260,8 +267,8 @@ export default function ProfileSettings(props) {
 
   const _handlesave = async () => {
     setLoading(true);
-    if (dataImage) {
-      await upload(dataImage);
+    if (dataImage.current) {
+      await upload(dataImage.current);
     }
 
     let x = 0;
@@ -295,7 +302,6 @@ export default function ProfileSettings(props) {
           // Alert.alert(t('success'));
 
           let Xsetting = { ...seting.current };
-          console.log(Xsetting.user);
           Xsetting.user["first_name"] = data.current.first_name;
           Xsetting.user["last_name"] = data.current.last_name;
           Xsetting.user["username"] = data.current.username;
@@ -310,8 +316,6 @@ export default function ProfileSettings(props) {
       }
     }
   };
-
-  console.log(seting.current.user);
 
   return (
     <ScrollView contentContainerStyle={{}} showsVerticalScrollIndicator={false}>
@@ -358,7 +362,7 @@ export default function ProfileSettings(props) {
           }}
         >
           <Image
-            source={{ uri: dataImagepatch }}
+            source={{ uri: dataImagepatch.current }}
             style={{
               borderRadius: 60,
               resizeMode: "cover",
