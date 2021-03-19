@@ -12,6 +12,8 @@ import { useTranslation } from "react-i18next";
 export default function Following(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
+    headerTransparent: false,
+
     title: `${t("Following")}`,
     headerTintColor: "white",
     headerTitle: `${t("Following")}`,
@@ -36,8 +38,9 @@ export default function Following(props) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const idUser = props.route.params.idUser;
+  let [data, setdata] = useState(null);
 
-  const [LoadFollowing, { data, loading, error }] = useLazyQuery(
+  const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
     FollowingQuery,
     {
       fetchPolicy: "network-only",
@@ -49,6 +52,9 @@ export default function Following(props) {
       },
       variables: {
         id: idUser,
+      },
+      onCompleted: () => {
+        setdata(dataFollow);
       },
     }
   );

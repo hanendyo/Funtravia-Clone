@@ -16,6 +16,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
     LoadPost,
     { data: datapost, loading: loadingpost, error: errorpost },
   ] = useLazyQuery(User_Post, {
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -28,6 +29,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
     const unsubscribe = props.navigation.addListener("focus", (data) => {
       if (token) {
         LoadPost();
+        // LoadUserProfile();
         // NotifCount();
       }
     });
@@ -58,7 +60,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
         height: ukuran,
         borderRadius: 5,
         borderColor: "#209FAE",
-        borderWidth: 1,
+        borderWidth: 1.5,
         backgroundColor: "#FFFFFF",
         alignContent: "center",
         alignItems: "center",
@@ -68,8 +70,9 @@ export default function RenderAccount({ data, token, props, datanotif }) {
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 1,
         shadowRadius: 1,
-        elevation: 6,
+        elevation: 3,
         padding: 10,
+        marginBottom: 10,
       }}
     >
       <View
@@ -111,8 +114,8 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 }}
                 // defaultSource={DefaultProfileSquare}
                 source={
-                  data && data.user_profile.picture
-                    ? { uri: data.user_profile.picture }
+                  data && data.picture
+                    ? { uri: data.picture }
                     : DefaultProfileSquare
                 }
               />
@@ -164,12 +167,10 @@ export default function RenderAccount({ data, token, props, datanotif }) {
               }}
             >
               <Text size="label" type="black" style={{ marginLeft: 10 }}>
-                {data && data.user_profile.first_name
-                  ? `${data.user_profile.first_name}`
+                {data && data.first_name
+                  ? `${data.first_name}`
                   : "User Funtravia"}
-                {data && data.user_profile.last_name
-                  ? ` ${data.user_profile.last_name}`
-                  : null}
+                {data && data.last_name ? ` ${data.last_name}` : null}
               </Text>
               <Pressable
                 onPress={() => props.navigation.navigate("Notification")}
@@ -246,8 +247,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 onPress={() =>
                   props.navigation.navigate("myfeed", {
                     token: token,
-                    datauser:
-                      data && data.user_profile ? data.user_profile : null,
+                    datauser: data ? data : null,
                     data:
                       datapost && datapost.user_post
                         ? datapost.user_post
@@ -256,7 +256,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 }
               >
                 <Text size="label" type="black" style={styles.statNumber}>
-                  {data ? data.user_profile.count_post : 0}
+                  {data ? data.count_post : 0}
                 </Text>
                 <Text size="small" type="regular" style={styles.statLabel}>
                   {t("post")}
@@ -267,7 +267,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 onPress={() => props.navigation.navigate("TripPlaning")}
               >
                 <Text size="label" type="black" style={styles.statNumber}>
-                  {data ? data.user_profile.count_my_itinerary : 0}
+                  {data ? data.count_my_itinerary : 0}
                 </Text>
                 <Text size="small" type="regular" style={styles.statLabel}>
                   {t("trip")}
@@ -282,7 +282,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 }
               >
                 <Text size="label" type="black" style={styles.statNumber}>
-                  {data ? data.user_profile.count_follower : 0}
+                  {data ? data.count_follower : 0}
                 </Text>
                 <Text size="small" type="regular" style={styles.statLabel}>
                   {t("followers")}
@@ -297,7 +297,7 @@ export default function RenderAccount({ data, token, props, datanotif }) {
                 }
               >
                 <Text size="label" type="black" style={styles.statNumber}>
-                  {data ? data.user_profile.count_following : 0}
+                  {data ? data.count_following : 0}
                 </Text>
                 <Text size="small" type="regular" style={styles.statLabel}>
                   {t("following")}

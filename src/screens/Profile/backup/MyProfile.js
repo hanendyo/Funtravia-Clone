@@ -14,14 +14,14 @@ import {
   View,
 } from "react-native";
 import { useQuery } from "@apollo/react-hooks";
-import { Akunsaya, default_image } from "../../assets/png";
-import { Kosong } from "../../assets/svg";
-import { Button, Text, Truncate } from "../../component";
+import { Akunsaya, default_image } from "../../../assets/png";
+import { Kosong } from "../../../assets/svg";
+import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import Account from "../../graphQL/Query/Home/Account";
-import User_Post from "../../graphQL/Query/Profile/post";
-import Reviews from "../../graphQL/Query/Profile/review";
-import Itinerary from "../../graphQL/Query/Profile/itinerary";
+import Account from "../../../graphQL/Query/Home/Account";
+import User_Post from "../../../graphQL/Query/Profile/post";
+import Reviews from "../../../graphQL/Query/Profile/review";
+import Itinerary from "../../../graphQL/Query/Profile/itinerary";
 import { TabBar, TabView } from "react-native-tab-view";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);

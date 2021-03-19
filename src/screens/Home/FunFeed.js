@@ -173,7 +173,7 @@ export default function SearchFeed({ props }) {
                   textShadowRadius: 10,
                 }}
               >
-                {`@${username}`}
+                <Truncate text={`@${username}`} length={13} />
               </Text>
             </View>
           </TouchableOpacity>

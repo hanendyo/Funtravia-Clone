@@ -38,19 +38,26 @@ export default function Follower(props) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const idUser = props.route.params.idUser;
+  let [data, setdata] = useState(null);
 
-  const [LoadFollower, { data, loading, error }] = useLazyQuery(FollowerQuery, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  const [LoadFollower, { data: dataFollow, loading, error }] = useLazyQuery(
+    FollowerQuery,
+    {
+      fetchPolicy: "network-only",
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-    variables: {
-      id: idUser,
-    },
-  });
+      variables: {
+        id: idUser,
+      },
+      onCompleted: () => {
+        setdata(dataFollow);
+      },
+    }
+  );
   const loadAsync = async () => {
     setLoading(true);
     let tkn = await AsyncStorage.getItem("access_token");
