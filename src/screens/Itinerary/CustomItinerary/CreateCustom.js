@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Picker,
+  Image,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -25,6 +26,8 @@ import SaveCustom from "../../../graphQL/Mutation/Itinerary/Savecustom";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { useTranslation } from "react-i18next";
 import { Button, Text } from "../../../component";
+import { default_image } from "../../../assets/png";
+
 export default function CreateCustom(props) {
   const HeaderComponent = {
     headerShown: true,
@@ -754,7 +757,7 @@ export default function CreateCustom(props) {
                 // height: 30,
                 paddingHorizontal: 10,
                 borderWidth: 0.2,
-                borderRadius: 1,
+                borderRadius: 2,
                 borderColor: "#646464",
                 backgroundColor: "#f3f3f3",
               }}
@@ -762,6 +765,8 @@ export default function CreateCustom(props) {
               <View
                 style={{
                   height: 30,
+                  borderRadius: 2,
+
                   flexDirection: "row",
                   // borderWidth: 1,
                   alignItems: "center",
@@ -815,7 +820,8 @@ export default function CreateCustom(props) {
             <Textarea
               style={{
                 width: "100%",
-                borderRadius: 1,
+                borderRadius: 5,
+
                 fontFamily: "Lato-Regular",
                 backgroundColor: "#f3f3f3",
                 padding: 5,
@@ -842,6 +848,61 @@ export default function CreateCustom(props) {
               </Text>
             ) : null}
           </View>
+
+          <View style={{}}>
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                marginTop: 20,
+              }}
+            >
+              {t("Attach File")}
+            </Text>
+            <View style={{ flex: 1, marginVertical: 10 }}>
+              <TouchableOpacity
+                style={{
+                  width: "100%",
+                  height: 120,
+                  // borderColor: "black",
+                  borderWidth: 1,
+                  borderStyle: "dashed",
+                  borderRadius: 5,
+                  borderColor: "#d3d3d3",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text>test</Text>
+              </TouchableOpacity>
+              <Text size="description" type="regular" style={{}}>
+                {t("Upload your flight ticket, hotel voucher, etc.")}
+              </Text>
+            </View>
+            <View style={{ flex: 1, marginVertical: 10 }}>
+              <Image
+                source={default_image}
+                style={{
+                  width: "100%",
+                  height: 120,
+                  borderRadius: 5,
+                  resizeMode: "cover",
+                  marginVertical: 10,
+                }}
+              ></Image>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button style={{ flex: 1, marginRight: 2.5 }}></Button>
+                <Button style={{ flex: 1, marginLeft: 2.5 }}></Button>
+              </View>
+            </View>
+          </View>
+
           <TouchableOpacity
             onPress={() => setcheck(!cheked)}
             style={{

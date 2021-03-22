@@ -45,6 +45,8 @@ import {
   Xhitam,
   LikeEmptynew,
   Reorder,
+  CameraBlue,
+  CameraIcon,
 } from "../../../assets/svg";
 import {
   Button,
@@ -80,6 +82,7 @@ import album from "../../../graphQL/Query/Itinerary/album";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
+import UploadfotoAlbum from "../../../graphQL/Mutation/Profile/Uploadfotoalbum";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -201,6 +204,7 @@ export default function ItineraryDetail(props) {
   let [modalmenu, setModalmenu] = useState(false);
   let [showside, setshowside] = useState(false);
   let [modalcover, setmodalcover] = useState(false);
+  let [modalAlbum, setmodalAlbum] = useState(false);
   let [users, setuser] = useState(null);
   const loadasync = async () => {
     let user = await AsyncStorage.getItem("setting");
@@ -533,6 +537,80 @@ export default function ItineraryDetail(props) {
         )
       : setCover(datadetail.itinerary_detail.cover);
     return <View></View>;
+  };
+
+  const [
+    mutationUploadAlbum,
+    {
+      loading: loadinguploadAlbum,
+      data: datauploadAlbum,
+      error: erroruploadAlbum,
+    },
+  ] = useMutation(UploadfotoAlbum, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const pickcameraAlbum = async () => {
+    ImagePicker.openCamera({
+      width: 600,
+      height: 400,
+      cropping: true,
+      // freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      // uploadAlbum(image.data);
+    });
+  };
+
+  const pickGalleryAlbum = async () => {
+    ImagePicker.openPicker({
+      width: 600,
+      height: 400,
+      cropping: true,
+      // freeStyleCropEnabled: true,
+      includeBase64: true,
+    }).then((image) => {
+      // uploadAlbum(image.data);
+    });
+  };
+
+  const uploadAlbum = async (data) => {
+    setmodal(false);
+    setLoading(true);
+
+    if (data) {
+      // console.log(tmpFile.base64);
+      try {
+        let response = await mutationUploadAlbum({
+          variables: {
+            itinerary_id: iditinerary,
+            day_id: day_id,
+            description: "0",
+            assets: "data:image/jpeg;base64," + data,
+          },
+        });
+        if (errorupload) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (response.data.uploadalbums.code !== 200) {
+            throw new Error(response.data.uploadalbums.message);
+          }
+          // Alert.alert(t('success'));
+          onRefresh();
+          // props.navigation.goBack();
+        }
+        setLoading(false);
+      } catch (error) {
+        Alert.alert("" + error);
+        setLoading(false);
+      }
+    }
   };
 
   const getcity = (data) => {
@@ -2390,7 +2468,7 @@ export default function ItineraryDetail(props) {
                           height: tab2ItemSize,
                           marginRight: 2.5,
                           marginBottom: 2.5,
-                          backgroundColor: "#aaa",
+                          backgroundColor: "#f6f6f6",
                           justifyContent: "center",
                           alignItems: "center",
                           resizeMode: "cover",
@@ -2428,30 +2506,56 @@ export default function ItineraryDetail(props) {
           >
             {item.unposted.length > 0 ? (
               item.unposted.map((data, i) => {
-                return data.is_posted !== true ? (
-                  <ImageBackground
-                    key={"posted" + data.id}
-                    source={data.assets ? { uri: data.assets } : default_image}
-                    defaultSource={default_image}
-                    style={{
-                      width: tab2ItemSize,
-                      height: tab2ItemSize,
-                      marginRight: 2.5,
-                      marginBottom: 2.5,
-                      backgroundColor: "#aaa",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      resizeMode: "cover",
-                    }}
-                  >
-                    <Ripple
-                      style={{
-                        height: "100%",
-                        width: "100%",
+                if (data.id === "camera") {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log(itincountries);
+                        console.log(item);
+                        // setmodalAlbum(true)
                       }}
-                    ></Ripple>
-                  </ImageBackground>
-                ) : null;
+                      style={{
+                        alignContent: "center",
+                        justifyContent: "center",
+                        backgroundColor: "#d0d0d0",
+                        alignItems: "center",
+                        width: tab2ItemSize,
+                        height: tab2ItemSize,
+                        marginRight: 2.5,
+                        marginBottom: 2.5,
+                      }}
+                    >
+                      <CameraIcon height={30} width={30} />
+                    </TouchableOpacity>
+                  );
+                } else {
+                  return data.is_posted !== true ? (
+                    <ImageBackground
+                      key={"posted" + data.id}
+                      source={
+                        data.assets ? { uri: data.assets } : default_image
+                      }
+                      defaultSource={default_image}
+                      style={{
+                        width: tab2ItemSize,
+                        height: tab2ItemSize,
+                        marginRight: 2.5,
+                        marginBottom: 2.5,
+                        backgroundColor: "#f6f6f6",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        resizeMode: "cover",
+                      }}
+                    >
+                      <Ripple
+                        style={{
+                          height: "100%",
+                          width: "100%",
+                        }}
+                      ></Ripple>
+                    </ImageBackground>
+                  ) : null;
+                }
               })
             ) : (
               <View>
@@ -2481,30 +2585,50 @@ export default function ItineraryDetail(props) {
         >
           {item.album.length > 0 ? (
             item.album.map((data, i) => {
-              return (
-                <ImageBackground
-                  key={"perday" + data.id}
-                  source={data.assets ? { uri: data.assets } : default_image}
-                  defaultSource={default_image}
-                  style={{
-                    width: tab2ItemSize,
-                    height: tab2ItemSize,
-                    marginRight: 2.5,
-                    marginBottom: 2.5,
-                    backgroundColor: "#aaa",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    resizeMode: "cover",
-                  }}
-                >
-                  <Ripple
+              if (data.id === "camera") {
+                return (
+                  <TouchableOpacity
+                    onPress={() => setmodalAlbum(true)}
                     style={{
-                      height: "100%",
-                      width: "100%",
+                      alignContent: "center",
+                      justifyContent: "center",
+                      backgroundColor: "#d0d0d0",
+                      alignItems: "center",
+                      width: tab2ItemSize,
+                      height: tab2ItemSize,
+                      marginRight: 2.5,
+                      marginBottom: 2.5,
                     }}
-                  ></Ripple>
-                </ImageBackground>
-              );
+                  >
+                    <CameraIcon height={30} width={30} />
+                  </TouchableOpacity>
+                );
+              } else {
+                return (
+                  <ImageBackground
+                    key={"perday" + data.id}
+                    source={data.assets ? { uri: data.assets } : default_image}
+                    defaultSource={default_image}
+                    style={{
+                      width: tab2ItemSize,
+                      height: tab2ItemSize,
+                      marginRight: 2.5,
+                      marginBottom: 2.5,
+                      backgroundColor: "#f6f6f6",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      resizeMode: "cover",
+                    }}
+                  >
+                    <Ripple
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    ></Ripple>
+                  </ImageBackground>
+                );
+              }
             })
           ) : (
             <View>
@@ -2524,7 +2648,7 @@ export default function ItineraryDetail(props) {
           borderRadius: 16,
           width: tab2ItemSize,
           height: tab2ItemSize,
-          backgroundColor: "#aaa",
+          backgroundColor: "#f6f6f6",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -2566,7 +2690,13 @@ export default function ItineraryDetail(props) {
   const spreadData = (rData) => {
     let result = [];
     rData.itinerary_album_list.day_album.map((dataS, index) => {
-      let tempdata = { posted: [], unposted: [], album: [], day: "", id: "" };
+      let tempdata = {
+        posted: [],
+        unposted: [{ id: "camera" }],
+        album: [{ id: "camera" }],
+        day: "",
+        id: "",
+      };
       tempdata["day"] = dataS.day;
       tempdata["id"] = dataS.id;
       if (dataS.album.length > 0) {
@@ -2918,7 +3048,10 @@ export default function ItineraryDetail(props) {
           keyExtractor={(item, index) => index.toString()}
           initialScrollIndex={0}
         />
-        {route.key === "tab1" && status === "edit" && Anggota === "true" ? (
+        {route.key === "tab1" &&
+        status === "edit" &&
+        Anggota === "true" &&
+        dataList.length > 0 ? (
           <Animated.View
             style={{
               zIndex: 99,
@@ -4322,6 +4455,61 @@ export default function ItineraryDetail(props) {
             </TouchableOpacity>
           </View>
         </Modal>
+
+        <Modal
+          onBackdropPress={() => {
+            setmodalAlbum(false);
+          }}
+          onRequestClose={() => setmodalAlbum(false)}
+          onDismiss={() => setmodalAlbum(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalAlbum}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              padding: 20,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setmodalAlbum(false), pickcameraAlbum();
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ color: "#d75995" }}
+              >
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                setmodalAlbum(false), pickGalleryAlbum();
+              }}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenGallery")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
         <Sidebar
           props={props}
           show={showside}
