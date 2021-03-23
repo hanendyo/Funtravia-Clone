@@ -83,6 +83,7 @@ import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
 import UploadfotoAlbum from "../../../graphQL/Mutation/Profile/Uploadfotoalbum";
+import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -235,7 +236,7 @@ export default function ItineraryDetail(props) {
     error: errorAlbum,
     refetch: GetAlbum,
   } = useQuery(album, {
-    // fetchPolicy: "network-only",
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -456,7 +457,7 @@ export default function ItineraryDetail(props) {
             throw new Error(response.data.upload_cover_itinerary.message);
           }
           // Alert.alert(t('success'));
-          _Refresh();
+          startRefreshAction();
           // props.navigation.goBack();
         }
         setloading(false);
@@ -520,7 +521,7 @@ export default function ItineraryDetail(props) {
         if (response.data.update_cover_itinerary.code !== 200) {
           throw new Error(response.data.update_cover_itinerary.message);
         } else {
-          _Refresh();
+          startRefreshAction();
         }
       }
       setloading(false);
@@ -557,39 +558,43 @@ export default function ItineraryDetail(props) {
 
   const pickcameraAlbum = async () => {
     ImagePicker.openCamera({
-      width: 600,
-      height: 400,
       cropping: true,
-      // freeStyleCropEnabled: true,
+      freeStyleCropEnabled: true,
       includeBase64: true,
+      compressImageMaxWidth: 1024,
+      compressImageMaxHeight: 1024,
+      // compressImageQuality: 0.7,
     }).then((image) => {
-      // uploadAlbum(image.data);
+      uploadAlbum(image.data);
     });
   };
 
   const pickGalleryAlbum = async () => {
     ImagePicker.openPicker({
-      width: 600,
-      height: 400,
       cropping: true,
-      // freeStyleCropEnabled: true,
+      freeStyleCropEnabled: true,
       includeBase64: true,
+      compressImageMaxWidth: 1024,
+      compressImageMaxHeight: 1024,
+      // compressImageQuality: 0.7,
     }).then((image) => {
-      // uploadAlbum(image.data);
+      uploadAlbum(image.data);
     });
   };
 
+  let [idupload, setidupload] = useState(null);
+
   const uploadAlbum = async (data) => {
-    setmodal(false);
-    setLoading(true);
+    setmodalAlbum(false);
+    setloading(true);
 
     if (data) {
       // console.log(tmpFile.base64);
       try {
         let response = await mutationUploadAlbum({
           variables: {
-            itinerary_id: iditinerary,
-            day_id: day_id,
+            itinerary_id: itincountries,
+            day_id: idupload,
             description: "0",
             assets: "data:image/jpeg;base64," + data,
           },
@@ -597,18 +602,21 @@ export default function ItineraryDetail(props) {
         if (errorupload) {
           throw new Error("Error Input");
         }
+        console.log(response);
+
         if (response.data) {
           if (response.data.uploadalbums.code !== 200) {
             throw new Error(response.data.uploadalbums.message);
           }
           // Alert.alert(t('success'));
-          onRefresh();
+          startRefreshAction();
+          loadasync();
           // props.navigation.goBack();
         }
-        setLoading(false);
+        setloading(false);
       } catch (error) {
         Alert.alert("" + error);
-        setLoading(false);
+        setloading(false);
       }
     }
   };
@@ -2475,6 +2483,9 @@ export default function ItineraryDetail(props) {
                         }}
                       >
                         <Ripple
+                          onPress={() => {
+                            setdataimage(item.posted, i);
+                          }}
                           style={{
                             height: "100%",
                             width: "100%",
@@ -2510,9 +2521,8 @@ export default function ItineraryDetail(props) {
                   return (
                     <TouchableOpacity
                       onPress={() => {
-                        console.log(itincountries);
-                        console.log(item);
-                        // setmodalAlbum(true)
+                        setidupload(item.id);
+                        setmodalAlbum(true);
                       }}
                       style={{
                         alignContent: "center",
@@ -2548,6 +2558,9 @@ export default function ItineraryDetail(props) {
                       }}
                     >
                       <Ripple
+                        onPress={() => {
+                          setdataimage(item.unposted, i - 1);
+                        }}
                         style={{
                           height: "100%",
                           width: "100%",
@@ -2588,7 +2601,10 @@ export default function ItineraryDetail(props) {
               if (data.id === "camera") {
                 return (
                   <TouchableOpacity
-                    onPress={() => setmodalAlbum(true)}
+                    onPress={() => {
+                      setidupload(item.id);
+                      setmodalAlbum(true);
+                    }}
                     style={{
                       alignContent: "center",
                       justifyContent: "center",
@@ -2621,6 +2637,9 @@ export default function ItineraryDetail(props) {
                     }}
                   >
                     <Ripple
+                      onPress={() => {
+                        setdataimage(item.album, i - 1);
+                      }}
                       style={{
                         height: "100%",
                         width: "100%",
@@ -2694,6 +2713,33 @@ export default function ItineraryDetail(props) {
         posted: [],
         unposted: [{ id: "camera" }],
         album: [{ id: "camera" }],
+        day: "",
+        id: "",
+      };
+      tempdata["day"] = dataS.day;
+      tempdata["id"] = dataS.id;
+      if (dataS.album.length > 0) {
+        dataS.album.map((item, ind) => {
+          if (item.is_posted === true) {
+            tempdata["posted"].push(item);
+          } else {
+            tempdata["unposted"].push(item);
+          }
+          tempdata["album"].push(item);
+        });
+      }
+      result.push(tempdata);
+    });
+    return result;
+  };
+
+  const spreadDatas = (rData) => {
+    let result = [];
+    rData.itinerary_album_list.day_album.map((dataS, index) => {
+      let tempdata = {
+        posted: [],
+        unposted: [],
+        album: [],
         day: "",
         id: "",
       };
@@ -3257,17 +3303,20 @@ export default function ItineraryDetail(props) {
     });
   };
 
-  const goToSelectPhoto = (album, dayaktif) => {
-    console.log(dayaktif.itinerary_id);
-    let dataAlbum =
-      album &&
-      album.itinerary_album_list &&
-      album.itinerary_album_list.day_album
-        ? album.itinerary_album_list.day_album
-        : null;
-    let index = dataAlbum.findIndex((k) => k["id"] === dayaktif.id);
-    let albumselected = dataAlbum[index];
-    props.navigation.navigate("ItineraryStack", {
+  const goToSelectPhoto = async (album, dayaktif) => {
+    let data = await spreadDatas(album);
+    // let dataAlbum =
+    //   album &&
+    //   album.itinerary_album_list &&
+    //   album.itinerary_album_list.day_album
+    //     ? album.itinerary_album_list.day_album
+    //     : null;
+    // let index = dataAlbum.findIndex((k) => k["id"] === dayaktif.id);
+    let index = data.findIndex((k) => k["id"] === dayaktif.id);
+    // let albumselected = dataAlbum[index];
+    let albumselected = data[index].unposted;
+    console.log(albumselected);
+    await props.navigation.navigate("ItineraryStack", {
       screen: "SelectAlbumsPost",
       params: {
         data_album: albumselected,
@@ -3696,8 +3745,39 @@ export default function ItineraryDetail(props) {
   // ============================== RRRR   EEEE  N     N DDD   EEEEE RRRR   ===============
   // ============================== R   R  E     N N   N D  D  E     R   R  ===============
   // ============================== RRRR   EEE   N  N  N D   D EEE   RRRR   ===============
-  // ============================== R   R  E     N   N N D  D  E     R   R  ===============
+  // ============================== render utama  ===============
   // ============================== RENDER DATA VIEW  ===============
+
+  let [indexs, setIndexs] = useState(0);
+  let [dataImage, setImage] = useState([]);
+  let [modalss, setModalss] = useState(false);
+  let judul = "";
+
+  const setdataimage = async (data, inde) => {
+    setIndexs(inde);
+    var tempdatas = [];
+    var x = 0;
+    for (var i in data) {
+      console.log(data[i]);
+      if (data[i].id !== "camera") {
+        // console.log(data.album[i].photoby.first_name);
+        tempdatas.push({
+          key: i,
+          selected: i === inde ? true : false,
+          url: data[i].assets ? data[i].assets : "",
+          width: Dimensions.get("screen").width,
+          height: Dimensions.get("screen").width,
+          props: {
+            source: data[i].assets ? data[i].assets : "",
+          },
+          by: data[i].photoby.first_name ? data[i].photoby.first_name : "",
+        });
+        x++;
+      }
+    }
+    await setImage(tempdatas);
+    await setModalss(true);
+  };
 
   if (loadingdetail) {
     return (
@@ -3725,6 +3805,17 @@ export default function ItineraryDetail(props) {
           {renderCustomRefresh()}
           {renderMenuBottom()}
         </MenuProvider>
+
+        <ImageSlide
+          index={indexs}
+          name="Funtravia Images"
+          location={judul}
+          // {...props}
+          show={modalss}
+          dataImage={dataImage}
+          setClose={() => setModalss(!modalss)}
+        />
+
         <Modal
           onBackdropPress={() => {
             setModalmenuday(false);
