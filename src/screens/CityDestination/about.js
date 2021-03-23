@@ -55,7 +55,7 @@ export default function about(props) {
     title: "About",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "About",
+    headerTitle: "Essentials - About",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -147,7 +147,7 @@ export default function about(props) {
     about = data.list_about_article_city;
   }
 
-  console.log("about", about);
+  console.log("idcity", props.route.params.city_id);
   // console.log("tab", routes);
 
   useEffect(() => {
@@ -230,10 +230,11 @@ export default function about(props) {
                       <View>
                         {i.title ? (
                           <Text
-                            size="label"
+                            size="readable"
                             type="bold"
                             style={{
                               marginBottom: 5,
+                              textAlign:"justify",
                             }}
                           >
                             {i.title}
@@ -254,11 +255,11 @@ export default function about(props) {
                           />
                         </View>
                         <Text
-                          size="description"
+                          size="readable"
                           type="regular"
                           style={{
                             textAlign: "justify",
-                            lineHeight: 21,
+                            lineHeight: 20,
                             color: "#464646",
                           }}
                         >
@@ -269,11 +270,11 @@ export default function about(props) {
                       <View>
                         {i.title ? (
                           <Text
-                            size="label"
+                            size="readable"
                             type="bold"
                             style={{
-                              marginBottom: 10,
-
+                              // marginBottom: 5,
+                              textAlign:"justify",
                               // marginVertical: 10,
 
                               color: "#464646",
@@ -283,13 +284,11 @@ export default function about(props) {
                           </Text>
                         ) : null}
                         <Text
-                          size="description"
+                          size="readable"
                           type="regular"
                           style={{
-                            lineHeight: 21,
+                            lineHeight: 20,
                             textAlign: "justify",
-                            // fontFamily: "Lato-Regular",
-                            // fontSize: 13,
                             color: "#464646",
                           }}
                         >
@@ -300,21 +299,21 @@ export default function about(props) {
                   </View>
                 );
               })
-            : null
-          //  (
-          //   <View style={{ alignItems: "center" }}>
-          //     <Text
-          //       type="regular"
-          //       size="title"
-          //       style={{
-          //         textAlign: "justify",
-          //         color: "#464646",
-          //       }}
-          //     >
-          //       {t("noArticle")}
-          //     </Text>
-          //   </View>
-          // )
+            : 
+           (
+            <View style={{ alignItems: "center" }}>
+              <Text
+                type="regular"
+                size="title"
+                style={{
+                  textAlign: "justify",
+                  color: "#464646",
+                }}
+              >
+                {t("noArticle")}
+              </Text>
+            </View>
+          )
         }
       </View>
     );
@@ -446,6 +445,7 @@ export default function about(props) {
       horizontal={true}
       style={{
         width:"100%",
+        backgroundColor:"#DAF0F2",
         
       }}
       // contentContainerStyle={{
@@ -483,6 +483,7 @@ export default function about(props) {
 
   const renderLabel =({route, focused})=>{
     return (
+      
       <View
       style={{
         borderBottomWidth:2,
@@ -493,21 +494,19 @@ export default function about(props) {
             
       }}
       >
-  
         <Text
           style={[
             focused ? styles.labelActive : styles.label,
-            { opacity: focused ? 1 : 0.7 },
+            { opacity: focused ? 1 : 0.7 ,height:33},
           ]}
         >
           {route.title}
         </Text>
-        
         </View>    
       );
   }
 
-  // console.log("indexawal", tabIndex)
+ 
   const renderTabView = () => {
     return (
       <TabView
@@ -535,30 +534,7 @@ export default function about(props) {
       }}
     >
       {renderTabView()}
-      {/* <ScrollView
-        nestedScrollEnabled={true}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[0]}
-        // scrol
-        style={
-          {
-            // marginTop: 10,
-            // borderWidth: 1,
-            // borderColor: 'red',
-            // paddingHorizontal: 20,
-          }
-        }
-        contentContainerStyle={
-          {
-            // paddingHorizontal: 20,
-          }
-        }
-      >
-        <RenderUtama aktif={actives} render={about} />
-
-        <Rendercontent active={actives} about={about} />
-      </ScrollView> */}
+   
     </SafeAreaView>
   );
 }
