@@ -197,7 +197,16 @@ export default function CityDetail(props) {
     }
   });
   
- 
+  const Goto = (item) => {
+    if (item.id) {
+      props.navigation.navigate("eventdetail", {
+        data: item,
+        name: item.name,
+        token: token,
+      });
+    }
+  };
+  
   const [
   getJournalCity,
     { loading: loadingjournal, data: dataJournal, error: errorjournal },
@@ -965,6 +974,7 @@ export default function CityDetail(props) {
                               props.navigation.navigate("Abouts", {
                                 active: item.id,
                                 city_id: render.id,
+                                indexcity : index,
                               });
                             }}
                             style={{
@@ -2269,6 +2279,11 @@ export default function CityDetail(props) {
       <ScrollView
       horizontal={true}
       showsHorizontalScrollIndicator={false}
+      style={{
+        backgroundColor: "white",
+        borderBottomColor:"#209FAE",
+        borderBottomWidth:1,
+      }}
 
       >
         <TabBar
