@@ -279,8 +279,8 @@ export default function DetailJournal(props) {
               >
                 <Thumbnail
                   style={{
-                    height: 35,
-                    width: 35,
+                    height: 40,
+                    width: 40,
                   }}
                   source={
                     data.journal_byid.userby
@@ -291,7 +291,7 @@ export default function DetailJournal(props) {
               </TouchableOpacity>
               <View style={{ marginLeft: 10 }}>
                 <Text
-                  size={"description"}
+                  size={"label"}
                   type={"bold"}
                   onPress={() => {
                     data.journal_byid.userby
@@ -364,7 +364,7 @@ export default function DetailJournal(props) {
           </View>
           <View style={{ marginHorizontal: 20 }}>
             <View>
-              <Text size={"title"} type={"bold"} style={{ lineHeight: 22 }}>
+              <Text type={"bold"} style={{ lineHeight: 26, fontSize: 20 }}>
                 {data.journal_byid ? data.journal_byid.title : "Title"}
               </Text>
             </View>
@@ -376,13 +376,17 @@ export default function DetailJournal(props) {
                 }}
               >
                 {data && data.journal_byid && data.journal_byid.created_at ? (
-                  <Text size={"small"} type={"regular"}>
+                  <Text size={"description"} type={"regular"}>
                     {duration(data.journal_byid.created_at)}
                   </Text>
                 ) : null}
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <LikeEmpty width={10} height={10} />
-                  <Text size={"small"} type={"bold"} style={{ marginLeft: 5 }}>
+                  <Text
+                    size={"description"}
+                    type={"bold"}
+                    style={{ marginLeft: 5 }}
+                  >
                     {data.journal_byid &&
                     data.journal_byid.article_response_count > 1
                       ? data.journal_byid.article_response_count +
@@ -425,7 +429,7 @@ export default function DetailJournal(props) {
                           }}
                         >
                           <Text
-                            size={"label"}
+                            size={"title"}
                             type={"bold"}
                             style={{ textAlign: "justify", lineHeight: 20 }}
                           >
@@ -444,7 +448,7 @@ export default function DetailJournal(props) {
                           <Text
                             size="readable"
                             type="regular"
-                            style={{ textAlign: "justify", lineHeight: 18 }}
+                            style={{ textAlign: "left", lineHeight: 20 }}
                           >
                             {item.text ? item.text : null}
                           </Text>
@@ -473,7 +477,7 @@ export default function DetailJournal(props) {
                             <Text
                               size="readable"
                               type="regular"
-                              style={{ textAlign: "justify", lineHeight: 18 }}
+                              style={{ textAlign: "left", lineHeight: 20 }}
                             >
                               {item.text ? item.text : null}
                             </Text>
