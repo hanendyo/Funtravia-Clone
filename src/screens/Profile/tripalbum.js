@@ -145,8 +145,8 @@ export default function tripalbum(props) {
 
   const pickcamera = async () => {
     ImagePicker.openCamera({
-      // width: 500,
-      // height: 500,
+      compressImageMaxWidth: 1024,
+      compressImageMaxHeight: 1024,
       cropping: true,
       freeStyleCropEnabled: true,
       includeBase64: true,
@@ -156,8 +156,8 @@ export default function tripalbum(props) {
   };
   const pickGallery = async () => {
     ImagePicker.openPicker({
-      // width: 500,
-      // height: 500,
+      compressImageMaxWidth: 1024,
+      compressImageMaxHeight: 1024,
       cropping: true,
       freeStyleCropEnabled: true,
       includeBase64: true,
