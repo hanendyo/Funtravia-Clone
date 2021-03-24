@@ -192,6 +192,10 @@ import Tag from "./files/tag.svg";
 import Taggreen from "./files/tag2.svg";
 import Reorder from "./files/reorder.svg";
 import DisketWhite from "./files/disketwhite.svg";
+import UnescoIcon from "./files/unesco_icon.svg";
+import MovieIcon from "./files/movie_icon.svg";
+import Clock from "./files/clock.svg";
+import Globe from "./files/globe.svg";
 
 export {
   LikeWhite,
@@ -388,4 +392,8 @@ export {
   Taggreen,
   Reorder,
   DisketWhite,
+  UnescoIcon,
+  MovieIcon,
+  Clock,
+  Globe,
 };

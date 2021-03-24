@@ -27,6 +27,8 @@ import Notification from "../screens/Notification";
 import TravelGoal from "../screens/TravelGoal/Index";
 import TravelGoalDetail from "../screens/TravelGoal/TravelGoalDetail";
 import DestinationMaps from "../screens/Maps";
+// import DestinationStackNavigation from "./StackItems/DestinationStackNavigation";
+import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew/index";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeStatus }) {
@@ -160,6 +162,17 @@ export default function MainStackNavigator({ authorizeStatus }) {
           component={detailStack}
           options={{ headerShown: false }}
         />
+
+        {/* <Tab.Screen
+          name="DestinationStackNavigation"
+          component={DestinationStackNavigation}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "white",
+          }}
+        /> */}
+
         <Tab.Screen
           name="Notification"
           component={Notification}
@@ -294,6 +307,15 @@ export default function MainStackNavigator({ authorizeStatus }) {
             headerBackTitleVisible: false,
             headerTintColor: "#FFF",
             headerStyle: { backgroundColor: "#209FAE" },
+          }}
+        />
+        <Tab.Screen
+          name="DestinationUnescoDetail"
+          component={DestinationUnescoDetail}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
           }}
         />
       </Tab.Navigator>
