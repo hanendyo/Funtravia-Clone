@@ -91,7 +91,7 @@ export default function Trip(props) {
   let [selected, setSelected] = useState(new Map());
   let [startDate, setStartDate] = useState(null);
   let [endDate, setEndDate] = useState(null);
-  let [duration, setDuration] = useState(0);
+  let [duration, setDuration] = useState(1);
   let [privateToggle, setPrivateToggle] = useState(true);
   let [publicToggle, setPublicToggle] = useState(false);
   let [minimum, setMinimum] = useState("");
@@ -967,6 +967,7 @@ export default function Trip(props) {
                       style={{
                         fontFamily: "Lato-Regular",
                         fontSize: 14,
+                        color: "#464646",
                       }}
                     >
                       {t("StartDate")}
@@ -994,7 +995,50 @@ export default function Trip(props) {
                     onPress={() => setModal(true)}
                   ></TouchableOpacity>
                 </View>
-                <View style={{ width: "40%" }}>
+
+                <View
+                  style={{
+                    width: "40%",
+                    height: 70,
+                    paddingTop: 5,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={
+                      {
+                        // color: 'E4E4E4',
+                      }
+                    }
+                  >
+                    {t("duration")}
+                  </Text>
+                  <TouchableOpacity>
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={
+                        {
+                          // color: duration > 0 ? "#464646" : "#E4E4E4",
+                        }
+                      }
+                    >
+                      {duration} {t("day")}
+                    </Text>
+                    <Text
+                      size="description"
+                      style={{
+                        color: "#d3d3d3",
+                      }}
+                    >
+                      Max. 30 days
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* <View style={{ width: "40%" }}>
                   <Item
                     floatingLabel
                     style={{
@@ -1031,59 +1075,35 @@ export default function Trip(props) {
                     }}
                     onPress={() => (startDate ? setModalEnd(true) : null)}
                   ></TouchableOpacity>
-                </View>
+                </View> */}
               </View>
-
-              <DropDownPicker
-                items={dataCategories}
-                defaultValue={null}
-                containerStyle={{ height: 40 }}
-                style={{ backgroundColor: "#fafafa" }}
-                itemStyle={{
-                  justifyContent: "flex-start",
-                }}
-                showArrow={false}
-                dropDownStyle={{ backgroundColor: "#fafafa" }}
-                placeholder="Pilih Kategori"
-                // multiple={true}
-                // multipleText="%d items have been selected."
-                // min={0}
-                // max={2}
-                // onChangeItem={item => this.setState({
-                //     country: item.value
-                // })}
-              />
-
               <View
                 style={{
-                  marginVertical: 15,
-                  width: "100%",
-                  flexDirection: "row",
-                  alignContent: "center",
-                  justifyContent: "space-between",
+                  marginTop: 10,
                 }}
               >
-                <Text
-                  size="description"
-                  type="regular"
-                  style={
-                    {
-                      // color: 'E4E4E4',
-                    }
-                  }
-                >
-                  {t("duration")}
-                </Text>
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    color: duration > 0 ? "#464646" : "#E4E4E4",
+                <DropDownPicker
+                  items={dataCategories}
+                  defaultValue={null}
+                  containerStyle={{ height: 40 }}
+                  style={{ backgroundColor: "#fafafa" }}
+                  itemStyle={{
+                    justifyContent: "flex-start",
                   }}
-                >
-                  {duration} {t("day")}
-                </Text>
+                  showArrow={false}
+                  dropDownStyle={{ backgroundColor: "#fafafa", height: 100 }}
+                  placeholder="Pilih Kategori"
+                  // multiple={true}
+                  // multipleText="%d items have been selected."
+                  // min={0}
+                  // max={2}
+                  // onChangeItem={item => this.setState({
+                  //     country: item.value
+                  // })}
+                />
               </View>
+
+              {/*               
               <View style={[styles.halfContainer, { marginVertical: 10 }]}>
                 <Button
                   color={privateToggle ? "secondary" : "tertiary"}
@@ -1099,7 +1119,7 @@ export default function Trip(props) {
                   text="Public"
                   style={{ width: "49%" }}
                 />
-              </View>
+              </View> */}
 
               <View
                 style={{

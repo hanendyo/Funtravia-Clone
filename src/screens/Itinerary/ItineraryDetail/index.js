@@ -2500,10 +2500,11 @@ export default function ItineraryDetail(props) {
                   </View>
                 )}
               </View>
-
-              <Text type="bold" style={{ paddingVertical: 10 }}>
-                Unposted on Fun Feed
-              </Text>
+              {Anggota === "true" ? (
+                <Text type="bold" style={{ paddingVertical: 10 }}>
+                  Unposted on Fun Feed
+                </Text>
+              ) : null}
             </>
           ) : null}
 
@@ -2515,66 +2516,68 @@ export default function ItineraryDetail(props) {
               paddingBottom: 10,
             }}
           >
-            {item.unposted.length > 0 ? (
-              item.unposted.map((data, i) => {
-                if (data.id === "camera") {
-                  return (
-                    <TouchableOpacity
-                      onPress={() => {
-                        setidupload(item.id);
-                        setmodalAlbum(true);
-                      }}
-                      style={{
-                        alignContent: "center",
-                        justifyContent: "center",
-                        backgroundColor: "#d0d0d0",
-                        alignItems: "center",
-                        width: tab2ItemSize,
-                        height: tab2ItemSize,
-                        marginRight: 2.5,
-                        marginBottom: 2.5,
-                      }}
-                    >
-                      <CameraIcon height={30} width={30} />
-                    </TouchableOpacity>
-                  );
-                } else {
-                  return data.is_posted !== true ? (
-                    <ImageBackground
-                      key={"posted" + data.id}
-                      source={
-                        data.assets ? { uri: data.assets } : default_image
-                      }
-                      defaultSource={default_image}
-                      style={{
-                        width: tab2ItemSize,
-                        height: tab2ItemSize,
-                        marginRight: 2.5,
-                        marginBottom: 2.5,
-                        backgroundColor: "#f6f6f6",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        resizeMode: "cover",
-                      }}
-                    >
-                      <Ripple
+            {Anggota === "true" ? (
+              item.unposted.length - 1 > 0 ? (
+                item.unposted.map((data, i) => {
+                  if (data.id === "camera") {
+                    return (
+                      <TouchableOpacity
                         onPress={() => {
-                          setdataimage(item.unposted, i - 1);
+                          setidupload(item.id);
+                          setmodalAlbum(true);
                         }}
                         style={{
-                          height: "100%",
-                          width: "100%",
+                          alignContent: "center",
+                          justifyContent: "center",
+                          backgroundColor: "#d0d0d0",
+                          alignItems: "center",
+                          width: tab2ItemSize,
+                          height: tab2ItemSize,
+                          marginRight: 2.5,
+                          marginBottom: 2.5,
                         }}
-                      ></Ripple>
-                    </ImageBackground>
-                  ) : null;
-                }
-              })
-            ) : (
-              <View>
-                <Text>Kosong</Text>
-              </View>
-            )}
+                      >
+                        <CameraIcon height={30} width={30} />
+                      </TouchableOpacity>
+                    );
+                  } else {
+                    return data.is_posted !== true ? (
+                      <ImageBackground
+                        key={"posted" + data.id}
+                        source={
+                          data.assets ? { uri: data.assets } : default_image
+                        }
+                        defaultSource={default_image}
+                        style={{
+                          width: tab2ItemSize,
+                          height: tab2ItemSize,
+                          marginRight: 2.5,
+                          marginBottom: 2.5,
+                          backgroundColor: "#f6f6f6",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          resizeMode: "cover",
+                        }}
+                      >
+                        <Ripple
+                          onPress={() => {
+                            setdataimage(item.unposted, i - 1);
+                          }}
+                          style={{
+                            height: "100%",
+                            width: "100%",
+                          }}
+                        ></Ripple>
+                      </ImageBackground>
+                    ) : null;
+                  }
+                })
+              ) : (
+                <View>
+                  <Text>Kosong</Text>
+                </View>
+              )
+            ) : null}
           </View>
         </View>
       ) : null
@@ -2596,29 +2599,33 @@ export default function ItineraryDetail(props) {
             paddingBottom: 10,
           }}
         >
-          {item.album.length > 0 ? (
+          {item.album.length - 1 > 0 ? (
             item.album.map((data, i) => {
               if (data.id === "camera") {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setidupload(item.id);
-                      setmodalAlbum(true);
-                    }}
-                    style={{
-                      alignContent: "center",
-                      justifyContent: "center",
-                      backgroundColor: "#d0d0d0",
-                      alignItems: "center",
-                      width: tab2ItemSize,
-                      height: tab2ItemSize,
-                      marginRight: 2.5,
-                      marginBottom: 2.5,
-                    }}
-                  >
-                    <CameraIcon height={30} width={30} />
-                  </TouchableOpacity>
-                );
+                if (Anggota == "true") {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setidupload(item.id);
+                        setmodalAlbum(true);
+                      }}
+                      style={{
+                        alignContent: "center",
+                        justifyContent: "center",
+                        backgroundColor: "#d0d0d0",
+                        alignItems: "center",
+                        width: tab2ItemSize,
+                        height: tab2ItemSize,
+                        marginRight: 2.5,
+                        marginBottom: 2.5,
+                      }}
+                    >
+                      <CameraIcon height={30} width={30} />
+                    </TouchableOpacity>
+                  );
+                } else {
+                  return null;
+                }
               } else {
                 return (
                   <ImageBackground
@@ -3760,13 +3767,19 @@ export default function ItineraryDetail(props) {
     for (var i in data) {
       console.log(data[i]);
       if (data[i].id !== "camera") {
-        // console.log(data.album[i].photoby.first_name);
+        let wid = 0;
+        let hig = 0;
+        Image.getSize(data[i].assets, (width, height) => {
+          wid = width;
+          hig = height;
+        });
+
         tempdatas.push({
           key: i,
           selected: i === inde ? true : false,
           url: data[i].assets ? data[i].assets : "",
-          width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").width,
+          width: wid,
+          height: hig,
           props: {
             source: data[i].assets ? data[i].assets : "",
           },
