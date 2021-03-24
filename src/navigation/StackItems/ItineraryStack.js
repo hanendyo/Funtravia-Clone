@@ -17,6 +17,7 @@ import ItineraryPlaning from "../../screens/Itinerary/ItineraryPlaning/index";
 import ItineraryCategory from "../../screens/Itinerary/ItineraryCategory/ItineraryCategory";
 import ReorderDetail from "../../screens/Itinerary/ReorderDetail";
 import PostItineraryAlbum from "../../screens/Itinerary/PostItineraryAlbum";
+import CraetePostAlbum from "../../screens/Itinerary/PostItineraryAlbum/CraetePostAlbum";
 
 const ItineraryStack = createStackNavigator();
 export default function ItineraryStackNavigation() {
@@ -165,6 +166,15 @@ export default function ItineraryStackNavigation() {
       <ItineraryStack.Screen
         name="SelectAlbumsPost"
         component={PostItineraryAlbum}
+        options={{
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ItineraryStack.Screen
+        name="CraetePostAlbum"
+        component={CraetePostAlbum}
         options={{
           headerTransparent: false,
           headerTintColor: "white",

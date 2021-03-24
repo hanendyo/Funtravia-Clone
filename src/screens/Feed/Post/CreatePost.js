@@ -143,7 +143,12 @@ export default function CreatePost(props) {
       if (response.data) {
         if (response.data.create_post.code === 200) {
           setLoading(false);
-          props.navigation.navigate("FeedScreen", { isposting: true });
+          props.navigation.navigate("BottomStack", {
+            screen: "FeedScreen",
+            params: {
+              isposting: true,
+            },
+          });
         } else {
           setLoading(false);
           throw new Error(response.data.create_post.message);

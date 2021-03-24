@@ -13,13 +13,15 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Text, Button, StatusBar } from "../../../component";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("screen");
 
 export default function PostItineraryAlbum(props) {
+  const { t } = useTranslation();
   const [dataalbums, setAllalbum] = useState(props.route.params.data_album);
+  const [selectedPhoto, setSelectedPhoto] = useState([]);
   let itinerary_id = props.route.params.itinerary_id;
-  // console.log(dataalbums.album);
   const HeaderComponent = {
     title: "Select Photos",
     headerTintColor: "white",
@@ -38,13 +40,164 @@ export default function PostItineraryAlbum(props) {
       color: "white",
     },
   };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, [props.navigation]);
 
+  const selectPhoto = (data) => {
+    let slcphoto = [...selectedPhoto];
+    let index = slcphoto.findIndex((k) => k["id"] === data.id);
+    if (index !== -1) {
+      slcphoto.splice(index, 1);
+      setSelectedPhoto(slcphoto);
+    } else {
+      slcphoto.push({ id: data.id, assets: data.assets });
+      setSelectedPhoto(slcphoto);
+    }
+    props.navigation.setOptions({
+      headerRight: () => (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 20,
+          }}
+        >
+          {slcphoto.length > 0 ? (
+            <Text
+              style={{
+                color: "white",
+              }}
+            >
+              {slcphoto.length}/{dataalbums.album.length} {t("photosSelected")}
+            </Text>
+          ) : null}
+        </View>
+      ),
+    });
+  };
+
+  const gotoCreatePost = (data) => {
+    props.navigation.navigate("ItineraryStack", {
+      screen: "CraetePostAlbum",
+      params: {
+        selectedPhoto: data,
+        itinerary_id: itinerary_id,
+        day_id: dataalbums.id,
+      },
+    });
+  };
+
   return (
-    <View>
-      <Text>Feed Album</Text>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      <FlatList
+        contentContainerStyle={{
+          flex: 1,
+        }}
+        style={{
+          paddingStart: 0,
+          alignContent: "center",
+          // backgroundColor: "white",
+        }}
+        data={dataalbums.album}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            style={{
+              alignContent: "center",
+              justifyContent: "center",
+              backgroundColor: "white",
+              alignItems: "center",
+              paddingVertical: 1,
+              paddingHorizontal: 1,
+            }}
+            onPress={() => selectPhoto(item)}
+          >
+            <Image
+              source={{ uri: item.assets }}
+              style={{
+                height: Dimensions.get("screen").width / 4 - 2,
+                width: Dimensions.get("screen").width / 4 - 2,
+                resizeMode: "cover",
+              }}
+            />
+            {selectedPhoto.findIndex((k) => k["id"] === item.id) !== -1 ? (
+              <View
+                style={{
+                  width: 25,
+                  height: 25,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 5,
+                  backgroundColor: "#209fae",
+                  borderWidth: 1.5,
+                  borderRadius: 13,
+                  borderColor: "white",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  paddingBottom: 1,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="label"
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  {selectedPhoto.findIndex((k) => k["id"] === item.id) + 1}
+                </Text>
+              </View>
+            ) : (
+              <View
+                style={{
+                  width: 25,
+                  height: 25,
+                  position: "absolute",
+                  bottom: 5,
+                  right: 5,
+                  borderWidth: 2,
+                  borderRadius: 13,
+                  borderColor: "white",
+                }}
+              />
+            )}
+          </TouchableOpacity>
+        )}
+        numColumns={4}
+      />
+      {selectedPhoto.length > 0 ? (
+        <View
+          style={{
+            alignItems: "center",
+            padding: 20,
+            backgroundColor: "white",
+            shadowColor: "#464646",
+            shadowOffset: { width: 0, height: 2 },
+            elevation: 3,
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          }}
+        >
+          <Button
+            onPress={() => {
+              gotoCreatePost(selectedPhoto);
+            }}
+            size="large"
+            text={t("next")}
+            style={{
+              width: width - 40,
+            }}
+          ></Button>
+        </View>
+      ) : null}
     </View>
   );
 }
