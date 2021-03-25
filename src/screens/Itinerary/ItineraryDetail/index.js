@@ -84,6 +84,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
 import UploadfotoAlbum from "../../../graphQL/Mutation/Profile/Uploadfotoalbum";
 import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
+import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
+import { StackActions } from "@react-navigation/routers";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -251,20 +253,54 @@ export default function ItineraryDetail(props) {
     await GetTimelin();
   };
 
-  // const {
-  //   data: datatimeline,
-  //   loading: loadingtimeline,
-  //   error: errortimeline,
-  //   refetch: GetTimelin,
-  // } = useQuery(Timeline, {
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  //   variables: { id: idDay },
-  // });
+  const [
+    mutationdeleteItinerary,
+    { loading: loadingdelete, data: datadelete, error: errordelete },
+  ] = useMutation(Deleteitinerary, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _handlehapus = async (id) => {
+    setloading(true);
+    try {
+      let response = await mutationdeleteItinerary({
+        variables: {
+          id: id,
+        },
+      });
+      if (errordelete) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.delete_itinerary.code !== 200) {
+          throw new Error(response.data.delete_itinerary.message);
+        }
+
+        props.navigation.dispatch(
+          StackActions.replace("BottomStack", {
+            screen: "TripPlaning",
+            params: {
+              index: status === "saved" ? 1 : 0,
+            },
+          })
+        );
+
+        // props.navigation.push("TripPlaning", {
+        // 	index: status === "saved" ? 1 : 0,
+        // });
+      }
+
+      setloading(false);
+    } catch (error) {
+      setloading(false);
+      Alert.alert("" + error);
+    }
+  };
 
   const [
     GetTimelin,
@@ -3310,7 +3346,6 @@ export default function ItineraryDetail(props) {
     });
   };
 
-<<<<<<< Updated upstream
   const goToSelectPhoto = async (album, dayaktif) => {
     let data = await spreadDatas(album);
     // let dataAlbum =
@@ -3325,18 +3360,6 @@ export default function ItineraryDetail(props) {
     let albumselected = data[index].unposted;
     console.log(albumselected);
     await props.navigation.navigate("ItineraryStack", {
-=======
-  const goToSelectPhoto = (album, dayaktif) => {
-    let dataAlbum =
-      album &&
-      album.itinerary_album_list &&
-      album.itinerary_album_list.day_album
-        ? album.itinerary_album_list.day_album
-        : null;
-    let index = dataAlbum.findIndex((k) => k["id"] === dayaktif.id);
-    let albumselected = dataAlbum[index];
-    props.navigation.navigate("ItineraryStack", {
->>>>>>> Stashed changes
       screen: "SelectAlbumsPost",
       params: {
         data_album: albumselected,

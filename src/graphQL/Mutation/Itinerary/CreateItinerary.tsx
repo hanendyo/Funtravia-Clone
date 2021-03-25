@@ -8,7 +8,7 @@ const CreateItinerary = gql`
     $end_date: String!
     $isprivate: Boolean!
     $itinerary_buddy: [ID]!
-    $category_id: String
+    $category_id: ID
   ) {
     create_itinerary(
       input: {

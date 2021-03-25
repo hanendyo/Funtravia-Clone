@@ -1,5 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Xblue, Xgray, Arrowbackwhite, Xhitam } from "../../../assets/svg";
+import {
+  Xblue,
+  Xgray,
+  Arrowbackwhite,
+  Xhitam,
+  Bottom,
+} from "../../../assets/svg";
 import {
   Dimensions,
   Platform,
@@ -12,6 +18,7 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
+  Picker,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -29,6 +36,7 @@ import { Truncate, Loading, Button, Text } from "../../../component";
 import { useTranslation } from "react-i18next";
 import DropDownPicker from "react-native-dropdown-picker";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
+import { StackActions } from "@react-navigation/routers";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
@@ -97,6 +105,40 @@ export default function Trip(props) {
   let [minimum, setMinimum] = useState("");
   let [token, setToken] = useState("");
   let [dataCategories, setdataCategories] = useState([]);
+  let [category_id, setcategory_id] = useState(null);
+
+  const jam = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+  ];
 
   const [
     getkategori,
@@ -117,10 +159,8 @@ export default function Trip(props) {
         });
       }
       setdataCategories(tempdata);
-      console.log("masuk paji");
     },
   });
-  console.log("luar", dataCategories);
 
   const [mutation, { loading, data, error }] = useMutation(CreateItinerary, {
     context: {
@@ -176,7 +216,7 @@ export default function Trip(props) {
       query();
       querywith();
       getkategori();
-      //   querycity();
+      querycity();
     } else {
       setToken("");
     }
@@ -212,10 +252,11 @@ export default function Trip(props) {
           countries_id: idCountry,
           cities_id: idCity,
           name: title,
-          start_date: startDate,
+          start_date: new Date(startDate),
           end_date: endDate,
           isprivate: privateToggle,
           itinerary_buddy: idwithSelected,
+          category_id: category_id,
         },
       });
       if (loading) {
@@ -228,16 +269,17 @@ export default function Trip(props) {
         if (response.data.create_itinerary.code !== 200) {
           throw new Error(response.data.create_itinerary.message);
         }
-        // console.log(response);
-        props.navigation.navigate("ItineraryStack", {
-          screen: "itindetail",
-          params: {
-            itintitle: title,
-            country: response.data.create_itinerary.id,
-            dateitin: dateFormats(startDate) + " - " + dateFormats(endDate),
-            token: token,
-          },
-        });
+        props.navigation.dispatch(
+          StackActions.replace("ItineraryStack", {
+            screen: "itindetail",
+            params: {
+              itintitle: title,
+              country: response.data.create_itinerary.id,
+              dateitin: dateFormats(startDate) + " - " + dateFormats(endDate),
+              token: token,
+            },
+          })
+        );
       }
       setLoadingApp(false);
     } catch (error) {
@@ -307,6 +349,7 @@ export default function Trip(props) {
 
   const setstart = async (x) => {
     await setStartDate(x);
+    await setEndDate(new Date(x));
     await setMinimum(x);
     await setModal(false);
     {
@@ -381,6 +424,9 @@ export default function Trip(props) {
       setLoadingApp(false);
     } else if (!endDate) {
       Alert.alert("End Date is not valid!");
+      setLoadingApp(false);
+    } else if (!category_id) {
+      Alert.alert("Category is not valid!");
       setLoadingApp(false);
     } else {
       Create();
@@ -885,6 +931,7 @@ export default function Trip(props) {
               <Modal
                 onRequestClose={() => setModalEnd(false)}
                 onBackdropPress={() => setModalEnd(false)}
+                onSwipeComplete={() => setModalEnd(false)}
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={modalEnd}
@@ -900,24 +947,82 @@ export default function Trip(props) {
               >
                 <View
                   style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center",
+                    width: Dimensions.get("screen").width - 20,
+                    backgroundColor: "white",
+                    marginBottom: 70,
+                    paddingTop: 60,
+                    paddingHorizontal: 20,
+                    paddingBottom: 30,
                     alignContent: "center",
-                    width: Dimensions.get("screen").width - 40,
-                    // height: Dimensions.get('screen').width - 40,
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
+                    alignItems: "center",
                   }}
                 >
-                  {/* <TouchableOpacity
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      top: 20,
+                      left: 20,
+                    }}
+                    onPress={() => setModalEnd(false)}
+                  >
+                    <Xhitam width={15} height={15} />
+                  </TouchableOpacity>
+                  <Text size="description" type="bold" style={{}}>
+                    {t("duration")}
+                  </Text>
+                  <View
+                    style={{
+                      width: "100%",
+                      // borderWidth: 1,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View style={{ width: "50%" }}>
+                      <Picker
+                        iosIcon={
+                          <View>
+                            <Bottom />
+                          </View>
+                        }
+                        iosHeader="Select Hours"
+                        note
+                        mode="dropdown"
+                        selectedValue={duration}
+                        textStyle={{ fontFamily: "Lato-Regular" }}
+                        itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                        itemStyle={{ fontFamily: "Lato-Regular" }}
+                        placeholderStyle={{ fontFamily: "Lato-Regular" }}
+                        headerTitleStyle={{
+                          fontFamily: "Lato-Regular",
+                        }}
+                        style={{
+                          color: "#209fae",
+                          fontFamily: "Lato-Regular",
+                        }}
+                        onValueChange={(itemValue, itemIndex) => {
+                          let dat = new Date(startDate);
+                          dat.setDate(dat.getDate() + itemValue);
+                          setEndDate(dat);
+                          setDuration(itemValue);
+                        }}
+                      >
+                        {jam.map((item, index) => {
+                          return (
+                            <Picker.Item
+                              key={""}
+                              label={item + " " + t("days")}
+                              value={item}
+                            />
+                          );
+                        })}
+                      </Picker>
+                    </View>
+                  </View>
+                </View>
+                {/* <TouchableOpacity
 										style={{
 											alignSelf: 'flex-end',
 											height: 30,
@@ -930,7 +1035,7 @@ export default function Trip(props) {
 										onPress={() => setModalEnd(false)}>
 										<Xgray height={20} width={20} />
 									</TouchableOpacity> */}
-                  <DatePicker
+                {/* <DatePicker
                     options={{}}
                     current={endDate ? endDate : minimum}
                     selected={endDate ? endDate : minimum}
@@ -939,8 +1044,7 @@ export default function Trip(props) {
                     mode="calendar"
                     minuteInterval={30}
                     style={{ borderRadius: 10 }}
-                  />
-                </View>
+                  /> */}
               </Modal>
 
               <View
@@ -1015,7 +1119,9 @@ export default function Trip(props) {
                   >
                     {t("duration")}
                   </Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => (startDate ? setModalEnd(true) : null)}
+                  >
                     <Text
                       size="label"
                       type="regular"
@@ -1025,7 +1131,7 @@ export default function Trip(props) {
                         }
                       }
                     >
-                      {duration} {t("day")}
+                      {duration} {t("days")}
                     </Text>
                     <Text
                       size="description"
@@ -1033,7 +1139,7 @@ export default function Trip(props) {
                         color: "#d3d3d3",
                       }}
                     >
-                      Max. 30 days
+                      Max. 30 {t("days")}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -1097,9 +1203,7 @@ export default function Trip(props) {
                   // multipleText="%d items have been selected."
                   // min={0}
                   // max={2}
-                  // onChangeItem={item => this.setState({
-                  //     country: item.value
-                  // })}
+                  onChangeItem={(item) => setcategory_id(item.value)}
                 />
               </View>
 
