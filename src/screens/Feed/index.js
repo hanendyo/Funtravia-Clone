@@ -300,7 +300,6 @@ export default function Feed(props) {
       image_post,
       username,
     });
-    // console.log(id_post);
   };
 
   const [selected, setSelected] = useState(new Map());

@@ -196,6 +196,7 @@ import UnescoIcon from "./files/unesco_icon.svg";
 import MovieIcon from "./files/movie_icon.svg";
 import Clock from "./files/clock.svg";
 import Globe from "./files/globe.svg";
+import AllPostWhite from "./files/AllPostWhite.svg";
 
 export {
   LikeWhite,
@@ -396,4 +397,5 @@ export {
   MovieIcon,
   Clock,
   Globe,
+  AllPostWhite,
 };

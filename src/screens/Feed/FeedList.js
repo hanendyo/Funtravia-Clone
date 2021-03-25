@@ -8,7 +8,9 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
-  // Image,
+  Image as ImageRN,
+  ImageBackground,
+  Pressable,
 } from "react-native";
 // import { OptimizedFlatList as FlatList } from "react-native-optimized-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,6 +27,7 @@ import {
   More,
   LikeBlack,
   CommentBlack,
+  allPostWhite,
 } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import { gql } from "apollo-boost";
@@ -39,6 +42,8 @@ import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import ReadMore from "react-native-read-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
+import RenderAlbum from "./RenderAlbumItinerary";
+import RenderSinglePhoto from "./RenderSinglePhoto";
 const deletepost = gql`
   mutation($post_id: ID!) {
     delete_post(post_id: $post_id) {
@@ -221,7 +226,7 @@ export default function FeedList({ props, token }) {
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
     feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
-  // console.log(feed_post_pageing);
+  console.log(feed_post_pageing);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -357,6 +362,19 @@ export default function FeedList({ props, token }) {
     loadAsync();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", (data) => {
+      console.log(props);
+      // if (
+      //   props.route.params.isposting &&
+      //   props.route.params.isposting == true
+      // ) {
+      //   Refresh();
+      // }
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   let [liked, setLiked] = useState(false);
 
   const createPost = () => {
@@ -413,6 +431,21 @@ export default function FeedList({ props, token }) {
         Read Less
       </Text>
     );
+  };
+
+  const goToItinerary = (data) => {
+    props.navigation.push("ItineraryStack", {
+      screen: "itindetail",
+      params: {
+        itintitle: data.itinerary.name,
+        country: data.itinerary.id,
+        dateitin: "",
+        token: token,
+        status: "",
+        index: 1,
+        datadayaktif: data.day,
+      },
+    });
   };
 
   return (
@@ -632,18 +665,6 @@ export default function FeedList({ props, token }) {
         ref={ref}
         data={feed_post_pageing}
         renderItem={({ item, index }) => (
-          // <Image
-          //   source={{ uri: item.assets[0].filepath }}
-          //   style={{
-          //     height: (width) -15,
-          //     width: (width) -20,
-          //     borderRadius: 5,
-          //     margin: 2,
-          //     alignSelf: "center",
-          //     resizeMode: "cover",
-          //   }}
-          // />
-          // return (
           <View
             style={{
               width: Dimensions.get("window").width - 20,
@@ -780,35 +801,20 @@ export default function FeedList({ props, token }) {
                 marginHorizontal: 10,
                 alignContent: "center",
                 justifyContent: "center",
-                alignItems: "center",
+                // alignItems: "center",
                 width: Dimensions.get("window").width - 40,
                 // height: Dimensions.get("window").width - 40,
                 minHeight: Dimensions.get("window").width - 155,
-                borderWidth: 0.5,
+                // borderWidth: 0.5,
                 borderColor: "#EEEEEE",
                 borderRadius: 15,
               }}
             >
-              <Image
-                style={{
-                  width: Dimensions.get("window").width - 40,
-                  borderRadius: 15,
-                  alignSelf: "center",
-                  // height: Dimensions.get("window").width - 40,
-                }}
-                uri={item.assets[0].filepath}
-              />
-              {/* <Image
-                style={{
-                  // width: Dimensions.get("window").width - 40,
-                  // height: Dimensions.get("window").width - 40,
-                  borderRadius: 15,
-                  alignSelf: "center",
-                }}
-                width={Dimensions.get("window").width - 40}
-                source={{ uri: item.assets[0].filepath }}
-                defaultSource={default_image}
-              /> */}
+              {item.is_single == false && item.itinerary !== null ? (
+                <RenderAlbum data={item} props={props} />
+              ) : (
+                <RenderSinglePhoto data={item} props={props} />
+              )}
             </View>
 
             <View
@@ -933,18 +939,49 @@ export default function FeedList({ props, token }) {
                 }}
                 More
               >
-                {/* <Text
-                    style={{
-                      textAlign: 'left',
-                      fontFamily: "Lato-Bold",
-                      fontSize: 14,
-                      color: '#616161',
-                      marginRight: 5,
-                    }}>
-                    {item.user.first_name} {''}{' '}
-                    {item.user.first_name ? item.user.last_name : null}
-                  </Text> */}
-                {item.caption ? (
+                {item.is_single == false && item.itinerary !== null ? (
+                  <View>
+                    <Pressable
+                      onPress={() => goToItinerary(item)}
+                      style={{
+                        flexDirection: "row",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#209fae",
+                          height: 23,
+                          width: 7,
+                          borderRadius: 4,
+                          marginRight: 10,
+                          marginLeft: 2,
+                        }}
+                      />
+                      <Text type="bold" size="title">
+                        {item.itinerary.name}
+                      </Text>
+                    </Pressable>
+                    {item.caption ? (
+                      <ReadMore
+                        numberOfLines={3}
+                        renderTruncatedFooter={ReadMorehendle}
+                        renderRevealedFooter={ReadLesshendle}
+                        // onReady={this._handleTextReady}
+                      >
+                        <Text
+                          size="label"
+                          style={{
+                            textAlign: "left",
+                            lineHeight: 20,
+                          }}
+                        >
+                          {item.caption}
+                        </Text>
+                      </ReadMore>
+                    ) : null}
+                  </View>
+                ) : item.caption ? (
                   <ReadMore
                     numberOfLines={3}
                     renderTruncatedFooter={ReadMorehendle}
