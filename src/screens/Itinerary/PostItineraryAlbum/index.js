@@ -20,6 +20,7 @@ const { width } = Dimensions.get("screen");
 export default function PostItineraryAlbum(props) {
   const { t } = useTranslation();
   const [dataalbums, setAllalbum] = useState(props.route.params.data_album);
+  console.log(dataalbums);
   const [selectedPhoto, setSelectedPhoto] = useState([]);
   let itinerary_id = props.route.params.itinerary_id;
   const HeaderComponent = {
@@ -72,7 +73,7 @@ export default function PostItineraryAlbum(props) {
                 color: "white",
               }}
             >
-              {slcphoto.length}/{dataalbums.album.length} {t("photosSelected")}
+              {slcphoto.length}/{dataalbums.length} {t("photosSelected")}
             </Text>
           ) : null}
         </View>
@@ -86,7 +87,7 @@ export default function PostItineraryAlbum(props) {
       params: {
         selectedPhoto: data,
         itinerary_id: itinerary_id,
-        day_id: dataalbums.id,
+        day_id: dataalbums[0].day_id,
       },
     });
   };
@@ -106,7 +107,7 @@ export default function PostItineraryAlbum(props) {
           alignContent: "center",
           // backgroundColor: "white",
         }}
-        data={dataalbums.album}
+        data={dataalbums}
         renderItem={({ item, index }) => (
           <TouchableOpacity
             style={{

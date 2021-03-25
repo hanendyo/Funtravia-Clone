@@ -3310,7 +3310,6 @@ export default function ItineraryDetail(props) {
     });
   };
 
-<<<<<<< Updated upstream
   const goToSelectPhoto = async (album, dayaktif) => {
     let data = await spreadDatas(album);
     // let dataAlbum =
@@ -3325,18 +3324,6 @@ export default function ItineraryDetail(props) {
     let albumselected = data[index].unposted;
     console.log(albumselected);
     await props.navigation.navigate("ItineraryStack", {
-=======
-  const goToSelectPhoto = (album, dayaktif) => {
-    let dataAlbum =
-      album &&
-      album.itinerary_album_list &&
-      album.itinerary_album_list.day_album
-        ? album.itinerary_album_list.day_album
-        : null;
-    let index = dataAlbum.findIndex((k) => k["id"] === dayaktif.id);
-    let albumselected = dataAlbum[index];
-    props.navigation.navigate("ItineraryStack", {
->>>>>>> Stashed changes
       screen: "SelectAlbumsPost",
       params: {
         data_album: albumselected,

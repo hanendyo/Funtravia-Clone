@@ -11,6 +11,8 @@ import {
   Pressable,
   Keyboard,
   SafeAreaView,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -18,6 +20,8 @@ import { useTranslation } from "react-i18next";
 import Image from "react-native-auto-scale-image";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
+import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
+
 // import { NavigationEvents, SafeAreaView } from "react-navigation";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import {
@@ -45,10 +49,11 @@ import {
 } from "../../../assets/svg";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
-import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
 import { gql } from "apollo-boost";
 import ReadMore from "react-native-read-more-text";
-
+import RenderAlbum from "../RenderAlbumItinerary";
+import RenderSinglePhoto from "../RenderSinglePhoto";
+import set from "lodash.set";
 const deletepost = gql`
   mutation($post_id: ID!) {
     delete_post(post_id: $post_id) {
@@ -59,7 +64,7 @@ const deletepost = gql`
     }
   }
 `;
-export default function CommentsById(props) {
+export default function Comments(props) {
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -76,12 +81,25 @@ export default function CommentsById(props) {
       // fontSize: 14,
       color: "white",
     },
+    // headerLeftContainerStyle: {
+    // 	background: "#FFF",
+    // },
+    // headerRight: () => (
+    // 	<View style={{ flexDirection: "row" }}>
+    // 		<TouchableOpacity
+    // 			style={{ marginRight: 20 }}
+    // 			onPress={() => Alert.alert("Coming soon")}
+    // 		>
+    // 			<SearchWhite height={20} width={20} />
+    // 		</TouchableOpacity>
+    // 	</View>
+    // ),
   };
   const [loadings, setLoading] = useState(false);
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  let [postid, setPostid] = useState(props.route.params.post_id);
+  let [postid, setPostid] = useState(props.route.params?.post_id);
   let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
@@ -89,34 +107,39 @@ export default function CommentsById(props) {
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [selectedOption, SetOption] = useState({});
-
-  const onSelect = useCallback(
-    (id) => {
-      let newSelected = new Map(selected);
-      newSelected.set(id, !selected.get(id));
-      setLiked(!liked);
-      likeToggle(liked);
-      setSelected(newSelected);
-    },
-    [selected]
+  let [data_comment, SetDatacommnet] = useState([]);
+  const { data: datafeed, loading: loadingfeed, error: errorfeed } = useQuery(
+    FeedByID,
+    {
+      fetchPolicy: "network-only",
+      variables: { post_id: postid },
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
   );
+  let dataPost = [];
+  if (datafeed && datafeed.feed_post_byid) {
+    dataPost = datafeed.feed_post_byid;
+  }
+
+  console.log(postid);
+  console.log(datafeed);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
-    await GetFeed();
+    // await GetDataSetting();
+    // if (datas && datas.setting_data) {
+    // 	await AsyncStorage.setItem('setting', JSON.stringify(datas.setting_data));
+    // }
+
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
-
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      GetCommentList();
-      loadAsync();
-    });
-    return unsubscribe;
-  }, []);
 
   const [
     MutationComment,
@@ -164,14 +187,21 @@ export default function CommentsById(props) {
       },
     },
   });
+  const [refreshing, setRefreshing] = useState(false);
+  const Refresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
-    // var tempData = [...datafeed.feed_post_byid?];
+    // var tempData = [...datafeed];
     // var index = tempData.findIndex((k) => k['id'] === id);
 
-    // Setdatafeed.feed_post_byid?(tempData);
+    // SetDataFeed(tempData);
     if (token || token !== "") {
       try {
         let response = await Mutationdeletepost({
@@ -193,6 +223,13 @@ export default function CommentsById(props) {
             response.data.delete_post.code === "200"
           ) {
             props.navigation.goBack();
+            // Refresh();
+            // var tempData = [...datafeed];
+            // var index = tempData.findIndex((k) => k['id'] === id);
+            // tempData[index].liked = false;
+            // tempData[index].response_count =
+            // 	response.data.delete_post.count_like;
+            // SetDataFeed(tempData);
           } else {
             throw new Error(response.data.delete_post.message);
           }
@@ -203,15 +240,19 @@ export default function CommentsById(props) {
         Alert.alert("" + error);
       }
     } else {
+      // tempData[index].liked = true;
+      // tempData[index].response_count = tempData[index].response_count + 1;
+      // SetDataFeed(tempData);
       Alert.alert("Please Login");
     }
   };
 
   const _liked = async (id) => {
     // console.log(id);
-    // Setdatafeed?(tempData);
+    // SetDataFeed(tempData);
     if (token) {
-      // datafeed.liked = true;
+      dataPost.liked = true;
+      dataPost.response_count = dataPost.response_count + 1;
       try {
         let response = await MutationLike({
           variables: {
@@ -224,27 +265,22 @@ export default function CommentsById(props) {
         // if (errorLike) {
         //   throw new Error("Error Input");
         // }
-        console.log(response);
+
         if (response.data) {
           if (
             response.data.like_post.code === 200 ||
             response.data.like_post.code === "200"
           ) {
-            GetFeed();
-
-            // datafeed.liked = true;
+            dataPost.liked = true;
           } else {
-            GetFeed();
-
-            // datafeed.liked = false;
+            dataPost.liked = false;
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
-        GetFeed();
-
-        // datafeed.liked = false;
+        dataPost.liked = false;
+        dataPost.response_count = dataPost.response_count - 1;
         console.log(error);
         // Alert.alert("" + error);
       }
@@ -255,7 +291,8 @@ export default function CommentsById(props) {
 
   const _unliked = async (id) => {
     if (token || token !== "") {
-      // datafeed.liked = false;
+      dataPost.liked = false;
+      dataPost.response_count = dataPost.response_count - 1;
       try {
         let response = await MutationunLike({
           variables: {
@@ -268,39 +305,81 @@ export default function CommentsById(props) {
         // if (errorunLike) {
         //   throw new Error("Error Input");
         // }
-        console.log(response);
+
         if (response.data) {
           if (
             response.data.unlike_post.code === 200 ||
             response.data.unlike_post.code === "200"
           ) {
-            GetFeed();
-
-            // datafeed.liked = false;
+            dataPost.liked = false;
           } else {
-            GetFeed();
-
-            // datafeed.liked = true;
+            dataPost.liked = true;
             throw new Error(response.data.unlike_post.message);
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
-        GetFeed();
+        dataPost.liked = true;
+        dataPost.response_count = dataPost.response_count + 1;
 
         Alert.alert("" + error);
       }
     } else {
-      // datafeed.liked = false;
+      dataPost.liked = false;
       Alert.alert("Please Login");
     }
   };
 
+  const create_UUID = () => {
+    var dt = new Date().getTime();
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (dt + Math.random() * 16) % 16 | 0;
+        dt = Math.floor(dt / 16);
+        return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+    return uuid;
+  };
+
+  useEffect(() => {
+    loadAsync();
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      // GetFeed();
+      GetCommentList();
+      // refetch();
+    });
+    return unsubscribe;
+  }, []);
+
   const comment = async (id, text) => {
-    Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
-      setLoading(true);
+      let gen_uuid = create_UUID();
+      let tempData = [...data_comment];
+      let pushcomment = {
+        created_at: "",
+        id: gen_uuid,
+        text: text,
+        updated_at: "",
+        user: {
+          id: setting?.user.id,
+          first_name: setting?.user.first_name,
+          last_name: setting?.user.last_name,
+          picture: setting?.user.picture,
+          username: setting?.user.username,
+        },
+        is_send: false,
+      };
+      tempData.push(pushcomment);
+      // console.log(tempData);
+      await SetDatacommnet(tempData);
+      await scroll_to();
+      let idx = tempData.length - 1;
+      Keyboard.dismiss();
+      setStatusText("");
       try {
         let response = await MutationComment({
           variables: {
@@ -308,9 +387,6 @@ export default function CommentsById(props) {
             text: text,
           },
         });
-        if (loadingcmnt) {
-          Alert.alert("Loading!!");
-        }
         if (errorcmnt) {
           throw new Error("Error Input");
         }
@@ -319,91 +395,32 @@ export default function CommentsById(props) {
             response.data.comment_post.code === 200 ||
             response.data.comment_post.code === "200"
           ) {
-            setLoading(false);
-
-            setStatusText("");
-            // datafeed.comment_count = datafeed?.comment_count + 1;
-            GetCommentList();
-            scroll_to();
+            // setLoading(false);
+            dataPost.comment_count = dataPost.comment_count + 1;
+            tempData[idx] = response.data.comment_post.data;
+            tempData[idx].is_send = true;
+            // slider.current.scrollToEnd();
+            SetDatacommnet(tempData);
+            Refresh();
           } else {
-            setLoading(false);
             throw new Error(response.data.comment_post.message);
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
-        setLoading(false);
-        // console.log(error);
+        tempData.splice(idx, 1);
+        SetDatacommnet(tempData);
+
         Alert.alert("" + error);
       }
     } else {
       Alert.alert("Please Insert a Text");
     }
   };
-  const ReadMorehendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read More
-      </Text>
-    );
-  };
-
-  const ReadLesshendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read Less
-      </Text>
-    );
-  };
-  const [
-    GetFeed,
-    { data: datafeed, loading: loadingfeed, error: errorfeed },
-  ] = useLazyQuery(FeedByID, {
-    fetchPolicy: "network-only",
-    variables: { post_id: postid },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-  // if (loadingfeed){
-  //   return <View></View>
-  // }
-  // if (errorfeed){
-  //   return <View></View>
-  // }
-  // console.log(token);
-  // console.log(
-  //   datafeed && datafeed.feed_post_byid ? datafeed.feed_post_byid : null
-  // );
 
   const scroll_to = () => {
-    // GetCommentList();
-    if (loading == true) {
-      // console.log(loading);
-      scroll_to();
-    }
-    if (loading == false) {
-      // console.log(loading);
-      wait(1000).then(() => {
-        slider.current.scrollToEnd();
-      });
-    }
+    slider.current.scrollToEnd();
   };
 
   const wait = (timeout) => {
@@ -413,22 +430,27 @@ export default function CommentsById(props) {
   };
 
   // console.log(props.navigation.getParam('post_id'));
-  const [GetCommentList, { data, loading, error }] = useLazyQuery(CommentList, {
-    fetchPolicy: "network-only",
-    variables: { post_id: datafeed?.feed_post_byid?.id },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  const [GetCommentList, { data, loading, error, refetch }] = useLazyQuery(
+    CommentList,
+    {
+      fetchPolicy: "network-only",
+      variables: { post_id: postid },
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  });
+      onCompleted: (data) => {
+        SetDatacommnet(data.comment);
+      },
+    }
+  );
 
-  // console.log(loading);
-
-  if (data) {
-    // console.log(data.comment[0].text);
-  }
+  // if (data && data.comment) {
+  //   data_comment = data.comment;
+  // }
+  // console.log(data_comment);
 
   let [liked, setLiked] = useState(false);
 
@@ -441,7 +463,6 @@ export default function CommentsById(props) {
   };
 
   const duration = (datetime) => {
-    console.log(datetime);
     var date1 = new Date(datetime).getTime();
     var date2 = new Date().getTime();
     var msec = date2 - date1;
@@ -473,13 +494,40 @@ export default function CommentsById(props) {
   // 	likeToggle(liked);
   // };
   const OptionOpen = (data) => {
-    console.log("select", data);
     SetOption(data);
-    if (datafeed?.feed_post_byid?.user.id == setting?.user?.id) {
+    if (dataPost.user.id == setting?.user?.id) {
       setModalmenu(true);
     } else {
       setModalmenuother(true);
     }
+  };
+
+  const ReadMorehendle = (handlePress) => {
+    return (
+      <Text
+        onPress={handlePress}
+        type="bold"
+        style={{
+          color: "#209fae",
+        }}
+      >
+        Read More
+      </Text>
+    );
+  };
+
+  const ReadLesshendle = (handlePress) => {
+    return (
+      <Text
+        onPress={handlePress}
+        type="bold"
+        style={{
+          color: "#209fae",
+        }}
+      >
+        Read Less
+      </Text>
+    );
   };
 
   const Item = ({ dataComment }) => {
@@ -560,16 +608,29 @@ export default function CommentsById(props) {
               >
                 {dataComment.user?.first_name} {dataComment.user?.last_name}
               </Text>
-              <Text
-                size={"small"}
-                style={{
-                  fontFamily: "Lato-Regular",
-                  // fontSize: 10,
-                  // marginTop: 7,
-                }}
-              >
-                {duration(dataComment.created_at)}
-              </Text>
+              {dataComment.is_send == false ? (
+                <Text
+                  size={"small"}
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    // fontSize: 10,
+                    // marginTop: 7,
+                  }}
+                >
+                  Loading...
+                </Text>
+              ) : (
+                <Text
+                  size={"small"}
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    // fontSize: 10,
+                    // marginTop: 7,
+                  }}
+                >
+                  {duration(dataComment.created_at)}
+                </Text>
+              )}
             </View>
           </View>
         </View>
@@ -577,7 +638,7 @@ export default function CommentsById(props) {
           style={{
             width: "100%",
             marginVertical: 5,
-            // marginLeft: 45,
+            marginLeft: 45,
           }}
         >
           <Text
@@ -592,10 +653,27 @@ export default function CommentsById(props) {
     );
   };
 
+  const goToItinerary = (data) => {
+    props.navigation.push("ItineraryStack", {
+      screen: "itindetail",
+      params: {
+        itintitle: data.itinerary.name,
+        country: data.itinerary.id,
+        dateitin: "",
+        token: token,
+        status: "",
+        index: 1,
+        datadayaktif: data.day,
+      },
+    });
+  };
+
   return (
     <SafeAreaView
       style={{
-        flex: 1,
+        backgroundColor: "#F6F6F6",
+
+        // flex: 1,
       }}
     >
       <Modal
@@ -653,7 +731,7 @@ export default function CommentsById(props) {
               paddingVertical: 10,
             }}
             onPress={() => {
-              setModalhapus(true);
+              setModalmenu(false), setModalhapus(true);
             }}
           >
             <Text
@@ -807,17 +885,19 @@ export default function CommentsById(props) {
       </Modal>
 
       <ScrollView
-        contentContainerStyle={
+        ref={slider}
+        contentContainerStyle={{
+          paddingBottom: 30,
+        }}
+        showsVerticalScrollIndicator={false}
+        style={
           {
-            // paddingBottom :100,
+            // flex: 1,
+            // marginBottom: 10,
+            // backgroundColor: "#FFF",
+            // height: Dimensions.get('window').height - 100,
           }
         }
-        style={{
-          flex: 1,
-
-          // backgroundColor: "#FFF",
-          // height: Dimensions.get('window').height - 100,
-        }}
       >
         <Loading show={loadings} />
         <View
@@ -825,271 +905,267 @@ export default function CommentsById(props) {
             width: Dimensions.get("window").width - 20,
             backgroundColor: "#FFFFFF",
             // flex: 1,
-            borderBottomWidth: 1,
+            // borderBottomWidth: 1,
             borderBottomColor: "#EEEEEE",
             marginHorizontal: 10,
-            marginVertical: 10,
+            marginTop: 10,
+            // marginBottom: 5,
+            paddingBottom: 60,
+
             // borderWidth:1,
-            borderRadius: 20,
-            paddingBottom: 20,
-            shadowColor: "#464646",
-            shadowOffset: { width: 0, height: 0 },
-            shadowRadius: 0.5,
-            shadowOpacity: 0.5,
-            elevation: 1,
+            borderRadius: 15,
+            // paddingBottom: 20,
+            minHeight: Dimensions.get("window").height - 70,
+            // shadowColor: "#464646",
+            // shadowOffset: { width: 0, height: 0 },
+            // shadowRadius: 0.5,
+            // shadowOpacity: 0.5,
+            // elevation: 1,
           }}
         >
-          <View
-            style={{
-              // width: "100%",
-              width: Dimensions.get("window").width - 40,
-              flexDirection: "row",
-              marginVertical: 10,
-              paddingHorizontal: 10,
-              alignContent: "center",
-            }}
-          >
-            <Pressable
-              onPress={() => {
-                datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "otherprofile",
-                      params: {
-                        idUser: datafeed?.feed_post_byid?.user.id,
-                      },
-                    })
-                  : props.navigation.push("ProfileStack", {
-                      screen: "ProfileTab",
-                    });
-              }}
-              u
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                isTouchable
-                onPress={() => {
-                  datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                    ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: datafeed?.feed_post_byid?.user.id,
-                        },
-                      })
-                    : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                      });
-                }}
-                style={{
-                  height: 35,
-                  width: 35,
-                  borderRadius: 18,
-                  alignSelf: "center",
-                  resizeMode: "cover",
-                }}
-                source={{
-                  uri:
-                    datafeed &&
-                    datafeed.feed_post_byid &&
-                    datafeed.feed_post_byid.user
-                      ? datafeed.feed_post_byid.user.picture
-                      : null,
-                }}
-              />
+          {loadingfeed ? (
+            <ActivityIndicator animating={true} size="large" color="#209fae" />
+          ) : (
+            <>
               <View
                 style={{
-                  justifyContent: "center",
-                  marginHorizontal: 10,
-                }}
-              >
-                <Text
-                  onPress={() => {
-                    datafeed?.feed_post_byid?.user.id !== setting?.user?.id
-                      ? props.navigation.push("otherprofile", {
-                          idUser: datafeed?.feed_post_byid?.user.id,
-                        })
-                      : props.navigation.push("ProfileTab");
-                  }}
-                  type={"bold"}
-                  style={{}}
-                >
-                  {datafeed?.feed_post_byid?.user.first_name}{" "}
-                  {datafeed?.feed_post_byid?.user.first_name
-                    ? datafeed?.feed_post_byid?.user.last_name
-                    : null}
-                </Text>
-                <Text size={"small"} style={{}}>
-                  {duration(datafeed?.feed_post_byid.created_at)}
-                </Text>
-              </View>
-            </Pressable>
-            <TouchableOpacity
-              onPress={() => {
-                OptionOpen(datafeed?.feed_post_byid);
-              }}
-              style={{
-                position: "absolute",
-                right: 0,
-                alignSelf: "center",
-              }}
-            >
-              <More height={20} width={20} />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 10,
-              alignContent: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              width: Dimensions.get("window").width - 40,
-              minHeight: Dimensions.get("window").width - 155,
-              borderRadius: 15,
-            }}
-          >
-            {datafeed &&
-            datafeed.feed_post_byid &&
-            datafeed.feed_post_byid?.assets &&
-            datafeed.feed_post_byid?.assets[0].filepath ? (
-              <Image
-                style={{
+                  // width: "100%",
                   width: Dimensions.get("window").width - 40,
-                  borderRadius: 15,
-                  alignSelf: "center",
-                }}
-                uri={datafeed.feed_post_byid.assets[0].filepath}
-              />
-            ) : null}
-            {/* <AutoHeightImage
-              width={Dimensions.get("window").width -40}
-              source={{ uri: datafeed.feed_post_byid?.assets[0]?.filepath }}
-            /> */}
-          </View>
-          <View
-            style={{
-              width: "100%",
-              backgroundColor: "white",
-              marginTop: 17,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "white",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
-              }}
-            >
-              <View
-                style={{
                   flexDirection: "row",
-                  width: "50%",
-                  alignSelf: "flex-start",
-                  alignContent: "space-between",
-                  alignItems: "center",
-                  // justifyContent: 'space-evenly',
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
+                  alignContent: "center",
                 }}
               >
-                {datafeed?.feed_post_byid?.liked ? (
-                  <Button
-                    onPress={() => _unliked(datafeed.feed_post_byid?.id)}
-                    type="icon"
-                    // variant="transparent"
-                    position="left"
-                    size="small"
-                    style={{
-                      paddingHorizontal: 10,
-                      marginRight: 15,
-                      borderRadius: 16,
-                      backgroundColor: "#F2DAE5",
-                      // minidth: 70,
-                      // right: 10,
-                    }}
-                  >
-                    <LikeRed height={15} width={15} />
-                    <Text
-                      type="black"
-                      size="label"
-                      style={{ marginHorizontal: 5, color: "#BE3737" }}
-                    >
-                      {datafeed.feed_post_byid?.response_count}
-                    </Text>
-                  </Button>
-                ) : (
-                  <Button
-                    onPress={() => _liked(datafeed?.feed_post_byid?.id)}
-                    type="icon"
-                    position="left"
-                    size="small"
-                    color="tertiary"
-                    style={{
-                      paddingHorizontal: 10,
-                      marginRight: 15,
-                      borderRadius: 16,
-                      // right: 10,
-                    }}
-                  >
-                    <LikeBlack height={15} width={15} />
-                    <Text
-                      type="black"
-                      size="label"
-                      style={{ marginHorizontal: 7 }}
-                    >
-                      {datafeed?.feed_post_byid?.response_count}
-                    </Text>
-                  </Button>
-                )}
-
-                <Button
-                  onPress={() => console.log("datafeed.feed_post_byid")}
-                  type="icon"
-                  variant="transparent"
-                  position="left"
-                  size="small"
+                <Pressable
+                  onPress={() => {
+                    dataPost?.user?.id !== setting?.user?.id
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: dataPost?.user?.id,
+                          },
+                        })
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                        });
+                  }}
                   style={{
-                    paddingHorizontal: 2,
-
-                    // right: 10,
+                    flexDirection: "row",
                   }}
                 >
-                  <CommentBlack height={15} width={15} />
-                  <Text
-                    type="black"
-                    size="label"
-                    style={{ marginHorizontal: 7 }}
+                  <Image
+                    isTouchable
+                    onPress={() => {
+                      dataPost?.user?.id !== setting?.user?.id
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: dataPost?.user?.id,
+                            },
+                          })
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                          });
+                    }}
+                    style={{
+                      height: 35,
+                      width: 35,
+                      borderRadius: 18,
+                      alignSelf: "center",
+                      resizeMode: "cover",
+                    }}
+                    source={{ uri: dataPost?.user?.picture }}
+                  />
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      marginHorizontal: 10,
+                    }}
                   >
-                    {datafeed?.feed_post_byid?.comment_count}
-                  </Text>
-                </Button>
+                    <Text
+                      onPress={() => {
+                        dataPost.user.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: dataPost.user.id,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                            });
+                      }}
+                      type={"bold"}
+                      style={{}}
+                    >
+                      {dataPost.user.first_name}{" "}
+                      {dataPost.user.first_name
+                        ? dataPost.user.last_name
+                        : null}
+                    </Text>
+                    <Text size={"small"} style={{}}>
+                      {duration(dataPost.created_at)}
+                    </Text>
+                  </View>
+                </Pressable>
+                <TouchableOpacity
+                  onPress={() => {
+                    OptionOpen(dataPost);
+                  }}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    alignSelf: "center",
+                  }}
+                >
+                  <More height={20} width={20} />
+                </TouchableOpacity>
               </View>
-
-              <Button
-                type="icon"
-                variant="transparent"
-                position="left"
-                size="small"
+              <View
                 style={{
-                  // right: 10,
-                  paddingHorizontal: 2,
+                  marginHorizontal: 10,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  // alignItems: "center",
+                  width: Dimensions.get("window").width - 40,
+                  // height: Dimensions.get("window").width - 40,
+                  minHeight: Dimensions.get("window").width - 155,
+                  // borderWidth: 0.5,
+                  borderColor: "#EEEEEE",
+                  borderRadius: 15,
                 }}
               >
-                <ShareBlack height={17} width={17} />
-                <Text size="small" style={{ marginLeft: 3 }}>
-                  {t("share")}
-                </Text>
-              </Button>
-            </View>
-            <View
-              style={{
-                width: "100%",
-                padding: 10,
-                flexDirection: "row",
-                borderRadius: 20,
-                // borderWidth:1,
-              }}
-            >
-              {/* <Text
+                {dataPost.is_single == false && dataPost.itinerary !== null ? (
+                  <RenderAlbum data={dataPost} props={props} />
+                ) : (
+                  <RenderSinglePhoto data={dataPost} props={props} />
+                )}
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  marginTop: 17,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "white",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      width: "50%",
+                      alignSelf: "flex-start",
+                      alignContent: "space-between",
+                      alignItems: "center",
+                      // justifyContent: 'space-evenly',
+                    }}
+                  >
+                    {dataPost.liked ? (
+                      <Button
+                        onPress={() => _unliked(dataPost.id)}
+                        type="icon"
+                        // variant="transparent"
+                        position="left"
+                        size="small"
+                        style={{
+                          paddingHorizontal: 10,
+                          marginRight: 15,
+                          borderRadius: 16,
+                          backgroundColor: "#F2DAE5",
+                          // minidth: 70,
+                          // right: 10,
+                        }}
+                      >
+                        <LikeRed height={15} width={15} />
+                        <Text
+                          type="black"
+                          size="label"
+                          style={{ marginHorizontal: 5, color: "#BE3737" }}
+                        >
+                          {dataPost.response_count}
+                        </Text>
+                      </Button>
+                    ) : (
+                      <Button
+                        onPress={() => _liked(dataPost.id)}
+                        type="icon"
+                        position="left"
+                        size="small"
+                        color="tertiary"
+                        style={{
+                          paddingHorizontal: 10,
+                          marginRight: 15,
+                          borderRadius: 16,
+                          // right: 10,
+                        }}
+                      >
+                        <LikeBlack height={15} width={15} />
+                        <Text
+                          type="black"
+                          size="label"
+                          style={{ marginHorizontal: 7 }}
+                        >
+                          {dataPost.response_count}
+                        </Text>
+                      </Button>
+                    )}
+
+                    <Button
+                      onPress={() => console.log("dataPost")}
+                      type="icon"
+                      variant="transparent"
+                      position="left"
+                      size="small"
+                      style={{
+                        paddingHorizontal: 2,
+
+                        // right: 10,
+                      }}
+                    >
+                      <CommentBlack height={15} width={15} />
+                      <Text
+                        type="black"
+                        size="label"
+                        style={{ marginHorizontal: 7 }}
+                      >
+                        {dataPost.comment_count}
+                      </Text>
+                    </Button>
+                  </View>
+
+                  <Button
+                    type="icon"
+                    variant="transparent"
+                    position="left"
+                    size="small"
+                    style={{
+                      // right: 10,
+                      paddingHorizontal: 2,
+                    }}
+                  >
+                    <ShareBlack height={17} width={17} />
+                    <Text size="small" style={{ marginLeft: 3 }}>
+                      {t("share")}
+                    </Text>
+                  </Button>
+                </View>
+                <View
+                  style={{
+                    width: "100%",
+                    padding: 10,
+                    flexDirection: "row",
+                    borderRadius: 20,
+                    // borderWidth:1,
+                  }}
+                >
+                  {/* <Text
                 style={{
                   textAlign: 'left',
                   fontFamily: "Lato-Bold",
@@ -1097,118 +1173,198 @@ export default function CommentsById(props) {
                   color: '#616161',
                   marginRight: 5,
                 }}>
-                {datafeed.feed_post_byid?.user.first_name} {''}{' '}
-                {datafeed.feed_post_byid?.user.first_name ? datafeed.feed_post_byid?.user.last_name : null}
+                {dataPost.user.first_name} {''}{' '}
+                {dataPost.user.first_name ? dataPost.user.last_name : null}
               </Text> */}
-              {datafeed &&
-              datafeed.feed_post_byid &&
-              datafeed.feed_post_byid.caption ? (
-                <ReadMore
-                  numberOfLines={3}
-                  renderTruncatedFooter={ReadMorehendle}
-                  renderRevealedFooter={ReadLesshendle}
-                  // onReady={this._handleTextReady}
-                >
-                  <Text
-                    size="label"
-                    style={{
-                      textAlign: "left",
-                      lineHeight: 20,
-                    }}
-                  >
-                    <Text
-                      type="bold"
-                      size="label"
-                      style={{
-                        marginRight: 5,
-                      }}
+                  {dataPost.is_single == false &&
+                  dataPost.itinerary !== null ? (
+                    <View>
+                      <Pressable
+                        onPress={() => goToItinerary(dataPost)}
+                        style={{
+                          flexDirection: "row",
+                          marginBottom: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: "#209fae",
+                            height: 23,
+                            width: 7,
+                            borderRadius: 4,
+                            marginRight: 10,
+                            marginLeft: 2,
+                          }}
+                        />
+                        <Text type="bold" size="title">
+                          {dataPost.itinerary.name}
+                        </Text>
+                      </Pressable>
+                      {dataPost.caption ? (
+                        <ReadMore
+                          numberOfLines={3}
+                          renderTruncatedFooter={ReadMorehendle}
+                          renderRevealedFooter={ReadLesshendle}
+                          // onReady={this._handleTextReady}
+                        >
+                          <Text
+                            size="label"
+                            style={{
+                              textAlign: "left",
+                              lineHeight: 20,
+                            }}
+                          >
+                            {dataPost.caption}
+                          </Text>
+                        </ReadMore>
+                      ) : null}
+                    </View>
+                  ) : dataPost.caption ? (
+                    <ReadMore
+                      numberOfLines={3}
+                      renderTruncatedFooter={ReadMorehendle}
+                      renderRevealedFooter={ReadLesshendle}
+                      // onReady={this._handleTextReady}
                     >
-                      {datafeed.feed_post_byid?.user.first_name}{" "}
-                      {datafeed.feed_post_byid?.user.first_name
-                        ? datafeed.feed_post_byid?.user.last_name
-                        : null}{" "}
-                    </Text>
-                    {datafeed.feed_post_byid?.caption}
-                  </Text>
-                </ReadMore>
-              ) : null}
-            </View>
-          </View>
-
+                      <Text
+                        size="label"
+                        style={{
+                          textAlign: "left",
+                          lineHeight: 20,
+                        }}
+                      >
+                        <Text
+                          type="bold"
+                          size="label"
+                          style={{
+                            marginRight: 5,
+                          }}
+                        >
+                          {dataPost.user.first_name}{" "}
+                          {dataPost.user.first_name
+                            ? dataPost.user.last_name
+                            : null}{" "}
+                        </Text>
+                        {dataPost.caption}
+                      </Text>
+                    </ReadMore>
+                  ) : null}
+                </View>
+              </View>
+            </>
+          )}
           <FlatList
-            ref={slider}
-            data={data ? data.comment : null}
+            scrollEnabled={false}
+            data={data_comment}
             renderItem={({ item }) => {
               return <Item dataComment={item} />;
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => Refresh()}
+              />
+            }
             keyExtractor={(item) => item.id}
             extraData={selected}
+            contentContainerStyle={
+              {
+                // minHeight: Dimensions.get("window").height / 2,
+              }
+            }
           />
         </View>
       </ScrollView>
       <View
         style={{
-          flexDirection: "row",
-          marginVertical: 5,
-          marginHorizontal: 10,
-          // position: 'absolute',
-          // bottom: 0,
-          borderRadius: 50,
-          backgroundColor: "#ffffff",
-          // height: 100,
-          width: Dimensions.get("screen").width - 20,
-          // position: 'absolute',
-          // bottom: 0,
-          // borderWidth:1,
+          position: "absolute",
+          bottom: 0,
+          paddingBottom: 10,
+          width: Dimensions.get("window").width,
+          backgroundColor: "#F6F6F6",
+          // borderWidth: 1,
+          // marginHorizontal: 10,
+          justifyContent: "center",
           alignItems: "center",
-          // justifyContent: 'space-around',
         }}
       >
-        <TextInput
-          allowFontScaling={false}
-          multiline
-          placeholder={
-            "Comment as " +
-            setting?.user?.first_name +
-            " " +
-            setting?.user?.last_name +
-            "..."
-          }
-          maxLength={255}
+        <View
           style={{
-            height: 60,
-            width: Dimensions.get("screen").width - 120,
-            // borderBottomColor: '#f0f0f0f0',
+            // borderRadius: 2,
+            backgroundColor: "#FFFFFF",
+            borderBottomRightRadius: 15,
+            borderBottomLeftRadius: 15,
+            marginHorizontal: 18,
+            // marginBottom: 10,
+            paddingVertical: 10,
+            width: Dimensions.get("screen").width - 20,
+
             // borderWidth: 1,
-            marginLeft: 20,
-          }}
-          onChangeText={(text) => setStatusText(text)}
-          value={statusText}
-        />
-        <Pressable
-          onPress={() => comment(datafeed?.feed_post_byid?.id, statusText)}
-          style={{
-            flex: 1,
-            // borderWidth: 1,
-            height: 60,
-            // alignSelf: 'center',
-            alignItems: "center",
-            justifyContent: "center",
-            paddingRight: 10,
           }}
         >
-          <Text
-            allowFontScaling={false}
-            size="label"
-            type="bold"
+          <View
             style={{
-              alignSelf: "center",
-              color: "#209fae",
+              flexDirection: "row",
+              // marginVertical: 10,
+              marginHorizontal: 10,
+              borderRadius: 50,
+              backgroundColor: "#F6F6F6",
+              // height: 100,
+              width: Dimensions.get("screen").width - 50,
+              // position: 'absolute',
+              // bottom: 0,
+              // borderWidth:1,
+              alignItems: "center",
+              // justifyContent: 'space-around',
             }}
           >
-            Post
-          </Text>
-        </Pressable>
+            <TextInput
+              allowFontScaling={false}
+              multiline
+              placeholder={
+                "Comment as " +
+                setting?.user?.first_name +
+                " " +
+                setting?.user?.last_name +
+                "..."
+              }
+              maxLength={1000}
+              style={{
+                height: 50,
+                width: Dimensions.get("screen").width - 130,
+                // borderBottomColor: '#f0f0f0f0',
+                // borderWidth: 1,
+                marginLeft: 20,
+              }}
+              onChangeText={(text) => setStatusText(text)}
+              value={statusText}
+            />
+            <Pressable
+              onPress={() => comment(dataPost.id, statusText)}
+              style={{
+                flex: 1,
+                // borderWidth: 1,
+                height: 50,
+                // alignSelf: 'center',
+                alignItems: "center",
+                justifyContent: "center",
+                paddingRight: 10,
+              }}
+            >
+              <Text
+                allowFontScaling={false}
+                size="label"
+                type="bold"
+                style={{
+                  alignSelf: "center",
+                  color: "#209fae",
+                }}
+              >
+                Post
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );

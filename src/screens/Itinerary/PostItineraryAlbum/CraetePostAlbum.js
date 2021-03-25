@@ -71,7 +71,7 @@ export default function CraetePostAlbum(props) {
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
-  console.log(setting);
+  // console.log(setting);
   const HeaderComponent = {
     title: "Select Photos",
     headerTintColor: "white",
@@ -251,7 +251,7 @@ export default function CraetePostAlbum(props) {
         source={{ uri: selectedPhoto[indexAktif].assets }}
         style={{
           width: width - 20,
-          height: width - 150,
+          height: width - 120,
           borderRadius: 15,
           margin: 10,
         }}

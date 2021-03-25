@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Image } from "react-native";
+import { View, Image, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 
 // import { loading } from "../../assets/Gif";
@@ -20,15 +20,12 @@ export default function Loading({ show }) {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "white",
-            width: 100,
-            height: 100,
+            width: 75,
+            height: 75,
             borderRadius: 5,
           }}
         >
-          <Image
-            // source={loading ? loading : null}
-            style={{ alignSelf: "center", width: 70, height: 70 }}
-          />
+          <ActivityIndicator animating={true} size="large" color="#209fae" />
         </View>
       </View>
     </Modal>

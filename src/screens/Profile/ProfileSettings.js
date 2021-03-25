@@ -161,7 +161,7 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       includeBase64: true,
     }).then((image) => {
-      // console.log(image);
+      console.log(image);
       // setdataImage(image.data);
       dataImage.current = image.data;
       dataImagepatch.current = image.path;
@@ -177,9 +177,9 @@ export default function ProfileSettings(props) {
       height: 500,
       cropping: true,
       cropperCircleOverlay: true,
-      includeBase64: true,
+      includeBase64: false,
     }).then((image) => {
-      // console.log(image);
+      console.log(image);
       dataImage.current = image.data;
       dataImagepatch.current = image.path;
       // setdataImage(image.data);

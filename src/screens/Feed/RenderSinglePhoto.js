@@ -7,7 +7,7 @@ import {
   FlatList,
   Pressable,
   ImageBackground,
-  Image as ImageRN,
+  // Image,
 } from "react-native";
 import Image from "react-native-auto-scale-image";
 
@@ -21,7 +21,6 @@ export default function RenderSinglePhoto({ data, props }) {
         borderRadius: 15,
         alignSelf: "center",
         marginHorizontal: 10,
-        // height: Dimensions.get("window").width - 40,
       }}
       uri={data.assets[0].filepath}
     />
