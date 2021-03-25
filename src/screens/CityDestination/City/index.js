@@ -26,6 +26,7 @@ import {
   PinWhite,
   LikeEmpty,
   Showmore,
+  Showless,
   PinHijau,
   Calendargrey,
   User,
@@ -85,6 +86,7 @@ export default function CityDetail(props) {
   const [tab2Data] = useState(Array(1).fill(0));
 
   let [full, setFull] = useState(false);
+  console.log("bahasa", i18n.language);
  
 
   /**
@@ -199,7 +201,7 @@ export default function CityDetail(props) {
     }
   });
 
-  console.log("city")
+  console.log("city", dataCity);
   
   const Goto = (item) => {
     if (item.id) {
@@ -248,65 +250,12 @@ export default function CityDetail(props) {
     list_populer = dataItinerary.itinerary_populer_by_city;
   }
 
-  console.log("list", list_populer);
   let list_journal = [];
   if (dataJournal && dataJournal.journal_by_city) {
     list_journal = dataJournal.journal_by_city;
   }
 
-  /**
-   * PanResponder for header
-   */
-  const headerPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        headerScrollY.stopAnimation();
-        syncScrollOffset();
-        return false;
-      },
-
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        headerScrollY.stopAnimation();
-        return Math.abs(gestureState.dy) > 5;
-      },
-      onPanResponderEnd: (evt, gestureState) => {
-        handlePanReleaseOrEnd(evt, gestureState);
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        const curListRef = listRefArr.current.find(
-          (ref) => ref.key === routes[_tabIndex.current].key
-        );
-        const headerScrollOffset = -gestureState.dy + headerScrollStart.current;
-        if (curListRef.value) {
-          // scroll up
-          if (headerScrollOffset > 0) {
-            curListRef.value.scrollToOffset({
-              offset: headerScrollOffset,
-              animated: false,
-            });
-            // start pull down
-          } else {
-            if (Platform.OS === "ios") {
-              curListRef.value.scrollToOffset({
-                offset: headerScrollOffset / 3,
-                animated: false,
-              });
-            } else if (Platform.OS === "android") {
-              if (!refreshStatusRef.current) {
-                headerMoveScrollY.setValue(headerScrollOffset / 1.5);
-              }
-            }
-          }
-        }
-      },
-      onShouldBlockNativeResponder: () => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        headerScrollStart.current = scrollY._value;
-      },
-    })
-  ).current;
+  console.log("journal", list_journal);
 
   /**
    * PanResponder for list in tab scene
@@ -328,91 +277,7 @@ export default function CityDetail(props) {
   ).current;
 
   let [tutup, setTutup] = useState(true);
-  const RenderType = ({ item }) => {
-    return tutup == true
-      ? item.map((item, index) => {
-          return index < 8 ? (
-            <Ripple
-              onPress={() => {
-                props.navigation.push("DestinationList", {
-                  idtype: item.id,
-                  idcity: render.id,
-                });
-              }}
-              style={{
-                // borderWidth: 1,
-                width: "25%",
-                // justifyContent: '',
-                alignContent: "center",
-                alignItems: "center",
-                padding: 5,
-              }}
-            >
-              <View
-                style={{
-                  height: 60,
-                }}
-              >
-                <FunIcon
-                  icon={item.icon ? item.icon : "w-fog"}
-                  height={50}
-                  width={50}
-                  style={{
-                    bottom: -3,
-                  }}
-                />
-                <Text
-                  size="small"
-                  style={{ textAlign: "center", marginTop: 3 }}
-                >
-                  {item.name}
-                </Text>
-              </View>
-            </Ripple>
-          ) : null;
-        })
-      : item.map((item, index) => {
-          return (
-            <Ripple
-              onPress={() => {
-                props.navigation.push("DestinationList", {
-                  idtype: item.id,
-                  idcity: render.id,
-                });
-              }}
-              style={{
-                // borderWidth: 1,
-                width: "25%",
-                // justifyContent: '',
-                alignContent: "center",
-                alignItems: "center",
-                padding: 5,
-              }}
-            >
-              <View
-                style={{
-                  height: 80,
-                }}
-              >
-                <FunIcon
-                  icon={item.icon ? item.icon : "w-fog"}
-                  height={50}
-                  width={50}
-                  style={{
-                    bottom: -3,
-                  }}
-                />
-                <Text
-                  size="small"
-                  style={{ textAlign: "center", marginTop: 3 }}
-                >
-                  {item.name}
-                </Text>
-              </View>
-            </Ripple>
-          );
-        });
-  };
+ 
   const spreadData = (data) => {
     let tmpData = [];
     let count = 1;
@@ -682,29 +547,7 @@ export default function CityDetail(props) {
            <Truncate
               text={render ? render.description : null}
               length={120}
-            />
-          
-             <TouchableOpacity
-              onPress={() => {
-                setFull(true);
-              }}
-              style={{ 
-                height: 20,
-                // flexDirection: "row",
-              //  borderWidth:1,
-               }}
-            >
-              <Text  
-                size="readable"
-                type="regular" 
-                style={{ color: "#209FAE",lineHeight: 20, marginTop:5 }}
-                >
-                  
-                  {t("readMore")} 
-                </Text>
-    
-            </TouchableOpacity>
-           
+            /> 
          </Text>
         ):(
           <Text
@@ -717,8 +560,44 @@ export default function CityDetail(props) {
         >
           {render ? render.description : null}
         </Text>
-        
-        )}
+         )}
+         {full == false && render.description.length > 120 ?(
+            <TouchableOpacity
+            onPress={() => {
+              setFull(true);
+            }}
+            style={{ 
+              height: 20,
+              // flexDirection: "row",
+            //  borderWidth:1,
+             }}
+          >
+            <Text  
+              size="readable"
+              type="regular" 
+              style={{ color: "#209FAE",lineHeight: 20, marginTop:5 }}
+              >
+                
+                {t("readMore")} 
+              </Text>
+  
+          </TouchableOpacity>
+         ):full == true && render.description.length > 120 ?(
+          <TouchableOpacity
+          onPress={() => {
+            setFull(false);
+          }}
+        >
+          <Text  
+            size="readable"
+            type="regular" 
+            style={{ color: "#209FAE"}}
+            >
+              
+              {t("readless")} 
+            </Text>
+            </TouchableOpacity>
+         ):null}
        
       </View>
       </View>
@@ -730,8 +609,6 @@ export default function CityDetail(props) {
                 paddingVertical: 10,
                 paddingHorizontal: 15,
                 width: "100%",
-                
-                
               }}
             >
               <Text size="label" type="bold" style={{}}>
@@ -767,8 +644,87 @@ export default function CityDetail(props) {
                     flexDirection: "row",
                   }}
                 >
-                  <RenderType item={render.destination_type} />
-
+                {tutup == true  ? render.destination_type.map((item, index)=>{
+                  
+                  return index < 8 ? (
+                     <Ripple
+                     onPress={() => {
+                      props.navigation.push("DestinationList", {
+                        idtype: item.id,
+                        idcity: render.id,
+                      });
+                    }}
+                    style={{
+                      // borderWidth: 1,
+                      width: "25%",
+                      // justifyContent: '',
+                      alignContent: "center",
+                      alignItems: "center",
+                      padding: 5,
+                    }}
+                    
+                    >
+                       <View
+                      style={{
+                        height: 60,
+                      }}
+                    >
+                      <FunIcon
+                        icon={item.icon ? item.icon : "w-fog"}
+                        height={50}
+                        width={50}
+                        style={{
+                          bottom: -3,
+                        }}
+                      />
+                      <Text
+                        size="small"
+                        style={{ textAlign: "center", marginTop: 3 }}
+                      >
+                        {item.name}
+                      </Text>
+                    </View>
+                    </Ripple>
+                  ):null;
+                }):render.destination_type.map((item, index) => {
+                  return (
+                  <Ripple
+                  onPress={() => {
+                    props.navigation.push("DestinationList", {
+                      idtype: item.id,
+                      idcity: render.id,
+                    });
+                  }}
+                  style={{
+                    width: "25%",
+                    alignContent: "center",
+                    alignItems: "center",
+                    padding: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 80,
+                    }}
+                  >
+                    <FunIcon
+                      icon={item.icon ? item.icon : "w-fog"}
+                      height={50}
+                      width={50}
+                      style={{
+                        bottom: -3,
+                      }}
+                    />
+                    <Text
+                      size="small"
+                      style={{ textAlign: "center", marginTop: 3 }}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                </Ripple>
+                )
+                })}
                   <View
                     style={{
                       width: "100%",
@@ -780,7 +736,7 @@ export default function CityDetail(props) {
                     {tutup == true && render.destination_type.length > 7 ? (
                       <TouchableOpacity
                         onPress={() => {
-                          setTutup(!tutup);
+                          setTutup(false);
                         }}
                         style={{ flexDirection: "row" }}
                       >
@@ -791,7 +747,21 @@ export default function CityDetail(props) {
                           style={{ marginTop: 3 }}
                         />
                       </TouchableOpacity>
-                    ) : null}
+                    ) : 
+                     <TouchableOpacity
+                      onPress={() => {
+                        setTutup(true);
+                      }}
+                      style={{ flexDirection: "row" }}
+                    >
+                      <Text style={{ color: "#209FAE" }}>{t("showless")} </Text>
+                      <Showless
+                        height={12}
+                        width={12}
+                        style={{ marginTop: 3 }}
+                      />
+                    </TouchableOpacity>
+                  }
                   </View>
                 </View>
               </View>
@@ -806,11 +776,20 @@ export default function CityDetail(props) {
               width: "100%",
             }}
           >
+            {i18n.language==="id" ? (
             <Text size="label" type="bold" style={{}}>
+               {t("atGlance")}
+
               <Capital text={render.name} />
+            </Text>
+            ):(
+              <Text size="label" type="bold" style={{}}>
+              <Capital text={render.name} />
+           
               {t("atGlance")}
             </Text>
-            <Text size="description">Geography and religion information</Text>
+            )}
+            <Text size="description">{t("geography&religion")}</Text>
             <View
               style={{
                 marginTop: 10,
@@ -831,7 +810,7 @@ export default function CityDetail(props) {
                 // locked={false}
               >
                 <Tab
-                  heading={t("Map")}
+                  heading={t("map")}
                   tabStyle={{ backgroundColor: "white", elevation: 0 }}
                   activeTabStyle={{ backgroundColor: "white" }}
                   textStyle={{
@@ -855,7 +834,7 @@ export default function CityDetail(props) {
                   ></Image>
                 </Tab>
                 <Tab
-                  heading={t("Climate")}
+                  heading={t("climate")}
                   tabStyle={{ backgroundColor: "white" }}
                   activeTabStyle={{ backgroundColor: "white" }}
                   textStyle={{
@@ -879,7 +858,7 @@ export default function CityDetail(props) {
                   ></Image>
                 </Tab>
                 <Tab
-                  heading={t("Religion")}
+                  heading={t("religion")}
                   tabStyle={{ backgroundColor: "white" }}
                   activeTabStyle={{ backgroundColor: "white" }}
                   textStyle={{
@@ -1040,7 +1019,7 @@ export default function CityDetail(props) {
                       >
                         {(renderjournal ? spreadData(renderjournal) : []).map(
                           (image, index) => {
-                            console.log("IndexJurnal", index);
+                            // console.log("IndexJurnal", index);
                             return (
                               <TouchableHighlight
                                 key={"keys" + index}
@@ -1965,10 +1944,9 @@ export default function CityDetail(props) {
 
   }
   const RenderArticle=({})=>{
-    console.log("tabartikel", tabIndex);
     let render=[];
       render = dataCity && dataCity.CitiesInformation.article_header[tabIndex-1] ? dataCity.CitiesInformation.article_header[tabIndex-1] : null;
-      console.log("datarticle",render);
+
     return (
       <View style={{ 
         paddingHorizontal: 15,
@@ -1977,7 +1955,6 @@ export default function CityDetail(props) {
         {render &&
         render.content.length
           ? render.content.map((i, index) => {
-              console.log("item", i);
               if (!i) {
                 <View style={{ alignItems: "center" }}>
                   <Text
@@ -1985,8 +1962,6 @@ export default function CityDetail(props) {
                     size="title"
                     style={{
                       textAlign: "justify",
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 18,
                       color: "#464646",
                     }}
                   >
@@ -2004,7 +1979,6 @@ export default function CityDetail(props) {
                             type="bold"
                             style={{
                               marginBottom: 5,
-                              // fontFamily: "Lato-Bold",
                             }}
                           >
                             {i.title}
@@ -2221,14 +2195,14 @@ export default function CityDetail(props) {
   };
 
   const refresh = async () => {
-    console.log("-- start refresh");
+    // console.log("-- start refresh");
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      console.log("-- refresh done!");
+      // console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
@@ -2259,7 +2233,22 @@ export default function CityDetail(props) {
 					backgroundColor: "#209fae",
 				}}
       >
-        
+        	<Sidebar
+				props={props}
+				show={showside}
+				Data={() => {
+					return (
+						<View
+							style={{
+								padding: 10,
+								width: "100%",
+								justifyContent: "flex-start",
+							}}
+						></View>
+					);
+				}}
+				setClose={(e) => setshowside(false)}
+			/>
         
           <Animated.Image
             style={{
@@ -2378,7 +2367,6 @@ export default function CityDetail(props) {
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
-    console.log("renderScene", routes[tabIndex].key);
     let numCols;
     let data;
     let renderItem;
