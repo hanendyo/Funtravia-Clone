@@ -83,8 +83,6 @@ export default function TripPlaning(props) {
     },
   });
 
-  console.log(dataCount);
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
