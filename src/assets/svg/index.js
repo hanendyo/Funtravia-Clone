@@ -197,6 +197,7 @@ import MovieIcon from "./files/movie_icon.svg";
 import Clock from "./files/clock.svg";
 import Globe from "./files/globe.svg";
 import AllPostWhite from "./files/AllPostWhite.svg";
+import Showless from "./files/Showless.svg";
 
 export {
   LikeWhite,
@@ -398,4 +399,5 @@ export {
   Clock,
   Globe,
   AllPostWhite,
+  Showless,
 };

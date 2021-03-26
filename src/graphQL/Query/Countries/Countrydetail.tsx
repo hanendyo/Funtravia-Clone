@@ -45,9 +45,11 @@ const country_detail = gql`
       }
       journal {
         id
+        liked
         title
         text
         picture
+       
       }
     }
   }
