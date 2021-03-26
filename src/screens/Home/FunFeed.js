@@ -97,6 +97,7 @@ export default function SearchFeed({ props }) {
             screen: "CommentsById",
             params: {
               post_id: id,
+              token: token,
             },
           })
         }

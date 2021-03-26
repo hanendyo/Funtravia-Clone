@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 export default function RenderAlbum({ data, props }) {
   const [indexAktif, setIndexAktive] = useState(0);
   const { t } = useTranslation();
-  const goToItinerary = () => {
+  const goToItinerary = (data) => {
     props.navigation.push("ItineraryStack", {
       screen: "itindetail",
       params: {
@@ -27,6 +27,7 @@ export default function RenderAlbum({ data, props }) {
         token: token,
         status: "",
         index: 1,
+        datadayaktif: data.day,
       },
     });
   };
@@ -39,30 +40,34 @@ export default function RenderAlbum({ data, props }) {
       <ImageBackground
         style={{
           width: Dimensions.get("window").width - 40,
-          height: Dimensions.get("window").width - 155,
+          height: Dimensions.get("window").width - 110,
           borderRadius: 15,
           alignSelf: "center",
           // height: Dimensions.get("window").width - 40,
         }}
         imageStyle={{
           borderRadius: 15,
+          resizeMode: "cover",
         }}
         source={{ uri: data.assets[indexAktif].filepath }}
       >
-        <View
-          style={{
-            position: "absolute",
-            top: 15,
-            left: 10,
-            backgroundColor: "#040404",
-            opacity: 0.8,
-            paddingHorizontal: 15,
-            borderRadius: 14,
-            height: 28,
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
+        <Pressable
+          onPress={() => goToItinerary(data)}
+          style={({ pressed }) => [
+            {
+              position: "absolute",
+              top: 15,
+              left: 10,
+              backgroundColor: "#040404",
+              opacity: pressed ? 1 : 0.8,
+              paddingHorizontal: 15,
+              borderRadius: 14,
+              height: 28,
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+            },
+          ]}
         >
           <Text
             type="bold"
@@ -73,7 +78,7 @@ export default function RenderAlbum({ data, props }) {
           >
             Travel Album {data.itinerary.city.name} {t("day")} {data.day.day}
           </Text>
-        </View>
+        </Pressable>
         <View
           style={{
             position: "absolute",

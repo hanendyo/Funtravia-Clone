@@ -11,7 +11,6 @@ import {
   Pressable,
   Keyboard,
   SafeAreaView,
-  RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -20,7 +19,6 @@ import Image from "react-native-auto-scale-image";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
 // import { NavigationEvents, SafeAreaView } from "react-navigation";
-import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import {
   Text,
   Button,
@@ -46,11 +44,11 @@ import {
 } from "../../../assets/svg";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
+import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
+import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import { gql } from "apollo-boost";
 import ReadMore from "react-native-read-more-text";
-import RenderAlbum from "../RenderAlbumItinerary";
-import RenderSinglePhoto from "../RenderSinglePhoto";
-import set from "lodash.set";
+
 const deletepost = gql`
   mutation($post_id: ID!) {
     delete_post(post_id: $post_id) {
@@ -61,7 +59,7 @@ const deletepost = gql`
     }
   }
 `;
-export default function Comments(props) {
+export default function CommentsById(props) {
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -78,27 +76,12 @@ export default function Comments(props) {
       // fontSize: 14,
       color: "white",
     },
-    // headerLeftContainerStyle: {
-    // 	background: "#FFF",
-    // },
-    // headerRight: () => (
-    // 	<View style={{ flexDirection: "row" }}>
-    // 		<TouchableOpacity
-    // 			style={{ marginRight: 20 }}
-    // 			onPress={() => Alert.alert("Coming soon")}
-    // 		>
-    // 			<SearchWhite height={20} width={20} />
-    // 		</TouchableOpacity>
-    // 	</View>
-    // ),
   };
   const [loadings, setLoading] = useState(false);
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  let dataPost = useRef(props.route.params?.data);
-  // console.log(dataPost);
-  let [postid, setPostid] = useState(props.route.params?.post_id);
+  let [postid, setPostid] = useState(props.route.params.post_id);
   let [token, setToken] = useState(props.route.params.token);
   let slider = useRef();
   let [setting, setSetting] = useState();
@@ -106,7 +89,6 @@ export default function Comments(props) {
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [selectedOption, SetOption] = useState({});
-  let [data_comment, SetDatacommnet] = useState([]);
 
   const onSelect = useCallback(
     (id) => {
@@ -121,11 +103,20 @@ export default function Comments(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-
+    await setToken(tkn);
+    await GetFeed();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      GetCommentList();
+      loadAsync();
+    });
+    return unsubscribe;
+  }, []);
 
   const [
     MutationComment,
@@ -173,21 +164,14 @@ export default function Comments(props) {
       },
     },
   });
-  const [refreshing, setRefreshing] = useState(false);
-  const Refresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(1000).then(() => {
-      setRefreshing(false);
-    });
-  }, []);
 
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
-    // var tempData = [...datafeed];
+    // var tempData = [...datafeed.feed_post_byid?];
     // var index = tempData.findIndex((k) => k['id'] === id);
 
-    // SetDataFeed(tempData);
+    // Setdatafeed.feed_post_byid?(tempData);
     if (token || token !== "") {
       try {
         let response = await Mutationdeletepost({
@@ -209,13 +193,6 @@ export default function Comments(props) {
             response.data.delete_post.code === "200"
           ) {
             props.navigation.goBack();
-            // Refresh();
-            // var tempData = [...datafeed];
-            // var index = tempData.findIndex((k) => k['id'] === id);
-            // tempData[index].liked = false;
-            // tempData[index].response_count =
-            // 	response.data.delete_post.count_like;
-            // SetDataFeed(tempData);
           } else {
             throw new Error(response.data.delete_post.message);
           }
@@ -226,19 +203,15 @@ export default function Comments(props) {
         Alert.alert("" + error);
       }
     } else {
-      // tempData[index].liked = true;
-      // tempData[index].response_count = tempData[index].response_count + 1;
-      // SetDataFeed(tempData);
       Alert.alert("Please Login");
     }
   };
 
   const _liked = async (id) => {
     // console.log(id);
-    // SetDataFeed(tempData);
+    // Setdatafeed?(tempData);
     if (token) {
-      dataPost.current.liked = true;
-      dataPost.current.response_count = dataPost.current.response_count + 1;
+      // datafeed.liked = true;
       try {
         let response = await MutationLike({
           variables: {
@@ -251,22 +224,27 @@ export default function Comments(props) {
         // if (errorLike) {
         //   throw new Error("Error Input");
         // }
-
+        console.log(response);
         if (response.data) {
           if (
             response.data.like_post.code === 200 ||
             response.data.like_post.code === "200"
           ) {
-            dataPost.current.liked = true;
+            GetFeed();
+
+            // datafeed.liked = true;
           } else {
-            dataPost.current.liked = false;
+            GetFeed();
+
+            // datafeed.liked = false;
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
-        dataPost.current.liked = false;
-        dataPost.current.response_count = dataPost.current.response_count - 1;
+        GetFeed();
+
+        // datafeed.liked = false;
         console.log(error);
         // Alert.alert("" + error);
       }
@@ -277,8 +255,7 @@ export default function Comments(props) {
 
   const _unliked = async (id) => {
     if (token || token !== "") {
-      dataPost.current.liked = false;
-      dataPost.current.response_count = dataPost.current.response_count - 1;
+      // datafeed.liked = false;
       try {
         let response = await MutationunLike({
           variables: {
@@ -291,81 +268,39 @@ export default function Comments(props) {
         // if (errorunLike) {
         //   throw new Error("Error Input");
         // }
-
+        console.log(response);
         if (response.data) {
           if (
             response.data.unlike_post.code === 200 ||
             response.data.unlike_post.code === "200"
           ) {
-            dataPost.current.liked = false;
+            GetFeed();
+
+            // datafeed.liked = false;
           } else {
-            dataPost.current.liked = true;
+            GetFeed();
+
+            // datafeed.liked = true;
             throw new Error(response.data.unlike_post.message);
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
-        dataPost.current.liked = true;
-        dataPost.current.response_count = dataPost.current.response_count + 1;
+        GetFeed();
 
         Alert.alert("" + error);
       }
     } else {
-      dataPost.current.liked = false;
+      // datafeed.liked = false;
       Alert.alert("Please Login");
     }
   };
 
-  const create_UUID = () => {
-    var dt = new Date().getTime();
-    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0;
-        dt = Math.floor(dt / 16);
-        return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
-      }
-    );
-    return uuid;
-  };
-
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      // GetFeed();
-      GetCommentList();
-      // refetch();
-      loadAsync();
-    });
-    return unsubscribe;
-  }, []);
-
   const comment = async (id, text) => {
+    Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
-      let gen_uuid = create_UUID();
-      let tempData = [...data_comment];
-      let pushcomment = {
-        created_at: "",
-        id: gen_uuid,
-        text: text,
-        updated_at: "",
-        user: {
-          id: setting?.user.id,
-          first_name: setting?.user.first_name,
-          last_name: setting?.user.last_name,
-          picture: setting?.user.picture,
-          username: setting?.user.username,
-        },
-        is_send: false,
-      };
-      tempData.push(pushcomment);
-      // console.log(tempData);
-      await SetDatacommnet(tempData);
-      await scroll_to();
-      let idx = tempData.length - 1;
-      Keyboard.dismiss();
-      setStatusText("");
+      setLoading(true);
       try {
         let response = await MutationComment({
           variables: {
@@ -373,6 +308,9 @@ export default function Comments(props) {
             text: text,
           },
         });
+        if (loadingcmnt) {
+          Alert.alert("Loading!!");
+        }
         if (errorcmnt) {
           throw new Error("Error Input");
         }
@@ -381,32 +319,91 @@ export default function Comments(props) {
             response.data.comment_post.code === 200 ||
             response.data.comment_post.code === "200"
           ) {
-            // setLoading(false);
-            dataPost.current.comment_count = dataPost.current.comment_count + 1;
-            tempData[idx] = response.data.comment_post.data;
-            tempData[idx].is_send = true;
-            // slider.current.scrollToEnd();
-            SetDatacommnet(tempData);
-            Refresh();
+            setLoading(false);
+
+            setStatusText("");
+            // datafeed.comment_count = datafeed?.comment_count + 1;
+            GetCommentList();
+            scroll_to();
           } else {
+            setLoading(false);
             throw new Error(response.data.comment_post.message);
           }
 
           // Alert.alert('Succes');
         }
       } catch (error) {
-        tempData.splice(idx, 1);
-        SetDatacommnet(tempData);
-
+        setLoading(false);
+        // console.log(error);
         Alert.alert("" + error);
       }
     } else {
       Alert.alert("Please Insert a Text");
     }
   };
+  const ReadMorehendle = (handlePress) => {
+    return (
+      <Text
+        onPress={handlePress}
+        type="bold"
+        style={{
+          color: "#209fae",
+        }}
+      >
+        Read More
+      </Text>
+    );
+  };
+
+  const ReadLesshendle = (handlePress) => {
+    return (
+      <Text
+        onPress={handlePress}
+        type="bold"
+        style={{
+          color: "#209fae",
+        }}
+      >
+        Read Less
+      </Text>
+    );
+  };
+  const [
+    GetFeed,
+    { data: datafeed, loading: loadingfeed, error: errorfeed },
+  ] = useLazyQuery(FeedByID, {
+    fetchPolicy: "network-only",
+    variables: { post_id: postid },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  // if (loadingfeed){
+  //   return <View></View>
+  // }
+  // if (errorfeed){
+  //   return <View></View>
+  // }
+  // console.log(token);
+  // console.log(
+  //   datafeed && datafeed.feed_post_byid ? datafeed.feed_post_byid : null
+  // );
 
   const scroll_to = () => {
-    slider.current.scrollToEnd();
+    // GetCommentList();
+    if (loading == true) {
+      // console.log(loading);
+      scroll_to();
+    }
+    if (loading == false) {
+      // console.log(loading);
+      wait(1000).then(() => {
+        slider.current.scrollToEnd();
+      });
+    }
   };
 
   const wait = (timeout) => {
@@ -416,27 +413,22 @@ export default function Comments(props) {
   };
 
   // console.log(props.navigation.getParam('post_id'));
-  const [GetCommentList, { data, loading, error, refetch }] = useLazyQuery(
-    CommentList,
-    {
-      fetchPolicy: "network-only",
-      variables: { post_id: dataPost.current.id },
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+  const [GetCommentList, { data, loading, error }] = useLazyQuery(CommentList, {
+    fetchPolicy: "network-only",
+    variables: { post_id: datafeed?.feed_post_byid?.id },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      onCompleted: (data) => {
-        SetDatacommnet(data.comment);
-      },
-    }
-  );
+    },
+  });
 
-  // if (data && data.comment) {
-  //   data_comment = data.comment;
-  // }
-  // console.log(data_comment);
+  // console.log(loading);
+
+  if (data) {
+    // console.log(data.comment[0].text);
+  }
 
   let [liked, setLiked] = useState(false);
 
@@ -449,6 +441,7 @@ export default function Comments(props) {
   };
 
   const duration = (datetime) => {
+    console.log(datetime);
     var date1 = new Date(datetime).getTime();
     var date2 = new Date().getTime();
     var msec = date2 - date1;
@@ -480,40 +473,13 @@ export default function Comments(props) {
   // 	likeToggle(liked);
   // };
   const OptionOpen = (data) => {
+    console.log("select", data);
     SetOption(data);
-    if (dataPost.current.user.id == setting?.user?.id) {
+    if (datafeed?.feed_post_byid?.user.id == setting?.user?.id) {
       setModalmenu(true);
     } else {
       setModalmenuother(true);
     }
-  };
-
-  const ReadMorehendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read More
-      </Text>
-    );
-  };
-
-  const ReadLesshendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read Less
-      </Text>
-    );
   };
 
   const Item = ({ dataComment }) => {
@@ -594,29 +560,16 @@ export default function Comments(props) {
               >
                 {dataComment.user?.first_name} {dataComment.user?.last_name}
               </Text>
-              {dataComment.is_send == false ? (
-                <Text
-                  size={"small"}
-                  style={{
-                    fontFamily: "Lato-Regular",
-                    // fontSize: 10,
-                    // marginTop: 7,
-                  }}
-                >
-                  Loading...
-                </Text>
-              ) : (
-                <Text
-                  size={"small"}
-                  style={{
-                    fontFamily: "Lato-Regular",
-                    // fontSize: 10,
-                    // marginTop: 7,
-                  }}
-                >
-                  {duration(dataComment.created_at)}
-                </Text>
-              )}
+              <Text
+                size={"small"}
+                style={{
+                  fontFamily: "Lato-Regular",
+                  // fontSize: 10,
+                  // marginTop: 7,
+                }}
+              >
+                {duration(dataComment.created_at)}
+              </Text>
             </View>
           </View>
         </View>
@@ -624,7 +577,7 @@ export default function Comments(props) {
           style={{
             width: "100%",
             marginVertical: 5,
-            marginLeft: 45,
+            // marginLeft: 45,
           }}
         >
           <Text
@@ -639,27 +592,10 @@ export default function Comments(props) {
     );
   };
 
-  const goToItinerary = (data) => {
-    props.navigation.push("ItineraryStack", {
-      screen: "itindetail",
-      params: {
-        itintitle: data.itinerary.name,
-        country: data.itinerary.id,
-        dateitin: "",
-        token: token,
-        status: "",
-        index: 1,
-        datadayaktif: data.day,
-      },
-    });
-  };
-
   return (
     <SafeAreaView
       style={{
-        backgroundColor: "#F6F6F6",
-
-        // flex: 1,
+        flex: 1,
       }}
     >
       <Modal
@@ -717,7 +653,7 @@ export default function Comments(props) {
               paddingVertical: 10,
             }}
             onPress={() => {
-              setModalmenu(false), setModalhapus(true);
+              setModalhapus(true);
             }}
           >
             <Text
@@ -871,19 +807,17 @@ export default function Comments(props) {
       </Modal>
 
       <ScrollView
-        ref={slider}
-        contentContainerStyle={{
-          paddingBottom: 30,
-        }}
-        showsVerticalScrollIndicator={false}
-        style={
+        contentContainerStyle={
           {
-            // flex: 1,
-            // marginBottom: 10,
-            // backgroundColor: "#FFF",
-            // height: Dimensions.get('window').height - 100,
+            // paddingBottom :100,
           }
         }
+        style={{
+          flex: 1,
+
+          // backgroundColor: "#FFF",
+          // height: Dimensions.get('window').height - 100,
+        }}
       >
         <Loading show={loadings} />
         <View
@@ -891,22 +825,18 @@ export default function Comments(props) {
             width: Dimensions.get("window").width - 20,
             backgroundColor: "#FFFFFF",
             // flex: 1,
-            // borderBottomWidth: 1,
+            borderBottomWidth: 1,
             borderBottomColor: "#EEEEEE",
             marginHorizontal: 10,
-            marginTop: 10,
-            // marginBottom: 5,
-            paddingBottom: 60,
-
+            marginVertical: 10,
             // borderWidth:1,
-            borderRadius: 15,
-            // paddingBottom: 20,
-            minHeight: Dimensions.get("window").height - 70,
-            // shadowColor: "#464646",
-            // shadowOffset: { width: 0, height: 0 },
-            // shadowRadius: 0.5,
-            // shadowOpacity: 0.5,
-            // elevation: 1,
+            borderRadius: 20,
+            paddingBottom: 20,
+            shadowColor: "#464646",
+            shadowOffset: { width: 0, height: 0 },
+            shadowRadius: 0.5,
+            shadowOpacity: 0.5,
+            elevation: 1,
           }}
         >
           <View
@@ -921,17 +851,18 @@ export default function Comments(props) {
           >
             <Pressable
               onPress={() => {
-                dataPost.current.user.id !== setting?.user?.id
+                datafeed?.feed_post_byid?.user.id !== setting?.user?.id
                   ? props.navigation.push("ProfileStack", {
                       screen: "otherprofile",
                       params: {
-                        idUser: dataPost.current.user.id,
+                        idUser: datafeed?.feed_post_byid?.user.id,
                       },
                     })
                   : props.navigation.push("ProfileStack", {
                       screen: "ProfileTab",
                     });
               }}
+              u
               style={{
                 flexDirection: "row",
               }}
@@ -939,11 +870,11 @@ export default function Comments(props) {
               <Image
                 isTouchable
                 onPress={() => {
-                  dataPost.current.user.id !== setting?.user?.id
+                  datafeed?.feed_post_byid?.user.id !== setting?.user?.id
                     ? props.navigation.push("ProfileStack", {
                         screen: "otherprofile",
                         params: {
-                          idUser: dataPost.current.user.id,
+                          idUser: datafeed?.feed_post_byid?.user.id,
                         },
                       })
                     : props.navigation.push("ProfileStack", {
@@ -957,7 +888,14 @@ export default function Comments(props) {
                   alignSelf: "center",
                   resizeMode: "cover",
                 }}
-                source={{ uri: dataPost.current.user.picture }}
+                source={{
+                  uri:
+                    datafeed &&
+                    datafeed.feed_post_byid &&
+                    datafeed.feed_post_byid.user
+                      ? datafeed.feed_post_byid.user.picture
+                      : null,
+                }}
               />
               <View
                 style={{
@@ -967,33 +905,28 @@ export default function Comments(props) {
               >
                 <Text
                   onPress={() => {
-                    dataPost.current.user.id !== setting?.user?.id
-                      ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: dataPost.current.user.id,
-                          },
+                    datafeed?.feed_post_byid?.user.id !== setting?.user?.id
+                      ? props.navigation.push("otherprofile", {
+                          idUser: datafeed?.feed_post_byid?.user.id,
                         })
-                      : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                        });
+                      : props.navigation.push("ProfileTab");
                   }}
                   type={"bold"}
                   style={{}}
                 >
-                  {dataPost.current.user.first_name}{" "}
-                  {dataPost.current.user.first_name
-                    ? dataPost.current.user.last_name
+                  {datafeed?.feed_post_byid?.user.first_name}{" "}
+                  {datafeed?.feed_post_byid?.user.first_name
+                    ? datafeed?.feed_post_byid?.user.last_name
                     : null}
                 </Text>
                 <Text size={"small"} style={{}}>
-                  {duration(dataPost.current.created_at)}
+                  {duration(datafeed?.feed_post_byid.created_at)}
                 </Text>
               </View>
             </Pressable>
             <TouchableOpacity
               onPress={() => {
-                OptionOpen(dataPost);
+                OptionOpen(datafeed?.feed_post_byid);
               }}
               style={{
                 position: "absolute",
@@ -1009,21 +942,29 @@ export default function Comments(props) {
               marginHorizontal: 10,
               alignContent: "center",
               justifyContent: "center",
-              // alignItems: "center",
+              alignItems: "center",
               width: Dimensions.get("window").width - 40,
-              // height: Dimensions.get("window").width - 40,
               minHeight: Dimensions.get("window").width - 155,
-              // borderWidth: 0.5,
-              borderColor: "#EEEEEE",
               borderRadius: 15,
             }}
           >
-            {dataPost.current.is_single == false &&
-            dataPost.current.itinerary !== null ? (
-              <RenderAlbum data={dataPost.current} props={props} />
-            ) : (
-              <RenderSinglePhoto data={dataPost.current} props={props} />
-            )}
+            {datafeed &&
+            datafeed.feed_post_byid &&
+            datafeed.feed_post_byid?.assets &&
+            datafeed.feed_post_byid?.assets[0].filepath ? (
+              <Image
+                style={{
+                  width: Dimensions.get("window").width - 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                }}
+                uri={datafeed.feed_post_byid.assets[0].filepath}
+              />
+            ) : null}
+            {/* <AutoHeightImage
+              width={Dimensions.get("window").width -40}
+              source={{ uri: datafeed.feed_post_byid?.assets[0]?.filepath }}
+            /> */}
           </View>
           <View
             style={{
@@ -1050,9 +991,9 @@ export default function Comments(props) {
                   // justifyContent: 'space-evenly',
                 }}
               >
-                {dataPost.current.liked ? (
+                {datafeed?.feed_post_byid?.liked ? (
                   <Button
-                    onPress={() => _unliked(dataPost.current.id)}
+                    onPress={() => _unliked(datafeed.feed_post_byid?.id)}
                     type="icon"
                     // variant="transparent"
                     position="left"
@@ -1072,12 +1013,12 @@ export default function Comments(props) {
                       size="label"
                       style={{ marginHorizontal: 5, color: "#BE3737" }}
                     >
-                      {dataPost.current.response_count}
+                      {datafeed.feed_post_byid?.response_count}
                     </Text>
                   </Button>
                 ) : (
                   <Button
-                    onPress={() => _liked(dataPost.current.id)}
+                    onPress={() => _liked(datafeed?.feed_post_byid?.id)}
                     type="icon"
                     position="left"
                     size="small"
@@ -1095,13 +1036,13 @@ export default function Comments(props) {
                       size="label"
                       style={{ marginHorizontal: 7 }}
                     >
-                      {dataPost.current.response_count}
+                      {datafeed?.feed_post_byid?.response_count}
                     </Text>
                   </Button>
                 )}
 
                 <Button
-                  onPress={() => console.log("dataPost")}
+                  onPress={() => console.log("datafeed.feed_post_byid")}
                   type="icon"
                   variant="transparent"
                   position="left"
@@ -1118,7 +1059,7 @@ export default function Comments(props) {
                     size="label"
                     style={{ marginHorizontal: 7 }}
                   >
-                    {dataPost.current.comment_count}
+                    {datafeed?.feed_post_byid?.comment_count}
                   </Text>
                 </Button>
               </View>
@@ -1156,53 +1097,12 @@ export default function Comments(props) {
                   color: '#616161',
                   marginRight: 5,
                 }}>
-                {dataPost.current.user.first_name} {''}{' '}
-                {dataPost.current.user.first_name ? dataPost.current.user.last_name : null}
+                {datafeed.feed_post_byid?.user.first_name} {''}{' '}
+                {datafeed.feed_post_byid?.user.first_name ? datafeed.feed_post_byid?.user.last_name : null}
               </Text> */}
-              {dataPost.current.is_single == false &&
-              dataPost.current.itinerary !== null ? (
-                <View>
-                  <Pressable
-                    onPress={() => goToItinerary(dataPost.current)}
-                    style={{
-                      flexDirection: "row",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#209fae",
-                        height: 23,
-                        width: 7,
-                        borderRadius: 4,
-                        marginRight: 10,
-                        marginLeft: 2,
-                      }}
-                    />
-                    <Text type="bold" size="title">
-                      {dataPost.current.itinerary.name}
-                    </Text>
-                  </Pressable>
-                  {dataPost.current.caption ? (
-                    <ReadMore
-                      numberOfLines={3}
-                      renderTruncatedFooter={ReadMorehendle}
-                      renderRevealedFooter={ReadLesshendle}
-                      // onReady={this._handleTextReady}
-                    >
-                      <Text
-                        size="label"
-                        style={{
-                          textAlign: "left",
-                          lineHeight: 20,
-                        }}
-                      >
-                        {dataPost.current.caption}
-                      </Text>
-                    </ReadMore>
-                  ) : null}
-                </View>
-              ) : dataPost.current.caption ? (
+              {datafeed &&
+              datafeed.feed_post_byid &&
+              datafeed.feed_post_byid.caption ? (
                 <ReadMore
                   numberOfLines={3}
                   renderTruncatedFooter={ReadMorehendle}
@@ -1223,12 +1123,12 @@ export default function Comments(props) {
                         marginRight: 5,
                       }}
                     >
-                      {dataPost.current.user.first_name}{" "}
-                      {dataPost.current.user.first_name
-                        ? dataPost.current.user.last_name
+                      {datafeed.feed_post_byid?.user.first_name}{" "}
+                      {datafeed.feed_post_byid?.user.first_name
+                        ? datafeed.feed_post_byid?.user.last_name
                         : null}{" "}
                     </Text>
-                    {dataPost.current.caption}
+                    {datafeed.feed_post_byid?.caption}
                   </Text>
                 </ReadMore>
               ) : null}
@@ -1236,117 +1136,79 @@ export default function Comments(props) {
           </View>
 
           <FlatList
-            scrollEnabled={false}
-            data={data_comment}
+            ref={slider}
+            data={data ? data.comment : null}
             renderItem={({ item }) => {
               return <Item dataComment={item} />;
             }}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => Refresh()}
-              />
-            }
             keyExtractor={(item) => item.id}
             extraData={selected}
-            contentContainerStyle={
-              {
-                // minHeight: Dimensions.get("window").height / 2,
-              }
-            }
           />
         </View>
       </ScrollView>
       <View
         style={{
-          position: "absolute",
-          bottom: 0,
-          paddingBottom: 10,
-          width: Dimensions.get("window").width,
-          backgroundColor: "#F6F6F6",
-          // borderWidth: 1,
-          // marginHorizontal: 10,
-          justifyContent: "center",
+          flexDirection: "row",
+          marginVertical: 5,
+          marginHorizontal: 10,
+          // position: 'absolute',
+          // bottom: 0,
+          borderRadius: 50,
+          backgroundColor: "#ffffff",
+          // height: 100,
+          width: Dimensions.get("screen").width - 20,
+          // position: 'absolute',
+          // bottom: 0,
+          // borderWidth:1,
           alignItems: "center",
+          // justifyContent: 'space-around',
         }}
       >
-        <View
+        <TextInput
+          allowFontScaling={false}
+          multiline
+          placeholder={
+            "Comment as " +
+            setting?.user?.first_name +
+            " " +
+            setting?.user?.last_name +
+            "..."
+          }
+          maxLength={255}
           style={{
-            // borderRadius: 2,
-            backgroundColor: "#FFFFFF",
-            borderBottomRightRadius: 15,
-            borderBottomLeftRadius: 15,
-            marginHorizontal: 18,
-            // marginBottom: 10,
-            paddingVertical: 10,
-            width: Dimensions.get("screen").width - 20,
-
+            height: 60,
+            width: Dimensions.get("screen").width - 120,
+            // borderBottomColor: '#f0f0f0f0',
             // borderWidth: 1,
+            marginLeft: 20,
+          }}
+          onChangeText={(text) => setStatusText(text)}
+          value={statusText}
+        />
+        <Pressable
+          onPress={() => comment(datafeed?.feed_post_byid?.id, statusText)}
+          style={{
+            flex: 1,
+            // borderWidth: 1,
+            height: 60,
+            // alignSelf: 'center',
+            alignItems: "center",
+            justifyContent: "center",
+            paddingRight: 10,
           }}
         >
-          <View
+          <Text
+            allowFontScaling={false}
+            size="label"
+            type="bold"
             style={{
-              flexDirection: "row",
-              // marginVertical: 10,
-              marginHorizontal: 10,
-              borderRadius: 50,
-              backgroundColor: "#F6F6F6",
-              // height: 100,
-              width: Dimensions.get("screen").width - 50,
-              // position: 'absolute',
-              // bottom: 0,
-              // borderWidth:1,
-              alignItems: "center",
-              // justifyContent: 'space-around',
+              alignSelf: "center",
+              color: "#209fae",
             }}
           >
-            <TextInput
-              allowFontScaling={false}
-              multiline
-              placeholder={
-                "Comment as " +
-                setting?.user?.first_name +
-                " " +
-                setting?.user?.last_name +
-                "..."
-              }
-              maxLength={1000}
-              style={{
-                height: 50,
-                width: Dimensions.get("screen").width - 130,
-                // borderBottomColor: '#f0f0f0f0',
-                // borderWidth: 1,
-                marginLeft: 20,
-              }}
-              onChangeText={(text) => setStatusText(text)}
-              value={statusText}
-            />
-            <Pressable
-              onPress={() => comment(dataPost.current.id, statusText)}
-              style={{
-                flex: 1,
-                // borderWidth: 1,
-                height: 50,
-                // alignSelf: 'center',
-                alignItems: "center",
-                justifyContent: "center",
-                paddingRight: 10,
-              }}
-            >
-              <Text
-                allowFontScaling={false}
-                size="label"
-                type="bold"
-                style={{
-                  alignSelf: "center",
-                  color: "#209fae",
-                }}
-              >
-                Post
-              </Text>
-            </Pressable>
-          </View>
-        </View>
+            Post
+          </Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
