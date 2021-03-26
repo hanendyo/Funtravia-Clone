@@ -873,7 +873,7 @@ export default function Comments(props) {
       <ScrollView
         ref={slider}
         contentContainerStyle={{
-          paddingBottom: 30,
+          paddingBottom: 10,
         }}
         showsVerticalScrollIndicator={false}
         style={
