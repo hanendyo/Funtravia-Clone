@@ -182,14 +182,21 @@ export default function tripalbumdetail(props) {
     setIndex(inde);
     var tempdatas = [];
     var x = 0;
+
     for (var i in data.album) {
+      let wid = 0;
+      let hig = 0;
+      Image.getSize(data.album[i].assets, (width, height) => {
+        wid = width;
+        hig = height;
+      });
       // console.log(data.album[i].photoby.first_name);
       tempdatas.push({
         key: i,
         selected: i === inde ? true : false,
         url: data.album[i].assets ? data.album[i].assets : "",
-        width: Dimensions.get("screen").width,
-        height: 300,
+        width: wid,
+        height: hig,
         props: {
           source: data.album[i].assets ? data.album[i].assets : "",
         },

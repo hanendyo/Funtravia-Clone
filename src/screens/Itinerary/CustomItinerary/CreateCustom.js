@@ -21,12 +21,14 @@ import {
   Xhitam,
   Pointmapgray,
   Bottom,
+  New,
 } from "../../../assets/svg";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/Savecustom";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { useTranslation } from "react-i18next";
 import { Button, Text } from "../../../component";
 import { default_image } from "../../../assets/png";
+import DocumentPicker from "react-native-document-picker";
 
 export default function CreateCustom(props) {
   const HeaderComponent = {
@@ -86,6 +88,23 @@ export default function CreateCustom(props) {
   let [DetailAddress, setDetailAddress] = useState("");
   let [hour, sethour] = useState(1);
   let [minutes, setMinutes] = useState(0);
+  let [dataUpload, setDataUpload] = useState([
+    {
+      name: "testing",
+    },
+    {
+      name: "testing",
+    },
+    {
+      name: "testing",
+    },
+    {
+      name: "testing",
+    },
+    {
+      name: "testing",
+    },
+  ]);
   let [validate, setValidate] = useState({
     tittle: true,
     duration: true,
@@ -181,6 +200,26 @@ export default function CreateCustom(props) {
     58,
     59,
   ];
+
+  const pickFile = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+      });
+      console.log(
+        res.uri,
+        res.type, // mime type
+        res.name,
+        res.size
+      );
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+  };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -502,7 +541,10 @@ export default function CreateCustom(props) {
           </View>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={{ width: Dimensions.get("screen").width, padding: 20 }}>
           <Text
             size="title"
@@ -859,11 +901,48 @@ export default function CreateCustom(props) {
             >
               {t("Attach File")}
             </Text>
+            <View
+              style={{
+                paddingTop: 5,
+              }}
+            >
+              {dataUpload.map((data, index) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Text>{index + 1}. </Text>
+                      <Text>{data.name}</Text>
+                    </View>
+                    <Xhitam
+                      style={{
+                        marginRight: 10,
+                      }}
+                      width={5}
+                      height={5}
+                    />
+                  </View>
+                );
+              })}
+            </View>
+
             <View style={{ flex: 1, marginVertical: 10 }}>
               <TouchableOpacity
+                onPress={() => {
+                  pickFile();
+                }}
                 style={{
                   width: "100%",
-                  height: 120,
                   // borderColor: "black",
                   borderWidth: 1,
                   borderStyle: "dashed",
@@ -872,34 +951,30 @@ export default function CreateCustom(props) {
                   justifyContent: "center",
                   alignContent: "center",
                   alignItems: "center",
+                  paddingVertical: 10,
+                  flexDirection: "row",
+                  marginBottom: 5,
                 }}
               >
-                <Text>test</Text>
+                <New height={15} width={15} />
+                <Text
+                  style={{
+                    marginLeft: 5,
+                    color: "#d1d1d1",
+                  }}
+                >
+                  Upload File
+                </Text>
               </TouchableOpacity>
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  color: "#d1d1d1",
+                }}
+              >
                 {t("Upload your flight ticket, hotel voucher, etc.")}
               </Text>
-            </View>
-            <View style={{ flex: 1, marginVertical: 10 }}>
-              <Image
-                source={default_image}
-                style={{
-                  width: "100%",
-                  height: 120,
-                  borderRadius: 5,
-                  resizeMode: "cover",
-                  marginVertical: 10,
-                }}
-              ></Image>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Button style={{ flex: 1, marginRight: 2.5 }}></Button>
-                <Button style={{ flex: 1, marginLeft: 2.5 }}></Button>
-              </View>
             </View>
           </View>
 
@@ -907,7 +982,8 @@ export default function CreateCustom(props) {
             onPress={() => setcheck(!cheked)}
             style={{
               flexDirection: "row",
-              paddingVertical: 20,
+              paddingVertical: 5,
+              // borderWidth: 1,
               justifyContent: "flex-start",
               alignItems: "center",
               alignContent: "center",

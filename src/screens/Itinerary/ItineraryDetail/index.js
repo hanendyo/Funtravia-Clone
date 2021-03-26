@@ -638,7 +638,7 @@ export default function ItineraryDetail(props) {
         if (errorupload) {
           throw new Error("Error Input");
         }
-        console.log(response);
+        // console.log(response);
 
         if (response.data) {
           if (response.data.uploadalbums.code !== 200) {
@@ -3358,7 +3358,7 @@ export default function ItineraryDetail(props) {
     let index = data.findIndex((k) => k["id"] === dayaktif.id);
     // let albumselected = dataAlbum[index];
     let albumselected = data[index].unposted;
-    console.log(albumselected);
+    // console.log(albumselected);
     await props.navigation.navigate("ItineraryStack", {
       screen: "SelectAlbumsPost",
       params: {
@@ -3801,7 +3801,7 @@ export default function ItineraryDetail(props) {
     var tempdatas = [];
     var x = 0;
     for (var i in data) {
-      console.log(data[i]);
+      // console.log(data[i]);
       if (data[i].id !== "camera") {
         let wid = 0;
         let hig = 0;
