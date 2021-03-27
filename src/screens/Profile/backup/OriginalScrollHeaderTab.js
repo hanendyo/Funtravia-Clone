@@ -265,7 +265,7 @@ const TestProfile = () => {
       } else {
         Animated.timing(headerMoveScrollY, {
           toValue: 0,
-          duration: 300,
+          duration: 100,
           useNativeDriver: true,
         }).start();
       }
