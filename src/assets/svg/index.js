@@ -198,6 +198,7 @@ import Clock from "./files/clock.svg";
 import Globe from "./files/globe.svg";
 import AllPostWhite from "./files/AllPostWhite.svg";
 import Showless from "./files/Showless.svg";
+import New from "./files/New.svg";
 
 export {
   LikeWhite,
@@ -400,4 +401,5 @@ export {
   Globe,
   AllPostWhite,
   Showless,
+  New,
 };
