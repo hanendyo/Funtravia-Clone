@@ -51,6 +51,26 @@ const country_detail = gql`
         picture
        
       }
+      about{
+        id
+        type
+        information_id
+        article_id
+        name
+        label
+        description
+        icon
+      }
+      practical{
+        id
+        type
+        information_id
+        article_id
+        name
+        label
+        description
+        icon
+      }
     }
   }
 `;
