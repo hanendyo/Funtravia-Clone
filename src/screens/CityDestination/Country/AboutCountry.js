@@ -13,15 +13,12 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
-
-import { Arrowbackwhite, Garuda, Calendargreen } from "../../assets/svg";
-import { default_image } from "../../assets/png";
+import AboutCountries from "../../../graphQL/Query/Countries/AboutCountries";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../component";
-import Ripple from "react-native-material-ripple";
 import { useLazyQuery } from "@apollo/client";
-import About from "../../graphQL/Query/Cities/About";
-import { TabView, TabBar } from "react-native-tab-view";
+import { Button, Text } from "../../../component";
+import { Arrowbackwhite } from "../../../assets/svg";
+import { TabBar, TabView } from "react-native-tab-view";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -32,7 +29,7 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 
-export default function about(props) {
+export default function aboutcountry(props) {
   let [token, setToken] = useState("");
   const [loadings, setloadings] = useState(true);
   const [tabIndex, setIndex] = useState(0);
@@ -98,7 +95,7 @@ export default function about(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await getAboutDetail();
-    await setloadings(false);
+    // await setloadings(false);
   };
 
   const listPanResponder = useRef(
@@ -117,40 +114,43 @@ export default function about(props) {
     })
   ).current;
 
-  const [getAboutDetail, { loading, data, error }] = useLazyQuery(About, {
-    fetchPolicy: "network-only",
-    variables: {
-      id: props.route.params.city_id,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  const [getAboutDetail, { loading, data, error }] = useLazyQuery(
+    AboutCountries,
+    {
+      fetchPolicy: "network-only",
+      variables: {
+        id: props.route.params.country_id,
       },
-    },
-    onCompleted: () => {
-      let tab = [];
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      onCompleted: () => {
+        let tab = [];
 
-      data.list_about_article_city.map((item, index) => {
-        tab.push({ key: item.id, title: item.name });
-      });
+        data.list_about_article_country.map((item, index) => {
+          tab.push({ key: item.id, title: item.name });
+        });
 
-      setRoutes(tab);
-      setIndex(props.route.params.indexcity);
-    },
-  });
+        setRoutes(tab);
+        setIndex(props.route.params.indexcountry);
+      },
+    }
+  );
   let about = [];
-  if (data && data.list_about_article_city) {
-    about = data.list_about_article_city;
+  if (data && data.list_about_article_country) {
+    about = data.list_about_article_country;
   }
 
-  console.log("idcity", props.route.params.city_id);
-  // console.log("tab", routes);
+  console.log("about", about);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, []);
 
+  // renderScene
   // renderScene
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -501,6 +501,7 @@ export default function about(props) {
       />
     );
   };
+
   return (
     <SafeAreaView
       style={{
