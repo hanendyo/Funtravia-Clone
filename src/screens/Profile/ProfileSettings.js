@@ -16,11 +16,14 @@ import { Input, Item, Label } from "native-base";
 import { useTranslation } from "react-i18next";
 import EditProfile from "../../graphQL/Mutation/Profile/EditProfile";
 import Uploadfoto from "../../graphQL/Mutation/Profile/Uploadfoto";
+import UploadfotoV2 from "../../graphQL/Mutation/Profile/UploadfotoV2";
 import Check from "../../graphQL/Query/Profile/check";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Akunsaya } from "../../assets/png";
 import ImagePicker from "react-native-image-crop-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ReactNativeFile } from "apollo-upload-client";
+import * as mime from "react-native-mime-types";
 
 export default function ProfileSettings(props) {
   const HeaderComponent = {
@@ -119,35 +122,52 @@ export default function ProfileSettings(props) {
       BackHandler.removeEventListener("hardwareBackPress", backAction);
   }, []);
 
+  function generateRNFile(uri, name) {
+    return uri
+      ? new ReactNativeFile({
+          uri,
+          type: mime.lookup(uri) || "image",
+          name,
+        })
+      : null;
+  }
+
   const upload = async (data) => {
     setmodal(false);
-    setLoading(true);
+    // setLoading(true);
     if (data) {
-      // console.log(tmpFile.base64);
+      let file = new ReactNativeFile({
+        uri: data.path,
+        type: data.mime,
+        name: "hello.jpg",
+      });
+      console.log(file);
       try {
-        let response = await mutationUpload({
+        let response = await mutationUploadV2({
           variables: {
-            picture: "data:image/jpeg;base64," + data,
+            file,
           },
         });
-        if (errorupload) {
+        console.log("res", errorupv2);
+        if (errorupv2) {
           throw new Error("Error Input");
         }
         if (response.data) {
-          if (response.data.update_fotoprofile.code !== 200) {
-            throw new Error(response.data.update_fotoprofile.message);
+          if (response.data.update_fotoprofile_v2.code !== 200) {
+            throw new Error(response.data.update_fotoprofile_v2.message);
           }
           // Alert.alert(t('success'));
 
           let Xsetting = { ...seting.current };
-          Xsetting.user["picture"] = response.data.update_fotoprofile.path;
+          Xsetting.user["picture"] = response.data.update_fotoprofile_v2.path;
           await AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
 
           //  await props.navigation.goBack();
         }
         setLoading(false);
-      } catch (error) {
-        Alert.alert("" + error);
+      } catch (err) {
+        console.log({ err: err, errorupv2: errorupv2 });
+        Alert.alert("" + err);
         setLoading(false);
       }
     }
@@ -159,11 +179,11 @@ export default function ProfileSettings(props) {
       height: 500,
       cropping: true,
       cropperCircleOverlay: true,
-      includeBase64: true,
+      // includeBase64: true,
     }).then((image) => {
       console.log(image);
       // setdataImage(image.data);
-      dataImage.current = image.data;
+      dataImage.current = image;
       dataImagepatch.current = image.path;
       // setdataImagepatch(image.path);
       setmodal(false);
@@ -177,10 +197,10 @@ export default function ProfileSettings(props) {
       height: 500,
       cropping: true,
       cropperCircleOverlay: true,
-      includeBase64: false,
+      // includeBase64: true,
     }).then((image) => {
       console.log(image);
-      dataImage.current = image.data;
+      dataImage.current = image;
       dataImagepatch.current = image.path;
       // setdataImage(image.data);
       // setdataImagepatch(image.path);
@@ -252,6 +272,18 @@ export default function ProfileSettings(props) {
   });
 
   const [
+    mutationUploadV2,
+    { loading: loadingupv2, data: dataupv2, error: errorupv2 },
+  ] = useMutation(UploadfotoV2, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
     GetUsername,
     { data: datausername, loading: loadingusername, error: errorusername },
   ] = useLazyQuery(Check, {
@@ -266,55 +298,54 @@ export default function ProfileSettings(props) {
   });
 
   const _handlesave = async () => {
-    setLoading(true);
+    // setLoading(true);
     if (dataImage.current) {
       await upload(dataImage.current);
     }
+    // let x = 0;
+    // for (var i in dataerror) {
+    //   if (dataerror[i] === true) {
+    //     x++;
+    //   }
+    // }
 
-    let x = 0;
-    for (var i in dataerror) {
-      if (dataerror[i] === true) {
-        x++;
-      }
-    }
+    // if (x > 0 || (datausername && datausername.user_check.isused === true)) {
+    //   setLoading(false);
+    //   Alert.alert(t("Terdapat kesalahan"));
+    // } else {
+    //   // console.log(datausername);
+    //   try {
+    //     let response = await mutationEdit({
+    //       variables: {
+    //         first_name: data.current.first_name,
+    //         last_name: data.current.last_name,
+    //         username: data.current.username,
+    //         bio: data.current.bio,
+    //       },
+    //     });
+    //     if (errorEdit) {
+    //       throw new Error("Error Input");
+    //     }
+    //     if (response.data) {
+    //       if (response.data.update_profile.code !== 200) {
+    //         throw new Error(response.data.update_profile.message);
+    //       }
+    //       // Alert.alert(t('success'));
 
-    if (x > 0 || (datausername && datausername.user_check.isused === true)) {
-      setLoading(false);
-      Alert.alert(t("Terdapat kesalahan"));
-    } else {
-      // console.log(datausername);
-      try {
-        let response = await mutationEdit({
-          variables: {
-            first_name: data.current.first_name,
-            last_name: data.current.last_name,
-            username: data.current.username,
-            bio: data.current.bio,
-          },
-        });
-        if (errorEdit) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (response.data.update_profile.code !== 200) {
-            throw new Error(response.data.update_profile.message);
-          }
-          // Alert.alert(t('success'));
-
-          let Xsetting = { ...seting.current };
-          Xsetting.user["first_name"] = data.current.first_name;
-          Xsetting.user["last_name"] = data.current.last_name;
-          Xsetting.user["username"] = data.current.username;
-          Xsetting.user["bio"] = data.current.bio;
-          AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
-          props.navigation.goBack();
-        }
-        setLoading(false);
-      } catch (error) {
-        Alert.alert("" + error);
-        setLoading(false);
-      }
-    }
+    //       let Xsetting = { ...seting.current };
+    //       Xsetting.user["first_name"] = data.current.first_name;
+    //       Xsetting.user["last_name"] = data.current.last_name;
+    //       Xsetting.user["username"] = data.current.username;
+    //       Xsetting.user["bio"] = data.current.bio;
+    //       AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
+    //       props.navigation.goBack();
+    //     }
+    //     setLoading(false);
+    //   } catch (error) {
+    //     Alert.alert("" + error);
+    //     setLoading(false);
+    //   }
+    // }
   };
 
   return (
