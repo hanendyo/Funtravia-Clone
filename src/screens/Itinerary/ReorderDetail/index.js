@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, ScrollView, Pressable, Alert } from "react-native";
+import {
+	View,
+	Image,
+	ScrollView,
+	Pressable,
+	Alert,
+	SafeAreaView,
+} from "react-native";
 import {
 	Button,
 	Capital,
@@ -632,8 +639,8 @@ export default function ReoderDetail({ navigation, route }) {
 		navigation.setOptions(HeaderComponent);
 	}, []);
 	return (
-		<View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-			<StatusBar backgroundColor="#209FAE" barStyle="light-content" />
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
+			{/* <StatusBar backgroundColor="#209FAE" barStyle="light-content" /> */}
 			<DraggableFlatList
 				data={listData}
 				showsVerticalScrollIndicator={false}
@@ -644,6 +651,6 @@ export default function ReoderDetail({ navigation, route }) {
 					padding: 15,
 				}}
 			/>
-		</View>
+		</SafeAreaView>
 	);
 }

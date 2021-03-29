@@ -9,16 +9,22 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 } from "react-native";
-import { Button, Text, Truncate, CustomImage, Loading } from "../../component";
-import { default_image, search_button } from "../../assets/png";
+import {
+	Button,
+	Text,
+	Truncate,
+	CustomImage,
+	Loading,
+} from "../../../component";
+import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Arrowbackwhite, SendMessage } from "../../assets/svg";
-import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
+import { Arrowbackwhite, SendMessage } from "../../../assets/svg";
+import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER } from "../../config";
+import { CHATSERVER } from "../../../config";
 
-export default function NewChat({ navigation }) {
+export default function NewGroup({ navigation }) {
 	const { t, i18n } = useTranslation();
 	const [token, setToken] = useState(null);
 	let [search, setSearch] = useState("");
@@ -42,7 +48,7 @@ export default function NewChat({ navigation }) {
 
 	const ChatOptions = {
 		headerShown: true,
-		headerTitle: "New Message",
+		headerTitle: "New Group",
 		headerMode: "screen",
 		headerStyle: {
 			backgroundColor: "#209FAE",
@@ -203,16 +209,6 @@ export default function NewChat({ navigation }) {
 									</Text>
 								</View>
 							</View>
-							<Button
-								onPress={() => _sendMessage(value.id)}
-								text=""
-								size="medium"
-								color="primary"
-								variant="transparent"
-								type="icon"
-							>
-								<SendMessage width={22} height={22} />
-							</Button>
 						</TouchableOpacity>
 					);
 				})}
@@ -304,9 +300,6 @@ export default function NewChat({ navigation }) {
 						</Text>
 					</View>
 				)}
-				{/* {DataBuddy && DataBuddy.search_travelwith ? (
-          <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-        ) : null} */}
 			</ScrollView>
 		</SafeAreaView>
 	);
