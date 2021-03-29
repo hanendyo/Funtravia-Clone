@@ -29,6 +29,7 @@ import TravelGoalDetail from "../screens/TravelGoal/TravelGoalDetail";
 import DestinationMaps from "../screens/Maps";
 // import DestinationStackNavigation from "./StackItems/DestinationStackNavigation";
 import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew/index";
+import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({ authorizeStatus }) {
@@ -312,6 +313,15 @@ export default function MainStackNavigator({ authorizeStatus }) {
         <Tab.Screen
           name="DestinationUnescoDetail"
           component={DestinationUnescoDetail}
+          options={{
+            headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+          }}
+        />
+        <Tab.Screen
+          name="DestinationUnescoReview"
+          component={DestinationUnescoReview}
           options={{
             headerShown: false,
             headerBackTitleVisible: false,
