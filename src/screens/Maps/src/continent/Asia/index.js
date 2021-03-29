@@ -106,7 +106,7 @@ export default function Asia({ navigation }) {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<StatusBar backgroundColor="#14646e" barStyle="light-content" />
+			{/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
 			<View style={{ backgroundColor: "#FFF", padding: 15 }}>
 				{Components[`cm${subContinent.id}`]}
 			</View>
@@ -122,7 +122,7 @@ export default function Asia({ navigation }) {
 					backgroundColor: "#FFF",
 					borderRadius: 5,
 					margin: 10,
-					elevation: 3,
+					elevation: 1,
 					shadowColor: "#d3d3d3",
 					shadowOffset: { width: 2, height: 2 },
 					shadowOpacity: 1,
@@ -141,7 +141,7 @@ export default function Asia({ navigation }) {
 							paddingHorizontal: 15,
 							borderRadius: 5,
 							margin: 5,
-							elevation: 3,
+							elevation: 1,
 							shadowColor: "#d3d3d3",
 							shadowOffset: { width: 2, height: 2 },
 							shadowOpacity: 1,
@@ -177,7 +177,7 @@ export default function Asia({ navigation }) {
 							backgroundColor: "#FFF",
 							marginVertical: 5,
 							borderRadius: 5,
-							elevation: 3,
+							elevation: 1,
 							shadowColor: "#d3d3d3",
 							shadowOffset: { width: 2, height: 2 },
 							shadowOpacity: 1,
