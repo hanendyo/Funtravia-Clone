@@ -18,7 +18,7 @@ import {
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   Arrowbackwhite,
   OptionsVertWhite,
@@ -51,6 +51,8 @@ import { useTranslation } from "react-i18next";
 import ImageSlider from "react-native-image-slider";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
+import likedJournal from "../../../graphQL/Mutation/Journal/likedJournal";
+import unlikedJournal from "../../../graphQL/Mutation/Journal/unlikedJournal";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -69,15 +71,8 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 const PullToRefreshDist = 150;
 
 export default function Country(props) {
-  // console.log(props.route.params.data.id);
   let [token, setToken] = useState("");
-  // console.log("token", token);
   const { t, i18n } = useTranslation();
-  // const { width, height } = Dimensions.get("screen");
-  const [active, setActive] = useState("Map");
-  const [actives, setActives] = useState("General");
-  const [actived, setActived] = useState("About");
-  // const [loadings, setloadings] = useState(true);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
   let [full, setFull] = useState(false);
@@ -187,15 +182,20 @@ export default function Country(props) {
     }
   );
 
+  let list_journal = [];
+  if (data && data.country_detail.journal) {
+    list_journal = data.country_detail.journal;
+  }
+
+  console.log("data", data);
+
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await getPackageDetail();
-    // await setloadings(false);
   };
 
   useEffect(() => {
-    // props.navigation.setOptions(HeaderComponent);
     refresh();
   }, []);
 
@@ -472,20 +472,129 @@ export default function Country(props) {
 
     // check pull to refresh
   };
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-        }}
-      >
-        <ActivityIndicator animating={true} color="#209fae" size="large" />
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         alignItems: "center",
+  //         alignContent: "center",
+  //         justifyContent: "center",
+  //       }}
+  //     >
+  //       <ActivityIndicator animating={true} color="#209fae" size="large" />
+  //     </View>
+  //   );
+  // }
+
+  // mutasi liked jurnal
+  const [
+    mutationlikedJournal,
+    {
+      loading: loadingLikeJournal,
+      data: dataLikeJournal,
+      error: errorLikeJournal,
+    },
+  ] = useMutation(likedJournal, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _likedjournal = async (id, index, item) => {
+    let fiindex = await list_journal.findIndex((k) => k["id"] === id);
+
+    if (token || token !== "") {
+      list_journal[fiindex].liked = true;
+      try {
+        let response = await mutationlikedJournal({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLikeJournal) {
+          Alert.alert("Loading!!");
+        }
+        if (errorLikeJournal) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.like_journal.code === 200 ||
+            response.data.like_journal.code === "200"
+          ) {
+            list_journal[fiindex].liked = true;
+          } else {
+            throw new Error(response.data.message);
+          }
+
+          // Alert.alert('Succes');
+        }
+      } catch (error) {
+        list_journal[fiindex].liked = false;
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  // mutasi unliked jurnal
+  const [
+    mutationUnlikedJournal,
+    {
+      loading: loadingUnLikeJournal,
+      data: dataUnLikeJournal,
+      error: errorUnLikeJournal,
+    },
+  ] = useMutation(unlikedJournal, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _unlikedjournal = async (id, index) => {
+    let fiindex = await list_journal.findIndex((k) => k["id"] === id);
+    if (token || token !== "") {
+      list_journal[fiindex].liked = false;
+      try {
+        let response = await mutationUnlikedJournal({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadingUnLikeJournal) {
+          Alert.alert("Loading!!");
+        }
+        if (errorUnLikeJournal) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.unlike_journal.code === 200 ||
+            response.data.unlike_journal.code === "200"
+          ) {
+            list_journal[fiindex].liked = false;
+          } else {
+            throw new Error(response.data.unlike_journal.message);
+          }
+        }
+      } catch (error) {
+        list_journal[fiindex].response_count =
+          list_journal[fiindex].response_count - 1;
+        list_journal[fiindex].liked = true;
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
 
   // renderHeader
   const renderHeader = () => {
@@ -587,7 +696,6 @@ export default function Country(props) {
     let numCols;
     let data;
     let renderItem;
-    // console.log("route", route);
     switch (route.key) {
       case "general":
         // numCols = 2;
@@ -656,6 +764,8 @@ export default function Country(props) {
       outputRange: [HeaderHeight, 55],
       extrapolateRight: "clamp",
     });
+
+    console.log("props", props);
     return (
       <Animated.View
         style={{
@@ -1292,7 +1402,7 @@ export default function Country(props) {
                             alignItems: "center",
                           }}
                         >
-                          <Text>No Popular Destintation</Text>
+                          <Text>{null}</Text>
                         </View>
                       )}
                     </View>
@@ -1481,10 +1591,10 @@ export default function Country(props) {
                     ? render.about.map((item, index) => (
                         <Ripple
                           onPress={() => {
-                            props.navigation.navigate("Abouts", {
+                            props.navigation.navigate("AboutCountry", {
                               active: item.id,
-                              city_id: render.id,
-                              indexcity: index,
+                              country_id: render.id,
+                              indexcountry: index,
                             });
                           }}
                           style={{
@@ -1543,10 +1653,10 @@ export default function Country(props) {
                     ? render.practical.map((item, index) => (
                         <Ripple
                           onPress={() => {
-                            props.navigation.navigate("PracticalInformation", {
+                            props.navigation.navigate("PracticalCountry", {
                               active: item.id,
-                              city_id: render.id,
-                              indexcity: index,
+                              country_id: render.id,
+                              indexcountry: index,
                             });
                           }}
                           style={{
@@ -1586,10 +1696,6 @@ export default function Country(props) {
   const RenderArticle = (e, dataR) => {
     let render = [];
     render = dataR;
-    // data && data.country_detail.article_header[tabIndex - 1]
-    //   ? data.country_detail.article_header[tabIndex - 1]
-    //   : null;
-    console.log("data", dataR);
     return (
       <View
         // key={"art" + index}

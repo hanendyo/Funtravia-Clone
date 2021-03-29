@@ -13,15 +13,12 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
-
-import { Arrowbackwhite, Garuda, Calendargreen } from "../../assets/svg";
-import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../component";
-import Ripple from "react-native-material-ripple";
 import { useLazyQuery } from "@apollo/client";
-import Practical from "../../graphQL/Query/Cities/Practical";
-import { TabView, TabBar } from "react-native-tab-view";
+import PracticalCountries from "../../../graphQL/Query/Countries/PracticalCountries";
+import { TabBar, TabView } from "react-native-tab-view";
+import { Button, Text } from "../../../component";
+import { Arrowbackwhite } from "../../../assets/svg";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -101,11 +98,11 @@ export default function PracticalInformation(props) {
   };
 
   const [getPracticalDetail, { loading, data, error }] = useLazyQuery(
-    Practical,
+    PracticalCountries,
     {
       fetchPolicy: "network-only",
       variables: {
-        id: props.route.params.city_id,
+        id: props.route.params.country_id,
       },
       context: {
         headers: {
@@ -116,15 +113,17 @@ export default function PracticalInformation(props) {
       onCompleted: () => {
         let tab = [];
 
-        data.list_practical_article_city.map((item, index) => {
+        data.list_practical_article_country.map((item, index) => {
           tab.push({ key: item.id, title: item.name });
         });
 
         setRoutes(tab);
-        setIndex(props.route.params.indexcity);
+        setIndex(props.route.params.indexcountry);
       },
     }
   );
+
+  console.log("id", props.route.params.country_id);
 
   const listPanResponder = useRef(
     PanResponder.create({
@@ -143,8 +142,8 @@ export default function PracticalInformation(props) {
   ).current;
 
   let practical = [];
-  if (data && data.list_practical_article_city) {
-    practical = data.list_practical_article_city;
+  if (data && data.list_practical_article_country) {
+    practical = data.list_practical_article_country;
   }
 
   // console.log("Practical", practical);
