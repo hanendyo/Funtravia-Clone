@@ -41,7 +41,12 @@ import {
   logo_funtravia,
 } from "../../../assets/png";
 import { Input, Tab, Tabs } from "native-base";
-import { Capital, Truncate, StatusBar as StaBar } from "../../../component";
+import {
+  Capital,
+  Truncate,
+  StatusBar as StaBar,
+  RenderMaps,
+} from "../../../component";
 import Ripple from "react-native-material-ripple";
 import { Text, Button } from "../../../component";
 import { FunIcon, Loading, Sidebar } from "../../../component";
@@ -174,7 +179,6 @@ export default function Country(props) {
 
         data.country_detail.article_header.map((item, index) => {
           tab.push({ key: item.title, title: item.title, data: item.content });
-          // console.log("item", item.con);
         });
 
         setRoutes(tab);
@@ -186,8 +190,6 @@ export default function Country(props) {
   if (data && data.country_detail.journal) {
     list_journal = data.country_detail.journal;
   }
-
-  console.log("data", data);
 
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -405,7 +407,6 @@ export default function Country(props) {
   };
 
   const handlePanReleaseOrEnd = (evt, gestureState) => {
-    // console.log('handlePanReleaseOrEnd', scrollY._value);
     syncScrollOffset();
     headerScrollY.setValue(scrollY._value);
     if (Platform.OS === "ios") {
@@ -693,17 +694,14 @@ export default function Country(props) {
   // renderScene
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
-    let numCols;
     let data;
     let renderItem;
     switch (route.key) {
       case "general":
-        // numCols = 2;
         data = tabGeneral;
         renderItem = RenderGeneral;
         break;
       default:
-        // numCols = 3;
         data = tab2Data;
         renderItem = (e) => RenderArticle(e, route.data);
         break;
@@ -714,7 +712,6 @@ export default function Country(props) {
         scrollToOverflowEnabled={true}
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
-        // numColumns={numCols}
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);
@@ -764,15 +761,13 @@ export default function Country(props) {
       outputRange: [HeaderHeight, 55],
       extrapolateRight: "clamp",
     });
-
-    console.log("props", props);
     return (
       <Animated.View
         style={{
           top: 0,
           zIndex: 1,
           position: "absolute",
-          paddingHorizontal: 15,
+          // paddingHorizontal: 15,
           transform: [{ translateY: y }],
           width: "100%",
         }}
@@ -891,6 +886,8 @@ export default function Country(props) {
     let renderjournal = [];
     renderjournal =
       data && data.country_detail.journal ? data.country_detail.journal : null;
+
+    console.log("rendermap", render.map);
 
     return (
       <View>
@@ -1020,14 +1017,23 @@ export default function Country(props) {
                   color: "#209FAE",
                 }}
               >
-                <Image
+                <RenderMaps
+                  icon={render.map ? render.map : null}
+                  height={250}
+                  width={width - 70}
+                  style={{
+                    bottom: -3,
+                  }}
+                />
+
+                {/* <Image
                   source={render.map ? { uri: render.map } : default_image}
                   style={{
                     width: "100%",
                     height: width * 0.7,
                     resizeMode: "center",
                   }}
-                ></Image>
+                ></Image> */}
               </Tab>
               <Tab
                 heading={t("climate")}
@@ -1126,6 +1132,7 @@ export default function Country(props) {
                       {item.map((dataX, index) => {
                         return (
                           <Pressable
+                            key={"keyjournal" + index}
                             onPress={() =>
                               props.navigation.push("JournalStackNavigation", {
                                 screen: "DetailJournal",
@@ -1177,6 +1184,9 @@ export default function Country(props) {
                               >
                                 {dataX.liked === false ? (
                                   <Ripple
+                                    style={{
+                                      width: 30,
+                                    }}
                                     onPress={() =>
                                       _likedjournal(dataX.id, index)
                                     }
@@ -1185,6 +1195,9 @@ export default function Country(props) {
                                   </Ripple>
                                 ) : (
                                   <Ripple
+                                    style={{
+                                      width: 30,
+                                    }}
                                     onPress={() =>
                                       _unlikedjournal(dataX.id, index)
                                     }
@@ -1213,6 +1226,7 @@ export default function Country(props) {
                         (image, index) => {
                           return (
                             <TouchableHighlight
+                              key={"keyjournal1" + index}
                               underlayColor="#f7f7f700"
                               // onPress={() => move(index)}
                             >
@@ -1422,6 +1436,7 @@ export default function Country(props) {
                       (image, index) => {
                         return (
                           <TouchableHighlight
+                            key={"keycity" + index}
                             underlayColor="#f7f7f700"
                             // onPress={() => move(index)}
                           >
@@ -1456,9 +1471,24 @@ export default function Country(props) {
             }}
           >
             <View>
-              <Text type="bold" size="label" style={{}}>
-                {render.name} {t("Unique Facts")}
-              </Text>
+              {/* <Text type="bold" size="label" style={{}}>
+                {render.name
+                } {t("Unique Facts")}
+              </Text> */}
+              {i18n.language === "id" ? (
+                <Text size="label" type="bold" style={{}}>
+                  {t("uniquefacts")}
+
+                  <Capital text={render.name} />
+                </Text>
+              ) : (
+                <Text size="label" type="bold" style={{}}>
+                  <Capital text={render.name} />
+
+                  {t("uniquefacts")}
+                </Text>
+              )}
+
               <Text
                 size="description"
                 style={{
@@ -1590,6 +1620,7 @@ export default function Country(props) {
                   {render.about.length > 0
                     ? render.about.map((item, index) => (
                         <Ripple
+                          key={"keyabout" + index}
                           onPress={() => {
                             props.navigation.navigate("AboutCountry", {
                               active: item.id,
@@ -1652,6 +1683,7 @@ export default function Country(props) {
                   {render.practical.length > 0
                     ? render.practical.map((item, index) => (
                         <Ripple
+                          key={"keypractical" + index}
                           onPress={() => {
                             props.navigation.navigate("PracticalCountry", {
                               active: item.id,

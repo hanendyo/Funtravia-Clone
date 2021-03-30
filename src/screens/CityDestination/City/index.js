@@ -48,6 +48,7 @@ import {
   Truncate,
   Text,
   FunIcon,
+  RenderMaps,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
@@ -559,6 +560,8 @@ export default function CityDetail(props) {
 
     let renderItinerary = list_populer;
 
+    console.log("rendermap", render.map);
+
     return (
       // Deskripsi
       <View>
@@ -862,14 +865,22 @@ export default function CityDetail(props) {
                   color: "#209FAE",
                 }}
               >
-                <Image
+                <RenderMaps
+                  icon={render.map ? render.map : "mn-indonesia"}
+                  height={250}
+                  width={width - 70}
+                  style={{
+                    bottom: -3,
+                  }}
+                />
+                {/* <Image
                   source={render.map ? { uri: render.map } : default_image}
                   style={{
                     width: "100%",
                     height: width * 0.7,
                     resizeMode: "center",
                   }}
-                ></Image>
+                ></Image> */}
               </Tab>
               <Tab
                 heading={t("climate")}
