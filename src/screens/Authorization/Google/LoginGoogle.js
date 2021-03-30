@@ -51,6 +51,7 @@ export default function LoginGoogle({ navigation }) {
             pushtoken: FCM_TOKEN,
           },
         });
+        console.log(response);
       }
       if (
         response.data.login_google.code === 200 ||
