@@ -17,6 +17,7 @@ import StatusBar from "./src/StatusBar";
 import Errors from "./src/AlertModal/Errors";
 import Success from "./src/AlertModal/Success";
 import Drawable from "./src/Drawable";
+import RenderMaps from "./src/RenderMaps";
 
 export {
   Text,
@@ -38,4 +39,5 @@ export {
   Errors,
   Success,
   Drawable,
+  RenderMaps,
 };
