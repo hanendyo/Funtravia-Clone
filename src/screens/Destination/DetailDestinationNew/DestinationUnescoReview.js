@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   View,
@@ -23,6 +23,8 @@ import { Button, Text } from "../../../component";
 import { activity_unesco7 } from "../../../assets/png";
 
 export default function DestinationUnescoReview(props) {
+  console.log("data", props);
+  let [data] = useState(props.route.params.data);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -79,7 +81,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <Text size="title" type="bold">
-          Pandawa Beach
+          {data.name}
         </Text>
         <View style={{ flexDirection: "row" }}>
           <View
@@ -91,7 +93,7 @@ export default function DestinationUnescoReview(props) {
             }}
           >
             <Text size="description" type="bold">
-              Beach
+              {data.type.name}
             </Text>
           </View>
         </View>
@@ -108,7 +110,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <Image
-          source={activity_unesco7}
+          source={{ uri: data.images[0].image }}
           height={50}
           width={100}
           style={{ height: "100%", width: "100%", borderRadius: 5 }}
@@ -222,9 +224,21 @@ export default function DestinationUnescoReview(props) {
           marginBottom: 30,
         }}
       >
-        <Button type="box" color="secondary" size="medium">
-          <SendReview height={20} width={20} />
-          <Text style={{ zIndex: 2 }}>Send Review</Text>
+        <Button
+          type="icon"
+          color="secondary"
+          size="medium"
+          text="Send Review"
+          style={{
+            borderRadius: Dimensions.get("screen").width * 0.7,
+            // alignSelf: "center",
+          }}
+        >
+          <SendReview
+            height={20}
+            width={20}
+            // style={{ zIndex: 3, borderWidth: 5 }}
+          />
         </Button>
       </View>
     </ScrollView>

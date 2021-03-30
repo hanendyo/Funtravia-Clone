@@ -11,15 +11,15 @@ export default function ActivityModal({ setModalActivity, modals, data }) {
       onRequestClose={() => {
         setModalActivity(false);
       }}
-      animationIn="slideInRight"
-      animationOut="slideOutRight"
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
       isVisible={modals}
       style={{
         alignSelf: "center",
         alignContent: "center",
       }}
     >
-      {/* <StatusBar backgroundColor="#14646E" barStyle="light-content" /> */}
+      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <View
         style={{
           backgroundColor: "#FFF",
@@ -27,7 +27,7 @@ export default function ActivityModal({ setModalActivity, modals, data }) {
           height: Dimensions.get("screen").height,
         }}
       >
-        <ScrollView style={{ borderWidth: 1, flex: 1, height: 10 }}>
+        <ScrollView style={{ flex: 1, height: 10 }}>
           <View
             style={{
               width: Dimensions.get("screen").width,
