@@ -505,7 +505,8 @@
   "map" : "Map",
   "religion" : "Religion",
   "readless" : "Read less",
-  "photosSelected": "photo selected"
+  "photosSelected": "photo selected",
+  "uniquefacts" : "Unique Facts"
 
   
 }
