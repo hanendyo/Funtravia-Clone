@@ -20,91 +20,98 @@ import { View } from "native-base";
 import { SvgCss } from "react-native-svg";
 export default function World({ navigation }) {
 	const { width, height } = Dimensions.get("screen");
+	const HeaderHeight = (height * 34) / 100;
+	const ContentHeight = (height * 66) / 100;
+	const MapHeight = (ContentHeight * 22) / 100;
+	const MapWidth = width / 2 - 20;
 	const data = [
 		{
 			name: "Europe",
 			screen: "Europe",
 			count: 50,
-			map: <Europe width={width / 2 - 40} height={width / 2 - 80} />,
+			map: <Europe width={MapWidth} height={MapHeight} />,
 		},
 		{
 			name: "Asia",
 			screen: "Asia",
 			count: 50,
-			map: <Asia width={width / 2 - 40} height={width / 2 - 80} />,
+			map: <Asia width={MapWidth} height={MapHeight} />,
 		},
 		{
 			name: "Australia",
 			screen: "Australia",
 			count: 6,
-			map: <Australia width={width / 2 - 40} height={width / 2 - 80} />,
+			map: <Australia width={MapWidth} height={MapHeight} />,
 		},
 		{
 			name: "North America",
 			screen: "NorthAmerica",
 			count: 31,
-			map: <NortAmerica width={width / 2 - 40} height={width / 2 - 80} />,
+			map: <NortAmerica width={MapWidth} height={MapHeight} />,
 		},
 		{
 			name: "South America",
 			screen: "SouthAmerica",
 			count: 21,
-			map: <SouthAmerica width={width / 2 - 40} height={width / 2 - 80} />,
+			map: <SouthAmerica width={MapWidth} height={MapHeight} />,
 		},
 		{
 			name: "Africa",
 			screen: "Africa",
 			count: 54,
-			map: <Africa width={width / 2 - 40} height={width / 2 - 80} />,
+			map: <Africa width={MapWidth} height={MapHeight} />,
 		},
 	];
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
 			<StatusBar backgroundColor="#14646E" barStyle="dark-content" />
+			<View
+				style={{
+					height: HeaderHeight,
+					alignItems: "center",
+					backgroundColor: "#FFF",
+					paddingVertical: 15,
+				}}
+			>
+				<Text type="bold" size="title">
+					World Tourism
+				</Text>
+				<Text type="regular" size="label">
+					Get closer to your perfect destination
+				</Text>
+				<View style={{ marginVertical: 10 }}>
+					<WorldMap width={HeaderHeight} height={HeaderHeight - 125} />
+				</View>
+				<Text
+					type="regular"
+					size="label"
+					style={{ marginHorizontal: width / 6, textAlign: "center" }}
+				>
+					Choose your destination. Pick the best place for your holiday.
+				</Text>
+			</View>
 			<FlatList
 				key="world"
 				data={data}
 				numColumns={2}
 				showsVerticalScrollIndicator={false}
-				ListHeaderComponent={() => (
-					<View
-						style={{
-							padding: 20,
-							alignItems: "center",
-							backgroundColor: "#FFF",
-						}}
-					>
-						<Text type="bold" size="title">
-							World Tourism
-						</Text>
-						<Text type="regular" size="label">
-							Get closer to your perfect destination
-						</Text>
-						<View style={{ marginVertical: 30 }}>
-							<WorldMap width={width - 30} height={width / 2 - 100} />
-						</View>
-						<Text
-							type="regular"
-							size="label"
-							style={{ marginHorizontal: width / 6, textAlign: "center" }}
-						>
-							Choose your destination. Pick the best place for your holiday.
-						</Text>
-					</View>
-				)}
-				contentContainerStyle={{ alignItems: "center" }}
+				contentContainerStyle={{
+					alignItems: "center",
+					height: ContentHeight,
+					marginVertical: 5,
+				}}
+				scrollEnabled={false}
 				renderItem={({ item }) => (
 					<TouchableOpacity
 						onPress={() => navigation.navigate(item.screen)}
 						style={{
-							padding: 5,
 							borderWidth: 1,
 							borderColor: "#209FAE",
-							borderRadius: 10,
-							margin: 5,
+							borderRadius: 5,
 							alignItems: "center",
 							justifyContent: "center",
 							backgroundColor: "#FFF",
+							margin: 5,
 						}}
 					>
 						{item.map}

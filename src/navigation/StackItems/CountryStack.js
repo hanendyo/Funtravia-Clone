@@ -7,6 +7,8 @@ import Abouts from "../../screens/CityDestination/about";
 import PracticalInformation from "../../screens/CityDestination/PracticalInformation";
 import ArticelCategory from "../../screens/CityDestination/ArtikelCategory/Index";
 import ArticelDetail from "../../screens/CityDestination/ArtikelCategory/ArtikelDetail";
+import Aboutcountry from "../../screens/CityDestination/Country/AboutCountry";
+import Practicalcountry from "../../screens/CityDestination/Country/PracticalCountry";
 
 const CountryStack = createStackNavigator();
 export default function CountryStackNavigation() {
@@ -69,6 +71,26 @@ export default function CountryStackNavigation() {
       <CountryStack.Screen
         name="ArticelDetail"
         component={ArticelDetail}
+        options={{
+          headerShown: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+
+      <CountryStack.Screen
+        name="AboutCountry"
+        component={Aboutcountry}
+        options={{
+          headerShown: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+
+      <CountryStack.Screen
+        name="PracticalCountry"
+        component={Practicalcountry}
         options={{
           headerShown: false,
           headerTintColor: "white",

@@ -199,6 +199,13 @@ import Globe from "./files/globe.svg";
 import AllPostWhite from "./files/AllPostWhite.svg";
 import Showless from "./files/Showless.svg";
 import New from "./files/New.svg";
+import WebsiteHitam from "./files/website_hitam.svg";
+import TeleponHitam from "./files/telepon_hitam.svg";
+import InstagramHitam from "./files/instagram_hitam.svg";
+import ClockHitam from "./files/clock_hitam.svg";
+import StarBlue from "./files/start_blue.svg";
+import SendReview from "./files/send_review.svg";
+import NewGroup from "./files/group.svg";
 
 export {
   LikeWhite,
@@ -402,4 +409,11 @@ export {
   AllPostWhite,
   Showless,
   New,
+  WebsiteHitam,
+  TeleponHitam,
+  InstagramHitam,
+  ClockHitam,
+  StarBlue,
+  SendReview,
+  NewGroup,
 };

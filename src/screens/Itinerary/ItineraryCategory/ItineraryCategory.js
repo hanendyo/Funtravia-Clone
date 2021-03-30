@@ -52,19 +52,19 @@ export default function ItineraryCategory(props) {
   let [actives, setActives] = useState("Itinerary");
   let [order, setOrder] = useState(props.route.params.typeOrder);
   let idcity = [];
-  if(props.route.params.idcity){
+
+  if (props.route.params.idcity) {
     idcity = props.route.params.idcity;
   }
+  console.log("dataid", props.route.params.idcity);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
-    cities: idcity?idcity:null,
+    cities: null,
     countries: null,
     orderby: null,
     rating: null,
   });
-
-  
 
   const { SlideInMenu } = renderers;
   const unSelect = (id) => {
@@ -156,7 +156,7 @@ export default function ItineraryCategory(props) {
       keyword: search.keyword,
       type: dataType,
       countries: null,
-      cities: null,
+      cities: idcity,
       rating: null,
       orderby: order,
       limit: 10,

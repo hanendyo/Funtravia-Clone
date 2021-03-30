@@ -1,6 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import NewChat from "../../screens/Chat/NewChat";
+import NewGroup from "../../screens/Chat/Group/CreateGroup";
 import GroupChat from "../../screens/Chat/GroupRoom";
 import RoomChat from "../../screens/Chat/PersonalRoom";
 
@@ -29,6 +30,15 @@ export default function ChatStackNavigation() {
 			<ChatStack.Screen
 				name="GroupRoom"
 				component={GroupChat}
+				options={{
+					headerShown: false,
+					headerTintColor: "white",
+					headerBackTitleVisible: false,
+				}}
+			/>
+			<ChatStack.Screen
+				name="NewGroup"
+				component={NewGroup}
 				options={{
 					headerShown: false,
 					headerTintColor: "white",

@@ -172,6 +172,35 @@ export default function CityDetail(props) {
     refreshData();
   }, []);
 
+  useEffect(() => {
+    scrollY.addListener(({ value }) => {
+      const curRoute = routes[tabIndex].key;
+      listOffset.current[curRoute] = value;
+    });
+
+    headerScrollY.addListener(({ value }) => {
+      listRefArr.current.forEach((item) => {
+        if (item.key !== routes[tabIndex].key) {
+          return;
+        }
+        if (value > HeaderHeight || value < 0) {
+          headerScrollY.stopAnimation();
+          syncScrollOffset();
+        }
+        if (item.value && value <= HeaderHeight) {
+          item.value.scrollToOffset({
+            offset: value,
+            animated: false,
+          });
+        }
+      });
+    });
+    return () => {
+      scrollY.removeAllListeners();
+      headerScrollY.removeAllListeners();
+    };
+  }, [routes, tabIndex]);
+
   const refreshData = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
@@ -198,14 +227,14 @@ export default function CityDetail(props) {
       let tab = [{ key: "general", title: "General" }];
 
       dataCity.CitiesInformation.article_header.map((item, index) => {
-        tab.push({ key: item.title, title: item.title });
+        tab.push({ key: item.title, title: item.title, data: item.content });
       });
 
       setRoutes(tab);
     },
   });
 
-  // console.log("city", dataCity);
+  console.log("city", dataCity);
 
   const Goto = (item) => {
     if (item.id) {
@@ -403,8 +432,9 @@ export default function CityDetail(props) {
 
   // unliked journal
   const _unlikedjournal = async (id, index) => {
+    let fiindex = await list_journal.findIndex((k) => k["id"] === id);
     if (token || token !== "") {
-      list_journal[index].liked = false;
+      list_journal[fiindex].liked = false;
       try {
         let response = await mutationUnlikedJournal({
           variables: {
@@ -417,22 +447,21 @@ export default function CityDetail(props) {
         if (errorUnLikeJournal) {
           throw new Error("Error Input");
         }
-        renderjournal;
-        // console.log("data unlike journal : ", response.data);
+
         if (response.data) {
           if (
             response.data.unlike_journal.code === 200 ||
             response.data.unlike_journal.code === "200"
           ) {
-            list_journal[index].liked = false;
+            list_journal[fiindex].liked = false;
           } else {
             throw new Error(response.data.unlike_journal.message);
           }
         }
       } catch (error) {
-        list_journal[index].response_count =
-          list_journal[index].response_count - 1;
-        list_journal[index].liked = true;
+        list_journal[fiindex].response_count =
+          list_journal[fiindex].response_count - 1;
+        list_journal[fiindex].liked = true;
       }
     } else {
       Alert.alert("Please Login");
@@ -653,6 +682,7 @@ export default function CityDetail(props) {
                   ? render.destination_type.map((item, index) => {
                       return index < 8 ? (
                         <Ripple
+                          key={"keydestination" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               idtype: item.id,
@@ -694,6 +724,7 @@ export default function CityDetail(props) {
                   : render.destination_type.map((item, index) => {
                       return (
                         <Ripple
+                          key={"keydestination1" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               idtype: item.id,
@@ -752,7 +783,9 @@ export default function CityDetail(props) {
                         style={{ marginTop: 3 }}
                       />
                     </TouchableOpacity>
-                  ) : (
+                  ) : null}
+
+                  {tutup == false ? (
                     <TouchableOpacity
                       onPress={() => {
                         setTutup(true);
@@ -766,7 +799,7 @@ export default function CityDetail(props) {
                         style={{ marginTop: 3 }}
                       />
                     </TouchableOpacity>
-                  )}
+                  ) : null}
                 </View>
               </View>
             </View>
@@ -945,7 +978,7 @@ export default function CityDetail(props) {
                             }
                             style={{
                               flexDirection: "row",
-                              width: width - 80,
+                              width: width - 70,
                               height: width * 0.2,
                             }}
                           >
@@ -985,6 +1018,9 @@ export default function CityDetail(props) {
                               >
                                 {dataX.liked === false ? (
                                   <Ripple
+                                    style={{
+                                      width: 30,
+                                    }}
                                     onPress={() =>
                                       _likedjournal(dataX.id, indeks, item)
                                     }
@@ -993,6 +1029,9 @@ export default function CityDetail(props) {
                                   </Ripple>
                                 ) : (
                                   <Ripple
+                                    style={{
+                                      width: 30,
+                                    }}
                                     onPress={() =>
                                       _unlikedjournal(dataX.id, indeks, item)
                                     }
@@ -1120,6 +1159,7 @@ export default function CityDetail(props) {
                   {render.about.length > 0
                     ? render.about.map((item, index) => (
                         <Ripple
+                          key={"keyabout" + index}
                           onPress={() => {
                             props.navigation.navigate("Abouts", {
                               active: item.id,
@@ -1182,6 +1222,7 @@ export default function CityDetail(props) {
                   {render.practical.length > 0
                     ? render.practical.map((item, index) => (
                         <Ripple
+                          key={"keypractical" + index}
                           onPress={() => {
                             props.navigation.navigate("PracticalInformation", {
                               active: item.id,
@@ -1383,7 +1424,7 @@ export default function CityDetail(props) {
                     ).map((image, index) => {
                       return (
                         <TouchableHighlight
-                          key={index}
+                          key={"keyevent" + index}
                           underlayColor="#f7f7f700"
                           onPress={() => move(index)}
                         >
@@ -1428,6 +1469,7 @@ export default function CityDetail(props) {
                   ? render.event.map((item, index) => {
                       return (
                         <Ripple
+                          key={"keyevent1" + index}
                           onPress={() => {
                             setdataevent(item);
                           }}
@@ -1472,6 +1514,7 @@ export default function CityDetail(props) {
                   : bulan.map((item, index) => {
                       return (
                         <Ripple
+                          key={"keybulan" + index}
                           style={{
                             width: "33.3%",
                             alignContent: "center",
@@ -1529,6 +1572,7 @@ export default function CityDetail(props) {
                     params: {
                       typeCategory: null,
                       idcity: render.id,
+                      typeOrder: null,
                     },
 
                     // idcountries:
@@ -1928,12 +1972,9 @@ export default function CityDetail(props) {
       </View>
     );
   };
-  const RenderArticle = ({}) => {
+  const RenderArticle = (e, dataR) => {
     let render = [];
-    render =
-      dataCity && dataCity.CitiesInformation.article_header[tabIndex - 1]
-        ? dataCity.CitiesInformation.article_header[tabIndex - 1]
-        : null;
+    render = dataR;
 
     return (
       <View
@@ -1942,10 +1983,10 @@ export default function CityDetail(props) {
           paddingVertical: 5,
         }}
       >
-        {render && render.content.length
-          ? render.content.map((i, index) => {
+        {render && render.length
+          ? render.map((i, index) => {
               if (!i) {
-                <View style={{ alignItems: "center" }}>
+                <View key={"content" + index} style={{ alignItems: "center" }}>
                   <Text
                     type="regular"
                     size="title"
@@ -2342,27 +2383,28 @@ export default function CityDetail(props) {
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
-    let numCols;
+    // let numCols;
     let data;
     let renderItem;
     switch (route.key) {
       case "general":
-        numCols = 2;
+        // numCols = 2;
         data = tabGeneral;
         renderItem = RenderGeneral;
         break;
       default:
-        numCols = 3;
+        // numCols = 3;
         data = tab2Data;
-        renderItem = RenderArticle;
+        renderItem = (e) => RenderArticle(e, route.data);
         break;
     }
     return (
       <Animated.FlatList
+        listkey={"flatcity"}
         scrollToOverflowEnabled={true}
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
-        numColumns={numCols}
+        // numColumns={numCols}
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);
@@ -2418,7 +2460,7 @@ export default function CityDetail(props) {
           top: 0,
           zIndex: 1,
           position: "absolute",
-          paddingHorizontal: 15,
+          // paddingHorizontal: 15,
           transform: [{ translateY: y }],
           width: "100%",
         }}
