@@ -302,6 +302,31 @@ export default function ItineraryDetail(props) {
     }
   };
 
+  let [dataSpreadtimeline, setDataSpread] = useState([]);
+  const spreadtimeline = async (req) => {
+    let xdata = [];
+    let parent_id = null;
+
+    for (var index in req) {
+      let datas = { ...req[index] };
+      // datas["id"] = req[index].name;
+      if (
+        req[index - 1] &&
+        req[index].latitude == req[index - 1].latitude &&
+        req[index].longitude == req[index - 1].longitude
+      ) {
+        datas["parent"] = false;
+        datas["parent_id"] = parent_id;
+      } else {
+        datas["parent"] = true;
+        datas["parent_id"] = null;
+        parent_id = req[index].id;
+      }
+      xdata.push(datas);
+    }
+    await setDataSpread(xdata);
+  };
+
   const [
     GetTimelin,
     { data: datatimeline, loading: loadingtimeline, error: errortimeline },
@@ -316,12 +341,13 @@ export default function ItineraryDetail(props) {
     variables: { id: idDay },
     onCompleted: (res) => {
       setDataListItem(res.day_timeline);
+
+      spreadtimeline(res.day_timeline);
     },
   });
-
-  if (datatimeline && datatimeline.day_timeline.length) {
-    dataList = datatimeline.day_timeline;
-  }
+  // if (datatimeline && datatimeline.day_timeline.length) {
+  //   dataList = datatimeline.day_timeline;
+  // }
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -2299,13 +2325,21 @@ export default function ItineraryDetail(props) {
                     {Getdurasi(item.duration ? item.duration : "00:00:00")}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    Alert.alert("Coming soon");
-                  }}
-                >
-                  <Next width={15} height={15} />
-                </TouchableOpacity>
+                {item.type === "custom" ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.navigation.push("detailCustomItinerary", {
+                        data: dataSpreadtimeline,
+                        token: token,
+                        idItin: itincountries,
+                        id: item.id,
+                        nameitin: datadetail.itinerary_detail.name,
+                      });
+                    }}
+                  >
+                    <Next width={15} height={15} />
+                  </TouchableOpacity>
+                ) : null}
               </View>
               <View
                 style={{
