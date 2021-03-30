@@ -11,15 +11,15 @@ export default function ServiceModal({ setModalService, modals, data }) {
       onRequestClose={() => {
         setModalService(false);
       }}
-      animationIn="slideInRight"
-      animationOut="slideOutRight"
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
       isVisible={modals}
       style={{
         alignSelf: "center",
         alignContent: "center",
       }}
     >
-      {/* <StatusBar backgroundColor="#14646E" barStyle="light-content" /> */}
+      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <View
         style={{
           backgroundColor: "#FFF",

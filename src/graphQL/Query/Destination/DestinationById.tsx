@@ -6,7 +6,6 @@ const DestinationById = gql`
       name
       phone1
       phone2
-      liked
       email1
       email2
       latitude
@@ -17,15 +16,21 @@ const DestinationById = gql`
       weekendprice
       openat
       status
+      liked
+      countries {
+        name
+      }
+      cities {
+        name
+      }
       facebook
       instagram
       website
       map
-      cities {
-        name
-      }
       created_at
       updated_at
+      rating
+      count_review
       images {
         image
       }
@@ -35,6 +40,69 @@ const DestinationById = gql`
         text
         image
         order
+      }
+      greatfor {
+        id
+        label
+        icon
+      }
+      review {
+        id
+        user {
+          id
+          username
+          first_name
+          last_name
+          picture
+        }
+        ulasan
+        rating
+        image {
+          image
+        }
+      }
+      movie_location {
+        id
+        title
+        description
+        cover
+        is_populer
+        populer_order
+      }
+      type {
+        id
+        name
+        slug
+        suggestion
+        icon
+      }
+      core_facilities {
+        id
+        name
+        icon
+        slug
+      }
+      another_place {
+        id
+        name
+        rating
+        count_review
+        liked
+        cities {
+          id
+          name
+        }
+        countries {
+          id
+          name
+        }
+        greatfor {
+          label
+          icon
+        }
+        images {
+          image
+        }
       }
     }
   }
