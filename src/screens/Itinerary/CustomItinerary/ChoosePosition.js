@@ -80,14 +80,12 @@ export default function ChoosePosition(props) {
   let [indexinput, setIndexInput] = useState("");
   let [jammax, setjammax] = useState(props.route.params.jammax);
 
-  console.log(props.route.params.jammax);
-  console.log(jammax);
-
   let [dataAkhir, setData] = useState([]);
   let [dataInput, setDataInput] = useState(props.route.params.dataCustom);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+
     // const unsubscribe = props.navigation.addListener("focus", () => {
     //   loadAsync();
     // });
@@ -879,16 +877,80 @@ export default function ChoosePosition(props) {
           {datatimeline.length > 0 ? (
             datatimeline.map((item, index) => {
               // console.log(item);
-              return (
-                <View>
-                  {(index !== 0 && !item.stat) ||
-                  (item.stat && item.stat !== "new") ? (
-                    datatimeline[index - 1] &&
-                    datatimeline[index - 1].stat &&
-                    datatimeline[index - 1].stat === "new" ? null : (
+              if (props.route.params.dataParent) {
+                return props.route.params.dataParent.id === item.id ||
+                  props.route.params.dataParent.id === item.parent_id ||
+                  item.stat === "new" ? (
+                  <View>
+                    {/* {(index !== 0 && !item.stat) ||
+                    (item.stat && item.stat !== "new") ? (
+                      datatimeline[index - 1] &&
+                      datatimeline[index - 1].stat &&
+                      datatimeline[index - 1].stat === "new" ? null : (
+                        <View>
+                          <TouchableOpacity
+                            onPress={() => addHere(index)}
+                            style={{
+                              marginVertical: 5,
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexDirection: "row",
+                              paddingVertical: 10,
+                              // borderBottomWidth: 1,
+                            }}
+                          >
+                            <View
+                              style={{
+                                height: 40,
+                                width: 40,
+                                backgroundColor: "#f3f3f3",
+                                borderRadius: 5,
+                                alignContent: "center",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                size="small"
+                                type="regular"
+                                style={{
+                                  fontFamily: "Lato-Regular",
+                                  fontSize: 30,
+                                }}
+                              >
+                                +
+                              </Text>
+                            </View>
+                            <Text
+                              // size='small'
+                              type="regular"
+                              style={{
+                                // fontFamily: 'Lato-Regular',
+                                // fontSize: 30,
+                                marginLeft: 10,
+                              }}
+                            >
+                              {t("addHere")}
+                            </Text>
+                          </TouchableOpacity>
+                          <View
+                            style={{
+                              width: "100%",
+                              borderStyle: "dashed",
+                              borderRadius: 1,
+                              borderWidth: 1,
+                              borderColor: "#f3f3f3",
+                            }}
+                          ></View>
+                        </View>
+                      )
+                    ) : null} */}
+                    <RenderItinerary key={item.id} item={item} index={index} />
+                    {!item.stat || (item.stat && item.stat !== "new") ? (
                       <View>
                         <TouchableOpacity
-                          onPress={() => addHere(index)}
+                          onPress={() => addHere(index + 1)}
                           style={{
                             marginVertical: 5,
                             alignContent: "center",
@@ -911,10 +973,10 @@ export default function ChoosePosition(props) {
                             }}
                           >
                             <Text
-                              size="small"
+                              size="h4"
                               type="regular"
                               style={{
-                                fontFamily: "Lato-Regular",
+                                // fontFamily: 'Lato-Regular',
                                 fontSize: 30,
                               }}
                             >
@@ -922,7 +984,7 @@ export default function ChoosePosition(props) {
                             </Text>
                           </View>
                           <Text
-                            // size='small'
+                            // size='h4'
                             type="regular"
                             style={{
                               // fontFamily: 'Lato-Regular',
@@ -943,71 +1005,140 @@ export default function ChoosePosition(props) {
                           }}
                         ></View>
                       </View>
-                    )
-                  ) : null}
-                  <RenderItinerary key={item.id} item={item} index={index} />
-                  {index === datatimeline.length - 1 &&
-                  (!item.stat || (item.stat && item.stat !== "new")) ? (
-                    <View>
-                      <TouchableOpacity
-                        onPress={() => addHere(index + 1)}
-                        style={{
-                          marginVertical: 5,
-                          alignContent: "center",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexDirection: "row",
-                          paddingVertical: 10,
-                          // borderBottomWidth: 1,
-                        }}
-                      >
-                        <View
+                    ) : null}
+                  </View>
+                ) : null;
+              } else {
+                return (
+                  <View>
+                    {(index !== 0 && !item.stat) ||
+                    (item.stat && item.stat !== "new") ? (
+                      datatimeline[index - 1] &&
+                      datatimeline[index - 1].stat &&
+                      datatimeline[index - 1].stat === "new" ? null : (
+                        <View>
+                          <TouchableOpacity
+                            onPress={() => addHere(index)}
+                            style={{
+                              marginVertical: 5,
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexDirection: "row",
+                              paddingVertical: 10,
+                              // borderBottomWidth: 1,
+                            }}
+                          >
+                            <View
+                              style={{
+                                height: 40,
+                                width: 40,
+                                backgroundColor: "#f3f3f3",
+                                borderRadius: 5,
+                                alignContent: "center",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Text
+                                size="small"
+                                type="regular"
+                                style={{
+                                  fontFamily: "Lato-Regular",
+                                  fontSize: 30,
+                                }}
+                              >
+                                +
+                              </Text>
+                            </View>
+                            <Text
+                              // size='small'
+                              type="regular"
+                              style={{
+                                // fontFamily: 'Lato-Regular',
+                                // fontSize: 30,
+                                marginLeft: 10,
+                              }}
+                            >
+                              {t("addHere")}
+                            </Text>
+                          </TouchableOpacity>
+                          <View
+                            style={{
+                              width: "100%",
+                              borderStyle: "dashed",
+                              borderRadius: 1,
+                              borderWidth: 1,
+                              borderColor: "#f3f3f3",
+                            }}
+                          ></View>
+                        </View>
+                      )
+                    ) : null}
+                    <RenderItinerary key={item.id} item={item} index={index} />
+                    {index === datatimeline.length - 1 &&
+                    (!item.stat || (item.stat && item.stat !== "new")) ? (
+                      <View>
+                        <TouchableOpacity
+                          onPress={() => addHere(index + 1)}
                           style={{
-                            height: 40,
-                            width: 40,
-                            backgroundColor: "#f3f3f3",
-                            borderRadius: 5,
+                            marginVertical: 5,
                             alignContent: "center",
                             alignItems: "center",
                             justifyContent: "center",
+                            flexDirection: "row",
+                            paddingVertical: 10,
+                            // borderBottomWidth: 1,
                           }}
                         >
+                          <View
+                            style={{
+                              height: 40,
+                              width: 40,
+                              backgroundColor: "#f3f3f3",
+                              borderRadius: 5,
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Text
+                              size="h4"
+                              type="regular"
+                              style={{
+                                // fontFamily: 'Lato-Regular',
+                                fontSize: 30,
+                              }}
+                            >
+                              +
+                            </Text>
+                          </View>
                           <Text
-                            size="h4"
+                            // size='h4'
                             type="regular"
                             style={{
                               // fontFamily: 'Lato-Regular',
-                              fontSize: 30,
+                              // fontSize: 30,
+                              marginLeft: 10,
                             }}
                           >
-                            +
+                            {t("addHere")}
                           </Text>
-                        </View>
-                        <Text
-                          // size='h4'
-                          type="regular"
+                        </TouchableOpacity>
+                        <View
                           style={{
-                            // fontFamily: 'Lato-Regular',
-                            // fontSize: 30,
-                            marginLeft: 10,
+                            width: "100%",
+                            borderStyle: "dashed",
+                            borderRadius: 1,
+                            borderWidth: 1,
+                            borderColor: "#f3f3f3",
                           }}
-                        >
-                          {t("addHere")}
-                        </Text>
-                      </TouchableOpacity>
-                      <View
-                        style={{
-                          width: "100%",
-                          borderStyle: "dashed",
-                          borderRadius: 1,
-                          borderWidth: 1,
-                          borderColor: "#f3f3f3",
-                        }}
-                      ></View>
-                    </View>
-                  ) : null}
-                </View>
-              );
+                        ></View>
+                      </View>
+                    ) : null}
+                  </View>
+                );
+              }
             })
           ) : (
             <View>

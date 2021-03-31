@@ -345,9 +345,9 @@ export default function ItineraryDetail(props) {
       spreadtimeline(res.day_timeline);
     },
   });
-  // if (datatimeline && datatimeline.day_timeline.length) {
-  //   dataList = datatimeline.day_timeline;
-  // }
+  if (datatimeline && datatimeline.day_timeline.length) {
+    dataList = datatimeline.day_timeline;
+  }
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -1762,10 +1762,11 @@ export default function ItineraryDetail(props) {
               color: "#464646",
               textAlign: "left",
             }}
+            numberOfLines={1}
           >
-            {datadetail && datadetail.itinerary_detail ? (
-              <Truncate text={datadetail.itinerary_detail.name} length={30} />
-            ) : null}
+            {datadetail && datadetail.itinerary_detail
+              ? datadetail.itinerary_detail.name
+              : null}
           </Animated.Text>
           <Animated.Text
             allowFontScaling={false}
@@ -1776,10 +1777,11 @@ export default function ItineraryDetail(props) {
               color: "#ffff",
               textAlign: "left",
             }}
+            numberOfLines={1}
           >
-            {datadetail && datadetail.itinerary_detail ? (
-              <Truncate text={datadetail.itinerary_detail.name} length={30} />
-            ) : null}
+            {datadetail && datadetail.itinerary_detail
+              ? datadetail.itinerary_detail.name
+              : null}
           </Animated.Text>
           <View
             style={{

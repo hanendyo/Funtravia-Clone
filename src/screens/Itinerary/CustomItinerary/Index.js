@@ -388,7 +388,7 @@ export default function CustomItinerary(props) {
                   token: token,
                   idItin: idItin,
                   idDay: idDay,
-                  datatimeline: datati.custome_timeline,
+                  datatimeline: datatimeline,
                   jammax: total_hours,
                   itintitle: itintitle,
                   dateitin: dateitin,
@@ -400,7 +400,7 @@ export default function CustomItinerary(props) {
                   token: token,
                   idItin: idItin,
                   idDay: idDay,
-                  datatimeline: datati.custome_timeline,
+                  datatimeline: datatimeline,
                   jammax: total_hours,
                   itintitle: itintitle,
                   dateitin: dateitin,
@@ -593,6 +593,7 @@ export default function CustomItinerary(props) {
                               itintitle: itintitle,
                               dateitin: dateitin,
                               datadayaktif: datadayaktif,
+                              dataParent: props.route?.params?.dataParent,
                             })
                           }
                           style={{
@@ -699,6 +700,7 @@ export default function CustomItinerary(props) {
                               itintitle: itintitle,
                               dateitin: dateitin,
                               datadayaktif: datadayaktif,
+                              dataParent: props.route?.params?.dataParent,
                             })
                           }
                           style={{
