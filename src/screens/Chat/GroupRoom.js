@@ -146,6 +146,7 @@ export default function Room({ navigation, route }) {
 			}
 		);
 		let responseJson = await response.json();
+		console.log(room);
 		if (responseJson.data) {
 			await AsyncStorage.setItem(
 				"history_" + room,
