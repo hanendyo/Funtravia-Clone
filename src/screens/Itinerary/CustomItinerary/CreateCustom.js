@@ -83,9 +83,11 @@ export default function CreateCustom(props) {
   let datadayaktif = props.route.params.datadayaktif;
   let [title, setTitle] = useState("");
   let [Address, setAddress] = useState("");
-  let [Lat, setLat] = useState("");
-  let [Long, setLong] = useState("");
-  let [DetailAddress, setDetailAddress] = useState("");
+  let [Lat, setLat] = useState(props.route.params?.dataParent?.latitude);
+  let [Long, setLong] = useState(props.route.params?.dataParent?.longitude);
+  let [DetailAddress, setDetailAddress] = useState(
+    props.route.params?.dataParent?.address
+  );
   let [hour, sethour] = useState(1);
   let [minutes, setMinutes] = useState(0);
   let [dataUpload, setDataUpload] = useState([
@@ -200,6 +202,8 @@ export default function CreateCustom(props) {
     58,
     59,
   ];
+
+  console.log(props.route.params.dataParent);
 
   const pickFile = async () => {
     try {
@@ -788,75 +792,84 @@ export default function CreateCustom(props) {
             </Modal>
           </View>
           <View style={{}}>
-            <Text size="label" type="bold" style={{}}>
-              {t("address")}
-            </Text>
-            <TouchableOpacity
-              onPress={() => setModal(true)}
-              style={{
-                marginVertical: 10,
-                width: "100%",
-                // height: 30,
-                paddingHorizontal: 10,
-                borderWidth: 0.2,
-                borderRadius: 2,
-                borderColor: "#646464",
-                backgroundColor: "#f3f3f3",
-              }}
-            >
-              <View
-                style={{
-                  height: 30,
-                  borderRadius: 2,
-
-                  flexDirection: "row",
-                  // borderWidth: 1,
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-              >
-                <Pointmapgray />
-                <Input
-                  disabled={true}
+            {props.route.params?.dataParent ? null : (
+              <>
+                <Text size="label" type="bold" style={{}}>
+                  {t("address")}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setModal(true)}
                   style={{
-                    fontFamily: "Lato-Regular",
-                    fontSize: 14,
-                    marginLeft: 5,
-                    padding: 0,
-                    // color: '#646464',
-                  }}
-                  autoCorrect={false}
-                  placeholder={"Search Address"}
-                  value={Address}
-                  onChangeText={onChange("address")}
-                  keyboardType="default"
-                />
-              </View>
-
-              {validate.address === false ? (
-                <Text
-                  size="small"
-                  type="regular"
-                  style={{
-                    color: "#D75995",
-
-                    position: "absolute",
-                    bottom: -15,
+                    marginVertical: 10,
+                    width: "100%",
+                    // height: 30,
+                    paddingHorizontal: 10,
+                    borderWidth: 0.2,
+                    borderRadius: 2,
+                    borderColor: "#646464",
+                    backgroundColor: "#f3f3f3",
+                    marginBottom: 20,
                   }}
                 >
-                  {t("enteraddres")}
-                </Text>
-              ) : null}
-            </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 30,
+                      borderRadius: 2,
+
+                      flexDirection: "row",
+                      // borderWidth: 1,
+                      alignItems: "center",
+                      alignContent: "center",
+                    }}
+                  >
+                    <Pointmapgray />
+                    <Input
+                      disabled={true}
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        fontSize: 14,
+                        marginLeft: 5,
+                        padding: 0,
+                        // color: '#646464',
+                      }}
+                      autoCorrect={false}
+                      placeholder={"Search Address"}
+                      value={Address}
+                      onChangeText={onChange("address")}
+                      keyboardType="default"
+                    />
+                  </View>
+
+                  {validate.address === false ? (
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        color: "#D75995",
+
+                        position: "absolute",
+                        bottom: -15,
+                      }}
+                    >
+                      {t("enteraddres")}
+                    </Text>
+                  ) : null}
+                </TouchableOpacity>
+              </>
+            )}
 
             <Text
               size="label"
               type="bold"
-              style={{
-                marginTop: 20,
-              }}
+              style={
+                {
+                  // marginTop: 20,
+                }
+              }
             >
-              {t("detailAddress")}
+              {props.route.params?.dataParent
+                ? t("address")
+                : t("detailAddress")}
             </Text>
 
             <Textarea
@@ -868,6 +881,7 @@ export default function CreateCustom(props) {
                 backgroundColor: "#f3f3f3",
                 padding: 5,
               }}
+              disabled={props.route.params?.dataParent ? true : false}
               rowSpan={5}
               placeholder="Detail Address"
               value={DetailAddress}

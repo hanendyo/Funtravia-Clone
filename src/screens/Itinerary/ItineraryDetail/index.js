@@ -2334,6 +2334,7 @@ export default function ItineraryDetail(props) {
                         idItin: itincountries,
                         id: item.id,
                         nameitin: datadetail.itinerary_detail.name,
+                        datadayaktif: datadayaktif,
                       });
                     }}
                   >
