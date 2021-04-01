@@ -82,12 +82,13 @@ export default function CreateCustom(props) {
   let jammax = props.route.params.jammax;
   let datadayaktif = props.route.params.datadayaktif;
   let [title, setTitle] = useState("");
-  let [Address, setAddress] = useState("");
+  let [Address, setAddress] = useState(props.route.params?.dataParent?.address);
   let [Lat, setLat] = useState(props.route.params?.dataParent?.latitude);
   let [Long, setLong] = useState(props.route.params?.dataParent?.longitude);
   let [DetailAddress, setDetailAddress] = useState(
     props.route.params?.dataParent?.address
   );
+
   let [hour, sethour] = useState(1);
   let [minutes, setMinutes] = useState(0);
   let [dataUpload, setDataUpload] = useState([
@@ -203,8 +204,6 @@ export default function CreateCustom(props) {
     59,
   ];
 
-  console.log(props.route.params.dataParent);
-
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -280,7 +279,6 @@ export default function CreateCustom(props) {
   };
 
   const _Next = async () => {
-    // console.log(hour + ':' + minutes);
     if (cheked === true) {
       try {
         let response = await mutationSaved({
@@ -301,7 +299,6 @@ export default function CreateCustom(props) {
         if (errorSaved) {
           throw new Error("Error Input");
         }
-        // console.log(response.data.save_custom);
         if (response.data) {
           if (response.data.save_custom.code !== 200) {
             throw new Error(response.data.save_custom.message);
@@ -328,6 +325,7 @@ export default function CreateCustom(props) {
               },
               itintitle: itintitle,
               dateitin: dateitin,
+              dataParent: props.route?.params?.dataParent,
             });
             // Alert.alert('Succes');
           }
@@ -358,8 +356,8 @@ export default function CreateCustom(props) {
         },
         itintitle: itintitle,
         dateitin: dateitin,
+        dataParent: props.route?.params?.dataParent,
       });
-      // console.log('none saved');
     }
   };
 
@@ -1003,7 +1001,7 @@ export default function CreateCustom(props) {
               alignContent: "center",
             }}
           >
-            <CheckBox value={cheked} />
+            <CheckBox value={cheked} onChange={() => setcheck(!cheked)} />
             <Text
               size="small"
               type="regular"
@@ -1134,7 +1132,6 @@ export default function CreateCustom(props) {
           <View
             style={{
               width: Dimensions.get("screen").width,
-              // height: '100%',
               height: Dimensions.get("screen").height,
               backgroundColor: "white",
               paddingTop: 20,
@@ -1142,19 +1139,13 @@ export default function CreateCustom(props) {
               paddingBottom: 20,
             }}
           >
-            {/* <View
-                        style={{
-                            marginHorizontal: 20,
-                        }}> */}
             <GooglePlacesAutocomplete
               style={{}}
               query={{
                 key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
                 language: "id", // language of the results
-                // components: 'country:id',
               }}
               fetchDetails={true}
-              // GooglePlacesDetailsQuery={{}}
               onPress={(data, details = null, search = null) => {
                 setModal(false);
                 masukan(details);
@@ -1175,7 +1166,6 @@ export default function CreateCustom(props) {
               GooglePlacesSearchQuery={{ rankby: "distance" }}
               enablePoweredByContainer={false}
               renderRow={(data) => {
-                // console.log(data);
                 if (data.description) {
                   var x = data.description.split(",");
                 }
@@ -1183,7 +1173,6 @@ export default function CreateCustom(props) {
                   <View
                     style={{
                       flexDirection: "row",
-                      // height: 70,
                       alignContent: "flex-start",
                       alignItems: "flex-start",
                     }}
@@ -1218,17 +1207,12 @@ export default function CreateCustom(props) {
                 );
               }}
               styles={{
-                // container: { backgroundColor: 'red' },
                 textInputContainer: {
                   height: 40,
-                  // alignContent: "center",
-                  // alignItems: "center",
                   backgroundColor: "#f4f4f4",
                   borderWidth: 0.5,
                   borderColor: "#6c6c6c",
                   borderRadius: 5,
-                  // paddingVertical: 0,
-                  // paddingTop: 5,
                   margin: 0,
                   paddingHorizontal: 10,
                 },
@@ -1247,18 +1231,13 @@ export default function CreateCustom(props) {
                 predefinedPlacesDescription: {
                   color: "#646464",
                 },
-                listView: {
-                  // backgroundColor: 'red',
-                  // position: 'absolute',
-                  // height: 50,
-                },
+                listView: {},
                 row: {
                   height: 48,
                 },
               }}
             />
           </View>
-          {/* </View> */}
         </KeyboardAvoidingView>
       </Modal>
     </View>
