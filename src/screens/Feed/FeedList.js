@@ -226,7 +226,7 @@ export default function FeedList({ props, token }) {
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
     feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
-  console.log(feed_post_pageing);
+  // console.log(feed_post_pageing);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
