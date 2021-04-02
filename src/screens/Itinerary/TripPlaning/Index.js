@@ -183,6 +183,8 @@ export default function TripPlaning(props) {
     );
   }
 
+  console.log(dataCount);
+
   if (token !== null && dataCount && dataCount.count_myitinerary) {
     return (
       <Tab.Navigator

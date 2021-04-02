@@ -206,6 +206,8 @@ import ClockHitam from "./files/clock_hitam.svg";
 import StarBlue from "./files/start_blue.svg";
 import SendReview from "./files/send_review.svg";
 import NewGroup from "./files/group.svg";
+import Stay from "./files/stay.svg";
+import Flights from "./files/flight.svg";
 
 export {
   LikeWhite,
@@ -416,4 +418,6 @@ export {
   StarBlue,
   SendReview,
   NewGroup,
+  Stay,
+  Flights,
 };
