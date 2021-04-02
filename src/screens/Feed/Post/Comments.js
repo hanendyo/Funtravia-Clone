@@ -96,7 +96,7 @@ export default function Comments(props) {
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [selected, setSelected] = useState(new Map());
-  let dataPost = useRef(props.route.params?.data);
+  let dataPost = React.useRef({ ...props.route.params.data });
   // console.log(dataPost);
   let [postid, setPostid] = useState(props.route.params?.post_id);
   let [token, setToken] = useState(props.route.params.token);
@@ -340,6 +340,7 @@ export default function Comments(props) {
     });
     return unsubscribe;
   }, []);
+  console.log(dataPost);
 
   const comment = async (id, text) => {
     if ((token || token !== "") && text !== "") {
@@ -395,6 +396,7 @@ export default function Comments(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
+        console.log(error);
         tempData.splice(idx, 1);
         SetDatacommnet(tempData);
 
@@ -1238,9 +1240,126 @@ export default function Comments(props) {
           <FlatList
             scrollEnabled={false}
             data={data_comment}
-            renderItem={({ item }) => {
-              return <Item dataComment={item} />;
-            }}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  // width: Dimensions.get('window').width,
+                  backgroundColor: "#FFFFFF",
+                  // flex: 1,
+                  borderTopWidth: 1,
+                  borderTopColor: "#EEEEEE",
+                  paddingHorizontal: 15,
+                  paddingVertical: 10,
+                  borderRadius: 20,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    // marginVertical: 10,
+                    alignContent: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Image
+                      isTouchable
+                      onPress={() => {
+                        item.user.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.user.id,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                            });
+                      }}
+                      style={{
+                        height: 35,
+                        width: 35,
+                        borderRadius: 18,
+                        alignSelf: "center",
+                        resizeMode: "cover",
+                      }}
+                      source={{ uri: item.user?.picture }}
+                    />
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        marginHorizontal: 10,
+                      }}
+                    >
+                      <Text
+                        onPress={() => {
+                          item.user.id !== setting?.user?.id
+                            ? props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.user.id,
+                                },
+                              })
+                            : props.navigation.push("ProfileStack", {
+                                screen: "ProfileTab",
+                              });
+                        }}
+                        allowFontScaling={false}
+                        style={{
+                          fontFamily: "Lato-Bold",
+                          fontSize: 14,
+                          // marginTop: 7,
+                        }}
+                      >
+                        {item.user?.first_name} {item.user?.last_name}
+                      </Text>
+                      {item.is_send == false ? (
+                        <Text
+                          size={"small"}
+                          style={{
+                            fontFamily: "Lato-Regular",
+                            // fontSize: 10,
+                            // marginTop: 7,
+                          }}
+                        >
+                          Loading...
+                        </Text>
+                      ) : (
+                        <Text
+                          size={"small"}
+                          style={{
+                            fontFamily: "Lato-Regular",
+                            // fontSize: 10,
+                            // marginTop: 7,
+                          }}
+                        >
+                          {duration(item.created_at)}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: "100%",
+                    marginVertical: 5,
+                    marginLeft: 45,
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: "left",
+                    }}
+                  >
+                    {item.text}
+                  </Text>
+                </View>
+              </View>
+            )}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
