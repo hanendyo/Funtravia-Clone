@@ -47,6 +47,10 @@ import {
   Reorder,
   CameraBlue,
   CameraIcon,
+  Hotel,
+  Plane,
+  Stay,
+  Flights,
 } from "../../../assets/svg";
 import {
   Button,
@@ -2515,6 +2519,8 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
+    console.log(item);
+
     return grid !== 1 ? (
       item.id === datadayaktif.id ? (
         <View
@@ -2647,7 +2653,24 @@ export default function ItineraryDetail(props) {
                 })
               ) : (
                 <View>
-                  <Text>Kosong</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setidupload(item.id);
+                      setmodalAlbum(true);
+                    }}
+                    style={{
+                      alignContent: "center",
+                      justifyContent: "center",
+                      backgroundColor: "#d0d0d0",
+                      alignItems: "center",
+                      width: tab2ItemSize,
+                      height: tab2ItemSize,
+                      marginRight: 2.5,
+                      marginBottom: 2.5,
+                    }}
+                  >
+                    <CameraIcon height={30} width={30} />
+                  </TouchableOpacity>
                 </View>
               )
             ) : null}
@@ -2731,7 +2754,24 @@ export default function ItineraryDetail(props) {
             })
           ) : (
             <View>
-              <Text>Kosong</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setidupload(item.id);
+                  setmodalAlbum(true);
+                }}
+                style={{
+                  alignContent: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#d0d0d0",
+                  alignItems: "center",
+                  width: tab2ItemSize,
+                  height: tab2ItemSize,
+                  marginRight: 2.5,
+                  marginBottom: 2.5,
+                }}
+              >
+                <CameraIcon height={30} width={30} />
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -3385,24 +3425,19 @@ export default function ItineraryDetail(props) {
 
   const goToSelectPhoto = async (album, dayaktif) => {
     let data = await spreadDatas(album);
-    // let dataAlbum =
-    //   album &&
-    //   album.itinerary_album_list &&
-    //   album.itinerary_album_list.day_album
-    //     ? album.itinerary_album_list.day_album
-    //     : null;
-    // let index = dataAlbum.findIndex((k) => k["id"] === dayaktif.id);
     let index = data.findIndex((k) => k["id"] === dayaktif.id);
-    // let albumselected = dataAlbum[index];
     let albumselected = data[index].unposted;
-    // console.log(albumselected);
-    await props.navigation.navigate("ItineraryStack", {
-      screen: "SelectAlbumsPost",
-      params: {
-        data_album: albumselected,
-        itinerary_id: dayaktif.itinerary_id,
-      },
-    });
+    if (albumselected.length > 0) {
+      await props.navigation.navigate("ItineraryStack", {
+        screen: "SelectAlbumsPost",
+        params: {
+          data_album: albumselected,
+          itinerary_id: dayaktif.itinerary_id,
+        },
+      });
+    } else {
+      Alert.alert("", "Album kosong");
+    }
   };
 
   const renderMenuBottom = () => {
@@ -4053,6 +4088,81 @@ export default function ItineraryDetail(props) {
                 </Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert("coming soon");
+              }}
+              style={{
+                marginVertical: 2.5,
+                width: "100%",
+                height: Dimensions.get("screen").width * 0.2,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 25,
+                  backgroundColor: "#f3f3f3",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <Flights height={25} width={25} />
+              </View>
+              <View>
+                <Text size="description" type="bold">
+                  {t("Flight")}
+                </Text>
+                <Text size="small" type="regular">
+                  {t("Add flight number to your itinerary")}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert("coming soon");
+              }}
+              style={{
+                marginVertical: 2.5,
+                width: "100%",
+                height: Dimensions.get("screen").width * 0.2,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 25,
+                  backgroundColor: "#f3f3f3",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <Stay height={25} width={25} />
+              </View>
+              <View>
+                <Text size="description" type="bold">
+                  {t("Stay")}
+                </Text>
+                <Text size="small" type="regular">
+                  {t("Add place name")}
+                </Text>
+              </View>
+            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => {
                 setModalcustom(false);

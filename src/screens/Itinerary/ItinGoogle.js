@@ -227,7 +227,7 @@ export default function ItinGoogle(props) {
                     {detailMap.name}
                   </Text>
                   <View style={{ flexDirection: "row" }}>
-                    <PinHijau height={15} width={15} style={{ marginTop: 0 }} />
+                    <PinHijau height={15} width={15} style={{ marginTop: 5 }} />
                     <Text
                       style={{
                         width: Dimensions.get("screen").width * 0.5,
@@ -259,7 +259,7 @@ export default function ItinGoogle(props) {
               </View>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <PinMerah height={15} width={15} style={{ marginTop: 0 }} />
+              <PinMerah height={15} width={15} style={{ marginTop: 5 }} />
 
               <Text
                 style={{
