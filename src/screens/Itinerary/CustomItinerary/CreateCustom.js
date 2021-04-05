@@ -679,7 +679,7 @@ export default function CreateCustom(props) {
                     alignItems: "center",
                   }}
                 >
-                  <View style={{ width: "30%" }}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosIcon={
                         <View>
@@ -718,16 +718,16 @@ export default function CreateCustom(props) {
                   </View>
                   <View
                     style={{
-                      width: "10%",
-                      alignItems: "flex-end",
-                      alignContent: "flex-end",
+                      width: "5%",
+                      alignItems: "center",
+                      // alignContent: "flex-end",
                     }}
                   >
                     <Text size="description" type="bold" style={{}}>
                       :
                     </Text>
                   </View>
-                  <View style={{ width: "30%" }}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosHeader="Select Minutes"
                       headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}
@@ -920,7 +920,7 @@ export default function CreateCustom(props) {
             >
               {dataUpload.map((data, index) => {
                 return (
-                  <View
+                  <TouchableOpacity
                     style={{
                       flexDirection: "row",
                       justifyContent: "space-between",
@@ -943,7 +943,7 @@ export default function CreateCustom(props) {
                       width={5}
                       height={5}
                     />
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
             </View>

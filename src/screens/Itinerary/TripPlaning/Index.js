@@ -183,8 +183,6 @@ export default function TripPlaning(props) {
     );
   }
 
-  console.log(dataCount);
-
   if (token !== null && dataCount && dataCount.count_myitinerary) {
     return (
       <Tab.Navigator
@@ -230,7 +228,7 @@ export default function TripPlaning(props) {
           justifyContent: "center",
         }}
       >
-        <ActivityIndicator animating={true} color="#209fae" size="large" />
+        {/* <ActivityIndicator animating={true} color="#209fae" size="large" /> */}
       </View>
     );
   }

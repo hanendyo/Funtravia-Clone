@@ -81,19 +81,19 @@ export default function OtherProfile(props) {
 
     if (!props.route.params.idUser) {
       await seID(user.user.id);
-      console.log(user.user.id);
+      // console.log(user.user.id);
 
       await props.navigation.setParams({ idUser: user.user.id });
       setposition("profile");
     } else {
       if (props.route.params.idUser === user.user.id) {
         await seID(user.user.id);
-        console.log(user.user.id);
+        // console.log(user.user.id);
 
         setposition("profile");
       } else {
         await seID(props.route.params.idUser);
-        console.log(props.route.params.idUser);
+        // console.log(props.route.params.idUser);
 
         setposition("other");
       }
@@ -102,17 +102,17 @@ export default function OtherProfile(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
 
-    await Loaddata();
+    // await Loaddata();
     await LoadUserProfile();
     // await Getdatapost();
     // await LoadReview();
     // await LoadTrip();
   };
 
-  const Loaddata = () => {
-    console.log("hasil", id);
-    console.log("hasil", token);
-  };
+  // const Loaddata = () => {
+  //   console.log("hasil", id);
+  //   console.log("hasil", token);
+  // };
 
   const [
     Getdatapost,
@@ -195,8 +195,8 @@ export default function OtherProfile(props) {
     },
   });
 
-  console.log(loadingtripX);
-  console.log(datatripX);
+  // console.log(loadingtripX);
+  // console.log(datatripX);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -407,7 +407,7 @@ export default function OtherProfile(props) {
 
   const imageTranslatesA = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 55 + SafeStatusBar + 25],
+    outputRange: [0, 55 + (SafeStatusBar > 20 ? SafeStatusBar : 45) + 25],
     extrapolate: "clamp",
   });
 
@@ -526,11 +526,12 @@ export default function OtherProfile(props) {
       fontFamily: "Lato-Bold",
       fontSize: 14,
       color: "white",
-      paddingLeft: Platform.select({
-        // ios: 44,
-        ios: 0,
-        android: 40,
-      }),
+      alignSelf: "center",
+      // paddingLeft: Platform.select({
+      //   // ios: 44,
+      //   ios: 0,
+      //   android: 40,
+      // }),
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -1351,6 +1352,8 @@ export default function OtherProfile(props) {
 
   let [dataUser, setDataUser] = useState({});
 
+  let [datas, setdatas] = useState(null);
+
   const [LoadUserProfile, { data, loading, error, refetch }] = useLazyQuery(
     Account,
     {
@@ -1374,6 +1377,7 @@ export default function OtherProfile(props) {
         } else {
           LoadTrip();
         }
+        setdatas(1);
 
         props.navigation.setOptions({
           headerTitle: (

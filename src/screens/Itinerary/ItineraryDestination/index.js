@@ -140,7 +140,6 @@ export default function ItineraryDestination(props) {
       },
     },
   });
-  // console.log(token);-
 
   const [
     mutationUnliked,
@@ -445,15 +444,17 @@ export default function ItineraryDestination(props) {
                 }}
               >
                 {data.greatfor.map((item, index) => {
-                  return (
+                  return item && item.icon ? (
                     <FunIcon
+                      // variant="i"
                       icon={item.icon}
                       fill="#464646"
                       height={42}
                       width={42}
                       style={{}}
                     />
-                  );
+                  ) : // <Text>test</Text>
+                  null;
                 })}
               </View>
             </View>

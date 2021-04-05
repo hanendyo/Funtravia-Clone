@@ -22,8 +22,8 @@ export default function Fillter({ type, country, sendBack, props }) {
   const { t, i18n } = useTranslation();
   let [selected] = useState(new Map());
   let [search, setSearch] = useState(null);
-  let [dataFillter, setdataFillter] = useState(type);
-  let [datacountry, setdatacountry] = useState(country);
+  let [dataFillter, setdataFillter] = useState([...type]);
+  let [datacountry, setdatacountry] = useState([...country]);
   let [Filterlenght, setfilterlenght] = useState(0);
   let [modal, setModal] = useState(false);
   let [id_country, setId_country] = useState(null);
@@ -66,7 +66,7 @@ export default function Fillter({ type, country, sendBack, props }) {
     sendBack({ type: null, tag: tempData, keyword: x });
     setSearch(x);
   };
- 
+
   const onSelectFilter = (status, id) => {
     const tempDataPg = [...dataFillter];
     let index = tempDataPg.findIndex((x) => x.id === id);
