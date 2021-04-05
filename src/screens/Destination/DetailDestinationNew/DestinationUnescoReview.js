@@ -23,7 +23,6 @@ import { Button, Text } from "../../../component";
 import { activity_unesco7 } from "../../../assets/png";
 
 export default function DestinationUnescoReview(props) {
-  console.log("data", props);
   let [data] = useState(props.route.params.data);
   const HeaderComponent = {
     headerShown: true,
