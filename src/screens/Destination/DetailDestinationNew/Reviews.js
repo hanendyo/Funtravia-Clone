@@ -1,64 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, View, Image, ScrollView } from "react-native";
+import { Dimensions, View, Image, ScrollView, Animated } from "react-native";
 import { Text, Button } from "../../../component";
 import { LikeEmpty, Star, SendReview } from "../../../assets/svg";
 import { activity_unesco2 } from "../../../assets/png";
 import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Reviews({ props, data }) {
-  console.log("props review", props);
-  console.log("props review", data);
-  // const [setting, setSetting] = useState("");
-  // const [token, setToken] = useState("");
+export default function Reviews({ props, id, scroll, heights }) {
+  const [setting, setSetting] = useState("");
+  const [token, setToken] = useState("");
 
-  // const loadAsync = async () => {
-  //   let tkn = await AsyncStorage.getItem("access_token");
-  //   await setToken(tkn);
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
 
-  //   let setsetting = await AsyncStorage.getItem("setting");
-  //   await setSetting(JSON.parse(setsetting));
-  // };
+    let setsetting = await AsyncStorage.getItem("setting");
+    await setSetting(JSON.parse(setsetting));
+  };
 
-  // useEffect(() => {
-  //   const unsubscribe = props.navigation.addListener("focus", () => {
-  //     loadAsync();
-  //   });
-  //   return unsubscribe;
-  // }, [props.navigation]);
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
-  // const { data, loading, error } = useQuery(DestinationById, {
-  //   // variables: { id: props.props.route.params.id },
-  //   variables: { id: "a7b22010-4f53-4108-ba4a-e5cb459791af" },
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  // });
-
-  // console.log("data review", data);
+  const { data, loading, error } = useQuery(DestinationById, {
+    // variables: { id: props.props.route.params.id },
+    variables: { id: id },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
   return (
-    // <View>
-    //   <Text>test</Text>
-    // </View>
-
     <ScrollView
-      style={{
-        flex: 1,
+      contentContainerStyle={{
         width: Dimensions.get("screen").width,
         paddingHorizontal: 15,
+        paddingTop: heights,
+        // height: Dimensions.get("screen").height,
       }}
+      onScroll={Animated.event(
+        [
+          {
+            nativeEvent: {
+              contentOffset: {
+                y: scroll,
+              },
+            },
+          },
+        ],
+        { useNativeDriver: false }
+      )}
+      scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
     >
-      {data?.destinationById.review?.length > 0 ? (
+      {data?.destinationById ? (
         <>
           {/* View Name */}
           <View
             style={{
-              height: 70,
+              // height: 200,
               flexDirection: "row",
               marginTop: 15,
               justifyContent: "space-between",
@@ -160,10 +167,10 @@ export default function Reviews({ props, data }) {
         type="icon"
         text="Write Review"
         style={{
-          bottom: 0,
           width: Dimensions.get("screen").width * 0.7,
           borderRadius: 42,
           alignSelf: "center",
+          // position: "absolute",
           marginTop: Dimensions.get("screen").height * 0.2,
         }}
         onPress={() =>

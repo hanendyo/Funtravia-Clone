@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import { Dimensions, View, Image, ScrollView, Pressable } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  Dimensions,
+  View,
+  Image,
+  ScrollView,
+  Pressable,
+  Animated,
+} from "react-native";
 import { Text, Button, Truncate, FunIcon } from "../../../component";
 import { LikeEmpty, Star, PinHijau } from "../../../assets/svg";
+import { findLastKey } from "lodash";
 
-export default function Generals({ data }) {
+export default function Generals({ data, scroll, heights }) {
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   const layoutText = (e) => {
@@ -12,7 +20,20 @@ export default function Generals({ data }) {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{ backgroundColor: "#fff", paddingTop: heights }}
+      onScroll={Animated.event(
+        [
+          {
+            nativeEvent: {
+              contentOffset: {
+                y: scroll,
+              },
+            },
+          },
+        ],
+        { useNativeDriver: false }
+      )}
+      scrollEventThrottle={16}
     >
       {/* View descrition */}
       {data?.description ? (
@@ -415,138 +436,135 @@ export default function Generals({ data }) {
           Another Place
         </Text>
         {data &&
-          data.another_place.map(
-            (item, index) => (
-              console.log("anot", item),
-              (
+          data.another_place.map((item, index) => (
+            <View
+              key={index}
+              style={{
+                borderWidth: 1,
+                borderColor: "#F3F3F3",
+                borderRadius: 10,
+                height: 170,
+                padding: 10,
+                marginTop: 10,
+                width: "100%",
+                flexDirection: "row",
+                backgroundColor: "#FFF",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+                shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+                elevation: Platform.OS == "ios" ? 3 : 3.5,
+              }}
+            >
+              {/* Image */}
+              <Image
+                source={{ uri: item.images.image }}
+                style={{
+                  width: "40%",
+                  height: "100%",
+                  borderRadius: 10,
+                }}
+              />
+
+              {/* Keterangan */}
+              {/* rating */}
+              <View style={{ width: "55%", marginHorizontal: 10 }}>
                 <View
-                  key={index}
                   style={{
-                    borderWidth: 1,
-                    borderColor: "#F3F3F3",
-                    borderRadius: 10,
-                    height: 170,
-                    padding: 10,
-                    marginTop: 10,
-                    width: "100%",
                     flexDirection: "row",
-                    backgroundColor: "#FFF",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-                    shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-                    elevation: Platform.OS == "ios" ? 3 : 3.5,
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  {/* Image */}
-                  <Image
-                    source={{ uri: item.images.image }}
+                  <View
                     style={{
-                      width: "40%",
-                      height: "100%",
-                      borderRadius: 10,
+                      flexDirection: "row",
+                      backgroundColor: "#F3F3F3",
+                      borderRadius: 3,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 5,
+                      height: 25,
                     }}
-                  />
-
-                  {/* Keterangan */}
-                  {/* rating */}
-                  <View style={{ width: "55%", marginHorizontal: 10 }}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          backgroundColor: "#F3F3F3",
-                          borderRadius: 3,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          paddingHorizontal: 5,
-                          height: 25,
-                        }}
-                      >
-                        <Star height={15} width={15} />
-                        <Text size="description" type="bold">
-                          {item.rating}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          backgroundColor: "#F3F3F3",
-                          height: 34,
-                          width: 34,
-                          borderRadius: 17,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <LikeEmpty height={15} width={15} />
-                      </View>
-                    </View>
-
-                    {/* Title */}
-                    <Text
-                      size="label"
-                      type="bold"
-                      style={{ marginTop: 2 }}
-                      numberOfLines={1}
-                    >
-                      {item.name}
+                  >
+                    <Star height={15} width={15} />
+                    <Text size="description" type="bold">
+                      {item.rating}
                     </Text>
-
-                    {/* Maps */}
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        marginTop: 5,
-                        alignItems: "center",
-                      }}
-                    >
-                      <PinHijau height={15} width={15} />
-                      <Text
-                        size="description"
-                        type="regular"
-                        style={{ marginLeft: 5 }}
-                        numberOfLines={1}
-                      >
-                        {item.cities.name}
-                      </Text>
-                    </View>
-
-                    {/* Great for */}
-
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        height: 50,
-                        marginTop: 5,
-                      }}
-                    >
-                      <View>
-                        <Text size="description" type="bold">
-                          Great for :
-                        </Text>
-                        {item.greatfor.icon ? (
-                          <View style={{ flexDirection: "row" }}>
-                            <FunIcon
-                              icon={item.greatfor.icon}
-                              height={30}
-                              width={30}
-                            />
-                          </View>
-                        ) : null}
-                      </View>
-                      <Button text={"Add"} style={{ marginTop: 5 }} />
-                    </View>
+                  </View>
+                  <View
+                    style={{
+                      backgroundColor: "#F3F3F3",
+                      height: 34,
+                      width: 34,
+                      borderRadius: 17,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <LikeEmpty height={15} width={15} />
                   </View>
                 </View>
-              )
-            )
-          )}
+
+                {/* Title */}
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ marginTop: 2 }}
+                  numberOfLines={1}
+                >
+                  {item.name}
+                </Text>
+
+                {/* Maps */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <PinHijau height={15} width={15} />
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{ marginLeft: 5 }}
+                    numberOfLines={1}
+                  >
+                    {item.cities.name}
+                  </Text>
+                </View>
+
+                {/* Great for */}
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    height: 50,
+                    marginTop: 5,
+                  }}
+                >
+                  <View>
+                    <Text size="description" type="bold">
+                      Great for :
+                    </Text>
+                    {item.greatfor.icon ? (
+                      <View style={{ flexDirection: "row" }}>
+                        <FunIcon
+                          icon={item.greatfor.icon}
+                          height={30}
+                          width={30}
+                        />
+                      </View>
+                    ) : (
+                      <Text>-</Text>
+                    )}
+                  </View>
+                  <Button size="small" text={"Add"} style={{ marginTop: 20 }} />
+                </View>
+              </View>
+            </View>
+          ))}
       </View>
     </ScrollView>
   );
