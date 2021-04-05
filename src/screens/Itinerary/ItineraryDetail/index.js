@@ -2519,8 +2519,6 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
-    console.log(item);
-
     return grid !== 1 ? (
       item.id === datadayaktif.id ? (
         <View
@@ -2961,7 +2959,7 @@ export default function ItineraryDetail(props) {
                   size="large"
                 />
               ) : dataList.length == 0 && tabIndex == 0 ? (
-                <Text>No data</Text>
+                <Text></Text>
               ) : (
                 <View onLayout={() => handlecover()}></View>
               )}
@@ -4540,7 +4538,7 @@ export default function ItineraryDetail(props) {
                 alignItems: "center",
               }}
             >
-              <View style={{ width: "30%" }}>
+              <View style={{ width: "40%" }}>
                 <Picker
                   iosIcon={
                     <View>
@@ -4572,16 +4570,16 @@ export default function ItineraryDetail(props) {
 
               <View
                 style={{
-                  width: "10%",
-                  alignItems: "flex-end",
-                  alignContent: "flex-end",
+                  width: "5%",
+                  alignItems: "center",
+                  // alignContent: "flex-end",
                 }}
               >
                 <Text size="description" type="bold" style={{}}>
                   :
                 </Text>
               </View>
-              <View style={{ width: "30%" }}>
+              <View style={{ width: "40%" }}>
                 <Picker
                   iosHeader="Select Minutes"
                   headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}

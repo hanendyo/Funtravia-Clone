@@ -25,6 +25,7 @@ import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
+import DocumentPicker from "react-native-document-picker";
 
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
@@ -112,6 +113,27 @@ export default function detailCustomItinerary(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const pickFile = async (id) => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+      });
+      console.log(
+        res.uri,
+        res.type, // mime type
+        res.name,
+        res.size,
+        id
+      );
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+  };
 
   // console.log(dataParent);
 
@@ -465,7 +487,7 @@ export default function detailCustomItinerary(props) {
                 >
                   {dataChild.map((data, index) => {
                     return (
-                      <View
+                      <TouchableOpacity
                         style={{
                           flexDirection: "row",
                           justifyContent: "space-between",
@@ -488,7 +510,7 @@ export default function detailCustomItinerary(props) {
                           width={5}
                           height={5}
                         />
-                      </View>
+                      </TouchableOpacity>
                     );
                   })}
                 </View>
@@ -496,7 +518,7 @@ export default function detailCustomItinerary(props) {
                 <View style={{ flex: 1, marginVertical: 10 }}>
                   <TouchableOpacity
                     onPress={() => {
-                      //   pickFile();
+                      pickFile(dataParent.id);
                     }}
                     style={{
                       width: "100%",
@@ -776,7 +798,7 @@ export default function detailCustomItinerary(props) {
                   >
                     {dataChild.map((data, index) => {
                       return (
-                        <View
+                        <TouchableOpacity
                           style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
@@ -799,7 +821,7 @@ export default function detailCustomItinerary(props) {
                             width={5}
                             height={5}
                           />
-                        </View>
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
@@ -807,7 +829,7 @@ export default function detailCustomItinerary(props) {
                   <View style={{ flex: 1, marginVertical: 10 }}>
                     <TouchableOpacity
                       onPress={() => {
-                        //   pickFile();
+                        pickFile(item.id);
                       }}
                       style={{
                         width: "100%",

@@ -16,7 +16,7 @@ export default function Fillter({ fillter, sendBack }) {
   const { t, i18n } = useTranslation();
   let [selected] = useState(new Map());
   let [search, setSearch] = useState(null);
-  let [dataFillter, setdataFillter] = useState(fillter);
+  let [dataFillter, setdataFillter] = useState([...fillter]);
   let [Filterlenght, setfilterlenght] = useState(0);
   let [modal, setModal] = useState(false);
   const compare = (a, b) => {
