@@ -25,7 +25,6 @@ import { Loading } from "../../../component";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import ImagePicker from "react-native-image-crop-picker";
 import Video from "react-native-video";
-import ReactHlsPlayer from "react-hls-player";
 
 const { width } = Dimensions.get("screen");
 export default function Post(props) {
