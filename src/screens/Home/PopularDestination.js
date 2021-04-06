@@ -36,66 +36,6 @@ export default function PopularDestination({ props }) {
     });
   };
 
-  const RenderDesImg = ({ item }) => {
-    return (
-      <TouchableOpacity
-        key={item.id}
-        onPress={() => onSelect(item)}
-        style={{
-          shadowColor: "#464646",
-          shadowOffset: { width: 0.5, height: 0.5 },
-          shadowRadius: 0.5,
-          shadowOpacity: 0.5,
-          elevation: 2,
-        }}
-      >
-        <ImageBackground
-          key={item.id}
-          source={
-            item && item.image && item.image.image
-              ? { uri: item.image.image }
-              : { uri: defaultImage }
-          }
-          style={{
-            width: (width - 50) / 3,
-            height: (width - 50) / 3,
-            marginHorizontal: 3,
-            borderRadius: 5,
-            justifyContent: "flex-end",
-          }}
-          imageStyle={styles.destinationImage}
-        >
-          <LinearGradient
-            colors={["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0)"]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 0, y: 0 }}
-            style={{
-              height: "50%",
-              width: "100%",
-              alignItems: "flex-start",
-              alignContent: "flex-start",
-              justifyContent: "flex-end",
-              borderRadius: 5,
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-            }}
-          >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                color: "#ffff",
-                letterSpacing: 0.5,
-              }}
-            >
-              {Capital({ text: item.name })}
-            </Text>
-          </LinearGradient>
-        </ImageBackground>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <SafeAreaView>
       {data && data.beranda_popularV2.length ? (
@@ -174,7 +114,63 @@ export default function PopularDestination({ props }) {
           horizontal={true}
           data={data.beranda_popularV2}
           renderItem={({ item, index }) =>
-            index !== 0 ? <RenderDesImg key={index} item={item} /> : null
+            index !== 0 ? (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => onSelect(item)}
+                style={{
+                  shadowColor: "#464646",
+                  shadowOffset: { width: 0.5, height: 0.5 },
+                  shadowRadius: 0.5,
+                  shadowOpacity: 0.5,
+                  elevation: 2,
+                }}
+              >
+                <ImageBackground
+                  key={item.id}
+                  source={
+                    item && item.image && item.image.image
+                      ? { uri: item.image.image }
+                      : { uri: defaultImage }
+                  }
+                  style={{
+                    width: (width - 50) / 3,
+                    height: (width - 50) / 3,
+                    marginHorizontal: 3,
+                    borderRadius: 5,
+                    justifyContent: "flex-end",
+                  }}
+                  imageStyle={styles.destinationImage}
+                >
+                  <LinearGradient
+                    colors={["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0)"]}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0 }}
+                    style={{
+                      height: "50%",
+                      width: "100%",
+                      alignItems: "flex-start",
+                      alignContent: "flex-start",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type="bold"
+                      style={{
+                        color: "#ffff",
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      {Capital({ text: item.name })}
+                    </Text>
+                  </LinearGradient>
+                </ImageBackground>
+              </TouchableOpacity>
+            ) : null
           }
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
