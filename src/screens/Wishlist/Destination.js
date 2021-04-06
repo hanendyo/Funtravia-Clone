@@ -261,20 +261,68 @@ export default function Destination({
                             alignSelf: "flex-start",
                           }}
                         >
-                          <FunIcon
-                            icon="i-4wd"
-                            fill="#464646"
-                            height={42}
-                            width={42}
-                            style={{}}
-                          />
-                          <FunIcon
-                            icon="i-family_room"
-                            fill="#464646"
-                            height={42}
-                            width={42}
-                            style={{}}
-                          />
+                          {/* {item.greatfor.map((datas, index) => {
+                            return datas && datas.icon ? (
+                              <View
+                                style={{
+                                  height: 50,
+                                  width: 50,
+                                }}
+                              >
+                                <FunIcon
+                                  icon="i-4wd"
+                                  fill="#464646"
+                                  height={42}
+                                  width={42}
+                                  style={{}}
+                                />
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  height: 50,
+                                  width: 50,
+                                }}
+                              >
+                                <FunIcon
+                                  icon="i-4wd"
+                                  fill="#464646"
+                                  height={42}
+                                  width={42}
+                                  style={{}}
+                                />
+                              </View>
+                            );
+                          })} */}
+
+                          <View
+                            style={{
+                              height: 50,
+                              width: 50,
+                            }}
+                          >
+                            <FunIcon
+                              icon="i-4wd"
+                              fill="#464646"
+                              height={42}
+                              width={42}
+                              style={{}}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              height: 50,
+                              width: 50,
+                            }}
+                          >
+                            <FunIcon
+                              icon="i-family_room"
+                              fill="#464646"
+                              height={42}
+                              width={42}
+                              style={{}}
+                            />
+                          </View>
 
                           {/* );
             })} */}

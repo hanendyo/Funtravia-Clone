@@ -103,7 +103,7 @@ export default function ItineraryChooseday(props) {
     }
     setRefreshing(true);
     GetListEvent();
-    wait(5000).then(() => {
+    wait(1000).then(() => {
       setRefreshing(false);
     });
   }, []);
@@ -643,7 +643,16 @@ export default function ItineraryChooseday(props) {
           paddingVertical: 10,
         }}
       >
-        <CheckBox value={getchecked(item.id)} />
+        <CheckBox
+          onChange={() =>
+            _handleCheck(
+              item.id,
+              item.day,
+              item.total_hours ? item.total_hours : "00:00:00"
+            )
+          }
+          value={getchecked(item.id)}
+        />
         <Text
           style={{
             fontFamily: "Lato-Bold",

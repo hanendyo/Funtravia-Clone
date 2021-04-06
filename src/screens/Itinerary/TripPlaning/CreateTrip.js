@@ -869,6 +869,7 @@ export default function Trip(props) {
               <Modal
                 onRequestClose={() => setModal(false)}
                 onBackdropPress={() => setModal(false)}
+                onDismiss={() => setModal(false)}
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={modal}
@@ -878,11 +879,11 @@ export default function Trip(props) {
                   alignItems: "center",
                   alignSelf: "center",
                   alignContent: "center",
-                  // width: Dimensions.get('screen').width,
-                  // height: Dimensions.get('screen').height,
+                  width: Dimensions.get("screen").width,
+                  paddingHorizontal: 20,
                 }}
               >
-                <View
+                {/* <View
                   style={{
                     flex: 1,
                     justifyContent: "center",
@@ -900,8 +901,8 @@ export default function Trip(props) {
                     shadowRadius: 3.84,
                     elevation: 5,
                   }}
-                >
-                  {/* <TouchableOpacity
+                > */}
+                {/* <TouchableOpacity
 										style={{
 											alignSelf: 'flex-end',
 											height: 30,
@@ -914,18 +915,18 @@ export default function Trip(props) {
 										onPress={() => setModal(false)}>
 										<Xgray height={20} width={20} />
 									</TouchableOpacity> */}
-                  <DatePicker
-                    options={{}}
-                    current={startDate ? startDate : getToday()}
-                    selected={startDate ? startDate : getToday()}
-                    minimumDate={getToday()}
-                    maximumDate={endDate}
-                    onDateChange={(x) => setstart(x)}
-                    mode="calendar"
-                    minuteInterval={30}
-                    style={{ borderRadius: 10 }}
-                  />
-                </View>
+                <DatePicker
+                  options={{}}
+                  current={startDate ? startDate : getToday()}
+                  selected={startDate ? startDate : getToday()}
+                  minimumDate={getToday()}
+                  maximumDate={endDate}
+                  onDateChange={(x) => setstart(x)}
+                  mode="calendar"
+                  minuteInterval={30}
+                  style={{ borderRadius: 10 }}
+                />
+                {/* </View> */}
               </Modal>
               {/* date end */}
               <Modal
