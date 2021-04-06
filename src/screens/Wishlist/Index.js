@@ -9,7 +9,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, CustomImage } from "../../component";
 import { search_button, back_arrow_white } from "../../assets/png";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/client";
 import { Tab, Tabs, ScrollableTab } from "native-base";
 import Destination from "./Destination";
 import Event from "./Event";
@@ -77,9 +77,14 @@ export default function Wishlist(props) {
     }
   };
 
+  let [dataTrans, setdataTrans] = useState({});
+  let [dataEvent, setdataEvent] = useState({});
+  let [dataDes, setdataDes] = useState({});
+  let [dataServices, setdataServices] = useState({});
+
   const [
     getTrans,
-    { loading: loadingTrans, data: dataTrans, error: errorTrans },
+    { loading: loadingTrans, data: dataTran, error: errorTrans },
   ] = useLazyQuery(Trans, {
     fetchPolicy: "network-only",
     variables: {
@@ -91,9 +96,12 @@ export default function Wishlist(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      setdataTrans(dataTran);
+    },
   });
 
-  const [getEvent, { loading, data: dataEvent, error }] = useLazyQuery(Events, {
+  const [getEvent, { loading, data: dataEven, error }] = useLazyQuery(Events, {
     fetchPolicy: "network-only",
     variables: {
       keyword: texts !== null ? texts : "",
@@ -104,11 +112,14 @@ export default function Wishlist(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      setdataEvent(dataEven);
+    },
   });
 
   const [
     getDes,
-    { loading: loadingDes, data: dataDes, error: errorDes },
+    { loading: loadingDes, data: dataDe, error: errorDes },
   ] = useLazyQuery(Destinasi, {
     fetchPolicy: "network-only",
     variables: {
@@ -120,11 +131,14 @@ export default function Wishlist(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      setdataDes(dataDe);
+    },
   });
 
   const [
     getServices,
-    { loading: loadingServices, data: dataServices, error: errorServices },
+    { loading: loadingServices, data: dataService, error: errorServices },
   ] = useLazyQuery(Services, {
     fetchPolicy: "network-only",
     variables: {
@@ -135,6 +149,9 @@ export default function Wishlist(props) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+    },
+    onCompleted: () => {
+      setdataServices(dataService);
     },
   });
 
@@ -166,7 +183,7 @@ export default function Wishlist(props) {
       <Event
         props={props}
         dataEvent={
-          dataEvent && dataEvent.listevent_wishlist.length > 0
+          dataEvent && dataEvent?.listevent_wishlist.length > 0
             ? dataEvent.listevent_wishlist
             : []
         }
@@ -182,7 +199,7 @@ export default function Wishlist(props) {
       <Destination
         props={props}
         destinationData={
-          dataDes && dataDes.listdetination_wishlist.length > 0
+          dataDes && dataDes?.listdetination_wishlist.length > 0
             ? dataDes.listdetination_wishlist
             : []
         }
@@ -198,7 +215,7 @@ export default function Wishlist(props) {
       <Service
         props={props}
         serviceData={
-          dataServices && dataServices.listservice_wishlist.length > 0
+          dataServices && dataServices?.listservice_wishlist.length > 0
             ? dataServices.listservice_wishlist
             : []
         }
@@ -214,7 +231,7 @@ export default function Wishlist(props) {
       <Transportation
         props={props}
         transData={
-          dataTrans && dataTrans.listtransportation_wishlist.length > 0
+          dataTrans && dataTrans?.listtransportation_wishlist.length > 0
             ? dataTrans.listtransportation_wishlist
             : []
         }
@@ -232,7 +249,7 @@ export default function Wishlist(props) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Loading show={loading} />
+      {/* <Loading show={loading} /> */}
       {/* <NavigationEvents onDidFocus={() => _Refresh()} /> */}
       <View>
         <View
@@ -288,11 +305,13 @@ export default function Wishlist(props) {
                     textAlign: "left",
                   }}
                   underlineColorAndroid="transparent"
-                  onChangeText={(x) => setTextc(x)}
+                  onChangeText={async (x) => {
+                    await setTextc(x), await search(x);
+                  }}
                   placeholder={t("searchWishlist")}
                   returnKeyType="search"
                   autoFocus={true}
-                  onSubmitEditing={(x) => search(x)}
+                  // onSubmitEditing={(x) => }
                 />
               </View>
             </View>
