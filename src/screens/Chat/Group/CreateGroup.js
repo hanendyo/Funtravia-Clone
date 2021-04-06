@@ -26,7 +26,6 @@ import {
     SendMessage,
     CheckWhite,
     Xhitam,
-    Xgray,
     XGray,
     ArrowRight,
 } from "../../../assets/svg";
