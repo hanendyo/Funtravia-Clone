@@ -7,11 +7,12 @@ import {
   Pressable,
   Animated,
 } from "react-native";
+import Ripple from "react-native-material-ripple";
 import { Text, Button, Truncate, FunIcon } from "../../../component";
-import { LikeEmpty, Star, PinHijau } from "../../../assets/svg";
-import { findLastKey } from "lodash";
+import { LikeEmpty, Star, PinHijau, LikeBlack } from "../../../assets/svg";
 
-export default function Generals({ data, scroll, heights }) {
+export default function Generals({ data, scroll, heights, props }) {
+  console.log("props general", props);
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   const layoutText = (e) => {
@@ -211,7 +212,7 @@ export default function Generals({ data, scroll, heights }) {
                 >
                   <FunIcon icon="i-4wd" height={20} width={20} />
                 </View>
-                <Text size="description" type="light" style={{ marginTop: 5 }}>
+                <Text size="small" type="light" style={{ marginTop: 5 }}>
                   Sunbating
                 </Text>
               </View>
@@ -221,9 +222,7 @@ export default function Generals({ data, scroll, heights }) {
       ) : null}
 
       {/* View Public Facilty */}
-      {data &&
-      data.destinationById &&
-      data.destinationById.core_facilities.length > 0 ? (
+      {data && data.core_facilities.length > 0 ? (
         <View
           style={{
             width: Dimensions.get("screen").width,
@@ -253,8 +252,7 @@ export default function Generals({ data, scroll, heights }) {
             </Text>
             <View style={{ flexDirection: "row" }}>
               {data &&
-                data.destinationById &&
-                data.destinationById.core_facilities.map((item, index) => (
+                data.core_facilities.map((item, index) => (
                   <View
                     key={index}
                     style={{
@@ -276,11 +274,7 @@ export default function Generals({ data, scroll, heights }) {
                     >
                       <FunIcon icon={item?.icon} height={25} width={25} />
                     </View>
-                    <Text
-                      size="description"
-                      type="light"
-                      style={{ marginTop: 5 }}
-                    >
+                    <Text size="small" type="light" style={{ marginTop: 5 }}>
                       {item?.name}
                     </Text>
                   </View>
@@ -290,8 +284,8 @@ export default function Generals({ data, scroll, heights }) {
         </View>
       ) : null}
 
-      {/* Movie Location */}
-      {data && data.destinationById && data.destinationById.facility ? (
+      {/* Moview */}
+      {data && data.movie_location.length > 0 ? (
         <>
           <View
             style={{
@@ -312,87 +306,58 @@ export default function Generals({ data, scroll, heights }) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            <Pressable
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#F3F3F3",
-                height: 130,
-                marginTop: 10,
-                marginBottom: 10,
-                flexDirection: "row",
-                width: Dimensions.get("screen").width * 0.9,
-                padding: 10,
-                backgroundColor: "#FFF",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-                shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-                elevation: Platform.OS == "ios" ? 3 : 3.5,
-              }}
-            >
-              <Image
-                source={{ uri: data?.images[0].image }}
-                style={{ height: "100%", width: "30%", borderWidth: 1 }}
-              />
-              <View style={{ width: "65%", height: "100%", marginLeft: 10 }}>
-                <Text size="label" type="bold">
-                  Sang Pemimpi
-                </Text>
-                <Text
-                  size="description"
-                  type="reguler"
-                  style={{ lineHeight: 20 }}
+            {data &&
+              data.movie_location.map((item, index) => (
+                <Pressable
+                  key={index}
+                  style={{
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#F3F3F3",
+                    height: 130,
+                    marginTop: 10,
+                    marginBottom: 10,
+                    flexDirection: "row",
+                    // width: Dimensions.get("screen").width * 0.9,
+                    width: Dimensions.get("screen").width * 0.7,
+                    padding: 10,
+                    backgroundColor: "#FFF",
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+                    shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+                    elevation: Platform.OS == "ios" ? 3 : 3.5,
+                    marginRight: 5,
+                  }}
                 >
-                  {Truncate({
-                    text: data?.description,
-                    length: 100,
-                  })}
-                </Text>
-              </View>
-            </Pressable>
-            <Pressable
-              style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#F3F3F3",
-                height: 130,
-                marginTop: 10,
-                marginBottom: 10,
-                flexDirection: "row",
-                width: "100%",
-                padding: 10,
-                marginLeft: 10,
-                width: Dimensions.get("screen").width * 0.9,
-                marginRight: 30,
-                backgroundColor: "#FFF",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-                shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-                elevation: Platform.OS == "ios" ? 3 : 3.5,
-              }}
-            >
-              <Image
-                source={{ uri: data?.images[0].image }}
-                style={{ height: "100%", width: "30%", borderWidth: 1 }}
-              />
-              <View style={{ width: "65%", height: "100%", marginLeft: 10 }}>
-                <Text size="label" type="bold">
-                  Sang Pemimpi
-                </Text>
-                <Text size="description" type="regular">
-                  {Truncate({
-                    text: data?.description,
-                    length: 200,
-                  })}
-                </Text>
-              </View>
-            </Pressable>
+                  <Image
+                    source={{ uri: item?.cover }}
+                    style={{ height: "100%", width: "30%", borderWidth: 1 }}
+                  />
+                  <View
+                    style={{ width: "65%", height: "100%", marginLeft: 10 }}
+                  >
+                    <Text size="label" type="bold">
+                      {item?.title}
+                    </Text>
+                    <Text
+                      size="description"
+                      type="reguler"
+                      style={{ lineHeight: 20 }}
+                    >
+                      {Truncate({
+                        text: item?.description,
+                        length: 100,
+                      })}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))}
           </ScrollView>
         </>
       ) : null}
 
       {/* Photo */}
-      {data && data.destinationById && data.destinationById.images ? (
+      {data.images ? (
         <View
           style={{
             width: Dimensions.get("screen").width,
@@ -410,8 +375,8 @@ export default function Generals({ data, scroll, heights }) {
               width: "100%",
             }}
           >
-            {data && data.destinationById
-              ? data.destinationById.images.map((item, index) => (
+            {data
+              ? data.images.map((item, index) => (
                   <Image
                     key={index}
                     source={{ uri: item.image }}
@@ -436,135 +401,163 @@ export default function Generals({ data, scroll, heights }) {
           Another Place
         </Text>
         {data &&
-          data.another_place.map((item, index) => (
-            <View
-              key={index}
-              style={{
-                borderWidth: 1,
-                borderColor: "#F3F3F3",
-                borderRadius: 10,
-                height: 170,
-                padding: 10,
-                marginTop: 10,
-                width: "100%",
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-                shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-                elevation: Platform.OS == "ios" ? 3 : 3.5,
-              }}
-            >
-              {/* Image */}
-              <Image
-                source={{ uri: item.images.image }}
+          data.another_place.map((item, index) =>
+            data.id !== item.id ? (
+              <Pressable
+                onPress={() =>
+                  props.navigation.navigate("DestinationUnescoDetail", {
+                    id: item.id,
+                    name: item.name,
+                    token: token,
+                  })
+                }
+                key={index}
                 style={{
-                  width: "40%",
-                  height: "100%",
+                  borderWidth: 1,
+                  borderColor: "#F3F3F3",
                   borderRadius: 10,
+                  height: 170,
+                  padding: 10,
+                  marginTop: 10,
+                  width: "100%",
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+                  shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+                  elevation: Platform.OS == "ios" ? 3 : 3.5,
                 }}
-              />
-
-              {/* Keterangan */}
-              {/* rating */}
-              <View style={{ width: "55%", marginHorizontal: 10 }}>
-                <View
+              >
+                {/* Image */}
+                <Image
+                  source={{ uri: item.images.image }}
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    width: "40%",
+                    height: "100%",
+                    borderRadius: 10,
                   }}
-                >
+                />
+
+                {/* Keterangan */}
+                {/* rating */}
+                <View style={{ width: "55%", marginHorizontal: 10 }}>
                   <View
                     style={{
                       flexDirection: "row",
-                      backgroundColor: "#F3F3F3",
-                      borderRadius: 3,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      paddingHorizontal: 5,
-                      height: 25,
-                    }}
-                  >
-                    <Star height={15} width={15} />
-                    <Text size="description" type="bold">
-                      {item.rating}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: "#F3F3F3",
-                      height: 34,
-                      width: 34,
-                      borderRadius: 17,
-                      justifyContent: "center",
+                      justifyContent: "space-between",
                       alignItems: "center",
                     }}
                   >
-                    <LikeEmpty height={15} width={15} />
-                  </View>
-                </View>
-
-                {/* Title */}
-                <Text
-                  size="label"
-                  type="bold"
-                  style={{ marginTop: 2 }}
-                  numberOfLines={1}
-                >
-                  {item.name}
-                </Text>
-
-                {/* Maps */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 5,
-                    alignItems: "center",
-                  }}
-                >
-                  <PinHijau height={15} width={15} />
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ marginLeft: 5 }}
-                    numberOfLines={1}
-                  >
-                    {item.cities.name}
-                  </Text>
-                </View>
-
-                {/* Great for */}
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 50,
-                    marginTop: 5,
-                  }}
-                >
-                  <View>
-                    <Text size="description" type="bold">
-                      Great for :
-                    </Text>
-                    {item.greatfor.icon ? (
-                      <View style={{ flexDirection: "row" }}>
-                        <FunIcon
-                          icon={item.greatfor.icon}
-                          height={30}
-                          width={30}
-                        />
-                      </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "#F3F3F3",
+                        borderRadius: 3,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 5,
+                        height: 25,
+                      }}
+                    >
+                      <Star height={15} width={15} />
+                      <Text size="description" type="bold">
+                        {item.rating}
+                      </Text>
+                    </View>
+                    {item.liked === true ? (
+                      <Pressable
+                        style={{
+                          backgroundColor: "#F3F3F3",
+                          height: 34,
+                          width: 34,
+                          borderRadius: 17,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <LikeBlack height={15} width={15} />
+                      </Pressable>
                     ) : (
-                      <Text>-</Text>
+                      <Pressable
+                        style={{
+                          backgroundColor: "#F3F3F3",
+                          height: 34,
+                          width: 34,
+                          borderRadius: 17,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <LikeEmpty height={15} width={15} />
+                      </Pressable>
                     )}
                   </View>
-                  <Button size="small" text={"Add"} style={{ marginTop: 20 }} />
+
+                  {/* Title */}
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ marginTop: 2 }}
+                    numberOfLines={1}
+                  >
+                    {item.name}
+                  </Text>
+
+                  {/* Maps */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginTop: 5,
+                      alignItems: "center",
+                    }}
+                  >
+                    <PinHijau height={15} width={15} />
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ marginLeft: 5 }}
+                      numberOfLines={1}
+                    >
+                      {item.cities.name}
+                    </Text>
+                  </View>
+
+                  {/* Great for */}
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      height: 50,
+                      marginTop: 5,
+                    }}
+                  >
+                    <View>
+                      <Text size="description" type="bold">
+                        Great for :
+                      </Text>
+                      {item.greatfor.icon ? (
+                        <View style={{ flexDirection: "row" }}>
+                          <FunIcon
+                            icon={item.greatfor.icon}
+                            height={30}
+                            width={30}
+                          />
+                        </View>
+                      ) : (
+                        <Text>-</Text>
+                      )}
+                    </View>
+                    <Button
+                      size="small"
+                      text={"Add"}
+                      style={{ marginTop: 20 }}
+                    />
+                  </View>
                 </View>
-              </View>
-            </View>
-          ))}
+              </Pressable>
+            ) : null
+          )}
       </View>
     </ScrollView>
   );

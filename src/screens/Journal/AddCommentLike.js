@@ -1,13 +1,7 @@
 import { View } from "native-base";
 import { Dimensions, Alert, Keyboard } from "react-native";
 import React, { useState } from "react";
-import {
-  LikeJournal,
-  Shareout,
-  CommentChat,
-  LikeRed,
-  LikeEmpty,
-} from "../../assets/svg";
+import { LikeRed, LikeEmpty, Sharegreen } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Loading, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -191,7 +185,7 @@ export default function AddCommentLike({
       <View
         style={{
           backgroundColor: "#f6f6f6",
-          borderRadius: 20,
+          borderRadius: 30,
           width: Dimensions.get("window").width * 0.6,
           height: Dimensions.get("window").width * 0.13,
           flexDirection: "row",
@@ -237,14 +231,14 @@ export default function AddCommentLike({
             justifyContent: "center",
           }}
         >
-          <Shareout width={20} height={20} />
+          <Sharegreen width={20} height={20} />
         </View>
       </TouchableOpacity>
       {data?.liked === false ? (
         <TouchableOpacity onPress={() => _liked(dataList.id)}>
           <View
             style={{
-              marginLeft: 10,
+              marginLeft: 5,
               borderRadius: 30,
               backgroundColor: "#f6f6f6",
               width: Dimensions.get("window").width * 0.13,
@@ -260,7 +254,7 @@ export default function AddCommentLike({
         <TouchableOpacity onPress={() => _unliked(dataList.id)}>
           <View
             style={{
-              marginLeft: 10,
+              marginLeft: 5,
               borderRadius: 30,
               backgroundColor: "#f6f6f6",
               width: Dimensions.get("window").width * 0.13,

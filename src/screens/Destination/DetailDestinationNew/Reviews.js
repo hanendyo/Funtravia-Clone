@@ -162,25 +162,6 @@ export default function Reviews({ props, id, scroll, heights }) {
           </Text>
         </View>
       )}
-      <Button
-        color="secondary"
-        type="icon"
-        text="Write Review"
-        style={{
-          width: Dimensions.get("screen").width * 0.7,
-          borderRadius: 42,
-          alignSelf: "center",
-          // position: "absolute",
-          marginTop: Dimensions.get("screen").height * 0.2,
-        }}
-        onPress={() =>
-          props.navigation.navigate("DestinationUnescoReview", {
-            data: data.destinationById,
-          })
-        }
-      >
-        <SendReview height={15} width={15} />
-      </Button>
     </ScrollView>
   );
 }

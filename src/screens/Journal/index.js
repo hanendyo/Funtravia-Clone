@@ -103,13 +103,13 @@ export default function Journal(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
+  console.log("journal_list :", dataList);
+  console.log("populer :", data);
 
   let journal_list = [];
   if (dataList && "datas" in dataList.journal_list) {
     journal_list = dataList.journal_list.datas;
   }
-
-  console.log("journal_list :", journal_list);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -237,9 +237,19 @@ export default function Journal(props) {
     >
       {/* ============================== Populer Journal ====================================================*/}
 
-      {data && data.journal_most_populer ? (
+      {loading ? (
+        <View
+          style={{
+            backgroundColor: "white",
+            paddingVertical: 20,
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          <ActivityIndicator animating={true} color="#209FAE" />
+        </View>
+      ) : (
         <View style={styles.container}>
-          <Pressable onPress={() => JournalDetail(data.journal_most_populer)}>
+          <Pressable onPress={() => JournalDetail(data?.journal_most_populer)}>
             <Image
               source={
                 data.journal_most_populer.firstimg
@@ -280,7 +290,7 @@ export default function Journal(props) {
                 <View style={styles.dataEditor}>
                   <Text size={"label"} type={"bold"}>
                     {data.journal_most_populer.userby
-                      ? data.journal_most_populer.userby
+                      ? data.journal_most_populer.userby.first_name
                       : "Funtravia"}
                   </Text>
                   <Text
@@ -296,16 +306,6 @@ export default function Journal(props) {
               </View>
             </View>
           </Pressable>
-        </View>
-      ) : (
-        <View
-          style={{
-            backgroundColor: "white",
-            paddingVertical: 20,
-            height: Dimensions.get("screen").height,
-          }}
-        >
-          <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       )}
       {dataCategory && dataCategory.category_journal ? (
