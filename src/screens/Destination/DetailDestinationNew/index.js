@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Text, StatusBar } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
@@ -32,6 +32,7 @@ import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
 import Ripple from "react-native-material-ripple";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
+import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
 import ActivityModal from "./ActivityModal";
 import FacilityModal from "./FacilityModal";
 import ServiceModal from "./ServiceModal";
@@ -44,10 +45,10 @@ import BottomButton from "./BottomButton";
 const HEADER_EXPANDED_HEIGHT = 380;
 const HEADER_COLLAPSED_HEIGHT = 50;
 
-const { width, height } = Dimensions.get("screen");
 export default function index(props) {
+  console.log("props index : ", props);
   const [setting, setSetting] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(props.route.params.token);
   const [modalActivity, setModalActivity] = useState(false);
   const [modalFacility, setModalFacility] = useState(false);
   const [modalService, setModalService] = useState(false);
@@ -71,6 +72,7 @@ export default function index(props) {
 
   const { data, loading, error } = useQuery(DestinationById, {
     variables: { id: props.route.params.id },
+    // variables: { id: "48181851-79dc-43d4-bd74-b7d2a96a57ad" },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -79,26 +81,31 @@ export default function index(props) {
     },
   });
 
+  // let [state, setState] = useState()
+
+  console.log("data", data);
+
   const General = () => {
     return (
       <Generals
-        data={data.destinationById}
+        data={data?.destinationById}
         scroll={scrollY}
         heights={HEADER_EXPANDED_HEIGHT + 50}
+        props={props}
       />
     );
   };
 
   const Activity = () => {
-    return <Activities data={data.destinationById} />;
+    return <Activities data={data?.destinationById} />;
   };
 
   const Facility = () => {
-    return <Facilities data={data.destinationById} />;
+    return <Facilities data={data?.destinationById} />;
   };
 
   const Service = () => {
-    return <Services data={data.destinationById} />;
+    return <Services data={data?.destinationById} />;
   };
 
   const FAQ = () => (
@@ -170,11 +177,142 @@ export default function index(props) {
     extrapolate: "clamp",
   });
 
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(Liked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(unLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _liked = async (id) => {
+    console.log("token like:", token);
+    console.log("id like:", id);
+    if (token || token !== "") {
+      try {
+        let response = await mutationliked({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadingLike) {
+          alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        console.log("response", response);
+        // if (response.data) {
+        //   if (
+        //     response.data.like_journal.code === 200 ||
+        //     response.data.like_journal.code === "200"
+        //   ) {
+        //     var tempData = { ...dataList };
+        //     tempData.liked = true;
+        //     setDataList(tempData);
+        //     fetchData();
+        //   } else {
+        //     throw new Error(response.data.like_journal.message);
+        //   }
+        // }
+      } catch (error) {
+        alert("" + error);
+      }
+    } else {
+      alert("Please Login");
+    }
+  };
+
+  const _unliked = async (id) => {
+    console.log("token unlike:", token);
+    console.log("id unlike:", id);
+    if (token || token !== "") {
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            destination_id: id,
+          },
+        });
+        if (loadingUnLike) {
+          alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+        console.log("Response", response);
+        if (response.data) {
+          if (
+            response.data.unset_wishlist_destinasi.code === 200 ||
+            response.data.unset_wishlist_destinasi.code === "200"
+          ) {
+            var tempData = { ...data };
+            console.log("tempData", tempData);
+            tempData.liked = false;
+            console.log("tempData", tempData);
+            // setDataList(tempData);
+            // fetchData();
+          } else {
+            throw new Error(response.data.unlike_journal.message);
+          }
+        }
+      } catch (error) {
+        alert("" + error);
+      }
+    } else {
+      alert("Please Login");
+    }
+  };
+
+  const addToPlan = () => {
+    console.log("test");
+    props.route.params && props.route.params.iditinerary
+      ? props.navigation.dispatch(
+          StackActions.replace("ItineraryStack", {
+            screen: "ItineraryChooseday",
+            params: {
+              Iditinerary: props.route.params.iditinerary,
+              Kiriman: data.destinationById.id,
+              token: token,
+              Position: "destination",
+              datadayaktif: props.route.params.datadayaktif,
+            },
+          })
+        )
+      : props.navigation.navigate("ItineraryStack", {
+          screen: "ItineraryPlaning",
+          params: {
+            idkiriman: data.destinationById.id,
+            Position: "destination",
+          },
+        });
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       {loading ? (
-        <View style={{ marginTop: 50 }}>
+        <View
+          style={{
+            marginTop: 50,
+            marginBottom: Dimensions.get("screen").height - 50,
+          }}
+        >
           <ActivityIndicator animating={true} color="#209FAE" />
         </View>
       ) : (
@@ -264,7 +402,7 @@ export default function index(props) {
                 {data && data.destinationById && data.destinationById.images ? (
                   <Image
                     source={{ uri: data?.destinationById?.images[0].image }}
-                    style={{ height: 180, width: "100%" }}
+                    style={{ minHeight: 180, width: "100%" }}
                   />
                 ) : null}
               </Animated.View>
@@ -359,7 +497,7 @@ export default function index(props) {
                         justifyContent: "center",
                         marginRight: 5,
                       }}
-                      onPress={() => _liked(data.destinationById.id)}
+                      onPress={() => _unliked(data.destinationById.id)}
                     >
                       <LikeBlack height={18} width={18} />
                     </Pressable>
@@ -431,7 +569,7 @@ export default function index(props) {
                     UNESCO
                   </Text>
                 </View>
-                {data.destinationById.movie_location.length > 0 ? (
+                {data?.destinationById?.movie_location?.length > 0 ? (
                   <View
                     style={{
                       flexDirection: "row",
@@ -485,23 +623,27 @@ export default function index(props) {
                     style={{ marginRight: 10 }}
                   />
                   <Text size="description" type="regular">
-                    {data?.destinationById?.address}
+                    {data?.destinationById?.address
+                      ? data?.destinationById?.address
+                      : "-"}
                   </Text>
                 </View>
-                <Pressable
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ color: "#209FAE" }}
+                {data?.destinationById?.address ? (
+                  <Ripple
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
                   >
-                    maps
-                  </Text>
-                </Pressable>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ color: "#209FAE" }}
+                    >
+                      maps
+                    </Text>
+                  </Ripple>
+                ) : null}
               </Animated.View>
 
               {/* View Time */}
@@ -529,25 +671,29 @@ export default function index(props) {
                 >
                   <Clock height={18} width={18} style={{ marginRight: 10 }} />
                   <Text size="description" type="regular">
-                    {data?.destinationById?.openat}
+                    {data?.destinationById?.openat
+                      ? data?.destinationById?.openat
+                      : "-"}
                   </Text>
                 </View>
-                <Ripple
-                  onPress={() => setModalTime(true)}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    minHeight: 40,
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ color: "#209FAE" }}
+                {data?.destinationById?.openat ? (
+                  <Ripple
+                    onPress={() => setModalTime(true)}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      minHeight: 40,
+                    }}
                   >
-                    more
-                  </Text>
-                </Ripple>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ color: "#209FAE" }}
+                    >
+                      more
+                    </Text>
+                  </Ripple>
+                ) : null}
               </Animated.View>
 
               {/* View Website */}
@@ -575,25 +721,29 @@ export default function index(props) {
                 >
                   <Globe height={18} width={18} style={{ marginRight: 10 }} />
                   <Text size="description" type="regular">
-                    {data?.destinationById?.website}
+                    {data?.destinationById?.website
+                      ? data?.destinationById?.website
+                      : "-"}
                   </Text>
                 </View>
-                <Ripple
-                  onPress={() => setModalSosial(true)}
-                  style={{
-                    minHeight: 40,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ color: "#209FAE" }}
+                {data?.destinationById?.website ? (
+                  <Ripple
+                    onPress={() => setModalSosial(true)}
+                    style={{
+                      minHeight: 40,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
                   >
-                    more
-                  </Text>
-                </Ripple>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ color: "#209FAE" }}
+                    >
+                      more
+                    </Text>
+                  </Ripple>
+                ) : null}
               </Animated.View>
 
               {/* View Garis */}
@@ -651,7 +801,12 @@ export default function index(props) {
       )}
 
       {/* BottomButton */}
-      <BottomButton routed={index} props={props} data={data?.destinationById} />
+      <BottomButton
+        routed={index}
+        props={props}
+        data={data?.destinationById}
+        addTo={addToPlan}
+      />
 
       {/* Modal Activiy */}
       <ActivityModal

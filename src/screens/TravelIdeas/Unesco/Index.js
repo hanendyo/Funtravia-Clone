@@ -29,7 +29,7 @@ import {
   cultural_lanscape,
   borobudur,
 } from "../../../assets/png";
-import { Kosong, Select } from "../../../assets/svg";
+import { Kosong, Pin, Select, PinHitam } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
@@ -633,6 +633,7 @@ export default function Unesco({ navigation, route }) {
           navigation.navigate("DestinationUnescoDetail", {
             id: item.id,
             name: item.name,
+            token: token,
           })
         }
         style={{
@@ -654,20 +655,21 @@ export default function Unesco({ navigation, route }) {
           style={{
             marginHorizontal: 10,
             marginVertical: 5,
-            width: "65%",
+            width: "60%",
             justifyContent: "space-between",
           }}
         >
           <View>
-            <Text type="bold">{item.name}</Text>
-            <Text>
-              {"("}
+            <Text type="bold" size="label" numberOfLines={1}>
+              {item.name}
+            </Text>
+            <Text numberOfLines={2} style={{ lineHeight: 16 }}>
               {item.description}
-              {")"}
             </Text>
           </View>
-          <View>
-            <Text>
+          <View style={{ flexDirection: "row" }}>
+            <PinHitam height={15} width={15} />
+            <Text numberOfLines={1} size="description" type="regular">
               {item.cities.name}, {item.province.name}
             </Text>
           </View>
@@ -981,7 +983,6 @@ export default function Unesco({ navigation, route }) {
               size="label"
               type="bold"
               style={{
-                color: "",
                 marginRight: 10,
               }}
             >

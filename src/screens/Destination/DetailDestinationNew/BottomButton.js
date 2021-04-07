@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 import { Ticket, SendReview } from "../../../assets/svg";
 import { Text, Button } from "../../../component";
 
-export default function BottomButton({ routed, props, data }) {
+export default function BottomButton({ routed, props, data, addTo }) {
   return (
     <View
       style={{
@@ -65,7 +65,7 @@ export default function BottomButton({ routed, props, data }) {
           </Text>
         </Button>
         <Button
-          onPress={() => null}
+          onPress={() => addTo()}
           style={{ height: "100%", width: "58%" }}
           color="primary"
           type="box"

@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
+import { Arrowbackwhite, LikeEmpty, PanahBulat } from "../../assets/svg";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Truncate, Loading } from "../../component";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
@@ -23,6 +23,7 @@ import {
 } from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
 export default function DetailJournal(props) {
   let [dataPopuler] = useState(props.route.params.dataPopuler);
@@ -312,8 +313,8 @@ export default function DetailJournal(props) {
                     text={
                       data.journal_byid &&
                       data.journal_byid.userby &&
-                      data.journal_byid.userby.username
-                        ? data.journal_byid.userby.username
+                      data.journal_byid.userby.first_name
+                        ? data.journal_byid.userby.first_name
                         : "Funtravia"
                     }
                     length={20}
@@ -526,8 +527,8 @@ export default function DetailJournal(props) {
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
-                {data.journal_byid && data.journal_byid.userby
-                  ? data.journal_byid.userby
+                {data.journal_byid && data.journal_byid.userby.first_name
+                  ? data.journal_byid.userby.first_name
                   : "Funtravia"}
               </Text>
             </View>
@@ -691,20 +692,42 @@ export default function DetailJournal(props) {
                     style={{
                       width: Dimensions.get("screen").width,
                       paddingHorizontal: 15,
+                      alignItems: "flex-start",
+                      marginVertical: 15,
                     }}
                   >
-                    <Button
+                    <Pressable
                       onPress={() =>
                         props.navigation.navigate("JournalComment", {
                           dataJournalById: dataPopuler.id,
                         })
                       }
-                      text={"View All"}
-                      type="box"
+                      style={{
+                        height: "100%",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Text size="label" type="bold">
+                        View all comments
+                      </Text>
+                      <PanahBulat
+                        height={20}
+                        width={20}
+                        style={{ marginLeft: 10 }}
+                      />
+                    </Pressable>
+                    {/* <Button
+                      onPress={() =>
+                        props.navigation.navigate("JournalComment", {
+                          dataJournalById: dataPopuler.id,
+                        })
+                      }
+                      text={"View all comments"}
+                      // type="box"
                       size="medium"
                       variant="transparent"
-                      style={{ borderColor: "#000", borderWidth: 1 }}
-                    ></Button>
+                      // style={{ borderColor: "#000", borderWidth: 1 }}
+                    ></Button> */}
                   </View>
                 ) : null
               }
@@ -725,7 +748,7 @@ export default function DetailJournal(props) {
         </ScrollView>
       ) : null}
       {/* ==================================== Add Comment, Like and Unlike ============================================== */}
-      {data && data.journal_byid ? (
+      {data && data.journal_byid && token !== null && token !== "null" ? (
         <AddCommentLike
           data={data.journal_byid}
           token={token}

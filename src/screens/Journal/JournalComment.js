@@ -329,13 +329,15 @@ export default function JournalComment(props) {
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
       />
-      <AddComment
-        data={data?.journal_byid}
-        token={token}
-        fetchData={(e) => fetchData(e)}
-        listComments={() => afterComment()}
-        setting={setting}
-      />
+      {token !== null && token !== "null" ? (
+        <AddComment
+          data={data?.journal_byid}
+          token={token}
+          fetchData={(e) => fetchData(e)}
+          listComments={() => afterComment()}
+          setting={setting}
+        />
+      ) : null}
     </View>
   );
 }

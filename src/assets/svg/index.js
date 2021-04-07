@@ -210,6 +210,8 @@ import Stay from "./files/stay.svg";
 import Flights from "./files/flight.svg";
 import XGray from "./files/xGray.svg";
 import Ticket from "./files/ticket.svg";
+import PinHitam from "./files/pin_hitam.svg";
+import PanahBulat from "./files/panah_bulet.svg";
 
 export {
   LikeWhite,
@@ -424,4 +426,6 @@ export {
   Flights,
   XGray,
   Ticket,
+  PinHitam,
+  PanahBulat,
 };
