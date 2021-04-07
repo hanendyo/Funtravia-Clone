@@ -127,6 +127,7 @@ export default function Message({ navigation }) {
 
     const renderItem = ({ item }) => {
         let timeChat = new Date(item.recent?.time).toTimeString();
+
         let dateChateDate = new Date(item.recent?.time).getDate();
         let dateChateMonth = new Date(item.recent?.time).getMonth();
         let dateChateYear = new Date(item.recent?.time)
@@ -135,11 +136,13 @@ export default function Message({ navigation }) {
             .substr(2, 2);
         let dateChat =
             dateChateDate + "/" + (dateChateMonth + 1) + "/" + dateChateYear;
+
         const dates = new Date();
         let day = dates.getDate();
         let month = dates.getMonth();
         let year = dates.getFullYear().toString().substr(2, 2);
         let date = day + "/" + (month + 1) + "/" + year;
+
         let change = item.sender_id === user.id ? item.receiver : item.sender;
         return (
             <View key={`${item.id}_child`}>
@@ -319,21 +322,165 @@ export default function Message({ navigation }) {
 
         // if (active == "group") {
         let newDataGroup = dataGroup.filter(function (str) {
-            return str.itinerary.title
-                .toLowerCase()
-                .includes(text.toLowerCase());
+            return str.title.toLowerCase().includes(text.toLowerCase());
         });
         setDataGroupRes(newDataGroup);
         // }
     };
 
+    const timeChat = (item) => {
+        let timeChat = new Date(item.recent?.time).toTimeString();
+        return timeChat;
+    };
+    const change = (item) => {
+        let change = item.sender_id === user.id ? item.receiver : item.sender;
+        console.log(change);
+        return change;
+    };
+    const date = () => {
+        const dates = new Date();
+        let day = dates.getDate();
+        let month = dates.getMonth();
+        let year = dates.getFullYear().toString().substr(2, 2);
+        let date = day + "/" + (month + 1) + "/" + year;
+        return date;
+    };
+    const dateChat = (item) => {
+        let dateChateDate = new Date(item.recent?.time).getDate();
+        let dateChateMonth = new Date(item.recent?.time).getMonth();
+        let dateChateYear = new Date(item.recent?.time)
+            .getFullYear()
+            .toString()
+            .substr(2, 2);
+        let dateChat =
+            dateChateDate + "/" + (dateChateMonth + 1) + "/" + dateChateYear;
+        return dateChat;
+    };
+
+    // let change = item.sender_id === user.id ? item.receiver : item.sender;
+    // console.log(dataRes);
     const Personal = () => (
         <>
             {dataRes && dataRes.length > 0 ? (
                 <View style={{ flex: 1 }}>
                     <FlatList
                         data={dataRes}
-                        renderItem={renderItem}
+                        renderItem={({ item }) => (
+                            <View key={`${item.id}_child`}>
+                                {item?.recent !== null ? (
+                                    <TouchableOpacity
+                                        onLongPress={() =>
+                                            LongPressFunc(change(item))
+                                        }
+                                        onPress={() =>
+                                            navigation.navigate("ChatStack", {
+                                                screen: "RoomChat",
+                                                params: {
+                                                    room_id: item.id,
+                                                    receiver: change(item).id,
+                                                    name:
+                                                        change(item)
+                                                            .first_name +
+                                                        " " +
+                                                        (change(item).last_name
+                                                            ? change.last_name
+                                                            : ""),
+                                                    picture: change(item)
+                                                        .picture,
+                                                },
+                                            })
+                                        }
+                                        style={{
+                                            backgroundColor: "white",
+                                            paddingVertical: 10,
+                                            paddingHorizontal: 10,
+                                            flexDirection: "row",
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: "#EEEEEE",
+                                            alignContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Image
+                                            source={{
+                                                uri:
+                                                    item.sender_id === user.id
+                                                        ? item.receiver?.picture
+                                                        : item.sender?.picture,
+                                            }}
+                                            style={{
+                                                width: 50,
+                                                height: 50,
+                                                borderRadius: 25,
+                                                borderWidth: 1,
+                                                borderColor: "#EEEEEE",
+                                            }}
+                                        />
+                                        <View
+                                            style={{
+                                                width: width - 160,
+                                                paddingHorizontal: 10,
+                                            }}
+                                        >
+                                            <Text
+                                                size="description"
+                                                type="bold"
+                                                style={{ paddingVertical: 5 }}
+                                            >
+                                                {item.sender_id === user.id
+                                                    ? `${
+                                                          item.receiver
+                                                              ?.first_name
+                                                      } ${
+                                                          item.receiver
+                                                              ?.last_name
+                                                              ? item.receiver
+                                                                    ?.last_name
+                                                              : ""
+                                                      }`
+                                                    : `${
+                                                          item.sender
+                                                              ?.first_name
+                                                      } ${
+                                                          item.sender?.last_name
+                                                              ? item.sender
+                                                                    ?.last_name
+                                                              : ""
+                                                      }`}
+                                            </Text>
+                                            {item.recent ? (
+                                                <Text size="small">
+                                                    <Truncate
+                                                        text={item.recent.text}
+                                                        length={80}
+                                                    />
+                                                </Text>
+                                            ) : null}
+                                        </View>
+                                        {item.recent ? (
+                                            <View
+                                                style={{
+                                                    width: 100,
+                                                    alignItems: "flex-end",
+                                                    paddingRight: 10,
+                                                }}
+                                            >
+                                                <Text size="small">
+                                                    {timeChat(item)
+                                                        ? dateChat(item) ==
+                                                          date()
+                                                            ? timeChat(
+                                                                  item
+                                                              ).substring(0, 5)
+                                                            : dateChat(item)
+                                                        : null}
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                    </TouchableOpacity>
+                                ) : null}
+                            </View>
+                        )}
                         keyExtractor={(item) => item.id}
                     />
                     <Button
@@ -359,13 +506,107 @@ export default function Message({ navigation }) {
             )}
         </>
     );
+    const dateGroup = () => {
+        let date = new Date().toLocaleDateString();
+        return date;
+    };
+    const timeChatGroup = (item) => {
+        let timeChat = new Date(item.recent?.time).toTimeString();
+        return timeChat;
+    };
+    const dateChatGroup = (item) => {
+        let dateChat = new Date(item.recent?.time).toLocaleDateString();
+
+        return dateChat;
+    };
     const Group = () => (
         <>
             {dataGroupRes && dataGroupRes.length > 0 ? (
                 <View style={{ flex: 1 }}>
                     <FlatList
                         data={dataGroupRes}
-                        renderItem={renderItemGroup}
+                        renderItem={({ item }) => (
+                            <View key={`${item.id}_child`}>
+                                <Ripple
+                                    onPress={() =>
+                                        navigation.navigate("ChatStack", {
+                                            screen: "GroupRoom",
+                                            params: {
+                                                room_id: item.group_id,
+                                                name: item.title,
+                                                picture: item.picture,
+                                                from: item.itinerary
+                                                    ? "itinerary"
+                                                    : "group",
+                                            },
+                                        })
+                                    }
+                                    style={{
+                                        backgroundColor: "white",
+                                        paddingVertical: 10,
+                                        paddingHorizontal: 10,
+                                        flexDirection: "row",
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: "#EEEEEE",
+                                        alignContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Image
+                                        source={{ uri: item.picture }}
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: 25,
+                                            borderWidth: 1,
+                                            borderColor: "#EEEEEE",
+                                        }}
+                                    />
+                                    <View
+                                        style={{
+                                            width: width - 160,
+                                            paddingHorizontal: 10,
+                                        }}
+                                    >
+                                        <Text
+                                            size="description"
+                                            type="bold"
+                                            style={{ paddingVertical: 5 }}
+                                        >
+                                            {item.title}
+                                        </Text>
+                                        {item.recent ? (
+                                            <Text size="small">
+                                                <Truncate
+                                                    text={item.recent.text}
+                                                    length={80}
+                                                />
+                                            </Text>
+                                        ) : null}
+                                    </View>
+                                    {item.recent ? (
+                                        <View
+                                            style={{
+                                                width: 100,
+                                                alignItems: "flex-end",
+                                                paddingRight: 10,
+                                            }}
+                                        >
+                                            <Text size="small">
+                                                {timeChatGroup(item)
+                                                    ? dateChatGroup(item) ==
+                                                      dateGroup()
+                                                        ? timeChatGroup(
+                                                              item
+                                                          ).substring(0, 5)
+                                                        : dateChatGroup(item)
+                                                    : null}
+                                            </Text>
+                                        </View>
+                                    ) : null}
+                                </Ripple>
+                            </View>
+                        )}
                         keyExtractor={(item) => item.id}
                     />
                     <Button
