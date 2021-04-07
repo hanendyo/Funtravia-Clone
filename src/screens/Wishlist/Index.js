@@ -170,12 +170,13 @@ export default function Wishlist(props) {
     });
   }, []);
 
-  const search = (x) => {
-    setText(textc);
-    GetEvent();
-    GetDes();
-    getServices();
-    getTrans();
+  const search = async (x) => {
+    await setTextc(x);
+    await setText(x);
+    await GetEvent();
+    await GetDes();
+    await getServices();
+    await getTrans();
   };
 
   const GetEvent = () => {
@@ -183,8 +184,8 @@ export default function Wishlist(props) {
       <Event
         props={props}
         dataEvent={
-          dataEvent && dataEvent?.listevent_wishlist.length > 0
-            ? dataEvent.listevent_wishlist
+          dataEvent && dataEvent?.listevent_wishlist?.length > 0
+            ? dataEvent?.listevent_wishlist
             : []
         }
         token={token}
@@ -199,8 +200,8 @@ export default function Wishlist(props) {
       <Destination
         props={props}
         destinationData={
-          dataDes && dataDes?.listdetination_wishlist.length > 0
-            ? dataDes.listdetination_wishlist
+          dataDes && dataDes?.listdetination_wishlist?.length > 0
+            ? dataDes?.listdetination_wishlist
             : []
         }
         token={token}
@@ -215,8 +216,8 @@ export default function Wishlist(props) {
       <Service
         props={props}
         serviceData={
-          dataServices && dataServices?.listservice_wishlist.length > 0
-            ? dataServices.listservice_wishlist
+          dataServices && dataServices?.listservice_wishlist?.length > 0
+            ? dataServices?.listservice_wishlist
             : []
         }
         token={token}
@@ -231,8 +232,8 @@ export default function Wishlist(props) {
       <Transportation
         props={props}
         transData={
-          dataTrans && dataTrans?.listtransportation_wishlist.length > 0
-            ? dataTrans.listtransportation_wishlist
+          dataTrans && dataTrans?.listtransportation_wishlist?.length > 0
+            ? dataTrans?.listtransportation_wishlist
             : []
         }
         token={token}
@@ -306,7 +307,7 @@ export default function Wishlist(props) {
                   }}
                   underlineColorAndroid="transparent"
                   onChangeText={async (x) => {
-                    await setTextc(x), await search(x);
+                    await search(x);
                   }}
                   placeholder={t("searchWishlist")}
                   returnKeyType="search"

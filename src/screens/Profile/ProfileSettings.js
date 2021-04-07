@@ -53,7 +53,7 @@ export default function ProfileSettings(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => backAction()}
+        onPress={() => props.navigation.goBack()}
         style={{
           backgroundColor: "rgba(0,0,0,0.3)",
         }}
@@ -185,6 +185,22 @@ export default function ProfileSettings(props) {
       dataImage.current = image;
       dataImagepatch.current = image.path;
       BackHandler.addEventListener("hardwareBackPress", backAction);
+      props.navigation.setOptions({
+        headerLeft: () => (
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => backAction()}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.3)",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Button>
+        ),
+      });
 
       // setdataImagepatch(image.path);
       setmodal(false);
@@ -204,6 +220,22 @@ export default function ProfileSettings(props) {
       dataImage.current = image;
       dataImagepatch.current = image.path;
       BackHandler.addEventListener("hardwareBackPress", backAction);
+      props.navigation.setOptions({
+        headerLeft: () => (
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => backAction()}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.3)",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Button>
+        ),
+      });
 
       // setdataImage(image.data);
       // setdataImagepatch(image.path);
@@ -236,6 +268,22 @@ export default function ProfileSettings(props) {
   };
   const _handleOnChange = async (value, name) => {
     BackHandler.addEventListener("hardwareBackPress", backAction);
+    props.navigation.setOptions({
+      headerLeft: () => (
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => backAction()}
+          style={{
+            backgroundColor: "rgba(0,0,0,0.3)",
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+      ),
+    });
 
     let check = validation(name, value);
     // await setdata({ ...data, [name]: value });

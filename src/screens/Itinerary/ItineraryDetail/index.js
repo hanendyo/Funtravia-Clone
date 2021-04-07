@@ -518,9 +518,12 @@ export default function ItineraryDetail(props) {
         if (errorupload) {
           throw new Error("Error Input");
         }
+
+        console.log(response);
+        console.log(response.data.update_cover_itinerary.code);
         if (response.data) {
-          if (response.data.upload_cover_itinerary.code !== 200) {
-            throw new Error(response.data.upload_cover_itinerary.message);
+          if (response.data.update_cover_itinerary.code !== 200) {
+            throw new Error(response.data.update_cover_itinerary.message);
           }
           // Alert.alert(t('success'));
           startRefreshAction();
@@ -1777,6 +1780,7 @@ export default function ItineraryDetail(props) {
             style={{
               opacity: textOpacitys,
               position: "absolute",
+              bottom: 10,
               fontFamily: "Lato-Black",
               color: "#ffff",
               textAlign: "left",
@@ -1816,6 +1820,8 @@ export default function ItineraryDetail(props) {
               type="bold"
               style={{
                 position: "absolute",
+                top: 10,
+
                 color: "#fff",
                 opacity: textOpacitys,
                 fontFamily: "Lato-Bold",
@@ -1859,7 +1865,7 @@ export default function ItineraryDetail(props) {
           datadetail.itinerary_detail &&
           datadetail.itinerary_detail.isprivate === true ? (
             <Button
-              onPress={() => Alert.alert("coming soon")}
+              onPress={() => Alert.alert(t("comingSoon"))}
               type="circle"
               variant="bordered"
               size="small"
@@ -2258,23 +2264,37 @@ export default function ItineraryDetail(props) {
                     }}
                   />
                 ) : item.icon ? (
-                  <FunIcon
-                    icon={item.icon}
-                    height={30}
-                    width={30}
+                  <View
                     style={{
-                      borderRadius: 15,
+                      height: 30,
+                      width: 30,
                     }}
-                  />
+                  >
+                    <FunIcon
+                      icon={item.icon}
+                      height={30}
+                      width={30}
+                      style={{
+                        borderRadius: 15,
+                      }}
+                    />
+                  </View>
                 ) : (
-                  <FunIcon
-                    icon={"i-tour"}
-                    height={30}
-                    width={30}
+                  <View
                     style={{
-                      borderRadius: 15,
+                      height: 30,
+                      width: 30,
                     }}
-                  />
+                  >
+                    <FunIcon
+                      icon={"i-tour"}
+                      height={30}
+                      width={30}
+                      style={{
+                        borderRadius: 15,
+                      }}
+                    />
+                  </View>
                 )}
                 <TouchableOpacity
                   style={{ flex: 1, paddingHorizontal: 10 }}
@@ -2505,7 +2525,7 @@ export default function ItineraryDetail(props) {
                       kecepatan={50}
                     />
                   </Text>
-                  <Text>{"h"}</Text>
+                  <Text>{t("hours")}</Text>
                   {/* <Text>{" in "}</Text>
 									<Text type="bold">{"50"}</Text>
 									<Text>{"km/h"}</Text> */}
@@ -3067,14 +3087,21 @@ export default function ItineraryDetail(props) {
                           justifyContent: "center",
                         }}
                       >
-                        <FunIcon
-                          icon={icons[dataweather.weather[0].icon]}
-                          height={35}
-                          width={35}
+                        <View
                           style={{
-                            bottom: -3,
+                            height: 35,
+                            width: 35,
                           }}
-                        />
+                        >
+                          <FunIcon
+                            icon={icons[dataweather.weather[0].icon]}
+                            height={35}
+                            width={35}
+                            style={{
+                              bottom: -3,
+                            }}
+                          />
+                        </View>
                         <View
                           style={{
                             paddingTop: 5,
@@ -3110,13 +3137,20 @@ export default function ItineraryDetail(props) {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <FunIcon
-                          icon={"w-hot"}
-                          height={35}
+                        <View
                           style={{
-                            bottom: -3,
+                            height: 35,
+                            width: 35,
                           }}
-                        />
+                        >
+                          <FunIcon
+                            icon={"w-hot"}
+                            height={35}
+                            style={{
+                              bottom: -3,
+                            }}
+                          />
+                        </View>
                         <Text size="small" type="regular" style={{}}>
                           HOT
                         </Text>
@@ -3133,7 +3167,14 @@ export default function ItineraryDetail(props) {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <FunIcon icon={"w-warm"} height={50} width={50} />
+                        <View
+                          style={{
+                            height: 50,
+                            width: 50,
+                          }}
+                        >
+                          <FunIcon icon={"w-warm"} height={50} width={50} />
+                        </View>
                         <Text size="small" type="regular" style={{}}>
                           WARM
                         </Text>
@@ -3150,7 +3191,14 @@ export default function ItineraryDetail(props) {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <FunIcon icon={"w-humid"} height={50} width={50} />
+                        <View
+                          style={{
+                            height: 50,
+                            width: 50,
+                          }}
+                        >
+                          <FunIcon icon={"w-humid"} height={50} width={50} />
+                        </View>
                         <Text size="small" type="regular" style={{}}>
                           HUMID
                         </Text>
@@ -3167,7 +3215,14 @@ export default function ItineraryDetail(props) {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <FunIcon icon={"w-cold"} height={50} width={50} />
+                        <View
+                          style={{
+                            height: 50,
+                            width: 50,
+                          }}
+                        >
+                          <FunIcon icon={"w-cold"} height={50} width={50} />
+                        </View>
                         <Text size="small" type="regular" style={{}}>
                           COLD
                         </Text>
@@ -3183,7 +3238,14 @@ export default function ItineraryDetail(props) {
                           justifyContent: "flex-end",
                         }}
                       >
-                        <FunIcon icon={"w-freezing"} height={50} />
+                        <View
+                          style={{
+                            height: 50,
+                            width: 50,
+                          }}
+                        >
+                          <FunIcon icon={"w-freezing"} height={50} />
+                        </View>
                         <Text size="small" type="regular" style={{}}>
                           FREEZING
                         </Text>
@@ -3759,7 +3821,11 @@ export default function ItineraryDetail(props) {
                 )
               ) : null}
               <Button
-                onPress={() => Alert.alert("Coming soon")}
+                onPress={() => {
+                  props.navigation.navigate("copyItinerary", {
+                    idiItin: itincountries,
+                  });
+                }}
                 text={t("CopyTrip")}
                 size="medium"
                 style={{
@@ -3838,7 +3904,11 @@ export default function ItineraryDetail(props) {
                 )
               ) : null}
               <Button
-                onPress={() => Alert.alert("Coming soon")}
+                onPress={() => {
+                  props.navigation.navigate("copyItinerary", {
+                    idiItin: itincountries,
+                  });
+                }}
                 text={t("CopyTrip")}
                 size="medium"
                 style={{
@@ -4088,7 +4158,7 @@ export default function ItineraryDetail(props) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                Alert.alert("coming soon");
+                Alert.alert(t("comingSoon"));
               }}
               style={{
                 marginVertical: 2.5,
@@ -4125,7 +4195,7 @@ export default function ItineraryDetail(props) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                Alert.alert("coming soon");
+                Alert.alert(t("comingSoon"));
               }}
               style={{
                 marginVertical: 2.5,

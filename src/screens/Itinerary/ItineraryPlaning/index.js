@@ -516,7 +516,7 @@ export default function listItinPlaning(props) {
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
     GetListitinaktif();
-    wait(2000).then(() => {
+    wait(1000).then(() => {
       setRefreshing(false);
     });
   }, []);
