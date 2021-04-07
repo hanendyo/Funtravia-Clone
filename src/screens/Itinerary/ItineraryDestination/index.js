@@ -295,11 +295,28 @@ export default function ItineraryDestination(props) {
                 style={{
                   width: "100%",
                 }}
+                // onPress={() => {
+                //   props.navigation.navigate("detailStack", {
+                //     id: item.id,
+                //     name: item.name,
+                //   });
+                // }}
                 onPress={() => {
-                  props.navigation.navigate("detailStack", {
-                    id: item.id,
-                    name: item.name,
-                  });
+                  props.route.params && props.route.params.IdItinerary
+                    ? props.navigation.dispatch(
+                        props.navigation.push("DestinationUnescoDetail", {
+                          id: item.id,
+                          name: item.name,
+                          token: token,
+                          Iditinerary: props.route.params.IdItinerary,
+                          datadayaktif: props.route.params.datadayaktif,
+                        })
+                      )
+                    : props.navigation.push("DestinationUnescoDetail", {
+                        id: item.id,
+                        name: item.name,
+                        token: token,
+                      });
                 }}
               >
                 <Image

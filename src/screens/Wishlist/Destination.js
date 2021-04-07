@@ -93,11 +93,29 @@ export default function Destination({
         data={dataDes}
         renderItem={({ item }) => (
           <Pressable
+            // onPress={() => {
+            //   props.navigation.navigate("detailStack", {
+            //     id: item.id,
+            //     name: item.name,
+            //   });
+            // }}
+
             onPress={() => {
-              props.navigation.navigate("detailStack", {
-                id: item.id,
-                name: item.name,
-              });
+              props.route.params && props.route.params.iditinerary
+                ? props.navigation.dispatch(
+                    props.navigation.push("DestinationUnescoDetail", {
+                      id: item.id,
+                      name: item.name,
+                      token: token,
+                      Iditinerary: props.route.params.iditinerary,
+                      datadayaktif: props.route.params.datadayaktif,
+                    })
+                  )
+                : props.navigation.push("DestinationUnescoDetail", {
+                    id: item.id,
+                    name: item.name,
+                    token: token,
+                  });
             }}
             style={{
               width: "100%",

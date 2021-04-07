@@ -3824,6 +3824,7 @@ export default function ItineraryDetail(props) {
                 onPress={() => {
                   props.navigation.navigate("copyItinerary", {
                     idiItin: itincountries,
+                    datadetail: datadetail?.itinerary_detail,
                   });
                 }}
                 text={t("CopyTrip")}
@@ -3907,6 +3908,7 @@ export default function ItineraryDetail(props) {
                 onPress={() => {
                   props.navigation.navigate("copyItinerary", {
                     idiItin: itincountries,
+                    datadetail: datadetail?.itinerary_detail,
                   });
                 }}
                 text={t("CopyTrip")}

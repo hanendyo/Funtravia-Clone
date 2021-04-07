@@ -1008,6 +1008,7 @@ export default function Trip(props) {
                           dat.setDate(dat.getDate() + itemValue);
                           setEndDate(dat);
                           setDuration(itemValue);
+                          setModalEnd(false);
                         }}
                       >
                         {jam.map((item, index) => {
