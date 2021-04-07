@@ -527,7 +527,7 @@ export default function DetailJournal(props) {
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
-                {data.journal_byid && data.journal_byid.userby.first_name
+                {data.journal_byid && data.journal_byid.userby
                   ? data.journal_byid.userby.first_name
                   : "Funtravia"}
               </Text>
