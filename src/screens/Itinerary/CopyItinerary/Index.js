@@ -17,17 +17,23 @@ import { useTranslation } from "react-i18next";
 import DatePicker from "react-native-modern-datepicker";
 import { getToday } from "react-native-modern-datepicker";
 import DropDownPicker from "react-native-dropdown-picker";
+import ItineraryCategory from "../../../graphQL/Query/Itinerary/ItineraryCategory";
+import { useLazyQuery } from "@apollo/client";
+import { dateFormats } from "../../../component/src/dateformatter";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function CopyItinerary(props) {
   const { t, i18n } = useTranslation();
   let [modal, setModal] = useState(false);
-  let [modalEnd, setModalEnd] = useState(false);
-  let [startDate, setStartDate] = useState(null);
+  let [startDate, setStartDate] = useState(new Date());
   let [endDate, setEndDate] = useState(null);
-  let [duration, setDuration] = useState(1);
   let [dataCategories, setdataCategories] = useState([]);
+  let [title, setTitle] = useState(props.route?.params?.datadetail?.name);
+  let [minimum, setMinimum] = useState("");
+  let [category_id, setcategory_id] = useState(
+    props.route?.params?.datadetail?.categori?.id
+  );
 
   const jam = [
     1,
@@ -117,13 +123,47 @@ export default function CopyItinerary(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    getkategori();
   }, []);
+
+  const setstart = async (x) => {
+    await setStartDate(x);
+    await setEndDate(new Date(x));
+    await setMinimum(x);
+    await setModal(false);
+    {
+      endDate ? setdur(x, endDate) : null;
+    }
+  };
+
+  const [
+    getkategori,
+    { data: dataCategory, loading: loadingCategory, error: errorCategory },
+  ] = useLazyQuery(ItineraryCategory, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+    onCompleted: () => {
+      let tempdata = [];
+      for (var i of dataCategory.category_journal) {
+        tempdata.push({
+          label: i.name,
+          value: i.id,
+        });
+      }
+      setdataCategories(tempdata);
+    },
+  });
 
   return (
     <View
       style={{
         flex: 1,
         padding: 15,
+        backgroundColor: "#fff",
       }}
     >
       <Text type="bold" size="label">
@@ -152,7 +192,7 @@ export default function CopyItinerary(props) {
           </Label>
           <Input
             autoCorrect={false}
-            // value={title}
+            value={title}
             onChangeText={(text) => setTitle(text)}
             style={{
               fontFamily: "Lato-Regular",
@@ -192,125 +232,6 @@ export default function CopyItinerary(props) {
             style={{ borderRadius: 10 }}
           />
           {/* </View> */}
-        </Modal>
-        {/* date end */}
-        <Modal
-          onRequestClose={() => setModalEnd(false)}
-          onBackdropPress={() => setModalEnd(false)}
-          onSwipeComplete={() => setModalEnd(false)}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          isVisible={modalEnd}
-          style={{
-            // backgroundColor: 'rgba(47, 47, 47, 0.75)',
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-            // width: Dimensions.get('screen').width,
-            // height: Dimensions.get('screen').height,
-          }}
-        >
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 20,
-              backgroundColor: "white",
-              marginBottom: 70,
-              paddingTop: 60,
-              paddingHorizontal: 20,
-              paddingBottom: 30,
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-              }}
-              onPress={() => setModalEnd(false)}
-            >
-              <Xhitam width={15} height={15} />
-            </TouchableOpacity>
-            <Text size="description" type="bold" style={{}}>
-              {t("duration")}
-            </Text>
-            <View
-              style={{
-                width: "100%",
-                // borderWidth: 1,
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View style={{ width: "50%" }}>
-                <Picker
-                  iosIcon={
-                    <View>
-                      <Bottom />
-                    </View>
-                  }
-                  iosHeader="Select Hours"
-                  note
-                  mode="dropdown"
-                  selectedValue={duration}
-                  textStyle={{ fontFamily: "Lato-Regular" }}
-                  itemTextStyle={{ fontFamily: "Lato-Regular" }}
-                  itemStyle={{ fontFamily: "Lato-Regular" }}
-                  placeholderStyle={{ fontFamily: "Lato-Regular" }}
-                  headerTitleStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
-                  style={{
-                    color: "#209fae",
-                    fontFamily: "Lato-Regular",
-                  }}
-                  onValueChange={(itemValue, itemIndex) => {
-                    let dat = new Date(startDate);
-                    dat.setDate(dat.getDate() + itemValue);
-                    setEndDate(dat);
-                    setDuration(itemValue);
-                  }}
-                >
-                  {jam.map((item, index) => {
-                    return (
-                      <Picker.Item
-                        key={""}
-                        label={item + " " + t("days")}
-                        value={item}
-                      />
-                    );
-                  })}
-                </Picker>
-              </View>
-            </View>
-          </View>
-          {/* <TouchableOpacity
-										style={{
-											alignSelf: 'flex-end',
-											height: 30,
-											width: 30,
-											zIndex: 999,
-											marginBottom: 20,
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-										onPress={() => setModalEnd(false)}>
-										<Xgray height={20} width={20} />
-									</TouchableOpacity> */}
-          {/* <DatePicker
-                    options={{}}
-                    current={endDate ? endDate : minimum}
-                    selected={endDate ? endDate : minimum}
-                    minimumDate={minimum}
-                    onDateChange={(x) => setEnd(x)}
-                    mode="calendar"
-                    minuteInterval={30}
-                    style={{ borderRadius: 10 }}
-                  /> */}
         </Modal>
 
         <View
@@ -385,9 +306,7 @@ export default function CopyItinerary(props) {
             >
               {t("duration")}
             </Text>
-            <TouchableOpacity
-              onPress={() => (startDate ? setModalEnd(true) : null)}
-            >
+            <View>
               <Text
                 size="label"
                 type="regular"
@@ -397,7 +316,7 @@ export default function CopyItinerary(props) {
                   }
                 }
               >
-                {duration} {t("days")}
+                {props.route?.params?.datadetail?.day?.length} {t("days")}
               </Text>
               <Text
                 size="description"
@@ -407,7 +326,7 @@ export default function CopyItinerary(props) {
               >
                 Max. 30 {t("days")}
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
         <View
@@ -425,7 +344,7 @@ export default function CopyItinerary(props) {
           </Text>
           <DropDownPicker
             items={dataCategories}
-            defaultValue={null}
+            // defaultValue={category_id}
             containerStyle={{ height: 40 }}
             style={{ backgroundColor: "#fafafa" }}
             itemStyle={{
@@ -442,6 +361,19 @@ export default function CopyItinerary(props) {
           />
         </View>
       </View>
+      <Button
+        onPress={() => {
+          console.log(category_id);
+          console.log(title);
+          console.log(startDate);
+          console.log(endDate);
+        }}
+        text={t("save")}
+        color="secondary"
+        style={{
+          marginTop: 25,
+        }}
+      ></Button>
     </View>
   );
 }
