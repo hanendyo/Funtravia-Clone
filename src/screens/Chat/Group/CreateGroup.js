@@ -122,7 +122,6 @@ export default function NewGroup({ navigation }) {
     };
 
     const [userSelected, setUserSelected] = useState([]);
-    //   console.log(userSelected);
     const selectUser = (data) => {
         let tempData = [...userSelected];
         let index = tempData.findIndex((k) => k["id"] === data.id);
@@ -130,13 +129,13 @@ export default function NewGroup({ navigation }) {
             tempData.splice(index, 1);
             setUserSelected(tempData);
         } else {
-            tempData.push(data);
+            tempData.splice(0, 0, data);
+            // tempData.push(data);
             setUserSelected(tempData);
         }
     };
 
     const next_createGrup = (userSelected) => {
-        console.log(userSelected);
         navigation.navigate("ChatStack", {
             screen: "CraeteGrup",
             params: {
@@ -294,10 +293,13 @@ export default function NewGroup({ navigation }) {
                     </View>
                 ) : DataBuddy && DataBuddy.search_travelwith.length > 1 ? (
                     <View style={{ width: Dimensions.get("screen").width }}>
-                        {DataBuddy.search_travelwith.map((value, i) => {
-                            return (
+                        <FlatList
+                            scrollEnabled={false}
+                            data={DataBuddy.search_travelwith}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item, index }) => (
                                 <TouchableOpacity
-                                    onPress={() => selectUser(value)}
+                                    onPress={() => selectUser(item)}
                                     style={{
                                         flexDirection: "row",
                                         width: Dimensions.get("screen").width,
@@ -317,8 +319,8 @@ export default function NewGroup({ navigation }) {
                                     >
                                         <ImageBackground
                                             source={
-                                                value && value.picture
-                                                    ? { uri: value.picture }
+                                                item && item.picture
+                                                    ? { uri: item.picture }
                                                     : default_image
                                             }
                                             style={{
@@ -334,7 +336,7 @@ export default function NewGroup({ navigation }) {
                                             }}
                                         >
                                             {userSelected.findIndex(
-                                                (k) => k["id"] === value.id
+                                                (k) => k["id"] === item.id
                                             ) !== -1 ? (
                                                 <View
                                                     style={{
@@ -360,7 +362,6 @@ export default function NewGroup({ navigation }) {
                                                 </View>
                                             ) : null}
                                         </ImageBackground>
-
                                         <View>
                                             <Text
                                                 size="label"
@@ -368,11 +369,12 @@ export default function NewGroup({ navigation }) {
                                                 style={{
                                                     marginLeft: 20,
                                                 }}
+                                                numberOfLines={1}
                                             >
-                                                <Truncate
-                                                    text={value.first_name}
-                                                    length={17}
-                                                />
+                                                {item.first_name}{" "}
+                                                {item.last_name
+                                                    ? item.last_name
+                                                    : ""}
                                             </Text>
 
                                             <Text
@@ -382,13 +384,13 @@ export default function NewGroup({ navigation }) {
                                                     marginLeft: 20,
                                                 }}
                                             >
-                                                {value.username}
+                                                @{item.username}
                                             </Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
-                            );
-                        })}
+                            )}
+                        />
                     </View>
                 ) : (
                     //   <RenderBuddy databuddy={DataBuddy.search_travelwith} />
