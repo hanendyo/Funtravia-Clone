@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Text, StatusBar } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
@@ -42,6 +42,7 @@ import Facilities from "./Facilities";
 import Services from "./Services";
 import Reviews from "./Reviews";
 import BottomButton from "./BottomButton";
+import { StackActions } from "@react-navigation/routers";
 const HEADER_EXPANDED_HEIGHT = 380;
 const HEADER_COLLAPSED_HEIGHT = 50;
 
@@ -54,10 +55,12 @@ export default function index(props) {
   const [modalService, setModalService] = useState(false);
   const [modalTime, setModalTime] = useState(false);
   const [modalSosial, setModalSosial] = useState(false);
+  let scrollto = useRef();
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
+    await fetchData();
 
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
@@ -70,14 +73,17 @@ export default function index(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const { data, loading, error } = useQuery(DestinationById, {
+  const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
     variables: { id: props.route.params.id },
-    // variables: { id: "48181851-79dc-43d4-bd74-b7d2a96a57ad" },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+    },
+    onCompleted: () => {
+      console.log("data use", data);
     },
   });
 
@@ -88,10 +94,14 @@ export default function index(props) {
   const General = () => {
     return (
       <Generals
+        _liked={_liked}
+        _unliked={_unliked}
+        scrollto={scrollto}
         data={data?.destinationById}
         scroll={scrollY}
         heights={HEADER_EXPANDED_HEIGHT + 50}
         props={props}
+        addTo={addToPlan}
       />
     );
   };
@@ -125,7 +135,8 @@ export default function index(props) {
   const Review = () => {
     return (
       <Reviews
-        id={data.destinationById.id}
+        scrollto={scrollto}
+        id={data?.destinationById?.id}
         props={props}
         scroll={scrollY}
         heights={HEADER_EXPANDED_HEIGHT + 50}
@@ -208,7 +219,8 @@ export default function index(props) {
       try {
         let response = await mutationliked({
           variables: {
-            id: id,
+            destination_id: id,
+            qty: 1,
           },
         });
         if (loadingLike) {
@@ -218,19 +230,18 @@ export default function index(props) {
           throw new Error("Error Input");
         }
         console.log("response", response);
-        // if (response.data) {
-        //   if (
-        //     response.data.like_journal.code === 200 ||
-        //     response.data.like_journal.code === "200"
-        //   ) {
-        //     var tempData = { ...dataList };
-        //     tempData.liked = true;
-        //     setDataList(tempData);
-        //     fetchData();
-        //   } else {
-        //     throw new Error(response.data.like_journal.message);
-        //   }
-        // }
+        if (response.data) {
+          if (
+            response.data.setDestination_wishlist.code === 200 ||
+            response.data.setDestination_wishlist.code === "200"
+          ) {
+            var tempData = { ...data };
+            tempData.liked = true;
+            fetchData();
+          } else {
+            throw new Error(response.data.setDestination_wishlist.message);
+          }
+        }
       } catch (error) {
         alert("" + error);
       }
@@ -262,13 +273,10 @@ export default function index(props) {
             response.data.unset_wishlist_destinasi.code === "200"
           ) {
             var tempData = { ...data };
-            console.log("tempData", tempData);
             tempData.liked = false;
-            console.log("tempData", tempData);
-            // setDataList(tempData);
-            // fetchData();
+            fetchData();
           } else {
-            throw new Error(response.data.unlike_journal.message);
+            throw new Error(response.data.unset_wishlist_destinasi.message);
           }
         }
       } catch (error) {
@@ -280,14 +288,13 @@ export default function index(props) {
   };
 
   const addToPlan = () => {
-    console.log("test");
-    props.route.params && props.route.params.iditinerary
+    props?.route?.params && props?.route?.params?.iditinerary
       ? props.navigation.dispatch(
           StackActions.replace("ItineraryStack", {
             screen: "ItineraryChooseday",
             params: {
-              Iditinerary: props.route.params.iditinerary,
-              Kiriman: data.destinationById.id,
+              Iditinerary: props?.route?.params?.iditinerary,
+              Kiriman: data?.destinationById.id,
               token: token,
               Position: "destination",
               datadayaktif: props.route.params.datadayaktif,
@@ -297,7 +304,7 @@ export default function index(props) {
       : props.navigation.navigate("ItineraryStack", {
           screen: "ItineraryPlaning",
           params: {
-            idkiriman: data.destinationById.id,
+            idkiriman: data?.destinationById?.id,
             Position: "destination",
           },
         });
@@ -882,7 +889,7 @@ export default function index(props) {
                 {data.destinationById.openat}
               </Text>
             ) : (
-              "-"
+              <Text>-</Text>
             )}
           </View>
           {/* <View
@@ -955,7 +962,7 @@ export default function index(props) {
                 {data.destinationById.phone1}
               </Text>
             ) : (
-              "-"
+              <Text>-</Text>
             )}
           </View>
           <View
@@ -973,7 +980,7 @@ export default function index(props) {
                 {data.destinationById.website}
               </Text>
             ) : (
-              "-"
+              <Text>-</Text>
             )}
           </View>
           <View
@@ -995,7 +1002,7 @@ export default function index(props) {
                 {data.destinationById.instagram}
               </Text>
             ) : (
-              "-"
+              <Text>-</Text>
             )}
           </View>
         </View>

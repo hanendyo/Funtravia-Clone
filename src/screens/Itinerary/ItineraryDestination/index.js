@@ -29,6 +29,7 @@ import UnLiked from "../../../graphQL/Mutation/unliked";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 import LinearGradient from "react-native-linear-gradient";
+import { StackActions } from "@react-navigation/routers";
 
 export default function ItineraryDestination(props) {
   const HeaderComponent = {
@@ -303,15 +304,13 @@ export default function ItineraryDestination(props) {
                 // }}
                 onPress={() => {
                   props.route.params && props.route.params.IdItinerary
-                    ? props.navigation.dispatch(
-                        props.navigation.push("DestinationUnescoDetail", {
-                          id: item.id,
-                          name: item.name,
-                          token: token,
-                          Iditinerary: props.route.params.IdItinerary,
-                          datadayaktif: props.route.params.datadayaktif,
-                        })
-                      )
+                    ? props.navigation.push("DestinationUnescoDetail", {
+                        id: item.id,
+                        name: item.name,
+                        token: token,
+                        iditinerary: props.route.params.IdItinerary,
+                        datadayaktif: props.route.params.datadayaktif,
+                      })
                     : props.navigation.push("DestinationUnescoDetail", {
                         id: item.id,
                         name: item.name,

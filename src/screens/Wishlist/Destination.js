@@ -101,16 +101,14 @@ export default function Destination({
             // }}
 
             onPress={() => {
-              props.route.params && props.route.params.iditinerary
-                ? props.navigation.dispatch(
-                    props.navigation.push("DestinationUnescoDetail", {
-                      id: item.id,
-                      name: item.name,
-                      token: token,
-                      Iditinerary: props.route.params.iditinerary,
-                      datadayaktif: props.route.params.datadayaktif,
-                    })
-                  )
+              props?.route?.params && props?.route?.params?.iditinerary
+                ? props.navigation.push("DestinationUnescoDetail", {
+                    id: item.id,
+                    name: item.name,
+                    token: token,
+                    iditinerary: props.route.params.iditinerary,
+                    datadayaktif: props.route.params.datadayaktif,
+                  })
                 : props.navigation.push("DestinationUnescoDetail", {
                     id: item.id,
                     name: item.name,

@@ -7,19 +7,131 @@ import {
   Pressable,
   Animated,
 } from "react-native";
-import Ripple from "react-native-material-ripple";
 import { Text, Button, Truncate, FunIcon } from "../../../component";
 import { LikeEmpty, Star, PinHijau, LikeBlack } from "../../../assets/svg";
+import Liked from "../../../graphQL/Mutation/Destination/Liked";
+import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
+import { useMutation } from "@apollo/client";
 
-export default function Generals({ data, scroll, heights, props }) {
-  console.log("props general", props);
+export default function Generals({
+  data,
+  scroll,
+  heights,
+  props,
+  scrollto,
+  _liked,
+  _unliked,
+  addTo,
+}) {
+  // let [datas, setDatas] = useState(data);
+  console.log("scrol general", scroll);
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   const layoutText = (e) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
+
+  // const [
+  //   mutationliked,
+  //   { loading: loadingLike, data: dataLike, error: errorLike },
+  // ] = useMutation(Liked, {
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  // });
+
+  // const [
+  //   mutationUnliked,
+  //   { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  // ] = useMutation(unLiked, {
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  // });
+
+  // const _liked = async (id) => {
+  //   console.log("token like:", token);
+  //   console.log("id like:", id);
+  //   if (token || token !== "") {
+  //     try {
+  //       let response = await mutationliked({
+  //         variables: {
+  //           destination_id: id,
+  //           qty: 1,
+  //         },
+  //       });
+  //       if (loadingLike) {
+  //         alert("Loading!!");
+  //       }
+  //       if (errorLike) {
+  //         throw new Error("Error Input");
+  //       }
+  //       console.log("response", response);
+  //       if (response.data) {
+  //         if (
+  //           response.data.setDestination_wishlist.code === 200 ||
+  //           response.data.setDestination_wishlist.code === "200"
+  //         ) {
+  //           var tempData = { ...data };
+  //           tempData.liked = true;
+  //           setDatas(tempData);
+  //         } else {
+  //           throw new Error(response.data.setDestination_wishlist.message);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       alert("" + error);
+  //     }
+  //   } else {
+  //     alert("Please Login");
+  //   }
+  // };
+
+  // const _unliked = async (id) => {
+  //   console.log("token unlike:", token);
+  //   console.log("id unlike:", id);
+  //   if (token || token !== "") {
+  //     try {
+  //       let response = await mutationUnliked({
+  //         variables: {
+  //           destination_id: id,
+  //         },
+  //       });
+  //       if (loadingUnLike) {
+  //         alert("Loading!!");
+  //       }
+  //       if (errorUnLike) {
+  //         throw new Error("Error Input");
+  //       }
+  //       console.log("Response", response);
+  //       if (response.data) {
+  //         if (
+  //           response.data.unset_wishlist_destinasi.code === 200 ||
+  //           response.data.unset_wishlist_destinasi.code === "200"
+  //         ) {
+  //           var tempData = { ...data };
+  //           tempData.liked = false;
+  //           setDatas(tempData);
+  //         } else {
+  //           throw new Error(response.data.unset_wishlist_destinasi.message);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       alert("" + error);
+  //     }
+  //   } else {
+  //     alert("Please Login");
+  //   }
+  // };
   return (
     <ScrollView
+      ref={scroll}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ backgroundColor: "#fff", paddingTop: heights }}
       onScroll={Animated.event(
@@ -299,12 +411,14 @@ export default function Generals({ data, scroll, heights, props }) {
             </Text>
           </View>
           <ScrollView
-            style={{
-              width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
+            contentContainerStyle={{
+              // width: Dimensions.get("screen").width,
+              paddingLeft: 15,
+              paddingRight: 10,
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
+            spara
           >
             {data &&
               data.movie_location.map((item, index) => (
@@ -357,7 +471,7 @@ export default function Generals({ data, scroll, heights, props }) {
       ) : null}
 
       {/* Photo */}
-      {data.images ? (
+      {data && data.images ? (
         <View
           style={{
             width: Dimensions.get("screen").width,
@@ -405,7 +519,7 @@ export default function Generals({ data, scroll, heights, props }) {
             data.id !== item.id ? (
               <Pressable
                 onPress={() =>
-                  props.navigation.navigate("DestinationUnescoDetail", {
+                  props.navigation.push("DestinationUnescoDetail", {
                     id: item.id,
                     name: item.name,
                     token: token,
@@ -466,6 +580,7 @@ export default function Generals({ data, scroll, heights, props }) {
                     </View>
                     {item.liked === true ? (
                       <Pressable
+                        onPress={() => _unliked(item.id)}
                         style={{
                           backgroundColor: "#F3F3F3",
                           height: 34,
@@ -479,6 +594,7 @@ export default function Generals({ data, scroll, heights, props }) {
                       </Pressable>
                     ) : (
                       <Pressable
+                        onPress={() => _liked(item.id)}
                         style={{
                           backgroundColor: "#F3F3F3",
                           height: 34,
@@ -549,6 +665,7 @@ export default function Generals({ data, scroll, heights, props }) {
                       )}
                     </View>
                     <Button
+                      onPress={() => addTo()}
                       size="small"
                       text={"Add"}
                       style={{ marginTop: 20 }}

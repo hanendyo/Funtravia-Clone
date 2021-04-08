@@ -7,7 +7,7 @@ import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Reviews({ props, id, scroll, heights }) {
+export default function Reviews({ props, id, scroll, heights, scrollto }) {
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState("");
 
@@ -37,13 +37,16 @@ export default function Reviews({ props, id, scroll, heights }) {
     },
   });
 
+  console.log("data review", data);
+
   return (
     <ScrollView
+      ref={scroll}
       contentContainerStyle={{
         width: Dimensions.get("screen").width,
         paddingHorizontal: 15,
         paddingTop: heights,
-        // height: Dimensions.get("screen").height,
+        height: 1000,
       }}
       onScroll={Animated.event(
         [
@@ -60,96 +63,82 @@ export default function Reviews({ props, id, scroll, heights }) {
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
     >
-      {data?.destinationById ? (
-        <>
-          {/* View Name */}
-          <View
-            style={{
-              // height: 200,
-              flexDirection: "row",
-              marginTop: 15,
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  backgroundColor: "#464646",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 25,
-                }}
-              ></View>
-              <View style={{ marginLeft: 10 }}>
-                <Text size="label" type="bold">
-                  Wisnu Utama
-                </Text>
-                <View style={{ flexDirection: "row" }}>
-                  <Star height={15} width={15} />
-                  <Star height={15} width={15} />
-                  <Star height={15} width={15} />
-                  <Star height={15} width={15} />
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ marginLeft: 5 }}
+      {data?.destinationById?.review.length > 0 ? (
+        <View style={{ marginTop: 20 }}>
+          {data?.destinationById?.review.map((item, index) => {
+            let set = [1, 2, 3, 4, 5];
+            return (
+              <View key={index}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "#464646",
+                      height: 50,
+                      width: 50,
+                      borderRadius: 25,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      width: Dimensions.get("screen").width * 0.7,
+                    }}
                   >
-                    9.8/10
+                    <Text size="label" type="bold" numberOfLines={1}>
+                      {item?.id}
+                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                      {set.map((value, index) =>
+                        item.rating >= value ? (
+                          <Star height={15} width={15} />
+                        ) : null
+                      )}
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{ marginLeft: 5 }}
+                      >
+                        {item?.rating}
+                      </Text>
+                    </View>
+                    <Text size="small" type="reguler">
+                      23 June
+                    </Text>
+                  </View>
+                  {/* <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginLeft: 10,
+                    }}
+                  >
+                    <LikeEmpty height={25} width={25} />
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{ marginLeft: 10 }}
+                    >
+                      112
+                    </Text>
+                  </View> */}
+                </View>
+                <View
+                  style={{
+                    marginTop: 15,
+                  }}
+                >
+                  <Text ellipsizeMode="head" size="label" type="reguler">
+                    {item.ulasan}
                   </Text>
                 </View>
-                <Text size="small" type="reguler">
-                  23 June
-                </Text>
               </View>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <LikeEmpty height={25} width={25} />
-              <Text size="small" type="regular" style={{ marginLeft: 10 }}>
-                112
-              </Text>
-            </View>
-          </View>
-          <View
-            style={
-              {
-                // marginTop: 15,
-              }
-            }
-          >
-            <Text
-              // numberOfLines={2}
-              ellipsizeMode="head"
-              size="label"
-              type="reguler"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam
-              cursus nunc, etiam Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Diam cursus nunc, etiam Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit. Diam cursus nunc, etiam
-            </Text>
-          </View>
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-            }}
-          >
-            <Image
-              source={activity_unesco2}
-              style={{ height: 110, width: 130, borderRadius: 5 }}
-            />
-            <Image
-              source={activity_unesco2}
-              style={{
-                height: 110,
-                width: 130,
-                marginLeft: 10,
-                borderRadius: 5,
-              }}
-            />
-          </View>
-        </>
+            );
+          })}
+        </View>
       ) : (
         <View
           style={{

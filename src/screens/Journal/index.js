@@ -289,7 +289,7 @@ export default function Journal(props) {
                 />
                 <View style={styles.dataEditor}>
                   <Text size={"label"} type={"bold"}>
-                    {data.journal_most_populer.userby
+                    {data.journal_most_populer.userby.first_name
                       ? data.journal_most_populer.userby.first_name
                       : "Funtravia"}
                   </Text>
