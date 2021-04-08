@@ -7,7 +7,6 @@ import {
 	TouchableOpacity,
 	FlatList,
 	Platform,
-	Button as ButtonRn,
 } from "react-native";
 import {
 	Arrowbackblack,
@@ -47,7 +46,6 @@ export default function Post(props) {
 	let videoView = useRef(null);
 
 	const selectImg = async (file) => {
-		console.log(file);
 		await setRecent(file);
 		await setLoading(false);
 		setRatio({ width: 1, height: 1, index: 0 });
@@ -75,18 +73,25 @@ export default function Post(props) {
 		});
 	};
 	const nextFunction = async () => {
-		let result = await ImagePicker.openCropper({
-			path: recent.image.uri,
-			width: ratio.width * 1000,
-			height: ratio.height * 1000,
-			includeBase64: true,
-			compressImageQuality: 0.7,
-		});
-		props.navigation.navigate("CreatePostScreen", {
-			location: recent.location,
-			base64: result.data,
-			image: result,
-		});
+		if (recent.node.type.substr(0, 5) === "video") {
+			props.navigation.navigate("CreatePostScreen", {
+				location: recent.node.location,
+				type: recent.node.type.substr(0, 5),
+				file: recent.node.image,
+			});
+		} else {
+			let result = await ImagePicker.openCropper({
+				path: recent.node.image.uri,
+				width: ratio.width * 1000,
+				height: ratio.height * 1000,
+				// compressImageQuality: 0.7,
+			});
+			props.navigation.navigate("CreatePostScreen", {
+				location: recent.node.location,
+				type: recent.node.type.substr(0, 5),
+				file: result,
+			});
+		}
 	};
 
 	useEffect(() => {
@@ -121,6 +126,7 @@ export default function Post(props) {
 			console.warn(err);
 		}
 	};
+
 	const getAlbumRoll = async () => {
 		try {
 			let granted = false;
@@ -169,7 +175,7 @@ export default function Post(props) {
 			assetType: "All",
 			groupTypes: "Album",
 			groupName: dataalbum.title,
-			include: ["location", "filename", "imageSize"],
+			include: ["location", "filename", "imageSize", "playableDuration"],
 		});
 		let data_foto = dataCamera.edges;
 		let camera = {
@@ -177,6 +183,7 @@ export default function Post(props) {
 			mediaType: "camera",
 		};
 		data_foto.splice(0, 0, camera);
+		console.log(data_foto);
 		setImageRoll(data_foto);
 		await selectImg(data_foto[1]);
 	};
@@ -186,6 +193,14 @@ export default function Post(props) {
 		await setIsVisible(false);
 		await getImageFromRoll(item);
 		await props.navigation.setParams({ title: item.title });
+	};
+
+	const _getDuration = (s) => {
+		var m = Math.floor(s / 60);
+		m = m >= 10 ? m : "0" + m;
+		s = Math.floor(s % 60);
+		s = s >= 10 ? s : "0" + s;
+		return m + ":" + s;
 	};
 
 	const _modalGalery = () => {
@@ -344,21 +359,31 @@ export default function Post(props) {
 							marginBottom: 5,
 						}}
 					>
-						{recent.node?.type === "video/mp4" ? (
+						{recent?.node?.type.substr(0, 5) === "video" ? (
 							<Video
 								source={{
-									uri: recent.node?.image?.uri,
+									uri:
+										Platform.OS === "ios"
+											? `assets-library://asset/asset.${recent.node.image.filename.substring(
+													recent.node.image.filename.length - 3
+											  )}?id=${recent.node.image.uri.substring(
+													5,
+													41
+											  )}&ext=${recent.node.image.filename.substring(
+													recent.node.image.filename.length - 3
+											  )}`
+											: recent.node?.image?.uri,
 								}}
 								ref={(ref) => {
 									videoView = ref;
 								}}
 								onBuffer={videoView?.current?.onBuffer}
 								onError={videoView?.current?.videoError}
-								selectedVideoTrack
 								style={{
 									width: width,
-									height: width - 50,
+									height: width,
 								}}
+								resizeMode="cover"
 							/>
 						) : (
 							<Image
@@ -407,6 +432,26 @@ export default function Post(props) {
 							}}
 							onPress={() => selectImg(item)}
 						>
+							{item.node?.type.substr(0, 5) === "video" ? (
+								<View
+									style={{
+										zIndex: 1,
+										flex: 1,
+										top: 5,
+										left: 5,
+										paddingHorizontal: 2,
+										borderRadius: 5,
+										position: "absolute",
+										backgroundColor: "rgba(0,0,0,0.50)",
+										borderWidth: 0.5,
+										borderColor: "white",
+									}}
+								>
+									<Text style={{ color: "white" }}>
+										{_getDuration(item.node.image.playableDuration)}
+									</Text>
+								</View>
+							) : null}
 							<Image
 								source={{ uri: item.node.image.uri }}
 								style={{
