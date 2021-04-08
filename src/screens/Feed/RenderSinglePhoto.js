@@ -6,9 +6,15 @@ import { Mute, Unmute } from "../../assets/svg";
 
 const { width, height } = Dimensions.get("screen");
 
-export default function RenderSinglePhoto({ data, props, separators }) {
+export default function RenderSinglePhoto({
+	data,
+	props,
+	play,
+	isFocused,
+	muted,
+	setMuted,
+}) {
 	let videoView = useRef(null);
-	let [muted, setMuted] = useState(true);
 	if (data.assets[0].type === "video") {
 		return (
 			<View>
@@ -30,6 +36,7 @@ export default function RenderSinglePhoto({ data, props, separators }) {
 						}}
 						resizeMode="cover"
 						muted={muted}
+						paused={play === data.id && isFocused ? false : true}
 					/>
 				</TouchableWithoutFeedback>
 				<View

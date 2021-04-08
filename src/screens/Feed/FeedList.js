@@ -38,6 +38,7 @@ import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
 import RenderAlbum from "./RenderAlbumItinerary";
 import RenderSinglePhoto from "./RenderSinglePhoto";
+import { useIsFocused } from "@react-navigation/native";
 
 const deletepost = gql`
 	mutation($post_id: ID!) {
@@ -53,7 +54,7 @@ const deletepost = gql`
 export default function FeedList({ props, token }) {
 	const ref = React.useRef(null);
 	useScrollToTop(ref);
-	// let [datafeed, SetDataFeed] = useState(dataRender);
+	const isFocused = useIsFocused();
 	let [selectedOption, SetOption] = useState({});
 	let [modalmenu, setModalmenu] = useState(false);
 	let [modalmenuother, setModalmenuother] = useState(false);
@@ -442,6 +443,15 @@ export default function FeedList({ props, token }) {
 		});
 	};
 
+	let [play, setPlay] = useState(null);
+	let [muted, setMuted] = useState(true);
+	const onViewRef = React.useRef(({ viewableItems, changed }) => {
+		if (viewableItems) {
+			setPlay(viewableItems[0].key);
+		}
+	});
+	const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
+
 	return (
 		<View>
 			<Modal
@@ -658,6 +668,8 @@ export default function FeedList({ props, token }) {
 			<FlatList
 				ref={ref}
 				data={feed_post_pageing}
+				onViewableItemsChanged={onViewRef.current}
+				viewabilityConfig={viewConfigRef.current}
 				renderItem={({ item, index }) => (
 					<View
 						style={{
@@ -807,7 +819,14 @@ export default function FeedList({ props, token }) {
 							{item.is_single == false && item.itinerary !== null ? (
 								<RenderAlbum data={item} props={props} />
 							) : (
-								<RenderSinglePhoto data={item} props={props} />
+								<RenderSinglePhoto
+									data={item}
+									props={props}
+									play={play}
+									muted={muted}
+									setMuted={(e) => setMuted(e)}
+									isFocused={isFocused}
+								/>
 							)}
 						</View>
 
@@ -915,14 +934,14 @@ export default function FeedList({ props, token }) {
 									position="left"
 									size="small"
 									style={{
-										// right: 10,
+										right: 10,
 										paddingHorizontal: 2,
 									}}
 								>
 									<ShareBlack height={17} width={17} />
-									<Text size="small" style={{ marginLeft: 3 }}>
+									{/* <Text size="small" style={{ marginLeft: 3 }}>
 										{t("share")}
-									</Text>
+									</Text> */}
 								</Button>
 							</View>
 							<View
