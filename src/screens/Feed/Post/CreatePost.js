@@ -120,17 +120,7 @@ export default function CreatePost({ navigation, route }) {
 		let assets = null;
 		if (route.params.type === "video") {
 			assets = new ReactNativeFile({
-				uri:
-					Platform.OS === "ios"
-						? `assets-library://asset/asset.${chosenFile.filename.substring(
-								chosenFile.filename.length - 3
-						  )}?id=${chosenFile.uri.substring(
-								5,
-								41
-						  )}&ext=${chosenFile.filename.substring(
-								chosenFile.filename.length - 3
-						  )}`
-						: chosenFile.uri,
+				uri: chosenFile.uri,
 				type: `video/${chosenFile.filename.substring(
 					chosenFile.filename.length - 3
 				)}`,
