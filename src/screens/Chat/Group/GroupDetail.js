@@ -278,6 +278,7 @@ export default function GroupDetail(props) {
                             ? dataDetail.buddy
                             : null
                     }
+                    scrollEnabled={false}
                     contentContainerStyle={{}}
                     renderItem={({ item, index }) => (
                         <Pressable
