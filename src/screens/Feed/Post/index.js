@@ -173,7 +173,7 @@ export default function Post(props) {
 		let dataCamera = await CameraRoll.getPhotos({
 			first: 51,
 			assetType: "All",
-			groupTypes: "Album",
+			// groupTypes: "Album",
 			groupName: dataalbum.title,
 			include: ["location", "filename", "imageSize", "playableDuration"],
 		});
