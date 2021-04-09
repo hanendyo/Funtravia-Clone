@@ -68,7 +68,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
           {data?.destinationById?.review.map((item, index) => {
             let set = [1, 2, 3, 4, 5];
             return (
-              <View key={index}>
+              <View key={item.id}>
                 <View
                   style={{
                     flexDirection: "row",

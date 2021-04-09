@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   View,
-  SafeAreaView,
   ScrollView,
   Image,
+  TextInput,
+  Pressable,
+  BackHandler,
+  Alert,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -13,17 +16,21 @@ import {
   CameraBlue,
   SendReview,
 } from "../../../assets/svg";
-import {
-  ex_photo_1,
-  ex_photo_2,
-  ex_photo_3,
-  ex_photo_4,
-} from "../../../assets/png";
 import { Button, Text } from "../../../component";
-import { activity_unesco7 } from "../../../assets/png";
+import Ripple from "react-native-material-ripple";
+import Modal from "react-native-modal";
+import { useTranslation } from "react-i18next";
+import ImagePicker from "react-native-image-crop-picker";
+import CheckBox from "@react-native-community/checkbox";
 
 export default function DestinationUnescoReview(props) {
+  const { t } = useTranslation();
+  let [toggleCheckBox, setToggleCheckBox] = useState(false);
+  let [dataImage, setDataImage] = useState([]);
   let [data] = useState(props.route.params.data);
+  let [maxRating] = useState([1, 2, 3, 4, 5]);
+  let [defaultRate, setDefaultRate] = useState(0);
+  let [modals, setmodal] = useState(false);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -63,6 +70,40 @@ export default function DestinationUnescoReview(props) {
     // const unsubscribe = props.navigation.addListener("focus");
     // return unsubscribe;
   }, [props.navigation]);
+
+  const pickcamera = async () => {
+    console.log("testkamera");
+    ImagePicker.openCamera({
+      width: 500,
+      height: 500,
+      cropping: true,
+      multiple: true,
+    }).then((image) => {
+      console.log(image);
+      let tempData = [...dataImage];
+      tempData.splice(0, 0, image);
+      setDataImage(tempData);
+      BackHandler.addEventListener("hardwareBackPress", backAction);
+      setmodal(false);
+    });
+  };
+
+  const pickGallery = async () => {
+    console.log("testGalery");
+    ImagePicker.openPicker({
+      width: 500,
+      height: 500,
+      cropping: true,
+      cropperCircleOverlay: true,
+      multiple: true,
+    }).then((image) => {
+      console.log(image);
+      let tempData = [...dataImage];
+      image.map((item) => tempData.splice(0, 0, item));
+      setDataImage(tempData);
+      setmodal(false);
+    });
+  };
 
   return (
     <ScrollView
@@ -123,17 +164,29 @@ export default function DestinationUnescoReview(props) {
           marginTop: 20,
         }}
       >
-        <Text size="description" type="regular">
-          How was your experience at Pandawa Beach ?
+        <Text size="description" type="regular" style={{ textAlign: "center" }}>
+          {t("howExperience")} {data?.name} ?
         </Text>
         <View style={{ flexDirection: "row", marginTop: 10 }}>
-          <StarBlue height={30} width={30} style={{ marginRight: 5 }} />
-          <StarBlue height={30} width={30} style={{ marginRight: 5 }} />
-          <StarBlue height={30} width={30} style={{ marginRight: 5 }} />
-          <StarBlue height={30} width={30} style={{ marginRight: 5 }} />
-          <StarBlue height={30} width={30} />
+          {maxRating.map((item, index) => {
+            return (
+              <Pressable onPress={() => setDefaultRate(item)} key={item}>
+                {item <= defaultRate ? (
+                  <Star height={30} width={30} style={{ marginRight: 15 }} />
+                ) : (
+                  <StarBlue
+                    height={30}
+                    width={30}
+                    style={{ marginRight: 15 }}
+                  />
+                )}
+              </Pressable>
+            );
+          })}
         </View>
-        <View
+        <Ripple
+          onPress={() => setmodal(true)}
+          rippleCentered={true}
           style={{
             marginTop: 20,
             borderWidth: 1,
@@ -146,31 +199,33 @@ export default function DestinationUnescoReview(props) {
         >
           <CameraBlue width={20} height={20} />
           <Text size="description" type="reguler" style={{ color: "#209FAE" }}>
-            Add Photo
+            {t("addFoto")}
           </Text>
-        </View>
-        <View
-          style={{
-            marginTop: 10,
-            height: 70,
-            width: "100%",
-            flexDirection: "row",
-          }}
+        </Ripple>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          // contentContainerStyle={{ paddingHorizontal: 15 }}
         >
-          <Image
-            source={ex_photo_1}
-            style={{ height: "100%", width: 70, marginRight: 5 }}
-          />
-          <Image
-            source={ex_photo_2}
-            style={{ height: "100%", width: 70, marginRight: 5 }}
-          />
-          <Image
-            source={ex_photo_3}
-            style={{ height: "100%", width: 70, marginRight: 5 }}
-          />
-          <Image source={ex_photo_4} style={{ height: "100%", width: 70 }} />
-        </View>
+          {dataImage.length > 0 ? (
+            <View
+              style={{
+                marginTop: 10,
+                height: 70,
+                width: "100%",
+                flexDirection: "row",
+              }}
+            >
+              {dataImage.map((item, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: item?.path }}
+                  style={{ height: "100%", width: 70, marginRight: 5 }}
+                />
+              ))}
+            </View>
+          ) : null}
+        </ScrollView>
       </View>
       <View
         style={{
@@ -180,11 +235,11 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <Text size="label" type="bold">
-          Share with us
+          {t("shareUs")}
         </Text>
         <View
           style={{
-            height: 200,
+            height: 150,
             width: "100%",
             borderWidth: 1,
             borderColor: "#D1D1D1",
@@ -192,13 +247,12 @@ export default function DestinationUnescoReview(props) {
             marginTop: 10,
           }}
         >
-          <Text
-            size="description"
-            type="regular"
-            style={{ color: "#B6B6B6", margin: 10 }}
-          >
-            Tell us your feedback
-          </Text>
+          <TextInput
+            placeholder={t("tellUs")}
+            placeholderTextColor="#464646"
+            style={{ color: "#464646", margin: 5, fontSize: 14 }}
+            multiline={true}
+          ></TextInput>
         </View>
       </View>
       <View
@@ -206,14 +260,22 @@ export default function DestinationUnescoReview(props) {
           marginTop: 15,
           width: Dimensions.get("screen").width,
           paddingHorizontal: 15,
+          flexDirection: "row",
         }}
       >
-        <Text size="description" type="light">
-          Term and Condition
-        </Text>
-        <Text size="small" type="light">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vitae mauris
-        </Text>
+        <CheckBox
+          value={toggleCheckBox}
+          onValueChange={(newValue) => setToggleCheckBox(newValue)}
+        />
+        <View>
+          <Text size="description" type="light">
+            Term and Condition
+          </Text>
+          <Text size="small" type="light">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vitae
+            mauris
+          </Text>
+        </View>
       </View>
       <View
         style={{
@@ -224,6 +286,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <Button
+          onPress={() => null}
           type="icon"
           color="secondary"
           size="medium"
@@ -240,6 +303,51 @@ export default function DestinationUnescoReview(props) {
           />
         </Button>
       </View>
+      <Modal
+        onBackdropPress={() => {
+          setmodal(false);
+        }}
+        onRequestClose={() => setmodal(false)}
+        onDismiss={() => setmodal(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modals}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 60,
+            padding: 20,
+          }}
+        >
+          <Ripple
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => pickcamera()}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("OpenCamera")}
+            </Text>
+          </Ripple>
+          <Ripple
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => pickGallery()}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("OpenGallery")}
+            </Text>
+          </Ripple>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

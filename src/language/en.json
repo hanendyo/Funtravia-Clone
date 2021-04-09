@@ -127,7 +127,11 @@
   "searchColumn": "Search People, Destination, Event",
   "others": "Others",
   "ticketAndAccommodation": "Ticket and Accommodation",
+<<<<<<< Updated upstream
   "people": "People",
+=======
+  "people": "Poeple",
+>>>>>>> Stashed changes
   "follow": "Follow",
   "recent": "Recent",
   "accommodation": "Accommodation",
@@ -510,5 +514,9 @@
   "Category": "Category",
   "selectCategory": "Pilih Kategori",
   "copyItinerary": "Copy Itinerary",
-  "participants": "Participants"
+  "participants": "Participants",
+  "howExperience": "How was your experience at",
+  "addFoto": "Add photo",
+  "shareUs": "Share with us",
+  "tellUs": "Tell us your feedback"
 }
