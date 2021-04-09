@@ -98,6 +98,7 @@ export default function ProfileSettings(props) {
         text: t("discard"),
         onPress: () => {
           BackHandler.removeEventListener("hardwareBackPress", backAction);
+          BackHandler.addEventListener("hardwareBackPress", handleBack);
           props.navigation.goBack();
         },
         style: "cancel",
@@ -106,6 +107,7 @@ export default function ProfileSettings(props) {
         text: t("saved"),
         onPress: () => {
           BackHandler.removeEventListener("hardwareBackPress", backAction);
+          BackHandler.addEventListener("hardwareBackPress", handleBack);
           _handlesave();
         },
       },

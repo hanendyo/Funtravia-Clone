@@ -18,21 +18,25 @@ import DatePicker from "react-native-modern-datepicker";
 import { getToday } from "react-native-modern-datepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import ItineraryCategory from "../../../graphQL/Query/Itinerary/ItineraryCategory";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { dateFormats } from "../../../component/src/dateformatter";
+import saveCopy from "../../../graphQL/Mutation/Itinerary/CopyItinerary";
+import { StackActions } from "@react-navigation/routers";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function CopyItinerary(props) {
   const { t, i18n } = useTranslation();
   let [modal, setModal] = useState(false);
-  let [startDate, setStartDate] = useState(new Date());
+  let [startDate, setStartDate] = useState(getToday());
   let [endDate, setEndDate] = useState(null);
   let [dataCategories, setdataCategories] = useState([]);
   let [title, setTitle] = useState(props.route?.params?.datadetail?.name);
   let [minimum, setMinimum] = useState("");
   let [category_id, setcategory_id] = useState(
     props.route?.params?.datadetail?.categori?.id
+      ? props.route?.params?.datadetail?.categori?.id
+      : "a47944f4-a2e1-4eae-83d1-5bf001475074"
   );
 
   const jam = [
@@ -157,6 +161,66 @@ export default function CopyItinerary(props) {
       setdataCategories(tempdata);
     },
   });
+
+  const [
+    mutationSave,
+    { loading: LoadingSave, data: dataSave, error: errorSave },
+  ] = useMutation(saveCopy, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${props.route?.params?.token}`,
+      },
+    },
+  });
+
+  const _handlesave = async () => {
+    console.log({
+      itinerary_id: props.route.params.idiItin,
+      start_date: startDate,
+      title: title,
+      category_id: category_id,
+    });
+    try {
+      let response = await mutationSave({
+        variables: {
+          itinerary_id: props.route.params.idiItin,
+          start_date: startDate,
+          title: title,
+          category_id: category_id,
+        },
+      });
+      if (LoadingSave) {
+        // setLoadingApp(true);
+      }
+      if (errorSave) {
+        throw new Error("Error Input");
+      }
+      console.log(response);
+      if (response.data) {
+        if (response.data.duplicate_itinerary.code !== 200) {
+          throw new Error(response.data.duplicate_itinerary.message);
+        } else {
+          props.navigation.dispatch(
+            StackActions.replace("ItineraryStack", {
+              screen: "itindetail",
+              params: {
+                country: response.data.duplicate_itinerary.id,
+                token: token,
+                status: "edit",
+              },
+            })
+          );
+        }
+      }
+      // setLoadingApp(false);
+    } catch (error) {
+      console.log(error);
+
+      Alert.alert("" + error);
+      // setLoadingApp(false);
+    }
+  };
 
   return (
     <View
@@ -344,7 +408,6 @@ export default function CopyItinerary(props) {
           </Text>
           <DropDownPicker
             items={dataCategories}
-            // defaultValue={category_id}
             containerStyle={{ height: 40 }}
             style={{ backgroundColor: "#fafafa" }}
             itemStyle={{
@@ -363,10 +426,7 @@ export default function CopyItinerary(props) {
       </View>
       <Button
         onPress={() => {
-          console.log(category_id);
-          console.log(title);
-          console.log(startDate);
-          console.log(endDate);
+          _handlesave();
         }}
         text={t("save")}
         color="secondary"

@@ -17,7 +17,8 @@ import {
   Pencilgreen,
   Xhitam,
 } from "../../../assets/svg";
-import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustom";
+import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustomNew";
+// import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustom";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon } from "../../../component";
@@ -565,7 +566,9 @@ export default function ChoosePosition(props) {
   ] = useMutation(SaveCustom, {
     context: {
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
+
         Authorization: `Bearer ${token}`,
       },
     },
@@ -584,6 +587,8 @@ export default function ChoosePosition(props) {
   });
 
   const saveToItinerary = async () => {
+    console.log(props.route.params.file);
+
     setLoading(true);
     // console.log(token);
     if (dataAkhir.length < 1) {
@@ -611,6 +616,7 @@ export default function ChoosePosition(props) {
             status: false,
             order: dataAkhir,
             total_price: "0",
+            file: props.route.params.file,
           },
         });
         if (loadingSaved) {
@@ -619,15 +625,16 @@ export default function ChoosePosition(props) {
         if (errorSaved) {
           throw new Error("Error Input");
         }
+        console.log(response);
         if (response.data) {
-          if (response.data.add_custom.code !== 200) {
+          if (response.data.add_custom_withattach.code !== 200) {
             setLoading(false);
 
-            throw new Error(response.data.add_custom.message);
+            throw new Error(response.data.add_custom_withattach.message);
           } else {
             var tempdatas = [...datatimeline];
             var jum = 0;
-            for (var i of response.data.add_custom.data) {
+            for (var i of response.data.add_custom_withattach.data) {
               var inde = tempdatas.findIndex(
                 (k) => k["order"] === parseInt(i.order)
               );
@@ -635,7 +642,7 @@ export default function ChoosePosition(props) {
               jum++;
             }
 
-            if (jum === response.data.add_custom.data.length) {
+            if (jum === response.data.add_custom_withattach.data.length) {
               setDatatimeline(tempdatas);
               try {
                 let responsed = await mutationSaveTimeline({
@@ -678,6 +685,8 @@ export default function ChoosePosition(props) {
           }
         }
       } catch (error) {
+        console.log(error);
+
         setLoading(false);
 
         Alert.alert("" + error);
