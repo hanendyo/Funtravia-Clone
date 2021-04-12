@@ -1,31 +1,29 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
-import { Ticket, SendReview } from "../../../assets/svg";
+import { PensilPutih } from "../../../assets/svg";
 import { Text, Button } from "../../../component";
 
 export default function BottomButton({ routed, props, data, addTo }) {
   return (
     <View
       style={{
-        // height: 100,
-        // width: Dimensions.get("screen").width,
-        // paddingHorizontal: 15,
-        // justifyContent: "flex-end",
-        alignItems: "center",
+        alignItems: "flex-end",
       }}
     >
       {routed === 1 ? (
-        <View style={{ position: "absolute", top: -45 }}>
+        <View style={{ position: "absolute", top: -75, right: 15, zIndex: 10 }}>
           <Button
-            color="secondary"
-            type="icon"
-            text="Write Review"
+            color="primary"
+            type="circle"
             style={{
-              width: Dimensions.get("screen").width * 0.7,
+              // width: Dimensions.get("screen").width * 0.7,
               borderRadius: 42,
-              alignSelf: "center",
+              paddingHorizontal: 15,
+              // alignSelf: "flex-end",
               // position: "absolute",
-              marginBottom: 5,
+              // marginBottom: 5,
+              // borderTopWidth: 6,
+              // zIndex: 10,
             }}
             onPress={() =>
               props.navigation.navigate("DestinationUnescoReview", {
@@ -33,7 +31,7 @@ export default function BottomButton({ routed, props, data, addTo }) {
               })
             }
           >
-            <SendReview height={15} width={15} />
+            <PensilPutih height={15} width={15} />
           </Button>
         </View>
       ) : null}
@@ -55,18 +53,8 @@ export default function BottomButton({ routed, props, data, addTo }) {
         }}
       >
         <Button
-          style={{ backgroundColor: "#E2ECF8", height: "100%", width: "40%" }}
-          type="icon"
-          onPress={() => null}
-        >
-          <Ticket height={20} width={20} />
-          <Text size="description" type="regular" style={{ marginLeft: 5 }}>
-            Find Ticket
-          </Text>
-        </Button>
-        <Button
           onPress={() => addTo()}
-          style={{ height: "100%", width: "58%" }}
+          style={{ height: "100%", width: "100%" }}
           color="primary"
           type="box"
           text="Add To Plan"

@@ -37,8 +37,6 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
     },
   });
 
-  console.log("data review", data);
-
   return (
     <ScrollView
       ref={scroll}

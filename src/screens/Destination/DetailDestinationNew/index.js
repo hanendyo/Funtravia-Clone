@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   Animated,
+  Linking,
 } from "react-native";
 import { Text, StatusBar } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
@@ -16,7 +17,7 @@ import {
   Arrowbackwhite,
   LikeEmpty,
   Star,
-  LikeBlack,
+  Love,
   ShareBlack,
   PinHijau,
   UnescoIcon,
@@ -47,7 +48,6 @@ const HEADER_EXPANDED_HEIGHT = 380;
 const HEADER_COLLAPSED_HEIGHT = 50;
 
 export default function index(props) {
-  console.log("props index : ", props);
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState(props.route.params.token);
   const [modalActivity, setModalActivity] = useState(false);
@@ -55,6 +55,8 @@ export default function index(props) {
   const [modalService, setModalService] = useState(false);
   const [modalTime, setModalTime] = useState(false);
   const [modalSosial, setModalSosial] = useState(false);
+  let [dataDestination, setDataDestination] = useState(data);
+  console.log("dataDestination", dataDestination);
   let scrollto = useRef();
 
   const loadAsync = async () => {
@@ -83,11 +85,9 @@ export default function index(props) {
       },
     },
     onCompleted: () => {
-      console.log("data use", data);
+      setDataDestination(data.destinationById);
     },
   });
-
-  // let [state, setState] = useState()
 
   console.log("data", data);
 
@@ -213,9 +213,11 @@ export default function index(props) {
   });
 
   const _liked = async (id) => {
-    console.log("token like:", token);
-    console.log("id like:", id);
     if (token || token !== "") {
+      var tempData = { ...dataDestination };
+      console.log("tempData like", tempData);
+      tempData.liked = true;
+      setDataDestination(tempData);
       try {
         let response = await mutationliked({
           variables: {
@@ -229,20 +231,22 @@ export default function index(props) {
         if (errorLike) {
           throw new Error("Error Input");
         }
-        console.log("response", response);
         if (response.data) {
           if (
             response.data.setDestination_wishlist.code === 200 ||
             response.data.setDestination_wishlist.code === "200"
           ) {
-            var tempData = { ...data };
+            var tempData = { ...dataDestination };
             tempData.liked = true;
-            fetchData();
+            setDataDestination(tempData);
           } else {
             throw new Error(response.data.setDestination_wishlist.message);
           }
         }
       } catch (error) {
+        var tempData = { ...dataDestination };
+        tempData.liked = false;
+        setDataDestination(tempData);
         alert("" + error);
       }
     } else {
@@ -251,9 +255,11 @@ export default function index(props) {
   };
 
   const _unliked = async (id) => {
-    console.log("token unlike:", token);
-    console.log("id unlike:", id);
     if (token || token !== "") {
+      var tempData = { ...dataDestination };
+      console.log("tempData unlike", tempData);
+      tempData.liked = false;
+      setDataDestination(tempData);
       try {
         let response = await mutationUnliked({
           variables: {
@@ -266,20 +272,22 @@ export default function index(props) {
         if (errorUnLike) {
           throw new Error("Error Input");
         }
-        console.log("Response", response);
         if (response.data) {
           if (
             response.data.unset_wishlist_destinasi.code === 200 ||
             response.data.unset_wishlist_destinasi.code === "200"
           ) {
-            var tempData = { ...data };
+            var tempData = { ...dataDestination };
             tempData.liked = false;
-            fetchData();
+            setDataDestination(tempData);
           } else {
             throw new Error(response.data.unset_wishlist_destinasi.message);
           }
         }
       } catch (error) {
+        var tempData = { ...dataDestination };
+        tempData.liked = false;
+        setDataDestination(tempData);
         alert("" + error);
       }
     } else {
@@ -492,7 +500,7 @@ export default function index(props) {
                     alignItems: "center",
                   }}
                 >
-                  {data?.destinationById.liked === true ? (
+                  {dataDestination?.liked === true ? (
                     <Pressable
                       style={{
                         backgroundColor: "#F6F6F6",
@@ -504,9 +512,9 @@ export default function index(props) {
                         justifyContent: "center",
                         marginRight: 5,
                       }}
-                      onPress={() => _unliked(data.destinationById.id)}
+                      onPress={() => _unliked(dataDestination.id)}
                     >
-                      <LikeBlack height={18} width={18} />
+                      <Love height={18} width={18} />
                     </Pressable>
                   ) : (
                     <Pressable
@@ -520,7 +528,7 @@ export default function index(props) {
                         justifyContent: "center",
                         marginRight: 5,
                       }}
-                      onPress={() => _liked(data.destinationById.id)}
+                      onPress={() => _liked(dataDestination.id)}
                     >
                       <LikeEmpty height={18} width={18} />
                     </Pressable>
@@ -640,6 +648,19 @@ export default function index(props) {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
+                    }}
+                    onPress={() => {
+                      Linking.openURL(
+                        Platform.OS == "ios"
+                          ? "maps://app?daddr=" +
+                              data?.destinationById?.latitude +
+                              "+" +
+                              data?.destinationById?.longitude
+                          : "google.navigation:q=" +
+                              data?.destinationById?.latitude +
+                              "+" +
+                              data?.destinationById?.longitude
+                      );
                     }}
                   >
                     <Text

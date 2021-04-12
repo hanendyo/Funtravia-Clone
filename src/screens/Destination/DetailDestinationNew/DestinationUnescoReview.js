@@ -8,6 +8,7 @@ import {
   Pressable,
   BackHandler,
   Alert,
+  Linking,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -15,6 +16,8 @@ import {
   StarBlue,
   CameraBlue,
   SendReview,
+  StartBuleIsi,
+  PanahPutih,
 } from "../../../assets/svg";
 import { Button, Text } from "../../../component";
 import Ripple from "react-native-material-ripple";
@@ -31,6 +34,7 @@ export default function DestinationUnescoReview(props) {
   let [maxRating] = useState([1, 2, 3, 4, 5]);
   let [defaultRate, setDefaultRate] = useState(0);
   let [modals, setmodal] = useState(false);
+  let [text, setText] = useState("");
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -79,7 +83,6 @@ export default function DestinationUnescoReview(props) {
       cropping: true,
       multiple: true,
     }).then((image) => {
-      console.log(image);
       let tempData = [...dataImage];
       tempData.splice(0, 0, image);
       setDataImage(tempData);
@@ -89,7 +92,6 @@ export default function DestinationUnescoReview(props) {
   };
 
   const pickGallery = async () => {
-    console.log("testGalery");
     ImagePicker.openPicker({
       width: 500,
       height: 500,
@@ -97,7 +99,6 @@ export default function DestinationUnescoReview(props) {
       cropperCircleOverlay: true,
       multiple: true,
     }).then((image) => {
-      console.log(image);
       let tempData = [...dataImage];
       image.map((item) => tempData.splice(0, 0, item));
       setDataImage(tempData);
@@ -172,7 +173,11 @@ export default function DestinationUnescoReview(props) {
             return (
               <Pressable onPress={() => setDefaultRate(item)} key={item}>
                 {item <= defaultRate ? (
-                  <Star height={30} width={30} style={{ marginRight: 15 }} />
+                  <StartBuleIsi
+                    height={30}
+                    width={30}
+                    style={{ marginRight: 15 }}
+                  />
                 ) : (
                   <StarBlue
                     height={30}
@@ -216,13 +221,66 @@ export default function DestinationUnescoReview(props) {
                 flexDirection: "row",
               }}
             >
-              {dataImage.map((item, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: item?.path }}
-                  style={{ height: "100%", width: 70, marginRight: 5 }}
-                />
-              ))}
+              {dataImage.map((item, index) => {
+                if (index < 3) {
+                  return (
+                    <Image
+                      key={index}
+                      source={{ uri: item.path }}
+                      style={{
+                        // width: Dimensions.get("screen").width * 0.15,
+                        width: Dimensions.get("screen").width * 0.22,
+                        height: Dimensions.get("screen").height * 0.1,
+                        marginLeft: 2,
+                      }}
+                    />
+                  );
+                } else if (index === 3 && dataImage.length > 4) {
+                  return (
+                    <View key={index}>
+                      <Image
+                        key={index}
+                        source={{ uri: item.path }}
+                        style={{
+                          opacity: 0.9,
+                          width: Dimensions.get("screen").width * 0.22,
+                          height: Dimensions.get("screen").height * 0.1,
+                          opacity: 0.32,
+                          marginLeft: 2,
+                          backgroundColor: "#000",
+                        }}
+                      />
+                      <Text
+                        size="title"
+                        type="regular"
+                        style={{
+                          position: "absolute",
+                          right: 40,
+                          alignSelf: "center",
+                          color: "#FFF",
+                        }}
+                      >
+                        {"+" + (dataImage.length - 4)}
+                      </Text>
+                    </View>
+                  );
+                } else if (index === 3) {
+                  return (
+                    <Image
+                      key={index}
+                      source={{ uri: item.path }}
+                      style={{
+                        // width: Dimensions.get("screen").width * 0.15,
+                        width: Dimensions.get("screen").width * 0.22,
+                        height: Dimensions.get("screen").height * 0.1,
+                        marginLeft: 2,
+                      }}
+                    />
+                  );
+                } else {
+                  null;
+                }
+              })}
             </View>
           ) : null}
         </ScrollView>
@@ -252,6 +310,7 @@ export default function DestinationUnescoReview(props) {
             placeholderTextColor="#464646"
             style={{ color: "#464646", margin: 5, fontSize: 14 }}
             multiline={true}
+            onChangeText={(e) => setText(e)}
           ></TextInput>
         </View>
       </View>
@@ -264,6 +323,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <CheckBox
+          style={{ alignSelf: "flex-start" }}
           value={toggleCheckBox}
           onValueChange={(newValue) => setToggleCheckBox(newValue)}
         />
@@ -281,27 +341,43 @@ export default function DestinationUnescoReview(props) {
         style={{
           marginTop: 15,
           width: Dimensions.get("screen").width,
+          height: 40,
           paddingHorizontal: 15,
-          marginBottom: 30,
+          marginBottom: 20,
         }}
       >
-        <Button
-          onPress={() => null}
-          type="icon"
-          color="secondary"
-          size="medium"
-          text="Send Review"
+        <Pressable
+          onPress={() => console.log("klik")}
+          disabled={!toggleCheckBox}
           style={{
-            borderRadius: Dimensions.get("screen").width * 0.7,
-            // alignSelf: "center",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#209FAE",
+            borderRadius: 5,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <SendReview
-            height={20}
-            width={20}
-            // style={{ zIndex: 3, borderWidth: 5 }}
-          />
-        </Button>
+          <Text
+            size="label"
+            type="bold"
+            style={{ color: "#FFF", marginRight: 10 }}
+          >
+            Send Review
+          </Text>
+          <PanahPutih height={20} width={20} />
+        </Pressable>
+        {/* <Button
+          disable={tombol}
+          onPress={() => console.log("klik")}
+          type="icon"
+          color="primary"
+          size="medium"
+          text="Send Review"
+        >
+          <PanahPutih height={20} width={20} />
+        </Button> */}
       </View>
       <Modal
         onBackdropPress={() => {

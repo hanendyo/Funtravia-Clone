@@ -459,6 +459,9 @@ export default function EventDetail(props) {
 
   const _liked = async (id) => {
     if (token || token !== "") {
+      var tempData = { ...dataevent };
+      tempData.liked = true;
+      setDataEvent(tempData);
       try {
         let response = await mutationliked({
           variables: {
@@ -485,6 +488,9 @@ export default function EventDetail(props) {
           }
         }
       } catch (error) {
+        var tempData = { ...dataevent };
+        tempData.liked = false;
+        setDataEvent(tempData);
         Alert.alert("" + error);
       }
     } else {
@@ -494,6 +500,9 @@ export default function EventDetail(props) {
 
   const _unliked = async (id) => {
     if (token || token !== "") {
+      var tempData = { ...dataevent };
+      tempData.liked = false;
+      setDataEvent(tempData);
       try {
         let response = await mutationUnliked({
           variables: {
@@ -521,6 +530,9 @@ export default function EventDetail(props) {
           }
         }
       } catch (error) {
+        var tempData = { ...dataevent };
+        tempData.liked = false;
+        setDataEvent(tempData);
         Alert.alert("" + error);
       }
     } else {
