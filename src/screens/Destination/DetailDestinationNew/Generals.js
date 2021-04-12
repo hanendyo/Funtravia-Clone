@@ -19,8 +19,6 @@ export default function Generals({
   heights,
   props,
   scrollto,
-  // _liked,
-  // _unliked,
   addTo,
 }) {
   let [more, setMore] = useState(false);
