@@ -8,7 +8,7 @@ import {
   Animated,
 } from "react-native";
 import { Text, Button, Truncate, FunIcon } from "../../../component";
-import { LikeEmpty, Star, PinHijau, LikeBlack } from "../../../assets/svg";
+import { LikeEmpty, Star, PinHijau, Love } from "../../../assets/svg";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
 import { useMutation } from "@apollo/client";
@@ -60,11 +60,10 @@ export default function Generals({
   const _liked = async (id) => {
     console.log(id);
     if (token || token !== "") {
-      var tempData = [...dataAnother.another_place];
-      var index = tempData.findIndex((k) => k["id"] === id);
-      tempData[index].liked = true;
-      console.group("tempData", tempData);
-      // setDataDestination(tempData);
+      var tempData = { ...dataAnother };
+      var index = tempData.another_place.findIndex((k) => k["id"] === id);
+      tempData.another_place[index].liked = true;
+      setDataAnother(tempData);
       try {
         let response = await mutationliked({
           variables: {
@@ -84,16 +83,18 @@ export default function Generals({
             response.data.setDestination_wishlist.code === 200 ||
             response.data.setDestination_wishlist.code === "200"
           ) {
-            // var tempData = { ...dataAnother };
-            // tempData.liked = true;
-            // setDataAnother(tempData);
+            var tempData = { ...dataAnother };
+            var index = tempData.another_place.findIndex((k) => k["id"] === id);
+            tempData.another_place[index].liked = true;
+            setDataAnother(tempData);
           } else {
             throw new Error(response.data.setDestination_wishlist.message);
           }
         }
       } catch (error) {
         var tempData = { ...dataAnother };
-        tempData.liked = false;
+        var index = tempData.another_place.findIndex((k) => k["id"] === id);
+        tempData.another_place[index].liked = false;
         setDataAnother(tempData);
         alert("" + error);
       }
@@ -105,7 +106,8 @@ export default function Generals({
   const _unliked = async (id) => {
     if (token || token !== "") {
       var tempData = { ...dataAnother };
-      tempData.liked = false;
+      var index = tempData.another_place.findIndex((k) => k["id"] === id);
+      tempData.another_place[index].liked = false;
       setDataAnother(tempData);
       try {
         let response = await mutationUnliked({
@@ -126,7 +128,8 @@ export default function Generals({
             response.data.unset_wishlist_destinasi.code === "200"
           ) {
             var tempData = { ...dataAnother };
-            tempData.liked = false;
+            var index = tempData.another_place.findIndex((k) => k["id"] === id);
+            tempData.another_place[index].liked = false;
             setDataAnother(tempData);
           } else {
             throw new Error(response.data.unset_wishlist_destinasi.message);
@@ -134,7 +137,8 @@ export default function Generals({
         }
       } catch (error) {
         var tempData = { ...dataAnother };
-        tempData.liked = true;
+        var index = tempData.another_place.findIndex((k) => k["id"] === id);
+        tempData.another_place[index].liked = true;
         setDataAnother(tempData);
         alert("" + error);
       }
@@ -663,7 +667,7 @@ export default function Generals({
                           alignItems: "center",
                         }}
                       >
-                        <LikeBlack height={15} width={15} />
+                        <Love height={15} width={15} />
                       </Pressable>
                     ) : (
                       <Pressable

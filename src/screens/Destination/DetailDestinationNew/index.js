@@ -370,6 +370,7 @@ export default function index(props) {
               <Animated.Text
                 style={{
                   // textAlign: "center",
+                  fontFamily: "Lato-Bold",
                   fontSize: 20,
                   paddingTop: 15,
                   marginLeft: 20,
