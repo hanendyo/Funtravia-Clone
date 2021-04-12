@@ -19,116 +19,129 @@ export default function Generals({
   heights,
   props,
   scrollto,
-  _liked,
-  _unliked,
+  // _liked,
+  // _unliked,
   addTo,
 }) {
-  // let [datas, setDatas] = useState(data);
-  console.log("scrol general", scroll);
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
+  let [dataAnother, setDataAnother] = useState(data);
+  let [saveData, setSaveData] = useState();
   const layoutText = (e) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
 
-  // const [
-  //   mutationliked,
-  //   { loading: loadingLike, data: dataLike, error: errorLike },
-  // ] = useMutation(Liked, {
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  // });
+  console.log("data general", dataAnother);
 
-  // const [
-  //   mutationUnliked,
-  //   { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-  // ] = useMutation(unLiked, {
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  // });
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(Liked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-  // const _liked = async (id) => {
-  //   console.log("token like:", token);
-  //   console.log("id like:", id);
-  //   if (token || token !== "") {
-  //     try {
-  //       let response = await mutationliked({
-  //         variables: {
-  //           destination_id: id,
-  //           qty: 1,
-  //         },
-  //       });
-  //       if (loadingLike) {
-  //         alert("Loading!!");
-  //       }
-  //       if (errorLike) {
-  //         throw new Error("Error Input");
-  //       }
-  //       console.log("response", response);
-  //       if (response.data) {
-  //         if (
-  //           response.data.setDestination_wishlist.code === 200 ||
-  //           response.data.setDestination_wishlist.code === "200"
-  //         ) {
-  //           var tempData = { ...data };
-  //           tempData.liked = true;
-  //           setDatas(tempData);
-  //         } else {
-  //           throw new Error(response.data.setDestination_wishlist.message);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       alert("" + error);
-  //     }
-  //   } else {
-  //     alert("Please Login");
-  //   }
-  // };
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(unLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-  // const _unliked = async (id) => {
-  //   console.log("token unlike:", token);
-  //   console.log("id unlike:", id);
-  //   if (token || token !== "") {
-  //     try {
-  //       let response = await mutationUnliked({
-  //         variables: {
-  //           destination_id: id,
-  //         },
-  //       });
-  //       if (loadingUnLike) {
-  //         alert("Loading!!");
-  //       }
-  //       if (errorUnLike) {
-  //         throw new Error("Error Input");
-  //       }
-  //       console.log("Response", response);
-  //       if (response.data) {
-  //         if (
-  //           response.data.unset_wishlist_destinasi.code === 200 ||
-  //           response.data.unset_wishlist_destinasi.code === "200"
-  //         ) {
-  //           var tempData = { ...data };
-  //           tempData.liked = false;
-  //           setDatas(tempData);
-  //         } else {
-  //           throw new Error(response.data.unset_wishlist_destinasi.message);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       alert("" + error);
-  //     }
-  //   } else {
-  //     alert("Please Login");
-  //   }
-  // };
+  const _liked = async (id) => {
+    console.log(id);
+    if (token || token !== "") {
+      var tempData = [...dataAnother.another_place];
+      var index = tempData.findIndex((k) => k["id"] === id);
+      tempData[index].liked = true;
+      console.group("tempData", tempData);
+      // setDataDestination(tempData);
+      try {
+        let response = await mutationliked({
+          variables: {
+            destination_id: id,
+            qty: 1,
+          },
+        });
+        console.log("response like", response);
+        if (loadingLike) {
+          alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.setDestination_wishlist.code === 200 ||
+            response.data.setDestination_wishlist.code === "200"
+          ) {
+            // var tempData = { ...dataAnother };
+            // tempData.liked = true;
+            // setDataAnother(tempData);
+          } else {
+            throw new Error(response.data.setDestination_wishlist.message);
+          }
+        }
+      } catch (error) {
+        var tempData = { ...dataAnother };
+        tempData.liked = false;
+        setDataAnother(tempData);
+        alert("" + error);
+      }
+    } else {
+      alert("Please Login");
+    }
+  };
+
+  const _unliked = async (id) => {
+    if (token || token !== "") {
+      var tempData = { ...dataAnother };
+      tempData.liked = false;
+      setDataAnother(tempData);
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            destination_id: id,
+          },
+        });
+        console.log("response unlike", response);
+        if (loadingUnLike) {
+          alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.unset_wishlist_destinasi.code === 200 ||
+            response.data.unset_wishlist_destinasi.code === "200"
+          ) {
+            var tempData = { ...dataAnother };
+            tempData.liked = false;
+            setDataAnother(tempData);
+          } else {
+            throw new Error(response.data.unset_wishlist_destinasi.message);
+          }
+        }
+      } catch (error) {
+        var tempData = { ...dataAnother };
+        tempData.liked = true;
+        setDataAnother(tempData);
+        alert("" + error);
+      }
+    } else {
+      alert("Please Login");
+    }
+  };
   return (
     <ScrollView
       ref={scroll}
@@ -231,7 +244,7 @@ export default function Generals({
             >
               Great For
             </Text>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
               <View
                 style={{
                   marginTop: 10,
@@ -362,7 +375,14 @@ export default function Generals({
             >
               Public Facility
             </Text>
-            <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                paddingHorizontal: 10,
+                // justifyContent: "center",
+              }}
+            >
               {data &&
                 data.core_facilities.map((item, index) => (
                   <View
@@ -490,13 +510,66 @@ export default function Generals({
             }}
           >
             {data
-              ? data.images.map((item, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri: item.image }}
-                    style={{ width: 80, height: 80, marginLeft: 2 }}
-                  />
-                ))
+              ? data.images.map((item, index) => {
+                  if (index < 3) {
+                    return (
+                      <Image
+                        key={index}
+                        source={{ uri: item.image }}
+                        style={{
+                          // width: Dimensions.get("screen").width * 0.15,
+                          width: Dimensions.get("screen").width * 0.22,
+                          height: Dimensions.get("screen").height * 0.1,
+                          marginLeft: 2,
+                        }}
+                      />
+                    );
+                  } else if (index === 3 && data.images.length > 4) {
+                    return (
+                      <>
+                        <Image
+                          key={index}
+                          source={{ uri: item.image }}
+                          style={{
+                            opacity: 0.9,
+                            width: Dimensions.get("screen").width * 0.22,
+                            height: Dimensions.get("screen").height * 0.1,
+                            opacity: 0.32,
+                            marginLeft: 2,
+                            backgroundColor: "#000",
+                          }}
+                        />
+                        <Text
+                          size="title"
+                          type="regular"
+                          style={{
+                            position: "absolute",
+                            right: 40,
+                            alignSelf: "center",
+                            color: "#FFF",
+                          }}
+                        >
+                          {"+" + (data.images.length - 4)}
+                        </Text>
+                      </>
+                    );
+                  } else if (index === 3) {
+                    return (
+                      <Image
+                        key={index}
+                        source={{ uri: item.image }}
+                        style={{
+                          // width: Dimensions.get("screen").width * 0.15,
+                          width: Dimensions.get("screen").width * 0.22,
+                          height: Dimensions.get("screen").height * 0.1,
+                          marginLeft: 2,
+                        }}
+                      />
+                    );
+                  } else {
+                    null;
+                  }
+                })
               : null}
           </View>
         </View>
@@ -514,9 +587,9 @@ export default function Generals({
         <Text size="label" type="bold">
           Another Place
         </Text>
-        {data &&
-          data.another_place.map((item, index) =>
-            data.id !== item.id ? (
+        {dataAnother &&
+          dataAnother.another_place.map((item, index) =>
+            dataAnother.id !== item.id ? (
               <Pressable
                 onPress={() =>
                   props.navigation.push("DestinationUnescoDetail", {
