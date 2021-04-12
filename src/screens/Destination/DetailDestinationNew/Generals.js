@@ -24,7 +24,7 @@ export default function Generals({
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState(data);
-  let [saveData, setSaveData] = useState();
+  // let [saveData, setSaveData] = useState();
   const layoutText = (e) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
