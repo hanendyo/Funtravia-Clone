@@ -3825,6 +3825,7 @@ export default function ItineraryDetail(props) {
                   props.navigation.navigate("copyItinerary", {
                     idiItin: itincountries,
                     datadetail: datadetail?.itinerary_detail,
+                    token: token,
                   });
                 }}
                 text={t("CopyTrip")}

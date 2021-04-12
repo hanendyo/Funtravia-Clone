@@ -85,6 +85,7 @@ export default function SearchFeed({ props }) {
                 marginLeft: 0,
                 margin: 5,
                 shadowColor: "#464646",
+                backgroundColor: "#fff",
                 shadowOffset: { width: 0, height: 0 },
                 shadowRadius: 0.5,
                 shadowOpacity: 0.5,

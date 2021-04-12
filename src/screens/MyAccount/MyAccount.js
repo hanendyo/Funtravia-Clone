@@ -66,7 +66,7 @@ export default function MyAccount(props) {
           justifyContent: "center",
         }}
       >
-        <Pressable
+        {/* <Pressable
           onPress={() =>
             props.navigation.navigate("AccountStack", {
               screen: "settings",
@@ -84,20 +84,8 @@ export default function MyAccount(props) {
               marginHorizontal: 10,
             }}
           />
-          {/* <Image
-            style={{
-              width: 25,
-              height: 25,
-              marginHorizontal: 10,
-            }}
-            imageStyle={{
-              width: 25,
-              height: 25,
-              resizeMode: "contain",
-            }}
-            source={SettinxgPutih}
-          /> */}
-        </Pressable>
+          
+        </Pressable> */}
       </View>
     ),
     headerRightStyle: {},
@@ -193,9 +181,31 @@ export default function MyAccount(props) {
             style={{
               width: width,
               height: 250,
+              alignContent: "flex-end",
+              alignItems: "flex-end",
+              justifyContent: "flex-start",
             }}
-          ></ImageBackground>
-          <View
+          >
+            <Pressable
+              onPress={() =>
+                props.navigation.navigate("AccountStack", {
+                  screen: "settings",
+                  params: { datauser: datauser },
+                })
+              }
+              style={{ marginTop: 45, marginRight: 15 }}
+            >
+              <SettingsPutih height={25} width={25} style={{}} />
+            </Pressable>
+          </ImageBackground>
+          <Pressable
+            onPress={() => {
+              // console.log(datauser.user_profile.id);
+              props.navigation.push("ProfileStack", {
+                screen: "ProfileTab",
+                params: { token: token },
+              });
+            }}
             style={{
               zIndex: 999,
               shadowOpacity: 0.5,
@@ -227,7 +237,7 @@ export default function MyAccount(props) {
                 width: "100%",
               }}
             />
-          </View>
+          </Pressable>
           <Text type="bold" size="label">
             {datauser && datauser.user_profile.first_name
               ? datauser.user_profile.first_name
