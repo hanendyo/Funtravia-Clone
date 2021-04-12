@@ -25,6 +25,9 @@ import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
 import ImagePicker from "react-native-image-crop-picker";
 import CheckBox from "@react-native-community/checkbox";
+import UploadReview from "../../../graphQL/Mutation/Destination/Review";
+import { ReactNativeFile } from "apollo-upload-client";
+import { useMutation } from "@apollo/client";
 
 export default function DestinationUnescoReview(props) {
   const { t } = useTranslation();
@@ -76,7 +79,6 @@ export default function DestinationUnescoReview(props) {
   }, [props.navigation]);
 
   const pickcamera = async () => {
-    console.log("testkamera");
     ImagePicker.openCamera({
       width: 500,
       height: 500,
@@ -84,9 +86,13 @@ export default function DestinationUnescoReview(props) {
       multiple: true,
     }).then((image) => {
       let tempData = [...dataImage];
-      tempData.splice(0, 0, image);
+      let file = new ReactNativeFile({
+        uri: image.path,
+        type: image.mime,
+        name: data.name,
+      });
+      tempData.splice(0, 0, file);
       setDataImage(tempData);
-      BackHandler.addEventListener("hardwareBackPress", backAction);
       setmodal(false);
     });
   };
@@ -100,10 +106,58 @@ export default function DestinationUnescoReview(props) {
       multiple: true,
     }).then((image) => {
       let tempData = [...dataImage];
-      image.map((item) => tempData.splice(0, 0, item));
-      setDataImage(tempData);
+      image.map((item) => {
+        let file = new ReactNativeFile({
+          uri: item.path,
+          type: item.mime,
+          name: data.name,
+        });
+        tempData.splice(0, 0, file);
+        setDataImage(tempData);
+      });
+
       setmodal(false);
     });
+  };
+
+  const [
+    mutationUploadV2,
+    { loading: loadingupv2, data: dataupv2, error: errorupv2 },
+  ] = useMutation(UploadReview, {
+    context: {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  console.log(dataImage);
+
+  const upload = async () => {
+    try {
+      let response = await mutationUploadV2({
+        variables: {
+          file: dataImage,
+          rating: defaultRate,
+          ulasan: text,
+          destination_id: data.id,
+        },
+      });
+
+      console.log(response.data);
+      // if (response.data) {
+      //   if (response.data.update_fotoprofile_v2.code !== 200) {
+      //     throw new Error(response.data.update_fotoprofile_v2.message);
+      //   }
+      //   let Xsetting = { ...seting.current };
+      //   Xsetting.user["picture"] = response.data.update_fotoprofile_v2.path;
+      //   await AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
+
+      // }
+    } catch (err) {
+      Alert.alert("" + err);
+    }
   };
 
   return (
@@ -226,7 +280,7 @@ export default function DestinationUnescoReview(props) {
                   return (
                     <Image
                       key={index}
-                      source={{ uri: item.path }}
+                      source={{ uri: item.uri }}
                       style={{
                         // width: Dimensions.get("screen").width * 0.15,
                         width: Dimensions.get("screen").width * 0.22,
@@ -240,7 +294,7 @@ export default function DestinationUnescoReview(props) {
                     <View key={index}>
                       <Image
                         key={index}
-                        source={{ uri: item.path }}
+                        source={{ uri: item.uri }}
                         style={{
                           opacity: 0.9,
                           width: Dimensions.get("screen").width * 0.22,
@@ -268,7 +322,7 @@ export default function DestinationUnescoReview(props) {
                   return (
                     <Image
                       key={index}
-                      source={{ uri: item.path }}
+                      source={{ uri: item.uri }}
                       style={{
                         // width: Dimensions.get("screen").width * 0.15,
                         width: Dimensions.get("screen").width * 0.22,
@@ -347,7 +401,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <Pressable
-          onPress={() => console.log("klik")}
+          onPress={() => upload()}
           disabled={!toggleCheckBox}
           style={{
             width: "100%",
@@ -370,7 +424,6 @@ export default function DestinationUnescoReview(props) {
         </Pressable>
         {/* <Button
           disable={tombol}
-          onPress={() => console.log("klik")}
           type="icon"
           color="primary"
           size="medium"

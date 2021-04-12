@@ -359,20 +359,18 @@ export default function index(props) {
               <Ripple
                 onPress={() => props.navigation.goBack()}
                 style={{
-                  // position: "absolute",
                   zIndex: 3,
                   paddingTop: 15,
                   paddingLeft: 15,
                 }}
               >
-                <Arrowbackwhite height={20} width={20} />
+                <Arrowbackwhite height={15} width={15} />
               </Ripple>
               <Animated.Text
                 style={{
-                  // textAlign: "center",
                   fontFamily: "Lato-Bold",
-                  fontSize: 20,
-                  paddingTop: 15,
+                  fontSize: 16,
+                  paddingTop: 10,
                   marginLeft: 20,
                   opacity: headerTitleOpacity,
                   color: "#FFF",
@@ -430,12 +428,8 @@ export default function index(props) {
                   minHeight: 50,
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  // height: headerHeight,
                   backgroundColor: "#FFF",
-                  // position: "absolute",
-                  // top: 0,
                   bottom: 0,
-                  // zIndex: 4,
                   opacity: heroTitleOpacity,
                 }}
               >

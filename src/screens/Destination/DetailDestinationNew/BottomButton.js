@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 import { PensilPutih } from "../../../assets/svg";
-import { Text, Button } from "../../../component";
+import { Button } from "../../../component";
 
 export default function BottomButton({ routed, props, data, addTo }) {
   return (
@@ -16,15 +16,9 @@ export default function BottomButton({ routed, props, data, addTo }) {
             color="primary"
             type="circle"
             style={{
-              // width: Dimensions.get("screen").width * 0.7,
-              borderRadius: 42,
               paddingHorizontal: 15,
-              // alignSelf: "flex-end",
-              // position: "absolute",
-              // marginBottom: 5,
-              // borderTopWidth: 6,
-              // zIndex: 10,
             }}
+            size="large"
             onPress={() =>
               props.navigation.navigate("DestinationUnescoReview", {
                 data: data,
