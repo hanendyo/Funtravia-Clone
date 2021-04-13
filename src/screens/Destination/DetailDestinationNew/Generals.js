@@ -12,7 +12,7 @@ import { LikeEmpty, Star, PinHijau, Love } from "../../../assets/svg";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
 import { useMutation } from "@apollo/client";
-
+const { width, height } = Dimensions.get("screen");
 export default function Generals({
   data,
   scroll,
@@ -145,24 +145,7 @@ export default function Generals({
     }
   };
   return (
-    <ScrollView
-      ref={scroll}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ backgroundColor: "#fff", paddingTop: heights }}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: scroll,
-              },
-            },
-          },
-        ],
-        { useNativeDriver: false }
-      )}
-      scrollEventThrottle={16}
-    >
+    <>
       {/* View descrition */}
       {data?.description ? (
         <View
@@ -381,8 +364,6 @@ export default function Generals({
               style={{
                 flexDirection: "row",
                 flexWrap: "wrap",
-                paddingHorizontal: 10,
-                // justifyContent: "center",
               }}
             >
               {data &&
@@ -391,7 +372,7 @@ export default function Generals({
                     key={index}
                     style={{
                       marginTop: 10,
-                      width: 70,
+                      width: (width - 50) / 5,
                       justifyContent: "center",
                       alignItems: "center",
                     }}
@@ -528,7 +509,7 @@ export default function Generals({
                     );
                   } else if (index === 3 && data.images.length > 4) {
                     return (
-                      <>
+                      <View key={index}>
                         <Image
                           key={index}
                           source={{ uri: item.image }}
@@ -549,11 +530,12 @@ export default function Generals({
                             right: 40,
                             alignSelf: "center",
                             color: "#FFF",
+                            top: 30,
                           }}
                         >
                           {"+" + (data.images.length - 4)}
                         </Text>
-                      </>
+                      </View>
                     );
                   } else if (index === 3) {
                     return (
@@ -720,7 +702,7 @@ export default function Generals({
                       flexDirection: "row",
                       justifyContent: "space-between",
                       height: 50,
-                      marginTop: 5,
+                      marginTop: 10,
                     }}
                   >
                     <View>
@@ -728,7 +710,7 @@ export default function Generals({
                         Great for :
                       </Text>
                       {item.greatfor.icon ? (
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row", marginTop: 10 }}>
                           <FunIcon
                             icon={item.greatfor.icon}
                             height={30}
@@ -743,7 +725,7 @@ export default function Generals({
                       onPress={() => addTo()}
                       size="small"
                       text={"Add"}
-                      style={{ marginTop: 20 }}
+                      style={{ marginTop: 30 }}
                     />
                   </View>
                 </View>
@@ -751,6 +733,6 @@ export default function Generals({
             ) : null
           )}
       </View>
-    </ScrollView>
+    </>
   );
 }

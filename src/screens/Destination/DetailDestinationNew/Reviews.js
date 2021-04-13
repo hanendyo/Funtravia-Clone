@@ -38,29 +38,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
   });
 
   return (
-    <ScrollView
-      ref={scroll}
-      contentContainerStyle={{
-        width: Dimensions.get("screen").width,
-        paddingHorizontal: 15,
-        paddingTop: heights,
-        height: 1000,
-      }}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: scroll,
-              },
-            },
-          },
-        ],
-        { useNativeDriver: false }
-      )}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-    >
+    <>
       {data?.destinationById?.review.length > 0 ? (
         <View style={{ marginTop: 20 }}>
           {data?.destinationById?.review.map((item, index) => {
@@ -149,6 +127,6 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
           </Text>
         </View>
       )}
-    </ScrollView>
+    </>
   );
 }
