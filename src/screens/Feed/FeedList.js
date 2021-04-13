@@ -12,10 +12,7 @@ import {
 	ImageBackground,
 	Pressable,
 } from "react-native";
-// import { OptimizedFlatList as FlatList } from "react-native-optimized-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Image from "react-native-auto-scale-image";
-// import Image from "react-native-scalable-image";
 import Modal from "react-native-modal";
 import { CustomImage } from "../../component";
 import {
