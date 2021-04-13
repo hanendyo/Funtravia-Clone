@@ -35,9 +35,7 @@ const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
 	const { t } = useTranslation();
 	let [token, setToken] = useState("");
-	let [searchBg, setSearchBg] = useState("transparent");
 	let [refresh, setRefresh] = useState(false);
-
 	let [data, setdata] = useState(null);
 
 	const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(

@@ -67,6 +67,7 @@ export default function Message({ navigation }) {
 			},
 		});
 		let dataResponse = await response.json();
+		console.log(dataResponse);
 		await setDataGroup(dataResponse);
 		await setDataGroupRes(dataResponse);
 	};
