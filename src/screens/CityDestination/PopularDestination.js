@@ -66,7 +66,7 @@ export default function AllDestination(props) {
     },
   });
 
-  console.log(search);
+ 
 
   const [
     GetContinent,
@@ -97,8 +97,8 @@ export default function AllDestination(props) {
   }, []);
 
   const RenderList = ({ item }) => {
-    // console.log({ Utama: item.image })
-    return (
+    console.log({ Item: item.city })
+    return item && item.city.length > 0  ? (
       <View>
         {item ? (
           <View
@@ -258,7 +258,7 @@ export default function AllDestination(props) {
             : null}
         </View>
       </View>
-    );
+    ):null;
   };
 
   return (
@@ -282,7 +282,7 @@ export default function AllDestination(props) {
           paddingStart: 10,
         }}
         horizontal={false}
-        data={data && data.region_list.length ? data.region_list : null}
+        data={data && data.populer_city_destination.length ? data.populer_city_destination : null}
         renderItem={({ item, index }) => <RenderList item={item} />}
         showsHorizontalScrollIndicator={false}
         extraData={selected}
