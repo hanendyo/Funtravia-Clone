@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 const RegionList = gql`
 	query($keyword: String, $type: [ID]) {
-		region_list(key: { keyword: $keyword, type: $type }) {
+		populer_city_destination(key: { keyword: $keyword, type: $type }) {
 			id
 			name
 			image {
@@ -17,6 +17,7 @@ const RegionList = gql`
 				image {
 					image
 				}
+				
 			}
 		}
 	}
