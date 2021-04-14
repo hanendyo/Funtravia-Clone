@@ -12,7 +12,10 @@ import { LikeEmpty, Star, PinHijau, Love } from "../../../assets/svg";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
 import { useMutation } from "@apollo/client";
+import Ripple from "react-native-material-ripple";
+import ImageSlide from "../../../component/src/ImageSlide";
 const { width, height } = Dimensions.get("screen");
+
 export default function Generals({
   data,
   scroll,
@@ -24,7 +27,8 @@ export default function Generals({
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState(data);
-  // let [saveData, setSaveData] = useState();
+  let [gambar, setGambar] = useState([]);
+  let [modalss, setModalss] = useState(false);
   const layoutText = (e) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
@@ -56,7 +60,6 @@ export default function Generals({
   });
 
   const _liked = async (id) => {
-    console.log(id);
     if (token || token !== "") {
       var tempData = { ...dataAnother };
       var index = tempData.another_place.findIndex((k) => k["id"] === id);
@@ -69,7 +72,6 @@ export default function Generals({
             qty: 1,
           },
         });
-        console.log("response like", response);
         if (loadingLike) {
           alert("Loading!!");
         }
@@ -113,7 +115,6 @@ export default function Generals({
             destination_id: id,
           },
         });
-        console.log("response unlike", response);
         if (loadingUnLike) {
           alert("Loading!!");
         }
@@ -144,8 +145,40 @@ export default function Generals({
       alert("Please Login");
     }
   };
+
+  const ImagesSlider = async (data) => {
+    var tempdatas = [];
+    var x = 0;
+
+    for (var i in data.images) {
+      let wid = 0;
+      let hig = 0;
+      Image.getSize(data.images[i].image, (width, height) => {
+        wid = width;
+        hig = height;
+      });
+      tempdatas.push({
+        key: i,
+        url: data.images[i].image ? data.images[i].image : "",
+        width: wid,
+        height: hig,
+        props: {
+          source: data.images[i].image ? data.images[i].image : "",
+        },
+        // by: data.album[i].photoby.first_name,
+      });
+      x++;
+    }
+    await setGambar(tempdatas);
+    await setModalss(true);
+  };
   return (
     <>
+      <ImageSlide
+        show={modalss}
+        dataImage={gambar}
+        setClose={() => setModalss(false)}
+      />
       {/* View descrition */}
       {data?.description ? (
         <View
@@ -490,6 +523,7 @@ export default function Generals({
               flexDirection: "row",
               marginTop: 10,
               width: "100%",
+              height: 80,
             }}
           >
             {data
@@ -502,21 +536,28 @@ export default function Generals({
                         style={{
                           // width: Dimensions.get("screen").width * 0.15,
                           width: Dimensions.get("screen").width * 0.22,
-                          height: Dimensions.get("screen").height * 0.1,
+                          height: "100%",
                           marginLeft: 2,
                         }}
                       />
                     );
                   } else if (index === 3 && data.images.length > 4) {
                     return (
-                      <View key={index}>
+                      <Ripple
+                        key={index}
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onPress={() => ImagesSlider(data)}
+                      >
                         <Image
                           key={index}
                           source={{ uri: item.image }}
                           style={{
                             opacity: 0.9,
                             width: Dimensions.get("screen").width * 0.22,
-                            height: Dimensions.get("screen").height * 0.1,
+                            height: "100%",
                             opacity: 0.32,
                             marginLeft: 2,
                             backgroundColor: "#000",
@@ -535,7 +576,7 @@ export default function Generals({
                         >
                           {"+" + (data.images.length - 4)}
                         </Text>
-                      </View>
+                      </Ripple>
                     );
                   } else if (index === 3) {
                     return (
@@ -545,7 +586,7 @@ export default function Generals({
                         style={{
                           // width: Dimensions.get("screen").width * 0.15,
                           width: Dimensions.get("screen").width * 0.22,
-                          height: Dimensions.get("screen").height * 0.1,
+                          height: "100%",
                           marginLeft: 2,
                         }}
                       />
