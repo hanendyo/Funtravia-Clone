@@ -21,7 +21,9 @@ const ListDestinationByUnesco = gql`
         name
       }
       greatfor {
-        label
+        id
+        name
+        slug
         icon
       }
       images {

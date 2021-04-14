@@ -193,6 +193,8 @@ export default function DetailJournal(props) {
     });
   };
 
+  console.log("scroll_to", scroll_to);
+
   const duration = (datetime) => {
     var date1 = new Date(datetime).getTime();
     var datenow = new Date();

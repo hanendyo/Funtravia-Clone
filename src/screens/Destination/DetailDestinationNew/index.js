@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Animated,
   Linking,
+  ScrollView,
 } from "react-native";
 import { Text, StatusBar } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
@@ -93,16 +94,29 @@ export default function index(props) {
 
   const General = () => {
     return (
-      <Generals
-        _liked={_liked}
-        _unliked={_unliked}
-        scrollto={scrollto}
-        data={data?.destinationById}
-        scroll={scrollY}
-        heights={HEADER_EXPANDED_HEIGHT + 50}
-        props={props}
-        addTo={addToPlan}
-      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: HEADER_EXPANDED_HEIGHT + 50,
+          backgroundColor: "#FFF",
+        }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
+        <Generals
+          _liked={_liked}
+          _unliked={_unliked}
+          scrollto={scrollto}
+          data={data?.destinationById}
+          scroll={scrollY}
+          heights={HEADER_EXPANDED_HEIGHT + 50}
+          props={props}
+          addTo={addToPlan}
+        />
+      </ScrollView>
     );
   };
 
@@ -134,13 +148,28 @@ export default function index(props) {
 
   const Review = () => {
     return (
-      <Reviews
-        scrollto={scrollto}
-        id={data?.destinationById?.id}
-        props={props}
-        scroll={scrollY}
-        heights={HEADER_EXPANDED_HEIGHT + 50}
-      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: HEADER_EXPANDED_HEIGHT + 50,
+          backgroundColor: "#FFF",
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 15,
+        }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
+        <Reviews
+          scrollto={scrollto}
+          id={data?.destinationById?.id}
+          props={props}
+          scroll={scrollY}
+          heights={HEADER_EXPANDED_HEIGHT + 50}
+        />
+      </ScrollView>
     );
   };
 
