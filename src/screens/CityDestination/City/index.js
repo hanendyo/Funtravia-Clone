@@ -391,10 +391,10 @@ export default function CityDetail(props) {
 
   // liked journal
   const _likedjournal = async (id, index, item) => {
-    console.log("id", id);
+    // console.log("id", id);
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    console.log("journal", list_journal);
-    console.log("index", fiindex);
+    // console.log("journal", list_journal);
+    // console.log("index", fiindex);
     if (token || token !== "") {
       list_journal[fiindex].liked = true;
       try {
@@ -560,7 +560,7 @@ export default function CityDetail(props) {
 
     let renderItinerary = list_populer;
 
-    console.log("rendermap", render.map);
+    // console.log("rendermap", render.map);
 
     return (
       // Deskripsi
@@ -2254,7 +2254,7 @@ export default function CityDetail(props) {
           justifyContent: "center",
           position: "absolute",
           backgroundColor: "#209fae",
-        }}
+        }} 
       >
         <Sidebar
           props={props}
@@ -2287,7 +2287,7 @@ export default function CityDetail(props) {
           }}
           source={
             dataCity && dataCity.CitiesInformation.cover
-              ? { uri: dataCity.CitiesInformation.cover.image }
+              ? { uri: dataCity.CitiesInformation.cover }
               : default_image
           }
         />
