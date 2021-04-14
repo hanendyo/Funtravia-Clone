@@ -38,6 +38,7 @@ export default function DestinationUnescoReview(props) {
   let [defaultRate, setDefaultRate] = useState(0);
   let [modals, setmodal] = useState(false);
   let [text, setText] = useState("");
+  console.log("props", props);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -132,29 +133,33 @@ export default function DestinationUnescoReview(props) {
     },
   });
 
-  console.log(dataImage);
-
   const upload = async () => {
     try {
       let response = await mutationUploadV2({
         variables: {
-          file: dataImage,
+          foto: dataImage,
           rating: defaultRate,
           ulasan: text,
-          destination_id: data.id,
+          id: data.id,
         },
       });
 
-      console.log(response.data);
-      // if (response.data) {
-      //   if (response.data.update_fotoprofile_v2.code !== 200) {
-      //     throw new Error(response.data.update_fotoprofile_v2.message);
-      //   }
-      //   let Xsetting = { ...seting.current };
-      //   Xsetting.user["picture"] = response.data.update_fotoprofile_v2.path;
-      //   await AsyncStorage.setItem("setting", JSON.stringify(Xsetting));
+      console.log(response);
+      if (response.data) {
+        if (response.data.create_review.code !== 200) {
+          throw new Error(response.data.create_review.message);
+        }
+        // let tempData = { ...data };
+        // console.log("data upload", tempData);
 
-      // }
+        // var index = tempData.review.findIndex((k) => k["id"] === id);
+        // console.log("index", index);
+        // tempData.another_place[index].liked = true;
+        // setDataAnother(tempData);
+        setTimeout(() => {
+          props.navigation.navigate("DestinationUnescoDetail");
+        }, 2000);
+      }
     } catch (err) {
       Alert.alert("" + err);
     }

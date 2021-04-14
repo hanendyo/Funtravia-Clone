@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dimensions, View, Image, ScrollView, Animated } from "react-native";
 import { Text, Button } from "../../../component";
 import { LikeEmpty, Star, SendReview } from "../../../assets/svg";
@@ -22,6 +22,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
+      scroll_to();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -37,14 +38,41 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
     },
   });
 
+  console.log("data review", data);
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+  let slider = useRef();
+  let [y, setY] = useState(0);
+
+  const scroll_to = () => {
+    wait(1000).then(() => {
+      slider.current.scrollTo({ y: y });
+    });
+  };
+
+  console.log("scroll_to", scroll_to);
+
+  console.log("y", y);
+
   return (
     <>
       {data?.destinationById?.review.length > 0 ? (
         <View style={{ marginTop: 20 }}>
           {data?.destinationById?.review.map((item, index) => {
+            console.log(item);
             let set = [1, 2, 3, 4, 5];
             return (
-              <View key={item.id}>
+              <View
+                key={item.id}
+                style={{ marginBottom: 20 }}
+                onLayout={(event) => {
+                  const layout = event.nativeEvent.layout;
+                  setY(layout.y);
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
@@ -65,7 +93,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                     }}
                   >
                     <Text size="label" type="bold" numberOfLines={1}>
-                      {item?.id}
+                      {item?.user?.first_name + " " + item?.user?.last_name}
                     </Text>
                     <View style={{ flexDirection: "row" }}>
                       {set.map((value, index) =>
@@ -104,10 +132,16 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                 </View>
                 <View
                   style={{
-                    marginTop: 15,
+                    marginTop: 10,
+                    marginLeft: 60,
                   }}
                 >
-                  <Text ellipsizeMode="head" size="label" type="reguler">
+                  <Text
+                    ellipsizeMode="head"
+                    size="label"
+                    type="reguler"
+                    style={{ lineHeight: 20 }}
+                  >
                     {item.ulasan}
                   </Text>
                 </View>
