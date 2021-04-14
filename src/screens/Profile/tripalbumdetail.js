@@ -179,6 +179,8 @@ export default function tripalbumdetail(props) {
   let [modalss, setModalss] = useState(false);
 
   const setdataimage = async (data, inde) => {
+    console.log("data review image trip", data);
+    console.log("index foto", inde);
     setIndex(inde);
     var tempdatas = [];
     var x = 0;
@@ -204,6 +206,7 @@ export default function tripalbumdetail(props) {
       });
       x++;
     }
+    console.log("temp", tempdatas);
     await setImage(tempdatas);
     await setModalss(true);
   };

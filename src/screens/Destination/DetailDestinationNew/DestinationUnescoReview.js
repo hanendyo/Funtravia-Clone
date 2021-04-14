@@ -149,13 +149,6 @@ export default function DestinationUnescoReview(props) {
         if (response.data.create_review.code !== 200) {
           throw new Error(response.data.create_review.message);
         }
-        // let tempData = { ...data };
-        // console.log("data upload", tempData);
-
-        // var index = tempData.review.findIndex((k) => k["id"] === id);
-        // console.log("index", index);
-        // tempData.another_place[index].liked = true;
-        // setDataAnother(tempData);
         setTimeout(() => {
           props.navigation.navigate("DestinationUnescoDetail");
         }, 2000);
@@ -289,21 +282,28 @@ export default function DestinationUnescoReview(props) {
                       style={{
                         // width: Dimensions.get("screen").width * 0.15,
                         width: Dimensions.get("screen").width * 0.22,
-                        height: Dimensions.get("screen").height * 0.1,
+                        height: "100%",
                         marginLeft: 2,
                       }}
                     />
                   );
                 } else if (index === 3 && dataImage.length > 4) {
                   return (
-                    <View key={index}>
+                    <View
+                      key={index}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <Image
                         key={index}
                         source={{ uri: item.uri }}
                         style={{
                           opacity: 0.9,
                           width: Dimensions.get("screen").width * 0.22,
-                          height: Dimensions.get("screen").height * 0.1,
+                          // height: Dimensions.get("screen").height * 0.1,
+                          height: "100%",
                           opacity: 0.32,
                           marginLeft: 2,
                           backgroundColor: "#000",
@@ -314,12 +314,13 @@ export default function DestinationUnescoReview(props) {
                         type="regular"
                         style={{
                           position: "absolute",
-                          right: 40,
+                          // right: 40,
                           alignSelf: "center",
                           color: "#FFF",
+                          // top: 25,
                         }}
                       >
-                        {"+" + (dataImage.length - 4)}
+                        {"+" + (data.images.length - 4)}
                       </Text>
                     </View>
                   );
@@ -331,7 +332,7 @@ export default function DestinationUnescoReview(props) {
                       style={{
                         // width: Dimensions.get("screen").width * 0.15,
                         width: Dimensions.get("screen").width * 0.22,
-                        height: Dimensions.get("screen").height * 0.1,
+                        height: "100%",
                         marginLeft: 2,
                       }}
                     />

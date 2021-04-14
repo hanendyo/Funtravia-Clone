@@ -499,7 +499,7 @@ export default function index(props) {
                         type="bold"
                         style={{ marginLeft: 3 }}
                       >
-                        {data?.destinationById?.rating}
+                        {data?.destinationById?.rating.substr(0, 4)}
                       </Text>
                     </View>
                     <View
