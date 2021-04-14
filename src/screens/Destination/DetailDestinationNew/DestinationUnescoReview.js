@@ -9,6 +9,7 @@ import {
   BackHandler,
   Alert,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -38,7 +39,6 @@ export default function DestinationUnescoReview(props) {
   let [defaultRate, setDefaultRate] = useState(0);
   let [modals, setmodal] = useState(false);
   let [text, setText] = useState("");
-  console.log("props", props);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -90,7 +90,7 @@ export default function DestinationUnescoReview(props) {
       let file = new ReactNativeFile({
         uri: image.path,
         type: image.mime,
-        name: data.name,
+        name: "review.jpg",
       });
       tempData.splice(0, 0, file);
       setDataImage(tempData);
@@ -111,7 +111,7 @@ export default function DestinationUnescoReview(props) {
         let file = new ReactNativeFile({
           uri: item.path,
           type: item.mime,
-          name: data.name,
+          name: "review.jpg",
         });
         tempData.splice(0, 0, file);
         setDataImage(tempData);
@@ -144,14 +144,18 @@ export default function DestinationUnescoReview(props) {
         },
       });
 
-      console.log(response);
       if (response.data) {
         if (response.data.create_review.code !== 200) {
           throw new Error(response.data.create_review.message);
         }
-        setTimeout(() => {
-          props.navigation.navigate("DestinationUnescoDetail");
+        setTimeout(async () => {
+          await (
+            <View style={{ marginTop: 20 }}>
+              <ActivityIndicator />
+            </View>
+          );
         }, 2000);
+        await props.navigation.navigate("DestinationUnescoDetail");
       }
     } catch (err) {
       Alert.alert("" + err);

@@ -230,9 +230,7 @@ export default function Generals({
       ) : null}
 
       {/* View GreatFor */}
-      {data &&
-      data.destinationById &&
-      data.destinationById.greatfor.length > 0 ? (
+      {data && data.greatfor.length > 0 ? (
         <View
           style={{
             width: Dimensions.get("screen").width,
@@ -243,8 +241,6 @@ export default function Generals({
             style={{
               marginTop: 10,
               borderRadius: 10,
-              borderWidth: 1,
-              borderColor: "#F3F3F3",
               minHeight: 50,
               justifyContent: "center",
               padding: 10,
@@ -262,103 +258,40 @@ export default function Generals({
             >
               Great For
             </Text>
-            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-              <View
-                style={{
-                  marginTop: 10,
-                  width: 70,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 20,
-                    backgroundColor: "#F6F6F6",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FunIcon icon="i-4wd" height={20} width={20} />
-                </View>
-                <Text size="description" type="light" style={{ marginTop: 5 }}>
-                  Sunbating
-                </Text>
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                  width: 70,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 20,
-                    backgroundColor: "#F6F6F6",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FunIcon icon="i-4wd" height={20} width={20} />
-                </View>
-                <Text size="description" type="light" style={{ marginTop: 5 }}>
-                  Sunbating
-                </Text>
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                  width: 70,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 20,
-                    backgroundColor: "#F6F6F6",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FunIcon icon="i-4wd" height={20} width={20} />
-                </View>
-                <Text size="description" type="light" style={{ marginTop: 5 }}>
-                  Sunbating
-                </Text>
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                  width: 70,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 20,
-                    backgroundColor: "#F6F6F6",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FunIcon icon="i-4wd" height={20} width={20} />
-                </View>
-                <Text size="small" type="light" style={{ marginTop: 5 }}>
-                  Sunbating
-                </Text>
-              </View>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+              }}
+            >
+              {data &&
+                data.greatfor.map((item, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      marginTop: 10,
+                      width: (width - 50) / 5,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 20,
+                        backgroundColor: "#F6F6F6",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <FunIcon icon={item?.icon} height={25} width={25} />
+                    </View>
+                    <Text size="small" type="light" style={{ marginTop: 5 }}>
+                      {item?.name}
+                    </Text>
+                  </View>
+                ))}
             </View>
           </View>
         </View>

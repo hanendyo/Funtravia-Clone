@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Dimensions, View, Image, ScrollView, Animated } from "react-native";
+import {
+  Dimensions,
+  View,
+  Image,
+  ScrollView,
+  Animated,
+  Thumbnail,
+} from "react-native";
 import { Text, Button } from "../../../component";
 import { LikeEmpty, Star, SendReview } from "../../../assets/svg";
-import { activity_unesco2 } from "../../../assets/png";
 import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { default_image, logo_funtravia } from "../../../assets/png";
 
 export default function Reviews({ props, id, scroll, heights, scrollto }) {
   const [setting, setSetting] = useState("");
@@ -38,7 +45,6 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
     },
   });
 
-  console.log("data review", data);
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -53,16 +59,11 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
     });
   };
 
-  console.log("scroll_to", scroll_to);
-
-  console.log("y", y);
-
   return (
     <>
       {data?.destinationById?.review.length > 0 ? (
         <View style={{ marginTop: 20 }}>
           {data?.destinationById?.review.map((item, index) => {
-            console.log(item);
             let set = [1, 2, 3, 4, 5];
             return (
               <View
@@ -78,14 +79,30 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                     flexDirection: "row",
                   }}
                 >
-                  <View
+                  {/* <Thumbnail
+                    style={{
+                      height: 40,
+                      width: 40,
+                    }}
+                    source={
+                      item.user.picture
+                        ? { uri: item.user.picture }
+                        : logo_funtravia
+                    }
+                  /> */}
+                  <Image
                     style={{
                       backgroundColor: "#464646",
                       height: 50,
                       width: 50,
                       borderRadius: 25,
                     }}
-                  ></View>
+                    source={
+                      item && item.user && item.user.picture
+                        ? { uri: item?.user?.picture }
+                        : null
+                    }
+                  />
                   <View
                     style={{
                       marginLeft: 10,

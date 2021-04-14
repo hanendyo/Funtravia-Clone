@@ -57,7 +57,6 @@ export default function index(props) {
   const [modalTime, setModalTime] = useState(false);
   const [modalSosial, setModalSosial] = useState(false);
   let [dataDestination, setDataDestination] = useState(data);
-  console.log("dataDestination", dataDestination);
   let scrollto = useRef();
 
   const loadAsync = async () => {
@@ -244,7 +243,6 @@ export default function index(props) {
   const _liked = async (id) => {
     if (token || token !== "") {
       var tempData = { ...dataDestination };
-      console.log("tempData like", tempData);
       tempData.liked = true;
       setDataDestination(tempData);
       try {
@@ -286,7 +284,6 @@ export default function index(props) {
   const _unliked = async (id) => {
     if (token || token !== "") {
       var tempData = { ...dataDestination };
-      console.log("tempData unlike", tempData);
       tempData.liked = false;
       setDataDestination(tempData);
       try {
