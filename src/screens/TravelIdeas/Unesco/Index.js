@@ -304,7 +304,6 @@ export default function Unesco({ navigation, route }) {
   if (data && data.listdestinasi_unesco) {
     listdestinasi_unesco = data.listdestinasi_unesco;
   }
-  console.log(listdestinasi_unesco);
   /**
    * PanResponder for header
    */
@@ -482,7 +481,6 @@ export default function Unesco({ navigation, route }) {
   };
 
   const handlePanReleaseOrEnd = (evt, gestureState) => {
-    // console.log('handlePanReleaseOrEnd', scrollY._value);
     syncScrollOffset();
     headerScrollY.setValue(scrollY._value);
     if (Platform.OS === "ios") {
@@ -532,14 +530,11 @@ export default function Unesco({ navigation, route }) {
   const onMomentumScrollEnd = () => {
     isListGliding.current = false;
     syncScrollOffset();
-    // console.log('onMomentumScrollEnd');
   };
 
   const onScrollEndDrag = (e) => {
     syncScrollOffset();
     const offsetY = e.nativeEvent.contentOffset.y;
-    // console.log('onScrollEndDrag', offsetY);
-    // iOS only
     if (Platform.OS === "ios") {
       if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
         startRefreshAction();
@@ -550,14 +545,12 @@ export default function Unesco({ navigation, route }) {
   };
 
   const refresh = async () => {
-    console.log("-- start refresh");
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };

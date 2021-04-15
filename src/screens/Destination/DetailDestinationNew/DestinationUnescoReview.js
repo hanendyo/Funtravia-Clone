@@ -10,6 +10,7 @@ import {
   Alert,
   Linking,
   ActivityIndicator,
+  ToastAndroid,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -20,7 +21,7 @@ import {
   StartBuleIsi,
   PanahPutih,
 } from "../../../assets/svg";
-import { Button, Text } from "../../../component";
+import { Button, Text, StatusBar } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
@@ -29,6 +30,7 @@ import CheckBox from "@react-native-community/checkbox";
 import UploadReview from "../../../graphQL/Mutation/Destination/Review";
 import { ReactNativeFile } from "apollo-upload-client";
 import { useMutation } from "@apollo/client";
+import ImageSlide from "../../../component/src/ImageSlide";
 
 export default function DestinationUnescoReview(props) {
   const { t } = useTranslation();
@@ -39,6 +41,9 @@ export default function DestinationUnescoReview(props) {
   let [defaultRate, setDefaultRate] = useState(0);
   let [modals, setmodal] = useState(false);
   let [text, setText] = useState("");
+  let [gambar, setGambar] = useState([]);
+  let [modalss, setModalss] = useState(false);
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -134,6 +139,23 @@ export default function DestinationUnescoReview(props) {
   });
 
   const upload = async () => {
+    if (defaultRate < 1) {
+      if (Platform.OS === "android") {
+        ToastAndroid.show("rating harus di isi", ToastAndroid.LONG);
+      } else {
+        AlertIOS.alert("rating harus di isi");
+      }
+      return true;
+    }
+    if (dataImage.length == 0) {
+      if (Platform.OS === "android") {
+        ToastAndroid.show("gambar harus di isi", ToastAndroid.LONG);
+      } else {
+        AlertIOS.alert("gambar harus di isi");
+      }
+      return true;
+    }
+
     try {
       let response = await mutationUploadV2({
         variables: {
@@ -162,6 +184,33 @@ export default function DestinationUnescoReview(props) {
     }
   };
 
+  const ImagesSlider = async (data) => {
+    var tempdatas = [];
+    var x = 0;
+
+    for (var i in data) {
+      let wid = 0;
+      let hig = 0;
+      Image.getSize(data[i].uri, (width, height) => {
+        wid = width;
+        hig = height;
+      });
+      tempdatas.push({
+        key: i,
+        url: data[i].uri ? data[i].uri : "",
+        width: wid,
+        height: hig,
+        props: {
+          source: data[i].uri ? data[i].uri : "",
+        },
+      });
+      x++;
+    }
+    console.log("temp", tempdatas);
+    await setGambar(tempdatas);
+    await setModalss(true);
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -170,6 +219,11 @@ export default function DestinationUnescoReview(props) {
         backgroundColor: "#fff",
       }}
     >
+      <ImageSlide
+        show={modalss}
+        dataImage={gambar}
+        setClose={() => setModalss(false)}
+      />
       <View
         style={{
           marginTop: 20,
@@ -293,12 +347,13 @@ export default function DestinationUnescoReview(props) {
                   );
                 } else if (index === 3 && dataImage.length > 4) {
                   return (
-                    <View
+                    <Ripple
                       key={index}
                       style={{
                         justifyContent: "center",
                         alignItems: "center",
                       }}
+                      onPress={() => ImagesSlider(dataImage)}
                     >
                       <Image
                         key={index}
@@ -326,7 +381,7 @@ export default function DestinationUnescoReview(props) {
                       >
                         {"+" + (data.images.length - 4)}
                       </Text>
-                    </View>
+                    </Ripple>
                   );
                 } else if (index === 3) {
                   return (

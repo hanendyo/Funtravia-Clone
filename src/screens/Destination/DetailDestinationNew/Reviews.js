@@ -1,22 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Dimensions,
-  View,
-  Image,
-  ScrollView,
-  Animated,
-  Thumbnail,
-} from "react-native";
-import { Text, Button } from "../../../component";
-import { LikeEmpty, Star, SendReview } from "../../../assets/svg";
+import { Dimensions, View, Image } from "react-native";
+import { Text } from "../../../component";
+import { Star } from "../../../assets/svg";
 import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { default_image, logo_funtravia } from "../../../assets/png";
+import Ripple from "react-native-material-ripple";
+import ImageSlide from "../../../component/src/ImageSlide";
 
 export default function Reviews({ props, id, scroll, heights, scrollto }) {
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState("");
+  let [gambar, setGambar] = useState([]);
+  let [modalss, setModalss] = useState(false);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -35,7 +31,6 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
   }, [props.navigation]);
 
   const { data, loading, error } = useQuery(DestinationById, {
-    // variables: { id: props.props.route.params.id },
     variables: { id: id },
     context: {
       headers: {
@@ -59,15 +54,46 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
     });
   };
 
+  const ImagesSlider = async (data) => {
+    var tempdatas = [];
+    var x = 0;
+
+    for (var i in data.image) {
+      let wid = 0;
+      let hig = 0;
+      Image.getSize(data.image[i].image, (width, height) => {
+        wid = width;
+        hig = height;
+      });
+      tempdatas.push({
+        key: i,
+        url: data.image[i].image ? data.image[i].image : "",
+        width: wid,
+        height: hig,
+        props: {
+          source: data.image[i].image ? data.image[i].image : "",
+        },
+      });
+      x++;
+    }
+    await setGambar(tempdatas);
+    await setModalss(true);
+  };
+
   return (
     <>
+      <ImageSlide
+        show={modalss}
+        dataImage={gambar}
+        setClose={() => setModalss(false)}
+      />
       {data?.destinationById?.review.length > 0 ? (
         <View style={{ marginTop: 20 }}>
           {data?.destinationById?.review.map((item, index) => {
             let set = [1, 2, 3, 4, 5];
             return (
               <View
-                key={item.id}
+                key={item.id + "1"}
                 style={{ marginBottom: 20 }}
                 onLayout={(event) => {
                   const layout = event.nativeEvent.layout;
@@ -115,7 +141,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                     <View style={{ flexDirection: "row" }}>
                       {set.map((value, index) =>
                         item.rating >= value ? (
-                          <Star height={15} width={15} />
+                          <Star height={15} width={15} key={index} />
                         ) : null
                       )}
                       <Text
@@ -162,6 +188,89 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                     {item.ulasan}
                   </Text>
                 </View>
+                {item && item.image.length > 0 ? (
+                  <View
+                    style={{
+                      height: 90,
+                      width: "80%",
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                      marginTop: 10,
+                      marginLeft: 60,
+                      // marginHorizontal: 5,
+                    }}
+                  >
+                    {item
+                      ? item.image.map((items, indexs) => {
+                          if (indexs < 1) {
+                            return (
+                              <Image
+                                key={indexs + "1"}
+                                source={{ uri: items.image }}
+                                style={{
+                                  width: "48%",
+                                  height: "100%",
+                                  borderRadius: 3,
+                                }}
+                              />
+                            );
+                          } else if (item.image.length > 2 && indexs === 1) {
+                            return (
+                              <Ripple
+                                key={index}
+                                style={{
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  width: "48%",
+                                  height: "100%",
+                                }}
+                                onPress={() => ImagesSlider(item)}
+                              >
+                                <Image
+                                  key={indexs + "2"}
+                                  source={{ uri: items.image }}
+                                  style={{
+                                    opacity: 0.9,
+                                    width: "100%",
+                                    height: "100%",
+                                    opacity: 0.32,
+                                    borderRadius: 3,
+                                  }}
+                                />
+                                <Text
+                                  size="title"
+                                  type="regular"
+                                  style={{
+                                    position: "absolute",
+                                    right: 40,
+                                    alignSelf: "center",
+                                    color: "#FFF",
+                                    top: 30,
+                                  }}
+                                >
+                                  {"+" + (item.image.length - 2)}
+                                </Text>
+                              </Ripple>
+                            );
+                          } else if (indexs === 1) {
+                            return (
+                              <Image
+                                key={index + "3"}
+                                source={{ uri: items.image }}
+                                style={{
+                                  width: "48%",
+                                  height: "100%",
+                                  borderRadius: 3,
+                                }}
+                              />
+                            );
+                          } else {
+                            null;
+                          }
+                        })
+                      : null}
+                  </View>
+                ) : null}
               </View>
             );
           })}
