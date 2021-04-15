@@ -22,7 +22,7 @@ import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
 import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
-import { Text, Button, Loading } from "../../../component";
+import { Text, Button, Loading, shareAction } from "../../../component";
 
 import {
 	LikeRed,
@@ -263,14 +263,13 @@ export default function Comments(props) {
 
 	const create_UUID = () => {
 		var dt = new Date().getTime();
-		var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-			/[xy]/g,
-			function (c) {
-				var r = (dt + Math.random() * 16) % 16 | 0;
-				dt = Math.floor(dt / 16);
-				return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
-			}
-		);
+		var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+			c
+		) {
+			var r = (dt + Math.random() * 16) % 16 | 0;
+			dt = Math.floor(dt / 16);
+			return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+		});
 		return uuid;
 	};
 
@@ -1023,18 +1022,18 @@ export default function Comments(props) {
 									</View>
 
 									<Button
+										onPress={() =>
+											shareAction({ from: "feed", target: postid })
+										}
 										type="icon"
 										variant="transparent"
 										position="left"
 										size="small"
-										style={{
-											paddingHorizontal: 2,
-										}}
 									>
 										<ShareBlack height={17} width={17} />
-										<Text size="small" style={{ marginLeft: 3 }}>
+										{/* <Text size="small" style={{ marginLeft: 3 }}>
 											{t("share")}
-										</Text>
+										</Text> */}
 									</Button>
 								</View>
 								<View

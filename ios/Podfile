@@ -6,7 +6,6 @@ platform :ios, '10.0'
 target 'funtravia' do
     config = use_native_modules!
     pod 'GoogleSignIn', '~> 5.0.2'
-    pod 'react-native-image-crop-tools', :path => '../node_modules/react-native-image-crop-tools'
     permissions_path = '../node_modules/react-native-permissions/ios'
     pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
     pod 'Permission-Contacts', :path => "#{permissions_path}/Contacts"

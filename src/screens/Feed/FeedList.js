@@ -26,7 +26,7 @@ import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
-import { Text, Button } from "../../component";
+import { Text, Button, shareAction } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
@@ -926,6 +926,7 @@ export default function FeedList({ props, token }) {
 								</View>
 
 								<Button
+									onPress={() => shareAction({ from: "feed", target: item.id })}
 									type="icon"
 									variant="transparent"
 									position="left"

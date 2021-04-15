@@ -30,7 +30,7 @@ import { useTranslation } from "react-i18next";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { default_image } from "../../assets/png";
-import { CustomImage } from "../../component";
+import { CustomImage, shareAction } from "../../component";
 import { gql } from "apollo-boost";
 const deletepost = gql`
 	mutation($post_id: ID!) {
@@ -590,6 +590,9 @@ export default function myfeed(props) {
 						</View>
 
 						<Button
+							onPress={() =>
+								shareAction({ from: "feed", target: dataRender.id })
+							}
 							type="icon"
 							variant="transparent"
 							position="left"

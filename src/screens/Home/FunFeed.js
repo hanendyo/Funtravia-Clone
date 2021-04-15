@@ -58,12 +58,6 @@ export default function SearchFeed({ props }) {
 							style={{
 								marginRight: 7,
 								marginLeft: 0,
-								margin: 5,
-								shadowColor: "#464646",
-								shadowOffset: { width: 0, height: 0 },
-								shadowRadius: 0.5,
-								shadowOpacity: 0.5,
-								elevation: 2,
 								borderRadius: 5,
 							}}
 							onPress={() =>
