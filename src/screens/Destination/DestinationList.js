@@ -242,6 +242,7 @@ export default function DestinationList(props) {
 				<TouchableOpacity
 					style={{
 						width: "100%",
+						// borderWidth:1,
 					}}
 					onPress={() => {
 						props.navigation.navigate("detailStack", {
