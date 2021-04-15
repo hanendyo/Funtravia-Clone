@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 const STATUSBAR_HEIGHT = RNStatusBar.currentHeight;
-console.log("STATUSBAR_HEIGHT", STATUSBAR_HEIGHT);
 export default function StatusBar({ backgroundColor, ...props }) {
 	return (
 		<View

@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:funtravia.com</string>
+		<string>applinks:link.funtravia.com</string>
 	</array>
 </dict>
 </plist>
