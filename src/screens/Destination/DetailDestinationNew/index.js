@@ -1,1093 +1,601 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-	ActivityIndicator,
-	Dimensions,
-	View,
-	Image,
-	Pressable,
-	StyleSheet,
-	Animated,
-	Linking,
-	ScrollView,
+  StyleSheet,
+  View,
+  Dimensions,
+  Animated,
+  PanResponder,
+  Platform,
+  TouchableOpacity,
+  Alert,
+  StatusBar,
+  ActivityIndicator,
 } from "react-native";
-import { Text, StatusBar, shareAction } from "../../../component";
-import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
-import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-	Arrowbackwhite,
-	LikeEmpty,
-	Star,
-	Love,
-	ShareBlack,
-	PinHijau,
-	UnescoIcon,
-	MovieIcon,
-	Clock,
-	Globe,
-	Xhitam,
-	WebsiteHitam,
-	TeleponHitam,
-	InstagramHitam,
-} from "../../../assets/svg";
-import { TabBar, SceneMap, TabView } from "react-native-tab-view";
+import { Arrowbackwhite } from "../../../assets/svg";
+import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
 import Ripple from "react-native-material-ripple";
-import Liked from "../../../graphQL/Mutation/Destination/Liked";
-import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
-import ActivityModal from "./ActivityModal";
-import FacilityModal from "./FacilityModal";
-import ServiceModal from "./ServiceModal";
-import Generals from "./Generals";
-import Activities from "./Activities";
-import Facilities from "./Facilities";
-import Services from "./Services";
-import Reviews from "./Reviews";
-import BottomButton from "./BottomButton";
-import { StackActions } from "@react-navigation/routers";
-const HEADER_EXPANDED_HEIGHT = 380;
-const HEADER_COLLAPSED_HEIGHT = 50;
+import { Text } from "../../../component";
 
-export default function index(props) {
-	const [setting, setSetting] = useState("");
-	const [token, setToken] = useState(props.route.params.token);
-	const [modalActivity, setModalActivity] = useState(false);
-	const [modalFacility, setModalFacility] = useState(false);
-	const [modalService, setModalService] = useState(false);
-	const [modalTime, setModalTime] = useState(false);
-	const [modalSosial, setModalSosial] = useState(false);
-	let [dataDestination, setDataDestination] = useState(data);
-	let scrollto = useRef();
+const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
+const { width, height } = Dimensions.get("screen");
+const TabBarHeight = 48;
+const HeaderHeight = 300;
+const SafeStatusBar = Platform.select({
+  ios: 44,
+  android: StatusBar.currentHeight,
+});
+const tab1ItemSize = (width - 30) / 2;
+const tab2ItemSize = (width - 40) / 3;
+const PullToRefreshDist = 150;
 
-	const loadAsync = async () => {
-		let tkn = await AsyncStorage.getItem("access_token");
-		await setToken(tkn);
-		await fetchData();
+const Index = () => {
+  /**
+   * stats
+   */
+  const [tabIndex, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "tab1", title: "Tab1" },
+    { key: "tab2", title: "Tab2" },
+  ]);
+  const [canScroll, setCanScroll] = useState(true);
+  const [tab1Data] = useState(Array(40).fill(0));
+  const [tab2Data] = useState(Array(30).fill(0));
 
-		let setsetting = await AsyncStorage.getItem("setting");
-		await setSetting(JSON.parse(setsetting));
-	};
+  /**
+   * ref
+   */
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const headerScrollY = useRef(new Animated.Value(0)).current;
+  // for capturing header scroll on Android
+  const headerMoveScrollY = useRef(new Animated.Value(0)).current;
+  const listRefArr = useRef([]);
+  const listOffset = useRef({});
+  const isListGliding = useRef(false);
+  const headerScrollStart = useRef(0);
+  const _tabIndex = useRef(0);
+  const refreshStatusRef = useRef(false);
 
-	useEffect(() => {
-		const unsubscribe = props.navigation.addListener("focus", () => {
-			loadAsync();
-		});
-		return unsubscribe;
-	}, [props.navigation]);
+  /**
+   * PanResponder for header
+   */
+  const headerPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        syncScrollOffset();
+        return false;
+      },
 
-	const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
-		variables: { id: props.route.params.id },
-		fetchPolicy: "network-only",
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-		onCompleted: () => {
-			setDataDestination(data.destinationById);
-		},
-	});
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        return Math.abs(gestureState.dy) > 5;
+      },
+      onPanResponderEnd: (evt, gestureState) => {
+        handlePanReleaseOrEnd(evt, gestureState);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        const curListRef = listRefArr.current.find(
+          (ref) => ref.key === routes[_tabIndex.current].key
+        );
+        const headerScrollOffset = -gestureState.dy + headerScrollStart.current;
+        if (curListRef.value) {
+          // scroll up
+          if (headerScrollOffset > 0) {
+            curListRef.value.scrollToOffset({
+              offset: headerScrollOffset,
+              animated: false,
+            });
+            // start pull down
+          } else {
+            if (Platform.OS === "ios") {
+              curListRef.value.scrollToOffset({
+                offset: headerScrollOffset / 3,
+                animated: false,
+              });
+            } else if (Platform.OS === "android") {
+              if (!refreshStatusRef.current) {
+                headerMoveScrollY.setValue(headerScrollOffset / 1.5);
+              }
+            }
+          }
+        }
+      },
+      onShouldBlockNativeResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        headerScrollStart.current = scrollY._value;
+      },
+    })
+  ).current;
 
-	console.log("data", data);
+  /**
+   * PanResponder for list in tab scene
+   */
+  const listPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        return false;
+      },
+      onShouldBlockNativeResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+      },
+    })
+  ).current;
 
-	const General = () => {
-		return (
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{
-					paddingTop: HEADER_EXPANDED_HEIGHT + 50,
-					backgroundColor: "#FFF",
-				}}
-				onScroll={Animated.event(
-					[{ nativeEvent: { contentOffset: { y: scrollY } } }],
-					{ useNativeDriver: false }
-				)}
-				scrollEventThrottle={16}
-			>
-				<Generals
-					_liked={_liked}
-					_unliked={_unliked}
-					scrollto={scrollto}
-					data={data?.destinationById}
-					scroll={scrollY}
-					heights={HEADER_EXPANDED_HEIGHT + 50}
-					props={props}
-					addTo={addToPlan}
-				/>
-			</ScrollView>
-		);
-	};
+  /**
+   * effect
+   */
+  useEffect(() => {
+    scrollY.addListener(({ value }) => {
+      const curRoute = routes[tabIndex].key;
+      listOffset.current[curRoute] = value;
+    });
 
-	const Activity = () => {
-		return <Activities data={data?.destinationById} />;
-	};
+    headerScrollY.addListener(({ value }) => {
+      listRefArr.current.forEach((item) => {
+        if (item.key !== routes[tabIndex].key) {
+          return;
+        }
+        if (value > HeaderHeight || value < 0) {
+          headerScrollY.stopAnimation();
+          syncScrollOffset();
+        }
+        if (item.value && value <= HeaderHeight) {
+          item.value.scrollToOffset({
+            offset: value,
+            animated: false,
+          });
+        }
+      });
+    });
+    return () => {
+      scrollY.removeAllListeners();
+      headerScrollY.removeAllListeners();
+    };
+  }, [routes, tabIndex]);
 
-	const Facility = () => {
-		return <Facilities data={data?.destinationById} />;
-	};
+  /**
+   *  helper functions
+   */
+  const syncScrollOffset = () => {
+    const curRouteKey = routes[_tabIndex.current].key;
 
-	const Service = () => {
-		return <Services data={data?.destinationById} />;
-	};
+    listRefArr.current.forEach((item) => {
+      if (item.key !== curRouteKey) {
+        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
+          if (item.value) {
+            item.value.scrollToOffset({
+              offset: scrollY._value,
+              animated: false,
+            });
+            listOffset.current[item.key] = scrollY._value;
+          }
+        } else if (scrollY._value >= HeaderHeight) {
+          if (
+            listOffset.current[item.key] < HeaderHeight ||
+            listOffset.current[item.key] == null
+          ) {
+            if (item.value) {
+              item.value.scrollToOffset({
+                offset: HeaderHeight,
+                animated: false,
+              });
+              listOffset.current[item.key] = HeaderHeight;
+            }
+          }
+        }
+      }
+    });
+  };
 
-	const FAQ = () => (
-		<View
-			style={{
-				marginTop: 20,
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
-			<Text size="title" type="bold">
-				FAQ
-			</Text>
-		</View>
-	);
+  const startRefreshAction = () => {
+    if (Platform.OS === "ios") {
+      listRefArr.current.forEach((listRef) => {
+        listRef.value.scrollToOffset({
+          offset: -50,
+          animated: true,
+        });
+      });
+      refresh().finally(() => {
+        syncScrollOffset();
+        // do not bounce back if user scroll to another position
+        if (scrollY._value < 0) {
+          listRefArr.current.forEach((listRef) => {
+            listRef.value.scrollToOffset({
+              offset: 0,
+              animated: true,
+            });
+          });
+        }
+      });
+    } else if (Platform.OS === "android") {
+      Animated.timing(headerMoveScrollY, {
+        toValue: -150,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      refresh().finally(() => {
+        Animated.timing(headerMoveScrollY, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      });
+    }
+  };
 
-	const Review = () => {
-		return (
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{
-					paddingTop: HEADER_EXPANDED_HEIGHT + 50,
-					backgroundColor: "#FFF",
-					width: Dimensions.get("screen").width,
-					paddingHorizontal: 15,
-				}}
-				onScroll={Animated.event(
-					[{ nativeEvent: { contentOffset: { y: scrollY } } }],
-					{ useNativeDriver: false }
-				)}
-				scrollEventThrottle={16}
-			>
-				<Reviews
-					scrollto={scrollto}
-					id={data?.destinationById?.id}
-					props={props}
-					scroll={scrollY}
-					heights={HEADER_EXPANDED_HEIGHT + 50}
-				/>
-			</ScrollView>
-		);
-	};
+  const handlePanReleaseOrEnd = (evt, gestureState) => {
+    // console.log('handlePanReleaseOrEnd', scrollY._value);
+    syncScrollOffset();
+    headerScrollY.setValue(scrollY._value);
+    if (Platform.OS === "ios") {
+      if (scrollY._value < 0) {
+        if (scrollY._value < -PullToRefreshDist && !refreshStatusRef.current) {
+          startRefreshAction();
+        } else {
+          // should bounce back
+          listRefArr.current.forEach((listRef) => {
+            listRef.value.scrollToOffset({
+              offset: 0,
+              animated: true,
+            });
+          });
+        }
+      } else {
+        if (Math.abs(gestureState.vy) < 0.2) {
+          return;
+        }
+        Animated.decay(headerScrollY, {
+          velocity: -gestureState.vy,
+          useNativeDriver: true,
+        }).start(() => {
+          syncScrollOffset();
+        });
+      }
+    } else if (Platform.OS === "android") {
+      if (
+        headerMoveScrollY._value < 0 &&
+        headerMoveScrollY._value / 1.5 < -PullToRefreshDist
+      ) {
+        startRefreshAction();
+      } else {
+        Animated.timing(headerMoveScrollY, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  };
 
-	const [index, setIndex] = React.useState(0);
-	const [routes] = React.useState([
-		{ key: "general", title: "General" },
-		// { key: "activity", title: "Activity" },
-		// { key: "facility", title: "Facility" },
-		// { key: "service", title: "Service" },
-		// { key: "FAQ", title: "FAQ" },
-		{ key: "review", title: "Review" },
-	]);
+  const onMomentumScrollBegin = () => {
+    isListGliding.current = true;
+  };
 
-	const renderScene = SceneMap({
-		general: General,
-		// activity: Activity,
-		// facility: Facility,
-		// service: Service,
-		// FAQ: FAQ,
-		review: Review,
-	});
+  const onMomentumScrollEnd = () => {
+    isListGliding.current = false;
+    syncScrollOffset();
+    // console.log('onMomentumScrollEnd');
+  };
 
-	const scrollY = useRef(new Animated.Value(0)).current;
-	const headerHeight = scrollY.interpolate({
-		inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-		outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
-		extrapolate: "clamp",
-	});
+  const onScrollEndDrag = (e) => {
+    syncScrollOffset();
 
-	const tops = scrollY.interpolate({
-		inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-		outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
-		extrapolate: "clamp",
-	});
+    const offsetY = e.nativeEvent.contentOffset.y;
+    // console.log('onScrollEndDrag', offsetY);
+    // iOS only
+    if (Platform.OS === "ios") {
+      if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
+        startRefreshAction();
+      }
+    }
 
-	const headerTitleOpacity = scrollY.interpolate({
-		inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-		outputRange: [0, 1],
-		extrapolate: "clamp",
-	});
+    // check pull to refresh
+  };
 
-	const heroTitleOpacity = scrollY.interpolate({
-		inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-		outputRange: [1, 0],
-		extrapolate: "clamp",
-	});
+  const refresh = async () => {
+    console.log("-- start refresh");
+    refreshStatusRef.current = true;
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("done");
+      }, 2000);
+    }).then((value) => {
+      console.log("-- refresh done!");
+      refreshStatusRef.current = false;
+    });
+  };
 
-	const [
-		mutationliked,
-		{ loading: loadingLike, data: dataLike, error: errorLike },
-	] = useMutation(Liked, {
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-	});
+  /**
+   * render Helper
+   */
+  const renderHeader = () => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, -HeaderHeight + 55],
+      extrapolateRight: "clamp",
+      // extrapolate: 'clamp',
+    });
 
-	const [
-		mutationUnliked,
-		{ loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-	] = useMutation(unLiked, {
-		context: {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		},
-	});
-
-	const _liked = async (id) => {
-		if (token || token !== "") {
-			var tempData = { ...dataDestination };
-			tempData.liked = true;
-			setDataDestination(tempData);
-			try {
-				let response = await mutationliked({
-					variables: {
-						destination_id: id,
-						qty: 1,
-					},
-				});
-				if (loadingLike) {
-					alert("Loading!!");
-				}
-				if (errorLike) {
-					throw new Error("Error Input");
-				}
-				if (response.data) {
-					if (
-						response.data.setDestination_wishlist.code === 200 ||
-						response.data.setDestination_wishlist.code === "200"
-					) {
-						var tempData = { ...dataDestination };
-						tempData.liked = true;
-						setDataDestination(tempData);
-					} else {
-						throw new Error(response.data.setDestination_wishlist.message);
-					}
-				}
-			} catch (error) {
-				var tempData = { ...dataDestination };
-				tempData.liked = false;
-				setDataDestination(tempData);
-				alert("" + error);
-			}
-		} else {
-			alert("Please Login");
-		}
-	};
-
-	const _unliked = async (id) => {
-		if (token || token !== "") {
-			var tempData = { ...dataDestination };
-			tempData.liked = false;
-			setDataDestination(tempData);
-			try {
-				let response = await mutationUnliked({
-					variables: {
-						destination_id: id,
-					},
-				});
-				if (loadingUnLike) {
-					alert("Loading!!");
-				}
-				if (errorUnLike) {
-					throw new Error("Error Input");
-				}
-				if (response.data) {
-					if (
-						response.data.unset_wishlist_destinasi.code === 200 ||
-						response.data.unset_wishlist_destinasi.code === "200"
-					) {
-						var tempData = { ...dataDestination };
-						tempData.liked = false;
-						setDataDestination(tempData);
-					} else {
-						throw new Error(response.data.unset_wishlist_destinasi.message);
-					}
-				}
-			} catch (error) {
-				var tempData = { ...dataDestination };
-				tempData.liked = false;
-				setDataDestination(tempData);
-				alert("" + error);
-			}
-		} else {
-			alert("Please Login");
-		}
-	};
-
-	const addToPlan = () => {
-		props?.route?.params && props?.route?.params?.iditinerary
-			? props.navigation.dispatch(
-					StackActions.replace("ItineraryStack", {
-						screen: "ItineraryChooseday",
-						params: {
-							Iditinerary: props?.route?.params?.iditinerary,
-							Kiriman: data?.destinationById.id,
-							token: token,
-							Position: "destination",
-							datadayaktif: props.route.params.datadayaktif,
-						},
-					})
-			  )
-			: props.navigation.navigate("ItineraryStack", {
-					screen: "ItineraryPlaning",
-					params: {
-						idkiriman: data?.destinationById?.id,
-						Position: "destination",
-					},
-			  });
-	};
-
-	return (
-		<View style={{ flex: 1, backgroundColor: "#fff" }}>
-			<StatusBar backgroundColor="#14646E" barStyle="light-content" />
-			{loading ? (
-				<View
-					style={{
-						marginTop: 50,
-						marginBottom: Dimensions.get("screen").height - 50,
-					}}
-				>
-					<ActivityIndicator animating={true} color="#209FAE" />
-				</View>
-			) : (
-				<View style={{ flex: 1 }}>
-					<Animated.View
-						style={{
-							height: headerHeight,
-							width: Dimensions.get("screen").width,
-							position: "absolute",
-							top: 0,
-							left: 0,
-							bottom: 0,
-							zIndex: 1,
-							// backgroundColor: "#209FAE",
-							// justifyContent: "space-between",
-						}}
-					>
-						<Animated.View
-							style={{
-								height: 50,
-								width: Dimensions.get("screen").width,
-								flexDirection: "row",
-								opacity: headerTitleOpacity,
-								position: "absolute",
-								zIndex: 5,
-								backgroundColor: "#209FAE",
-							}}
-						>
-							<Ripple
-								onPress={() => props.navigation.goBack()}
-								style={{
-									zIndex: 3,
-									paddingTop: 15,
-									paddingLeft: 15,
-								}}
-							>
-								<Arrowbackwhite height={15} width={15} />
-							</Ripple>
-							<Animated.Text
-								style={{
-									fontFamily: "Lato-Bold",
-									fontSize: 16,
-									paddingTop: 10,
-									marginLeft: 20,
-									opacity: headerTitleOpacity,
-									color: "#FFF",
-								}}
-							>
-								{data?.destinationById?.name}
-							</Animated.Text>
-						</Animated.View>
-
-						<Animated.View
-							style={{
-								backgroundColor: "#FFF",
-								flex: 1,
-								justifyContent: "flex-end",
-							}}
-						>
-							{/* View Image Top */}
-
-							<Animated.View
-								style={{
-									width: Dimensions.get("screen").width,
-									// height: 180,
-									zIndex: 10,
-									backgroundColor: "#FFF",
-									opacity: heroTitleOpacity,
-									bottom: 0,
-									// top: 0,
-									// position: "absolute",
-								}}
-							>
-								<Ripple
-									onPress={() => props.navigation.goBack()}
-									style={{
-										position: "absolute",
-										zIndex: 3,
-										marginTop: 20,
-										marginLeft: 10,
-									}}
-								>
-									<Arrowbackwhite height={20} width={20} />
-								</Ripple>
-
-								{data && data.destinationById && data.destinationById.images ? (
-									<Image
-										source={{ uri: data?.destinationById?.images[0].image }}
-										style={{ minHeight: 180, width: "100%" }}
-									/>
-								) : null}
-							</Animated.View>
-							<Animated.View
-								style={{
-									paddingTop: 10,
-									paddingHorizontal: 15,
-									width: Dimensions.get("screen").width,
-									minHeight: 50,
-									flexDirection: "row",
-									justifyContent: "space-between",
-									backgroundColor: "#FFF",
-									bottom: 0,
-									opacity: heroTitleOpacity,
-								}}
-							>
-								<View
-									style={{
-										width: Dimensions.get("screen").width * 0.7,
-									}}
-								>
-									<Text size="title" type="black">
-										{data?.destinationById?.name}
-									</Text>
-									<View style={{ flexDirection: "row", marginTop: 2 }}>
-										<View
-											style={{
-												borderRadius: 3,
-												backgroundColor: "#F4F4F4",
-												padding: 3,
-												marginRight: 5,
-											}}
-										>
-											<Text size="description" type="bold">
-												{data?.destinationById?.type?.name}
-											</Text>
-										</View>
-										<View
-											style={{
-												borderRadius: 3,
-												backgroundColor: "#F4F4F4",
-												padding: 3,
-												flexDirection: "row",
-												marginRight: 5,
-												alignItems: "center",
-											}}
-										>
-											<Star height={13} width={13} />
-											<Text
-												size="description"
-												type="bold"
-												style={{ marginLeft: 3 }}
-											>
-												{data?.destinationById?.rating.substr(0, 4)}
-											</Text>
-										</View>
-										<View
-											style={{
-												borderRadius: 2,
-												padding: 3,
-											}}
-										>
-											<Text
-												size="description"
-												type="regular"
-												style={{ color: "#209FAE" }}
-											>
-												{data?.destinationById?.count_review} Reviews
-											</Text>
-										</View>
-									</View>
-								</View>
-								<View
-									style={{
-										flexDirection: "row",
-										alignItems: "center",
-									}}
-								>
-									{dataDestination?.liked === true ? (
-										<Pressable
-											style={{
-												backgroundColor: "#F6F6F6",
-												marginRight: 2,
-												height: 34,
-												width: 34,
-												borderRadius: 17,
-												alignItems: "center",
-												justifyContent: "center",
-												marginRight: 5,
-											}}
-											onPress={() => _unliked(dataDestination.id)}
-										>
-											<Love height={18} width={18} />
-										</Pressable>
-									) : (
-										<Pressable
-											style={{
-												backgroundColor: "#F6F6F6",
-												marginRight: 2,
-												height: 34,
-												width: 34,
-												borderRadius: 17,
-												alignItems: "center",
-												justifyContent: "center",
-												marginRight: 5,
-											}}
-											onPress={() => _liked(dataDestination.id)}
-										>
-											<LikeEmpty height={18} width={18} />
-										</Pressable>
-									)}
-									<Pressable
-										onPress={() =>
-											shareAction({
-												from: "destination",
-												target: dataDestination.id,
-											})
-										}
-										style={{
-											backgroundColor: "#F6F6F6",
-											marginRight: 2,
-											height: 34,
-											width: 34,
-											borderRadius: 17,
-											alignItems: "center",
-											justifyContent: "center",
-										}}
-									>
-										<ShareBlack height={20} width={20} />
-									</Pressable>
-								</View>
-							</Animated.View>
-
-							{/* View Types */}
-
-							<Animated.View
-								style={{
-									width: Dimensions.get("screen").width,
-									paddingHorizontal: 15,
-									height: 30,
-									paddingVertical: 5,
-									flexDirection: "row",
-									opacity: heroTitleOpacity,
-									backgroundColor: "#FFF",
-									bottom: 0,
-									opacity: heroTitleOpacity,
-								}}
-							>
-								<View
-									style={{
-										flexDirection: "row",
-										justifyContent: "center",
-										alignItems: "center",
-										padding: 5,
-										borderRadius: 5,
-										marginRight: 5,
-										backgroundColor: "#DAF0F2",
-									}}
-								>
-									<UnescoIcon
-										height={20}
-										width={20}
-										style={{ marginRight: 5 }}
-									/>
-									<Text size="description" type="regular">
-										UNESCO
-									</Text>
-								</View>
-								{data?.destinationById?.movie_location?.length > 0 ? (
-									<View
-										style={{
-											flexDirection: "row",
-											justifyContent: "center",
-											alignItems: "center",
-											padding: 5,
-											borderRadius: 5,
-											backgroundColor: "#DAF0F2",
-										}}
-									>
-										<MovieIcon
-											height={20}
-											width={20}
-											style={{ marginRight: 5 }}
-										/>
-										<Text size="description" type="regular">
-											Movie Location
-										</Text>
-									</View>
-								) : null}
-							</Animated.View>
-
-							{/* View address */}
-
-							<Animated.View
-								style={{
-									paddingTop: 10,
-									borderTopWidth: 1,
-									borderTopColor: "#F6F6F6",
-									width: Dimensions.get("screen").width,
-									minHeight: 40,
-									paddingHorizontal: 15,
-									backgroundColor: "#FFF",
-									flexDirection: "row",
-									justifyContent: "space-between",
-									alignItems: "center",
-									bottom: 0,
-									opacity: heroTitleOpacity,
-								}}
-							>
-								<View
-									style={{
-										flexDirection: "row",
-
-										width: Dimensions.get("screen").width * 0.75,
-									}}
-								>
-									<PinHijau
-										height={18}
-										width={18}
-										style={{ marginRight: 10 }}
-									/>
-									<Text size="description" type="regular">
-										{data?.destinationById?.address
-											? data?.destinationById?.address
-											: "-"}
-									</Text>
-								</View>
-								{data?.destinationById?.address ? (
-									<Ripple
-										style={{
-											justifyContent: "center",
-											alignItems: "center",
-										}}
-										onPress={() => {
-											Linking.openURL(
-												Platform.OS == "ios"
-													? "maps://app?daddr=" +
-															data?.destinationById?.latitude +
-															"+" +
-															data?.destinationById?.longitude
-													: "google.navigation:q=" +
-															data?.destinationById?.latitude +
-															"+" +
-															data?.destinationById?.longitude
-											);
-										}}
-									>
-										<Text
-											size="description"
-											type="regular"
-											style={{ color: "#209FAE" }}
-										>
-											maps
-										</Text>
-									</Ripple>
-								) : null}
-							</Animated.View>
-
-							{/* View Time */}
-
-							<Animated.View
-								style={{
-									borderTopWidth: 1,
-									borderTopColor: "#F6F6F6",
-									width: Dimensions.get("screen").width,
-									minHeight: 40,
-									paddingHorizontal: 15,
-									flexDirection: "row",
-									justifyContent: "space-between",
-									alignItems: "center",
-									backgroundColor: "#FFF",
-									bottom: 0,
-									opacity: heroTitleOpacity,
-								}}
-							>
-								<View
-									style={{
-										flexDirection: "row",
-										width: Dimensions.get("screen").width * 0.75,
-									}}
-								>
-									<Clock height={18} width={18} style={{ marginRight: 10 }} />
-									<Text size="description" type="regular">
-										{data?.destinationById?.openat
-											? data?.destinationById?.openat
-											: "-"}
-									</Text>
-								</View>
-								{data?.destinationById?.openat ? (
-									<Ripple
-										onPress={() => setModalTime(true)}
-										style={{
-											justifyContent: "center",
-											alignItems: "center",
-											minHeight: 40,
-										}}
-									>
-										<Text
-											size="description"
-											type="regular"
-											style={{ color: "#209FAE" }}
-										>
-											more
-										</Text>
-									</Ripple>
-								) : null}
-							</Animated.View>
-
-							{/* View Website */}
-
-							<Animated.View
-								style={{
-									borderTopWidth: 1,
-									borderTopColor: "#F6F6F6",
-									width: Dimensions.get("screen").width,
-									minHeight: 40,
-									paddingHorizontal: 15,
-									flexDirection: "row",
-									justifyContent: "space-between",
-									alignItems: "center",
-									backgroundColor: "#FFF",
-									bottom: 0,
-									opacity: heroTitleOpacity,
-								}}
-							>
-								<View
-									style={{
-										flexDirection: "row",
-										width: Dimensions.get("screen").width * 0.75,
-									}}
-								>
-									<Globe height={18} width={18} style={{ marginRight: 10 }} />
-									<Text size="description" type="regular">
-										{data?.destinationById?.website
-											? data?.destinationById?.website
-											: "-"}
-									</Text>
-								</View>
-								{data?.destinationById?.website ? (
-									<Ripple
-										onPress={() => setModalSosial(true)}
-										style={{
-											minHeight: 40,
-											justifyContent: "center",
-											alignItems: "center",
-										}}
-									>
-										<Text
-											size="description"
-											type="regular"
-											style={{ color: "#209FAE" }}
-										>
-											more
-										</Text>
-									</Ripple>
-								) : null}
-							</Animated.View>
-
-							{/* View Garis */}
-							<Animated.View
-								style={{
-									backgroundColor: "#F6F6F6",
-									height: 3,
-									width: Dimensions.get("screen").width,
-									// paddingVertical: 5,
-								}}
-							/>
-						</Animated.View>
-					</Animated.View>
-					{/* Tabs */}
-					<TabView
-						navigationState={{ index, routes }}
-						renderScene={renderScene}
-						onIndexChange={setIndex}
-						renderTabBar={(props) => (
-							<Animated.View
-								style={{
-									// top: 0,
-									zIndex: 1,
-									position: "absolute",
-									// paddingHorizontal: 15,
-									transform: [{ translateY: tops }],
-									width: "100%",
-								}}
-							>
-								<TabBar
-									{...props}
-									style={{
-										backgroundColor: "white",
-										borderBottomWidth: 2,
-										borderBottomColor: "#D3E9EC",
-									}}
-									renderLabel={({ route, focused }) => {
-										return (
-											<Text
-												style={[
-													focused ? styles.labelActive : styles.label,
-													{ opacity: focused ? 1 : 0.7 },
-												]}
-											>
-												{route.title}
-											</Text>
-										);
-									}}
-									indicatorStyle={styles.indicator}
-								/>
-							</Animated.View>
-						)}
-					/>
-				</View>
-			)}
-
-			{/* BottomButton */}
-			<BottomButton
-				routed={index}
-				props={props}
-				data={data?.destinationById}
-				addTo={addToPlan}
-			/>
-
-			{/* Modal Activiy */}
-			<ActivityModal
-				setModalActivity={(e) => setModalActivity(e)}
-				modals={modalActivity}
-				data={data?.destinationById}
-			/>
-
-			{/* Modal Facility */}
-			<FacilityModal
-				setModalFacility={(e) => setModalFacility(e)}
-				modals={modalFacility}
-				data={data?.destinationById}
-			/>
-
-			{/* Modal Service */}
-			<ServiceModal
-				setModalService={(e) => setModalService(e)}
-				modals={modalService}
-				data={data?.destinationById}
-			/>
-
-			{/* Modal Time */}
-			<Modal
-				isVisible={modalTime}
-				onRequestClose={() => {
-					setModalTime(false);
-				}}
-				animationIn="slideInUp"
-				animationOut="slideOutDown"
-			>
-				<View
-					style={{
-						backgroundColor: "#fff",
-						minHeight: 150,
-						// borderRadius: 5,
-					}}
-				>
-					{/* Information */}
-					<View
-						style={{
-							flexDirection: "row",
-							marginHorizontal: 15,
-							marginVertical: 20,
-							justifyContent: "space-between",
-							alignItems: "center",
-						}}
-					>
-						<Text size="title" type="bold">
-							Operational (Local Time)
-						</Text>
-						<Ripple
-							onPress={() => setModalTime(false)}
-							style={{
-								paddingVertical: 10,
-								width: 30,
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<Xhitam height={15} width={15} />
-						</Ripple>
-					</View>
-
-					{/* Detail Information */}
-					<View
-						style={{
-							marginHorizontal: 15,
-						}}
-					>
-						{data && data.destinationById && data.destinationById.openat ? (
-							<Text size="label" type="reguler">
-								{data.destinationById.openat}
-							</Text>
-						) : (
-							<Text>-</Text>
-						)}
-					</View>
-					{/* <View
+    const headerTitleOpacity = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [-HeaderHeight + 55, 0],
+      extrapolate: "clamp",
+    });
+    return (
+      <Animated.View
+        {...headerPanResponder.panHandlers}
+        style={[styles.header, { transform: [{ translateY: y }] }]}
+      >
+        <StatusBar backgroundColor="#14646E" />
+        <View>
+          <Ripple
+            onPress={() => props.navigation.goBack()}
             style={{
-              marginTop: 20,
-              marginHorizontal: 15,
+              zIndex: 3,
+              paddingTop: 15,
+              paddingLeft: 15,
             }}
           >
-            <Text size="label" type="reguler">
-              Open 24 hours
-            </Text>
-          </View> */}
-				</View>
-			</Modal>
+            <Arrowbackwhite height={15} width={15} />
+          </Ripple>
+        </View>
+      </Animated.View>
+    );
+  };
 
-			{/* Modal Sosial */}
-			<Modal
-				isVisible={modalSosial}
-				onRequestClose={() => {
-					setModalSosial(false);
-				}}
-				animationIn="slideInUp"
-				animationOut="slideOutDown"
-			>
-				<View
-					style={{
-						backgroundColor: "#fff",
-						minHeight: 200,
-						// borderRadius: 5,
-					}}
-				>
-					{/* Information */}
-					<View
-						style={{
-							flexDirection: "row",
-							marginHorizontal: 15,
-							justifyContent: "space-between",
-							alignItems: "center",
-							paddingVertical: 10,
-						}}
-					>
-						<Text size="title" type="bold">
-							Information
-						</Text>
-						<Ripple
-							onPress={() => setModalSosial(false)}
-							style={{
-								paddingVertical: 10,
-								width: 30,
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<Xhitam height={15} width={15} />
-						</Ripple>
-					</View>
+  const rednerTab1Item = ({ item, index }) => {
+    return (
+      <View
+        style={{
+          borderRadius: 16,
+          marginLeft: index % 2 === 0 ? 0 : 10,
+          width: tab1ItemSize,
+          height: tab1ItemSize,
+          backgroundColor: "#aaa",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>{index}</Text>
+      </View>
+    );
+  };
 
-					{/* Detail Information */}
-					<View
-						style={{
-							marginHorizontal: 15,
-							flexDirection: "row",
-							alignItems: "center",
-							width: Dimensions.get("screen").width * 0.7,
-						}}
-					>
-						<TeleponHitam height={15} width={15} style={{ marginRight: 10 }} />
-						{data && data.destinationById && data.destinationById.phone1 ? (
-							<Text size="label" type="reguler">
-								{data.destinationById.phone1}
-							</Text>
-						) : (
-							<Text>-</Text>
-						)}
-					</View>
-					<View
-						style={{
-							marginTop: 20,
-							marginHorizontal: 15,
-							flexDirection: "row",
-							alignItems: "center",
-							width: Dimensions.get("screen").width * 0.7,
-						}}
-					>
-						<WebsiteHitam height={15} width={15} style={{ marginRight: 10 }} />
-						{data && data.destinationById && data.destinationById.website ? (
-							<Text size="label" type="reguler">
-								{data.destinationById.website}
-							</Text>
-						) : (
-							<Text>-</Text>
-						)}
-					</View>
-					<View
-						style={{
-							marginTop: 20,
-							marginHorizontal: 15,
-							flexDirection: "row",
-							alignItems: "center",
-							width: Dimensions.get("screen").width * 0.7,
-						}}
-					>
-						<InstagramHitam
-							height={15}
-							width={15}
-							style={{ marginRight: 10 }}
-						/>
-						{data && data.destinationById && data.destinationById.instagram ? (
-							<Text size="label" type="reguler">
-								{data.destinationById.instagram}
-							</Text>
-						) : (
-							<Text>-</Text>
-						)}
-					</View>
-				</View>
-			</Modal>
-		</View>
-	);
-}
+  const rednerTab2Item = ({ item, index }) => {
+    return (
+      <View
+        style={{
+          marginLeft: index % 3 === 0 ? 0 : 10,
+          borderRadius: 16,
+          width: tab2ItemSize,
+          height: tab2ItemSize,
+          backgroundColor: "#aaa",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>{index}</Text>
+      </View>
+    );
+  };
+
+  const renderLabel = ({ route, focused }) => {
+    return (
+      <Text style={[styles.label, { opacity: focused ? 1 : 0.5 }]}>
+        {route.title}
+      </Text>
+    );
+  };
+
+  const renderScene = ({ route }) => {
+    const focused = route.key === routes[tabIndex].key;
+    let numCols;
+    let data;
+    let renderItem;
+    switch (route.key) {
+      case "tab1":
+        numCols = 2;
+        data = tab1Data;
+        renderItem = rednerTab1Item;
+        break;
+      case "tab2":
+        numCols = 3;
+        data = tab2Data;
+        renderItem = rednerTab2Item;
+        break;
+      default:
+        return null;
+    }
+    return (
+      <Animated.FlatList
+        scrollToOverflowEnabled={true}
+        // scrollEnabled={canScroll}
+        {...listPanResponder.panHandlers}
+        numColumns={numCols}
+        ref={(ref) => {
+          if (ref) {
+            const found = listRefArr.current.find((e) => e.key === route.key);
+            if (!found) {
+              listRefArr.current.push({
+                key: route.key,
+                value: ref,
+              });
+            }
+          }
+        }}
+        scrollEventThrottle={16}
+        onScroll={
+          focused
+            ? Animated.event(
+                [
+                  {
+                    nativeEvent: { contentOffset: { y: scrollY } },
+                  },
+                ],
+                { useNativeDriver: true }
+              )
+            : null
+        }
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        onScrollEndDrag={onScrollEndDrag}
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListHeaderComponent={() => <View style={{ height: 10 }} />}
+        contentContainerStyle={{
+          paddingTop: HeaderHeight + TabBarHeight,
+          paddingHorizontal: 10,
+          minHeight: height - SafeStatusBar + HeaderHeight,
+        }}
+        showsHorizontalScrollIndicator={false}
+        data={data}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    );
+  };
+
+  const renderTabBar = (props) => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [HeaderHeight, 55],
+      // extrapolate: 'clamp',
+      extrapolateRight: "clamp",
+    });
+    return (
+      <Animated.View
+        style={{
+          top: 0,
+          zIndex: 1,
+          position: "absolute",
+          transform: [{ translateY: y }],
+          width: "100%",
+        }}
+      >
+        <TabBar
+          {...props}
+          onTabPress={({ route, preventDefault }) => {
+            if (isListGliding.current) {
+              preventDefault();
+            }
+          }}
+          style={styles.tab}
+          renderLabel={renderLabel}
+          indicatorStyle={styles.indicator}
+        />
+      </Animated.View>
+    );
+  };
+
+  const renderTabView = () => {
+    return (
+      <TabView
+        onSwipeStart={() => setCanScroll(false)}
+        onSwipeEnd={() => setCanScroll(true)}
+        onIndexChange={(id) => {
+          _tabIndex.current = id;
+          setIndex(id);
+        }}
+        navigationState={{ index: tabIndex, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        initialLayout={{
+          height: 0,
+          width: width,
+        }}
+      />
+    );
+  };
+
+  const renderCustomRefresh = () => {
+    // headerMoveScrollY
+    return Platform.select({
+      ios: (
+        <AnimatedIndicator
+          style={{
+            top: -50,
+            position: "absolute",
+            alignSelf: "center",
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [-100, 0],
+                  outputRange: [120, 0],
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
+          }}
+          animating
+        />
+      ),
+      android: (
+        <Animated.View
+          style={{
+            transform: [
+              {
+                translateY: headerMoveScrollY.interpolate({
+                  inputRange: [-300, 0],
+                  outputRange: [150, 0],
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
+            backgroundColor: "#eee",
+            height: 38,
+            width: 38,
+            borderRadius: 19,
+            borderWidth: 2,
+            borderColor: "#ddd",
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            top: -50,
+            position: "absolute",
+          }}
+        >
+          <ActivityIndicator animating />
+        </Animated.View>
+      ),
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      {renderTabView()}
+      {renderHeader()}
+      {renderCustomRefresh()}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#FFF",
-	},
-	header: {
-		height: 100,
-		// width: "100%",
-		alignItems: "center",
-		justifyContent: "center",
-		position: "absolute",
-		backgroundColor: "#FFF",
-	},
-	label: {
-		fontSize: 14,
-		color: "#464646",
-		fontFamily: "Lato-Bold",
-	},
-	labelActive: {
-		fontSize: 14,
-		color: "#209FAE",
-		fontFamily: "Lato-Bold",
-		borderBottomColor: "#209FAE",
-	},
-	tab: {
-		elevation: 1,
-		shadowOpacity: 0.5,
-		backgroundColor: "#FFF",
-		// height: 50,
-	},
-	indicator: { backgroundColor: "#209FAE", height: 3 },
+  container: {
+    flex: 1,
+  },
+  header: {
+    height: HeaderHeight,
+    width: "100%",
+    position: "absolute",
+    paddingTop: SafeStatusBar,
+    backgroundColor: "#FFA088",
+  },
+  label: { fontSize: 16, color: "#222" },
+  tab: {
+    elevation: 0,
+    shadowOpacity: 0,
+    backgroundColor: "#FFCC80",
+    height: TabBarHeight,
+  },
+  indicator: { backgroundColor: "#222" },
 });
+
+export default Index;

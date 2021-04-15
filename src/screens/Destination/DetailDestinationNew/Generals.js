@@ -1,12 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  Dimensions,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  Animated,
-} from "react-native";
+import { Dimensions, View, Image, ScrollView, Pressable } from "react-native";
 import { Text, Button, Truncate, FunIcon } from "../../../component";
 import { LikeEmpty, Star, PinHijau, Love } from "../../../assets/svg";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
@@ -16,14 +9,7 @@ import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
 const { width, height } = Dimensions.get("screen");
 
-export default function Generals({
-  data,
-  scroll,
-  heights,
-  props,
-  scrollto,
-  addTo,
-}) {
+export default function Generals({ data, props, addTo }) {
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState(data);
@@ -32,8 +18,6 @@ export default function Generals({
   const layoutText = (e) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
-
-  console.log("data general", dataAnother);
 
   const [
     mutationliked,
@@ -165,7 +149,6 @@ export default function Generals({
         props: {
           source: data.images[i].image ? data.images[i].image : "",
         },
-        // by: data.album[i].photoby.first_name,
       });
       x++;
     }
@@ -464,7 +447,7 @@ export default function Generals({
                   if (index < 3) {
                     return (
                       <Image
-                        key={index}
+                        key={index + "1"}
                         source={{ uri: item.image }}
                         style={{
                           // width: Dimensions.get("screen").width * 0.15,
@@ -477,7 +460,7 @@ export default function Generals({
                   } else if (index === 3 && data.images.length > 4) {
                     return (
                       <Ripple
-                        key={index}
+                        key={index + "2"}
                         style={{
                           justifyContent: "center",
                           alignItems: "center",
@@ -514,7 +497,7 @@ export default function Generals({
                   } else if (index === 3) {
                     return (
                       <Image
-                        key={index}
+                        key={index + "3"}
                         source={{ uri: item.image }}
                         style={{
                           // width: Dimensions.get("screen").width * 0.15,
