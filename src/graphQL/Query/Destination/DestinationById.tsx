@@ -43,7 +43,7 @@ const DestinationById = gql`
       }
       greatfor {
         id
-        label
+        name
         icon
       }
       review {
