@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
 
-export default function Reviews({ props, id, scroll, heights, scrollto }) {
+export default function Reviews({ props, id }) {
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState("");
   let [gambar, setGambar] = useState([]);
@@ -25,7 +25,6 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
-      scroll_to();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -39,20 +38,6 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
       },
     },
   });
-
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
-  };
-  let slider = useRef();
-  let [y, setY] = useState(0);
-
-  const scroll_to = () => {
-    wait(1000).then(() => {
-      slider.current.scrollTo({ y: y });
-    });
-  };
 
   const ImagesSlider = async (data) => {
     var tempdatas = [];
@@ -88,40 +73,22 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
         setClose={() => setModalss(false)}
       />
       {data?.destinationById?.review.length > 0 ? (
-        <View style={{ marginTop: 20 }}>
+        <View style={{ paddingTop: 20, paddingLeft: 15 }}>
           {data?.destinationById?.review.map((item, index) => {
             let set = [1, 2, 3, 4, 5];
             return (
-              <View
-                key={item.id + "1"}
-                style={{ marginBottom: 20 }}
-                onLayout={(event) => {
-                  const layout = event.nativeEvent.layout;
-                  setY(layout.y);
-                }}
-              >
+              <View key={item.id + "1"} style={{ marginBottom: 20 }}>
                 <View
                   style={{
                     flexDirection: "row",
                   }}
                 >
-                  {/* <Thumbnail
-                    style={{
-                      height: 40,
-                      width: 40,
-                    }}
-                    source={
-                      item.user.picture
-                        ? { uri: item.user.picture }
-                        : logo_funtravia
-                    }
-                  /> */}
                   <Image
                     style={{
                       backgroundColor: "#464646",
-                      height: 50,
-                      width: 50,
-                      borderRadius: 25,
+                      height: 38,
+                      width: 38,
+                      borderRadius: 19,
                     }}
                     source={
                       item && item.user && item.user.picture
@@ -176,7 +143,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                 <View
                   style={{
                     marginTop: 10,
-                    marginLeft: 60,
+                    marginLeft: 50,
                   }}
                 >
                   <Text
@@ -196,7 +163,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                       justifyContent: "space-between",
                       flexDirection: "row",
                       marginTop: 10,
-                      marginLeft: 60,
+                      marginLeft: 50,
                       // marginHorizontal: 5,
                     }}
                   >
@@ -208,7 +175,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                                 key={indexs + "1"}
                                 source={{ uri: items.image }}
                                 style={{
-                                  width: "48%",
+                                  width: "49%",
                                   height: "100%",
                                   borderRadius: 3,
                                 }}
@@ -221,7 +188,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                                 style={{
                                   justifyContent: "center",
                                   alignItems: "center",
-                                  width: "48%",
+                                  width: "49%",
                                   height: "100%",
                                 }}
                                 onPress={() => ImagesSlider(item)}
@@ -258,7 +225,7 @@ export default function Reviews({ props, id, scroll, heights, scrollto }) {
                                 key={index + "3"}
                                 source={{ uri: items.image }}
                                 style={{
-                                  width: "48%",
+                                  width: "49%",
                                   height: "100%",
                                   borderRadius: 3,
                                 }}

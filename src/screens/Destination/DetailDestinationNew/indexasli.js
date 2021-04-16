@@ -89,8 +89,6 @@ export default function index(props) {
     },
   });
 
-  console.log("data", data);
-
   const General = () => {
     return (
       <ScrollView
