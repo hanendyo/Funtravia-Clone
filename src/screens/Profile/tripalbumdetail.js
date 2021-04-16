@@ -196,13 +196,13 @@ export default function tripalbumdetail(props) {
       tempdatas.push({
         key: i,
         selected: i === inde ? true : false,
-        url: data.album[i].assets ? data.album[i].assets : "",
+        url: data.album[i]?.assets ? data.album[i]?.assets : "",
         width: wid,
         height: hig,
         props: {
-          source: data.album[i].assets ? data.album[i].assets : "",
+          source: data.album[i]?.assets ? data.album[i]?.assets : "",
         },
-        by: data.album[i].photoby.first_name,
+        by: data.album[i]?.photoby?.first_name,
       });
       x++;
     }

@@ -18,14 +18,13 @@ import {
   New,
   Xhitam,
 } from "../../../assets/svg";
-import Timeline from "../../../graphQL/Query/Itinerary/Timelinecustom";
-import ListCustom from "../../../graphQL/Query/Itinerary/ListSavedCustom";
-import hapuscustomsaved from "../../../graphQL/Mutation/Itinerary/Deletecustomactivitysaved";
+import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
 import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
+import { ReactNativeFile } from "apollo-upload-client";
 
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
@@ -86,7 +85,6 @@ export default function detailCustomItinerary(props) {
     let dataX = [];
     let parent = null;
     let dataparents = {};
-    // console.log(data);
     let index = await data.findIndex((key) => key.id === id);
     if (data[index].parent === true) {
       parent = data[index].id;
@@ -114,18 +112,23 @@ export default function detailCustomItinerary(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const pickFile = async (id) => {
+  let [dataUpload, setdataUpload] = useState([]);
+
+  const pickFile = async (id, sumber) => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      console.log(
-        res.uri,
-        res.type, // mime type
-        res.name,
-        res.size,
-        id
-      );
+      let files = new ReactNativeFile({
+        uri: res.uri,
+        type: res.type,
+        name: res.name,
+      });
+
+      let tempe = [...dataUpload];
+      tempe.push(files);
+      // await setdataUpload(tempe);
+      await handleUpload(tempe, id, sumber, res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -134,8 +137,6 @@ export default function detailCustomItinerary(props) {
       }
     }
   };
-
-  // console.log(dataParent);
 
   const Getdurasi = (durasi) => {
     durasi = durasi.split(":");
@@ -177,6 +178,75 @@ export default function detailCustomItinerary(props) {
         {menit < 10 ? "0" + menit : menit}
       </Text>
     );
+  };
+
+  const [
+    mutationUpload,
+    { loading: loadingSaved, data: dataSaved, error: errorSaved },
+  ] = useMutation(Upload, {
+    context: {
+      headers: {
+        // "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
+
+        Authorization: `Bearer ${props.route.params.token}`,
+      },
+    },
+  });
+
+  const handleUpload = async (files, id, sumber, res) => {
+    try {
+      let response = await mutationUpload({
+        variables: {
+          file: files,
+          custom_itinerary_id: id,
+        },
+      });
+
+      if (errorSaved) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.upload_attach_custom.code !== 200) {
+          throw new Error(response.data.upload_attach_custom.message);
+        } else {
+          // Alert.alert("Succes");
+          if (sumber === "parent") {
+            let tempes = [...dataParent.attachment];
+            let init = {
+              __typename: "AttachmentCustom",
+              extention: null,
+              file_name: res.name,
+              filepath: res.uri,
+              itinerary_custom_id: id,
+            };
+
+            tempes.push(init);
+            let datas = { ...dataParent };
+            datas["attachment"] = tempes;
+            setDataParent(datas);
+          } else {
+            let datan = [...dataChild];
+            let inde = await datan.findIndex((key) => key.id === id);
+            let tempes = [...datan[inde].attachment];
+
+            let init = {
+              __typename: "AttachmentCustom",
+              extention: null,
+              file_name: res.name,
+              filepath: res.uri,
+              itinerary_custom_id: id,
+            };
+
+            tempes.push(init);
+            datan[inde]["attachment"] = tempes;
+            setDataChild(datan);
+          }
+        }
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
   };
 
   const x = dataChild.length - 1;
@@ -485,40 +555,47 @@ export default function detailCustomItinerary(props) {
                     paddingTop: 5,
                   }}
                 >
-                  {dataChild.map((data, index) => {
-                    return (
-                      <TouchableOpacity
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                          }}
-                        >
-                          <Text>{index + 1}. </Text>
-                          <Text>{data.name}</Text>
-                        </View>
-                        <Xhitam
-                          style={{
-                            marginRight: 10,
-                          }}
-                          width={5}
-                          height={5}
-                        />
-                      </TouchableOpacity>
-                    );
-                  })}
+                  {dataParent?.attachment?.length > 0
+                    ? dataParent.attachment.map((data, index) => {
+                        return (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignContent: "flex-start",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <Text style={{ width: 30 }}>{index + 1}. </Text>
+                            <Text style={{ flex: 1, paddingBottom: 5 }}>
+                              {data.file_name}
+                            </Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                let tempes = [...dataParent.attachment];
+                                tempes.splice(index, 1);
+                                let datas = { ...dataParent };
+                                datas["attachment"] = tempes;
+                                setDataParent(datas);
+                              }}
+                              style={{
+                                flexDirection: "row",
+                                paddingRight: 10,
+                                paddingLeft: 25,
+                                height: "100%",
+                              }}
+                            >
+                              <Xhitam style={{}} width={10} height={10} />
+                            </TouchableOpacity>
+                          </View>
+                        );
+                      })
+                    : null}
                 </View>
 
                 <View style={{ flex: 1, marginVertical: 10 }}>
                   <TouchableOpacity
                     onPress={() => {
-                      pickFile(dataParent.id);
+                      pickFile(dataParent.id, "parent");
                     }}
                     style={{
                       width: "100%",
@@ -796,40 +873,49 @@ export default function detailCustomItinerary(props) {
                       paddingTop: 5,
                     }}
                   >
-                    {dataChild.map((data, index) => {
-                      return (
-                        <TouchableOpacity
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <View
-                            style={{
-                              flexDirection: "row",
-                            }}
-                          >
-                            <Text>{index + 1}. </Text>
-                            <Text>{data.name}</Text>
-                          </View>
-                          <Xhitam
-                            style={{
-                              marginRight: 10,
-                            }}
-                            width={5}
-                            height={5}
-                          />
-                        </TouchableOpacity>
-                      );
-                    })}
+                    {item?.attachment?.length > 0
+                      ? item.attachment.map((data, indah) => {
+                          return (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignContent: "flex-start",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <Text style={{ width: 30 }}>{indah + 1}. </Text>
+                              <Text style={{ flex: 1, paddingBottom: 5 }}>
+                                {data.file_name}
+                              </Text>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  let tempes = [...item.attachment];
+                                  tempes.splice(indah, 1);
+                                  let datas = { ...item };
+                                  datas["attachment"] = tempes;
+                                  let datan = [...dataChild];
+                                  datan[index] = datas;
+                                  setDataChild(datan);
+                                }}
+                                style={{
+                                  flexDirection: "row",
+                                  paddingRight: 10,
+                                  paddingLeft: 25,
+                                  height: "100%",
+                                }}
+                              >
+                                <Xhitam style={{}} width={10} height={10} />
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        })
+                      : null}
                   </View>
 
                   <View style={{ flex: 1, marginVertical: 10 }}>
                     <TouchableOpacity
                       onPress={() => {
-                        pickFile(item.id);
+                        pickFile(item.id, "child");
                       }}
                       style={{
                         width: "100%",
