@@ -8,6 +8,7 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  RefreshControl,
   Pressable,
 } from "react-native";
 import { CustomImage, FunIcon } from "../../component";
@@ -40,6 +41,8 @@ export default function Destination({
       },
     },
   });
+
+  console.log("des", destinationData);
 
   const _unliked = async (id) => {
     if (token || token !== "") {
@@ -117,15 +120,27 @@ export default function Destination({
             }}
             style={{
               width: "100%",
-              padding: 10,
+              paddingLeft: 10,
+              paddingRight: 10,
               elevation: 2,
               backgroundColor: "#FFFFFF",
+            
               marginBottom: 10,
               borderRadius: 10,
               marginTop: 10,
               flexDirection: "row",
             }}
           >
+            <View
+            style={{
+              width: "100%",
+             
+              paddingTop:15,
+              flexDirection: "row",
+            }}
+            >
+
+           
             <Image
               source={
                 item.images && item.images.image
@@ -148,6 +163,7 @@ export default function Destination({
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
+                   
                     alignItems: "center",
                     marginBottom: 5,
                   }}
@@ -185,7 +201,7 @@ export default function Destination({
                     </Button>
                   ) : (
                     <Button
-                      onPress={() => _unliked(item.id, index)}
+                      onPress={() => _unliked(item.id)}
                       type="circle"
                       style={{
                         width: 25,
@@ -251,15 +267,8 @@ export default function Destination({
                           justifyContent: "flex-start",
                           alignContent: "flex-start",
                         }}
-                      ></View>
-                    ) : (
-                      <View
-                        style={{
-                          justifyContent: "flex-start",
-                          alignContent: "flex-start",
-                        }}
                       >
-                        <Text
+                          <Text
                           size="description"
                           type="bold"
                           style={{
@@ -268,81 +277,41 @@ export default function Destination({
                         >
                           {t("greatFor")}:
                         </Text>
+                       
                         <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
-                            alignContent: "space-between",
-                            alignItems: "stretch",
-                            alignSelf: "flex-start",
-                          }}
-                        >
-                          {/* {item.greatfor.map((datas, index) => {
-                            return datas && datas.icon ? (
-                              <View
-                                style={{
-                                  height: 50,
-                                  width: 50,
-                                }}
-                              >
-                                <FunIcon
-                                  icon="i-4wd"
-                                  fill="#464646"
-                                  height={42}
-                                  width={42}
-                                  style={{}}
-                                />
-                              </View>
-                            ) : (
-                              <View
-                                style={{
-                                  height: 50,
-                                  width: 50,
-                                }}
-                              >
-                                <FunIcon
-                                  icon="i-4wd"
-                                  fill="#464646"
-                                  height={42}
-                                  width={42}
-                                  style={{}}
-                                />
-                              </View>
-                            );
-                          })} */}
-
-                          <View
                             style={{
                               height: 50,
-                              width: 50,
+                              flexDirection: "row",
+                              justifyContent: "space-evenly",
+                              alignContent: "space-between",
+                              alignItems: "stretch",
+                              alignSelf: "flex-start",
                             }}
                           >
+                             {item.greatfor.map((item, index) => {
+                        
+                          return index < 3 ? (
                             <FunIcon
-                              icon="i-4wd"
+                              icon={item.icon}
                               fill="#464646"
                               height={42}
                               width={42}
                               style={{}}
                             />
+                            ):null
+                            })}
                           </View>
-                          <View
-                            style={{
-                              height: 50,
-                              width: 50,
-                            }}
-                          >
-                            <FunIcon
-                              icon="i-family_room"
-                              fill="#464646"
-                              height={42}
-                              width={42}
-                              style={{}}
-                            />
-                          </View>
-
-                          {/* );
-            })} */}
-                        </View>
+                          
+                        
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          justifyContent: "flex-start",
+                          alignContent: "flex-start",
+                        }}
+                      >
+                  
                       </View>
                     )}
                   </View>
@@ -380,10 +349,14 @@ export default function Destination({
                 />
               </View>
             </View>
+            </View>
           </Pressable>
         )}
         // keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        }
         // extraData={selected}
       />
     </View>

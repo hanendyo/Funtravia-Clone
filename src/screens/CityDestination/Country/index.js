@@ -186,6 +186,8 @@ export default function Country(props) {
     }
   );
 
+  console.log("data", data);
+
   let list_journal = [];
   if (data && data.country_detail.journal) {
     list_journal = data.country_detail.journal;
@@ -643,8 +645,8 @@ export default function Country(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            data && data.country_detail && data.country_detail.images.length
-              ? { uri: data.country_detail.images[0].image }
+            data && data.country_detail && data.country_detail.cover
+              ? { uri: data.country_detail.cover }
               : default_image
           }
         />
