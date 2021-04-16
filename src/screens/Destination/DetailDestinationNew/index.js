@@ -6,41 +6,78 @@ import {
   Animated,
   PanResponder,
   Platform,
-  TouchableOpacity,
-  Alert,
   StatusBar,
   ActivityIndicator,
+  Linking,
+  Pressable,
 } from "react-native";
-import { Arrowbackwhite } from "../../../assets/svg";
+import {
+  Arrowbackwhite,
+  Star,
+  LikeEmpty,
+  ShareBlack,
+  Love,
+  UnescoIcon,
+  MovieIcon,
+  PinHijau,
+  Clock,
+  WebsiteHitam,
+  Globe,
+  Xhitam,
+  TeleponHitam,
+  InstagramHitam,
+} from "../../../assets/svg";
 import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
 import Ripple from "react-native-material-ripple";
-import { Text } from "../../../component";
+import {
+  Text,
+  Button,
+  StatusBar as Satbar,
+  shareAction,
+} from "../../../component";
+import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
+import { useMutation, useLazyQuery } from "@apollo/client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Generals from "./Generals";
+import Reviews from "./Reviews";
+import { StackActions } from "@react-navigation/native";
+import Liked from "../../../graphQL/Mutation/Destination/Liked";
+import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
+import BottomButton from "./BottomButton";
+import ActivityModal from "./ActivityModal";
+import FacilityModal from "./FacilityModal";
+import ServiceModal from "./ServiceModal";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
-const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: 44,
   android: StatusBar.currentHeight,
 });
+const HeaderHeight = 408 - SafeStatusBar;
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
-const Index = () => {
+const Index = (props) => {
   /**
    * stats
    */
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "Tab1" },
-    { key: "tab2", title: "Tab2" },
+    { key: "tab1", title: "General" },
+    { key: "tab2", title: "Review" },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   const [tab1Data] = useState(Array(40).fill(0));
   const [tab2Data] = useState(Array(30).fill(0));
+  const [modalActivity, setModalActivity] = useState(false);
+  const [modalFacility, setModalFacility] = useState(false);
+  const [modalService, setModalService] = useState(false);
+  const [modalTime, setModalTime] = useState(false);
+  const [modalSosial, setModalSosial] = useState(false);
 
   /**
    * ref
@@ -316,6 +353,229 @@ const Index = () => {
   /**
    * render Helper
    */
+
+  const [setting, setSetting] = useState("");
+  const [token, setToken] = useState(props.route.params.token);
+  let [dataDestination, setDataDestination] = useState(data);
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+    await fetchData();
+
+    let setsetting = await AsyncStorage.getItem("setting");
+    await setSetting(JSON.parse(setsetting));
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
+  const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
+    variables: { id: props.route.params.id },
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setDataDestination(data.destinationById);
+      props.navigation.setOptions({
+        headerTitle: (
+          <Animated.View
+            style={{
+              opacity: hide.current,
+            }}
+          >
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                color: "#fff",
+              }}
+            >
+              {data?.destinationById?.name}
+            </Text>
+          </Animated.View>
+        ),
+      });
+    },
+  });
+
+  const HeaderComponent = {
+    headerShown: true,
+    headerTransparent: true,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(Liked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(unLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _liked = async (id) => {
+    if (token || token !== "") {
+      var tempData = { ...dataDestination };
+      tempData.liked = true;
+      setDataDestination(tempData);
+      try {
+        let response = await mutationliked({
+          variables: {
+            destination_id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLike) {
+          alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.setDestination_wishlist.code === 200 ||
+            response.data.setDestination_wishlist.code === "200"
+          ) {
+            var tempData = { ...dataDestination };
+            tempData.liked = true;
+            setDataDestination(tempData);
+          } else {
+            throw new Error(response.data.setDestination_wishlist.message);
+          }
+        }
+      } catch (error) {
+        var tempData = { ...dataDestination };
+        tempData.liked = false;
+        setDataDestination(tempData);
+        alert("" + error);
+      }
+    } else {
+      alert("Please Login");
+    }
+  };
+
+  const _unliked = async (id) => {
+    if (token || token !== "") {
+      var tempData = { ...dataDestination };
+      tempData.liked = false;
+      setDataDestination(tempData);
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            destination_id: id,
+          },
+        });
+        if (loadingUnLike) {
+          alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.unset_wishlist_destinasi.code === 200 ||
+            response.data.unset_wishlist_destinasi.code === "200"
+          ) {
+            var tempData = { ...dataDestination };
+            tempData.liked = false;
+            setDataDestination(tempData);
+          } else {
+            throw new Error(response.data.unset_wishlist_destinasi.message);
+          }
+        }
+      } catch (error) {
+        var tempData = { ...dataDestination };
+        tempData.liked = false;
+        setDataDestination(tempData);
+        alert("" + error);
+      }
+    } else {
+      alert("Please Login");
+    }
+  };
+
+  let HEADER_MAX_HEIGHT = HeaderHeight;
+  let HEADER_MIN_HEIGHT = 55;
+  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  let hide = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0.5, 0],
+    extrapolate: "clamp",
+  });
+
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -55],
+    extrapolate: "clamp",
+  });
+
+  console.log("latitude", data?.destinationById?.latitude);
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -324,74 +584,458 @@ const Index = () => {
       // extrapolate: 'clamp',
     });
 
-    const headerTitleOpacity = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [-HeaderHeight + 55, 0],
-      extrapolate: "clamp",
-    });
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
+        style={{
+          transform: [{ translateY: y }],
+          top: SafeStatusBar,
+          height: HeaderHeight,
+          width: "100%",
+          // alignItems: "center",
+          // justifyContent: "center",
+          position: "absolute",
+          backgroundColor: "#209FAE",
+        }}
       >
-        <StatusBar backgroundColor="#14646E" />
-        <View>
-          <Ripple
-            onPress={() => props.navigation.goBack()}
+        <Animated.View
+          style={{
+            transform: [{ translateY: imageTranslate }],
+            opacity: imageOpacity,
+          }}
+        >
+          {/* Image */}
+          <Animated.Image
+            source={{ uri: data?.destinationById?.images[0].image }}
             style={{
-              zIndex: 3,
-              paddingTop: 15,
-              paddingLeft: 15,
+              height: 180,
+              width: "100%",
+              opacity: imageOpacity,
+              // transform: [{ translateY: imageTranslate }],
+            }}
+          />
+
+          {/* Judul */}
+          <View
+            style={{
+              paddingTop: 10,
+              paddingHorizontal: 15,
+              width: Dimensions.get("screen").width,
+              minHeight: 50,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              backgroundColor: "#FFF",
+              bottom: 0,
             }}
           >
-            <Arrowbackwhite height={15} width={15} />
-          </Ripple>
-        </View>
+            <View
+              style={{
+                width: Dimensions.get("screen").width * 0.7,
+              }}
+            >
+              <Text size="title" type="black">
+                {data?.destinationById?.name}
+              </Text>
+              <View style={{ flexDirection: "row", marginTop: 2 }}>
+                <View
+                  style={{
+                    borderRadius: 3,
+                    backgroundColor: "#F4F4F4",
+                    padding: 3,
+                    marginRight: 5,
+                  }}
+                >
+                  <Text size="description" type="bold">
+                    {data?.destinationById?.type?.name}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    borderRadius: 3,
+                    backgroundColor: "#F4F4F4",
+                    padding: 3,
+                    flexDirection: "row",
+                    marginRight: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <Star height={13} width={13} />
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginLeft: 3 }}
+                  >
+                    {data?.destinationById?.rating.substr(0, 4)}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    borderRadius: 2,
+                    padding: 3,
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{ color: "#209FAE" }}
+                  >
+                    {data?.destinationById?.count_review} Reviews
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {dataDestination?.liked === true ? (
+                <Pressable
+                  style={{
+                    backgroundColor: "#F6F6F6",
+                    marginRight: 2,
+                    height: 34,
+                    width: 34,
+                    borderRadius: 17,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 5,
+                  }}
+                  onPress={() => _unliked(dataDestination.id)}
+                >
+                  <Love height={18} width={18} />
+                </Pressable>
+              ) : (
+                <Pressable
+                  onPress={() =>
+                    shareAction({
+                      from: "destination",
+                      target: dataDestination.id,
+                    })
+                  }
+                  style={{
+                    backgroundColor: "#F6F6F6",
+                    marginRight: 2,
+                    height: 34,
+                    width: 34,
+                    borderRadius: 17,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 5,
+                  }}
+                  onPress={() => _liked(dataDestination.id)}
+                >
+                  <LikeEmpty height={18} width={18} />
+                </Pressable>
+              )}
+              <Pressable
+                onPress={() =>
+                  shareAction({
+                    from: "destination",
+                    target: dataDestination.id,
+                  })
+                }
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  marginRight: 2,
+                  height: 34,
+                  width: 34,
+                  borderRadius: 17,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ShareBlack height={20} width={20} />
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Type */}
+          {data?.destinationById?.movie_location?.length > 0 ||
+          data?.destinationById?.type?.name.toLowerCase().substr(0, 6) ==
+            "unesco" ? (
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                paddingHorizontal: 15,
+                height: 30,
+                paddingVertical: 5,
+                flexDirection: "row",
+                backgroundColor: "#FFF",
+                bottom: 0,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 5,
+                  borderRadius: 5,
+                  marginRight: 5,
+                  backgroundColor: "#DAF0F2",
+                }}
+              >
+                <UnescoIcon height={20} width={20} style={{ marginRight: 5 }} />
+                <Text size="description" type="regular">
+                  UNESCO
+                </Text>
+              </View>
+              {data?.destinationById?.movie_location?.length > 0 ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 5,
+                    borderRadius: 5,
+                    backgroundColor: "#DAF0F2",
+                  }}
+                >
+                  <MovieIcon
+                    height={20}
+                    width={20}
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text size="description" type="regular">
+                    Movie Location
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+          ) : (
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                paddingHorizontal: 15,
+                height: 30,
+                paddingVertical: 5,
+                flexDirection: "row",
+                backgroundColor: "#FFF",
+                bottom: 0,
+              }}
+            ></View>
+          )}
+
+          {/* View address */}
+
+          <View
+            style={{
+              paddingTop: 10,
+              borderTopWidth: 1,
+              borderTopColor: "#F6F6F6",
+              width: Dimensions.get("screen").width,
+              minHeight: 40,
+              paddingHorizontal: 15,
+              backgroundColor: "#FFF",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              bottom: 0,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+
+                width: Dimensions.get("screen").width * 0.75,
+              }}
+            >
+              <PinHijau height={18} width={18} style={{ marginRight: 10 }} />
+              <Text size="description" type="regular">
+                {data?.destinationById?.address
+                  ? data?.destinationById?.address
+                  : "-"}
+              </Text>
+            </View>
+            {data?.destinationById?.address ? (
+              <Ripple
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  Linking.openURL(
+                    Platform.OS == "ios"
+                      ? "maps://app?daddr=" +
+                          data?.destinationById?.latitude +
+                          "+" +
+                          data?.destinationById?.longitude
+                      : "google.navigation:q=" +
+                          data?.destinationById?.latitude +
+                          "+" +
+                          data?.destinationById?.longitude
+                  );
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#209FAE" }}
+                >
+                  maps
+                </Text>
+              </Ripple>
+            ) : null}
+          </View>
+
+          {/* View Time */}
+
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: "#F6F6F6",
+              width: Dimensions.get("screen").width,
+              minHeight: 40,
+              paddingHorizontal: 15,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "#FFF",
+              bottom: 0,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                width: Dimensions.get("screen").width * 0.75,
+              }}
+            >
+              <Clock height={18} width={18} style={{ marginRight: 10 }} />
+              <Text size="description" type="regular">
+                {data?.destinationById?.openat
+                  ? data?.destinationById?.openat
+                  : "-"}
+              </Text>
+            </View>
+            {data?.destinationById?.openat ? (
+              <Ripple
+                onPress={() => setModalTime(true)}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 40,
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#209FAE" }}
+                >
+                  more
+                </Text>
+              </Ripple>
+            ) : null}
+          </View>
+
+          {/* View Website */}
+
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: "#F6F6F6",
+              width: Dimensions.get("screen").width,
+              minHeight: 40,
+              paddingHorizontal: 15,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "#FFF",
+              bottom: 0,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                width: Dimensions.get("screen").width * 0.75,
+              }}
+            >
+              <Globe height={18} width={18} style={{ marginRight: 10 }} />
+              <Text size="description" type="regular">
+                {data?.destinationById?.website
+                  ? data?.destinationById?.website
+                  : "-"}
+              </Text>
+            </View>
+            {data?.destinationById?.website ? (
+              <Ripple
+                onPress={() => setModalSosial(true)}
+                style={{
+                  minHeight: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#209FAE" }}
+                >
+                  more
+                </Text>
+              </Ripple>
+            ) : null}
+          </View>
+          <View style={{ height: 5, backgroundColor: "#F1F1F1" }}></View>
+        </Animated.View>
       </Animated.View>
     );
   };
 
-  const rednerTab1Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          borderRadius: 16,
-          marginLeft: index % 2 === 0 ? 0 : 10,
-          width: tab1ItemSize,
-          height: tab1ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
-      </View>
-    );
+  const addToPlan = () => {
+    props?.route?.params && props?.route?.params?.iditinerary
+      ? props.navigation.dispatch(
+          StackActions.replace("ItineraryStack", {
+            screen: "ItineraryChooseday",
+            params: {
+              Iditinerary: props?.route?.params?.iditinerary,
+              Kiriman: data?.destinationById.id,
+              token: token,
+              Position: "destination",
+              datadayaktif: props.route.params.datadayaktif,
+            },
+          })
+        )
+      : props.navigation.navigate("ItineraryStack", {
+          screen: "ItineraryPlaning",
+          params: {
+            idkiriman: data?.destinationById?.id,
+            Position: "destination",
+          },
+        });
   };
 
-  const rednerTab2Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          marginLeft: index % 3 === 0 ? 0 : 10,
-          borderRadius: 16,
-          width: tab2ItemSize,
-          height: tab2ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
-      </View>
-    );
+  const renderGeneral = ({ item, index, props }) => {
+    return <Generals data={item} props={props} addTo={addToPlan} />;
+  };
+
+  const renderReview = ({ item, props }) => {
+    console.log("item", item);
+    return <Reviews id={item?.id} props={props} />;
   };
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <Text style={[styles.label, { opacity: focused ? 1 : 0.5 }]}>
-        {route.title}
-      </Text>
+      <View
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          width: Dimensions.get("screen").width / 3,
+        }}
+      >
+        <Text
+          type={focused ? "bold" : "regular"}
+          size="label"
+          style={{
+            color: focused ? "#209FAE" : "#464646",
+          }}
+        >
+          {route.title}
+        </Text>
+      </View>
     );
   };
 
@@ -400,20 +1044,23 @@ const Index = () => {
     let numCols;
     let data;
     let renderItem;
+    let tempdataa = [];
+    tempdataa.push(dataDestination);
     switch (route.key) {
       case "tab1":
-        numCols = 2;
-        data = tab1Data;
-        renderItem = rednerTab1Item;
+        numCols = 1;
+        data = tempdataa;
+        renderItem = (e) => renderGeneral(e);
         break;
       case "tab2":
-        numCols = 3;
-        data = tab2Data;
-        renderItem = rednerTab2Item;
+        numCols = 1;
+        data = tempdataa;
+        renderItem = (e) => renderReview(e);
         break;
       default:
         return null;
     }
+
     return (
       <Animated.FlatList
         scrollToOverflowEnabled={true}
@@ -447,16 +1094,17 @@ const Index = () => {
         onMomentumScrollBegin={onMomentumScrollBegin}
         onScrollEndDrag={onScrollEndDrag}
         onMomentumScrollEnd={onMomentumScrollEnd}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListHeaderComponent={() => <View style={{ height: 10 }} />}
+        // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        // ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
-          paddingHorizontal: 10,
+          // paddingHorizontal: 10,
+          backgroundColor: "#FFF",
           minHeight: height - SafeStatusBar + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
-        renderItem={renderItem}
+        renderItem={({ item, index }) => renderItem({ props, item, index })}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -467,7 +1115,6 @@ const Index = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [HeaderHeight, 55],
-      // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
     return (
@@ -487,9 +1134,16 @@ const Index = () => {
               preventDefault();
             }
           }}
-          style={styles.tab}
+          style={{
+            elevation: 0,
+            shadowOpacity: 0,
+            backgroundColor: "white",
+            height: TabBarHeight,
+            borderBottomWidth: 2,
+            borderBottomColor: "#daf0f2",
+          }}
           renderLabel={renderLabel}
-          indicatorStyle={styles.indicator}
+          indicatorStyle={{ backgroundColor: "#209fae" }}
         />
       </Animated.View>
     );
@@ -570,9 +1224,210 @@ const Index = () => {
 
   return (
     <View style={styles.container}>
+      <Satbar backgroundColor="#14646E" />
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
+      {/* BottomButton */}
+      <BottomButton
+        routed={_tabIndex.current}
+        props={props}
+        data={data?.destinationById}
+        addTo={addToPlan}
+      />
+
+      {/* Modal Activiy */}
+      <ActivityModal
+        setModalActivity={(e) => setModalActivity(e)}
+        modals={modalActivity}
+        data={data?.destinationById}
+      />
+
+      {/* Modal Facility */}
+      <FacilityModal
+        setModalFacility={(e) => setModalFacility(e)}
+        modals={modalFacility}
+        data={data?.destinationById}
+      />
+
+      {/* Modal Service */}
+      <ServiceModal
+        setModalService={(e) => setModalService(e)}
+        modals={modalService}
+        data={data?.destinationById}
+      />
+
+      {/* Modal Time */}
+      <Modal
+        isVisible={modalTime}
+        onRequestClose={() => {
+          setModalTime(false);
+        }}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+      >
+        <View
+          style={{
+            backgroundColor: "#fff",
+            minHeight: 150,
+            // borderRadius: 5,
+          }}
+        >
+          {/* Information */}
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: 15,
+              marginVertical: 20,
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text size="title" type="bold">
+              Operational (Local Time)
+            </Text>
+            <Ripple
+              onPress={() => setModalTime(false)}
+              style={{
+                paddingVertical: 10,
+                width: 30,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xhitam height={15} width={15} />
+            </Ripple>
+          </View>
+
+          {/* Detail Information */}
+          <View
+            style={{
+              marginHorizontal: 15,
+            }}
+          >
+            {data && data.destinationById && data.destinationById.openat ? (
+              <Text size="label" type="reguler">
+                {data.destinationById.openat}
+              </Text>
+            ) : (
+              <Text>-</Text>
+            )}
+          </View>
+          {/* <View
+            style={{
+              marginTop: 20,
+              marginHorizontal: 15,
+            }}
+          >
+            <Text size="label" type="reguler">
+              Open 24 hours
+            </Text>
+          </View> */}
+        </View>
+      </Modal>
+
+      {/* Modal Sosial */}
+      <Modal
+        isVisible={modalSosial}
+        onRequestClose={() => {
+          setModalSosial(false);
+        }}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+      >
+        <View
+          style={{
+            backgroundColor: "#fff",
+            minHeight: 200,
+            // borderRadius: 5,
+          }}
+        >
+          {/* Information */}
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: 15,
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingVertical: 10,
+            }}
+          >
+            <Text size="title" type="bold">
+              Information
+            </Text>
+            <Ripple
+              onPress={() => setModalSosial(false)}
+              style={{
+                paddingVertical: 10,
+                width: 30,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xhitam height={15} width={15} />
+            </Ripple>
+          </View>
+
+          {/* Detail Information */}
+          <View
+            style={{
+              marginHorizontal: 15,
+              flexDirection: "row",
+              alignItems: "center",
+              width: Dimensions.get("screen").width * 0.7,
+            }}
+          >
+            <TeleponHitam height={15} width={15} style={{ marginRight: 10 }} />
+            {data && data.destinationById && data.destinationById.phone1 ? (
+              <Text size="label" type="reguler">
+                {data.destinationById.phone1}
+              </Text>
+            ) : (
+              <Text>-</Text>
+            )}
+          </View>
+          <View
+            style={{
+              marginTop: 20,
+              marginHorizontal: 15,
+              flexDirection: "row",
+              alignItems: "center",
+              width: Dimensions.get("screen").width * 0.7,
+            }}
+          >
+            <WebsiteHitam height={15} width={15} style={{ marginRight: 10 }} />
+            {data && data.destinationById && data.destinationById.website ? (
+              <Text size="label" type="reguler">
+                {data.destinationById.website}
+              </Text>
+            ) : (
+              <Text>-</Text>
+            )}
+          </View>
+          <View
+            style={{
+              marginTop: 20,
+              marginHorizontal: 15,
+              flexDirection: "row",
+              alignItems: "center",
+              width: Dimensions.get("screen").width * 0.7,
+            }}
+          >
+            <InstagramHitam
+              height={15}
+              width={15}
+              style={{ marginRight: 10 }}
+            />
+            {data && data.destinationById && data.destinationById.instagram ? (
+              <Text size="label" type="reguler">
+                {data.destinationById.instagram}
+              </Text>
+            ) : (
+              <Text>-</Text>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -588,14 +1443,14 @@ const styles = StyleSheet.create({
     paddingTop: SafeStatusBar,
     backgroundColor: "#FFA088",
   },
-  label: { fontSize: 16, color: "#222" },
+  label: { fontSize: 14, color: "#222" },
   tab: {
     elevation: 0,
     shadowOpacity: 0,
-    backgroundColor: "#FFCC80",
+    backgroundColor: "#FFF",
     height: TabBarHeight,
   },
-  indicator: { backgroundColor: "#222" },
+  indicator: { backgroundColor: "#209FAE" },
 });
 
 export default Index;

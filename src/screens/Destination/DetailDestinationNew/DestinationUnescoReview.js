@@ -78,6 +78,21 @@ export default function DestinationUnescoReview(props) {
     ),
   };
 
+  const handleBack = () => {
+    BackHandler.removeEventListener("hardwareBackPress", backAction);
+    props.navigation.goBack();
+    return true;
+  };
+
+  const backAction = () => {
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Cancelled", ToastAndroid.LONG);
+    } else {
+      AlertIOS.alert("Cancelled");
+    }
+    return true;
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     // const unsubscribe = props.navigation.addListener("focus");
@@ -90,17 +105,21 @@ export default function DestinationUnescoReview(props) {
       height: 500,
       cropping: true,
       multiple: true,
-    }).then((image) => {
-      let tempData = [...dataImage];
-      let file = new ReactNativeFile({
-        uri: image.path,
-        type: image.mime,
-        name: "review.jpg",
+    })
+      .then((image) => {
+        let tempData = [...dataImage];
+        let file = new ReactNativeFile({
+          uri: image.path,
+          type: image.mime,
+          name: "review.jpg",
+        });
+        tempData.splice(0, 0, file);
+        setDataImage(tempData);
+        setmodal(false);
+      })
+      .catch((err) => {
+        backAction();
       });
-      tempData.splice(0, 0, file);
-      setDataImage(tempData);
-      setmodal(false);
-    });
   };
 
   const pickGallery = async () => {
@@ -110,20 +129,23 @@ export default function DestinationUnescoReview(props) {
       cropping: true,
       cropperCircleOverlay: true,
       multiple: true,
-    }).then((image) => {
-      let tempData = [...dataImage];
-      image.map((item) => {
-        let file = new ReactNativeFile({
-          uri: item.path,
-          type: item.mime,
-          name: "review.jpg",
+    })
+      .then((image) => {
+        let tempData = [...dataImage];
+        image.map((item) => {
+          let file = new ReactNativeFile({
+            uri: item.path,
+            type: item.mime,
+            name: "review.jpg",
+          });
+          tempData.splice(0, 0, file);
+          setDataImage(tempData);
         });
-        tempData.splice(0, 0, file);
-        setDataImage(tempData);
+        setmodal(false);
+      })
+      .catch((err) => {
+        backAction();
       });
-
-      setmodal(false);
-    });
   };
 
   const [
@@ -427,7 +449,7 @@ export default function DestinationUnescoReview(props) {
           <TextInput
             placeholder={t("tellUs")}
             placeholderTextColor="#464646"
-            style={{ color: "#464646", margin: 5, fontSize: 14 }}
+            style={{ color: "#464646", marginHorizontal: 5, fontSize: 12 }}
             multiline={true}
             onChangeText={(e) => setText(e)}
           ></TextInput>
@@ -446,7 +468,7 @@ export default function DestinationUnescoReview(props) {
           value={toggleCheckBox}
           onValueChange={(newValue) => setToggleCheckBox(newValue)}
         />
-        <View>
+        <Pressable onPress={() => setToggleCheckBox(!toggleCheckBox)}>
           <Text size="description" type="light">
             Term and Condition
           </Text>
@@ -454,7 +476,7 @@ export default function DestinationUnescoReview(props) {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vitae
             mauris
           </Text>
-        </View>
+        </Pressable>
       </View>
       <View
         style={{

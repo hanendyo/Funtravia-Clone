@@ -12,7 +12,7 @@ const { width, height } = Dimensions.get("screen");
 export default function Generals({ data, props, addTo }) {
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
-  let [dataAnother, setDataAnother] = useState(data);
+  let [dataAnother, setDataAnother] = useState({});
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   const layoutText = (e) => {
@@ -156,7 +156,11 @@ export default function Generals({ data, props, addTo }) {
     await setModalss(true);
   };
   return (
-    <>
+    <View
+      onLayout={(event) => {
+        setDataAnother(data);
+      }}
+    >
       <ImageSlide
         show={modalss}
         dataImage={gambar}
@@ -529,7 +533,7 @@ export default function Generals({ data, props, addTo }) {
           Another Place
         </Text>
         {dataAnother &&
-          dataAnother.another_place.map((item, index) =>
+          dataAnother?.another_place?.map((item, index) =>
             dataAnother.id !== item.id ? (
               <Pressable
                 onPress={() =>
@@ -690,6 +694,6 @@ export default function Generals({ data, props, addTo }) {
             ) : null
           )}
       </View>
-    </>
+    </View>
   );
 }
