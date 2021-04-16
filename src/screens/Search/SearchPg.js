@@ -320,6 +320,9 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   const _liked = async (id, index) => {
+
+    console.log("id", id);
+    console.log("index", index);
     if (token || token !== "") {
       destinationSearch[index].liked = true;
       try {
@@ -1008,9 +1011,8 @@ export default function SearchPg(props, { navigation, route }) {
                 paddingBottom: 120,
               }}
               horizontal={false}
-              // data={dataDes}
               renderItem={({ item, index }) => (
-                
+               
                 <Pressable
                   // onPress={() => {
                   //   props.navigation.navigate("detailStack", {
@@ -1059,8 +1061,8 @@ export default function SearchPg(props, { navigation, route }) {
                  
                   <Image
                     source={
-                      item.images && item.images.image
-                        ? { uri: item.images.image }
+                      item.cover && item.cover
+                        ? { uri: item.cover}
                         : default_image
                     }
                     style={{ width: "40%", height: 145, borderRadius: 10 }}

@@ -95,6 +95,7 @@ export default function Destination({
         horizontal={false}
         data={dataDes}
         renderItem={({ item }) => (
+          console.log("item", item),
           <Pressable
             // onPress={() => {
             //   props.navigation.navigate("detailStack", {
@@ -143,8 +144,8 @@ export default function Destination({
            
             <Image
               source={
-                item.images && item.images.image
-                  ? { uri: item.images.image }
+                item?.cover && item?.cover
+                  ? { uri: item?.cover }
                   : default_image
               }
               style={{ width: "40%", height: 145, borderRadius: 10 }}

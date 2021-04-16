@@ -5,6 +5,7 @@ const SearchDestinationQuery = gql`
 			id
 			name
 			rating
+			cover
 			count_review
 			cities {
 				id
@@ -15,8 +16,11 @@ const SearchDestinationQuery = gql`
 				name
 			}
 			greatfor {
+				id
+				name
 				label
 				icon
+				slug
 			}
 			images {
 				image
