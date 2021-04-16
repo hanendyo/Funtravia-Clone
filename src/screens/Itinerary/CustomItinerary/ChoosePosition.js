@@ -18,11 +18,12 @@ import {
   Xhitam,
 } from "../../../assets/svg";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustomNew";
-// import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustom";
+import SaveCustom2 from "../../../graphQL/Mutation/Itinerary/AddCustom";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { StackActions } from "@react-navigation/routers";
 
 export default function ChoosePosition(props) {
   const HeaderComponent = {
@@ -64,13 +65,8 @@ export default function ChoosePosition(props) {
   };
 
   const { t, i18n } = useTranslation();
-  let [cheked, setcheck] = useState(false);
-  let idItin = props.route.params.idItin;
   let idDay = props.route.params.idDay;
   let token = props.route.params.token;
-  let itintitle = props.route.params.itintitle;
-  let dateitin = props.route.params.dateitin;
-  let datadayaktif = props.route.params.datadayaktif;
   let [datatimeline, setDatatimeline] = useState(
     props.route.params.datatimeline
   );
@@ -575,6 +571,20 @@ export default function ChoosePosition(props) {
   });
 
   const [
+    mutationSaved2,
+    { loading: loadingSaved2, data: dataSaved2, error: errorSaved2 },
+  ] = useMutation(SaveCustom2, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // "Content-Type": "multipart/form-data",
+
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
     mutationSaveTimeline,
     { loading: loadingSave, data: dataSave, error: errorSave },
   ] = useMutation(UpdateTimeline, {
@@ -587,7 +597,7 @@ export default function ChoosePosition(props) {
   });
 
   const saveToItinerary = async () => {
-    console.log(props.route.params.file);
+    console.log(props?.route?.params?.file);
 
     setLoading(true);
     // console.log(token);
@@ -601,85 +611,177 @@ export default function ChoosePosition(props) {
       datas.push(idDay);
 
       try {
-        let response = await mutationSaved({
-          variables: {
-            day_id: datas,
-            title: dataInput.title,
-            icon: "i-tour",
-            qty: "1",
-            address: dataInput.address,
-            latitude: dataInput.latitude,
-            longitude: dataInput.longitude,
-            note: " ",
-            time: dataInput.time,
-            duration: dataInput.duration,
-            status: false,
-            order: dataAkhir,
-            total_price: "0",
-            file: props.route.params.file,
-          },
-        });
-        if (loadingSaved) {
-          Alert.alert("Loading!!");
-        }
-        if (errorSaved) {
-          throw new Error("Error Input");
-        }
-        console.log(response);
-        if (response.data) {
-          if (response.data.add_custom_withattach.code !== 200) {
-            setLoading(false);
+        if (props.route?.params?.file && props.route?.params?.file.length > 0) {
+          let response = await mutationSaved({
+            variables: {
+              day_id: datas,
+              title: dataInput.title,
+              icon: "i-tour",
+              qty: "1",
+              address: dataInput.address,
+              latitude: dataInput.latitude,
+              longitude: dataInput.longitude,
+              note: " ",
+              time: dataInput.time,
+              duration: dataInput.duration,
+              status: false,
+              order: dataAkhir,
+              total_price: "0",
+              file: props.route?.params?.file,
+            },
+          });
 
-            throw new Error(response.data.add_custom_withattach.message);
-          } else {
-            var tempdatas = [...datatimeline];
-            var jum = 0;
-            for (var i of response.data.add_custom_withattach.data) {
-              var inde = tempdatas.findIndex(
-                (k) => k["order"] === parseInt(i.order)
-              );
-              tempdatas[inde].id = i.id;
-              jum++;
-            }
+          if (loadingSaved || loadingSaved2) {
+            Alert.alert("Loading!!");
+          }
+          if (errorSaved || errorSaved2) {
+            throw new Error("Error Input");
+          }
+          console.log(response);
+          if (response.data) {
+            if (response.data.add_custom_withattach.code !== 200) {
+              setLoading(false);
 
-            if (jum === response.data.add_custom_withattach.data.length) {
-              setDatatimeline(tempdatas);
-              try {
-                let responsed = await mutationSaveTimeline({
-                  variables: {
-                    idday: idDay,
-                    value: JSON.stringify(tempdatas),
-                  },
-                });
-                if (loadingSave) {
-                  Alert.alert("Loading!!");
-                }
-                if (errorSave) {
-                  throw new Error("Error Input");
-                }
+              throw new Error(response.data.add_custom_withattach.message);
+            } else {
+              var tempdatas = [...datatimeline];
+              var jum = 0;
+              for (var i of response.data.add_custom_withattach.data) {
+                var inde = tempdatas.findIndex(
+                  (k) => k["order"] === parseInt(i.order)
+                );
+                tempdatas[inde].id = i.id;
+                jum++;
+              }
 
-                if (responsed.data) {
-                  if (responsed.data.update_timeline.code !== 200) {
-                    throw new Error(responsed.data.update_timeline.message);
-                  }
-
-                  props.navigation.push("ItineraryStack", {
-                    screen: "itindetail",
-                    params: {
-                      country: idItin,
-                      token: token,
-                      itintitle: itintitle,
-                      dateitin: dateitin,
-                      datadayaktif: datadayaktif,
-                      status: "edit",
+              if (jum === response.data.add_custom_withattach.data.length) {
+                setDatatimeline(tempdatas);
+                try {
+                  let responsed = await mutationSaveTimeline({
+                    variables: {
+                      idday: idDay,
+                      value: JSON.stringify(tempdatas),
                     },
                   });
-                }
-                setLoading(false);
-              } catch (error) {
-                setLoading(false);
+                  if (loadingSave) {
+                    Alert.alert("Loading!!");
+                  }
+                  if (errorSave) {
+                    throw new Error("Error Input");
+                  }
 
-                Alert.alert("" + error);
+                  if (responsed.data) {
+                    if (responsed.data.update_timeline.code !== 200) {
+                      throw new Error(responsed.data.update_timeline.message);
+                    }
+
+                    props.navigation.dispatch(
+                      StackActions.replace("ItineraryStack", {
+                        screen: "itindetail",
+                        params: {
+                          itintitle: props?.route?.params?.itintitle,
+                          country: props?.route?.params?.idItin,
+                          token: props?.route?.params?.token,
+                          dateitin: props?.route?.params?.dateitin,
+                          datadayaktif: props?.route?.params?.datadayaktif,
+                          status: "edit",
+                        },
+                      })
+                    );
+                  }
+                  setLoading(false);
+                } catch (error) {
+                  setLoading(false);
+
+                  Alert.alert("" + error);
+                }
+              }
+            }
+          }
+        } else {
+          let response = await mutationSaved2({
+            variables: {
+              day_id: datas,
+              title: dataInput.title,
+              icon: "i-tour",
+              qty: "1",
+              address: dataInput.address,
+              latitude: dataInput.latitude,
+              longitude: dataInput.longitude,
+              note: " ",
+              time: dataInput.time,
+              duration: dataInput.duration,
+              status: false,
+              order: dataAkhir,
+              total_price: "0",
+              // file: props.route?.params?.file,
+            },
+          });
+
+          if (loadingSaved || loadingSaved2) {
+            Alert.alert("Loading!!");
+          }
+          if (errorSaved || errorSaved2) {
+            throw new Error("Error Input");
+          }
+          console.log(response);
+          if (response.data) {
+            if (response.data.add_custom.code !== 200) {
+              setLoading(false);
+
+              throw new Error(response.data.add_custom.message);
+            } else {
+              var tempdatas = [...datatimeline];
+              var jum = 0;
+              for (var i of response.data.add_custom.data) {
+                var inde = tempdatas.findIndex(
+                  (k) => k["order"] === parseInt(i.order)
+                );
+                tempdatas[inde].id = i.id;
+                jum++;
+              }
+
+              if (jum === response.data.add_custom.data.length) {
+                setDatatimeline(tempdatas);
+                try {
+                  let responsed = await mutationSaveTimeline({
+                    variables: {
+                      idday: idDay,
+                      value: JSON.stringify(tempdatas),
+                    },
+                  });
+                  if (loadingSave) {
+                    Alert.alert("Loading!!");
+                  }
+                  if (errorSave) {
+                    throw new Error("Error Input");
+                  }
+
+                  if (responsed.data) {
+                    if (responsed.data.update_timeline.code !== 200) {
+                      throw new Error(responsed.data.update_timeline.message);
+                    }
+
+                    props.navigation.dispatch(
+                      StackActions.replace("ItineraryStack", {
+                        screen: "itindetail",
+                        params: {
+                          itintitle: props?.route?.params?.itintitle,
+                          country: props?.route?.params?.idItin,
+                          token: props?.route?.params?.token,
+                          dateitin: props?.route?.params?.dateitin,
+                          datadayaktif: props?.route?.params?.datadayaktif,
+                          status: "edit",
+                        },
+                      })
+                    );
+                  }
+                  setLoading(false);
+                } catch (error) {
+                  setLoading(false);
+
+                  Alert.alert("" + error);
+                }
               }
             }
           }
@@ -1234,17 +1336,19 @@ export default function ChoosePosition(props) {
         >
           <TouchableOpacity
             onPress={() => {
-              props.navigation.push("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  country: idItin,
-                  token: token,
-                  itintitle: itintitle,
-                  dateitin: dateitin,
-                  datadayaktif: datadayaktif,
-                  status: "edit",
-                },
-              });
+              props.navigation.dispatch(
+                StackActions.replace("ItineraryStack", {
+                  screen: "itindetail",
+                  params: {
+                    itintitle: props?.route?.params?.itintitle,
+                    country: props?.route?.params?.idItin,
+                    token: props?.route?.params?.token,
+                    dateitin: props?.route?.params?.dateitin,
+                    datadayaktif: props?.route?.params?.datadayaktif,
+                    status: "edit",
+                  },
+                })
+              );
             }}
             style={{
               height: 40,

@@ -1926,7 +1926,6 @@ export default function ItineraryDetail(props) {
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "flex-start",
-                // borderWidth: 1,
                 borderRadius: 5,
                 backgroundColor: "#daf0f2",
               }}
@@ -1951,6 +1950,7 @@ export default function ItineraryDetail(props) {
               </Text>
               <View
                 style={{
+                  flex: 1,
                   flexDirection: "row",
                 }}
               >
@@ -1983,27 +1983,31 @@ export default function ItineraryDetail(props) {
                 {datadetail.itinerary_detail.buddy.length > 1 ? (
                   <View
                     style={{
-                      alignItems: "center",
+                      paddingLeft: 5,
+                      // alignItems: "center",
                       justifyContent: "center",
+                      flex: 1,
                     }}
                   >
-                    <Text size="small" type="bold">
-                      <Truncate
+                    <Text size="small" type="bold" numberOfLines={1}>
+                      {/* <Truncate
                         text={
                           // " " +
                           // t("with") +
-                          "   " +
-                          datadetail.itinerary_detail.buddy[1].user.first_name +
-                          " " +
-                          (datadetail.itinerary_detail.buddy.length > 2
-                            ? " + " +
-                              (datadetail.itinerary_detail.buddy.length - 2) +
-                              " " +
-                              t("others")
-                            : " ")
-                        }
+                          "   " + */}
+                      {(datadetail?.itinerary_detail?.buddy[1]?.user?.first_name
+                        ? datadetail.itinerary_detail.buddy[1].user.first_name +
+                          " "
+                        : "User funtravia") +
+                        (datadetail.itinerary_detail.buddy.length > 2
+                          ? " + " +
+                            (datadetail.itinerary_detail.buddy.length - 2) +
+                            " " +
+                            t("others")
+                          : " ")}
+                      {/* }
                         length={23}
-                      />
+                      /> */}
                     </Text>
                   </View>
                 ) : null}
@@ -2846,7 +2850,7 @@ export default function ItineraryDetail(props) {
 
   const spreadData = (rData) => {
     let result = [];
-    rData.itinerary_album_list.day_album.map((dataS, index) => {
+    rData?.itinerary_album_list?.day_album.map((dataS, index) => {
       let tempdata = {
         posted: [],
         unposted: [{ id: "camera" }],
@@ -3971,6 +3975,8 @@ export default function ItineraryDetail(props) {
     await setModalss(true);
   };
 
+  console.log(datadayaktif);
+
   if (loadingdetail) {
     return (
       <View
@@ -4949,7 +4955,22 @@ export default function ItineraryDetail(props) {
                       alignItems: "center",
                     }}
                     onPress={() => {
-                      _handlehapus(itincountries), setshowside(false);
+                      Alert.alert("", t("delete") + " itinerary?", [
+                        {
+                          text: t("cancel"),
+                          onPress: () => {
+                            null;
+                          },
+                          style: "cancel",
+                        },
+                        {
+                          text: t("delete"),
+                          onPress: () => {
+                            _handlehapus(itincountries), setshowside(false);
+                          },
+                        },
+                      ]);
+                      return true;
                     }}
                   >
                     <Delete height={15} width={15} />
