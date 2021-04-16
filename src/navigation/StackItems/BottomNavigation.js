@@ -79,7 +79,7 @@ function MyAccountStackScreen() {
         name="AccountScreen"
         component={MyAccount}
         options={{
-          headerShown: true,
+          headerShown: false,
           // headerTransparent: false,
           headerTitle: "",
         }}

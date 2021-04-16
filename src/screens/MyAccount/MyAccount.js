@@ -7,6 +7,7 @@ import {
   Pressable,
   Image,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
@@ -24,72 +25,6 @@ export default function MyAccount(props) {
   const { width } = Dimensions.get("screen");
   const { t } = useTranslation();
   let [token, setToken] = useState("");
-
-  const HeaderComponent = {
-    headerTransparent: true,
-    headerTitle: null,
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
-    headerLeftContainerStyle: {
-      marginLeft: 10,
-    },
-
-    // headerLeft: () => (
-    //   <Button
-    //     text={""}
-    //     size="medium"
-    //     type="circle"
-    //     variant="transparent"
-    //     onPress={() => props.navigation.goBack()}
-    //     style={{
-    //       height: 55,
-    //     }}
-    //   >
-    //     <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    //   </Button>
-    // ),
-
-    headerRight: () => (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {/* <Pressable
-          onPress={() =>
-            props.navigation.navigate("AccountStack", {
-              screen: "settings",
-              params: { datauser: datauser },
-            })
-          }
-          style={{
-            marginHorizontal: 10,
-          }}
-        >
-          <SettingsPutih
-            height={25}
-            width={25}
-            style={{
-              marginHorizontal: 10,
-            }}
-          />
-          
-        </Pressable> */}
-      </View>
-    ),
-    headerRightStyle: {},
-  };
 
   const [mutationlogout, { loading, data, error }] = useMutation(Logout, {
     context: {
@@ -125,7 +60,6 @@ export default function MyAccount(props) {
   });
 
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
     });
@@ -141,27 +75,6 @@ export default function MyAccount(props) {
 
   return (
     <View style={{ zIndex: -1 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 130,
-          position: "absolute",
-          top: 0,
-          justifyContent: "space-between",
-          width: width,
-          zIndex: 1,
-        }}
-      >
-        {/* <LinearGradient
-					colors={["rgba(34, 34, 34, 1)", "rgba(34, 34, 34, 0)"]}
-					start={{ x: 1, y: 0 }}
-					end={{ x: 1, y: 1 }}
-					style={{
-						height: 130,
-						width: width,
-					}}
-				></LinearGradient> */}
-      </View>
       <ScrollView style={{ backgroundColor: "#F6F6F7" }}>
         <View
           style={{
@@ -186,17 +99,22 @@ export default function MyAccount(props) {
               justifyContent: "flex-start",
             }}
           >
-            <Pressable
+            <TouchableOpacity
               onPress={() =>
                 props.navigation.navigate("AccountStack", {
                   screen: "settings",
                   params: { datauser: datauser },
                 })
               }
-              style={{ marginTop: 45, marginRight: 15 }}
+              style={{
+                marginTop: 50,
+                marginRight: 15,
+                // zIndex: 5,
+                // position: "absolute",
+              }}
             >
               <SettingsPutih height={25} width={25} style={{}} />
-            </Pressable>
+            </TouchableOpacity>
           </ImageBackground>
           <Pressable
             onPress={() => {

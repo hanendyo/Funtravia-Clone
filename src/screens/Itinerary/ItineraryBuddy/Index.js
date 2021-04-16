@@ -274,6 +274,37 @@ export default function ItineraryBuddy(props) {
     ];
   };
 
+  const swipeoutBtnsx = (idbuddy, iditin) => {
+    return [
+      {
+        backgroundColor: "#f6f6f6",
+        component: (
+          <TouchableOpacity
+            onPress={() => {
+              DeleteBuddy(idbuddy, iditin);
+            }}
+            style={{
+              height: "100%",
+              width: "100%",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Delete height={20} width={20} />
+            <Text
+              size="small"
+              type="regular"
+              style={{ textAlign: "center", paddingHorizontal: 2 }}
+            >
+              {t("delete")}
+            </Text>
+          </TouchableOpacity>
+        ),
+      },
+    ];
+  };
+
   const swipeoutBtn = (idbuddy, iditin) => {
     return [
       {
@@ -458,7 +489,13 @@ export default function ItineraryBuddy(props) {
             databuddy[inde].isadmin === true
           ) {
             return (
-              <Swipeout right={swipeoutBtns(value.id, iditinerary)}>
+              <Swipeout
+                right={
+                  value.isconfrim !== true
+                    ? swipeoutBtnsx(value.id, iditinerary)
+                    : swipeoutBtns(value.id, iditinerary)
+                }
+              >
                 <View
                   style={{
                     backgroundColor: "#f0f0f0",

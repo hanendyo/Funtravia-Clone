@@ -92,23 +92,7 @@ export default function CreateCustom(props) {
 
   let [hour, sethour] = useState(1);
   let [minutes, setMinutes] = useState(0);
-  let [dataUpload, setDataUpload] = useState([
-    {
-      name: "testing",
-    },
-    {
-      name: "testing",
-    },
-    {
-      name: "testing",
-    },
-    {
-      name: "testing",
-    },
-    {
-      name: "testing",
-    },
-  ]);
+
   let [validate, setValidate] = useState({
     tittle: true,
     duration: true,
@@ -927,32 +911,35 @@ export default function CreateCustom(props) {
                 paddingTop: 5,
               }}
             >
-              {dataUpload.map((data, index) => {
+              {file.map((data, index) => {
                 return (
-                  <TouchableOpacity
+                  <View
                     style={{
                       flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignContent: "center",
-                      alignItems: "center",
+                      alignContent: "flex-start",
+                      alignItems: "flex-start",
                     }}
                   >
-                    <View
+                    <Text style={{ width: 30 }}>{index + 1}. </Text>
+                    <Text style={{ flex: 1, paddingBottom: 5 }}>
+                      {data.name}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        let tempes = [...file];
+                        tempes.splice(index, 1);
+                        setfile(tempes);
+                      }}
                       style={{
                         flexDirection: "row",
+                        paddingRight: 10,
+                        paddingLeft: 25,
+                        height: "100%",
                       }}
                     >
-                      <Text>{index + 1}. </Text>
-                      <Text>{data.name}</Text>
-                    </View>
-                    <Xhitam
-                      style={{
-                        marginRight: 10,
-                      }}
-                      width={5}
-                      height={5}
-                    />
-                  </TouchableOpacity>
+                      <Xhitam style={{}} width={10} height={10} />
+                    </TouchableOpacity>
+                  </View>
                 );
               })}
             </View>
@@ -1073,6 +1060,8 @@ export default function CreateCustom(props) {
         animationOut="slideOutRight"
         isVisible={modals}
         style={{
+          backgroundColor: "#209fae",
+
           // backgroundColor: 'rgba(0, 0, 0, 0.25)',
           justifyContent: "flex-end",
           alignItems: "center",
@@ -1083,6 +1072,8 @@ export default function CreateCustom(props) {
         <KeyboardAvoidingView
           style={{
             flex: 1,
+            backgroundColor: "#209fae",
+
             width: Dimensions.get("screen").width,
             // height: '100%',
             height: Dimensions.get("screen").height,

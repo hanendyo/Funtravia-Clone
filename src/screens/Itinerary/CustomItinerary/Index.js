@@ -5,6 +5,7 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -560,228 +561,240 @@ export default function CustomItinerary(props) {
             {t("savedCustomActivity")}
           </Text>
 
-          {dataSaved && dataSaved.saved_activity_list.length > 0
-            ? dataSaved.saved_activity_list.map((item, index) => {
-                if (props.route.params.dataParent) {
-                  return item.latitude ===
-                    props.route.params?.dataParent?.latitude &&
-                    item.longitude ===
-                      props.route.params?.dataParent?.longitude ? (
-                    <Swipeout
-                      style={{ backgroundColor: "white" }}
-                      left={swipeoutBtn(item.id)}
+          {dataSaved && dataSaved.saved_activity_list.length > 0 ? (
+            dataSaved.saved_activity_list.map((item, index) => {
+              if (props.route.params.dataParent) {
+                return item.latitude ===
+                  props.route.params?.dataParent?.latitude &&
+                  item.longitude ===
+                    props.route.params?.dataParent?.longitude ? (
+                  <Swipeout
+                    style={{ backgroundColor: "white" }}
+                    left={swipeoutBtn(item.id)}
+                  >
+                    <View
+                      style={{
+                        paddingVertical: 5,
+                        zIndex: 1,
+                        width: Dimensions.get("screen").width,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        alignContent: "center",
+                      }}
                     >
-                      <View
+                      <TouchableOpacity
+                        onPress={() =>
+                          props.navigation.navigate("ChoosePosition", {
+                            idItin: idItin,
+                            idDay: idDay,
+                            token: token,
+                            datatimeline: datatimeline,
+                            jammax: total_hours,
+                            dataCustom: item,
+                            itintitle: itintitle,
+                            dateitin: dateitin,
+                            datadayaktif: datadayaktif,
+                            dataParent: props.route?.params?.dataParent,
+                          })
+                        }
                         style={{
-                          paddingVertical: 5,
-                          zIndex: 1,
-                          width: Dimensions.get("screen").width,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          alignContent: "center",
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() =>
-                            props.navigation.navigate("ChoosePosition", {
-                              idItin: idItin,
-                              idDay: idDay,
-                              token: token,
-                              datatimeline: datatimeline,
-                              jammax: total_hours,
-                              dataCustom: item,
-                              itintitle: itintitle,
-                              dateitin: dateitin,
-                              datadayaktif: datadayaktif,
-                              dataParent: props.route?.params?.dataParent,
-                            })
-                          }
-                          style={{
-                            width: Dimensions.get("screen").width - 40,
-                            justifyContent: "center",
-                            alignContent: "center",
-                            alignItems: "center",
-                            borderWidth: 1,
-                            borderColor: "#d3d3d3",
-                            backgroundColor: "white",
-                            shadowColor: "#d3d3d3",
-                            shadowOffset: { width: 2, height: 2 },
-                            shadowOpacity: 1,
-                            shadowRadius: 2,
-                            elevation: 2,
-                            borderRadius: 5,
-                            flexDirection: "row",
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                          }}
-                        >
-                          <View style={{ width: "70%" }}>
-                            <Text
-                              size="label"
-                              type="bold"
-                              style={{
-                                width: "60%",
-                              }}
-                            >
-                              {item.title ? item.title : "-"}
-                            </Text>
-                          </View>
-                          <View style={{ width: "30%" }}>
-                            <Text
-                              size="label"
-                              type="light"
-                              style={{
-                                color: "#646464",
-                              }}
-                            >
-                              {t("duration")}
-                            </Text>
-                            <Text
-                              size="description"
-                              type="regular"
-                              style={{
-                                color: "#209fae",
-                              }}
-                            >
-                              <GetDuration
-                                data={item.duration ? item.duration : "00:00"}
-                              />
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                      <View
-                        style={{
-                          position: "absolute",
-                          zIndex: 99,
-                          top: 22,
-                          right: 7.5,
-                          width: 25,
-                          height: 25,
-                          opacity: 1,
-                          borderRadius: 12.5,
-                          borderWidth: 0.5,
-                          borderColor: "#209fae",
-                          backgroundColor: "#209fae",
-                          alignItems: "center",
-                          alignContent: "center",
+                          width: Dimensions.get("screen").width - 40,
                           justifyContent: "center",
+                          alignContent: "center",
+                          alignItems: "center",
+                          borderWidth: 1,
+                          borderColor: "#d3d3d3",
+                          backgroundColor: "white",
+                          shadowColor: "#d3d3d3",
+                          shadowOffset: { width: 2, height: 2 },
+                          shadowOpacity: 1,
+                          shadowRadius: 2,
+                          elevation: 2,
+                          borderRadius: 5,
+                          flexDirection: "row",
+                          paddingVertical: 10,
+                          paddingHorizontal: 20,
                         }}
                       >
-                        <ArrowRight height={10} width={10} />
-                      </View>
-                    </Swipeout>
-                  ) : null;
-                } else {
-                  return (
-                    <Swipeout
-                      style={{ backgroundColor: "white" }}
-                      left={swipeoutBtn(item.id)}
+                        <View style={{ width: "70%" }}>
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{
+                              width: "60%",
+                            }}
+                          >
+                            {item.title ? item.title : "-"}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%" }}>
+                          <Text
+                            size="label"
+                            type="light"
+                            style={{
+                              color: "#646464",
+                            }}
+                          >
+                            {t("duration")}
+                          </Text>
+                          <Text
+                            size="description"
+                            type="regular"
+                            style={{
+                              color: "#209fae",
+                            }}
+                          >
+                            <GetDuration
+                              data={item.duration ? item.duration : "00:00"}
+                            />
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={{
+                        position: "absolute",
+                        zIndex: 99,
+                        top: 22,
+                        right: 7.5,
+                        width: 25,
+                        height: 25,
+                        opacity: 1,
+                        borderRadius: 12.5,
+                        borderWidth: 0.5,
+                        borderColor: "#209fae",
+                        backgroundColor: "#209fae",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+                      }}
                     >
-                      <View
+                      <ArrowRight height={10} width={10} />
+                    </View>
+                  </Swipeout>
+                ) : null;
+              } else {
+                return (
+                  <Swipeout
+                    style={{ backgroundColor: "white" }}
+                    left={swipeoutBtn(item.id)}
+                  >
+                    <View
+                      style={{
+                        paddingVertical: 5,
+                        zIndex: 1,
+                        width: Dimensions.get("screen").width,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        alignContent: "center",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() =>
+                          props.navigation.navigate("ChoosePosition", {
+                            idItin: idItin,
+                            idDay: idDay,
+                            token: token,
+                            datatimeline: datatimeline,
+                            jammax: total_hours,
+                            dataCustom: item,
+                            itintitle: itintitle,
+                            dateitin: dateitin,
+                            datadayaktif: datadayaktif,
+                            dataParent: props.route?.params?.dataParent,
+                          })
+                        }
                         style={{
-                          paddingVertical: 5,
-                          zIndex: 1,
-                          width: Dimensions.get("screen").width,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          alignContent: "center",
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() =>
-                            props.navigation.navigate("ChoosePosition", {
-                              idItin: idItin,
-                              idDay: idDay,
-                              token: token,
-                              datatimeline: datatimeline,
-                              jammax: total_hours,
-                              dataCustom: item,
-                              itintitle: itintitle,
-                              dateitin: dateitin,
-                              datadayaktif: datadayaktif,
-                              dataParent: props.route?.params?.dataParent,
-                            })
-                          }
-                          style={{
-                            width: Dimensions.get("screen").width - 40,
-                            justifyContent: "center",
-                            alignContent: "center",
-                            alignItems: "center",
-                            borderWidth: 1,
-                            borderColor: "#d3d3d3",
-                            backgroundColor: "white",
-                            shadowColor: "#d3d3d3",
-                            shadowOffset: { width: 2, height: 2 },
-                            shadowOpacity: 1,
-                            shadowRadius: 2,
-                            elevation: 2,
-                            borderRadius: 5,
-                            flexDirection: "row",
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                          }}
-                        >
-                          <View style={{ width: "70%" }}>
-                            <Text
-                              size="label"
-                              type="bold"
-                              style={{
-                                width: "60%",
-                              }}
-                            >
-                              {item.title ? item.title : "-"}
-                            </Text>
-                          </View>
-                          <View style={{ width: "30%" }}>
-                            <Text
-                              size="label"
-                              type="light"
-                              style={{
-                                color: "#646464",
-                              }}
-                            >
-                              {t("duration")}
-                            </Text>
-                            <Text
-                              size="description"
-                              type="regular"
-                              style={{
-                                color: "#209fae",
-                              }}
-                            >
-                              <GetDuration
-                                data={item.duration ? item.duration : "00:00"}
-                              />
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                      <View
-                        style={{
-                          position: "absolute",
-                          zIndex: 99,
-                          top: 22,
-                          right: 7.5,
-                          width: 25,
-                          height: 25,
-                          opacity: 1,
-                          borderRadius: 12.5,
-                          borderWidth: 0.5,
-                          borderColor: "#209fae",
-                          backgroundColor: "#209fae",
-                          alignItems: "center",
-                          alignContent: "center",
+                          width: Dimensions.get("screen").width - 40,
                           justifyContent: "center",
+                          alignContent: "center",
+                          alignItems: "center",
+                          borderWidth: 1,
+                          borderColor: "#d3d3d3",
+                          backgroundColor: "white",
+                          shadowColor: "#d3d3d3",
+                          shadowOffset: { width: 2, height: 2 },
+                          shadowOpacity: 1,
+                          shadowRadius: 2,
+                          elevation: 2,
+                          borderRadius: 5,
+                          flexDirection: "row",
+                          paddingVertical: 10,
+                          paddingHorizontal: 20,
                         }}
                       >
-                        <ArrowRight height={10} width={10} />
-                      </View>
-                    </Swipeout>
-                  );
-                }
-              })
-            : null}
+                        <View style={{ width: "70%" }}>
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{
+                              width: "60%",
+                            }}
+                          >
+                            {item.title ? item.title : "-"}
+                          </Text>
+                        </View>
+                        <View style={{ width: "30%" }}>
+                          <Text
+                            size="label"
+                            type="light"
+                            style={{
+                              color: "#646464",
+                            }}
+                          >
+                            {t("duration")}
+                          </Text>
+                          <Text
+                            size="description"
+                            type="regular"
+                            style={{
+                              color: "#209fae",
+                            }}
+                          >
+                            <GetDuration
+                              data={item.duration ? item.duration : "00:00"}
+                            />
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={{
+                        position: "absolute",
+                        zIndex: 99,
+                        top: 22,
+                        right: 7.5,
+                        width: 25,
+                        height: 25,
+                        opacity: 1,
+                        borderRadius: 12.5,
+                        borderWidth: 0.5,
+                        borderColor: "#209fae",
+                        backgroundColor: "#209fae",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ArrowRight height={10} width={10} />
+                    </View>
+                  </Swipeout>
+                );
+              }
+            })
+          ) : loadingSaved ? (
+            <View
+              style={{
+                marginTop: 30,
+              }}
+            >
+              <ActivityIndicator
+                animating={true}
+                color="#209fae"
+                size="small"
+              />
+            </View>
+          ) : null}
         </View>
       </ScrollView>
     </View>
