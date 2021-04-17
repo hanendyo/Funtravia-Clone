@@ -1512,7 +1512,6 @@ export default function ItineraryDetail(props) {
    * effect
    */
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
     loadasync();
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
@@ -1540,6 +1539,15 @@ export default function ItineraryDetail(props) {
       headerScrollY.removeAllListeners();
     };
   }, [routes, tabIndex]);
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      // startRefreshAction();
+      GetTimelin();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   /**
    *  helper functions
@@ -3960,13 +3968,13 @@ export default function ItineraryDetail(props) {
         tempdatas.push({
           key: i,
           selected: i === inde ? true : false,
-          url: data[i].assets ? data[i].assets : "",
+          url: data[i]?.assets ? data[i]?.assets : "",
           width: wid,
           height: hig,
           props: {
-            source: data[i].assets ? data[i].assets : "",
+            source: data[i]?.assets ? data[i]?.assets : "",
           },
-          by: data[i].photoby.first_name ? data[i].photoby.first_name : "",
+          by: data[i]?.photoby?.first_name ? data[i]?.photoby?.first_name : "",
         });
         x++;
       }
@@ -3974,8 +3982,6 @@ export default function ItineraryDetail(props) {
     await setImage(tempdatas);
     await setModalss(true);
   };
-
-  console.log(datadayaktif);
 
   if (loadingdetail) {
     return (
