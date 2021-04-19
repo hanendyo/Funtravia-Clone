@@ -19,6 +19,7 @@ import {
   Xhitam,
 } from "../../../assets/svg";
 import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
+import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
 import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -210,38 +211,118 @@ export default function detailCustomItinerary(props) {
         if (response.data.upload_attach_custom.code !== 200) {
           throw new Error(response.data.upload_attach_custom.message);
         } else {
-          // Alert.alert("Succes");
           if (sumber === "parent") {
-            let tempes = [...dataParent.attachment];
+            let datan = { ...dataParent };
+            let tempes = [];
+            if (datan.attachment?.length > 0) {
+              tempes = [...datan.attachment];
+            }
             let init = {
               __typename: "AttachmentCustom",
-              extention: null,
-              file_name: res.name,
-              filepath: res.uri,
-              itinerary_custom_id: id,
+              itinerary_custom_id:
+                response.data.upload_attach_custom.data[0].itinerary_custom_id,
+              extention: response.data.upload_attach_custom.data[0].extention,
+              file_name: response.data.upload_attach_custom.data[0].file_name,
+              filepath: response.data.upload_attach_custom.data[0].filepath,
+              tiny: response.data.upload_attach_custom.data[0].tiny,
             };
-
             tempes.push(init);
             let datas = { ...dataParent };
             datas["attachment"] = tempes;
             setDataParent(datas);
-          } else {
+          } else if (sumber !== "parent") {
             let datan = [...dataChild];
             let inde = await datan.findIndex((key) => key.id === id);
-            let tempes = [...datan[inde].attachment];
+            let tempes = [];
+            if (datan[inde]?.attachment?.length > 0) {
+              tempes = [...datan[inde].attachment];
+            }
 
             let init = {
               __typename: "AttachmentCustom",
-              extention: null,
-              file_name: res.name,
-              filepath: res.uri,
-              itinerary_custom_id: id,
+              itinerary_custom_id:
+                response.data.upload_attach_custom.data[0].itinerary_custom_id,
+              extention: response.data.upload_attach_custom.data[0].extention,
+              file_name: response.data.upload_attach_custom.data[0].file_name,
+              filepath: response.data.upload_attach_custom.data[0].filepath,
+              tiny: response.data.upload_attach_custom.data[0].tiny,
             };
-
             tempes.push(init);
             datan[inde]["attachment"] = tempes;
             setDataChild(datan);
           }
+        }
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
+
+  const [
+    mutationdelete,
+    { loading: loadingdelete, data: datadelete, error: errordelete },
+  ] = useMutation(DeleteAttachcustom, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // "Content-Type": "multipart/form-data",
+
+        Authorization: `Bearer ${props.route.params.token}`,
+      },
+    },
+  });
+
+  const _handle_hapusParent = async (data, index, dataParents) => {
+    try {
+      let response = await mutationdelete({
+        variables: {
+          itinerary_custom_id: data.itinerary_custom_id,
+          tiny: data.tiny,
+        },
+      });
+
+      if (errordelete) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.delete_attach_custom.code !== 200) {
+          throw new Error(response.data.delete_attach_custom.message);
+        } else {
+          let tempes = [...dataParents.attachment];
+          tempes.splice(index, 1);
+          let datas = { ...dataParents };
+          datas["attachment"] = tempes;
+          setDataParent(datas);
+        }
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
+
+  const _handle_hapusChild = async (item, index, indah, dataChild) => {
+    try {
+      let response = await mutationdelete({
+        variables: {
+          itinerary_custom_id: item?.attachment[indah]?.itinerary_custom_id,
+          tiny: item?.attachment[indah]?.tiny,
+        },
+      });
+
+      if (errordelete) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.delete_attach_custom.code !== 200) {
+          throw new Error(response.data.delete_attach_custom.message);
+        } else {
+          let tempes = [...item.attachment];
+          tempes.splice(indah, 1);
+          let datas = { ...item };
+          datas["attachment"] = tempes;
+          let datan = [...dataChild];
+          datan[index] = datas;
+          setDataChild(datan);
         }
       }
     } catch (error) {
@@ -571,11 +652,7 @@ export default function detailCustomItinerary(props) {
                             </Text>
                             <TouchableOpacity
                               onPress={() => {
-                                let tempes = [...dataParent.attachment];
-                                tempes.splice(index, 1);
-                                let datas = { ...dataParent };
-                                datas["attachment"] = tempes;
-                                setDataParent(datas);
+                                _handle_hapusParent(data, index, dataParent);
                               }}
                               style={{
                                 flexDirection: "row",
@@ -889,13 +966,12 @@ export default function detailCustomItinerary(props) {
                               </Text>
                               <TouchableOpacity
                                 onPress={() => {
-                                  let tempes = [...item.attachment];
-                                  tempes.splice(indah, 1);
-                                  let datas = { ...item };
-                                  datas["attachment"] = tempes;
-                                  let datan = [...dataChild];
-                                  datan[index] = datas;
-                                  setDataChild(datan);
+                                  _handle_hapusChild(
+                                    item,
+                                    index,
+                                    indah,
+                                    dataChild
+                                  );
                                 }}
                                 style={{
                                   flexDirection: "row",

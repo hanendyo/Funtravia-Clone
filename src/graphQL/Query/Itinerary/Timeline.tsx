@@ -22,6 +22,7 @@ const Timeline = gql`
         extention
         filepath
         file_name
+        tiny
       }
     }
   }

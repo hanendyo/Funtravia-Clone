@@ -138,10 +138,12 @@ export default function ProfileSettings(props) {
   });
 
   const upload = async (data) => {
+    console.log(data);
+
     setmodal(false);
     setLoading(true);
     if (data) {
-      let file = new ReactNativeFile({
+      let files = new ReactNativeFile({
         uri: data.path,
         type: data.mime,
         name: "profile.jpeg",
@@ -149,7 +151,7 @@ export default function ProfileSettings(props) {
       try {
         let response = await mutationUploadV2({
           variables: {
-            file,
+            file: files,
           },
         });
 
@@ -182,7 +184,7 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
-      console.log(image);
+      // console.log(image);
       // setdataImage(image.data);
       dataImage.current = image;
       dataImagepatch.current = image.path;
@@ -218,7 +220,7 @@ export default function ProfileSettings(props) {
       cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
-      console.log(image);
+      // console.log(image);
       dataImage.current = image;
       dataImagepatch.current = image.path;
       BackHandler.addEventListener("hardwareBackPress", backAction);

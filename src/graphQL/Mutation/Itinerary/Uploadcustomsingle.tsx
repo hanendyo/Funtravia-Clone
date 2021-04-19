@@ -9,6 +9,13 @@ const Uplaodcover = gql`
       response_time
       message
       code
+      data {
+        itinerary_custom_id
+        extention
+        file_name
+        filepath
+        tiny
+      }
     }
   }
 `;

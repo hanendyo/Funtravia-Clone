@@ -237,7 +237,10 @@ export default function ItineraryChooseday(props) {
   const saveData = async () => {
     if (dataSelected.length > 0) {
       setLoading(true);
-      if (Position === "destination") {
+      if (Position === "destination" || Position === "Destination") {
+        console.log(Kiriman);
+        // return false;
+
         var datas = [];
         var x = 0;
         for (var i in dataSelected) {
@@ -346,7 +349,7 @@ export default function ItineraryChooseday(props) {
             Alert.alert("" + error);
           }
         }
-      } else if (Position === "google") {
+      } else if (Position === "google" || Position === "Google") {
         var datas = [];
         var x = 0;
         for (var i in dataSelected) {
@@ -464,7 +467,7 @@ export default function ItineraryChooseday(props) {
             console.log(error);
           }
         }
-      } else if (Position === "Event") {
+      } else if (Position === "Event" || Position === "event") {
         var datas = [];
         var x = 0;
         for (var i in dataSelected) {
