@@ -43,7 +43,7 @@ import {
   LikeRed,
   PinHijau,
 } from "../../../assets/svg";
-import { Button, Text, Truncate } from "../../../component";
+import { Button, FunIcon, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationByID";
 import ListDestinationByMovie from "../../../graphQL/Query/TravelIdeas/ListDestinationByMovie";
@@ -128,9 +128,10 @@ const data_film = [
   },
 ];
 
-export default function Detail_movie({ navigation, route }) {
-  let [token, setToken] = useState(route.params.token);
-  let movie_id = route.params.movie_id;
+export default function Detail_movie(props, { navigation, route }) {
+  console.log("props", props);
+  let [token, setToken] = useState(props.route.params.token);
+  let movie_id = props.route.params.movie_id;
   let [canScroll, setCanScroll] = useState(true);
   const { t } = useTranslation();
   const HeaderComponent = {
@@ -210,7 +211,7 @@ export default function Detail_movie({ navigation, route }) {
   useEffect(() => {
     // console.log("test");
     // loadAsync();
-    navigation.setOptions(HeaderComponent);
+    props.navigation.setOptions(HeaderComponent);
   }, []);
 
   const [
@@ -478,6 +479,269 @@ export default function Detail_movie({ navigation, route }) {
         {/* {token ? ( */}
         <FlatList
           data={listdestinasi_bymovie}
+          horizontal={false}
+          renderItem={({ item, index }) => (
+            <Pressable
+              onPress={() => {
+                props.navigation.navigate("detailStack", {
+                  id: item.id,
+                  name: item.name,
+                });
+              }}
+              // onPress={() => {
+              //   props?.route?.params && props?.route?.params?.iditinerary
+              //     ? props.navigation.push("DestinationUnescoDetail", {
+              //         id: item.id,
+              //         name: item.name,
+              //         token: token,
+              //         iditinerary: props.route.params.iditinerary,
+              //         datadayaktif: props.route.params.datadayaktif,
+              //       })
+              //     : props.navigation.push("DestinationUnescoDetail", {
+              //         id: item.id,
+              //         name: item.name,
+              //         token: token,
+              //       });
+              // }}
+              style={{
+                width: "100%",
+                paddingLeft: 10,
+                paddingRight: 10,
+                elevation: 2,
+                backgroundColor: "#FFFFFF",
+
+                marginBottom: 5,
+                borderRadius: 10,
+                marginTop: 5,
+                flexDirection: "row",
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+
+                  paddingTop: 15,
+                  flexDirection: "row",
+                }}
+              >
+                <Image
+                  source={
+                    item.cover && item.cover
+                      ? { uri: item.cover }
+                      : default_image
+                  }
+                  style={{ width: "40%", height: 145, borderRadius: 10 }}
+                  resizeMode="cover"
+                />
+                <View
+                  style={{
+                    paddingLeft: 10,
+                    paddingVertical: 5,
+                    width: "60%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+
+                        alignItems: "center",
+                        marginBottom: 5,
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#F4F4F4",
+                          borderRadius: 4,
+                          paddingHorizontal: 8,
+                          paddingVertical: 3,
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Star width={15} height={15} />
+                        <Text style={{ paddingLeft: 5 }} type="bold">
+                          {item.rating}
+                        </Text>
+                      </View>
+                      {item.liked === false ? (
+                        <Button
+                          onPress={() => _liked(item.id, index)}
+                          type="circle"
+                          style={{
+                            width: 25,
+                            borderRadius: 19,
+                            height: 25,
+                            justifyContent: "center",
+                            alignContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#EEEEEE",
+                            zIndex: 999,
+                          }}
+                        >
+                          <LikeEmptynew width={15} height={15} />
+                        </Button>
+                      ) : (
+                        <Button
+                          onPress={() => _unliked(item.id)}
+                          type="circle"
+                          style={{
+                            width: 25,
+                            borderRadius: 17.5,
+                            height: 25,
+                            justifyContent: "center",
+                            alignContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#EEEEEE",
+                            zIndex: 999,
+                          }}
+                        >
+                          <LikeRed width={15} height={15} />
+                        </Button>
+                      )}
+                    </View>
+                    <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+                      {item.name}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      <PinHijau width={15} height={15} />
+                      <Text
+                        type="regular"
+                        size="description"
+                        style={{ color: "#464646", marginLeft: 5 }}
+                      >
+                        {item.cities.name && item.countries.name
+                          ? `${item.cities.name}`
+                          : ""}
+                      </Text>
+                    </View>
+                  </View>
+                  {/* icon great for */}
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      padding: 0,
+                      // width: (Dimensions.get("screen").width - 100) * 0.5 ,
+                    }}
+                  >
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {item.greatfor && item.greatfor.length ? (
+                          <View
+                            style={{
+                              justifyContent: "flex-start",
+                              alignContent: "flex-start",
+                            }}
+                          >
+                            <Text
+                              size="description"
+                              type="bold"
+                              style={{
+                                color: "#464646",
+                              }}
+                            >
+                              {t("greatFor")}:
+                            </Text>
+
+                            <View
+                              style={{
+                                height: 50,
+                                flexDirection: "row",
+                                justifyContent: "space-evenly",
+                                alignContent: "space-between",
+                                alignItems: "stretch",
+                                alignSelf: "flex-start",
+                              }}
+                            >
+                              {item.greatfor.map((item, index) => {
+                                return index < 3 ? (
+                                  <FunIcon
+                                    icon={item.icon}
+                                    fill="#464646"
+                                    height={42}
+                                    width={42}
+                                    style={{}}
+                                  />
+                                ) : null;
+                              })}
+                            </View>
+                          </View>
+                        ) : (
+                          <View
+                            style={{
+                              height: 50,
+                              marginBottom: 15,
+                              flexDirection: "row",
+                              justifyContent: "space-evenly",
+                              alignContent: "space-between",
+                              alignItems: "stretch",
+                              alignSelf: "flex-start",
+                            }}
+                          ></View>
+                        )}
+                      </View>
+                    </View>
+
+                    <Button
+                      size="small"
+                      text={t("adddeswishlist")}
+                      color="primary"
+                      onPress={() => {
+                        props.route.params && props.route.params.iditinerary
+                          ? props.navigation.dispatch(
+                              StackActions.replace("ItineraryStack", {
+                                screen: "ItineraryChooseday",
+                                params: {
+                                  Iditinerary: props.route.params.iditinerary,
+                                  Kiriman: item.id,
+                                  token: token,
+                                  Position: "destination",
+                                  datadayaktif: props.route.params.datadayaktif,
+                                },
+                              })
+                            )
+                          : props.navigation.push("ItineraryStack", {
+                              screen: "ItineraryPlaning",
+                              params: {
+                                idkiriman: item.id,
+                                Position: "destination",
+                              },
+                            });
+                      }}
+                      style={{
+                        marginTop: 10,
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+            </Pressable>
+          )}
+          // keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+
+          // extraData={selected}
+        />
+        {/* <FlatList
+          data={listdestinasi_bymovie}
           renderItem={({ item, index }) => (
             <Pressable
               onPress={() => {
@@ -666,7 +930,7 @@ export default function Detail_movie({ navigation, route }) {
             // borderWidth: 1,
             paddingVertical: 10,
           }}
-        />
+        /> */}
         {/* ) : null} */}
       </View>
     </ScrollView>

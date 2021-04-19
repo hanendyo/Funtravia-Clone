@@ -1,34 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-	ActivityIndicator,
-	Animated,
-	Dimensions,
-	Image,
-	ImageBackground,
-	PanResponder,
-	Platform,
-	SafeAreaView,
-	StatusBar,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-	ScrollView,
-	FlatList,
-	Pressable,
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  Image,
+  ImageBackground,
+  PanResponder,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  FlatList,
+  Pressable,
 } from "react-native";
 import {
-	bg_movielocation,
-	laskar_pelangi,
-	hit_n_run,
-	serigala_terakhir,
-	night_bus,
-	gundala,
-	headshot,
-	wiro_sableng,
-	the_raid_2,
-	merantau,
-	the_raid,
-	default_image,
+  bg_movielocation,
+  laskar_pelangi,
+  hit_n_run,
+  serigala_terakhir,
+  night_bus,
+  gundala,
+  headshot,
+  wiro_sableng,
+  the_raid_2,
+  merantau,
+  the_raid,
+  default_image,
 } from "../../../assets/png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -48,83 +48,83 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
 const HeaderHeight = width - 100;
 const SafeStatusBar = Platform.select({
-	ios: 44,
-	android: StatusBar.currentHeight,
+  ios: 44,
+  android: StatusBar.currentHeight,
 });
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 const data_movielocation_utama = {
-	id: "1",
-	judul: "Laskar Pelangi",
-	sinopsis:
-		"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-	cover: laskar_pelangi,
+  id: "1",
+  judul: "Laskar Pelangi",
+  sinopsis:
+    "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+  cover: laskar_pelangi,
 };
 const data_film = [
-	{
-		id: "1",
-		judul: "The Raid",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: the_raid,
-	},
-	{
-		id: "2",
-		judul: "Merantau",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: merantau,
-	},
-	{
-		id: "3",
-		judul: "The Raid 2",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: the_raid_2,
-	},
-	{
-		id: "4",
-		judul: "Wiro Sableng",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: wiro_sableng,
-	},
-	{
-		id: "5",
-		judul: "Headshot",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: headshot,
-	},
-	{
-		id: "6",
-		judul: "Gundala",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: gundala,
-	},
-	{
-		id: "7",
-		judul: "Night Bus",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: night_bus,
-	},
-	{
-		id: "8",
-		judul: "Serigala Terakhir",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: serigala_terakhir,
-	},
-	{
-		id: "9",
-		judul: "Hit & Run",
-		sinopsis:
-			"In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-		cover: hit_n_run,
-	},
+  {
+    id: "1",
+    judul: "The Raid",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: the_raid,
+  },
+  {
+    id: "2",
+    judul: "Merantau",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: merantau,
+  },
+  {
+    id: "3",
+    judul: "The Raid 2",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: the_raid_2,
+  },
+  {
+    id: "4",
+    judul: "Wiro Sableng",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: wiro_sableng,
+  },
+  {
+    id: "5",
+    judul: "Headshot",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: headshot,
+  },
+  {
+    id: "6",
+    judul: "Gundala",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: gundala,
+  },
+  {
+    id: "7",
+    judul: "Night Bus",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: night_bus,
+  },
+  {
+    id: "8",
+    judul: "Serigala Terakhir",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: serigala_terakhir,
+  },
+  {
+    id: "9",
+    judul: "Hit & Run",
+    sinopsis:
+      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
+    cover: hit_n_run,
+  },
 ];
 
 export default function MovieLocation({ navigation, route }) {
@@ -224,12 +224,12 @@ export default function MovieLocation({ navigation, route }) {
     },
   });
 
-	let movie_most_populer = [];
-	if (datafirst && datafirst.movie_most_populer) {
-		movie_most_populer = datafirst.movie_most_populer;
-	}
+  let movie_most_populer = [];
+  if (datafirst && datafirst.movie_most_populer) {
+    movie_most_populer = datafirst.movie_most_populer;
+  }
 
-	const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     loadAsync();
@@ -565,6 +565,6 @@ export default function MovieLocation({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-	container: {},
-	header: {},
+  container: {},
+  header: {},
 });

@@ -23,6 +23,7 @@ const ListDestination = gql`
       id
       name
       rating
+      cover
       count_review
       liked
       cities {

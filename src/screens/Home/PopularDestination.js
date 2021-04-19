@@ -36,6 +36,7 @@ export default function PopularDestination({ props }) {
 		});
 	};
 
+<<<<<<< Updated upstream
 	return (
 		<SafeAreaView>
 			{data && data.beranda_popularV2.length ? (
@@ -177,6 +178,151 @@ export default function PopularDestination({ props }) {
 			) : null}
 		</SafeAreaView>
 	);
+=======
+  return (
+    <SafeAreaView>
+      {data && data.beranda_popularV2.length ? (
+        <TouchableOpacity
+          style={{
+            width: width,
+            marginTop: 10,
+            // height: 150,
+            paddingHorizontal: 20,
+            shadowColor: "#464646",
+            shadowOffset: { width: 0.5, height: 0.5 },
+            shadowRadius: 0.5,
+            shadowOpacity: 0.5,
+            // elevation: 2,
+          }}
+          onPress={() =>
+            onSelect(
+              data && data.beranda_popularV2 ? data.beranda_popularV2[0] : null
+            )
+          }
+        >
+          <ImageBackground
+            source={
+              data &&
+              data.beranda_popularV2[0] &&
+              data.beranda_popularV2[0].cover
+                ? { uri: data.beranda_popularV2[0].cover }
+                : default_image
+            }
+            style={{
+              width: width - 40,
+              height: 134,
+              justifyContent: "flex-end",
+            }}
+            imageStyle={[styles.destinationMainImage, { height: 134 }]}
+          >
+            <LinearGradient
+              colors={["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0)"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }}
+              style={{
+                height: "50%",
+                width: "100%",
+                alignItems: "flex-start",
+                alignContent: "flex-start",
+                justifyContent: "flex-end",
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                paddingVertical: 15,
+              }}
+            >
+              <Text
+                size="title"
+                type="black"
+                style={{
+                  zIndex: 2,
+                  color: "#fff",
+                }}
+              >
+                {data && data.beranda_popularV2[0]
+                  ? Capital({ text: data.beranda_popularV2[0].name })
+                  : ""}
+              </Text>
+            </LinearGradient>
+          </ImageBackground>
+        </TouchableOpacity>
+      ) : null}
+      {data && data.beranda_popularV2.length ? (
+        <FlatList
+          contentContainerStyle={{
+            marginTop: 5,
+            justifyContent: "space-evenly",
+            paddingStart: 18,
+            paddingEnd: 18,
+          }}
+          horizontal={true}
+          data={data.beranda_popularV2}
+          renderItem={({ item, index }) =>
+            index !== 0 ? (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => onSelect(item)}
+                style={{
+                  shadowColor: "#464646",
+                  shadowOffset: { width: 0.5, height: 0.5 },
+                  shadowRadius: 0.5,
+                  shadowOpacity: 0.5,
+                  elevation: 2,
+                }}
+              >
+                <ImageBackground
+                  key={item.id}
+                  source={
+                    item && item.cover
+                      ? { uri: item.cover }
+                      : { uri: defaultImage }
+                  }
+                  style={{
+                    width: (width - 50) / 3,
+                    height: (width - 50) / 3,
+                    marginHorizontal: 3,
+                    borderRadius: 5,
+                    justifyContent: "flex-end",
+                  }}
+                  imageStyle={styles.destinationImage}
+                >
+                  <LinearGradient
+                    colors={["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0)"]}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0 }}
+                    style={{
+                      height: "50%",
+                      width: "100%",
+                      alignItems: "flex-start",
+                      alignContent: "flex-start",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type="bold"
+                      style={{
+                        color: "#ffff",
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      {Capital({ text: item.name })}
+                    </Text>
+                  </LinearGradient>
+                </ImageBackground>
+              </TouchableOpacity>
+            ) : null
+          }
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          extraData={selected}
+        />
+      ) : null}
+    </SafeAreaView>
+  );
+>>>>>>> Stashed changes
 }
 
 const styles = StyleSheet.create({

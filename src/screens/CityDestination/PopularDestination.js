@@ -65,9 +65,7 @@ export default function AllDestination(props) {
       type: search.tag ? search.tag : "",
     },
   });
-
- 
-
+  console.log("data", data);
   const [
     GetContinent,
     { data: dataFillter, loading: loadingcat, error: errorcat },
@@ -97,8 +95,7 @@ export default function AllDestination(props) {
   }, []);
 
   const RenderList = ({ item }) => {
-    console.log({ Item: item.city })
-    return item && item.city.length > 0  ? (
+    return item && item.city.length > 0 ? (
       <View>
         {item ? (
           <View
@@ -174,7 +171,7 @@ export default function AllDestination(props) {
         >
           {item.city && item.city.length
             ? item.city.map((value, i) => {
-                // console.log(value);
+                console.log("value", value);
                 return (
                   <TouchableOpacity
                     onPress={() =>
@@ -210,9 +207,7 @@ export default function AllDestination(props) {
                       <ImageBackground
                         key={value.id}
                         source={
-                          value.image
-                            ? { uri: value.image.image }
-                            : default_image
+                          value.cover ? { uri: value.cover } : default_image
                         }
                         style={{
                           width: (Dimensions.get("window").width - 20) / 2,
@@ -239,17 +234,16 @@ export default function AllDestination(props) {
                       <View>
                         <Text type="bold" size="title" style={{}}>
                           <Truncate
-                              text={Capital({ text: value.name })}
-                              length={20}
-                            />
+                            text={Capital({ text: value.name })}
+                            length={20}
+                          />
                         </Text>
                         <Text type="" size="label" style={{}}>
-                            {rupiah(value.count_destination)} {t("destination")}
+                          {rupiah(value.count_destination)} {t("destination")}
                         </Text>
                         <Text type="" size="label" style={{}}>
-                             {rupiah(value.count_plan_tour)} {t("trip")}
+                          {rupiah(value.count_plan_tour)} {t("trip")}
                         </Text>
-
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -258,7 +252,7 @@ export default function AllDestination(props) {
             : null}
         </View>
       </View>
-    ):null;
+    ) : null;
   };
 
   return (
@@ -274,7 +268,7 @@ export default function AllDestination(props) {
           sendBack={(e) => setSearch(e)}
         />
       ) : null}
-      
+
       <FlatList
         contentContainerStyle={{
           marginTop: 5,
@@ -282,7 +276,11 @@ export default function AllDestination(props) {
           paddingStart: 10,
         }}
         horizontal={false}
-        data={data && data.populer_city_destination.length ? data.populer_city_destination : null}
+        data={
+          data && data.populer_city_destination.length
+            ? data.populer_city_destination
+            : null
+        }
         renderItem={({ item, index }) => <RenderList item={item} />}
         showsHorizontalScrollIndicator={false}
         extraData={selected}
