@@ -519,8 +519,6 @@ export default function ItineraryDetail(props) {
           throw new Error("Error Input");
         }
 
-        console.log(response);
-        console.log(response.data.update_cover_itinerary.code);
         if (response.data) {
           if (response.data.update_cover_itinerary.code !== 200) {
             throw new Error(response.data.update_cover_itinerary.message);
@@ -658,7 +656,6 @@ export default function ItineraryDetail(props) {
     setloading(true);
 
     if (data) {
-      // console.log(tmpFile.base64);
       try {
         let response = await mutationUploadAlbum({
           variables: {
@@ -671,7 +668,6 @@ export default function ItineraryDetail(props) {
         if (errorupload) {
           throw new Error("Error Input");
         }
-        // console.log(response);
 
         if (response.data) {
           if (response.data.uploadalbums.code !== 200) {
@@ -1149,19 +1145,11 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    // console.log(status);
-    // if (
-    //   statusKiriman !== "saved" &&
-    //   statusKiriman !== "edit" &&
-    //   statusKiriman !== "finish"
-    // ) {
     props.navigation.goBack();
-    // } else {
-    //   props.navigation.navigate("TripPlaning", {
-    //     render: status,
-    //   });
-    // }
   };
+
+  // console.log(itincountries);
+  // console.log(datadayaktif);
 
   const [
     mutationChangestatus,
@@ -3956,7 +3944,6 @@ export default function ItineraryDetail(props) {
     var tempdatas = [];
     var x = 0;
     for (var i in data) {
-      // console.log(data[i]);
       if (data[i].id !== "camera") {
         let wid = 0;
         let hig = 0;
@@ -4748,7 +4735,22 @@ export default function ItineraryDetail(props) {
                 paddingVertical: 10,
               }}
               onPress={() => {
-                deleteactivity(itincountries, idactivity, types);
+                Alert.alert("", t("DeleteActivityfromItinerary") + "?", [
+                  {
+                    text: t("cancel"),
+                    onPress: () => {
+                      setModalmenu(false);
+                    },
+                    style: "cancel",
+                  },
+                  {
+                    text: t("delete"),
+                    onPress: () => {
+                      deleteactivity(itincountries, idactivity, types);
+                    },
+                  },
+                ]);
+                return true;
               }}
             >
               <Text
@@ -4759,16 +4761,29 @@ export default function ItineraryDetail(props) {
                 {t("DeleteActivityfromItinerary")}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {}}
-            >
-              <Text size="description" type="regular" style={{}}>
-                Add Activity to Itinerary
-              </Text>
-            </TouchableOpacity>
+            {types !== "custom" ? (
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10,
+                }}
+                onPress={() => {
+                  // add to itin
+                  setModalmenu(false);
+
+                  props.navigation.push("ItineraryStack", {
+                    screen: "ItineraryPlaning",
+                    params: {
+                      idkiriman: idactivity,
+                      Position: types,
+                    },
+                  });
+                }}
+              >
+                <Text size="description" type="regular" style={{}}>
+                  Add Activity to Itinerary
+                </Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         </Modal>
 
