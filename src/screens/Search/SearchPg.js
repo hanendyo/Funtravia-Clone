@@ -162,7 +162,7 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const srcfromricent = async (text) => {
-    console.log(text);
+    // console.log(text);
     SetSearchtext(text);
     myStateRef.current = true;
     setAktifSearch(true);
@@ -172,7 +172,7 @@ export default function SearchPg(props, { navigation, route }) {
     let arryrecent = [...recent];
     arryrecent.splice(index, 1);
 
-    console.log(arryrecent);
+    // console.log(arryrecent);
     setRecent(arryrecent);
     await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
   };
@@ -194,7 +194,7 @@ export default function SearchPg(props, { navigation, route }) {
   const recent_save = async (data) => {
     let arryrecent = [...recent];
     arryrecent.splice(0, 0, data);
-    var filteredArray = arryrecent.filter(function (item, pos) {
+    var filteredArray = arryrecent.filter(function(item, pos) {
       return arryrecent.indexOf(item) == pos;
     });
     let ambil;
@@ -273,7 +273,7 @@ export default function SearchPg(props, { navigation, route }) {
   if (dataDestination && dataDestination.destinationSearch) {
     destinationSearch = dataDestination.destinationSearch;
   }
-  console.log("datades", destinationSearch);
+  // console.log("datades", destinationSearch);
 
   let user_search = [];
   if (dataSrcuser && dataSrcuser.user_search) {
@@ -320,9 +320,6 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   const _liked = async (id, index) => {
-
-    console.log("id", id);
-    console.log("index", index);
     if (token || token !== "") {
       destinationSearch[index].liked = true;
       try {
@@ -331,7 +328,6 @@ export default function SearchPg(props, { navigation, route }) {
             destination_id: id,
           },
         });
-        // console.log(response);
         if (loadingLike) {
           Alert.alert("Loading!!");
         }
@@ -530,7 +526,6 @@ export default function SearchPg(props, { navigation, route }) {
 
   //BUAT FOLLOW UNFOLLOW FUNCTION
   const _unfollow = async (id, index) => {
-    // console.log('get rekt' + typeof status);
     if (token || token !== "") {
       user_search[index].status = "0";
       try {
@@ -873,6 +868,7 @@ export default function SearchPg(props, { navigation, route }) {
               // />
 
               <FlatList
+                key={"search"}
                 contentContainerStyle={{
                   marginTop: 5,
                   justifyContent: "space-evenly",
@@ -1000,288 +996,284 @@ export default function SearchPg(props, { navigation, route }) {
                 </Text>
               </View>
             ) : (
-
               <FlatList
-              data={destinationSearch}
-              contentContainerStyle={{
-                marginTop: 5,
-                justifyContent: "space-evenly",
-                paddingStart: 10,
-                paddingEnd: 10,
-                paddingBottom: 120,
-              }}
-              horizontal={false}
-              renderItem={({ item, index }) => (
-               
-                <Pressable
-                  // onPress={() => {
-                  //   props.navigation.navigate("detailStack", {
-                  //     id: item.id,
-                  //     name: item.name,
-                  //   });
-                  // }}
-      
-                  onPress={() => {
-                    props?.route?.params && props?.route?.params?.iditinerary
-                      ? props.navigation.push("DestinationUnescoDetail", {
-                          id: item.id,
-                          name: item.name,
-                          token: token,
-                          iditinerary: props.route.params.iditinerary,
-                          datadayaktif: props.route.params.datadayaktif,
-                        })
-                      : props.navigation.push("DestinationUnescoDetail", {
-                          id: item.id,
-                          name: item.name,
-                          token: token,
-                        });
-                  }}
-                  style={{
-                    width: "100%",
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    elevation: 2,
-                    backgroundColor: "#FFFFFF",
-                  
-                    marginBottom: 10,
-                    borderRadius: 10,
-                    marginTop: 10,
-                    flexDirection: "row",
-                  }}
-                >
-                  <View
-                  style={{
-                    width: "100%",
-                   
-                    paddingTop:15,
-                    flexDirection: "row",
-                  }}
-                  >
-      
-                 
-                  <Image
-                    source={
-                      item.cover && item.cover
-                        ? { uri: item.cover}
-                        : default_image
-                    }
-                    style={{ width: "40%", height: 145, borderRadius: 10 }}
-                    resizeMode="cover"
-                  />
-                  <View
+                data={destinationSearch}
+                contentContainerStyle={{
+                  marginTop: 5,
+                  justifyContent: "space-evenly",
+                  paddingStart: 10,
+                  paddingEnd: 10,
+                  paddingBottom: 120,
+                }}
+                horizontal={false}
+                renderItem={({ item, index }) => (
+                  <Pressable
+                    // onPress={() => {
+                    //   props.navigation.navigate("detailStack", {
+                    //     id: item.id,
+                    //     name: item.name,
+                    //   });
+                    // }}
+
+                    onPress={() => {
+                      props?.route?.params && props?.route?.params?.iditinerary
+                        ? props.navigation.push("DestinationUnescoDetail", {
+                            id: item.id,
+                            name: item.name,
+                            token: token,
+                            iditinerary: props.route.params.iditinerary,
+                            datadayaktif: props.route.params.datadayaktif,
+                          })
+                        : props.navigation.push("DestinationUnescoDetail", {
+                            id: item.id,
+                            name: item.name,
+                            token: token,
+                          });
+                    }}
                     style={{
+                      width: "100%",
                       paddingLeft: 10,
-                      paddingVertical: 5,
-                      width: "60%",
-                      justifyContent: "space-between",
+                      paddingRight: 10,
+                      elevation: 2,
+                      backgroundColor: "#FFFFFF",
+
+                      marginBottom: 5,
+                      borderRadius: 10,
+                      marginTop: 5,
+                      flexDirection: "row",
                     }}
                   >
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                         
-                          alignItems: "center",
-                          marginBottom: 5,
-                        }}
-                      >
-                        <View
-                          style={{
-                            backgroundColor: "#F4F4F4",
-                            borderRadius: 4,
-                            paddingHorizontal: 8,
-                            paddingVertical: 3,
-                            flexDirection: "row",
-                          }}
-                        >
-                          <Star width={15} height={15} />
-                          <Text style={{ paddingLeft: 5 }} type="bold">
-                            {item.rating}
-                          </Text>
-                        </View>
-                        {item.liked === false ? (
-                          <Button
-                            onPress={() => _liked(item.id, index)}
-                            type="circle"
-                            style={{
-                              width: 25,
-                              borderRadius: 19,
-                              height: 25,
-                              justifyContent: "center",
-                              alignContent: "center",
-                              alignItems: "center",
-                              backgroundColor: "#EEEEEE",
-                              zIndex: 999,
-                            }}
-                          >
-                            <LikeEmptynew width={15} height={15} />
-                          </Button>
-                        ) : (
-                          <Button
-                            onPress={() => _unliked(item.id)}
-                            type="circle"
-                            style={{
-                              width: 25,
-                              borderRadius: 17.5,
-                              height: 25,
-                              justifyContent: "center",
-                              alignContent: "center",
-                              alignItems: "center",
-                              backgroundColor: "#EEEEEE",
-                              zIndex: 999,
-                            }}
-                          >
-                            <LikeRed width={15} height={15} />
-                          </Button>
-                        )}
-                      </View>
-                      <Text size="title" type="bold" style={{ marginBottom: 5 }}>
-                        {item.name}
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          alignContent: "center",
-                          justifyContent: "flex-start",
-                        }}
-                      >
-                        <PinHijau width={15} height={15} />
-                        <Text
-                          type="regular"
-                          size="description"
-                          style={{ color: "#464646", marginLeft: 5 }}
-                        >
-                          {item.cities.name && item.countries.name
-                            ? `${item.cities.name}`
-                            : ""}
-                        </Text>
-                      </View>
-                    </View>
-                    {/* icon great for */}
                     <View
                       style={{
-                        marginTop: 10,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignContent: "center",
-                        alignItems: "center",
                         width: "100%",
-                        padding: 0,
-                        // width: (Dimensions.get("screen").width - 100) * 0.5 ,
+
+                        paddingTop: 15,
+                        flexDirection: "row",
                       }}
                     >
-                      <View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          {item.greatfor && item.greatfor.length ? (
+                      <Image
+                        source={
+                          item.cover && item.cover
+                            ? { uri: item.cover }
+                            : default_image
+                        }
+                        style={{ width: "40%", height: 145, borderRadius: 10 }}
+                        resizeMode="cover"
+                      />
+                      <View
+                        style={{
+                          paddingLeft: 10,
+                          paddingVertical: 5,
+                          width: "60%",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+
+                              alignItems: "center",
+                              marginBottom: 5,
+                            }}
+                          >
                             <View
                               style={{
-                                justifyContent: "flex-start",
-                                alignContent: "flex-start",
+                                backgroundColor: "#F4F4F4",
+                                borderRadius: 4,
+                                paddingHorizontal: 8,
+                                paddingVertical: 3,
+                                flexDirection: "row",
                               }}
                             >
-                                <Text
-                                size="description"
-                                type="bold"
+                              <Star width={15} height={15} />
+                              <Text style={{ paddingLeft: 5 }} type="bold">
+                                {item.rating}
+                              </Text>
+                            </View>
+                            {item.liked === false ? (
+                              <Button
+                                onPress={() => _liked(item.id, index)}
+                                type="circle"
                                 style={{
-                                  color: "#464646",
+                                  width: 25,
+                                  borderRadius: 19,
+                                  height: 25,
+                                  justifyContent: "center",
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  backgroundColor: "#EEEEEE",
+                                  zIndex: 999,
                                 }}
                               >
-                                {t("greatFor")}:
-                              </Text>
-                             
-                              <View
+                                <LikeEmptynew width={15} height={15} />
+                              </Button>
+                            ) : (
+                              <Button
+                                onPress={() => _unliked(item.id)}
+                                type="circle"
+                                style={{
+                                  width: 25,
+                                  borderRadius: 17.5,
+                                  height: 25,
+                                  justifyContent: "center",
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  backgroundColor: "#EEEEEE",
+                                  zIndex: 999,
+                                }}
+                              >
+                                <LikeRed width={15} height={15} />
+                              </Button>
+                            )}
+                          </View>
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{ marginBottom: 5 }}
+                          >
+                            {item.name}
+                          </Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              alignContent: "center",
+                              justifyContent: "flex-start",
+                            }}
+                          >
+                            <PinHijau width={15} height={15} />
+                            <Text
+                              type="regular"
+                              size="description"
+                              style={{ color: "#464646", marginLeft: 5 }}
+                            >
+                              {item.cities.name && item.countries.name
+                                ? `${item.cities.name}`
+                                : ""}
+                            </Text>
+                          </View>
+                        </View>
+                        {/* icon great for */}
+                        <View
+                          style={{
+                            marginTop: 10,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignContent: "center",
+                            alignItems: "center",
+                            width: "100%",
+                            padding: 0,
+                            // width: (Dimensions.get("screen").width - 100) * 0.5 ,
+                          }}
+                        >
+                          <View>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              {item.greatfor && item.greatfor.length ? (
+                                <View
+                                  style={{
+                                    justifyContent: "flex-start",
+                                    alignContent: "flex-start",
+                                  }}
+                                >
+                                  <Text
+                                    size="description"
+                                    type="bold"
+                                    style={{
+                                      color: "#464646",
+                                    }}
+                                  >
+                                    {t("greatFor")}:
+                                  </Text>
+
+                                  <View
+                                    style={{
+                                      height: 50,
+                                      flexDirection: "row",
+                                      justifyContent: "space-evenly",
+                                      alignContent: "space-between",
+                                      alignItems: "stretch",
+                                      alignSelf: "flex-start",
+                                    }}
+                                  >
+                                    {item.greatfor.map((item, index) => {
+                                      return index < 3 ? (
+                                        <FunIcon
+                                          icon={item.icon}
+                                          fill="#464646"
+                                          height={42}
+                                          width={42}
+                                          style={{}}
+                                        />
+                                      ) : null;
+                                    })}
+                                  </View>
+                                </View>
+                              ) : (
+                                <View
                                   style={{
                                     height: 50,
+                                    marginBottom: 15,
                                     flexDirection: "row",
                                     justifyContent: "space-evenly",
                                     alignContent: "space-between",
                                     alignItems: "stretch",
                                     alignSelf: "flex-start",
                                   }}
-                                >
-                                   {item.greatfor.map((item, index) => {
-                              
-                                return index < 3 ? (
-                                  <FunIcon
-                                    icon={item.icon}
-                                    fill="#464646"
-                                    height={42}
-                                    width={42}
-                                    style={{}}
-                                  />
-                                  ):null
-                                  })}
-                                </View>
-                                
-                              
+                                ></View>
+                              )}
                             </View>
-                          ) : (
-                            <View
-                                style={{
-                                  height: 50,
-                                  marginBottom:15,
-                                  flexDirection: "row",
-                                  justifyContent: "space-evenly",
-                                  alignContent: "space-between",
-                                  alignItems: "stretch",
-                                  alignSelf: "flex-start",
-                              
-                              }}
-                            >
-                              
-                        
-                            </View>
-                          )}
+                          </View>
+
+                          <Button
+                            size="small"
+                            text={t("adddeswishlist")}
+                            color="primary"
+                            onPress={() => {
+                              props.route.params &&
+                              props.route.params.iditinerary
+                                ? props.navigation.dispatch(
+                                    StackActions.replace("ItineraryStack", {
+                                      screen: "ItineraryChooseday",
+                                      params: {
+                                        Iditinerary:
+                                          props.route.params.iditinerary,
+                                        Kiriman: item.id,
+                                        token: token,
+                                        Position: "destination",
+                                        datadayaktif:
+                                          props.route.params.datadayaktif,
+                                      },
+                                    })
+                                  )
+                                : props.navigation.push("ItineraryStack", {
+                                    screen: "ItineraryPlaning",
+                                    params: {
+                                      idkiriman: item.id,
+                                      Position: "destination",
+                                    },
+                                  });
+                            }}
+                            style={{
+                              marginTop: 10,
+                            }}
+                          />
                         </View>
                       </View>
-      
-                      <Button
-                        size="small"
-                        text={t("adddeswishlist")}
-                        color="primary"
-                        onPress={() => {
-                          props.route.params && props.route.params.iditinerary
-                            ? props.navigation.dispatch(
-                                StackActions.replace("ItineraryStack", {
-                                  screen: "ItineraryChooseday",
-                                  params: {
-                                    Iditinerary: props.route.params.iditinerary,
-                                    Kiriman: item.id,
-                                    token: token,
-                                    Position: "destination",
-                                    datadayaktif: props.route.params.datadayaktif,
-                                  },
-                                })
-                              )
-                            : props.navigation.push("ItineraryStack", {
-                                screen: "ItineraryPlaning",
-                                params: {
-                                  idkiriman: item.id,
-                                  Position: "destination",
-                                },
-                              });
-                        }}
-                        style={{
-                          marginTop: 10,
-                        }}
-                      />
                     </View>
-                  </View>
-                  </View>
-                </Pressable>
-              )}
-              // keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-             
-              // extraData={selected}
-            />
+                  </Pressable>
+                )}
+                // keyExtractor={(item) => item.id}
+                showsHorizontalScrollIndicator={false}
+
+                // extraData={selected}
+              />
               // <FlatList
               //   data={destinationSearch}
               //   contentContainerStyle={{ marginHorizontal: 15 }}
@@ -1313,7 +1305,7 @@ export default function SearchPg(props, { navigation, route }) {
               //       <View
               //       style={{
               //         width: "100%",
-                    
+
               //         paddingTop:15,
               //         flexDirection: "row",
               //       }}
