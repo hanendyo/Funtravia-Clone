@@ -93,7 +93,7 @@ export default function Trip(props) {
   let [idwithSelected, setIdwithSelected] = useState([]);
   let [idCountry, setIdCountry] = useState("");
   let [idCity, setIdCity] = useState("");
-
+  let [opens, setOpens] = useState(0);
   let [title, setTitle] = useState("");
   let [loadingApp, setLoadingApp] = useState(false);
   let [selected, setSelected] = useState(new Map());
@@ -106,6 +106,8 @@ export default function Trip(props) {
   let [token, setToken] = useState("");
   let [dataCategories, setdataCategories] = useState([]);
   let [category_id, setcategory_id] = useState(null);
+
+  console.log(dataCategories);
 
   const jam = [
     1,
@@ -1188,9 +1190,12 @@ export default function Trip(props) {
               <View
                 style={{
                   marginTop: 10,
+                  marginBottom: opens,
                 }}
               >
                 <DropDownPicker
+                  onOpen={() => setOpens(150)}
+                  onClose={() => setOpens(0)}
                   items={dataCategories}
                   defaultValue={null}
                   containerStyle={{ height: 40 }}
@@ -1199,7 +1204,10 @@ export default function Trip(props) {
                     justifyContent: "flex-start",
                   }}
                   showArrow={false}
-                  dropDownStyle={{ backgroundColor: "#fafafa", height: 100 }}
+                  dropDownStyle={{
+                    backgroundColor: "#fafafa",
+                    height: 150,
+                  }}
                   placeholder="Pilih Kategori"
                   // multiple={true}
                   // multipleText="%d items have been selected."

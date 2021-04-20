@@ -10,6 +10,7 @@ import { Text, Button } from "../../../component";
 import { Picker } from "react-native";
 import { Bottom } from "../../../assets/svg";
 import RenderCity from "./City";
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function FilterModal({
   props,
@@ -27,15 +28,29 @@ export default function FilterModal({
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   let [dataFilterCategori, setFilterCategori] = useState(datasfilter);
-  let [dataFilterCountry, setFilterCountry] = useState(datascountry);
+  let [dataFilterCountry, setFilterCountry] = useState([]);
   let [dataFilterCity, setFilterCity] = useState([]);
   let [id_country, setId_country] = useState(null);
+
+  let [opens, setOpens] = useState(10);
   const _handleCheck = (id, indexType) => {
     const tempData = [...dataFilterCategori];
 
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
 
     setFilterCategori(tempData);
+  };
+
+  console.log("dataFilterCountry", dataFilterCountry);
+
+  const dataCountrySelect = () => {
+    let temp = [];
+    {
+      datascountry.map((item, index) => {
+        temp.push({ value: item.id, label: item.name, checked: false });
+      });
+    }
+    setFilterCountry(temp);
   };
 
   const _handleCheckc = async (id, indexType) => {
@@ -115,6 +130,7 @@ export default function FilterModal({
 
   return (
     <Modal
+      onLayout={() => dataCountrySelect()}
       isVisible={show}
       style={{
         justifyContent: "flex-end",
@@ -191,151 +207,150 @@ export default function FilterModal({
           }}
         />
         {/* ==================garis========================= */}
-        <ScrollView>
-          <View
+        <ScrollView
+          nestedScrollEnabled={true}
+          style={{
+            flexDirection: "column",
+            // justifyContent: "space-between",
+            width: "100%",
+            paddingHorizontal: 15,
+            paddingVertical: 20,
+          }}
+        >
+          <Text
+            type="bold"
+            size="title"
             style={{
-              flexDirection: "column",
-              justifyContent: "space-between",
-              width: "100%",
-              paddingHorizontal: 15,
-              paddingVertical: 20,
+              // fontSize: 20,
+              // fontFamily: "Lato-Bold",
+              color: "#464646",
             }}
           >
-            <Text
-              type="bold"
-              size="title"
-              style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
-                color: "#464646",
-              }}
-            >
-              {t("categories")}
-            </Text>
+            {t("categories")}
+          </Text>
 
-            <FlatList
-              contentContainerStyle={{
-                marginHorizontal: 3,
-                paddingVertical: 15,
-                paddingRight: 10,
-                width: screenWidth - 40,
-              }}
-              data={dataFilterCategori}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => _handleCheck(item["id"], index)}
+          <FlatList
+            contentContainerStyle={{
+              marginHorizontal: 3,
+              paddingVertical: 15,
+              paddingRight: 10,
+              width: screenWidth - 40,
+            }}
+            data={dataFilterCategori}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() => _handleCheck(item["id"], index)}
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  // borderColor: "#464646",
+                  width: "49%",
+                  marginRight: 3,
+                  marginBottom: 20,
+                  justifyContent: "flex-start",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CheckBox
+                  onCheckColor="#FFF"
+                  lineWidth={3}
+                  onFillColor="#209FAE"
+                  onTintColor="#209FAE"
+                  boxType={"square"}
                   style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    borderColor: "#464646",
-                    width: "49%",
-                    marginRight: 3,
-                    marginBottom: 20,
-                    justifyContent: "flex-start",
-                    alignContent: "center",
-                    alignItems: "center",
+                    alignSelf: "center",
+                    width: Platform.select({
+                      ios: 30,
+                      android: 35,
+                    }),
+                    transform: Platform.select({
+                      ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                      android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                    }),
+                  }}
+                  onValueChange={() => _handleCheck(item["id"], index)}
+                  value={item["checked"]}
+                />
+
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    // fontFamily: "Lato-Regular",
+                    // fontSize: 16,
+                    // alignContent:'center',
+                    // textAlign: "center",
+
+                    marginLeft: 0,
+                    color: "#464646",
                   }}
                 >
-                  <CheckBox
-                    onValueChange={() => _handleCheck(item["id"], index)}
-                    value={item["checked"]}
-                  />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 16,
-                      // alignContent:'center',
-                      // textAlign: "center",
-
-                      marginLeft: 0,
-                      color: "#464646",
-                    }}
-                  >
-                    {item["name"]}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              extraData={selected}
-            ></FlatList>
-
-            <Text
-              type="bold"
-              size="title"
-              style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
-                color: "#464646",
-              }}
-            >
-              {t("location")}
-            </Text>
-            <View
-              style={{
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: "#d3d3d3",
-                marginVertical: 10,
-              }}
-            >
-              <Picker
-                iosIcon={
-                  <View>
-                    <Bottom />
-                  </View>
-                }
-                iosHeader="Select Hours"
-                note
-                mode="dropdown"
-                selectedValue={id_country}
-                textStyle={{ fontFamily: "Lato-Regular" }}
-                itemTextStyle={{ fontFamily: "Lato-Regular" }}
-                itemStyle={{ fontFamily: "Lato-Regular" }}
-                placeholderStyle={{ fontFamily: "Lato-Regular" }}
-                headerTitleStyle={{
-                  fontFamily: "Lato-Regular",
-                }}
-                style={{
-                  color: "#646464",
-                  fontFamily: "Lato-Regular",
-                }}
-                onValueChange={(itemValue, itemIndex) =>
-                  _handleCheckc(itemValue, itemIndex - 1)
-                }
-              >
-                <Picker.Item key={0} label={"All Country"} value={""} />
-                {dataFilterCountry.map((item, index) => {
-                  return (
-                    <Picker.Item
-                      key={item.id}
-                      label={item.name}
-                      value={item.id}
-                    />
-                  );
-                })}
-              </Picker>
-            </View>
-            {datacity &&
-            datacity.get_filter_city_evnt &&
-            datacity.get_filter_city_evnt.length > 0 ? (
-              <RenderCity
-                data={datacity}
-                dataFilterCity={dataFilterCity}
-                setFilterCity={(x) => setFilterCity(x)}
-                props={props}
-              />
-            ) : (
-              () => {
-                setFilterCity([]);
-              }
+                  {item["name"]}
+                </Text>
+              </TouchableOpacity>
             )}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={2}
+            showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
+            extraData={selected}
+          ></FlatList>
+
+          <Text
+            type="bold"
+            size="title"
+            style={{
+              // fontSize: 20,
+              // fontFamily: "Lato-Bold",
+              color: "#464646",
+            }}
+          >
+            {t("location")}
+          </Text>
+          <View
+            style={{
+              borderWidth: 1,
+              borderRadius: 5,
+              borderColor: "#d3d3d3",
+              marginVertical: 10,
+              marginBottom: opens,
+            }}
+          >
+            <DropDownPicker
+              autoScrollToDefaultValue={false}
+              onOpen={() => setOpens(150)}
+              onClose={() => setOpens(10)}
+              items={dataFilterCountry}
+              defaultValue={dataFilterCountry[0].name}
+              containerStyle={{ height: 40 }}
+              style={{ backgroundColor: "#fafafa" }}
+              itemStyle={{
+                justifyContent: "flex-start",
+              }}
+              showArrow={false}
+              dropDownStyle={{
+                backgroundColor: "#fafafa",
+                height: 150,
+              }}
+              placeholder="Pilih Negara"
+              onChangeItem={(item, index) => _handleCheckc(item.value, index)}
+            />
           </View>
+          {datacity &&
+          datacity.get_filter_city_evnt &&
+          datacity.get_filter_city_evnt.length > 0 ? (
+            <RenderCity
+              data={datacity}
+              dataFilterCity={dataFilterCity}
+              setFilterCity={(x) => setFilterCity(x)}
+              props={props}
+            />
+          ) : (
+            () => {
+              setFilterCity([]);
+            }
+          )}
         </ScrollView>
         <View
           style={{

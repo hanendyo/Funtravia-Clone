@@ -32,7 +32,12 @@ import {
 } from "../../../assets/png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Kosong, Select, LocationBlack } from "../../../assets/svg";
+import {
+  Kosong,
+  Select,
+  LocationBlack,
+  Arrowbackwhite,
+} from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useLazyQuery } from "@apollo/react-hooks";
@@ -154,13 +159,22 @@ export default function MovieLocation({ navigation, route }) {
       fontSize: 14,
       color: "white",
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          marginLeft: 10,
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
   };
-  /**
-   * stats
-   */
-  /**
-   * ref
-   */
 
   const {
     data: datacountry,
@@ -297,19 +311,19 @@ export default function MovieLocation({ navigation, route }) {
               height: 44,
               borderRadius: 20,
               borderColor: "grey",
-              paddingVertical: 20,
+              // paddingVertical: 20,
               paddingHorizontal: 30,
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
               backgroundColor: pressed ? "#F6F6F7" : "white",
-              shadowColor: "#DFDFDF",
+              shadowColor: "#000",
               shadowOffset: {
                 width: 0,
-                height: 1,
+                height: 2,
               },
-              shadowOpacity: 0.25,
-              shadowRadius: 2.84,
+              shadowOpacity: 0.22,
+              shadowRadius: 1.46,
               elevation: 3,
               flexDirection: "row",
               marginTop: -22,
@@ -331,7 +345,6 @@ export default function MovieLocation({ navigation, route }) {
               size="label"
               type="bold"
               style={{
-                color: "",
                 marginRight: 10,
               }}
             >
