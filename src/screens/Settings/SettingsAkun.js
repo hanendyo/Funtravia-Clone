@@ -71,6 +71,7 @@ export default function SettingsAkun(props) {
 
   const closeModalBirth = () => {
     setDate(null);
+    closeBirth1();
   };
 
   const HeaderComponent = {
@@ -464,7 +465,12 @@ export default function SettingsAkun(props) {
               mode="calendar"
               style={{ borderRadius: 10 }}
             />
-            <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-end",
+              }}
+            >
               <Button
                 size="small"
                 style={{ alignSelf: "flex-end" }}
@@ -765,7 +771,7 @@ export default function SettingsAkun(props) {
                   ? setting?.cities?.name
                       .toString()
                       .toLowerCase()
-                      .replace(/\b[a-z]/g, function (letter) {
+                      .replace(/\b[a-z]/g, function(letter) {
                         return letter.toUpperCase();
                       })
                   : "Not Set"}
