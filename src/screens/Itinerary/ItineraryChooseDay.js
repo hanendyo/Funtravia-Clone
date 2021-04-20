@@ -238,9 +238,6 @@ export default function ItineraryChooseday(props) {
     if (dataSelected.length > 0) {
       setLoading(true);
       if (Position === "destination" || Position === "Destination") {
-        console.log(Kiriman);
-        // return false;
-
         var datas = [];
         var x = 0;
         for (var i in dataSelected) {
@@ -463,8 +460,8 @@ export default function ItineraryChooseday(props) {
             }
             setLoading(false);
           } catch (error) {
-            Alert.alert("oioioioioio" + error);
-            console.log(error);
+            Alert.alert("error : " + error);
+            // console.log(error);
           }
         }
       } else if (Position === "Event" || Position === "event") {
