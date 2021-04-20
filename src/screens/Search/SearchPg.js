@@ -541,7 +541,7 @@ export default function SearchPg(props, { navigation, route }) {
           throw new Error("Error Input");
         }
 
-        console.log("for Unfollow:" + response.data.unfollow_user.message);
+        // console.log("for Unfollow:" + response.data.unfollow_user.message);
 
         if (response.data) {
           if (
