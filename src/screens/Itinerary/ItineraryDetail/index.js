@@ -2363,7 +2363,14 @@ export default function ItineraryDetail(props) {
                 {item.type === "custom" ? (
                   // custom detail
                   <TouchableOpacity
-                    style={{}}
+                    style={{
+                      height: 40,
+                      width: 40,
+                      // borderWidth: 1,
+                      justifyContent: "center",
+                      alignItems: "flex-end",
+                      alignContent: "flex-end",
+                    }}
                     onPress={() => {
                       props.navigation.push("detailCustomItinerary", {
                         data: dataSpreadtimeline,
