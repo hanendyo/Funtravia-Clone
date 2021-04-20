@@ -1051,7 +1051,8 @@ export default function ItineraryDetail(props) {
     }
   };
 
-  const bukamodalmenu = async (id, type) => {
+  const bukamodalmenu = async (id, type, item) => {
+    console.log(item);
     await setidactivity(id);
     await settypes(type);
     await setModalmenu(true);
@@ -2322,7 +2323,7 @@ export default function ItineraryDetail(props) {
                     variant="transparent"
                     style={{}}
                     onPress={() => {
-                      bukamodalmenu(item.id, item.type);
+                      bukamodalmenu(item.id, item.type, item);
                     }}
                   >
                     <More width={15} height={15} />
