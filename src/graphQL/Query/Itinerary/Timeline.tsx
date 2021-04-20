@@ -3,6 +3,8 @@ const Timeline = gql`
   query($id: ID!) {
     day_timeline(day_id: $id) {
       id
+      destination_id
+      event_id
       type
       name
       time

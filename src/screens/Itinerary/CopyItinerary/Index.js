@@ -33,6 +33,7 @@ export default function CopyItinerary(props) {
   let [dataCategories, setdataCategories] = useState([]);
   let [title, setTitle] = useState(props.route?.params?.datadetail?.name);
   let [minimum, setMinimum] = useState("");
+  let [opens, setOpens] = useState(0);
   let [category_id, setcategory_id] = useState(
     props.route?.params?.datadetail?.categori?.id
       ? props.route?.params?.datadetail?.categori?.id
@@ -396,6 +397,7 @@ export default function CopyItinerary(props) {
         <View
           style={{
             marginTop: 10,
+            paddingBottom: opens,
           }}
         >
           <Text
@@ -407,6 +409,8 @@ export default function CopyItinerary(props) {
             {t("Category")}
           </Text>
           <DropDownPicker
+            onOpen={() => setOpens(150)}
+            onClose={() => setOpens(0)}
             items={dataCategories}
             containerStyle={{ height: 40 }}
             style={{ backgroundColor: "#fafafa" }}
@@ -414,7 +418,7 @@ export default function CopyItinerary(props) {
               justifyContent: "flex-start",
             }}
             showArrow={false}
-            dropDownStyle={{ backgroundColor: "#fafafa", height: 100 }}
+            dropDownStyle={{ backgroundColor: "#fafafa", height: 150 }}
             placeholder={t("selectCategory")}
             // multiple={true}
             // multipleText="%d items have been selected."

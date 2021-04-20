@@ -37,6 +37,7 @@ import { useTranslation } from "react-i18next";
 import DropDownPicker from "react-native-dropdown-picker";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
 import { StackActions } from "@react-navigation/routers";
+import { gql } from "apollo-boost";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
@@ -181,17 +182,26 @@ export default function Trip(props) {
       keyword: countrys,
     },
   });
+
   const [
     querycity,
     { loading: loadingcity, data: datacity, error: errorcity },
   ] = useLazyQuery(City, {
     variables: {
       fetchPolicy: "network-only",
-
       keyword: citys,
       countries_id: idCountry,
     },
+    onCompleted: (e) => {
+      console.log("searh", e);
+    },
   });
+
+  console.log(loadingcity);
+  console.log(loadingcity);
+  console.log(datacity);
+  console.log(errorcity);
+  console.log(idCountry);
 
   const [
     querywith,
@@ -243,6 +253,7 @@ export default function Trip(props) {
   };
 
   const Searchcity = async (text) => {
+    console.log("masuk", text);
     setCitys(text);
     querycity();
   };
@@ -1190,7 +1201,7 @@ export default function Trip(props) {
               <View
                 style={{
                   marginTop: 10,
-                  marginBottom: opens,
+                  paddingBottom: opens,
                 }}
               >
                 <DropDownPicker
@@ -1208,7 +1219,7 @@ export default function Trip(props) {
                     backgroundColor: "#fafafa",
                     height: 150,
                   }}
-                  placeholder="Pilih Kategori"
+                  placeholder={t("selectCategory")}
                   // multiple={true}
                   // multipleText="%d items have been selected."
                   // min={0}

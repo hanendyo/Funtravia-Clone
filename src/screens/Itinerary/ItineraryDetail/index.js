@@ -1051,10 +1051,18 @@ export default function ItineraryDetail(props) {
     }
   };
 
+  let [idTarget, setIdtarget] = useState(null);
+
   const bukamodalmenu = async (id, type, item) => {
-    console.log(item);
     await setidactivity(id);
     await settypes(type);
+    if (item.destination_id) {
+      await setIdtarget(item.destination_id);
+    } else if (item.event_id) {
+      await setIdtarget(item.event_id);
+    } else {
+      await setIdtarget(null);
+    }
     await setModalmenu(true);
   };
 
@@ -2353,7 +2361,9 @@ export default function ItineraryDetail(props) {
                   </Text>
                 </View>
                 {item.type === "custom" ? (
+                  // custom detail
                   <TouchableOpacity
+                    style={{}}
                     onPress={() => {
                       props.navigation.push("detailCustomItinerary", {
                         data: dataSpreadtimeline,
@@ -4762,7 +4772,7 @@ export default function ItineraryDetail(props) {
                 {t("DeleteActivityfromItinerary")}
               </Text>
             </TouchableOpacity>
-            {types !== "custom" ? (
+            {types !== "custom" && types !== "google" ? (
               <TouchableOpacity
                 style={{
                   paddingVertical: 10,
@@ -4774,7 +4784,7 @@ export default function ItineraryDetail(props) {
                   props.navigation.push("ItineraryStack", {
                     screen: "ItineraryPlaning",
                     params: {
-                      idkiriman: idactivity,
+                      idkiriman: idTarget,
                       Position: types,
                     },
                   });
