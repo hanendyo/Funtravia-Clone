@@ -204,7 +204,7 @@ export default function Generals({ data, props, addTo }) {
           {!more && (
             <Text
               size="readable"
-              type="regular"$result->domain}
+              type="regular"
               onPress={() => {
                 setLines(3);
               }}

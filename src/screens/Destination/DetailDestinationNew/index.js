@@ -48,15 +48,22 @@ import BottomButton from "./BottomButton";
 import ActivityModal from "./ActivityModal";
 import FacilityModal from "./FacilityModal";
 import ServiceModal from "./ServiceModal";
+import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
+const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
-  ios: 44,
+  ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
-const HeaderHeight = 408 - SafeStatusBar;
+
+const HeaderHeight = Platform.select({
+  ios: Notch ? 425 - 48 : 425 - 20,
+  android: 408 - StatusBar.currentHeight,
+});
+// const HeaderHeight = 425 - SafeStatusBar;
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
@@ -666,7 +673,7 @@ const Index = (props) => {
                     type="bold"
                     style={{ marginLeft: 3 }}
                   >
-                    {data?.destinationById?.rating.substr(0, 4)}
+                    {data?.destinationById?.rating.substr(0, 3)}
                   </Text>
                 </View>
                 <View
@@ -772,7 +779,7 @@ const Index = (props) => {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-                  padding: 5,
+                  padding: 2,
                   borderRadius: 5,
                   marginRight: 5,
                   backgroundColor: "#DAF0F2",
@@ -789,7 +796,7 @@ const Index = (props) => {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: 5,
+                    padding: 2,
                     borderRadius: 5,
                     backgroundColor: "#DAF0F2",
                   }}

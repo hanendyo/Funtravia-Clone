@@ -29,7 +29,13 @@ import {
   cultural_lanscape,
   borobudur,
 } from "../../../assets/png";
-import { Kosong, Pin, Select, PinHitam } from "../../../assets/svg";
+import {
+  Kosong,
+  Pin,
+  Select,
+  PinHitam,
+  Arrowbackwhite,
+} from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
@@ -37,15 +43,26 @@ import Ripple from "react-native-material-ripple";
 import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
 import CountrySrc from "./CountrySrc";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 50;
-const HeaderHeight = width - 100;
+const TabBarHeight = 48;
+// const HeaderHeight = width - 100;
+// const SafeStatusBar = Platform.select({
+//   ios: 44,
+//   android: StatusBar.currentHeight,
+// });
 const SafeStatusBar = Platform.select({
-  ios: 44,
+  ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
+const HeaderHeight = Platform.select({
+  ios: Notch ? 335 - 48 : 335 - 20,
+  android: 305 - StatusBar.currentHeight,
+});
+
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
@@ -229,6 +246,21 @@ export default function Unesco({ navigation, route }) {
       fontSize: 14,
       color: "white",
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          marginLeft: 10,
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
   };
   /**
    * stats
@@ -281,7 +313,8 @@ export default function Unesco({ navigation, route }) {
 
   const PosisiCountry = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [HeaderHeight - 125, 50, TabBarHeight + 10],
+    // outputRange: [HeaderHeight - 125, 50, TabBarHeight + 10],
+    outputRange: [HeaderHeight - 125, -10, -100],
     extrapolate: "clamp",
   });
 
@@ -562,7 +595,7 @@ export default function Unesco({ navigation, route }) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight],
+      outputRange: [0, -HeaderHeight - 5],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -593,6 +626,8 @@ export default function Unesco({ navigation, route }) {
             flex: 1,
             marginTop: 35,
             paddingHorizontal: 20,
+            // height: 200,
+            zIndex: -10,
           }}
         >
           <Text size="label" type="bold" style={{ marginBottom: 5 }}>
@@ -922,6 +957,7 @@ export default function Unesco({ navigation, route }) {
       <Animated.View
         style={{
           position: "absolute",
+          // top: HeaderHeight - 120,
           transform: [{ translateY: PosisiCountry }],
           alignItems: "center",
           width: "100%",
@@ -938,7 +974,7 @@ export default function Unesco({ navigation, route }) {
               borderRadius: 20,
               // borderWidth: 1,
               borderColor: "grey",
-              paddingVertical: 20,
+              paddingVertical: 10,
               paddingHorizontal: 30,
               justifyContent: "center",
               alignContent: "center",
@@ -946,13 +982,13 @@ export default function Unesco({ navigation, route }) {
               // bottom: -22,
               // left: "30%",
               backgroundColor: pressed ? "#F6F6F7" : "white",
-              shadowColor: "#DFDFDF",
+              shadowColor: "#000",
               shadowOffset: {
                 width: 0,
-                height: 1,
+                height: 2,
               },
-              shadowOpacity: 0.25,
-              shadowRadius: 2.84,
+              shadowOpacity: 0.22,
+              shadowRadius: 1.46,
               elevation: 3,
               flexDirection: "row",
               // position: "absolute",
