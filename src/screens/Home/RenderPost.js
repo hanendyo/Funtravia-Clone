@@ -109,7 +109,7 @@ export default function RenderVideo({ data, user, navigation }) {
 				<LinearGradient
 					colors={["black", "transparent"]}
 					style={{
-						height: "50%",
+						height: "30%",
 						position: "absolute",
 						bottom: 0,
 						width: "100%",
@@ -293,7 +293,7 @@ export default function RenderVideo({ data, user, navigation }) {
 				<LinearGradient
 					colors={["black", "transparent"]}
 					style={{
-						height: "50%",
+						height: "30%",
 						position: "absolute",
 						bottom: 0,
 						width: "100%",
