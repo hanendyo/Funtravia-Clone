@@ -98,9 +98,15 @@ export default function Asia({ navigation }) {
 
 	const getCountry = (data) => {
 		if (subContinent.id === "142") {
-			return data["region-code"] === subContinent.id;
+			return (
+				data["region-code"] === subContinent.id &&
+				Country[data["alpha-3"]].available
+			);
 		} else {
-			return data["sub-region-code"] === subContinent.id;
+			return (
+				data["sub-region-code"] === subContinent.id &&
+				Country[data["alpha-3"]].available
+			);
 		}
 	};
 

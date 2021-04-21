@@ -43,7 +43,7 @@ import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
 import ChangeStatus from "../../../graphQL/Mutation/Itinerary/ChangeStatus";
 import { dateFormats } from "../../../component/src/dateformatter";
-import Sidebar from "../../../component/src/Sidebar";
+import { Sidebar, shareAction } from "../../../component";
 import { useTranslation } from "react-i18next";
 import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
 import Uploadfoto from "../../../graphQL/Mutation/Itinerary/Uploadcover";
@@ -710,7 +710,9 @@ export default function ItineraryDetail(props) {
 						datadetail.itinerary_detail &&
 						datadetail.itinerary_detail.isprivate === true ? (
 							<Button
-								onPress={() => Alert.alert("coming soon")}
+								onPress={() =>
+									shareAction({ from: "itinerary", target: itineraryId })
+								}
 								type="circle"
 								variant="bordered"
 								size="small"

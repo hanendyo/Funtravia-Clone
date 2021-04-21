@@ -12,7 +12,7 @@ export default async function shareAction({ from, target }) {
 		});
 		let dataResponse = await response.json();
 		data = {
-			message: dataResponse.result.link,
+			message: `Hi Travelers, visit this ${from} from funtravia ${dataResponse.result.link}`,
 			url: dataResponse.result.link,
 		};
 		const result = await Share.share(data);

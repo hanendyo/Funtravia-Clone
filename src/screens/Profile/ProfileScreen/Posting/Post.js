@@ -33,9 +33,10 @@ export default function Posts({ item, index, navigation }) {
 					>
 						{item[0].assets[0].type === "video" ? (
 							<Video
-								poster={
-									"https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"
-								}
+								poster={item[0].assets[0].filepath.replace(
+									"output.m3u8",
+									"thumbnail.png"
+								)}
 								source={{
 									uri: item[0].assets[0].filepath,
 								}}
@@ -82,9 +83,10 @@ export default function Posts({ item, index, navigation }) {
 						>
 							{item[1].assets[0].type === "video" ? (
 								<Video
-									poster={
-										"https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"
-									}
+									poster={item[1].assets[0].filepath.replace(
+										"output.m3u8",
+										"thumbnail.png"
+									)}
 									source={{
 										uri: item[1].assets[0].filepath,
 									}}
@@ -130,9 +132,10 @@ export default function Posts({ item, index, navigation }) {
 						>
 							{item[2].assets[0].type === "video" ? (
 								<Video
-									poster={
-										"https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"
-									}
+									poster={item[2].assets[0].filepath.replace(
+										"output.m3u8",
+										"thumbnail.png"
+									)}
 									source={{
 										uri: item[2].assets[0].filepath,
 									}}
@@ -192,6 +195,10 @@ export default function Posts({ item, index, navigation }) {
 						>
 							{item[0].assets[0].type === "video" ? (
 								<Video
+									poster={item[0].assets[0].filepath.replace(
+										"output.m3u8",
+										"thumbnail.png"
+									)}
 									source={{
 										uri: item[0].assets[0].filepath,
 									}}
@@ -237,6 +244,10 @@ export default function Posts({ item, index, navigation }) {
 						>
 							{item[1].assets[0].type === "video" ? (
 								<Video
+									poster={item[1].assets[0].filepath.replace(
+										"output.m3u8",
+										"thumbnail.png"
+									)}
 									source={{
 										uri: item[1].assets[0].filepath,
 									}}
@@ -283,6 +294,10 @@ export default function Posts({ item, index, navigation }) {
 					>
 						{item[2].assets[0].type === "video" ? (
 							<Video
+								poster={item[2].assets[0].filepath.replace(
+									"output.m3u8",
+									"thumbnail.png"
+								)}
 								source={{
 									uri: item[2].assets[0].filepath,
 								}}
@@ -342,6 +357,10 @@ export default function Posts({ item, index, navigation }) {
 								>
 									{data.assets[0].type === "video" ? (
 										<Video
+											poster={data.assets[0].filepath.replace(
+												"output.m3u8",
+												"thumbnail.png"
+											)}
 											source={{
 												uri: data.assets[0].filepath,
 											}}
@@ -406,6 +425,10 @@ export default function Posts({ item, index, navigation }) {
 						>
 							{data.assets[0].type === "video" ? (
 								<Video
+									poster={data.assets[0].filepath.replace(
+										"output.m3u8",
+										"thumbnail.png"
+									)}
 									source={{
 										uri: data.assets[0].filepath,
 									}}

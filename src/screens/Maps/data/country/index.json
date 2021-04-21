@@ -2,7 +2,8 @@
 	"IDN": {
 		"id": "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
 		"alpha-3": "IDN",
-		"name": "Indonesia"
+		"name": "Indonesia",
+		"available": true
 	},
 	"AFG": {
 		"id": "417cd79b-fbe5-41a6-99b7-ba340abcd993",
