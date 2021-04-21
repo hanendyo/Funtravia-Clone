@@ -21,6 +21,7 @@ import Ripple from "react-native-material-ripple";
 import TravelTops from "../../graphQL/Query/TravelGoal/TravelTop";
 import TravelPopulars from "../../graphQL/Query/TravelGoal/TravelPopular";
 import TravelNews from "../../graphQL/Query/TravelGoal/TravelNew";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function TravelGoal(props) {
   const HeaderComponent = {
@@ -132,10 +133,6 @@ export default function TravelGoal(props) {
     },
   });
 
-  console.log(loadingNew);
-  console.log(dataNews);
-  console.log(errorNew);
-
   const getdate = (date) => {
     date = date.replace(" ", "T");
     var date1 = new Date(date).getTime();
@@ -221,7 +218,10 @@ export default function TravelGoal(props) {
                 justifyContent: "space-between",
               }}
               onPress={() => {
-                props.navigation.push("TravelGoalDetail");
+                // console.log(dataTop?.travelgoal_first?.id)
+                props.navigation.push("TravelGoalDetail", {
+                  article_id: dataTop?.travelgoal_first?.id,
+                });
               }}
             >
               <View
@@ -279,43 +279,47 @@ export default function TravelGoal(props) {
           </ImageBackground>
         ) : null}
         {/* Popular */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "space-between",
-            marginVertical: 10,
-            marginTop: 20,
-          }}
-        >
+        {dataPopular.length > 0 ? (
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
+              justifyContent: "space-between",
+              marginVertical: 10,
+              marginTop: 20,
             }}
           >
             <View
               style={{
-                height: 20,
-                marginRight: 5,
-                width: 7,
-                backgroundColor: "#209fae",
-                borderRadius: 5,
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
               }}
-            ></View>
-            <Text type="bold" size="title">
-              {t("PopularArticle")}
-            </Text>
+            >
+              <View
+                style={{
+                  height: 20,
+                  marginRight: 5,
+                  width: 7,
+                  backgroundColor: "#209fae",
+                  borderRadius: 5,
+                }}
+              ></View>
+              <Text type="bold" size="title">
+                {t("PopularArticle")}
+              </Text>
+            </View>
+            <View></View>
           </View>
-          <View></View>
-        </View>
+        ) : null}
         {dataPopular.map((item, index) => {
           return (
             <Ripple
               onPress={() => {
-                props.navigation.push("TravelGoalDetail");
+                props.navigation.push("TravelGoalDetail", {
+                  article_id: item.id,
+                });
               }}
               style={{
                 shadowOpacity: 0.5,
@@ -361,7 +365,13 @@ export default function TravelGoal(props) {
                   {item?.title}
                 </Text>
                 {item?.firsttxt ? (
-                  <Text size="description" numberOfLines={2}>
+                  <Text
+                    size="description"
+                    numberOfLines={2}
+                    style={{
+                      textAlign: "justify",
+                    }}
+                  >
                     {item?.firsttxt}
                   </Text>
                 ) : null}
@@ -374,38 +384,46 @@ export default function TravelGoal(props) {
         })}
 
         {/* New */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "space-between",
-            marginVertical: 10,
-            marginTop: 20,
-          }}
-        >
+        {dataNew.length > 0 ? (
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
+              justifyContent: "space-between",
+              marginVertical: 10,
+              marginTop: 20,
             }}
           >
             <View
               style={{
-                height: 20,
-                marginRight: 5,
-                width: 7,
-                backgroundColor: "#209fae",
-                borderRadius: 5,
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
               }}
-            ></View>
-            <Text type="bold" size="title">
-              {t("NewArticle")}
-            </Text>
+            >
+              <View
+                style={{
+                  height: 20,
+                  marginRight: 5,
+                  width: 7,
+                  backgroundColor: "#209fae",
+                  borderRadius: 5,
+                }}
+              ></View>
+              <Text type="bold" size="title">
+                {t("NewArticle")}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                props.navigation.push("TravelGoalList");
+              }}
+            >
+              <Text style={{ color: "#209fae" }}>{t("Seemore")}</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={{ color: "#209fae" }}>{t("Seemore")}</Text>
-        </View>
+        ) : null}
       </View>
       <FlatList
         contentContainerStyle={{
@@ -422,7 +440,9 @@ export default function TravelGoal(props) {
         renderItem={({ item }) => (
           <Ripple
             onPress={() => {
-              props.navigation.push("TravelGoalDetail");
+              props.navigation.push("TravelGoalDetail", {
+                article_id: item.id,
+              });
             }}
             style={{
               marginRight: 10,

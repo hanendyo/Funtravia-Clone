@@ -424,9 +424,13 @@ export default function ItineraryBuddy(props) {
                     type="bold"
                     style={{
                       marginLeft: 20,
+                      width: "60%",
                     }}
+                    numberOfLines={1}
                   >
-                    <Truncate text={value.first_name} length={17} />
+                    {/* <Truncate text={value.first_name} length={17} /> */}
+                    {value?.first_name} {value?.last_name}
+                    {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                   </Text>
 
                   {/* <Text
@@ -532,7 +536,12 @@ export default function ItineraryBuddy(props) {
                       }}
                     />
                     <View>
-                      <View style={{ flexDirection: "row" }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "flex-start",
+                        }}
+                      >
                         <Text
                           size="label"
                           type="bold"
@@ -541,9 +550,13 @@ export default function ItineraryBuddy(props) {
                             // fontFamily: "Lato-Bold",
                             marginLeft: 20,
                             opacity: value.isconfrim !== true ? 0.3 : 1,
+                            width: "60%",
                           }}
+                          numberOfLines={1}
                         >
-                          <Truncate text={value.first_name} length={17} />
+                          {/* <Truncate text={value.first_name} length={17} /> */}
+                          {value?.first_name} {value?.last_name}
+                          {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                         </Text>
                         {value.isconfrim !== true ? (
                           <Text
@@ -640,9 +653,13 @@ export default function ItineraryBuddy(props) {
                       // fontSize: 14,
                       // fontFamily: "Lato-Bold",
                       marginLeft: 20,
+                      width: "60%",
                     }}
+                    numberOfLines={1}
                   >
-                    <Truncate text={value.first_name} length={17} />
+                    {/* <Truncate text={value.first_name} length={17} /> */}
+                    {value?.first_name} {value?.last_name}
+                    {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                   </Text>
 
                   {/* <Text
@@ -736,9 +753,13 @@ export default function ItineraryBuddy(props) {
                             // fontFamily: "Lato-Bold",
                             marginLeft: 20,
                             opacity: value.isconfrim !== true ? 0.3 : 1,
+                            width: "60%",
                           }}
+                          numberOfLines={1}
                         >
-                          <Truncate text={value.first_name} length={17} />
+                          {/* <Truncate text={value.first_name} length={17} /> */}
+                          {value?.first_name} {value?.last_name}
+                          {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                         </Text>
                         {/* {value.isconfrim !== true ? (
 													<Text
@@ -843,9 +864,13 @@ export default function ItineraryBuddy(props) {
                       // fontSize: 14,
                       // fontFamily: "Lato-Bold",
                       marginLeft: 20,
+                      width: "60%",
                     }}
+                    numberOfLines={1}
                   >
-                    <Truncate text={value.first_name} length={17} />
+                    {/* <Truncate text={value.first_name} length={17} /> */}
+                    {value?.first_name} {value?.last_name}
+                    {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                   </Text>
 
                   {/* <Text
@@ -1054,12 +1079,12 @@ export default function ItineraryBuddy(props) {
         >
           <View
             style={{
-              backgroundColor: "#e2ecf8",
+              backgroundColor: "#daf0f2",
               borderRadius: 5,
               width: "100%",
               height: 40,
-              borderWidth: 1,
-              borderColor: "#d3d3d3",
+              borderWidth: 0.3,
+              borderColor: "#209fae",
               // flex: 1,
               flexDirection: "row",
               alignItems: "center",
@@ -1085,6 +1110,7 @@ export default function ItineraryBuddy(props) {
                 width: "100%",
                 fontFamily: "Lato-Regular",
                 fontSize: 14,
+                color: "#464646",
               }}
               placeholder={t("search")}
               autoCorrect={false}

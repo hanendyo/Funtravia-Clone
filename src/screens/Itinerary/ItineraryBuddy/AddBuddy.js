@@ -253,9 +253,13 @@ export default function AddBuddy(props) {
                           // fontSize: 14,
                           // fontFamily: "Lato-Bold",
                           marginLeft: 20,
+                          width: "100%",
                         }}
+                        numberOfLines={1}
                       >
-                        <Truncate text={value.first_name} length={17} />
+                        {/* <Truncate text={value.first_name} length={17} /> */}
+                        {value?.first_name} {value?.last_name}
+                        {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
                       <Text
@@ -324,9 +328,13 @@ export default function AddBuddy(props) {
                         type="bold"
                         style={{
                           marginLeft: 20,
+                          width: "100%",
                         }}
+                        numberOfLines={1}
                       >
-                        <Truncate text={value.first_name} length={17} />
+                        {/* <Truncate text={value.first_name} length={17} /> */}
+                        {value?.first_name} {value?.last_name}
+                        {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
                       <Text
@@ -395,9 +403,13 @@ export default function AddBuddy(props) {
                       type="bold"
                       style={{
                         marginLeft: 20,
+                        width: "100%",
                       }}
+                      numberOfLines={1}
                     >
-                      <Truncate text={value.first_name} length={17} />
+                      {/* <Truncate text={value.first_name} length={17} /> */}
+                      {value?.first_name} {value?.last_name}
+                      {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                     </Text>
 
                     <Text
@@ -458,13 +470,13 @@ export default function AddBuddy(props) {
         >
           <View
             style={{
-              backgroundColor: "#e2ecf8",
+              backgroundColor: "#daf0f2",
               borderRadius: 5,
               width: "100%",
               height: 40,
 
-              borderWidth: 1,
-              borderColor: "#d3d3d3",
+              borderWidth: 0.3,
+              borderColor: "#209fae",
               // flex: 1,
               flexDirection: "row",
               alignItems: "center",
@@ -491,6 +503,7 @@ export default function AddBuddy(props) {
                 width: "100%",
                 fontFamily: "Lato-Regular",
                 fontSize: 14,
+                color: "#464646",
               }}
               value={search}
               onChangeText={(text) => _setSearch(text)}
