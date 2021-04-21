@@ -5,6 +5,7 @@ import {
   Dimensions,
   TextInput,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, CustomImage, Text, Truncate } from "../../component";
@@ -19,6 +20,8 @@ import { ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import Ripple from "react-native-material-ripple";
 import LinearGradient from "react-native-linear-gradient";
+import Traveldetails from "../../graphQL/Query/TravelGoal/Traveldetail";
+import Travelrelateds from "../../graphQL/Query/TravelGoal/TravelRelated";
 
 export default function TravelGoalDetail(props) {
   const HeaderComponent = {
@@ -59,12 +62,94 @@ export default function TravelGoalDetail(props) {
     ),
   };
   const { t, i18n } = useTranslation();
+  let [datadetail, setdatadetail] = useState({});
+  let [datarelated, setdatarelated] = useState([]);
+
+  const [
+    Traveldetail,
+    { loading: loadingdetail, data: datadetails, error: errordetail },
+  ] = useLazyQuery(Traveldetails, {
+    fetchPolicy: "network-only",
+    variables: {
+      article_id: props.route?.params?.article_id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setdatadetail(datadetails.detail_travelgoal);
+    },
+  });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    Traveldetail();
+    // console.log(props.route?.params?.article_id);
   }, []);
 
-  let data = [{}, {}, {}];
+  const [
+    Travelrelated,
+    { loading: loadingrelated, data: datarelateds, error: errorrelated },
+  ] = useLazyQuery(Travelrelateds, {
+    fetchPolicy: "network-only",
+    variables: {
+      article_id: props.route?.params?.article_id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      // console.log(datarelateds);
+      setdatarelated(datarelateds.related_travelgoal);
+    },
+  });
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    Traveldetail();
+    Travelrelated();
+    // console.log(props.route?.params?.article_id);
+  }, []);
+
+  const getdate = (date) => {
+    if (!date) {
+      return null;
+    }
+    date = date.replace(" ", "T");
+    var date1 = new Date(date).getTime();
+    var date2 = new Date().getTime();
+    var msec = date2 - date1;
+    var mins = Math.floor(msec / 60000);
+    var hrs = Math.floor(mins / 60);
+    var days = Math.floor(hrs / 24);
+    var month = Math.floor(days / 30);
+    var yrs = Math.floor(days / 365);
+    mins = mins % 60;
+    hrs = hrs % 24;
+    if (yrs > 0) {
+      return yrs + " " + t("yearsAgo");
+    }
+    if (month > 0) {
+      return month + " " + t("monthAgo");
+    }
+    if (days > 0) {
+      return days + " " + t("daysAgo");
+    }
+    if (hrs > 0) {
+      return hrs + " " + t("hoursAgo");
+    }
+    if (mins > 0) {
+      return mins + " " + t("minutesAgo");
+    } else {
+      return t("justNow");
+    }
+  };
 
   return (
     <ScrollView
@@ -80,89 +165,19 @@ export default function TravelGoalDetail(props) {
       }}
     >
       <ImageBackground
-        source={default_image}
+        source={
+          datadetail?.firstimg ? { uri: datadetail?.firstimg } : default_image
+        }
         style={{
           width: "100%",
-          height: Dimensions.get("screen").height * 0.4,
+          height: Dimensions.get("screen").height * 0.3,
           justifyContent: "flex-end",
         }}
         imageStyle={{
           width: "100%",
-          height: Dimensions.get("screen").height * 0.4,
+          height: Dimensions.get("screen").height * 0.3,
         }}
-      >
-        <LinearGradient
-          colors={["rgba(0, 0, 0, 0.7)", "rgba(0, 0, 0, 0)"]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 0, y: 0 }}
-          style={{
-            height: "50%",
-            width: "100%",
-
-            padding: 20,
-            justifyContent: "flex-end",
-            alignContent: "flex-start",
-            alignItems: "flex-start",
-            // backgroundColor: "rgba(0,0,0,0.2)",
-            // borderRadius: 5,
-            paddingBottom: 40,
-          }}
-          onPress={() => {
-            props.navigation.navigate("TravelGoalDetail");
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#E2ECF8",
-              paddingHorizontal: 10,
-              paddingVertical: 3,
-              borderRadius: 20,
-              marginVertical: 10,
-              // borderWidth: 1,
-            }}
-          >
-            <Text size="small" style={{ color: "#209fae" }}>
-              Tips & Trick
-            </Text>
-          </View>
-          <Text type={"bold"} size="description" style={{ color: "white" }}>
-            Hiking Beginners Guide
-          </Text>
-          <Text size="small" style={{ color: "white" }}>
-            <Truncate
-              text="we are going to show you how beautiful this world we are going to
-              show you how beautiful this world show you how beautiful this world"
-              length={120}
-            />
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text type="light" size="small" style={{ color: "white" }}>
-              Source :{" "}
-            </Text>
-
-            <Text
-              type="light"
-              size="small"
-              style={{ color: "white", fontStyle: "italic" }}
-            >
-              http://id.pinterest.com/
-            </Text>
-          </View>
-          <Text
-            size="small"
-            type="light"
-            style={{ fontStyle: "italic", color: "#fff" }}
-          >
-            12 min read
-          </Text>
-        </LinearGradient>
-      </ImageBackground>
+      ></ImageBackground>
 
       <View
         style={{
@@ -183,30 +198,103 @@ export default function TravelGoalDetail(props) {
             alignSelf: "center",
             flexDirection: "row",
           }}
+          onPress={() => {
+            Alert.alert("coming soon");
+          }}
         >
           <SharePutih height={20} width={20} />
           <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text>
         </Button>
       </View>
+      <View
+        style={{
+          width: "100%",
+          marginTop: -40,
+          paddingHorizontal: 20,
+          justifyContent: "flex-end",
+          alignContent: "flex-start",
+          alignItems: "flex-start",
+          marginBottom: 20,
+        }}
+        onPress={() => {
+          props.navigation.navigate("TravelGoalDetail");
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#E2ECF8",
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            borderRadius: 20,
+            marginVertical: 10,
+          }}
+        >
+          <Text size="small" style={{ color: "#209fae" }}>
+            {datadetail?.category?.name}
+          </Text>
+        </View>
+        <Text
+          type={"bold"}
+          size="label"
+          style={{
+            marginBottom: 10,
+          }}
+        >
+          {datadetail?.title}
+        </Text>
+        {datadetail?.firsttxt ? (
+          <Text
+            size="description"
+            numberOfLines={2}
+            style={{ textAlign: "justify" }}
+          >
+            {datadetail?.firsttxt}
+          </Text>
+        ) : null}
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {/* <Text type="light" size="small" style={{}}>
+            Source :{" "}
+          </Text> */}
+          {datadetail?.created_at ? (
+            <Text type="light" size="small" style={{ fontStyle: "italic" }}>
+              {getdate(datadetail?.created_at)}
+            </Text>
+          ) : null}
+        </View>
+        {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
+          12 min read
+        </Text> */}
+      </View>
+
       {/* detail */}
-      {data.map(({ item, index }) => {
+      {datadetail?.content?.map((item, index) => {
         return (
           <View
             style={{ paddingHorizontal: 20, width: "100%", marginBottom: 20 }}
           >
-            <Text size="label" type="bold" style={{ marginBottom: 10 }}>
-              1. Pulau Sipora, Sumatera Barat
-            </Text>
-            <Image
-              source={default_image}
-              style={{
-                width: "100%",
-                height: Dimensions.get("screen").width / 2,
-                borderRadius: 5,
-                marginBottom: 10,
-              }}
-            ></Image>
-            <View
+            {item?.title ? (
+              <Text size="label" type="bold" style={{}}>
+                {item?.title ? index + 1 + ". " + item?.title : null}
+              </Text>
+            ) : null}
+            {item?.image ? (
+              <Image
+                source={item?.image ? { uri: item?.image } : default_image}
+                style={{
+                  width: "100%",
+                  height: Dimensions.get("screen").width / 2,
+                  borderRadius: 5,
+                  marginVertical: 10,
+                }}
+              ></Image>
+            ) : null}
+            {/* <View
               style={{
                 flexDirection: "row",
                 alignContent: "center",
@@ -219,14 +307,12 @@ export default function TravelGoalDetail(props) {
               </Text>
 
               <Text type="light" size="small" style={{ fontStyle: "italic" }}>
-                http://id.pinterest.com/
+                {getdate(item.)}
               </Text>
-            </View>
-            <Text style={{ textAlign: "justify" }}>
-              Test kata kata dengan lembut kata kata dengan lembut kata kata
-              dengan lembut kata kata dengan lembut kata kata dengan lembut kata
-              kata dengan lembut kata kata dengan lembut kata kata dengan lembut{" "}
-            </Text>
+            </View> */}
+            {item.text ? (
+              <Text style={{ textAlign: "justify" }}>{item.text}</Text>
+            ) : null}
           </View>
         );
       })}
@@ -265,11 +351,13 @@ export default function TravelGoalDetail(props) {
           <View></View>
         </View>
 
-        {data.map(({ item, index }) => {
+        {datarelated?.map((item, index) => {
           return (
             <Ripple
               onPress={() => {
-                props.navigation.push("TravelGoalDetail");
+                props.navigation.push("TravelGoalDetail", {
+                  article_id: item.id,
+                });
               }}
               style={{
                 shadowOpacity: 0.5,
@@ -285,7 +373,7 @@ export default function TravelGoalDetail(props) {
               }}
             >
               <Image
-                source={default_image}
+                source={item.firstimg ? { uri: item.firstimg } : default_image}
                 style={{
                   height: (Dimensions.get("screen").width - 60) * 0.25,
                   width: (Dimensions.get("screen").width - 60) * 0.25,
@@ -306,47 +394,51 @@ export default function TravelGoalDetail(props) {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Text size="small">Island</Text>
-                  <Text size="small">12 month ago</Text>
+                  <Text size="small">{item?.category?.name}</Text>
+                  <Text size="small">{getdate(item.created_at)}</Text>
                 </View>
-                <Text size="small" type="bold">
-                  Sunset in Bali
+                <Text size="desription" type="bold">
+                  {item.title}
                 </Text>
-                <Text size="small">
-                  <Truncate
-                    text="we are going to show you how beautiful this world we are going to
-              show you how beautiful this world"
-                    length={60}
-                  />
+                <Text
+                  numberOfLines={2}
+                  size="small"
+                  style={{
+                    textAlign: "justify",
+                  }}
+                >
+                  {item.firsttxt}
                 </Text>
-                <Text size="small" type="light" style={{ fontStyle: "italic" }}>
+                {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
                   12 min read
-                </Text>
+                </Text> */}
               </View>
             </Ripple>
           );
         })}
 
-        <View
-          style={{
-            width: "100%",
-            paddingVertical: 10,
-            alignContent: "center",
-            alignContent: "center",
-          }}
-        >
-          <Button
-            type="box"
-            color="primary"
-            variant="bordered"
-            text="Explore More"
+        {datarelated.length < 5 ? null : (
+          <View
             style={{
-              width: Dimensions.get("screen").width / 2.5,
-              alignSelf: "center",
-              flexDirection: "row",
+              width: "100%",
+              paddingVertical: 10,
+              alignContent: "center",
+              alignContent: "center",
             }}
-          ></Button>
-        </View>
+          >
+            <Button
+              type="box"
+              color="primary"
+              variant="bordered"
+              text="Explore More"
+              style={{
+                width: Dimensions.get("screen").width / 2.5,
+                alignSelf: "center",
+                flexDirection: "row",
+              }}
+            ></Button>
+          </View>
+        )}
       </View>
     </ScrollView>
   );

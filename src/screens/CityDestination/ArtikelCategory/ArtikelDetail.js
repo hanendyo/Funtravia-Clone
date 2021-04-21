@@ -182,87 +182,19 @@ export default function ArticelDetail(props) {
         <ImageBackground
           source={
             dataDetail.article_byid.firstimg
-              ? { uri: dataDetail.article_byid.firstimg }
+              ? { uri: dataDetail?.article_byid?.firstimg }
               : default_image
           }
           style={{
             width: "100%",
-            height: Dimensions.get("screen").height * 0.4,
+            height: Dimensions.get("screen").height * 0.3,
             justifyContent: "flex-end",
           }}
           imageStyle={{
             width: "100%",
-            height: Dimensions.get("screen").height * 0.4,
+            height: Dimensions.get("screen").height * 0.3,
           }}
-        >
-          <LinearGradient
-            colors={["rgba(0, 0, 0, 0.7)", "rgba(0, 0, 0, 0)"]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 0, y: 0 }}
-            style={{
-              height: "50%",
-              width: "100%",
-
-              padding: 20,
-              justifyContent: "flex-end",
-              alignContent: "flex-start",
-              alignItems: "flex-start",
-              // backgroundColor: "rgba(0,0,0,0.2)",
-              // borderRadius: 5,
-              paddingBottom: 40,
-            }}
-            onPress={() => {
-              props.navigation.navigate("ArticelDetail");
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#E2ECF8",
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                borderRadius: 20,
-                marginVertical: 10,
-                // borderWidth: 1,
-              }}
-            >
-              <Text size="small" style={{ color: "#209fae" }}>
-                {dataDetail.article_byid.category.name}
-              </Text>
-            </View>
-            <Text type={"bold"} size="description" style={{ color: "white" }}>
-              {dataDetail.article_byid.title}
-            </Text>
-            <Text size="small" style={{ color: "white" }}>
-              <Truncate text={dataDetail.article_byid.firsttxt} length={120} />
-            </Text>
-            {/* <View
-              style={{
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text type="light" size="small" style={{ color: "white" }}>
-                Source :{" "}
-              </Text>
-
-              <Text
-                type="light"
-                size="small"
-                style={{ color: "white", fontStyle: "italic" }}
-              >
-                http://id.pinterest.com/
-              </Text>
-            </View> */}
-            <Text
-              size="small"
-              type="light"
-              style={{ fontStyle: "italic", color: "#fff" }}
-            >
-              {duration(dataDetail.article_byid.date)}
-            </Text>
-          </LinearGradient>
-        </ImageBackground>
+        ></ImageBackground>
 
         <View
           style={{
@@ -289,8 +221,81 @@ export default function ArticelDetail(props) {
             <Text style={{ color: "#fff", marginLeft: 10 }}>{t("share")}</Text>
           </Button>
         </View>
+
+        <View
+          // colors={["rgba(0, 0, 0, 0.7)", "rgba(0, 0, 0, 0)"]}
+          // start={{ x: 0, y: 1 }}
+          // end={{ x: 0, y: 0 }}
+          style={{
+            // height: "50%",
+            width: "100%",
+            marginTop: -40,
+            padding: 20,
+            justifyContent: "flex-end",
+            alignContent: "flex-start",
+            alignItems: "flex-start",
+            // backgroundColor: "rgba(0,0,0,0.2)",
+            // borderRadius: 5,
+            // paddingBottom: 40,
+          }}
+          onPress={() => {
+            props.navigation.navigate("ArticelDetail");
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#E2ECF8",
+              paddingHorizontal: 10,
+              paddingVertical: 3,
+              borderRadius: 20,
+              marginVertical: 10,
+              // borderWidth: 1,
+            }}
+          >
+            <Text size="small" style={{ color: "#209fae" }}>
+              {dataDetail.article_byid.category.name}
+            </Text>
+          </View>
+          <Text type={"bold"} size="label">
+            {dataDetail.article_byid.title}
+          </Text>
+
+          <Text
+            size="description"
+            numberOfLines={2}
+            style={{
+              textAlign: "justify",
+            }}
+          >
+            {dataDetail.article_byid.firsttxt}
+          </Text>
+          {/* <View
+              style={{
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text type="light" size="small" style={{ color: "white" }}>
+                Source :{" "}
+              </Text>
+
+              <Text
+                type="light"
+                size="small"
+                style={{ color: "white", fontStyle: "italic" }}
+              >
+                http://id.pinterest.com/
+              </Text>
+            </View> */}
+          <Text size="small" type="light" style={{ fontStyle: "italic" }}>
+            {duration(dataDetail.article_byid.date)}
+          </Text>
+        </View>
+
         {/* detail */}
         {dataDetail.article_byid.content.map((item, index) => {
+          // console.log(item);
           return (
             <View
               key={"content" + index}
@@ -301,37 +306,37 @@ export default function ArticelDetail(props) {
               }}
             >
               {item.title !== null ? (
-                <Text size="label" type="bold" style={{ marginBottom: 10 }}>
+                <Text size="label" type="bold" style={{}}>
                   {item.title}
                 </Text>
               ) : null}
-              {item.image !== null ? (
+              {item.image && item.image !== null ? (
                 <Image
                   source={item.image ? { uri: item.image } : default_image}
                   style={{
                     width: "100%",
                     height: Dimensions.get("screen").width / 2,
                     borderRadius: 5,
-                    marginBottom: 10,
+                    marginTop: 10,
                   }}
                 ></Image>
               ) : null}
-              <View
+              {/* <View
                 style={{
                   flexDirection: "row",
                   alignContent: "center",
                   alignItems: "center",
                   marginBottom: 5,
                 }}
-              >
-                {/* <Text type="light" size="small" style={{}}>
+              > */}
+              {/* <Text type="light" size="small" style={{}}>
                   Source :{" "}
                 </Text>
 
                 <Text type="light" size="small" style={{ fontStyle: "italic" }}>
                   http://id.pinterest.com/
                 </Text> */}
-              </View>
+              {/* </View> */}
               {item.text !== null && item.text !== "" ? (
                 <Text style={{ textAlign: "justify" }}>{item.text}</Text>
               ) : null}

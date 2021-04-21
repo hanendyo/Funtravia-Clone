@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const detail_travelgoal = gql`
-  query {
-    detail_travelgoal(article_id: "f91f3e93-9d0b-4e90-943b-3a28725bf960") {
+  query($article_id: ID!) {
+    detail_travelgoal(article_id: $article_id) {
       id
       title
       firstimg
