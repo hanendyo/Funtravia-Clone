@@ -41,13 +41,11 @@ export default function FilterModal({
 		setFilterCategori(tempData);
 	};
 
-	console.log("dataFilterCountry", dataFilterCountry);
-
 	const dataCountrySelect = () => {
 		let temp = [];
 		{
 			datascountry.map((item, index) => {
-				temp.push({ value: item.id, label: item.name, checked: false });
+				temp.push({ value: item?.id, label: item?.name, checked: false });
 			});
 		}
 		setFilterCountry(temp);
@@ -110,7 +108,6 @@ export default function FilterModal({
 		}
 
 		setFilterCity([]);
-		// console.log(tempdatasfilter);
 		setValueFilter(tempdatasfilter);
 		hitungfilter(tempdatasfilter);
 		// setClose();
@@ -140,6 +137,7 @@ export default function FilterModal({
 			<View
 				style={{
 					height: 10,
+
 					backgroundColor: "#209fae",
 				}}
 			></View>
