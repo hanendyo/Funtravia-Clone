@@ -140,7 +140,6 @@ export default function FilterModal({
 			<View
 				style={{
 					height: 10,
-
 					backgroundColor: "#209fae",
 				}}
 			></View>
@@ -207,14 +206,12 @@ export default function FilterModal({
 					}}
 				/>
 				{/* ==================garis========================= */}
+
 				<ScrollView
-					nestedScrollEnabled={true}
-					style={{
-						flexDirection: "column",
-						// justifyContent: "space-between",
-						width: "100%",
+					contentContainerStyle={{
+						width: Dimensions.get("screen").width,
 						paddingHorizontal: 15,
-						paddingVertical: 20,
+						marginVertical: 10,
 					}}
 				>
 					<Text
@@ -228,7 +225,6 @@ export default function FilterModal({
 					>
 						{t("categories")}
 					</Text>
-
 					<FlatList
 						contentContainerStyle={{
 							marginHorizontal: 3,
@@ -254,7 +250,7 @@ export default function FilterModal({
 							>
 								<CheckBox
 									onCheckColor="#FFF"
-									lineWidth={3}
+									lineWidth={2}
 									onFillColor="#209FAE"
 									onTintColor="#209FAE"
 									boxType={"square"}
@@ -277,11 +273,6 @@ export default function FilterModal({
 									size="label"
 									type="regular"
 									style={{
-										// fontFamily: "Lato-Regular",
-										// fontSize: 16,
-										// alignContent:'center',
-										// textAlign: "center",
-
 										marginLeft: 0,
 										color: "#464646",
 									}}
@@ -296,13 +287,10 @@ export default function FilterModal({
 						scrollEnabled={false}
 						extraData={selected}
 					></FlatList>
-
 					<Text
 						type="bold"
 						size="title"
 						style={{
-							// fontSize: 20,
-							// fontFamily: "Lato-Bold",
 							color: "#464646",
 						}}
 					>
@@ -310,19 +298,23 @@ export default function FilterModal({
 					</Text>
 					<View
 						style={{
-							borderWidth: 1,
 							borderRadius: 5,
 							borderColor: "#d3d3d3",
 							marginVertical: 10,
-							marginBottom: opens,
+							paddingBottom: opens,
+							// height: 200,
+							width: "100%",
 						}}
 					>
 						<DropDownPicker
-							autoScrollToDefaultValue={false}
+							scrollViewProps={{
+								nestedScrollEnabled: true,
+								persistentScrollbar: true,
+							}}
 							onOpen={() => setOpens(150)}
 							onClose={() => setOpens(10)}
 							items={dataFilterCountry}
-							// defaultValue={dataFilterCountry[0].name}
+							defaultValue={null}
 							containerStyle={{ height: 40 }}
 							style={{ backgroundColor: "#fafafa" }}
 							itemStyle={{
