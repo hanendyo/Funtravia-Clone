@@ -4,21 +4,17 @@ import { SHARE_LINK } from "../../config";
 
 export default async function shareAction({ from, target }) {
 	try {
-		let data;
-		switch (from) {
-			case "feed":
-				data = {
-					message: `${SHARE_LINK}/${from}/${target}`,
-					url: `${SHARE_LINK}/${from}/${target}`,
-				};
-				break;
-			default:
-				data = {
-					message: `${SHARE_LINK}/${from}/${target}`,
-					url: `${SHARE_LINK}/${from}/${target}`,
-				};
-				break;
-		}
+		console.log(`${SHARE_LINK}/getlink/${from}/${target}`);
+		let response = await fetch(`${SHARE_LINK}/getlink/${from}/${target}`, {
+			method: "GET",
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		});
+		let dataResponse = await response.json();
+		data = {
+			message: dataResponse.result.link,
+			url: dataResponse.result.link,
+		};
 		const result = await Share.share(data);
 		if (result.action === Share.sharedAction) {
 			if (result.activityType) {
