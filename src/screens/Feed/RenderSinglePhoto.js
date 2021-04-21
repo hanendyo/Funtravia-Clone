@@ -20,6 +20,10 @@ export default function RenderSinglePhoto({
 			<View>
 				<TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
 					<Video
+						poster={data.assets[0].filepath.replace(
+							"output.m3u8",
+							"thumbnail.png"
+						)}
 						source={{
 							uri: data.assets[0].filepath,
 						}}

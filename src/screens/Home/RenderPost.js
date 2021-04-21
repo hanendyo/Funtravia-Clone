@@ -7,7 +7,7 @@ import {
 	ActivityIndicator,
 } from "react-native";
 import { Text, Button, Truncate } from "../../component";
-import { CommentWhite, LikeWhite } from "../../assets/svg";
+import { CommentWhite, LikeWhite, Play } from "../../assets/svg";
 import Video from "react-native-video";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -19,6 +19,10 @@ export default function RenderVideo({ data, user, navigation }) {
 		return (
 			<View>
 				<Video
+					poster={data.assets[0].filepath.replace(
+						"output.m3u8",
+						"thumbnail.png"
+					)}
 					source={{
 						uri: data.assets[0].filepath,
 					}}
@@ -35,7 +39,7 @@ export default function RenderVideo({ data, user, navigation }) {
 					}}
 					resizeMode="cover"
 					muted={true}
-					// paused={true}
+					paused={true}
 				/>
 				<TouchableOpacity
 					style={{
@@ -197,6 +201,16 @@ export default function RenderVideo({ data, user, navigation }) {
 							{data.comment_count}
 						</Text>
 					</Button>
+				</View>
+				<View
+					style={{
+						flexDirection: "row",
+						position: "absolute",
+						bottom: (width + 70) / 5,
+						left: (width - 70) / 5,
+					}}
+				>
+					<Play width={40} height={40} />
 				</View>
 			</View>
 		);
