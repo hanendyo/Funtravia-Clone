@@ -10,6 +10,7 @@ import { Text, Button } from "../../component";
 import { Picker } from "react-native";
 import { Bottom } from "../../assets/svg";
 import RenderCity from "./City";
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function FilterModal({
   props,
@@ -23,11 +24,11 @@ export default function FilterModal({
   datacity,
 }) {
   const { t, i18n } = useTranslation();
-
+  let [opens, setOpens] = useState(10);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   let [dataFilterCategori, setFilterCategori] = useState(datasfilter);
-  let [dataFilterCountry, setFilterCountry] = useState(datascountry);
+  let [dataFilterCountry, setFilterCountry] = useState([]);
   let [dataFilterCity, setFilterCity] = useState([]);
   let [id_country, setId_country] = useState(null);
   const _handleCheck = (id, indexType) => {
@@ -36,6 +37,16 @@ export default function FilterModal({
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
 
     setFilterCategori(tempData);
+  };
+
+  const dataCountrySelect = () => {
+    let temp = [];
+    {
+      datascountry.map((item, index) => {
+        temp.push({ value: item?.id, label: item?.name, checked: false });
+      });
+    }
+    setFilterCountry(temp);
   };
 
   const _handleCheckc = async (id, indexType) => {
@@ -112,6 +123,7 @@ export default function FilterModal({
 
   return (
     <Modal
+      onLayout={() => dataCountrySelect()}
       isVisible={show}
       style={{
         justifyContent: "flex-end",
@@ -234,6 +246,22 @@ export default function FilterModal({
                   }}
                 >
                   <CheckBox
+                    onCheckColor="#FFF"
+                    lineWidth={3}
+                    onFillColor="#209FAE"
+                    onTintColor="#209FAE"
+                    boxType={"square"}
+                    style={{
+                      alignSelf: "center",
+                      width: Platform.select({
+                        ios: 30,
+                        android: 35,
+                      }),
+                      transform: Platform.select({
+                        ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                        android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                      }),
+                    }}
                     onValueChange={() => _handleCheck(item["id"], index)}
                     value={item["checked"]}
                   />
@@ -279,9 +307,34 @@ export default function FilterModal({
                 borderRadius: 5,
                 borderColor: "#d3d3d3",
                 marginVertical: 10,
+                paddingBottom: opens,
+                // height: 200,
+                width: "100%",
               }}
             >
-              <Picker
+              <DropDownPicker
+                scrollViewProps={{
+                  nestedScrollEnabled: true,
+                  persistentScrollbar: true,
+                }}
+                onOpen={() => setOpens(150)}
+                onClose={() => setOpens(10)}
+                items={dataFilterCountry}
+                defaultValue={null}
+                containerStyle={{ height: 40 }}
+                style={{ backgroundColor: "#fafafa" }}
+                itemStyle={{
+                  justifyContent: "flex-start",
+                }}
+                showArrow={false}
+                dropDownStyle={{
+                  backgroundColor: "#fafafa",
+                  height: 150,
+                }}
+                placeholder="Pilih Negara"
+                onChangeItem={(item, index) => _handleCheckc(item.value, index)}
+              />
+              {/* <Picker
                 iosIcon={
                   <View>
                     <Bottom />
@@ -316,7 +369,7 @@ export default function FilterModal({
                     />
                   );
                 })}
-              </Picker>
+              </Picker> */}
             </View>
             {datacity &&
             datacity.get_filter_city &&
