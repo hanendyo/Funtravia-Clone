@@ -280,7 +280,7 @@ export default function TravelGoalDetail(props) {
           >
             {item?.title ? (
               <Text size="label" type="bold" style={{}}>
-                {item?.title ? index + 1 + ". " + item?.title : null}
+                {item?.title ? item?.title : null}
               </Text>
             ) : null}
             {item?.image ? (
@@ -318,128 +318,135 @@ export default function TravelGoalDetail(props) {
       })}
 
       {/* more related */}
-      <View style={{ paddingHorizontal: 20 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "space-between",
-            marginBottom: 10,
-          }}
-        >
+      {datarelated.length > 0 ? (
+        <View style={{ paddingHorizontal: 20 }}>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
+              justifyContent: "space-between",
+              marginBottom: 10,
             }}
           >
             <View
               style={{
-                height: 20,
-                marginRight: 5,
-                width: 7,
-                backgroundColor: "#209fae",
-                borderRadius: 5,
-              }}
-            ></View>
-            <Text type="bold" size="title">
-              {t("More Related Articles")}
-            </Text>
-          </View>
-          <View></View>
-        </View>
-
-        {datarelated?.map((item, index) => {
-          return (
-            <Ripple
-              onPress={() => {
-                props.navigation.push("TravelGoalDetail", {
-                  article_id: item.id,
-                });
-              }}
-              style={{
-                shadowOpacity: 0.5,
-                shadowColor: "#d3d3d3",
-                elevation: 3,
                 flexDirection: "row",
-                width: "100%",
-                backgroundColor: "#fff",
-                borderRadius: 5,
-                justifyContent: "flex-start",
-                padding: 10,
-                marginVertical: 5,
+                alignItems: "center",
+                alignContent: "center",
               }}
             >
-              <Image
-                source={item.firstimg ? { uri: item.firstimg } : default_image}
-                style={{
-                  height: (Dimensions.get("screen").width - 60) * 0.25,
-                  width: (Dimensions.get("screen").width - 60) * 0.25,
-                  borderRadius: 5,
-                }}
-              ></Image>
               <View
                 style={{
-                  paddingLeft: 10,
-                  width: (Dimensions.get("screen").width - 60) * 0.75,
-                  // borderWidth: 1,
+                  height: 20,
+                  marginRight: 5,
+                  width: 7,
+                  backgroundColor: "#209fae",
+                  borderRadius: 5,
+                }}
+              ></View>
+              <Text type="bold" size="title">
+                {t("More Related Articles")}
+              </Text>
+            </View>
+            <View></View>
+          </View>
+
+          {datarelated?.map((item, index) => {
+            return (
+              <Ripple
+                onPress={() => {
+                  props.navigation.push("TravelGoalDetail", {
+                    article_id: item.id,
+                  });
+                }}
+                style={{
+                  shadowOpacity: 0.5,
+                  shadowColor: "#d3d3d3",
+                  elevation: 3,
+                  flexDirection: "row",
+                  width: "100%",
+                  backgroundColor: "#fff",
+                  borderRadius: 5,
+                  justifyContent: "flex-start",
+                  padding: 10,
+                  marginVertical: 5,
                 }}
               >
+                <Image
+                  source={
+                    item.firstimg ? { uri: item.firstimg } : default_image
+                  }
+                  style={{
+                    height: (Dimensions.get("screen").width - 60) * 0.25,
+                    width: (Dimensions.get("screen").width - 60) * 0.25,
+                    borderRadius: 5,
+                  }}
+                ></Image>
                 <View
                   style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    justifyContent: "space-between",
+                    paddingLeft: 10,
+                    width: (Dimensions.get("screen").width - 60) * 0.75,
+                    // borderWidth: 1,
                   }}
                 >
-                  <Text size="small">{item?.category?.name}</Text>
-                  <Text size="small">{getdate(item.created_at)}</Text>
-                </View>
-                <Text size="desription" type="bold">
-                  {item.title}
-                </Text>
-                <Text
-                  numberOfLines={2}
-                  size="small"
-                  style={{
-                    textAlign: "justify",
-                  }}
-                >
-                  {item.firsttxt}
-                </Text>
-                {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      width: "100%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text size="small">{item?.category?.name}</Text>
+                    <Text size="small">{getdate(item.created_at)}</Text>
+                  </View>
+                  <Text size="desription" type="bold">
+                    {item.title}
+                  </Text>
+                  <Text
+                    numberOfLines={2}
+                    size="small"
+                    style={{
+                      textAlign: "justify",
+                    }}
+                  >
+                    {item.firsttxt}
+                  </Text>
+                  {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
                   12 min read
                 </Text> */}
-              </View>
-            </Ripple>
-          );
-        })}
+                </View>
+              </Ripple>
+            );
+          })}
 
-        {datarelated.length < 5 ? null : (
-          <View
-            style={{
-              width: "100%",
-              paddingVertical: 10,
-              alignContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <Button
-              type="box"
-              color="primary"
-              variant="bordered"
-              text="Explore More"
+          {datarelated.length < 5 ? null : (
+            <View
               style={{
-                width: Dimensions.get("screen").width / 2.5,
-                alignSelf: "center",
-                flexDirection: "row",
+                width: "100%",
+                paddingVertical: 10,
+                alignContent: "center",
+                alignContent: "center",
               }}
-            ></Button>
-          </View>
-        )}
-      </View>
+            >
+              <Button
+                type="box"
+                color="primary"
+                variant="bordered"
+                text={t("exploreMore")}
+                style={{
+                  width: Dimensions.get("screen").width / 2.5,
+                  alignSelf: "center",
+                  flexDirection: "row",
+                }}
+                onPress={() => {
+                  props.navigation.push("TravelGoalList");
+                }}
+              ></Button>
+            </View>
+          )}
+        </View>
+      ) : null}
     </ScrollView>
   );
 }

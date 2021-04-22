@@ -166,9 +166,11 @@ export default function TravelGoal(props) {
 
   return (
     <ScrollView
-      contentContainerStyle={{
-        backgroundColor: "#f6f6f6",
-      }}
+      contentContainerStyle={
+        {
+          // backgroundColor: "#f6f6f6",
+        }
+      }
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       style={{
