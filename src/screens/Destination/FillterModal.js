@@ -22,6 +22,7 @@ export default function FilterModal({
   setJmlFilter,
   getDatacity,
   datacity,
+  setdatacountry,
 }) {
   const { t, i18n } = useTranslation();
   let [opens, setOpens] = useState(10);
@@ -59,6 +60,7 @@ export default function FilterModal({
     }
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
     await setFilterCountry(tempData);
+    await setdatacountry(tempData);
   };
 
   const UpdateFilter = async () => {
@@ -200,141 +202,137 @@ export default function FilterModal({
           }}
         />
         {/* ==================garis========================= */}
-        <ScrollView>
-          <View
+        <ScrollView
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
+            paddingBottom: 70,
+          }}
+        >
+          <Text
+            type="bold"
+            size="title"
             style={{
-              flexDirection: "column",
-              justifyContent: "space-between",
-              width: "100%",
-              paddingHorizontal: 15,
-              paddingVertical: 20,
+              // fontSize: 20,
+              // fontFamily: "Lato-Bold",
+              color: "#464646",
+              marginTop: 10,
             }}
           >
-            <Text
-              type="bold"
-              size="title"
-              style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
-                color: "#464646",
-              }}
-            >
-              {t("categories")}
-            </Text>
+            {t("categories")}
+          </Text>
 
-            <FlatList
-              contentContainerStyle={{
-                marginHorizontal: 3,
-                paddingVertical: 15,
-                paddingRight: 10,
-                width: screenWidth - 40,
-              }}
-              data={dataFilterCategori}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => _handleCheck(item["id"], index)}
+          <FlatList
+            contentContainerStyle={{
+              marginHorizontal: 3,
+              paddingVertical: 15,
+              paddingRight: 10,
+              width: screenWidth - 40,
+            }}
+            data={dataFilterCategori}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() => _handleCheck(item["id"], index)}
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  borderColor: "#464646",
+                  width: "49%",
+                  marginRight: 3,
+                  marginBottom: 20,
+                  justifyContent: "flex-start",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CheckBox
+                  onCheckColor="#FFF"
+                  lineWidth={3}
+                  onFillColor="#209FAE"
+                  onTintColor="#209FAE"
+                  boxType={"square"}
                   style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    borderColor: "#464646",
-                    width: "49%",
-                    marginRight: 3,
-                    marginBottom: 20,
-                    justifyContent: "flex-start",
-                    alignContent: "center",
-                    alignItems: "center",
+                    alignSelf: "center",
+                    width: Platform.select({
+                      ios: 30,
+                      android: 35,
+                    }),
+                    transform: Platform.select({
+                      ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                      android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                    }),
+                  }}
+                  onValueChange={() => _handleCheck(item["id"], index)}
+                  value={item["checked"]}
+                />
+
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    // fontFamily: "Lato-Regular",
+                    // fontSize: 16,
+                    // alignContent:'center',
+                    // textAlign: "center",
+
+                    marginLeft: 0,
+                    color: "#464646",
                   }}
                 >
-                  <CheckBox
-                    onCheckColor="#FFF"
-                    lineWidth={3}
-                    onFillColor="#209FAE"
-                    onTintColor="#209FAE"
-                    boxType={"square"}
-                    style={{
-                      alignSelf: "center",
-                      width: Platform.select({
-                        ios: 30,
-                        android: 35,
-                      }),
-                      transform: Platform.select({
-                        ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                        android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                      }),
-                    }}
-                    onValueChange={() => _handleCheck(item["id"], index)}
-                    value={item["checked"]}
-                  />
+                  {item["name"]}
+                </Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={2}
+            showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
+            extraData={selected}
+          ></FlatList>
 
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 16,
-                      // alignContent:'center',
-                      // textAlign: "center",
-
-                      marginLeft: 0,
-                      color: "#464646",
-                    }}
-                  >
-                    {item["name"]}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              extraData={selected}
-            ></FlatList>
-
-            <Text
-              type="bold"
-              size="title"
-              style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
-                color: "#464646",
+          <Text
+            type="bold"
+            size="title"
+            style={{
+              // fontSize: 20,
+              // fontFamily: "Lato-Bold",
+              color: "#464646",
+            }}
+          >
+            {t("location")}
+          </Text>
+          <View
+            style={{
+              // The solution: Apply zIndex to any device except Android
+              ...(Platform.OS !== "android" && {
+                zIndex: 10,
+              }),
+              marginBottom: 10,
+            }}
+          >
+            <DropDownPicker
+              scrollViewProps={{
+                nestedScrollEnabled: true,
+                persistentScrollbar: true,
               }}
-            >
-              {t("location")}
-            </Text>
-            <View
-              style={{
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: "#d3d3d3",
-                marginVertical: 10,
-                paddingBottom: opens,
-                // height: 200,
-                width: "100%",
+              items={dataFilterCountry}
+              defaultValue={null}
+              containerStyle={{ height: 40, marginTop: 10 }}
+              style={{ backgroundColor: "#fafafa" }}
+              itemStyle={{
+                justifyContent: "flex-start",
               }}
-            >
-              <DropDownPicker
-                scrollViewProps={{
-                  nestedScrollEnabled: true,
-                  persistentScrollbar: true,
-                }}
-                onOpen={() => setOpens(150)}
-                onClose={() => setOpens(10)}
-                items={dataFilterCountry}
-                defaultValue={null}
-                containerStyle={{ height: 40 }}
-                style={{ backgroundColor: "#fafafa" }}
-                itemStyle={{
-                  justifyContent: "flex-start",
-                }}
-                showArrow={false}
-                dropDownStyle={{
-                  backgroundColor: "#fafafa",
-                  height: 150,
-                }}
-                placeholder="Pilih Negara"
-                onChangeItem={(item, index) => _handleCheckc(item.value, index)}
-              />
-              {/* <Picker
+              showArrow={false}
+              dropDownStyle={{
+                backgroundColor: "#fafafa",
+                height: 150,
+              }}
+              placeholder="Pilih Negara"
+              onChangeItem={(item, index) => _handleCheckc(item.value, index)}
+            />
+            {/* <Picker
                 iosIcon={
                   <View>
                     <Bottom />
@@ -370,22 +368,21 @@ export default function FilterModal({
                   );
                 })}
               </Picker> */}
-            </View>
-            {datacity &&
-            datacity.get_filter_city &&
-            datacity.get_filter_city.length > 0 ? (
-              <RenderCity
-                data={datacity}
-                dataFilterCity={dataFilterCity}
-                setFilterCity={(x) => setFilterCity(x)}
-                props={props}
-              />
-            ) : (
-              () => {
-                setFilterCity([]);
-              }
-            )}
           </View>
+          {datacity &&
+          datacity.get_filter_city &&
+          datacity.get_filter_city.length > 0 ? (
+            <RenderCity
+              data={datacity}
+              dataFilterCity={dataFilterCity}
+              setFilterCity={(x) => setFilterCity(x)}
+              props={props}
+            />
+          ) : (
+            () => {
+              setFilterCity([]);
+            }
+          )}
         </ScrollView>
         <View
           style={{

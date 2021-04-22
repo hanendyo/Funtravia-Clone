@@ -294,6 +294,7 @@ export default function Fillter({ type, country, sendBack, props }) {
         setClose={() => setModal(!modal)}
         datasfilter={dataFillter}
         datascountry={datacountry}
+        setdatacountry={(e) => setdatacountry(e)}
         setValueFilter={(e) => sendBackData(e)}
         setJmlFilter={(y) => setfilterlenght(y)}
         getDatacity={(id) => {

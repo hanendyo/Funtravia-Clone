@@ -49,31 +49,29 @@ import ActivityModal from "./ActivityModal";
 import FacilityModal from "./FacilityModal";
 import ServiceModal from "./ServiceModal";
 import DeviceInfo from "react-native-device-info";
-let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
-let { width, height } = Dimensions.get("screen");
-let TabBarHeight = 48;
-let Notch = DeviceInfo.hasNotch();
-let SafeStatusBar = Platform.select({
+
+const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
+const { width, height } = Dimensions.get("screen");
+const TabBarHeight = 48;
+const Notch = DeviceInfo.hasNotch();
+const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
 
-let HeaderHeight = Platform.select({
-  ios: Notch ? 457 - 48 : 457 - 20,
-  android: 440 - StatusBar.currentHeight,
+const HeaderHeight = Platform.select({
+  ios: Notch ? 445 - 48 : 445 - 20,
+  android: 428 - StatusBar.currentHeight,
 });
-
-// let HeaderHeight = 425 - SafeStatusBar;
-let tab1ItemSize = (width - 30) / 2;
-let tab2ItemSize = (width - 40) / 3;
-let PullToRefreshDist = 150;
+// const HeaderHeight = 425 - SafeStatusBar;
+const tab1ItemSize = (width - 30) / 2;
+const tab2ItemSize = (width - 40) / 3;
+const PullToRefreshDist = 150;
 
 const Index = (props) => {
   /**
    * stats
    */
-
-  let [newHeight, setNewHeight] = useState(0);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "General" },
@@ -631,7 +629,7 @@ const Index = (props) => {
               paddingTop: 10,
               paddingHorizontal: 15,
               width: Dimensions.get("screen").width,
-              minHeight: 70,
+              height: 70,
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#FFF",
@@ -644,7 +642,7 @@ const Index = (props) => {
                 justifyContent: "space-around",
               }}
             >
-              <Text size="title" type="black" numberOfLines={1}>
+              <Text size="title" type="black">
                 {data?.destinationById?.name}
               </Text>
               <View style={{ flexDirection: "row", marginTop: 2 }}>
@@ -770,7 +768,7 @@ const Index = (props) => {
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 15,
-                height: 40,
+                height: 30,
                 paddingVertical: 5,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
@@ -782,21 +780,14 @@ const Index = (props) => {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
+                  padding: 2,
                   borderRadius: 5,
                   marginRight: 5,
                   backgroundColor: "#DAF0F2",
                 }}
               >
-                <UnescoIcon
-                  height={20}
-                  width={20}
-                  style={{ marginRight: 5, marginLeft: 10 }}
-                />
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ marginVertical: 10, marginRight: 10 }}
-                >
+                <UnescoIcon height={20} width={20} style={{ marginRight: 5 }} />
+                <Text size="description" type="regular">
                   UNESCO
                 </Text>
               </View>
@@ -814,13 +805,9 @@ const Index = (props) => {
                   <MovieIcon
                     height={20}
                     width={20}
-                    style={{ marginRight: 5, marginLeft: 10 }}
+                    style={{ marginRight: 5 }}
                   />
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ marginVertical: 10, marginRight: 10 }}
-                  >
+                  <Text size="description" type="regular">
                     Movie Location
                   </Text>
                 </View>
@@ -831,7 +818,7 @@ const Index = (props) => {
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 15,
-                height: 40,
+                height: 30,
                 paddingVertical: 5,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
@@ -844,6 +831,7 @@ const Index = (props) => {
 
           <View
             style={{
+              // paddingTop: 10,
               borderTopWidth: 1,
               borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
@@ -870,8 +858,8 @@ const Index = (props) => {
               <Text
                 size="description"
                 type="regular"
-                style={{ lineHeight: 18 }}
                 numberOfLines={2}
+                style={{ lineHeight: 18 }}
               >
                 {data?.destinationById?.address
                   ? data?.destinationById?.address
@@ -934,13 +922,13 @@ const Index = (props) => {
               <Clock
                 height={18}
                 width={18}
-                style={{ marginRight: 10, aligmSelf: "center" }}
+                style={{ marginRight: 10, alignSelf: "center" }}
               />
               <Text
                 size="description"
                 type="regular"
-                style={{ lineHeight: 18 }}
                 numberOfLines={2}
+                style={{ lineHeight: 18 }}
               >
                 {data?.destinationById?.openat
                   ? data?.destinationById?.openat
@@ -1269,9 +1257,11 @@ const Index = (props) => {
   };
 
   if (loading) {
-    <View style={{ marginTop: 70 }}>
-      <ActivityIndicator animating={true} size="small" color="#209FAE" />
-    </View>;
+    return (
+      <View style={{ marginTop: 70 }}>
+        <ActivityIndicator animating={true} size="small" color="#209FAE" />
+      </View>
+    );
   }
 
   return (

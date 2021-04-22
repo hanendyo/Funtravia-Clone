@@ -1,15 +1,19 @@
 import { View } from "native-base";
-import { Dimensions, Alert, Keyboard } from "react-native";
-import React, { useState, useEffect } from "react";
-import { LikeJournal, Shareout, CommentChat, LikeRed } from "../../assets/svg";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Loading, Text, Truncate } from "../../component";
+import {
+  Dimensions,
+  Alert,
+  Keyboard,
+  Platform,
+  ToastAndroid,
+} from "react-native";
+import React, { useState } from "react";
+import { TextInput } from "react-native-gesture-handler";
+import { Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import Liked from "../../graphQL/Mutation/Journal/likedJournal";
 import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
 import AddCommentJournal from "../../graphQL/Mutation/Journal/AddCommentJournal";
 import { useMutation } from "@apollo/react-hooks";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 
 export default function AddComment({
@@ -93,76 +97,6 @@ export default function AddComment({
     }
   };
 
-  const _liked = async (id) => {
-    if (token || token !== "") {
-      try {
-        let response = await mutationliked({
-          variables: {
-            id: id,
-          },
-        });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (
-            response.data.like_journal.code === 200 ||
-            response.data.like_journal.code === "200"
-          ) {
-            var tempData = { ...dataList };
-            tempData.liked = true;
-            setDataList(tempData);
-            fetchData();
-          } else {
-            throw new Error(response.data.like_journal.message);
-          }
-        }
-      } catch (error) {
-        Alert.alert("" + error);
-      }
-    } else {
-      Alert.alert("Please Login");
-    }
-  };
-
-  const _unliked = async (id) => {
-    if (token || token !== "") {
-      try {
-        let response = await mutationUnliked({
-          variables: {
-            id: id,
-          },
-        });
-        if (loadingUnLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (
-            response.data.unlike_journal.code === 200 ||
-            response.data.unlike_journal.code === "200"
-          ) {
-            var tempData = { ...dataList };
-            tempData.liked = false;
-            setDataList(tempData);
-            fetchData();
-          } else {
-            throw new Error(response.data.unlike_journal.message);
-          }
-        }
-      } catch (error) {
-        Alert.alert("" + error);
-      }
-    } else {
-      Alert.alert("Please Login");
-    }
-  };
-
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
@@ -193,24 +127,26 @@ export default function AddComment({
       <View
         style={{
           backgroundColor: "#f6f6f6",
-          borderRadius: 20,
+          borderRadius: 30,
           width: "100%",
-          height: Dimensions.get("window").width * 0.13,
+          minHeight: Dimensions.get("window").width * 0.13,
+          maxHeight: Dimensions.get("window").width * 0.16,
           flexDirection: "row",
           paddingHorizontal: 10,
-          paddingVertical: 5,
           justifyContent: "space-between",
         }}
       >
         <TextInput
           style={{
             flex: 1,
-            fontWeight: "bold",
             marginLeft: 5,
             width: "40%",
             flexWrap: "wrap",
             color: "#2c2c2c",
+            fontSize: 12,
+            lineHeight: 16,
           }}
+          multiline={true}
           onChangeText={(text) => setText(text)}
           value={text}
           placeholder={Truncate({
@@ -226,11 +162,13 @@ export default function AddComment({
           // onSubmitEditing={() => comment(dataList.id, text)}
         />
         <Ripple
+          rippleCentered={true}
           style={{
             alignItems: "center",
             justifyContent: "center",
             height: "100%",
             borderRadius: 15,
+            width: "20%",
           }}
           onPress={() => comment(data.id, text)}
         >
@@ -239,54 +177,6 @@ export default function AddComment({
           </Text>
         </Ripple>
       </View>
-      {/* <TouchableOpacity onPress={() => Alert.alert("Comming Soon")}>
-        <View
-          style={{
-            marginLeft: 10,
-            borderRadius: 30,
-            backgroundColor: "#f6f6f6",
-            width: Dimensions.get("window").width * 0.13,
-            height: Dimensions.get("window").width * 0.13,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Shareout width={20} height={20} />
-        </View>
-      </TouchableOpacity>
-      {data?.liked === false ? (
-        <TouchableOpacity onPress={() => _liked(dataList.id)}>
-          <View
-            style={{
-              marginLeft: 10,
-              borderRadius: 30,
-              backgroundColor: "#f6f6f6",
-              width: Dimensions.get("window").width * 0.13,
-              height: Dimensions.get("window").width * 0.13,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <LikeJournal width={20} height={20} />
-          </View>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={() => _unliked(dataList.id)}>
-          <View
-            style={{
-              marginLeft: 10,
-              borderRadius: 30,
-              backgroundColor: "#f6f6f6",
-              width: Dimensions.get("window").width * 0.13,
-              height: Dimensions.get("window").width * 0.13,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <LikeRed width={20} height={20} />
-          </View>
-        </TouchableOpacity>
-      )} */}
     </View>
   );
 }

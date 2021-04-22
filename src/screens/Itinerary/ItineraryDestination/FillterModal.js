@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import Modal from "react-native-modal";
 import { Capital, CustomImage } from "../../../component";
 import CheckBox from "@react-native-community/checkbox";
@@ -22,6 +28,7 @@ export default function FilterModal({
   setJmlFilter,
   getDatacity,
   datacity,
+  setdatacountry,
 }) {
   const { t, i18n } = useTranslation();
   let [opens, setOpens] = useState(10);
@@ -30,6 +37,8 @@ export default function FilterModal({
   let [dataFilterCountry, setFilterCountry] = useState([]);
   let [dataFilterCity, setFilterCity] = useState([]);
   let [id_country, setId_country] = useState(null);
+
+  console.log("filterCountries filter modal", dataFilterCountry);
 
   const _handleCheck = (id, indexType) => {
     const tempData = [...dataFilterCategori];
@@ -58,7 +67,10 @@ export default function FilterModal({
       tempData[i]["checked"] = false;
     }
     tempData[indexType]["checked"] = !tempData[indexType]["checked"];
+    console.log("tempdata", tempData);
     await setFilterCountry(tempData);
+    // await setFilterCountry(tempData);
+    await setdatacountry(tempData);
   };
 
   const UpdateFilter = async () => {
@@ -103,7 +115,6 @@ export default function FilterModal({
     }
 
     setFilterCity([]);
-    // console.log(tempdatasfilter);
     setValueFilter(tempdatasfilter);
     hitungfilter(tempdatasfilter);
     setClose();
@@ -204,6 +215,8 @@ export default function FilterModal({
         />
         {/* ==================garis========================= */}
         <ScrollView
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             width: Dimensions.get("screen").width,
             paddingHorizontal: 15,
@@ -217,6 +230,7 @@ export default function FilterModal({
               // fontSize: 20,
               // fontFamily: "Lato-Bold",
               color: "#464646",
+              marginTop: 10,
             }}
           >
             {t("categories")}
@@ -232,6 +246,7 @@ export default function FilterModal({
             data={dataFilterCategori}
             renderItem={({ item, index }) => (
               <TouchableOpacity
+                key={index}
                 onPress={() => _handleCheck(item["id"], index)}
                 style={{
                   flexDirection: "row",
@@ -297,92 +312,45 @@ export default function FilterModal({
               // fontSize: 20,
               // fontFamily: "Lato-Bold",
               color: "#464646",
+              marginBottom: 10,
             }}
           >
             {t("location")}
           </Text>
           <View
             style={{
-              borderRadius: 5,
-              borderColor: "#d3d3d3",
-              marginVertical: 10,
-              paddingBottom: opens,
-              width: "100%",
+              // The solution: Apply zIndex to any device except Android
+              ...(Platform.OS !== "android" && {
+                zIndex: 10,
+              }),
+              marginBottom: 10,
             }}
           >
             <DropDownPicker
-              // globalTextStyle={{
-              //   borderWidth: 1,
-              //   padding: 10,
-              //   backgroundColor: "#209FAE",
-              //   margin: 0,
-              //   height: "100%",
-              //   width: "250%",
-              // }}
               scrollViewProps={{
                 nestedScrollEnabled: true,
                 persistentScrollbar: true,
               }}
-              onOpen={() => setOpens(150)}
-              onClose={() => setOpens(10)}
+              // onOpen={() => setOpens(150)}
+              // onClose={() => setOpens(10)}
               items={dataFilterCountry}
               defaultValue={null}
               containerStyle={{
                 height: 40,
               }}
-              // style={{ backgroundColor: "#fafafa" }}
+              style={{ backgroundColor: "#fafafa" }}
               itemStyle={{
                 justifyContent: "flex-start",
               }}
               showArrow={false}
               dropDownStyle={{
-                borderWidth: 1,
-                position: "relative",
+                backgroundColor: "#fafafa",
                 height: 150,
-                // backgroundColor: "#fafafa",
               }}
               placeholder="Pilih Negara"
               onChangeItem={(item, index) => _handleCheckc(item.value, index)}
             />
-
-            {/* <Picker
-                iosIcon={
-                  <View>
-                    <Bottom />
-                  </View>
-                }
-                iosHeader="Select Hours"
-                note
-                mode="dropdown"
-                selectedValue={id_country}
-                textStyle={{ fontFamily: "Lato-Regular" }}
-                itemTextStyle={{ fontFamily: "Lato-Regular" }}
-                itemStyle={{ fontFamily: "Lato-Regular" }}
-                placeholderStyle={{ fontFamily: "Lato-Regular" }}
-                headerTitleStyle={{
-                  fontFamily: "Lato-Regular",
-                }}
-                style={{
-                  color: "#646464",
-                  fontFamily: "Lato-Regular",
-                }}
-                onValueChange={(itemValue, itemIndex) =>
-                  _handleCheckc(itemValue, itemIndex - 1)
-                }
-              >
-                <Picker.Item key={0} label={"All Country"} value={""} />
-                {dataFilterCountry.map((item, index) => {
-                  return (
-                    <Picker.Item
-                      key={item.id}
-                      label={item.name}
-                      value={item.id}
-                    />
-                  );
-                })}
-              </Picker> */}
           </View>
-          <View style={{ height: 100 }}></View>
           {datacity &&
           datacity.get_filter_city &&
           datacity.get_filter_city.length > 0 ? (

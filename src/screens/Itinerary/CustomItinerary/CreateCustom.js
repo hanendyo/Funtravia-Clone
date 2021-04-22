@@ -997,7 +997,26 @@ export default function CreateCustom(props) {
               alignContent: "center",
             }}
           >
-            <CheckBox value={cheked} onChange={() => setcheck(!cheked)} />
+            <CheckBox
+              onCheckColor="#FFF"
+              lineWidth={2}
+              onFillColor="#209FAE"
+              onTintColor="#209FAE"
+              boxType={"square"}
+              style={{
+                alignSelf: "center",
+                width: Platform.select({
+                  ios: 30,
+                  android: 35,
+                }),
+                transform: Platform.select({
+                  ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                  android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                }),
+              }}
+              value={cheked}
+              onChange={() => setcheck(!cheked)}
+            />
             <Text
               size="small"
               type="regular"

@@ -72,7 +72,7 @@ export default function City({
           >
             <CheckBox
               onCheckColor="#FFF"
-              lineWidth={3}
+              lineWidth={2}
               onFillColor="#209FAE"
               onTintColor="#209FAE"
               boxType={"square"}

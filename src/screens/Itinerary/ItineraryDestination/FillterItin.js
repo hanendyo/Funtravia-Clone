@@ -40,10 +40,12 @@ export default function Fillter({
   let [modal, setModal] = useState(false);
   let [id_country, setId_country] = useState(null);
 
+  console.log("datacountry itin", datacountry);
+
   const [
     Getcityfilter,
     { data: datacity, loading: loadingcity, error: errorcity },
-  ] = useLazyQuery(Getcity, {
+  ] = useLazyQuery(Getcity, { 
     fetchPolicy: "network-only",
     variables: {
       country_id: id_country,
@@ -125,7 +127,7 @@ export default function Fillter({
   };
 
   const _renderFilter = ({ item, index }) => {
-    // console.log(item);
+    console.log("item", item);
     if (item.checked == true) {
       return (
         <Button
@@ -347,6 +349,7 @@ export default function Fillter({
         show={modal}
         setClose={() => setModal(!modal)}
         datasfilter={dataFillter}
+        setdatacountry={(e) => setdatacountry(e)}
         datascountry={datacountry}
         setValueFilter={(e) => sendBackData(e)}
         setJmlFilter={(y) => setfilterlenght(y)}

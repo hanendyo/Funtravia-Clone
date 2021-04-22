@@ -351,7 +351,7 @@ export default function DetailJournal(props) {
                   }}
                 >
                   <Text
-                    size={"small"}
+                    size={"description"}
                     type={"regular"}
                     style={{
                       paddingHorizontal: 25,
@@ -693,9 +693,9 @@ export default function DetailJournal(props) {
                   <View
                     style={{
                       width: Dimensions.get("screen").width,
-                      paddingHorizontal: 15,
+                      paddingHorizontal: 70,
                       alignItems: "flex-start",
-                      marginVertical: 15,
+                      marginVertical: 5,
                     }}
                   >
                     <Pressable
@@ -707,6 +707,8 @@ export default function DetailJournal(props) {
                       style={{
                         height: "100%",
                         flexDirection: "row",
+                        width: "100%",
+                        paddingVertical: 10,
                       }}
                     >
                       <Text size="label" type="bold">

@@ -95,6 +95,7 @@ export default function FilterModal({
             width: "100%",
             paddingHorizontal: 15,
             paddingVertical: 20,
+            borderWidth: 1,
           }}
         >
           <Text
@@ -138,6 +139,8 @@ export default function FilterModal({
           style={{
             borderBottomColor: "#D1D1D1",
             borderBottomWidth: 1,
+            width: Dimensions.get("screen").width,
+            marginHorizontal: 15,
           }}
         />
         {/* ==================garis========================= */}
@@ -164,7 +167,7 @@ export default function FilterModal({
             </Text>
             <FlatList
               contentContainerStyle={{
-                marginHorizontal: 3,
+                // marginHorizontal: 3,
                 paddingVertical: 15,
                 paddingRight: 10,
                 width: screenWidth - 40,
@@ -193,6 +196,22 @@ export default function FilterModal({
                     }}
                   >
                     <CheckBox
+                      onCheckColor="#FFF"
+                      lineWidth={1}
+                      onFillColor="#209FAE"
+                      onTintColor="#209FAE"
+                      boxType={"square"}
+                      style={{
+                        alignSelf: "center",
+                        width: Platform.select({
+                          ios: 30,
+                          android: 35,
+                        }),
+                        transform: Platform.select({
+                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                        }),
+                      }}
                       onValueChange={() => _handleCheck(item["id"], index)}
                       value={item["checked"]}
                     />

@@ -36,6 +36,7 @@ import { NetworkStatus } from "@apollo/client";
 import RenderAlbum from "./RenderAlbumItinerary";
 import RenderSinglePhoto from "./RenderSinglePhoto";
 import { useIsFocused } from "@react-navigation/native";
+import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -57,6 +58,7 @@ export default function FeedList({ props, token }) {
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
+  let [dataUser, setDataUser] = useState();
   let [activelike, setactivelike] = useState(true);
   const { t, i18n } = useTranslation();
   let { width, height } = Dimensions.get("screen");
@@ -115,7 +117,6 @@ export default function FeedList({ props, token }) {
           if (errorLike) {
             throw new Error("Error");
           }
-          // console.log(response);
           if (response.data) {
             if (
               response.data.like_post.code === 200 ||
@@ -136,7 +137,6 @@ export default function FeedList({ props, token }) {
           feed_post_pageing[index].response_count =
             feed_post_pageing[index].response_count - 1;
           setactivelike(true);
-          console.log(error);
           // Alert.alert("" + error);
         }
       } else {
@@ -184,7 +184,6 @@ export default function FeedList({ props, token }) {
           feed_post_pageing[index].response_count =
             feed_post_pageing[index].response_count + 1;
           feed_post_pageing[index].liked = true;
-          console.log(error);
         }
       } else {
         Alert.alert("Please Login");
@@ -210,15 +209,18 @@ export default function FeedList({ props, token }) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      dataPost?.feed_post_pageing?.datas.map((item, index) => {
+        setDataUser(item.user);
+      });
+    },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
-  // console.log(token);
   let feed_post_pageing = [];
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
     feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
-  // console.log(feed_post_pageing);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -235,22 +237,16 @@ export default function FeedList({ props, token }) {
     });
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
-    // console.log("length_prev", prev.feed_post_pageing.datas.length);
-    // console.log("offset", fetchMoreResult.feed_post_pageing.page_info.offset);
     if (
       prev.feed_post_pageing.datas.length <
       fetchMoreResult.feed_post_pageing.page_info.offset
     ) {
-      // console.log("masuk");
       if (!fetchMoreResult) return prev;
-      // console.log("fatchmore", fetchMoreResult.feed_post_pageing.datas);
       const { page_info } = fetchMoreResult.feed_post_pageing;
       const datas = [
         ...prev.feed_post_pageing.datas,
         ...fetchMoreResult.feed_post_pageing.datas,
       ];
-      // no == 1;
-      // console.log(datas);
       return Object.assign({}, prev, {
         feed_post_pageing: {
           __typename: prev.feed_post_pageing.__typename,
@@ -290,7 +286,6 @@ export default function FeedList({ props, token }) {
         //   throw new Error("Error Input");
         // }
 
-        // console.log(response);
         if (response.data) {
           if (
             response.data.delete_post.code === 200 ||
@@ -356,7 +351,6 @@ export default function FeedList({ props, token }) {
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", (data) => {
-      console.log(props);
       // if (
       //   props.route.params.isposting &&
       //   props.route.params.isposting == true
@@ -383,7 +377,6 @@ export default function FeedList({ props, token }) {
         token: token,
       },
     });
-    // console.log(id_post);
   };
 
   const [selected, setSelected] = useState(new Map());
@@ -449,6 +442,57 @@ export default function FeedList({ props, token }) {
   });
   const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
+  const [
+    UnfollowMutation,
+    { loading: loadUnfolMut, data: dataUnfolMut, error: errorUnfolMut },
+  ] = useMutation(UnfollowMut, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _unfollow = async (id, status) => {
+    if (token || token !== "") {
+      try {
+        let response = await UnfollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadUnfolMut) {
+          Alert.alert("Loading!!");
+        }
+        if (errorUnfolMut) {
+          throw new Error("Error Input");
+        }
+
+        console.log("Respon", response);
+
+        if (response.data) {
+          if (
+            response.data.unfollow_user.code === 200 ||
+            response.data.unfollow_user.code === "200"
+          ) {
+            // loadAsync();
+            // setSelectedStatus("0");
+            setModalmenuother(false);
+          } else {
+            throw new Error(response.data.unfollow_user.message);
+          }
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+        setLoading(false);
+      }
+    } else {
+      Alert.alert("Please Login");
+      setLoading(false);
+    }
+  };
+
   return (
     <View>
       <Modal
@@ -478,9 +522,7 @@ export default function FeedList({ props, token }) {
             style={{
               paddingVertical: 10,
             }}
-            onPress={() => {
-              console.log(data);
-            }}
+            onPress={() => {}}
           >
             <Text size="description" type="regular" style={{}}>
               {t("shareTo")}...
@@ -588,9 +630,7 @@ export default function FeedList({ props, token }) {
             style={{
               paddingVertical: 10,
             }}
-            onPress={() => {
-              setModalmenuother(false);
-            }}
+            onPress={() => _unfollow(dataUser.id)}
           >
             <Text size="description" type="regular" style={{}}>
               {t("unfollow")}
