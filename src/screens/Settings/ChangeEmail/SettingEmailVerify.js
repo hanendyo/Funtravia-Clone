@@ -248,7 +248,7 @@ export default function SettingEmailVerify(props) {
           size="description"
           type="regular"
         >
-          {t("verifyOtp") + " " + props.route.params.emailOld}
+          {t("verifyOtp") + " " + props.route.params.emailNew}
         </Text>
       </View>
       <View

@@ -120,7 +120,7 @@ export default function ItineraryCategory(props) {
           height: 55,
         }}
       >
-        <SearchWhite height={20} width={20}></SearchWhite>
+        {/* <SearchWhite height={20} width={20}></SearchWhite> */}
       </Button>
     ),
   };

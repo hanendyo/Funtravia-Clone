@@ -235,8 +235,6 @@ export default function CityDetail(props) {
     },
   });
 
-  console.log("city", dataCity);
-
   const Goto = (item) => {
     if (item.id) {
       props.navigation.navigate("eventdetail", {
@@ -262,6 +260,8 @@ export default function CityDetail(props) {
       },
     },
   });
+
+  console.log("data", dataJournal);
 
   const [
     getItineraryCity,
@@ -642,7 +642,7 @@ export default function CityDetail(props) {
           </View>
         ) : null}
         {/* Activities */}
-        {render.destination_type && render.destination_type.length > 0 ? (
+        {render && render.destination_type.length > 0 ? (
           <View
             style={{
               paddingVertical: 10,
@@ -969,6 +969,7 @@ export default function CityDetail(props) {
                   customSlide={({ index, item, style, width }) => (
                     <View key={"ky" + index}>
                       {item.map((dataX, indeks) => {
+                        console.log("dataX", dataX);
                         return (
                           <Pressable
                             onPress={() =>
@@ -987,8 +988,8 @@ export default function CityDetail(props) {
                           >
                             <Image
                               source={
-                                item.picture
-                                  ? { uri: dataX.picture }
+                                dataX.userby
+                                  ? { uri: dataX.userby.picture }
                                   : logo_funtravia
                               }
                               style={{
