@@ -6,6 +6,13 @@ const CityJournal = gql`
       title
       text
       picture
+      userby{
+        id
+        username
+        first_name
+        last_name
+        picture
+      }
       liked
     }
   }

@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Platform,
   Pressable,
+  ToastAndroid,
   Alert,
 } from "react-native";
 import Modal from "react-native-modal";
@@ -115,11 +116,13 @@ export default function SettingsAkun(props) {
       keyword: searchCity,
       countries_id: setting?.countries?.id,
     },
+   
   });
 
   const resultSearch = async (x) => {
     await setSearchCity(x);
     await querycity();
+  
   };
 
   const [
@@ -206,6 +209,11 @@ export default function SettingsAkun(props) {
           throw new Error(response.data.update_gender_settings.message);
         }
         setModalGender(false);
+        if (Platform.OS === "android") {
+          ToastAndroid.show("Successfully set gender", ToastAndroid.LONG);
+        }else{
+          Alert.alert("Successfully set gender");
+        }
         let tmp_data = { ...setting };
         tmp_data.user.gender = x;
         await setSetting(tmp_data);
@@ -232,6 +240,11 @@ export default function SettingsAkun(props) {
           throw new Error(response.data.update_birth_settings.message);
         }
         setModalBirth(false);
+        if (Platform.OS === "android") {
+          ToastAndroid.show("Successfully set date of birth", ToastAndroid.LONG);
+        }else{
+          Alert.alert("Successfully set date of birth");
+        }
         let tmp_data = { ...setting };
         tmp_data.user.birth_date = format;
         await setSetting(tmp_data);
@@ -818,7 +831,14 @@ export default function SettingsAkun(props) {
                   width: Dimensions.get("screen").width - 50,
                 }}
               >
-                <View
+                 <Pressable
+                 onPress={() =>
+                  props.navigation.navigate("SettingEmailChange", {
+                    setting: setting,
+                  })
+                }
+                 >
+                 <View
                   style={{
                     alignContent: "flex-start",
                     justifyContent: "flex-start",
@@ -839,6 +859,9 @@ export default function SettingsAkun(props) {
                     {t("emailUsed")}
                   </Text>
                 </View>
+                    
+                </Pressable>
+               
               </View>
               {/* <OptionsVertBlack
                 width={20}
@@ -868,13 +891,13 @@ export default function SettingsAkun(props) {
         </View>
         {setting && setting.user && setting.user.email ? (
           <View style={{ justifyContent: "center" }}>
-            <OptionsVertBlack
+            {/* <OptionsVertBlack
               width={15}
               height={15}
               onPress={() => {
                 setModalEmail(true);
               }}
-            />
+            /> */}
           </View>
         ) : null}
       </View>
