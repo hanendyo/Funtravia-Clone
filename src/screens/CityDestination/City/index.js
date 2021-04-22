@@ -1136,12 +1136,15 @@ export default function CityDetail(props) {
               <Tabs
                 tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
                 tabContainerStyle={{ backgroundColor: "white", elevation: 0 }}
+                style={{   }}
                 // locked={false}
               >
                 <Tab
                   heading={t("About")}
-                  tabStyle={{ backgroundColor: "white", elevation: 0 }}
-                  activeTabStyle={{ backgroundColor: "white" }}
+                  tabStyle={{ backgroundColor: "white", elevation: 0 ,borderBottomColor: "#209FAE",
+                  borderBottomWidth: 0.5}}
+                  activeTabStyle={{ backgroundColor: "white" ,borderBottomColor: "#209FAE",
+                  borderBottomWidth: 0.5}}
                   textStyle={{
                     fontFamily: "Lato-Regular",
                     fontSize: 14,
@@ -1179,11 +1182,11 @@ export default function CityDetail(props) {
                               padding: 5,
                             }}
                           >
-                            <View style={{ height: 55 }}>
+                            <View style={{ height: 45 }}>
                               <FunIcon
                                 icon={item.icon ? item.icon : "w-fog"}
-                                height={50}
-                                width={50}
+                                height={40}
+                                width={40}
                                 style={{
                                   bottom: -3,
                                 }}
@@ -1203,8 +1206,10 @@ export default function CityDetail(props) {
 
                 <Tab
                   heading={t("Practical")}
-                  tabStyle={{ backgroundColor: "white" }}
-                  activeTabStyle={{ backgroundColor: "white" }}
+                  tabStyle={{ backgroundColor: "white" ,borderBottomColor: "#209FAE",
+                  borderBottomWidth: 0.5}}
+                  activeTabStyle={{ backgroundColor: "white", borderBottomColor: "#209FAE",
+                  borderBottomWidth: 0.5 }}
                   textStyle={{
                     fontFamily: "Lato-Regular",
                     fontSize: 14,
@@ -1245,11 +1250,11 @@ export default function CityDetail(props) {
                               padding: 5,
                             }}
                           >
-                            <View style={{ height: 55 }}>
+                            <View style={{ height: 45 }}>
                               <FunIcon
                                 icon={item.icon ? item.icon : "w-fog"}
-                                height={50}
-                                width={50}
+                                height={40}
+                                width={40}
                                 style={{
                                   bottom: -3,
                                 }}
@@ -1388,11 +1393,11 @@ export default function CityDetail(props) {
                       }}
                     >
                       <LinearGradient
-                        colors={["rgba(0, 0, 0, 1)", "rgba(0, 0, 0, 0)"]}
+                        colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
                         start={{ x: 0, y: 1 }}
                         end={{ x: 0, y: 0 }}
                         style={{
-                          height: "50%",
+                          height: "30%",
                           width: "100%",
                           alignContent: "center",
                           alignItems: "center",
@@ -1605,12 +1610,11 @@ export default function CityDetail(props) {
               </View>
             ) : renderItinerary.length > 0 ? (
               <FlatList
-                // initialScrollIndex
                 data={renderItinerary}
                 keyExtractor={(item) => item.id}
                 horizontal={true}
                 contentContainerStyle={{
-                  paddingLeft: 0,
+                  paddingLeft: 2,
                   paddingVertical: 15,
                 }}
                 renderItem={({ item, index }) => (
@@ -1629,8 +1633,8 @@ export default function CityDetail(props) {
                         shadowOpacity: arrayShadow.shadowOpacity,
                         shadowRadius: arrayShadow.shadowRadius,
                         elevation: arrayShadow.elevation,
-                        // borderWidth:1,
-                        width: "96%",
+                        borderWidth:0,
+                        width: "95%",
                         justifyContent: "space-between",
                         backgroundColor: "#F7F7F7",
                         overflow: "hidden",
