@@ -499,8 +499,7 @@ export default function ItineraryDestination(props) {
                       text={t("adddeswishlist")}
                       color="primary"
                       onPress={() => {
-                        props.route.params && props.route.params.iditinerary
-                          ? props.navigation.dispatch(
+                        props.navigation.dispatch(
                               StackActions.replace("ItineraryStack", {
                                 screen: "ItineraryChooseday",
                                 params: {
@@ -512,13 +511,7 @@ export default function ItineraryDestination(props) {
                                 },
                               })
                             )
-                          : props.navigation.push("ItineraryStack", {
-                              screen: "ItineraryPlaning",
-                              params: {
-                                idkiriman: item.id,
-                                Position: "destination",
-                              },
-                            });
+                     
                       }}
                       style={{
                         marginTop: 10,

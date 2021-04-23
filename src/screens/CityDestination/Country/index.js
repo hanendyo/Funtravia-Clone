@@ -1598,8 +1598,10 @@ export default function Country(props) {
             >
               <Tab
                 heading={t("About")}
-                tabStyle={{ backgroundColor: "white", elevation: 0 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                tabStyle={{ backgroundColor: "white", elevation: 0 , borderBottomColor: "#209FAE",
+                borderBottomWidth: 0.5}}
+                activeTabStyle={{ backgroundColor: "white" ,borderBottomColor: "#209FAE",
+                borderBottomWidth: 0.5}}
                 textStyle={{
                   fontFamily: "Lato-Regular",
                   fontSize: 14,
@@ -1637,11 +1639,11 @@ export default function Country(props) {
                             padding: 5,
                           }}
                         >
-                          <View style={{ height: 55 }}>
+                          <View style={{ height: 45 }}>
                             <FunIcon
                               icon={item.icon ? item.icon : "w-fog"}
-                              height={50}
-                              width={50}
+                              height={40}
+                              width={40}
                               style={{
                                 bottom: -3,
                               }}
@@ -1661,8 +1663,10 @@ export default function Country(props) {
 
               <Tab
                 heading={t("Practical")}
-                tabStyle={{ backgroundColor: "white" }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                tabStyle={{ backgroundColor: "white" ,borderBottomColor: "#209FAE",
+                borderBottomWidth: 0.5}}
+                activeTabStyle={{ backgroundColor: "white" ,borderBottomColor: "#209FAE",
+                borderBottomWidth: 0.5}}
                 textStyle={{
                   fontFamily: "Lato-Regular",
                   fontSize: 14,
@@ -1700,11 +1704,11 @@ export default function Country(props) {
                             padding: 5,
                           }}
                         >
-                          <View style={{ height: 55 }}>
+                          <View style={{ height: 45 }}>
                             <FunIcon
                               icon={item.icon ? item.icon : "w-fog"}
-                              height={50}
-                              width={50}
+                              height={40}
+                              width={40}
                               style={{
                                 bottom: -3,
                               }}
