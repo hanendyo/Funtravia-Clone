@@ -195,12 +195,10 @@ export default function Notification(props) {
                                 color: "#209FAE",
                             }}
                         >
-                            {token && datanotif ? (
+                            {token ? (
                                 <Invitation
                                     navigation={props.navigation}
                                     token={token}
-                                    datas={datanotif}
-                                    GetListNotif={() => GetListNotif()}
                                 />
                             ) : null}
                         </Tab>
