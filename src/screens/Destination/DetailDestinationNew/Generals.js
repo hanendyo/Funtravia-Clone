@@ -8,9 +8,11 @@ import { useMutation } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
 const { width, height } = Dimensions.get("screen");
+import { useTranslation } from "react-i18next";
 
 export default function Generals({ data, props, addTo }) {
   let [more, setMore] = useState(false);
+  const { t } = useTranslation();
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState({});
   let [gambar, setGambar] = useState([]);
@@ -198,7 +200,7 @@ export default function Generals({ data, props, addTo }) {
               }}
               style={{ color: "#209FAE" }}
             >
-              more
+              {t("readMore")}
             </Text>
           )}
           {!more && (
@@ -210,7 +212,7 @@ export default function Generals({ data, props, addTo }) {
               }}
               style={{ color: "#209FAE" }}
             >
-              hide more
+              {t("readless")}
             </Text>
           )}
         </View>
@@ -222,6 +224,7 @@ export default function Generals({ data, props, addTo }) {
           style={{
             width: Dimensions.get("screen").width,
             paddingHorizontal: 15,
+            // paddingVertical: 10,
           }}
         >
           <View
@@ -232,10 +235,15 @@ export default function Generals({ data, props, addTo }) {
               justifyContent: "center",
               padding: 10,
               backgroundColor: "#FFF",
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-              shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-              elevation: Platform.OS == "ios" ? 3 : 3.5,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.1,
+              shadowRadius: 6.27,
+
+              elevation: 6,
             }}
           >
             <Text
@@ -252,33 +260,35 @@ export default function Generals({ data, props, addTo }) {
               }}
             >
               {data &&
-                data.greatfor.map((item, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      marginTop: 10,
-                      width: (width - 50) / 5,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                data.greatfor.map((item, index) => {
+                  return (
                     <View
+                      key={index}
                       style={{
-                        height: 40,
-                        width: 40,
-                        borderRadius: 20,
-                        backgroundColor: "#F6F6F6",
+                        marginTop: 10,
+                        width: (width - 50) / 4,
                         justifyContent: "center",
                         alignItems: "center",
                       }}
                     >
-                      <FunIcon icon={item?.icon} height={25} width={25} />
+                      <View
+                        style={{
+                          height: 60,
+                          width: 60,
+                          borderRadius: 30,
+                          backgroundColor: "#F6F6F6",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FunIcon icon={item?.icon} height={25} width={25} />
+                      </View>
+                      <Text size="small" type="light" style={{ marginTop: 5 }}>
+                        {item?.name}
+                      </Text>
                     </View>
-                    <Text size="small" type="light" style={{ marginTop: 5 }}>
-                      {item?.name}
-                    </Text>
-                  </View>
-                ))}
+                  );
+                })}
             </View>
           </View>
         </View>
@@ -290,6 +300,7 @@ export default function Generals({ data, props, addTo }) {
           style={{
             width: Dimensions.get("screen").width,
             paddingHorizontal: 15,
+            // paddingTop: 10,
           }}
         >
           <View
@@ -300,10 +311,15 @@ export default function Generals({ data, props, addTo }) {
               justifyContent: "center",
               padding: 10,
               backgroundColor: "#FFF",
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-              shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-              elevation: Platform.OS == "ios" ? 3 : 3.5,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.1,
+              shadowRadius: 6.27,
+
+              elevation: 6,
             }}
           >
             <Text
@@ -325,16 +341,16 @@ export default function Generals({ data, props, addTo }) {
                     key={index}
                     style={{
                       marginTop: 10,
-                      width: (width - 50) / 5,
+                      width: (width - 50) / 4,
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <View
                       style={{
-                        height: 40,
-                        width: 40,
-                        borderRadius: 20,
+                        height: 60,
+                        width: 60,
+                        borderRadius: 30,
                         backgroundColor: "#F6F6F6",
                         justifyContent: "center",
                         alignItems: "center",
@@ -359,7 +375,7 @@ export default function Generals({ data, props, addTo }) {
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
-              marginTop: 10,
+              marginTop: 20,
             }}
           >
             <Text size="label" type="bold">
@@ -371,6 +387,7 @@ export default function Generals({ data, props, addTo }) {
               // width: Dimensions.get("screen").width,
               paddingLeft: 15,
               paddingRight: 10,
+              paddingBottom: 20,
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -379,45 +396,66 @@ export default function Generals({ data, props, addTo }) {
             {data &&
               data.movie_location.map((item, index) => (
                 <Pressable
+                  onPress={() => {
+                    props.navigation.push("TravelIdeaStack", {
+                      screen: "Detail_movie",
+                      params: {
+                        movie_id: item.id,
+                        token: token,
+                      },
+                    });
+                  }}
                   key={index}
                   style={{
                     borderRadius: 10,
                     borderWidth: 1,
                     borderColor: "#F3F3F3",
-                    height: 130,
+                    // height: 150,
                     marginTop: 10,
                     marginBottom: 10,
                     flexDirection: "row",
                     // width: Dimensions.get("screen").width * 0.9,
-                    width: Dimensions.get("screen").width * 0.7,
+                    width: Dimensions.get("screen").width * 0.9,
                     padding: 10,
                     backgroundColor: "#FFF",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-                    shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-                    elevation: Platform.OS == "ios" ? 3 : 3.5,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 5,
+                    },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 6.27,
+
+                    elevation: 6,
                     marginRight: 5,
                   }}
                 >
                   <Image
                     source={{ uri: item?.cover }}
-                    style={{ height: "100%", width: "30%", borderWidth: 1 }}
+                    style={{ height: 150, width: 100 }}
                   />
                   <View
-                    style={{ width: "65%", height: "100%", marginLeft: 10 }}
+                    style={{
+                      flex: 1,
+                      height: "100%",
+                      marginLeft: 10,
+                      paddingVertical: 5,
+                    }}
                   >
-                    <Text size="label" type="bold">
+                    <Text size="title" type="bold">
                       {item?.title}
                     </Text>
                     <Text
                       size="description"
-                      type="reguler"
-                      style={{ lineHeight: 20 }}
+                      type="regular"
+                      style={{
+                        lineHeight: 18,
+                        textAlign: "justify",
+                        marginTop: 8,
+                      }}
+                      numberOfLines={6}
                     >
-                      {Truncate({
-                        text: item?.description,
-                        length: 100,
-                      })}
+                      {item?.description}
                     </Text>
                   </View>
                 </Pressable>
@@ -432,7 +470,6 @@ export default function Generals({ data, props, addTo }) {
           style={{
             width: Dimensions.get("screen").width,
             paddingHorizontal: 15,
-            marginTop: 10,
           }}
         >
           <Text size="label" type="bold">
@@ -525,13 +562,15 @@ export default function Generals({ data, props, addTo }) {
         style={{
           width: Dimensions.get("screen").width,
           paddingHorizontal: 15,
-          marginTop: 10,
+          marginTop: 20,
           marginBottom: 50,
         }}
       >
-        <Text size="label" type="bold">
-          Another Place
-        </Text>
+        {dataAnother?.another_place?.length > 0 ? (
+          <Text size="label" type="bold">
+            Another Place
+          </Text>
+        ) : null}
         {dataAnother &&
           dataAnother?.another_place?.map((item, index) =>
             dataAnother.id !== item.id ? (
@@ -548,114 +587,129 @@ export default function Generals({ data, props, addTo }) {
                   borderWidth: 1,
                   borderColor: "#F3F3F3",
                   borderRadius: 10,
-                  height: 170,
+                  // height: 170,
                   padding: 10,
                   marginTop: 10,
                   width: "100%",
                   flexDirection: "row",
                   backgroundColor: "#FFF",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-                  shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-                  elevation: Platform.OS == "ios" ? 3 : 3.5,
+                  shadowColor: "#FFF",
+                  shadowOffset: {
+                    width: 0,
+                    height: 5,
+                  },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 6.27,
+
+                  elevation: 6,
                 }}
               >
-                {/* Image */}
-                <Image
-                  source={{ uri: item.images.image }}
-                  style={{
-                    width: "40%",
-                    height: "100%",
-                    borderRadius: 10,
-                  }}
-                />
+                <View style={{ justifyContent: "center" }}>
+                  {/* Image */}
+                  <Image
+                    source={{ uri: item.images.image }}
+                    style={{
+                      width: 130,
+                      height: 160,
+                      borderRadius: 10,
+                    }}
+                  />
+                </View>
 
                 {/* Keterangan */}
                 {/* rating */}
-                <View style={{ width: "55%", marginHorizontal: 10 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
+                <View
+                  style={{
+                    flex: 1,
+                    paddingLeft: 10,
+                    height: 160,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
                     <View
                       style={{
                         flexDirection: "row",
-                        backgroundColor: "#F3F3F3",
-                        borderRadius: 3,
-                        justifyContent: "center",
+                        justifyContent: "space-between",
                         alignItems: "center",
-                        paddingHorizontal: 5,
-                        height: 25,
                       }}
                     >
-                      <Star height={15} width={15} />
-                      <Text size="description" type="bold">
-                        {item.rating}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "#F3F3F3",
+                          borderRadius: 3,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 5,
+                          height: 25,
+                        }}
+                      >
+                        <Star height={15} width={15} />
+                        <Text size="description" type="bold">
+                          {item.rating}
+                        </Text>
+                      </View>
+                      {item.liked === true ? (
+                        <Pressable
+                          onPress={() => _unliked(item.id)}
+                          style={{
+                            backgroundColor: "#F3F3F3",
+                            height: 34,
+                            width: 34,
+                            borderRadius: 17,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Love height={15} width={15} />
+                        </Pressable>
+                      ) : (
+                        <Pressable
+                          onPress={() => _liked(item.id)}
+                          style={{
+                            backgroundColor: "#F3F3F3",
+                            height: 34,
+                            width: 34,
+                            borderRadius: 17,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <LikeEmpty height={15} width={15} />
+                        </Pressable>
+                      )}
+                    </View>
+
+                    {/* Title */}
+                    <Text
+                      size="label"
+                      type="bold"
+                      style={{ marginTop: 2 }}
+                      numberOfLines={2}
+                    >
+                      {item.name}
+                    </Text>
+
+                    {/* Maps */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: 5,
+                        alignItems: "center",
+                      }}
+                    >
+                      <PinHijau height={15} width={15} />
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{ marginLeft: 5 }}
+                        numberOfLines={1}
+                      >
+                        {item.cities.name}
                       </Text>
                     </View>
-                    {item.liked === true ? (
-                      <Pressable
-                        onPress={() => _unliked(item.id)}
-                        style={{
-                          backgroundColor: "#F3F3F3",
-                          height: 34,
-                          width: 34,
-                          borderRadius: 17,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Love height={15} width={15} />
-                      </Pressable>
-                    ) : (
-                      <Pressable
-                        onPress={() => _liked(item.id)}
-                        style={{
-                          backgroundColor: "#F3F3F3",
-                          height: 34,
-                          width: 34,
-                          borderRadius: 17,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <LikeEmpty height={15} width={15} />
-                      </Pressable>
-                    )}
                   </View>
-
-                  {/* Title */}
-                  <Text
-                    size="label"
-                    type="bold"
-                    style={{ marginTop: 2 }}
-                    numberOfLines={1}
-                  >
-                    {item.name}
-                  </Text>
-
-                  {/* Maps */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginTop: 5,
-                      alignItems: "center",
-                    }}
-                  >
-                    <PinHijau height={15} width={15} />
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{ marginLeft: 5 }}
-                      numberOfLines={1}
-                    >
-                      {item.cities.name}
-                    </Text>
-                  </View>
-
                   {/* Great for */}
 
                   <View
@@ -664,29 +718,36 @@ export default function Generals({ data, props, addTo }) {
                       justifyContent: "space-between",
                       height: 50,
                       marginTop: 10,
+                      alignItems: "flex-end",
                     }}
                   >
                     <View>
                       <Text size="description" type="bold">
                         Great for :
                       </Text>
-                      {item.greatfor.icon ? (
-                        <View style={{ flexDirection: "row", marginTop: 10 }}>
-                          <FunIcon
-                            icon={item.greatfor.icon}
-                            height={30}
-                            width={30}
-                          />
-                        </View>
-                      ) : (
-                        <Text>-</Text>
-                      )}
+                      <View style={{ flexDirection: "row" }}>
+                        {item.greatfor.length > 0 ? (
+                          item.greatfor.map((item, index) => {
+                            return index < 3 ? (
+                              <FunIcon
+                                key={index}
+                                icon={item.icon}
+                                fill="#464646"
+                                height={35}
+                                width={35}
+                              />
+                            ) : null;
+                          })
+                        ) : (
+                          <Text>-</Text>
+                        )}
+                      </View>
                     </View>
                     <Button
                       onPress={() => addTo()}
                       size="small"
                       text={"Add"}
-                      style={{ marginTop: 30 }}
+                      // style={{ marginTop: 15 }}
                     />
                   </View>
                 </View>

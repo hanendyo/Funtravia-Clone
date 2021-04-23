@@ -88,6 +88,12 @@ export default function JournalComment(props) {
     loadAsync();
   }, []);
 
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
   const scroll_to = () => {
     wait(1000).then(() => {
       // slider.current.scrollTo({ y: y });
@@ -119,8 +125,6 @@ export default function JournalComment(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
-
-  console.log(dataComment);
 
   let listComment = [];
   if (dataComment && "datas" in dataComment.comment_journal_list) {
@@ -320,6 +324,7 @@ export default function JournalComment(props) {
                 width: width,
                 justifyContent: "center",
                 alignItems: "center",
+                marginTop: 20,
               }}
             >
               <ActivityIndicator color="#209FAE" animating />

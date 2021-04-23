@@ -8,7 +8,6 @@ import {
   Image,
   Pressable,
   ScrollView,
-  Picker,
   RefreshControl,
   Alert,
   ActivityIndicator,
@@ -761,14 +760,6 @@ export default function ItineraryCategory(props) {
                           </MenuOptions>
                         </Menu>
                       </View>
-                      {/* <Picker
-                        mode="dropdown"
-                        selectedValue={order}
-                        onValueChange={(x) => setOrder(x)}
-                      >
-                        <Picker.Item label="New Post" value="new" />
-                        <Picker.Item label="Populer" value="populer" />
-                      </Picker> */}
                     </View>
                   </MenuProvider>
                 </>

@@ -132,8 +132,6 @@ export default function ItineraryDestination(props) {
     }
   );
 
-  console.log(data);
-
   const [
     mutationliked,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -209,7 +207,6 @@ export default function ItineraryDestination(props) {
           throw new Error("Error Input");
         }
 
-        // console.log(response);
         if (response.data) {
           if (
             response.data.unset_wishlist.code === 200 ||
@@ -275,6 +272,7 @@ export default function ItineraryDestination(props) {
           // data={dataDes}
           renderItem={({ item, index }) => (
             <Pressable
+              key={index}
               // onPress={() => {
               //   props.navigation.navigate("detailStack", {
               //     id: item.id,
@@ -468,6 +466,7 @@ export default function ItineraryDestination(props) {
                               {item.greatfor.map((item, index) => {
                                 return index < 3 ? (
                                   <FunIcon
+                                    key={index}
                                     icon={item.icon}
                                     fill="#464646"
                                     height={42}
