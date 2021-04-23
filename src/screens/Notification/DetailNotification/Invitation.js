@@ -40,6 +40,8 @@ import AcceptInvitation from "../../../graphQL/Mutation/Notification/AcceptInvit
 import RejectInvitation from "../../../graphQL/Mutation/Notification/RejectInvitation";
 import IsRead from "../../../graphQL/Mutation/Notification/IsRead";
 import ListNotifikasi from "../../../graphQL/Query/Notification/ListNotifikasi_";
+import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
+
 import Ripple from "react-native-material-ripple";
 const InvitationNotif = gql`
     query {
@@ -72,7 +74,7 @@ const InvitationNotif = gql`
 const ListNotifikasi_ = gql`
     query {
         list_notification {
-            id
+            ids
             notification_type
             isread
             itinerary_buddy {
@@ -109,6 +111,15 @@ const ListNotifikasi_ = gql`
                     last_name
                     picture
                 }
+                post {
+                    assets {
+                        filepath
+                    }
+                }
+                post_asset {
+                    type
+                    filepath
+                }
                 created_at
                 updated_at
             }
@@ -123,7 +134,12 @@ const ListNotifikasi_ = gql`
                     last_name
                     picture
                 }
+                post_asset {
+                    type
+                    filepath
+                }
             }
+
             follow_user {
                 user_req
                 user_follow
@@ -134,9 +150,13 @@ const ListNotifikasi_ = gql`
                     first_name
                     last_name
                     picture
+                    status_following
                     status_follower
                 }
             }
+            tgl_buat
+            created_at
+            updated_at
         }
     }
 `;
@@ -160,10 +180,9 @@ const DataInformasi = [
     },
 ];
 
-export default function Invitation({ navigation, token, datas, GetListNotif }) {
+export default function Invitation({ navigation, token }) {
     const { t, i18n } = useTranslation();
-    console.log(datas);
-    const [datanotif, SetDataNotif] = useState(datas.list_notification);
+    let [datanotif, SetDataNotif] = useState([]);
     let [selected] = useState(new Map());
     let [dataTrans, setTrans] = useState(DataInformasi);
     let [loadings, setLoadings] = useState(false);
@@ -174,6 +193,53 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
             datacar: data,
             data_iten: dataIten,
         });
+    };
+
+    const [
+        FollowMutation,
+        { loading: loadFollowMut, data: dataFollowMut, error: errorFollowMut },
+    ] = useMutation(FollowMut, {
+        context: {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+
+    const _follow = async (id, notif_id) => {
+        if (data.isread == false) {
+            updateisread(data.ids);
+        }
+        if (token) {
+            var tempData = [...datanotif];
+            var index = tempData.findIndex((k) => k["ids"] === notif_id);
+            tempData[index].follow_user.user.status_following = true;
+            SetDataNotif(tempData);
+            try {
+                let response = await FollowMutation({
+                    variables: {
+                        id: id,
+                    },
+                });
+                console.log(response);
+                if (errorFollowMut) {
+                    throw new Error("Error Input");
+                }
+                // refetch();
+                // setLoading(false);
+            } catch (error) {
+                var tempData = [...datanotif];
+                var index = tempData.findIndex((k) => k["ids"] === notif_id);
+                tempData[index].follow_user.user.status_following = true;
+                SetDataNotif(tempData);
+                Alert.alert("" + error);
+                // setLoading(false);
+            }
+        } else {
+            Alert.alert("Please Login");
+            // setLoading(false);
+        }
     };
 
     const [
@@ -215,7 +281,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     const reject = async (data) => {
         setLoadings(true);
         if (data.isread == false) {
-            await updateisread(data.ids);
+            updateisread(data.ids);
         }
         try {
             let response = await mutationRejectInvitation({
@@ -237,7 +303,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
 
                 // console.log(response.data.reject_buddy.data_itin.start_date);
                 // Alert.alert('Succes');
-                await GetListNotif();
+                await GetListInvitation();
                 await setLoadings(false);
             }
         } catch (error) {
@@ -246,7 +312,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
         }
     };
     const getdate = (start, end) => {
-        console.log(start);
+        // console.log(start);
         start = start.split(" ");
         end = end.split(" ");
 
@@ -255,9 +321,6 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
     const accept = async (data) => {
         setLoadings(true);
 
-        if (data.isread == false) {
-            await updateisread(data.ids);
-        }
         try {
             let response = await mutationAcceptInvitation({
                 variables: {
@@ -276,21 +339,24 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                 }
                 // console.log(response.data.confrim_buddy.data_itin.start_date);
                 // Alert.alert('Succes');
-                await GetListNotif();
+                await GetListInvitation();
                 await setLoadings(false);
             }
         } catch (error) {
             setLoadings(false);
             alert("" + error);
         }
+        if (data.isread == false) {
+            updateisread(data.ids);
+        }
     };
 
     const updateisread = async (notif_id) => {
         var tempData = [...datanotif];
         var index = tempData.findIndex((k) => k["ids"] === notif_id);
+        console.log(tempData[index].isread);
         tempData[index].isread = true;
         SetDataNotif(tempData);
-        // console.log("notif", notif_id);
         try {
             let response = await mutationIsRead({
                 variables: {
@@ -298,7 +364,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                 },
             });
 
-            console.log(response);
+            // console.log(response);
             if (response.data) {
                 if (response.data.update_read.code !== 200) {
                     // var tempData = [...datanotif];
@@ -375,20 +441,25 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
         }
     };
     // console.log(token);
-    const [GetListInvitation, { data, loading, error }] = useLazyQuery(
-        ListNotifikasi,
-        {
-            fetchPolicy: "network-only",
-            context: {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
+    const [
+        GetListInvitation,
+        { data: datasnotif, loading: loadingnotif, error: errornotif },
+    ] = useLazyQuery(ListNotifikasi_, {
+        fetchPolicy: "network-only",
+        context: {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
-        }
-    );
+        },
+        onCompleted: () => {
+            SetDataNotif(datasnotif.list_notification);
+        },
+    });
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        GetListInvitation();
+    }, []);
     const duration = (datetime) => {
         var date1 = new Date(datetime).getTime();
         var datenow = new Date();
@@ -627,7 +698,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                     marginBottom: 5,
                                 }}
                             >
-                                {duration(item.created_at)}
+                                {duration(item.tgl_buat)}
                             </Text>
                         </View>
                     </View>
@@ -637,7 +708,6 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
             item.notification_type == "comment_feed" &&
             item.comment_feed
         ) {
-            console.log(item.comment_feed.post_asset);
             return (
                 <Pressable
                     onPress={() => handle_areaklik_comment(item)}
@@ -752,7 +822,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                         marginBottom: 5,
                                     }}
                                 >
-                                    {duration(item.created_at)}
+                                    {duration(item.tgl_buat)}
                                 </Text>
                             </View>
                             {/* <View
@@ -972,7 +1042,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                         marginBottom: 5,
                                     }}
                                 >
-                                    {duration(item.created_at)}
+                                    {duration(item.tgl_buat)}
                                 </Text>
                             </View>
                         </View>
@@ -1074,7 +1144,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                 paddingLeft: 10,
                             }}
                         >
-                            <Adduser width={20} height={20} />
+                            <Adduser width={15} height={15} />
                             <View
                                 style={{
                                     flexDirection: "row",
@@ -1100,6 +1170,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                 style={{
                                     flexDirection: "row",
                                     justifyContent: "flex-start",
+                                    alignItems: "center",
                                     flexWrap: "wrap",
                                 }}
                             >
@@ -1119,15 +1190,28 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                 </Text>
                                 {item.follow_user.user?.status_following ==
                                 false ? (
-                                    <Text
-                                        type="regular"
-                                        size="description"
+                                    <Pressable
+                                        onPress={() =>
+                                            _follow(
+                                                item.follow_user.user.id,
+                                                item.ids
+                                            )
+                                        }
                                         style={{
-                                            color: "#209fae",
+                                            paddingVertical: 5,
+                                            // borderWidth: 1,
                                         }}
                                     >
-                                        Follow Back
-                                    </Text>
+                                        <Text
+                                            type="regular"
+                                            size="description"
+                                            style={{
+                                                color: "#209fae",
+                                            }}
+                                        >
+                                            Follow Back
+                                        </Text>
+                                    </Pressable>
                                 ) : null}
                             </View>
                         </View>
@@ -1150,7 +1234,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                                     marginBottom: 5,
                                 }}
                             >
-                                {duration(item.created_at)}
+                                {duration(item.tgl_buat)}
                             </Text>
                         </View>
                     </View>
@@ -1171,7 +1255,7 @@ export default function Invitation({ navigation, token, datas, GetListNotif }) {
                     horizontal={false}
                     data={datanotif}
                     renderItem={({ item }) => <RenderTrans item={item} />}
-                    // keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.ids}
                     showsHorizontalScrollIndicator={false}
                 />
             ) : null}
