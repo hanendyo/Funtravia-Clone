@@ -15,10 +15,12 @@ import { Button, CustomImage, Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite, FilterIcon, Search, Xhitam } from "../../assets/svg";
 import TravelLists from "../../graphQL/Query/TravelGoal/TravelList";
-import { useQuery } from "@apollo/client";
+import Travelcategorys from "../../graphQL/Query/TravelGoal/Travelcategory";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import Modal from "react-native-modal";
 import DropDownPicker from "react-native-dropdown-picker";
 import { default_image } from "../../assets/png";
+import CheckBox from "@react-native-community/checkbox";
 
 export default function TravelGoalList(props) {
   const HeaderComponent = {
@@ -60,17 +62,38 @@ export default function TravelGoalList(props) {
   };
   const { t, i18n } = useTranslation();
 
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-  }, []);
-
   let dataList = [];
   let dataListx = {};
+  let [dataFillter, setdataFillter] = useState([]);
   let [texts, setText] = useState(null);
   let [modal, setModal] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   let [opens, setOpens] = useState(10);
+
+  let [datacategory, setdatacategory] = useState([]);
+
+  const [
+    Getdatacategory,
+    { loading: loadingcategory, data: datacategorys, error: errorcategory },
+  ] = useLazyQuery(Travelcategorys, {
+    fetchPolicy: "network-only",
+    variables: {
+      limit: 7,
+      offset: 0,
+      category_id: [],
+      keyword: texts,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setdatacategory(datacategorys?.category_travelgoal);
+    },
+  });
 
   const {
     loading: loadingList,
@@ -168,6 +191,10 @@ export default function TravelGoalList(props) {
     }
   };
 
+  const compare = (a, b) => {
+    return b.checked - a.checked;
+  };
+
   const handleOnEndReached = () => {
     if (dataListx.travelgoal_list.page_info.hasNextPage) {
       return fetchMore({
@@ -179,6 +206,21 @@ export default function TravelGoalList(props) {
       });
     }
   };
+
+  const _handleCheck = async (item, index, data) => {
+    let temp = [...data];
+    // temp[1].checked = !temp[1].checked;
+    await console.log(temp[1]);
+    // console.log(temp);
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      Getdatacategory();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   return (
     <View
@@ -267,7 +309,7 @@ export default function TravelGoalList(props) {
             >
               {t("filter")}
             </Text>
-            {/* {dataFillter.length && Filterlenght > 0 ? (
+            {dataFillter.length && Filterlenght > 0 ? (
               <View
                 style={{
                   borderRadius: 3,
@@ -291,20 +333,51 @@ export default function TravelGoalList(props) {
                   {Filterlenght}
                 </Text>
               </View>
-            ) : null} */}
+            ) : null}
           </Button>
 
-          {/* <FlatList
+          <FlatList
             contentContainerStyle={{
               justifyContent: "space-evenly",
               marginHorizontal: 3,
             }}
             horizontal={true}
             data={dataFillter.sort(compare)}
-            renderItem={_renderFilter}
+            renderItem={({ item, index }) => {
+              // console.log("item", item);
+              if (item.checked == true) {
+                return (
+                  <Button
+                    type="box"
+                    size="small"
+                    color="primary"
+                    text={Capital({ text: item.name })}
+                    onPress={() => onSelectFilter(item.checked, item.id)}
+                    style={{
+                      marginRight: 3,
+                      flexDirection: "row",
+                    }}
+                  ></Button>
+                );
+              } else if (item.sugestion == true || item.show == true) {
+                return (
+                  <Button
+                    type="box"
+                    size="small"
+                    color="primary"
+                    variant="bordered"
+                    text={Capital({ text: item.name })}
+                    onPress={() => onSelectFilter(item.checked, item.id)}
+                    style={{
+                      marginRight: 3,
+                      flexDirection: "row",
+                    }}
+                  ></Button>
+                );
+              }
+            }}
             showsHorizontalScrollIndicator={false}
-            extraData={selected}
-          ></FlatList> */}
+          ></FlatList>
         </View>
       </View>
 
@@ -346,7 +419,7 @@ export default function TravelGoalList(props) {
             }}
           >
             <Image
-              source={item?.firstimg ? { uri: item?.firstimg } : default_image}
+              source={item?.cover ? { uri: item?.cover } : default_image}
               style={{
                 height: (Dimensions.get("screen").width - 60) * 0.25,
                 width: (Dimensions.get("screen").width - 60) * 0.25,
@@ -375,7 +448,7 @@ export default function TravelGoalList(props) {
               <Text size="label" type="bold">
                 {item?.title}
               </Text>
-              {item?.firsttxt ? (
+              {item?.description ? (
                 <Text
                   size="description"
                   numberOfLines={2}
@@ -383,7 +456,7 @@ export default function TravelGoalList(props) {
                     textAlign: "justify",
                   }}
                 >
-                  {item?.firsttxt}
+                  {item?.description}
                 </Text>
               ) : null}
               {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
@@ -493,10 +566,10 @@ export default function TravelGoalList(props) {
                   paddingRight: 10,
                   width: screenWidth - 40,
                 }}
-                data={[]}
+                data={datacategory}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
-                    onPress={() => _handleCheck(item["id"], index)}
+                    onPress={() => _handleCheck(item, index, datacategory)}
                     style={{
                       flexDirection: "row",
                       backgroundColor: "white",
@@ -526,7 +599,9 @@ export default function TravelGoalList(props) {
                           android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                         }),
                       }}
-                      onValueChange={() => _handleCheck(item["id"], index)}
+                      onValueChange={() =>
+                        _handleCheck(item, index, datacategory)
+                      }
                       value={item["checked"]}
                     />
 

@@ -15,6 +15,8 @@ const related_travelgoal = gql`
         slug
         icon
       }
+      cover
+      description
     }
   }
 `;

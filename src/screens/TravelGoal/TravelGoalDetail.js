@@ -165,9 +165,7 @@ export default function TravelGoalDetail(props) {
       }}
     >
       <ImageBackground
-        source={
-          datadetail?.firstimg ? { uri: datadetail?.firstimg } : default_image
-        }
+        source={datadetail?.cover ? { uri: datadetail?.cover } : default_image}
         style={{
           width: "100%",
           height: Dimensions.get("screen").height * 0.3,
@@ -242,13 +240,13 @@ export default function TravelGoalDetail(props) {
         >
           {datadetail?.title}
         </Text>
-        {datadetail?.firsttxt ? (
+        {datadetail?.description ? (
           <Text
             size="description"
             numberOfLines={2}
             style={{ textAlign: "justify" }}
           >
-            {datadetail?.firsttxt}
+            {datadetail?.description}
           </Text>
         ) : null}
         <View
@@ -374,9 +372,7 @@ export default function TravelGoalDetail(props) {
                 }}
               >
                 <Image
-                  source={
-                    item.firstimg ? { uri: item.firstimg } : default_image
-                  }
+                  source={item.cover ? { uri: item.cover } : default_image}
                   style={{
                     height: (Dimensions.get("screen").width - 60) * 0.25,
                     width: (Dimensions.get("screen").width - 60) * 0.25,
@@ -410,7 +406,7 @@ export default function TravelGoalDetail(props) {
                       textAlign: "justify",
                     }}
                   >
-                    {item.firsttxt}
+                    {item.description}
                   </Text>
                   {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
                   12 min read
