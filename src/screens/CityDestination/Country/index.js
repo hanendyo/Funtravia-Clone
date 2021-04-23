@@ -34,11 +34,12 @@ import {
   PinWhite,
   LikeEmpty,
   LikeRed,
+  Logofuntravianew,
 } from "../../../assets/svg";
 import {
   default_image,
   search_button,
-  logo_funtravia,
+  Logo_funtravia,
 } from "../../../assets/png";
 import { Input, Tab, Tabs } from "native-base";
 import {
@@ -61,7 +62,7 @@ import unlikedJournal from "../../../graphQL/Mutation/Journal/unlikedJournal";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 48;
+const TabBarHeight = 50;
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: 44,
@@ -813,12 +814,13 @@ export default function Country(props) {
           alignContent: "center",
           alignItems: "center",
           justifyContent: "flex-end",
+          // borderWidth:1
         }}
       >
         <Text
           style={[
             focused ? styles.labelActive : styles.label,
-            { opacity: focused ? 1 : 0.7, height: 36 },
+            { opacity: focused ? 1 : 0.7, height: 38 },
           ]}
         >
           {route.title}
@@ -1127,6 +1129,7 @@ export default function Country(props) {
                   style={{
                     borderTopLeftRadius: 5,
                     borderTopRightRadius: 5,
+
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
@@ -1150,18 +1153,25 @@ export default function Country(props) {
                               height: width * 0.2,
                             }}
                           >
-                            <Image
-                              source={
-                                item.picture
-                                  ? { uri: dataX.picture }
-                                  : logo_funtravia
-                              }
-                              style={{
-                                height: width * 0.15,
-                                width: width * 0.15,
-                                borderRadius: 5,
-                              }}
-                            ></Image>
+                            {dataX && dataX.picture?(
+                               <Image
+                                  source={
+                                    item.picture
+                                      ? { uri: dataX.picture }
+                                      : null
+                                  }
+                                  style={{
+                                    height: width * 0.15,
+                                    width: width * 0.15,
+                                    borderRadius: 5,
+                                    margin:5
+                                  }}
+                                ></Image>
+
+                            ):(
+                              <Logofuntravianew height={55} width={55} />
+                            )}
+                          
                             <View
                               style={{
                                 paddingHorizontal: 10,
@@ -1368,11 +1378,18 @@ export default function Country(props) {
                           renderItem={({ item, index }) => (
                             <Ripple
                               onPress={() => {
-                                props.navigation.navigate("detailStack", {
-                                  id: item.id,
-                                  name: item.name,
-                                });
-                              }}
+                              //   props.navigation.navigate("detailStack", {
+                              //     id: item.id,
+                              //     name: item.name,
+                              //   });
+                              // }}
+                              
+                                props.navigation.push("DestinationUnescoDetail", {
+                                    id: item.id,
+                                    name: item.name,
+                                    token: token,
+                                  });
+                            }}
                               style={{
                                 // width: (width - 60) / 4,
                                 alignContent: "center",

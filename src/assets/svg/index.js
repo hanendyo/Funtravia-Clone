@@ -218,6 +218,7 @@ import PensilPutih from "./files/pensil_putih.svg";
 import StartBuleIsi from "./files/blue_isi";
 import PanahPutih from "./files/panah_putih";
 import Play from "./files/play";
+import Logofuntravianew from "./files/Logofuntravianew.svg";
 
 export {
 	LikeWhite,
@@ -440,4 +441,5 @@ export {
 	StartBuleIsi,
 	PanahPutih,
 	Play,
+	Logofuntravianew,
 };
