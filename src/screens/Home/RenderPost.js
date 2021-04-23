@@ -1,11 +1,5 @@
 import React, { useRef, useState } from "react";
-import {
-	Dimensions,
-	Image,
-	View,
-	TouchableOpacity,
-	ActivityIndicator,
-} from "react-native";
+import { Dimensions, Image, View, TouchableOpacity } from "react-native";
 import { Text, Button, Truncate } from "../../component";
 import { CommentWhite, LikeWhite, Play } from "../../assets/svg";
 import Video from "react-native-video";
@@ -14,7 +8,6 @@ import LinearGradient from "react-native-linear-gradient";
 const { width, height } = Dimensions.get("screen");
 export default function RenderVideo({ data, user, navigation }) {
 	let videoView = useRef(null);
-	let [ready, setReady] = useState(false);
 	if (data.assets[0].type === "video") {
 		return (
 			<View>
@@ -98,9 +91,6 @@ export default function RenderVideo({ data, user, navigation }) {
 								textAlign: "center",
 								marginHorizontal: 12,
 								color: "rgba(255,255,255,1)",
-								textShadowColor: "rgba(0, 0, 0, 0.75)",
-								textShadowOffset: { width: -1, height: 1 },
-								textShadowRadius: 10,
 							}}
 						>
 							<Truncate text={`@${data.user.username}`} length={15} />
@@ -282,9 +272,6 @@ export default function RenderVideo({ data, user, navigation }) {
 								textAlign: "center",
 								marginHorizontal: 12,
 								color: "rgba(255,255,255,1)",
-								textShadowColor: "rgba(0, 0, 0, 0.75)",
-								textShadowOffset: { width: -1, height: 1 },
-								textShadowRadius: 10,
 							}}
 						>
 							<Truncate text={`@${data.user.username}`} length={15} />

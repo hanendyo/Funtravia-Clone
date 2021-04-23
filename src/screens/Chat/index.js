@@ -67,7 +67,6 @@ export default function Message({ navigation }) {
 			},
 		});
 		let dataResponse = await response.json();
-		console.log(dataResponse);
 		await setDataGroup(dataResponse);
 		await setDataGroupRes(dataResponse);
 	};
@@ -141,7 +140,10 @@ export default function Message({ navigation }) {
 		const dates = new Date();
 		let day = dates.getDate();
 		let month = dates.getMonth();
-		let year = dates.getFullYear().toString().substr(2, 2);
+		let year = dates
+			.getFullYear()
+			.toString()
+			.substr(2, 2);
 		let date = day + "/" + (month + 1) + "/" + year;
 
 		let change = item.sender_id === user.id ? item.receiver : item.sender;
@@ -303,7 +305,7 @@ export default function Message({ navigation }) {
 
 	const _searchHandle = (text) => {
 		// if (active == "personal") {
-		let newData = data.filter(function (str) {
+		let newData = data.filter(function(str) {
 			let strData = str.sender.id === user.id ? str.receiver : str.sender;
 			return strData.first_name.toLowerCase().includes(text.toLowerCase());
 		});
@@ -311,7 +313,7 @@ export default function Message({ navigation }) {
 		// }
 
 		// if (active == "group") {
-		let newDataGroup = dataGroup.filter(function (str) {
+		let newDataGroup = dataGroup.filter(function(str) {
 			return str.title.toLowerCase().includes(text.toLowerCase());
 		});
 		setDataGroupRes(newDataGroup);
@@ -330,7 +332,10 @@ export default function Message({ navigation }) {
 		const dates = new Date();
 		let day = dates.getDate();
 		let month = dates.getMonth();
-		let year = dates.getFullYear().toString().substr(2, 2);
+		let year = dates
+			.getFullYear()
+			.toString()
+			.substr(2, 2);
 		let date = day + "/" + (month + 1) + "/" + year;
 		return date;
 	};
@@ -366,7 +371,9 @@ export default function Message({ navigation }) {
 													name:
 														change(item).first_name +
 														" " +
-														(change(item).last_name ? change.last_name : ""),
+														(change(item).last_name
+															? change(item).last_name
+															: ""),
 													picture: change(item).picture,
 												},
 											})
@@ -384,10 +391,7 @@ export default function Message({ navigation }) {
 									>
 										<Image
 											source={{
-												uri:
-													item.sender_id === user.id
-														? item.receiver?.picture
-														: item.sender?.picture,
+												uri: item.receiver?.picture,
 											}}
 											style={{
 												width: 50,
@@ -520,7 +524,7 @@ export default function Message({ navigation }) {
 											params: {
 												room_id: item.group_id,
 												name: item.title,
-												picture: item.picture,
+												picture: item.link_picture,
 												from: item.itinerary ? "itinerary" : "group",
 											},
 										})
