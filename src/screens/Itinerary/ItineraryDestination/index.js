@@ -22,6 +22,7 @@ import {
   PinHijau,
   default_image,
   LikeEmptynew,
+  Love,
 } from "../../../assets/svg";
 import FilterItin from "./FillterItin";
 import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
@@ -34,6 +35,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { StackActions } from "@react-navigation/routers";
 
 export default function ItineraryDestination(props) {
+  console.log("props", props);
   const HeaderComponent = {
     headerShown: true,
     title: "Destination",
@@ -237,8 +239,8 @@ export default function ItineraryDestination(props) {
     <View
       style={{
         flex: 1,
-        alignContent: "center",
-        alignItems: "center",
+        // alignContent: "center",
+        // alignItems: "center",
         justifyContent: "flex-start",
         // paddingVertical: 10,
       }}
@@ -272,260 +274,213 @@ export default function ItineraryDestination(props) {
           // data={dataDes}
           renderItem={({ item, index }) => (
             <Pressable
-              key={index}
-              // onPress={() => {
-              //   props.navigation.navigate("detailStack", {
-              //     id: item.id,
-              //     name: item.name,
-              //   });
-              // }}
+            onPress={() => {
+                  props?.route?.params && props?.route?.params?.iditinerary
+                    ? props.navigation.push("DestinationUnescoDetail", {
+                        id: item.id,
+                        name: item.name,
+                        token: token,
+                        iditinerary: props.route.params.iditinerary,
+                        datadayaktif: props.route.params.datadayaktif,
+                      })
+                    : props.navigation.push("DestinationUnescoDetail", {
+                        id: item.id,
+                        name: item.name,
+                        token: token,
+                      });
+                }}
+          key={index}
+          style={{
+            borderWidth: 1,
+            borderColor: "#F3F3F3",
+            borderRadius: 10,
+            // height: 170,
+            padding: 10,
+            marginTop: 10,
+            width: "100%",
+            flexDirection: "row",
+            backgroundColor: "#FFF",
+            shadowColor: "#FFF",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6.27,
 
-              onPress={() => {
-                props?.route?.params && props?.route?.params?.iditinerary
-                  ? props.navigation.push("DestinationUnescoDetail", {
-                      id: item.id,
-                      name: item.name,
-                      token: token,
-                      iditinerary: props.route.params.iditinerary,
-                      datadayaktif: props.route.params.datadayaktif,
-                    })
-                  : props.navigation.push("DestinationUnescoDetail", {
-                      id: item.id,
-                      name: item.name,
-                      token: token,
-                    });
-              }}
+            elevation: 6,
+          }}
+        >
+          <View style={{ justifyContent: "center" }}>
+            {/* Image */}
+            <Image
+              source={{ uri: item.images.image }}
               style={{
-                width: "100%",
-                paddingLeft: 10,
-                paddingRight: 10,
-                elevation: 2,
-                backgroundColor: "#FFFFFF",
-
-                marginBottom: 10,
+                width: 130,
+                height: 160,
                 borderRadius: 10,
-                marginTop: 10,
-                flexDirection: "row",
               }}
-            >
+            />
+          </View>
+
+          {/* Keterangan */}
+          {/* rating */}
+          <View
+            style={{
+              flex: 1,
+              paddingLeft: 10,
+              height: 160,
+              justifyContent: "space-between",
+            }}
+          >
+            <View>
               <View
                 style={{
-                  width: "100%",
-
-                  paddingTop: 15,
                   flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <Image
-                  source={
-                    item.cover && item.cover
-                      ? { uri: item.cover }
-                      : default_image
-                  }
-                  style={{ width: "40%", height: 145, borderRadius: 10 }}
-                  resizeMode="cover"
-                />
                 <View
                   style={{
-                    paddingLeft: 10,
-                    paddingVertical: 5,
-                    width: "60%",
-                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    backgroundColor: "#F3F3F3",
+                    borderRadius: 3,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingHorizontal: 5,
+                    height: 25,
                   }}
                 >
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-
-                        alignItems: "center",
-                        marginBottom: 5,
-                      }}
-                    >
-                      <View
-                        style={{
-                          backgroundColor: "#F4F4F4",
-                          borderRadius: 4,
-                          paddingHorizontal: 8,
-                          paddingVertical: 3,
-                          flexDirection: "row",
-                        }}
-                      >
-                        <Star width={15} height={15} />
-                        <Text style={{ paddingLeft: 5 }} type="bold">
-                          {item.rating}
-                        </Text>
-                      </View>
-                      {item.liked === false ? (
-                        <Button
-                          onPress={() => _liked(item.id, index)}
-                          type="circle"
-                          style={{
-                            width: 25,
-                            borderRadius: 19,
-                            height: 25,
-                            justifyContent: "center",
-                            alignContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "#EEEEEE",
-                            zIndex: 999,
-                          }}
-                        >
-                          <LikeEmptynew width={15} height={15} />
-                        </Button>
-                      ) : (
-                        <Button
-                          onPress={() => _unliked(item.id)}
-                          type="circle"
-                          style={{
-                            width: 25,
-                            borderRadius: 17.5,
-                            height: 25,
-                            justifyContent: "center",
-                            alignContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "#EEEEEE",
-                            zIndex: 999,
-                          }}
-                        >
-                          <LikeRed width={15} height={15} />
-                        </Button>
-                      )}
-                    </View>
-                    <Text size="title" type="bold" style={{ marginBottom: 5 }}>
-                      {item.name}
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        alignContent: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <PinHijau width={15} height={15} />
-                      <Text
-                        type="regular"
-                        size="description"
-                        style={{ color: "#464646", marginLeft: 5 }}
-                      >
-                        {item.cities.name && item.countries.name
-                          ? `${item.cities.name}`
-                          : ""}
-                      </Text>
-                    </View>
-                  </View>
-                  {/* icon great for */}
-                  <View
+                  <Star height={15} width={15} />
+                  <Text size="description" type="bold">
+                    {item.rating}
+                  </Text>
+                </View>
+                {item.liked === true ? (
+                  <Pressable
+                    onPress={() => _unliked(item.id, index)}
                     style={{
-                      marginTop: 10,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignContent: "center",
+                      backgroundColor: "#F3F3F3",
+                      height: 34,
+                      width: 34,
+                      borderRadius: 17,
+                      justifyContent: "center",
                       alignItems: "center",
-                      width: "100%",
-                      padding: 0,
-                      // width: (Dimensions.get("screen").width - 100) * 0.5 ,
                     }}
                   >
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        {item.greatfor && item.greatfor.length ? (
-                          <View
-                            style={{
-                              justifyContent: "flex-start",
-                              alignContent: "flex-start",
-                            }}
-                          >
-                            <Text
-                              size="description"
-                              type="bold"
-                              style={{
-                                color: "#464646",
-                              }}
-                            >
-                              {t("greatFor")}:
-                            </Text>
+                    <Love height={15} width={15} />
+                  </Pressable>
+                ) : (
+                  <Pressable
+                    onPress={() => _liked(item.id, index)}
+                    style={{
+                      backgroundColor: "#F3F3F3",
+                      height: 34,
+                      width: 34,
+                      borderRadius: 17,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <LikeEmpty height={15} width={15} />
+                  </Pressable>
+                )}
+              </View>
 
-                            <View
-                              style={{
-                                height: 50,
-                                flexDirection: "row",
-                                justifyContent: "space-evenly",
-                                alignContent: "space-between",
-                                alignItems: "stretch",
-                                alignSelf: "flex-start",
-                              }}
-                            >
-                              {item.greatfor.map((item, index) => {
-                                return index < 3 ? (
-                                  <FunIcon
-                                    key={index}
-                                    icon={item.icon}
-                                    fill="#464646"
-                                    height={42}
-                                    width={42}
-                                    style={{}}
-                                  />
-                                ) : null;
-                              })}
-                            </View>
-                          </View>
-                        ) : (
-                          <View
-                            style={{
-                              height: 50,
-                              marginBottom: 15,
-                              flexDirection: "row",
-                              justifyContent: "space-evenly",
-                              alignContent: "space-between",
-                              alignItems: "stretch",
-                              alignSelf: "flex-start",
-                            }}
-                          ></View>
-                        )}
-                      </View>
-                    </View>
+              {/* Title */}
+              <Text
+                size="label"
+                type="bold"
+                style={{ marginTop: 2 }}
+                numberOfLines={2}
+              >
+                {item.name}
+              </Text>
 
-                    <Button
-                      size="small"
-                      text={t("adddeswishlist")}
-                      color="primary"
-                      onPress={() => {
-                        props.navigation.dispatch(
-                              StackActions.replace("ItineraryStack", {
-                                screen: "ItineraryChooseday",
-                                params: {
-                                  Iditinerary: props.route.params.iditinerary,
-                                  Kiriman: item.id,
-                                  token: token,
-                                  Position: "destination",
-                                  datadayaktif: props.route.params.datadayaktif,
-                                },
-                              })
-                            )
-                     
-                      }}
-                      style={{
-                        marginTop: 10,
-                      }}
-                    />
-                  </View>
+              {/* Maps */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 5,
+                  alignItems: "center",
+                }}
+              >
+                <PinHijau height={15} width={15} />
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginLeft: 5 }}
+                  numberOfLines={1}
+                >
+                  {item.cities.name}
+                </Text>
+              </View>
+            </View>
+            {/* Great for */}
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                height: 50,
+                marginTop: 10,
+                alignItems: "flex-end",
+              }}
+            >
+              <View>
+                <Text size="description" type="bold">
+                  Great for :
+                </Text>
+                <View style={{ flexDirection: "row" }}>
+                  {item.greatfor.length > 0 ? (
+                    item.greatfor.map((item, index) => {
+                      return index < 3 ? (
+                        <FunIcon
+                          key={index}
+                          icon={item.icon}
+                          fill="#464646"
+                          height={35}
+                          width={35}
+                        />
+                      ) : null;
+                    })
+                  ) : (
+                    <Text>-</Text>
+                  )}
                 </View>
               </View>
-            </Pressable>
+              <Button
+               onPress={() => {
+                    props.navigation.dispatch(
+                          StackActions.replace("ItineraryStack", {
+                            screen: "ItineraryChooseday",
+                            params: {
+                              Iditinerary: props.route.params.IdItinerary,
+                              Kiriman: item.id,
+                              token: token,
+                              Position: "destination",
+                              datadayaktif: props.route.params.datadayaktif,
+                            },
+                          })
+                        )
+                  
+                  }}
+                size="small"
+                text={"Add"}
+                // style={{ marginTop: 15 }}
+              />
+            </View>
+          </View>
+        </Pressable>
+
           )}
           // keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
 
           // extraData={selected}
         />
+       
       ) : null}
     </View>
   );
