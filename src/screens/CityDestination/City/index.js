@@ -33,6 +33,7 @@ import {
   TravelAlbum,
   TravelStories,
   LikeRed,
+  Logofuntravianew,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import {
@@ -65,7 +66,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 48;
+const TabBarHeight = 50;
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: 44,
@@ -986,18 +987,25 @@ export default function CityDetail(props) {
                               height: width * 0.2,
                             }}
                           >
-                            <Image
-                              source={
-                                dataX.userby
-                                  ? { uri: dataX.userby.picture }
-                                  : logo_funtravia
-                              }
-                              style={{
-                                height: width * 0.15,
-                                width: width * 0.15,
-                                borderRadius: 5,
-                              }}
-                            ></Image>
+                            {dataX && dataX.userby?(
+                               <Image
+                                  source={
+                                    item.picture
+                                      ? { uri: dataX.userby.picture }
+                                      : null
+                                  }
+                                  style={{
+                                    height: width * 0.15,
+                                    width: width * 0.15,
+                                    borderRadius: 5,
+                                    margin:5
+                                  }}
+                                ></Image>
+
+                            ):(
+                              <Logofuntravianew height={55} width={55} />
+                            )}
+                          
                             <View
                               style={{
                                 paddingHorizontal: 10,
@@ -2374,7 +2382,7 @@ export default function CityDetail(props) {
         <Text
           style={[
             focused ? styles.labelActive : styles.label,
-            { opacity: focused ? 1 : 0.7, height: 36 },
+            { opacity: focused ? 1 : 0.7, height: 38 },
           ]}
         >
           {route.title}
