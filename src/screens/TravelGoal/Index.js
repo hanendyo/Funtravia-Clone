@@ -188,8 +188,8 @@ export default function TravelGoal(props) {
         {dataTop?.travelgoal_first ? (
           <ImageBackground
             source={
-              dataTop?.travelgoal_first?.firstimg
-                ? { uri: dataTop?.travelgoal_first?.firstimg }
+              dataTop?.travelgoal_first?.cover
+                ? { uri: dataTop?.travelgoal_first?.cover }
                 : null
             }
             style={{
@@ -249,7 +249,7 @@ export default function TravelGoal(props) {
                   numberOfLines={1}
                   style={{ color: "white" }}
                 >
-                  {dataTop?.travelgoal_first?.firsttxt}
+                  {dataTop?.travelgoal_first?.description}
                 </Text>
                 <View
                   style={{
@@ -337,9 +337,7 @@ export default function TravelGoal(props) {
               }}
             >
               <Image
-                source={
-                  item?.firstimg ? { uri: item?.firstimg } : default_image
-                }
+                source={item?.cover ? { uri: item?.cover } : default_image}
                 style={{
                   height: (Dimensions.get("screen").width - 60) * 0.25,
                   width: (Dimensions.get("screen").width - 60) * 0.25,
@@ -366,7 +364,7 @@ export default function TravelGoal(props) {
                 <Text size="label" type="bold">
                   {item?.title}
                 </Text>
-                {item?.firsttxt ? (
+                {item?.description ? (
                   <Text
                     size="description"
                     numberOfLines={2}
@@ -374,7 +372,7 @@ export default function TravelGoal(props) {
                       textAlign: "justify",
                     }}
                   >
-                    {item?.firsttxt}
+                    {item?.description}
                   </Text>
                 ) : null}
                 {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
@@ -457,7 +455,7 @@ export default function TravelGoal(props) {
             }}
           >
             <Image
-              source={item?.firstimg ? { uri: item?.firstimg } : default_image}
+              source={item?.cover ? { uri: item?.cover } : default_image}
               style={{
                 borderTopLeftRadius: 5,
                 borderTopRightRadius: 5,

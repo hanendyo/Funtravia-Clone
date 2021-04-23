@@ -15,6 +15,8 @@ const travelgoal_populer = gql`
         slug
         icon
       }
+      cover
+      description
     }
   }
 `;

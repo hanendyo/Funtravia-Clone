@@ -23,6 +23,8 @@ const detail_travelgoal = gql`
         image
         order
       }
+      cover
+      description
     }
   }
 `;

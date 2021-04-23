@@ -110,7 +110,7 @@ export default function SearchPage(props, { navigation, route }) {
     let parseArr = JSON.parse(seacac);
     // console.log('typeSearchResult ' + parseArr.slice(0, 5));
     console.log("ParseArr:", parseArr);
-    let filterArr = parseArr.filter(function (fil) {
+    let filterArr = parseArr.filter(function(fil) {
       return fil !== (" " || null || undefined);
     });
     let limitArr = filterArr.slice(-6);
@@ -274,7 +274,7 @@ export default function SearchPage(props, { navigation, route }) {
     let seacac = await AsyncStorage.getItem("searchCache");
 
     let parseArr = JSON.parse(seacac);
-    let filterArr = parseArr.filter(function (fil) {
+    let filterArr = parseArr.filter(function(fil) {
       return fil !== (" " || null || undefined);
     });
     let limitArr = filterArr.slice(-6);

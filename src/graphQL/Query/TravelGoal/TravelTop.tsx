@@ -15,6 +15,8 @@ const travelgoal_firsts = gql`
         slug
         icon
       }
+      cover
+      description
     }
   }
 `;
