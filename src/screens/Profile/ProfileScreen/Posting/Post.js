@@ -37,6 +37,7 @@ export default function Posts({ item, index, navigation }) {
 									"output.m3u8",
 									"thumbnail.png"
 								)}
+								posterResizeMode={"cover"}
 								source={{
 									uri: item[0].assets[0].filepath,
 								}}
@@ -87,6 +88,7 @@ export default function Posts({ item, index, navigation }) {
 										"output.m3u8",
 										"thumbnail.png"
 									)}
+									posterResizeMode={"cover"}
 									source={{
 										uri: item[1].assets[0].filepath,
 									}}
@@ -136,6 +138,7 @@ export default function Posts({ item, index, navigation }) {
 										"output.m3u8",
 										"thumbnail.png"
 									)}
+									posterResizeMode={"cover"}
 									source={{
 										uri: item[2].assets[0].filepath,
 									}}
@@ -199,6 +202,7 @@ export default function Posts({ item, index, navigation }) {
 										"output.m3u8",
 										"thumbnail.png"
 									)}
+									posterResizeMode={"cover"}
 									source={{
 										uri: item[0].assets[0].filepath,
 									}}
@@ -248,6 +252,7 @@ export default function Posts({ item, index, navigation }) {
 										"output.m3u8",
 										"thumbnail.png"
 									)}
+									posterResizeMode={"cover"}
 									source={{
 										uri: item[1].assets[0].filepath,
 									}}
@@ -298,6 +303,7 @@ export default function Posts({ item, index, navigation }) {
 									"output.m3u8",
 									"thumbnail.png"
 								)}
+								posterResizeMode={"cover"}
 								source={{
 									uri: item[2].assets[0].filepath,
 								}}
@@ -361,6 +367,7 @@ export default function Posts({ item, index, navigation }) {
 												"output.m3u8",
 												"thumbnail.png"
 											)}
+											posterResizeMode={"cover"}
 											source={{
 												uri: data.assets[0].filepath,
 											}}
@@ -429,6 +436,7 @@ export default function Posts({ item, index, navigation }) {
 										"output.m3u8",
 										"thumbnail.png"
 									)}
+									posterResizeMode={"cover"}
 									source={{
 										uri: data.assets[0].filepath,
 									}}

@@ -23,6 +23,7 @@ export default function RenderVideo({ data, user, navigation }) {
 						"output.m3u8",
 						"thumbnail.png"
 					)}
+					posterResizeMode={"cover"}
 					source={{
 						uri: data.assets[0].filepath,
 					}}

@@ -5,7 +5,6 @@ import Video from "react-native-video";
 import { Mute, Unmute } from "../../assets/svg";
 
 const { width, height } = Dimensions.get("screen");
-
 export default function RenderSinglePhoto({
 	data,
 	props,
@@ -17,13 +16,14 @@ export default function RenderSinglePhoto({
 	let videoView = useRef(null);
 	if (data.assets[0].type === "video") {
 		return (
-			<View>
+			<View key={`FEED_${data.id}`}>
 				<TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
 					<Video
 						poster={data.assets[0].filepath.replace(
 							"output.m3u8",
 							"thumbnail.png"
 						)}
+						posterResizeMode={"cover"}
 						source={{
 							uri: data.assets[0].filepath,
 						}}
@@ -70,6 +70,7 @@ export default function RenderSinglePhoto({
 					alignSelf: "center",
 					marginHorizontal: 10,
 				}}
+				key={`FEED_${data.id}`}
 				uri={data.assets[0].filepath}
 			/>
 		);
