@@ -29,7 +29,7 @@ export default function NotificationSettings(props) {
   let [reviewSwitch, setReviewSwitch] = useState(false);
   let [paymentReminderSwitch, setPaymentReminderSwitch] = useState(false);
   let [selected, setSelected] = useState();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState();
   let [setting, setSetting] = useState(props.route.params.setting);
   const HeaderComponent = {
     headerTitle: t("accountInformation"),
@@ -86,8 +86,8 @@ export default function NotificationSettings(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const Update_setting = async () => {
-    if (token || token !== "") {
+  const Update_setting = async (tokens) => {
+    if (tokens || tokens !== "") {
       try {
         let response = await MutationsetNotif({
           variables: {
@@ -112,7 +112,7 @@ export default function NotificationSettings(props) {
             response.data.update_notif_settings.code === "200"
           ) {
             await AsyncStorage.setItem("setting", JSON.stringify(setting));
-            await props.navigation.navigate("ProfileStack", {
+            await props.navigation.navigate("AccountStack", {
               screen: "settings",
             });
           } else {
@@ -332,7 +332,7 @@ export default function NotificationSettings(props) {
           marginBottom: 20,
         }}
         onPress={() => {
-          Update_setting();
+          Update_setting(token);
         }}
       />
     </View>

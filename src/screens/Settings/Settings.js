@@ -493,7 +493,7 @@ export default function Settings(props) {
 							}}
 						>
 							<Text type="light" size="description" style={{}}>
-								1.0.13
+								1.0.18
 							</Text>
 						</View>
 					</View>
