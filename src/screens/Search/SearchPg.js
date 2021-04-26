@@ -62,9 +62,12 @@ export default function SearchPg(props, { navigation, route }) {
   const { t, i18n } = useTranslation();
   const [active, setActive] = useState("personal");
   const [active_src, setActiveSrc] = useState("destination");
-  const [searchtext, SetSearchtext] = useState("");
+  const [searchtext, SetSearchtext] = useState(props.route.params.searchInput ? props.route.params.searchInput: "");
   let [setting, setSetting] = useState();
   let [input, setInput] = useState("");
+
+  let IdSearch = [];
+  
 
   const HeaderComponent = {
     headerTitle: "Search",
@@ -95,7 +98,7 @@ export default function SearchPg(props, { navigation, route }) {
     "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
   let [idx, setIdx] = useState(2);
   let [refreshing, setRefreshing] = useState(false);
-  let [aktifsearch, setAktifSearch] = useState(false);
+  let [aktifsearch, setAktifSearch] = useState(props.route.params.aktifsearch ? props.route.params.aktifsearch : false);
   let { width, height } = Dimensions.get("screen");
   const spreadData = (data) => {
     let tmpData = [];
