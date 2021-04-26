@@ -7,6 +7,8 @@ import {
     TouchableOpacity,
     FlatList,
     Platform,
+    ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import {
     Arrowbackblack,
@@ -45,9 +47,23 @@ export default function Post(props) {
     let slider = useRef(null);
     let videoView = useRef(null);
 
+    // let newrecent = {};
+    const [refreshing, setRefreshing] = useState(false);
+    const Refresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(500).then(() => {
+            setRefreshing(false);
+        });
+    }, []);
+    const wait = (timeout) => {
+        return new Promise((resolve) => {
+            setTimeout(resolve, timeout);
+        });
+    };
     const selectImg = async (file) => {
         // console.log(file);
-        await setRecent(file);
+        // newrecent = file;
+        // Refresh();
         await setLoading(false);
         setRatio({ width: 1, height: 1, index: 0 });
         if (file.node.image.width > file.node.image.height) {
@@ -61,6 +77,7 @@ export default function Post(props) {
                 { width: 4, height: 5, index: 1 },
             ]);
         }
+        await setRecent(file);
     };
 
     const pickcamera = async () => {
@@ -69,8 +86,8 @@ export default function Post(props) {
             cropperCircleOverlay: false,
             includeBase64: false,
         }).then((image) => {
-            console.log(image);
-
+            Refresh();
+            setRatio({ width: 1, height: 1, index: 0 });
             setRecent({
                 node: {
                     image: { uri: image.path, filename: "camera.jpg" },
@@ -78,9 +95,9 @@ export default function Post(props) {
                     type: image.mime,
                 },
             });
-            setRatio({ width: 1, height: 1, index: 0 });
         });
     };
+    // console.log(newrecent);
     const nextFunction = async () => {
         if (recent.node.type.substr(0, 5) === "video") {
             props.navigation.navigate("CreatePostScreen", {
@@ -185,7 +202,7 @@ export default function Post(props) {
     const [loadimg, setLoadimg] = useState(false);
     const getImageFromRoll = async (dataalbum) => {
         let dataCamera = await CameraRoll.getPhotos({
-            first: 51,
+            first: 43,
             assetType: "All",
             // groupTypes: "Album",
             groupName: dataalbum.title,
@@ -206,11 +223,12 @@ export default function Post(props) {
     // console.log(page_info);
 
     const getMoreImage = async () => {
-        if (!loadimg) {
+        console.log(page_info);
+        if (!loadimg && page_info.has_next_page) {
             setLoadimg(true);
             let dataCamera = await CameraRoll.getPhotos({
                 after: page_info.end_cursor,
-                first: 51,
+                first: 40,
                 assetType: "All",
                 // groupTypes: "Album",
                 groupName: selectedAlbum.title,
@@ -222,10 +240,11 @@ export default function Post(props) {
                 ],
             });
             let data_foto = dataCamera.edges;
-            let TempImg = [...imageRoll];
-            TempImg.push(data_foto);
-            console.log(TempImg);
-            // setImageRoll(TempImg);
+            const datas = [...imageRoll, ...data_foto];
+            // TempImg.push(data_foto);
+            // console.log(datas);
+            setImageRoll(datas);
+            setPageInfo(dataCamera.page_info);
             await setLoadimg(false);
         }
     };
@@ -539,6 +558,32 @@ export default function Post(props) {
                             <CameraBlue height={30} width={30} />
                         </TouchableOpacity>
                     )
+                }
+                // refreshControl={
+                //     <RefreshControl
+                //         refreshing={refreshing}
+                //         onRefresh={() => Refresh()}
+                //     />
+                // }
+                ListFooterComponent={
+                    loadimg ? (
+                        <View
+                            style={{
+                                // position: 'absolute',
+                                // bottom:0,
+                                width: Dimensions.get("screen").width,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginBottom: 30,
+                            }}
+                        >
+                            <ActivityIndicator
+                                animating={loadimg}
+                                size="large"
+                                color="#209fae"
+                            />
+                        </View>
+                    ) : null
                 }
                 numColumns={4}
                 onEndReachedThreshold={1}

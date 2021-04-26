@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import NewChat from "../../screens/Chat/NewChat";
-import NewGroup from "../../screens/Chat/Group/CreateGroup";
+import NewGroup from "../../screens/Chat/Group/NewGroup";
 import CraeteGrup from "../../screens/Chat/Group/CraeteGroup_next";
 import GroupDetail from "../../screens/Chat/Group/GroupDetail";
 import GroupChat from "../../screens/Chat/GroupRoom";
