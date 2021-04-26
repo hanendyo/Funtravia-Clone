@@ -23,7 +23,7 @@ import {
   CommentBlack,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { Text, Button, shareAction } from "../../component";
@@ -37,6 +37,9 @@ import RenderAlbum from "./RenderAlbumItinerary";
 import RenderSinglePhoto from "./RenderSinglePhoto";
 import { useIsFocused } from "@react-navigation/native";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
+import FollowingQuery from "../../graphQL/Query/Profile/Following";
+import FollowerQuery from "../../graphQL/Query/Profile/Follower";
+import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -60,6 +63,7 @@ export default function FeedList({ props, token }) {
   let [setting, setSetting] = useState();
   let [dataUser, setDataUser] = useState();
   let [activelike, setactivelike] = useState(true);
+
   const { t, i18n } = useTranslation();
   let { width, height } = Dimensions.get("screen");
   const [
@@ -343,6 +347,8 @@ export default function FeedList({ props, token }) {
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
+    await LoadFollowing();
+    await LoadFollower();
   };
 
   useEffect(() => {
@@ -382,6 +388,9 @@ export default function FeedList({ props, token }) {
   const [selected, setSelected] = useState(new Map());
 
   const OptionOpen = (data) => {
+    if (datasFollow) {
+      var tempSelect = datasFollow.findIndex((k) => k["id"] == data.user.id);
+    }
     SetOption(data);
     if (data.user.ismyfeed == true) {
       setModalmenu(true);
@@ -442,6 +451,44 @@ export default function FeedList({ props, token }) {
   });
   const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
+  const [datasFollow, setDatasFollow] = useState();
+  const [datasFollower, setDatasFollower] = useState();
+
+  const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
+    FollowingQuery,
+    {
+      fetchPolicy: "network-only",
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      onCompleted: () => {
+        setDatasFollow(dataFollow.user_following);
+      },
+    }
+  );
+
+  const [
+    LoadFollower,
+    { data: dataFollower, loading: loadingFollower, error: errorFollower },
+  ] = useLazyQuery(FollowerQuery, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setDatasFollower(dataFollower.user_followers);
+    },
+  });
+
+  console.log("follower", dataFollower);
+  console.log("state", datasFollower);
+
   const [
     UnfollowMutation,
     { loading: loadUnfolMut, data: dataUnfolMut, error: errorUnfolMut },
@@ -455,6 +502,8 @@ export default function FeedList({ props, token }) {
   });
 
   const _unfollow = async (id, status) => {
+    setModalmenuother(false);
+
     if (token || token !== "") {
       try {
         let response = await UnfollowMutation({
@@ -469,27 +518,67 @@ export default function FeedList({ props, token }) {
           throw new Error("Error Input");
         }
 
-        console.log("Respon", response);
-
         if (response.data) {
           if (
             response.data.unfollow_user.code === 200 ||
             response.data.unfollow_user.code === "200"
           ) {
-            // loadAsync();
-            // setSelectedStatus("0");
-            setModalmenuother(false);
+            LoadFollowing();
           } else {
             throw new Error(response.data.unfollow_user.message);
           }
         }
       } catch (error) {
         Alert.alert("" + error);
-        setLoading(false);
       }
     } else {
       Alert.alert("Please Login");
-      setLoading(false);
+    }
+  };
+
+  const [
+    FollowMutation,
+    { loading: loadFollowMut, data: dataFollowMut, error: errorFollowMut },
+  ] = useMutation(FollowMut, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _follow = async (id, status) => {
+    setModalmenuother(false);
+    if (token || token !== "") {
+      try {
+        let response = await FollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+        if (loadFollowMut) {
+          Alert.alert("Loading!!");
+        }
+        if (errorFollowMut) {
+          throw new Error("Error Input");
+        }
+        console.log("Response", response);
+        if (response.data) {
+          if (
+            response.data.follow_user.code === 200 ||
+            response.data.follow_user.code === "200"
+          ) {
+            LoadFollowing();
+          } else {
+            throw new Error(response.data.follow_user.message);
+          }
+        }
+      } catch (error) {
+        Alert.alert("" + error);
+      }
+    } else {
+      Alert.alert("Please Login");
     }
   };
 
@@ -588,7 +677,7 @@ export default function FeedList({ props, token }) {
             padding: 20,
           }}
         >
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               paddingVertical: 10,
             }}
@@ -603,8 +692,8 @@ export default function FeedList({ props, token }) {
             >
               {t("reportThisPost")}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
             style={{
               paddingVertical: 10,
             }}
@@ -615,7 +704,7 @@ export default function FeedList({ props, token }) {
             <Text size="description" type="regular" style={{}}>
               {t("blockUser")}
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={{
               paddingVertical: 10,
@@ -626,16 +715,33 @@ export default function FeedList({ props, token }) {
               {t("copyLink")}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => _unfollow(dataUser.id)}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("unfollow")}
-            </Text>
-          </TouchableOpacity>
+          {datasFollow &&
+          selectedOption &&
+          selectedOption.user &&
+          datasFollow.findIndex((k) => k["id"] == selectedOption?.user?.id) ==
+            -1 ? (
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => _follow(selectedOption.user.id)}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("follow")}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => _unfollow(selectedOption.user.id)}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("unfollow")}
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={{
               paddingVertical: 10,
