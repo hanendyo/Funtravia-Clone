@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Button, CustomImage, Text, Truncate } from "../../component";
+import { Button, Capital, CustomImage, Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite, FilterIcon, Search, Xhitam } from "../../assets/svg";
 import TravelLists from "../../graphQL/Query/TravelGoal/TravelList";
@@ -65,33 +65,38 @@ export default function TravelGoalList(props) {
   let dataList = [];
   let dataListx = {};
   let [dataFillter, setdataFillter] = useState([]);
+  let [dataFillters, setdataFillters] = useState([]);
   let [texts, setText] = useState(null);
   let [modal, setModal] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
-  let [opens, setOpens] = useState(10);
-
   let [datacategory, setdatacategory] = useState([]);
 
-  const [
-    Getdatacategory,
-    { loading: loadingcategory, data: datacategorys, error: errorcategory },
-  ] = useLazyQuery(Travelcategorys, {
-    fetchPolicy: "network-only",
-    variables: {
-      limit: 7,
-      offset: 0,
-      category_id: [],
-      keyword: texts,
-    },
+  let [filtercategory, setfiltercategory] = useState([]);
+
+  const {
+    loading: loadingcategory,
+    data: datacategorys,
+    error: errorcategory,
+  } = useQuery(Travelcategorys, {
+    // fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         // Authorization: `Bearer ${token}`,
       },
     },
-    onCompleted: () => {
-      setdatacategory(datacategorys?.category_travelgoal);
+    onCompleted: async () => {
+      console.log("get data a =======================");
+      let filter = [];
+      for (var x of datacategorys?.category_travelgoal) {
+        if (x.sugestion === true) {
+          filter.push(x);
+        }
+      }
+      await setdataFillter(filter);
+      await setdataFillter(filter);
+      await setdatacategory(datacategorys?.category_travelgoal);
     },
   });
 
@@ -106,7 +111,7 @@ export default function TravelGoalList(props) {
     variables: {
       limit: 7,
       offset: 0,
-      category_id: [],
+      category_id: filtercategory,
       keyword: texts,
     },
     context: {
@@ -207,20 +212,99 @@ export default function TravelGoalList(props) {
     }
   };
 
-  const _handleCheck = async (item, index, data) => {
-    let temp = [...data];
-    // temp[1].checked = !temp[1].checked;
-    await console.log(temp[1]);
-    // console.log(temp);
+  const _handleCheck = async (item, index, datas) => {
+    let filter = [...dataFillters];
+    let items = { ...item };
+    let temp = [...datas];
+    items["checked"] = !items["checked"];
+    if (items["checked"] === true || items["sugestion"] === true) {
+      items["show"] = true;
+    } else {
+      items["show"] = false;
+    }
+    temp.splice(index, 1, items);
+    await setdatacategory(temp);
+    let indexfilter = filter.findIndex((k) => k["id"] === items.id);
+    if (indexfilter !== -1) {
+      filter.splice(indexfilter, 1, items);
+      await setdataFillters(filter);
+    } else {
+      filter.push(items);
+      await setdataFillters(filter);
+    }
+  };
+
+  const UpdateFilter = async () => {
+    await setdataFillter(dataFillters);
+    await setModal(false);
+    let x = [];
+    for (var y of dataFillters) {
+      x.push(y.id);
+    }
+    // await console.log(x);
+    await setfiltercategory(x);
+    // await console.log("hasil... ", filtercategory);
+  };
+
+  const ClearAllFilter = async () => {
+    {
+      datacategorys?.category_travelgoal
+        ? setdatacategory(datacategorys?.category_travelgoal)
+        : null;
+    }
+    await setdataFillters([]);
+    await setdataFillter([]);
+    await setfiltercategory([]);
+    await setModal(false);
+  };
+
+  const onSelectFilter = async (item, index) => {
+    let items = { ...item };
+    let fill = [...filtercategory];
+    let indexfil = fill.findIndex((k) => k === items.id);
+    if (items["checked"] === true && indexfil !== -1) {
+      fill.splice(indexfil, 1);
+    } else {
+      fill.push(items.id);
+    }
+
+    // await console.log(fill);
+    await setfiltercategory(fill);
+
+    items["checked"] = !items["checked"];
+    let filter = [...dataFillter];
+    let indexfilter = filter.findIndex((k) => k["id"] === items.id);
+    if (indexfilter !== -1) {
+      filter.splice(indexfilter, 1, items);
+      await setdataFillters(filter);
+      await setdataFillter(filter);
+    } else {
+      filter.push(items);
+      await setdataFillters(filter);
+      await setdataFillter(filter);
+    }
+
+    let temp = [...datacategory];
+    let indextemp = temp.findIndex((k) => k["id"] === items.id);
+    temp.splice(indextemp, 1, items);
+    await setdatacategory(temp);
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      Getdatacategory();
+      // Getdatacategory();
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  // useEffect(() => {
+  //   props.navigation.setOptions(HeaderComponent);
+  //   const unsubscribe = props.navigation.addListener("focus", () => {
+  //     fetchCategory();
+  //   });
+  //   return unsubscribe;
+  // }, [props.navigation]);
 
   return (
     <View
@@ -309,7 +393,7 @@ export default function TravelGoalList(props) {
             >
               {t("filter")}
             </Text>
-            {dataFillter.length && Filterlenght > 0 ? (
+            {dataFillter.length > 0 ? (
               <View
                 style={{
                   borderRadius: 3,
@@ -330,7 +414,7 @@ export default function TravelGoalList(props) {
                     alignSelf: "center",
                   }}
                 >
-                  {Filterlenght}
+                  {filtercategory.length}
                 </Text>
               </View>
             ) : null}
@@ -352,7 +436,7 @@ export default function TravelGoalList(props) {
                     size="small"
                     color="primary"
                     text={Capital({ text: item.name })}
-                    onPress={() => onSelectFilter(item.checked, item.id)}
+                    onPress={() => onSelectFilter(item, index)}
                     style={{
                       marginRight: 3,
                       flexDirection: "row",
@@ -367,7 +451,7 @@ export default function TravelGoalList(props) {
                     color="primary"
                     variant="bordered"
                     text={Capital({ text: item.name })}
-                    onPress={() => onSelectFilter(item.checked, item.id)}
+                    onPress={() => onSelectFilter(item, index)}
                     style={{
                       marginRight: 3,
                       flexDirection: "row",
@@ -720,12 +804,12 @@ export default function TravelGoalList(props) {
             <Button
               variant="bordered"
               color="secondary"
-              // onPress={() => ClearAllFilter()}
+              onPress={() => ClearAllFilter()}
               style={{ width: Dimensions.get("screen").width / 2 - 20 }}
               text={t("clearAll")}
             ></Button>
             <Button
-              // onPress={() => UpdateFilter()}
+              onPress={() => UpdateFilter()}
               style={{ width: Dimensions.get("screen").width / 2 - 20 }}
               text={t("apply")}
             ></Button>
