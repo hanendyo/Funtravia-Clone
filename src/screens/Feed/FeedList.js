@@ -38,7 +38,6 @@ import RenderSinglePhoto from "./RenderSinglePhoto";
 import { useIsFocused } from "@react-navigation/native";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
-import FollowerQuery from "../../graphQL/Query/Profile/Follower";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 
 const deletepost = gql`
@@ -63,6 +62,7 @@ export default function FeedList({ props, token }) {
   let [setting, setSetting] = useState();
   let [dataUser, setDataUser] = useState();
   let [activelike, setactivelike] = useState(true);
+  console.log("selectedOption :", selectedOption);
 
   const { t, i18n } = useTranslation();
   let { width, height } = Dimensions.get("screen");
@@ -348,7 +348,6 @@ export default function FeedList({ props, token }) {
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
     await LoadFollowing();
-    await LoadFollower();
   };
 
   useEffect(() => {
@@ -388,9 +387,6 @@ export default function FeedList({ props, token }) {
   const [selected, setSelected] = useState(new Map());
 
   const OptionOpen = (data) => {
-    if (datasFollow) {
-      var tempSelect = datasFollow.findIndex((k) => k["id"] == data.user.id);
-    }
     SetOption(data);
     if (data.user.ismyfeed == true) {
       setModalmenu(true);
@@ -452,7 +448,6 @@ export default function FeedList({ props, token }) {
   const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   const [datasFollow, setDatasFollow] = useState();
-  const [datasFollower, setDatasFollower] = useState();
 
   const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
     FollowingQuery,
@@ -469,25 +464,6 @@ export default function FeedList({ props, token }) {
       },
     }
   );
-
-  const [
-    LoadFollower,
-    { data: dataFollower, loading: loadingFollower, error: errorFollower },
-  ] = useLazyQuery(FollowerQuery, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    onCompleted: () => {
-      setDatasFollower(dataFollower.user_followers);
-    },
-  });
-
-  console.log("follower", dataFollower);
-  console.log("state", datasFollower);
 
   const [
     UnfollowMutation,
@@ -563,7 +539,6 @@ export default function FeedList({ props, token }) {
         if (errorFollowMut) {
           throw new Error("Error Input");
         }
-        console.log("Response", response);
         if (response.data) {
           if (
             response.data.follow_user.code === 200 ||
@@ -611,7 +586,9 @@ export default function FeedList({ props, token }) {
             style={{
               paddingVertical: 10,
             }}
-            onPress={() => {}}
+            onPress={() =>
+              shareAction({ from: "feed", target: selectedOption.id })
+            }
           >
             <Text size="description" type="regular" style={{}}>
               {t("shareTo")}...

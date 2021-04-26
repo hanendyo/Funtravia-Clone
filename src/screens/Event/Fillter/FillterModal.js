@@ -264,7 +264,6 @@ export default function FilterModal({
                       ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
                       android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                     }),
-                    borderWidth: 1,
                   }}
                   onValueChange={() => _handleCheck(item["id"], index)}
                   value={item["checked"]}
