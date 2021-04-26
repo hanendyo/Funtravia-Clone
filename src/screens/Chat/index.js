@@ -92,7 +92,7 @@ export default function Message({ navigation }) {
 	const [messages, setMessages] = useState("");
 	const [modalError, setModalError] = useState(false);
 
-	const LongPressFunc = (item) => {
+	const LongPressFunc = (item, room_id) => {
 		Alert.alert(
 			"Confirm",
 			`Are you sure to delete message with ${item.first_name} ${
@@ -104,12 +104,12 @@ export default function Message({ navigation }) {
 					onPress: () => console.log("Canceled"),
 					style: "cancel",
 				},
-				{ text: "OK", onPress: () => DeleteChat(item.id) },
+				{ text: "OK", onPress: () => DeleteChat(item.id, room_id) },
 			]
 		);
 	};
 
-	const DeleteChat = async (id) => {
+	const DeleteChat = async (id, room_id) => {
 		let response = await fetch(
 			`${CHATSERVER}/api/personal/delete?receiver_id=${id}`,
 			{
@@ -121,8 +121,8 @@ export default function Message({ navigation }) {
 				},
 			}
 		);
+		await AsyncStorage.removeItem("history_" + room_id);
 		getRoom(token);
-		let dataResponse = await response.json();
 	};
 
 	const renderItem = ({ item }) => {
@@ -151,7 +151,7 @@ export default function Message({ navigation }) {
 			<View key={`${item.id}_child`}>
 				{item?.recent !== null ? (
 					<TouchableOpacity
-						onLongPress={() => LongPressFunc(change)}
+						onLongPress={() => LongPressFunc(change, item.id)}
 						onPress={() =>
 							navigation.navigate("ChatStack", {
 								screen: "RoomChat",
@@ -361,7 +361,7 @@ export default function Message({ navigation }) {
 							<View key={`${item.id}_child`}>
 								{item?.recent !== null ? (
 									<TouchableOpacity
-										onLongPress={() => LongPressFunc(change(item))}
+										onLongPress={() => LongPressFunc(change(item), item.id)}
 										onPress={() =>
 											navigation.navigate("ChatStack", {
 												screen: "RoomChat",
