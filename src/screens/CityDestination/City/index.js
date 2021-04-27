@@ -432,6 +432,8 @@ export default function CityDetail(props) {
     }
   };
 
+
+
   // unliked journal
   const _unlikedjournal = async (id, index) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
@@ -1016,7 +1018,7 @@ export default function CityDetail(props) {
                             >
                               <View style={{ width: "100%" }}>
                                 <Text style={{ width: "80%" }} type="bold">
-                                  <Truncate text={dataX.title} length={60} />
+                                  <Truncate text={dataX.title} length={28} />
                                 </Text>
                                 <Text>
                                   <Truncate text={dataX.text} length={60} />
@@ -2642,8 +2644,10 @@ export default function CityDetail(props) {
             placeholder="Search"
             returnKeyType="search"
             onSubmitEditing={(x) =>
-              props.navigation.navigate("SearchTab", {
+              props.navigation.navigate("SearchPg", {
+                idcity : dataCity.CitiesInformation.id,
                 searchInput: search,
+                aktifsearch : true,
               })
             }
           />

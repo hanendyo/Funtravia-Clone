@@ -1182,7 +1182,7 @@ export default function Country(props) {
                             >
                               <View style={{ width: "100%" }}>
                                 <Text style={{ width: "80%" }} type="bold">
-                                  <Truncate text={dataX.title} length={60} />
+                                  <Truncate text={dataX.title} length={28} />
                                 </Text>
                                 <Text>
                                   <Truncate text={dataX.text} length={60} />
@@ -1944,8 +1944,10 @@ export default function Country(props) {
             placeholder="Search"
             returnKeyType="search"
             onSubmitEditing={(x) =>
-              props.navigation.navigate("SearchTab", {
+              props.navigation.navigate("SearchPg", {
+                idcountry : data.country_detail.id,
                 searchInput: search,
+                aktifsearch : true,
               })
             }
           />
