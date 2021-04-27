@@ -1,7 +1,11 @@
 import { gql } from "apollo-boost";
-const SearchDestinationQuery = gql`
-    query($keyword: String) {
-        destinationSearch(keyword: $keyword) {
+const SearchDestinationQueryNew = gql`
+    query($keyword: String, $cities_id: ID, $countries_id: ID) {
+        destinationSearchv2(
+            keyword: $keyword
+            cities_id: $cities_id
+            countries_id: $countries_id
+        ) {
             id
             name
             rating
@@ -29,4 +33,4 @@ const SearchDestinationQuery = gql`
         }
     }
 `;
-export default SearchDestinationQuery;
+export default SearchDestinationQueryNew;
