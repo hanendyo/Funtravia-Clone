@@ -435,27 +435,27 @@ export default function ItineraryDetail(props) {
             headerRight: () => (
                 <View style={{ flexDirection: "row" }}>
                     {/* <Button
-                  text={""}
-                  size="medium"
-                  type="circle"
-                  variant="transparent"
-                  style={{
-                    height: 55,
-                  }}
-                  onPress={() => Alert.alert("coming soon")}
-                >
-                  <Book height={20} width={20} />
-                </Button>
-                <Button
-                  text={""}
-                  size="medium"
-                  type="circle"
-                  variant="transparent"
-                  style={{ height: 55 }}
-                  onPress={() => Alert.alert("coming soon")}
-                >
-                  <Expences height={20} width={20} />
-                </Button> */}
+                      text={""}
+                      size="medium"
+                      type="circle"
+                      variant="transparent"
+                      style={{
+                        height: 55,
+                      }}
+                      onPress={() => Alert.alert("coming soon")}
+                    >
+                      <Book height={20} width={20} />
+                    </Button>
+                    <Button
+                      text={""}
+                      size="medium"
+                      type="circle"
+                      variant="transparent"
+                      style={{ height: 55 }}
+                      onPress={() => Alert.alert("coming soon")}
+                    >
+                      <Expences height={20} width={20} />
+                    </Button> */}
                     {anggota !== -1 ? (
                         <Button
                             text={""}
