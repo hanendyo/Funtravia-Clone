@@ -3,7 +3,7 @@ import { Dimensions, Alert, Keyboard } from "react-native";
 import React, { useState } from "react";
 import { LikeRed, LikeEmpty, Sharegreen } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Loading, Truncate, Text } from "../../component";
+import { Loading, Truncate, Text, shareAction } from "../../component";
 import { useTranslation } from "react-i18next";
 import Liked from "../../graphQL/Mutation/Journal/likedJournal";
 import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
