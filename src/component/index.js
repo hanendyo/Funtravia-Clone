@@ -19,6 +19,9 @@ import Success from "./src/AlertModal/Success";
 import Drawable from "./src/Drawable";
 import RenderMaps from "./src/RenderMaps";
 import shareAction from "./src/Share";
+import NavigateAction from "./src/NavigateAction";
+import FunImage from "./src/FunImage";
+import FunImageBackground from "./src/FunImageBackground";
 
 export {
 	Text,
@@ -42,4 +45,7 @@ export {
 	Drawable,
 	RenderMaps,
 	shareAction,
+	NavigateAction,
+	FunImage,
+	FunImageBackground,
 };
