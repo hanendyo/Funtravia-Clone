@@ -304,11 +304,13 @@ export default function JournalCategory(props) {
                         size={"label"}
                         type={"bold"}
                         style={{ color: "#3E3E3E", marginTop: 5 }}
+                        numberOfLines={1}
                       >
-                        <Truncate
+                        {item.title}
+                        {/* <Truncate
                           text={item.title ? item.title : ""}
                           length={40}
-                        />
+                        /> */}
                       </Text>
                       <Text
                         size={"small"}
@@ -318,11 +320,13 @@ export default function JournalCategory(props) {
                           marginTop: 5,
                           lineHeight: 16,
                         }}
+                        numberOfLines={2}
                       >
-                        <Truncate
+                        {item.firsttxt}
+                        {/* <Truncate
                           text={item.firsttxt ? item.firsttxt : ""}
                           length={110}
-                        />
+                        /> */}
                       </Text>
                     </View>
                     <View>
