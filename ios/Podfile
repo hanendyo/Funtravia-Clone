@@ -17,7 +17,6 @@ target 'funtravia' do
     pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
     pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"
     use_react_native!(:path => config["reactNativePath"])
-    pod 'RNCMaskedView', :path => '../node_modules/@react-native-masked-view/masked-view'
 
     target 'funtraviaTests' do
         inherit! :complete

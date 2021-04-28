@@ -10,19 +10,21 @@ import {
 	Image,
 	Pressable,
 	StyleSheet,
+	Modal,
+	ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, CustomImage, StatusBar } from "../../component";
 import {
-	Akunsaya,
-	search_black,
-	sampul2,
-	DefaultProfileSquare,
-} from "../../assets/png";
+	Text,
+	CustomImage,
+	StatusBar,
+	NavigateAction,
+	FunImage,
+} from "../../component";
+import { search_black, sampul2, DefaultProfileSquare } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import PopularDestination from "./PopularDestination";
-import RenderAccount from "./RenderAccount";
 import Account from "../../graphQL/Query/Home/Account";
 import MenuNew from "./MenuNew";
 import DiscoverCard from "./DiscoverCard";
@@ -37,6 +39,8 @@ export default function Home(props) {
 	let [token, setToken] = useState("");
 	let [refresh, setRefresh] = useState(false);
 	let [data, setdata] = useState(null);
+	let [shareId, setShareId] = useState(props.route.params?.shareid);
+	let [loadingModal, setLoadingModal] = useState(false);
 
 	const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
 		Account,
@@ -103,8 +107,6 @@ export default function Home(props) {
 		await NotifCount();
 		await LoadUserProfile();
 		await LoadPost();
-
-		console.log(tkn);
 	};
 
 	const searchPage = () => {
@@ -114,6 +116,13 @@ export default function Home(props) {
 	};
 
 	useEffect(() => {
+		if (shareId && shareId !== "undefined") {
+			setLoadingModal(true);
+			NavigateAction(props.navigation, shareId);
+			setTimeout(() => {
+				setLoadingModal(false);
+			}, 3000);
+		}
 		const unsubscribe = props.navigation.addListener("focus", (data) => {
 			loadAsync();
 		});
@@ -209,6 +218,14 @@ export default function Home(props) {
 		extrapolate: "clamp",
 	});
 
+	if (loadingModal) {
+		return (
+			<View style={{ flex: 1, justifyContent: "center" }}>
+				<ActivityIndicator size="large" color="#209FAE" />
+			</View>
+		);
+	}
+
 	return (
 		<View style={{ flex: 1, backgroundColor: "#fff" }}>
 			<StatusBar backgroundColor="#14646e" barStyle="light-content" />
@@ -298,7 +315,7 @@ export default function Home(props) {
 													borderRadius: 10,
 												}}
 											>
-												<Image
+												<FunImage
 													style={{
 														width: ukuran - 15,
 														height: ukuran - 15,
@@ -311,7 +328,7 @@ export default function Home(props) {
 													source={
 														data && data.picture
 															? { uri: data.picture }
-															: DefaultProfileSquare
+															: { uri: DefaultProfileSquare }
 													}
 												/>
 											</TouchableOpacity>
