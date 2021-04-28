@@ -24,6 +24,7 @@ import {
 } from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 export default function Journal(props) {
   let [search, setSearch] = useState({
@@ -190,45 +191,107 @@ export default function Journal(props) {
     const unsubscribe = props.navigation.addListener("focus", () => {
       fetchCategory();
     });
+    setTimeout(() => {
+      setLoad(false);
+    }, 5000);
     return unsubscribe;
   }, [props.navigation]);
+
+  let [load, setLoad] = useState(true);
 
   {
     /* ======================================= Render All ====================================================*/
   }
-  if (loading) {
-    <View
-      style={{
-        backgroundColor: "white",
-        paddingVertical: 20,
-        height: Dimensions.get("screen").height,
-      }}
-    >
-      <ActivityIndicator animating={true} color="#209FAE" />
-    </View>;
+  console.log(loading);
+  if (load) {
+    return (
+      <SkeletonPlaceholder>
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
+          }}
+        >
+          <View
+            style={{
+              height: 150,
+              width: "100%",
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "90%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "50%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <View style={{ width: 36, height: 36, borderRadius: 18 }}></View>
+            <View
+              style={{
+                height: 40,
+                width: "100%",
+                marginLeft: 10,
+                justifyContent: "center",
+              }}
+            >
+              <View style={{ height: 10, width: "30%" }}></View>
+              <View style={{ height: 10, marginTop: 5, width: "20%" }}></View>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <View style={{ width: 80, borderRadius: 5, height: 30 }}></View>
+            <View
+              style={{ width: 80, borderRadius: 5, height: 30, marginLeft: 5 }}
+            ></View>
+            <View
+              style={{ width: 80, borderRadius: 5, height: 30, marginLeft: 5 }}
+            ></View>
+            <View
+              style={{ width: 80, borderRadius: 5, height: 30, marginLeft: 5 }}
+            ></View>
+            <View
+              style={{ width: 80, borderRadius: 5, height: 30, marginLeft: 5 }}
+            ></View>
+          </View>
+          <View style={{ marginTop: 10 }}></View>
+        </View>
+      </SkeletonPlaceholder>
+    );
   }
-  if (loadingCategory) {
-    <View
-      style={{
-        backgroundColor: "white",
-        paddingVertical: 20,
-        height: Dimensions.get("screen").height,
-      }}
-    >
-      <ActivityIndicator animating={true} color="#209FAE" />
-    </View>;
-  }
-  if (loadingList) {
-    <View
-      style={{
-        backgroundColor: "white",
-        paddingVertical: 20,
-        height: Dimensions.get("screen").height,
-      }}
-    >
-      <ActivityIndicator animating={true} color="#209FAE" />
-    </View>;
-  }
+  // if (loadingCategory) {
+  //   <View
+  //     style={{
+  //       backgroundColor: "white",
+  //       paddingVertical: 20,
+  //       height: Dimensions.get("screen").height,
+  //     }}
+  //   >
+  //     <ActivityIndicator animating={true} color="#209FAE" />
+  //   </View>;
+  // }
+  // if (loadingList) {
+  //   <View
+  //     style={{
+  //       backgroundColor: "white",
+  //       paddingVertical: 20,
+  //       height: Dimensions.get("screen").height,
+  //     }}
+  //   >
+  //     <ActivityIndicator animating={true} color="#209FAE" />
+  //   </View>;
+  // }
 
   return (
     <ScrollView
@@ -237,77 +300,66 @@ export default function Journal(props) {
     >
       {/* ============================== Populer Journal ====================================================*/}
 
-      {loading ? (
-        <View
-          style={{
-            backgroundColor: "white",
-            paddingVertical: 20,
-            height: Dimensions.get("screen").height,
-          }}
-        >
-          <ActivityIndicator animating={true} color="#209FAE" />
-        </View>
-      ) : (
-        <View style={styles.container}>
-          <Pressable onPress={() => JournalDetail(data?.journal_most_populer)}>
-            <Image
-              source={
-                data.journal_most_populer.firstimg
-                  ? { uri: data.journal_most_populer.firstimg }
-                  : default_image
-              }
-              style={styles.imageTop}
-            />
-            <View style={{ marginHorizontal: 10 }}>
-              <View>
-                <Text style={styles.title} size={"title"} type={"bold"}>
-                  {data.journal_most_populer ? (
-                    <Truncate
-                      text={data.journal_most_populer.title}
-                      length={80}
-                    />
-                  ) : (
-                    "Title"
-                  )}
+      <View style={styles.container}>
+        <Pressable onPress={() => JournalDetail(data?.journal_most_populer)}>
+          <Image
+            source={
+              data.journal_most_populer.firstimg
+                ? { uri: data.journal_most_populer.firstimg }
+                : default_image
+            }
+            style={styles.imageTop}
+          />
+          <View style={{ marginHorizontal: 10 }}>
+            <View>
+              <Text style={styles.title} size={"title"} type={"bold"}>
+                {data.journal_most_populer ? (
+                  <Truncate
+                    text={data.journal_most_populer.title}
+                    length={80}
+                  />
+                ) : (
+                  "Title"
+                )}
+              </Text>
+            </View>
+            <View style={styles.editor}>
+              <Thumbnail
+                source={
+                  data &&
+                  data.journal_most_populer &&
+                  data.journal_most_populer.userby &&
+                  data.journal_most_populer.userby.picture
+                    ? { uri: data.journal_most_populer.userby.picture }
+                    : logo_funtravia
+                }
+                style={{
+                  borderColor: "#ffffff",
+                  height: 35,
+                  width: 35,
+                }}
+              />
+              <View style={styles.dataEditor}>
+                <Text size={"label"} type={"bold"}>
+                  {data.journal_most_populer.userby.first_name
+                    ? data.journal_most_populer.userby.first_name
+                    : "Funtravia"}
+                </Text>
+                <Text
+                  size={"description"}
+                  type={"regular"}
+                  style={{ marginTop: -2 }}
+                >
+                  {data.journal_most_populer.date
+                    ? dateFormatShortMonth(data.journal_most_populer.date)
+                    : null}
                 </Text>
               </View>
-              <View style={styles.editor}>
-                <Thumbnail
-                  source={
-                    data &&
-                    data.journal_most_populer &&
-                    data.journal_most_populer.userby &&
-                    data.journal_most_populer.userby.picture
-                      ? { uri: data.journal_most_populer.userby.picture }
-                      : logo_funtravia
-                  }
-                  style={{
-                    borderColor: "#ffffff",
-                    height: 35,
-                    width: 35,
-                  }}
-                />
-                <View style={styles.dataEditor}>
-                  <Text size={"label"} type={"bold"}>
-                    {data.journal_most_populer.userby.first_name
-                      ? data.journal_most_populer.userby.first_name
-                      : "Funtravia"}
-                  </Text>
-                  <Text
-                    size={"description"}
-                    type={"regular"}
-                    style={{ marginTop: -2 }}
-                  >
-                    {data.journal_most_populer.date
-                      ? dateFormatShortMonth(data.journal_most_populer.date)
-                      : null}
-                  </Text>
-                </View>
-              </View>
             </View>
-          </Pressable>
-        </View>
-      )}
+          </View>
+        </Pressable>
+      </View>
+
       {dataCategory && dataCategory.category_journal ? (
         <View
           style={{
