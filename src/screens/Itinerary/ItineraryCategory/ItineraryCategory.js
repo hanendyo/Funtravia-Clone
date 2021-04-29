@@ -191,19 +191,24 @@ export default function ItineraryCategory(props) {
   };
 
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.itinerary_list_populer;
-    const datas = [
-      ...prev.itinerary_list_populer.datas,
-      ...fetchMoreResult.itinerary_list_populer.datas,
-    ];
-    return Object.assign({}, prev, {
-      list_populer: {
-        __typename: prev.itinerary_list_populer.__typename,
-        page_info,
-        datas,
-      },
-    });
+    if (
+      prev.itinerary_list_populer.datas.length <
+      fetchMoreResult.itinerary_list_populer.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult.itinerary_list_populer;
+      const datas = [
+        ...prev.itinerary_list_populer.datas,
+        ...fetchMoreResult.itinerary_list_populer.datas,
+      ];
+      return Object.assign({}, prev, {
+        itinerary_list_populer: {
+          __typename: prev.itinerary_list_populer.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
 
   const handleOnEndReached = () => {
