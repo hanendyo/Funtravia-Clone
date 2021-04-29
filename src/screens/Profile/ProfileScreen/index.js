@@ -1091,7 +1091,9 @@ export default function OtherProfile(props) {
 
   const renderPost = (tabPost, e) => {
     if (tabPost === 0) {
-      return <Post item={e.item} navigation={e.props.navigation} />;
+      return (
+        <Post item={e.item} navigation={e.props.navigation} user={dataUser} />
+      );
     } else if (tabPost === 1) {
       return Albums(e);
     } else {
