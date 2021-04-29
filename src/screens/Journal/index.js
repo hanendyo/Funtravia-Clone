@@ -7,9 +7,7 @@ import {
   ScrollView,
   FlatList,
   Pressable,
-  Alert,
   RefreshControl,
-  ActivityIndicator,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
@@ -17,7 +15,7 @@ import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
-import { Loading, Truncate } from "../../component";
+import { Truncate } from "../../component";
 import {
   dateFormatMonthYears,
   dateFormatShortMonth,
@@ -104,8 +102,6 @@ export default function Journal(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
-  console.log("journal_list :", dataList);
-  console.log("populer :", data);
 
   let journal_list = [];
   if (dataList && "datas" in dataList.journal_list) {
@@ -121,6 +117,7 @@ export default function Journal(props) {
       setRefreshing(false);
     });
   }, []);
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -172,7 +169,6 @@ export default function Journal(props) {
       category_id: null,
       order_by: null,
     },
-    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -193,7 +189,7 @@ export default function Journal(props) {
     });
     setTimeout(() => {
       setLoad(false);
-    }, 5000);
+    }, 2000);
     return unsubscribe;
   }, [props.navigation]);
 
@@ -202,7 +198,6 @@ export default function Journal(props) {
   {
     /* ======================================= Render All ====================================================*/
   }
-  console.log(loading);
   if (load) {
     return (
       <SkeletonPlaceholder>
@@ -250,7 +245,7 @@ export default function Journal(props) {
               <View style={{ height: 10, marginTop: 5, width: "20%" }}></View>
             </View>
           </View>
-          <View style={{ flexDirection: "row", marginTop: 10 }}>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
             <View style={{ width: 80, borderRadius: 5, height: 30 }}></View>
             <View
               style={{ width: 80, borderRadius: 5, height: 30, marginLeft: 5 }}
@@ -265,7 +260,238 @@ export default function Journal(props) {
               style={{ width: 80, borderRadius: 5, height: 30, marginLeft: 5 }}
             ></View>
           </View>
-          <View style={{ marginTop: 10 }}></View>
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+            }}
+          >
+            <View style={{ height: 110, width: 80, borderRadius: 10 }}></View>
+            <View style={{ marginLeft: 10, justifyContent: "space-around" }}>
+              <View style={{ height: 10, width: 50, borderRadius: 5 }}></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 200,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+            }}
+          >
+            <View style={{ height: 110, width: 80, borderRadius: 10 }}></View>
+            <View style={{ marginLeft: 10, justifyContent: "space-around" }}>
+              <View style={{ height: 10, width: 50, borderRadius: 5 }}></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 200,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+            }}
+          >
+            <View style={{ height: 110, width: 80, borderRadius: 10 }}></View>
+            <View style={{ marginLeft: 10, justifyContent: "space-around" }}>
+              <View style={{ height: 10, width: 50, borderRadius: 5 }}></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 200,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+            }}
+          >
+            <View style={{ height: 110, width: 80, borderRadius: 10 }}></View>
+            <View style={{ marginLeft: 10, justifyContent: "space-around" }}>
+              <View style={{ height: 10, width: 50, borderRadius: 5 }}></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 250,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: 200,
+                  borderRadius: 5,
+                  marginTop: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 10,
+                    width: 50,
+                    borderRadius: 5,
+                    marginTop: 5,
+                  }}
+                ></View>
+              </View>
+            </View>
+          </View>
         </View>
       </SkeletonPlaceholder>
     );
@@ -313,9 +539,9 @@ export default function Journal(props) {
           <View style={{ marginHorizontal: 10 }}>
             <View>
               <Text style={styles.title} size={"title"} type={"bold"}>
-                {data.journal_most_populer ? (
+                {data?.journal_most_populer ? (
                   <Truncate
-                    text={data.journal_most_populer.title}
+                    text={data?.journal_most_populer.title}
                     length={80}
                   />
                 ) : (
@@ -341,8 +567,8 @@ export default function Journal(props) {
               />
               <View style={styles.dataEditor}>
                 <Text size={"label"} type={"bold"}>
-                  {data.journal_most_populer.userby.first_name
-                    ? data.journal_most_populer.userby.first_name
+                  {data?.journal_most_populer.userby.first_name
+                    ? data?.journal_most_populer.userby.first_name
                     : "Funtravia"}
                 </Text>
                 <Text
@@ -350,8 +576,8 @@ export default function Journal(props) {
                   type={"regular"}
                   style={{ marginTop: -2 }}
                 >
-                  {data.journal_most_populer.date
-                    ? dateFormatShortMonth(data.journal_most_populer.date)
+                  {data?.journal_most_populer.date
+                    ? dateFormatShortMonth(data?.journal_most_populer.date)
                     : null}
                 </Text>
               </View>
@@ -359,61 +585,48 @@ export default function Journal(props) {
           </View>
         </Pressable>
       </View>
-
-      {dataCategory && dataCategory.category_journal ? (
-        <View
-          style={{
-            height: 50,
+      <View
+        style={{
+          height: 50,
+          marginTop: 5,
+          backgroundColor: "white",
+        }}
+      >
+        <FlatList
+          data={dataCategory?.category_journal}
+          contentContainerStyle={{
+            flexDirection: "row",
+            paddingHorizontal: 5,
             marginTop: 5,
-            backgroundColor: "white",
           }}
-        >
-          <FlatList
-            data={dataCategory?.category_journal}
-            contentContainerStyle={{
-              flexDirection: "row",
-              paddingHorizontal: 5,
-              marginTop: 5,
-            }}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <Pressable
-                onPress={() =>
-                  props.navigation.navigate("JournalCategory", {
-                    category: item.id,
-                    index: index,
-                  })
-                }
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => (
+            <Pressable
+              onPress={() =>
+                props.navigation.navigate("JournalCategory", {
+                  category: item.id,
+                  index: index,
+                })
+              }
+            >
+              <Text
+                style={{
+                  padding: 10,
+                  backgroundColor: "#F6F6F6",
+                  marginLeft: 10,
+                  borderRadius: 5,
+                }}
+                size={"description"}
+                type={"bold"}
               >
-                <Text
-                  style={{
-                    padding: 10,
-                    backgroundColor: "#F6F6F6",
-                    marginLeft: 10,
-                    borderRadius: 5,
-                  }}
-                  size={"description"}
-                  type={"bold"}
-                >
-                  {item.name}
-                </Text>
-              </Pressable>
-            )}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            backgroundColor: "white",
-            paddingVertical: 20,
-            height: Dimensions.get("screen").height,
-          }}
-        >
-          <ActivityIndicator animating={true} color="#209FAE" />
-        </View>
-      )}
+                {item.name}
+              </Text>
+            </Pressable>
+          )}
+        />
+      </View>
 
       {/* ============================== Top Contributor ====================================================*/}
 
@@ -495,153 +708,130 @@ export default function Journal(props) {
 
       {/* ============================== List Journal ====================================================*/}
 
-      {journal_list.length > 0 ? (
-        <View
-          style={{
-            flex: 1,
-            width: Dimensions.get("window").width,
-            paddingHorizontal: 15,
-            alignContent: "center",
-          }}
-        >
-          <FlatList
-            data={journal_list}
-            renderItem={({ item, index }) => (
-              <View>
-                <Pressable
-                  style={{ flexDirection: "row" }}
-                  onPress={() => JournalDetail(item)}
+      <View
+        style={{
+          flex: 1,
+          width: Dimensions.get("window").width,
+          paddingHorizontal: 15,
+          alignContent: "center",
+        }}
+      >
+        <FlatList
+          data={journal_list}
+          renderItem={({ item, index }) => (
+            <View>
+              <Pressable
+                style={{ flexDirection: "row" }}
+                onPress={() => JournalDetail(item)}
+              >
+                <Image
+                  source={
+                    item.firstimg ? { uri: item.firstimg } : default_image
+                  }
+                  style={{
+                    width: "21%",
+                    height: 110,
+                    borderRadius: 10,
+                  }}
+                />
+                <View
+                  style={{
+                    width: "79%",
+                    marginVertical: 5,
+                    paddingLeft: 10,
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <Image
-                    source={
-                      item.firstimg ? { uri: item.firstimg } : default_image
-                    }
-                    style={{
-                      width: "21%",
-                      height: 110,
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      width: "79%",
-                      marginVertical: 5,
-                      paddingLeft: 10,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{ color: "#209FAE" }}
-                        size={"small"}
-                        type={"bold"}
-                      >
-                        #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                  <View>
+                    <Text
+                      style={{ color: "#209FAE" }}
+                      size={"small"}
+                      type={"bold"}
+                    >
+                      #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                    </Text>
+                    <Text
+                      size={"label"}
+                      type={"bold"}
+                      style={{ color: "#3E3E3E", marginTop: 5 }}
+                      numberOfLines={1}
+                    >
+                      {item.title}
+                      {/* <Truncate
+                        text={item.title ? item.title : ""}
+                        length={35}
+                      /> */}
+                    </Text>
+                    <Text
+                      size={"small"}
+                      type={"regular"}
+                      style={{
+                        textAlign: "justify",
+                        marginTop: 5,
+                        lineHeight: 16,
+                      }}
+                      numberOfLines={2}
+                    >
+                      {item.firsttxt}
+                      {/* <Truncate
+                        text={item.firsttxt ? item.firsttxt : ""}
+                        length={110}
+                      /> */}
+                    </Text>
+                  </View>
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text size={"small"} type={"regular"}>
+                        {dateFormatMonthYears(item.date)}
                       </Text>
-                      <Text
-                        size={"label"}
-                        type={"bold"}
-                        style={{ color: "#3E3E3E", marginTop: 5 }}
-                      >
-                        <Truncate
-                          text={item.title ? item.title : ""}
-                          length={35}
-                        />
-                      </Text>
-                      <Text
-                        size={"small"}
-                        type={"regular"}
-                        style={{
-                          textAlign: "justify",
-                          marginTop: 5,
-                          lineHeight: 16,
-                        }}
-                      >
-                        <Truncate
-                          text={item.firsttxt ? item.firsttxt : ""}
-                          length={110}
-                        />
-                      </Text>
-                    </View>
-                    <View>
                       <View
                         style={{
                           flexDirection: "row",
-                          justifyContent: "space-between",
+                          alignItems: "center",
                         }}
                       >
-                        <Text size={"small"} type={"regular"}>
-                          {dateFormatMonthYears(item.date)}
-                        </Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
+                        <LikeEmpty width={10} height={10} />
+                        <Text
+                          style={{ marginLeft: 5 }}
+                          size={"small"}
+                          type={"regular"}
                         >
-                          <LikeEmpty width={10} height={10} />
-                          <Text
-                            style={{ marginLeft: 5 }}
-                            size={"small"}
-                            type={"regular"}
-                          >
-                            {item.article_response_count > 0
-                              ? item.article_response_count +
-                                " " +
-                                t("likeMany")
-                              : item.article_response_count + " " + t("like")}
-                          </Text>
-                        </View>
+                          {item.article_response_count > 0
+                            ? item.article_response_count + " " + t("likeMany")
+                            : item.article_response_count + " " + t("like")}
+                        </Text>
                       </View>
                     </View>
                   </View>
-                </Pressable>
-                <View
-                  style={{
-                    margin: 10,
-                    borderBottomColor: "#f6f6f6",
-                    borderBottomWidth: 0.9,
-                  }}
-                />
-              </View>
-            )}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => Refresh()}
-              />
-            }
-            ListFooterComponent={
-              loadingList ? (
-                <View
-                  style={{
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ActivityIndicator color="#209FAE" animating={true} />
                 </View>
-              ) : null
-            }
-            onEndReachedThreshold={1}
-            onEndReached={handleOnEndReached}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            backgroundColor: "white",
-            paddingVertical: 20,
-            height: Dimensions.get("screen").height,
-          }}
-        >
-          <ActivityIndicator animating={true} color="#209FAE" />
-        </View>
-      )}
+              </Pressable>
+              <View
+                style={{
+                  margin: 10,
+                  borderBottomColor: "#f6f6f6",
+                  borderBottomWidth: 0.9,
+                }}
+              />
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          refreshing={refreshing}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => Refresh()}
+            />
+          }
+          onEndReachedThreshold={1}
+          onEndReached={handleOnEndReached}
+        />
+      </View>
     </ScrollView>
   );
 }

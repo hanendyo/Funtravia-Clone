@@ -19,7 +19,6 @@ export default function AddCommentLike({
   setting,
 }) {
   let [dataList, setDataList] = useState(data);
-  console.log("data :", data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
   const [
@@ -59,8 +58,6 @@ export default function AddCommentLike({
   });
 
   const comment = async (id, text) => {
-    console.log(id, text);
-
     Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
       try {
@@ -95,11 +92,11 @@ export default function AddCommentLike({
     }
   };
 
-  console.log("token:", token);
   const _liked = async (id) => {
-    console.log("token like:", token);
-    console.log("id like:", id);
     if (token || token !== "") {
+      var tempData = { ...dataList };
+      tempData.liked = true;
+      setDataList(tempData);
       try {
         let response = await mutationliked({
           variables: {
@@ -120,12 +117,14 @@ export default function AddCommentLike({
             var tempData = { ...dataList };
             tempData.liked = true;
             setDataList(tempData);
-            fetchData();
           } else {
             throw new Error(response.data.like_journal.message);
           }
         }
       } catch (error) {
+        var tempData = { ...dataList };
+        tempData.liked = false;
+        setDataList(tempData);
         Alert.alert("" + error);
       }
     } else {
@@ -134,9 +133,10 @@ export default function AddCommentLike({
   };
 
   const _unliked = async (id) => {
-    console.log("token unlike:", token);
-    console.log("id unlike:", id);
     if (token || token !== "") {
+      var tempData = { ...dataList };
+      tempData.liked = false;
+      setDataList(tempData);
       try {
         let response = await mutationUnliked({
           variables: {
@@ -157,12 +157,14 @@ export default function AddCommentLike({
             var tempData = { ...dataList };
             tempData.liked = false;
             setDataList(tempData);
-            fetchData();
           } else {
             throw new Error(response.data.unlike_journal.message);
           }
         }
       } catch (error) {
+        var tempData = { ...dataList };
+        tempData.liked = true;
+        setDataList(tempData);
         Alert.alert("" + error);
       }
     } else {
@@ -203,8 +205,8 @@ export default function AddCommentLike({
         // borderWidth: 1,
       }}
     >
-      <Loading show={loadingLike} />
-      <Loading show={loadingUnLike} />
+      {/* <Loading show={loadingLike} />
+      <Loading show={loadingUnLike} /> */}
       <View
         style={{
           backgroundColor: "#f6f6f6",
@@ -274,7 +276,7 @@ export default function AddCommentLike({
           <Sharegreen width={20} height={20} />
         </View>
       </TouchableOpacity>
-      {data?.liked === false ? (
+      {dataList?.liked === false ? (
         <TouchableOpacity onPress={() => _liked(dataList.id)}>
           <View
             style={{

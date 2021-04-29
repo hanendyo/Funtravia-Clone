@@ -281,7 +281,7 @@ export default function Generals({ data, props, addTo }) {
                           alignItems: "center",
                         }}
                       >
-                        <FunIcon icon={item?.icon} height={25} width={25} />
+                        <FunIcon icon={item?.icon} height={40} width={40} />
                       </View>
                       <Text size="small" type="light" style={{ marginTop: 5 }}>
                         {item?.name}
@@ -356,7 +356,7 @@ export default function Generals({ data, props, addTo }) {
                         alignItems: "center",
                       }}
                     >
-                      <FunIcon icon={item?.icon} height={25} width={25} />
+                      <FunIcon icon={item?.icon} height={40} width={40} />
                     </View>
                     <Text size="small" type="light" style={{ marginTop: 5 }}>
                       {item?.name}
@@ -491,8 +491,9 @@ export default function Generals({ data, props, addTo }) {
                         key={index + "1"}
                         source={{ uri: item.image }}
                         style={{
-                          // width: Dimensions.get("screen").width * 0.15,
-                          width: Dimensions.get("screen").width * 0.22,
+                          // // width: Dimensions.get("screen").width * 0.15,
+                          // width: Dimensions.get("screen").width * 0.22,
+                          width: (Dimensions.get("screen").width - 40) / 4,
                           height: "100%",
                           marginLeft: 2,
                         }}
@@ -513,7 +514,8 @@ export default function Generals({ data, props, addTo }) {
                           source={{ uri: item.image }}
                           style={{
                             opacity: 0.9,
-                            width: Dimensions.get("screen").width * 0.22,
+                            // width: Dimensions.get("screen").width * 0.22,
+                            width: (Dimensions.get("screen").width - 40) / 4,
                             height: "100%",
                             opacity: 0.32,
                             marginLeft: 2,
@@ -541,8 +543,8 @@ export default function Generals({ data, props, addTo }) {
                         key={index + "3"}
                         source={{ uri: item.image }}
                         style={{
-                          // width: Dimensions.get("screen").width * 0.15,
-                          width: Dimensions.get("screen").width * 0.22,
+                          // width: Dimensions.get("screen").width * 0.22,
+                          width: (Dimensions.get("screen").width - 40) / 4,
                           height: "100%",
                           marginLeft: 2,
                         }}

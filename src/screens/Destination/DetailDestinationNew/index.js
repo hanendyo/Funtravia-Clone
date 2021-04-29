@@ -49,29 +49,51 @@ import ActivityModal from "./ActivityModal";
 import FacilityModal from "./FacilityModal";
 import ServiceModal from "./ServiceModal";
 import DeviceInfo from "react-native-device-info";
-let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
-let { width, height } = Dimensions.get("screen");
-let TabBarHeight = 48;
-let Notch = DeviceInfo.hasNotch();
-let SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
-});
+// let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
+// let { width, height } = Dimensions.get("screen");
+// let TabBarHeight = 48;
+// let Notch = DeviceInfo.hasNotch();
+// let SafeStatusBar = Platform.select({
+//   ios: Notch ? 48 : 20,
+//   android: StatusBar.currentHeight,
+// });
 
-let HeaderHeight = Platform.select({
-  ios: Notch ? 457 - 48 : 457 - 20,
-  android: 440 - StatusBar.currentHeight,
-});
+// let HeaderHeight = Platform.select({
+//   ios: Notch ? 457 - 48 : 457 - 20,
+//   android: 440 - StatusBar.currentHeight,
+// });
 
 // let HeaderHeight = 425 - SafeStatusBar;
-let tab1ItemSize = (width - 30) / 2;
-let tab2ItemSize = (width - 40) / 3;
+// let tab1ItemSize = (width - 30) / 2;
+// let tab2ItemSize = (width - 40) / 3;
 let PullToRefreshDist = 150;
 
 const Index = (props) => {
   /**
    * stats
    */
+
+  let [unesco, setUnesco] = useState(0);
+  let [tambahan, setTambahan] = useState(0);
+  let [tambahan1, setTambahan1] = useState(0);
+  let [tambahan2, setTambahan2] = useState(0);
+
+  let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
+  let { width, height } = Dimensions.get("screen");
+  let TabBarHeight = 48;
+  let Notch = DeviceInfo.hasNotch();
+  let SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: StatusBar.currentHeight,
+  });
+
+  let HeaderHeight = Platform.select({
+    ios: Notch
+      ? 457 + tambahan + tambahan1 + tambahan2 - unesco - 48
+      : 457 + tambahan + tambahan1 + tambahan2 - unesco - 20,
+    android:
+      440 + tambahan + tambahan1 + tambahan2 - unesco - StatusBar.currentHeight,
+  });
 
   let [newHeight, setNewHeight] = useState(0);
   const [tabIndex, setIndex] = useState(0);
@@ -278,7 +300,6 @@ const Index = (props) => {
   };
 
   const handlePanReleaseOrEnd = (evt, gestureState) => {
-    // console.log('handlePanReleaseOrEnd', scrollY._value);
     syncScrollOffset();
     headerScrollY.setValue(scrollY._value);
     if (Platform.OS === "ios") {
@@ -328,14 +349,12 @@ const Index = (props) => {
   const onMomentumScrollEnd = () => {
     isListGliding.current = false;
     syncScrollOffset();
-    // console.log('onMomentumScrollEnd');
   };
 
   const onScrollEndDrag = (e) => {
     syncScrollOffset();
 
     const offsetY = e.nativeEvent.contentOffset.y;
-    // console.log('onScrollEndDrag', offsetY);
     // iOS only
     if (Platform.OS === "ios") {
       if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
@@ -347,14 +366,12 @@ const Index = (props) => {
   };
 
   const refresh = async () => {
-    console.log("-- start refresh");
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
@@ -582,9 +599,7 @@ const Index = (props) => {
     outputRange: [0, -55],
     extrapolate: "clamp",
   });
-
-  console.log("latitude", data?.destinationById?.latitude);
-
+  
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -612,13 +627,16 @@ const Index = (props) => {
           style={{
             transform: [{ translateY: imageTranslate }],
             opacity: imageOpacity,
+            // height:"100%",
+            flex: 1,
           }}
         >
           {/* Image */}
           <Animated.Image
             source={{ uri: data?.destinationById?.images[0].image }}
             style={{
-              height: 180,
+              flex: 1,
+              // height: 180,
               width: "100%",
               opacity: imageOpacity,
               // transform: [{ translateY: imageTranslate }],
@@ -631,7 +649,7 @@ const Index = (props) => {
               paddingTop: 10,
               paddingHorizontal: 15,
               width: Dimensions.get("screen").width,
-              minHeight: 70,
+              // height: 70,
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#FFF",
@@ -770,8 +788,8 @@ const Index = (props) => {
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 15,
-                height: 40,
-                paddingVertical: 5,
+                // height: 40,
+                padding: 5,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
                 bottom: 0,
@@ -785,18 +803,11 @@ const Index = (props) => {
                   borderRadius: 5,
                   marginRight: 5,
                   backgroundColor: "#DAF0F2",
+                  padding: 5,
                 }}
               >
-                <UnescoIcon
-                  height={20}
-                  width={20}
-                  style={{ marginRight: 5, marginLeft: 10 }}
-                />
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ marginVertical: 10, marginRight: 10 }}
-                >
+                <UnescoIcon height={20} width={20} style={{ marginRight: 5 }} />
+                <Text size="description" type="regular">
                   UNESCO
                 </Text>
               </View>
@@ -806,7 +817,7 @@ const Index = (props) => {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: 2,
+                    padding: 5,
                     borderRadius: 5,
                     backgroundColor: "#DAF0F2",
                   }}
@@ -814,13 +825,9 @@ const Index = (props) => {
                   <MovieIcon
                     height={20}
                     width={20}
-                    style={{ marginRight: 5, marginLeft: 10 }}
+                    style={{ marginRight: 5 }}
                   />
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ marginVertical: 10, marginRight: 10 }}
-                  >
+                  <Text size="description" type="regular">
                     Movie Location
                   </Text>
                 </View>
@@ -828,10 +835,11 @@ const Index = (props) => {
             </View>
           ) : (
             <View
+              onLayout={() => setUnesco(40)}
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 15,
-                height: 40,
+                // height: 0,
                 paddingVertical: 5,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
@@ -847,13 +855,14 @@ const Index = (props) => {
               borderTopWidth: 1,
               borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
-              minHeight: 40,
+              // minHeight: 40,
               paddingHorizontal: 15,
               backgroundColor: "#FFF",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
               bottom: 0,
+              paddingVertical: 10,
             }}
           >
             <View
@@ -868,6 +877,11 @@ const Index = (props) => {
                 style={{ marginRight: 10, alignSelf: "center" }}
               />
               <Text
+                onTextLayout={(x) => {
+                  let line = x.nativeEvent.lines.length;
+                  let lines = line - 1;
+                  setTambahan(lines * 20);
+                }}
                 size="description"
                 type="regular"
                 style={{ lineHeight: 18 }}
@@ -916,13 +930,14 @@ const Index = (props) => {
               borderTopWidth: 1,
               borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
-              minHeight: 40,
+              // minHeight: 40,
               paddingHorizontal: 15,
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "#FFF",
               bottom: 0,
+              paddingVertical: 10,
             }}
           >
             <View
@@ -941,6 +956,11 @@ const Index = (props) => {
                 type="regular"
                 style={{ lineHeight: 18 }}
                 numberOfLines={2}
+                onTextLayout={(x) => {
+                  let line = x.nativeEvent.lines.length;
+                  let lines = line - 1;
+                  setTambahan1(lines * 20);
+                }}
               >
                 {data?.destinationById?.openat
                   ? data?.destinationById?.openat
@@ -953,7 +973,6 @@ const Index = (props) => {
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
-                  minHeight: 40,
                 }}
               >
                 <Text
@@ -974,13 +993,14 @@ const Index = (props) => {
               borderTopWidth: 1,
               borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
-              minHeight: 40,
+              // minHeight: 40,
               paddingHorizontal: 15,
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "#FFF",
               bottom: 0,
+              paddingVertical: 10,
             }}
           >
             <View
@@ -999,6 +1019,11 @@ const Index = (props) => {
                 type="regular"
                 numberOfLines={2}
                 style={{ lineHeight: 18 }}
+                onTextLayout={(x) => {
+                  let line = x.nativeEvent.lines.length;
+                  let lines = line - 1;
+                  setTambahan2(lines * 20);
+                }}
               >
                 {data?.destinationById?.website
                   ? data?.destinationById?.website
@@ -1009,7 +1034,7 @@ const Index = (props) => {
               <Ripple
                 onPress={() => setModalSosial(true)}
                 style={{
-                  minHeight: 40,
+                  // minHeight: 40,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -1058,7 +1083,6 @@ const Index = (props) => {
   };
 
   const renderReview = ({ item, props }) => {
-    console.log("item", item);
     return <Reviews id={item?.id} props={props} />;
   };
 
@@ -1488,20 +1512,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    height: HeaderHeight,
-    width: "100%",
-    position: "absolute",
-    paddingTop: SafeStatusBar,
-    backgroundColor: "#FFA088",
-  },
+  // header: {
+  //   height: HeaderHeight,
+  //   width: "100%",
+  //   position: "absolute",
+  //   paddingTop: SafeStatusBar,
+  //   backgroundColor: "#FFA088",
+  // },
   label: { fontSize: 14, color: "#222" },
-  tab: {
-    elevation: 0,
-    shadowOpacity: 0,
-    backgroundColor: "#FFF",
-    height: TabBarHeight,
-  },
+  // tab: {
+  //   elevation: 0,
+  //   shadowOpacity: 0,
+  //   backgroundColor: "#FFF",
+  //   height: TabBarHeight,
+  // },
   indicator: { backgroundColor: "#209FAE" },
 });
 

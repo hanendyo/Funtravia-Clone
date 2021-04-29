@@ -24,6 +24,7 @@ import {
 import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 export default function DetailJournal(props) {
   let [dataPopuler] = useState(props.route.params.dataPopuler);
@@ -33,7 +34,11 @@ export default function DetailJournal(props) {
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
   const { t } = useTranslation();
-  let title = <Truncate text={dataPopuler?.title} length={40} />;
+  let title = (
+    <Text size="label" type="regular" style={{ color: "#FFF" }}>
+      {dataPopuler?.title}
+    </Text>
+  );
 
   const HeaderComponent = {
     headerShown: true,
@@ -84,10 +89,7 @@ export default function DetailJournal(props) {
     },
   });
 
-  console.log(data);
-
   const afterComment = async () => {
-    console.log(refetch);
     await refetch();
     await scroll_to();
   };
@@ -161,7 +163,6 @@ export default function DetailJournal(props) {
       });
     }
   };
-  console.log(dataComment?.comment_journal_list.page_info.hasNextPage);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -172,8 +173,6 @@ export default function DetailJournal(props) {
     await fetchData();
     // await fetchDataComment();
   };
-
-  console.log("token detail journal", token);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -192,8 +191,6 @@ export default function DetailJournal(props) {
       slider.current.scrollTo({ y: y });
     });
   };
-
-  console.log("scroll_to", scroll_to);
 
   const duration = (datetime) => {
     var date1 = new Date(datetime).getTime();
@@ -228,19 +225,146 @@ export default function DetailJournal(props) {
   {
     /* ==================================== Render All ============================================== */
   }
-  if (loading) {
+  // if (loading) {
+  //   return (
+  //     <View style={{ flex: 1, backgroundColor: "white" }}>
+  //       <View
+  //         style={{
+  //           backgroundColor: "white",
+  //           alignItems: "center",
+  //           paddingVertical: 20,
+  //         }}
+  //       >
+  //         <ActivityIndicator animating={true} color="#209FAE" />
+  //       </View>
+  //     </View>
+  //   );
+  // }
+
+  let [loadings, setLoadings] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadings(false);
+    }, 2000);
+  }, []);
+  if (loadings) {
     return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
+      <SkeletonPlaceholder>
         <View
           style={{
-            backgroundColor: "white",
-            alignItems: "center",
-            paddingVertical: 20,
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
           }}
         >
-          <ActivityIndicator animating={true} color="#209FAE" />
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 20,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20 }}></View>
+              <View
+                style={{
+                  marginLeft: 5,
+                  height: 40,
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 10,
+                    borderRadius: 4,
+                    width: Dimensions.get("screen").width * 0.4,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    marginTop: 5,
+                    height: 10,
+                    borderRadius: 4,
+                    width: Dimensions.get("screen").width * 0.3,
+                  }}
+                ></View>
+              </View>
+            </View>
+            <View
+              style={{
+                height: 20,
+                width: Dimensions.get("screen").width * 0.2,
+                borderRadius: 10,
+              }}
+            ></View>
+          </View>
+          <View style={{ marginTop: 60, height: 60 }}>
+            <View
+              style={{
+                height: 20,
+                width: Dimensions.get("screen").width * 0.8,
+                borderRadius: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 20,
+                width: Dimensions.get("screen").width * 0.7,
+                borderRadius: 10,
+                marginTop: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 20,
+                width: Dimensions.get("screen").width * 0.6,
+                borderRadius: 10,
+                marginTop: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 10,
+              }}
+            >
+              <View
+                style={{
+                  height: 10,
+                  width: Dimensions.get("screen").width * 0.1,
+                  borderRadius: 5,
+                }}
+              ></View>
+              <View
+                style={{
+                  height: 10,
+                  width: Dimensions.get("screen").width * 0.1,
+                  borderRadius: 5,
+                }}
+              ></View>
+            </View>
+          </View>
+          <View style={{ marginTop: 60, height: 200 }}></View>
+          <View
+            style={{
+              marginTop: 120,
+              height: 20,
+              borderRadius: 10,
+              // width: Dimensions.get("screen").width,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 105,
+              height: 20,
+              borderRadius: 10,
+              // width: Dimensions.get("screen").width,
+            }}
+          ></View>
         </View>
-      </View>
+      </SkeletonPlaceholder>
     );
   }
   return (
