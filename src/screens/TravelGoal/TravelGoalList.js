@@ -109,7 +109,7 @@ export default function TravelGoalList(props) {
   } = useQuery(TravelLists, {
     fetchPolicy: "network-only",
     variables: {
-      limit: 7,
+      limit: 5,
       offset: 0,
       category_id: filtercategory,
       keyword: texts,
@@ -204,7 +204,7 @@ export default function TravelGoalList(props) {
     if (dataListx.travelgoal_list.page_info.hasNextPage) {
       return fetchMore({
         variables: {
-          limit: 1,
+          limit: 5,
           offset: dataListx.travelgoal_list.page_info.offset,
         },
         updateQuery: onUpdate,
