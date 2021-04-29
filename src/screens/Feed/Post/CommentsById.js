@@ -24,7 +24,7 @@ import CommentList from "../../../graphQL/Query/Feed/CommentList";
 import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
 import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import { Text, Button, Loading, shareAction } from "../../../component";
-
+import { Toast, Root } from "native-base";
 import {
     LikeRed,
     ShareBlack,
@@ -54,6 +54,7 @@ export default function Comments(props) {
     const isFocused = useIsFocused();
     let [play, setPlay] = useState(props.route.params?.post_id);
     let [muted, setMuted] = useState(true);
+    let { width, height } = Dimensions.get("screen");
 
     const HeaderComponent = {
         headerShown: true,
@@ -108,7 +109,7 @@ export default function Comments(props) {
     // }
 
     // console.log(postid);
-    console.log(dataPost);
+    // console.log(dataPost);
 
     const loadAsync = async () => {
         let tkn = await AsyncStorage.getItem("access_token");
@@ -195,17 +196,31 @@ export default function Comments(props) {
                     }
                 }
             } catch (error) {
-                Alert.alert("" + error);
+                Toast.show({
+                    text: "Failed to delete this post",
+                    position: "bottom",
+                    buttonText: "Ok",
+                    duration: 3000,
+                });
+                // Alert.alert("" + error);
             }
         } else {
-            Alert.alert("Please Login");
+            Toast.show({
+                text: "Please Login",
+                position: "bottom",
+                buttonText: "Ok",
+                duration: 3000,
+            });
         }
     };
 
     const _liked = async (id) => {
         if (token) {
-            dataPost.liked = true;
-            dataPost.response_count = dataPost.response_count + 1;
+            let tmpData = { ...dataPost };
+
+            tmpData.liked = true;
+            tmpData.response_count = tmpData.response_count + 1;
+            SetDataPost(tmpData);
             try {
                 let response = await MutationLike({
                     variables: {
@@ -218,25 +233,32 @@ export default function Comments(props) {
                         response.data.like_post.code === 200 ||
                         response.data.like_post.code === "200"
                     ) {
-                        dataPost.liked = true;
                     } else {
-                        dataPost.liked = false;
+                        throw new Error(response.data.delete_post.message);
                     }
                 }
             } catch (error) {
-                dataPost.liked = false;
-                dataPost.response_count = dataPost.response_count - 1;
+                tmpData.liked = false;
+                tmpData.response_count = tmpData.response_count - 1;
+                SetDataPost(tmpData);
                 console.log(error);
             }
         } else {
-            Alert.alert("Please Login");
+            Toast.show({
+                text: "Please Login",
+                position: "bottom",
+                buttonText: "Ok",
+                duration: 3000,
+            });
         }
     };
 
     const _unliked = async (id) => {
         if (token || token !== "") {
-            dataPost.liked = false;
-            dataPost.response_count = dataPost.response_count - 1;
+            let tmpData = { ...dataPost };
+            tmpData.liked = false;
+            tmpData.response_count = tmpData.response_count - 1;
+            SetDataPost(tmpData);
             try {
                 let response = await MutationunLike({
                     variables: {
@@ -249,20 +271,28 @@ export default function Comments(props) {
                         response.data.unlike_post.code === 200 ||
                         response.data.unlike_post.code === "200"
                     ) {
-                        dataPost.liked = false;
                     } else {
-                        dataPost.liked = true;
                         throw new Error(response.data.unlike_post.message);
                     }
                 }
             } catch (error) {
-                dataPost.liked = true;
-                dataPost.response_count = dataPost.response_count + 1;
-
-                Alert.alert("" + error);
+                tmpData.liked = true;
+                tmpData.response_count = tmpData.response_count + 1;
+                SetDataPost(tmpData);
+                Toast.show({
+                    text: "Failed to unlike this post",
+                    position: "bottom",
+                    buttonText: "Ok",
+                    duration: 3000,
+                });
             }
         } else {
-            Alert.alert("Please Login");
+            Toast.show({
+                text: "Please Login",
+                position: "bottom",
+                buttonText: "Ok",
+                duration: 3000,
+            });
         }
     };
 
@@ -289,61 +319,85 @@ export default function Comments(props) {
     }, []);
 
     const comment = async (id, text) => {
-        if ((token || token !== "") && text !== "") {
-            let gen_uuid = create_UUID();
-            let tempData = [...data_comment];
-            let pushcomment = {
-                created_at: "",
-                id: gen_uuid,
-                text: text,
-                updated_at: "",
-                user: {
-                    id: setting?.user.id,
-                    first_name: setting?.user.first_name,
-                    last_name: setting?.user.last_name,
-                    picture: setting?.user.picture,
-                    username: setting?.user.username,
-                },
-                is_send: false,
-            };
-            tempData.push(pushcomment);
-            await SetDatacommnet(tempData);
-            await scroll_to();
-            let idx = tempData.length - 1;
-            Keyboard.dismiss();
-            setStatusText("");
-            try {
-                let response = await MutationComment({
-                    variables: {
-                        post_id: id,
-                        text: text,
+        if (text !== "") {
+            if (token || token !== "") {
+                let gen_uuid = create_UUID();
+                let tempData = [...data_comment];
+                let pushcomment = {
+                    created_at: "",
+                    id: gen_uuid,
+                    text: text,
+                    updated_at: "",
+                    user: {
+                        id: setting?.user.id,
+                        first_name: setting?.user.first_name,
+                        last_name: setting?.user.last_name,
+                        picture: setting?.user.picture,
+                        username: setting?.user.username,
                     },
-                });
-                if (errorcmnt) {
-                    throw new Error("Error Input");
-                }
-                if (response.data) {
-                    if (
-                        response.data.comment_post.code === 200 ||
-                        response.data.comment_post.code === "200"
-                    ) {
-                        dataPost.comment_count = dataPost.comment_count + 1;
-                        tempData[idx] = response.data.comment_post.data;
-                        tempData[idx].is_send = true;
-                        SetDatacommnet(tempData);
-                        Refresh();
-                    } else {
-                        throw new Error(response.data.comment_post.message);
+                    is_send: false,
+                };
+                tempData.push(pushcomment);
+                await SetDatacommnet(tempData);
+                await scroll_to();
+                let idx = tempData.length - 1;
+                Keyboard.dismiss();
+                setStatusText("");
+                try {
+                    let response = await MutationComment({
+                        variables: {
+                            post_id: id,
+                            text: text,
+                        },
+                    });
+                    if (errorcmnt) {
+                        throw new Error("Error Input");
                     }
+                    if (response.data) {
+                        if (
+                            response.data.comment_post.code === 200 ||
+                            response.data.comment_post.code === "200"
+                        ) {
+                            let tmpDataPost = { ...dataPost };
+                            tmpDataPost.liked = false;
+                            tmpDataPost.comment_count =
+                                tmpDataPost.comment_count - 1;
+                            SetDataPost(tmpDataPost);
+                            tempData[idx] = response.data.comment_post.data;
+                            tempData[idx].is_send = true;
+                            SetDatacommnet(tempData);
+                            Refresh();
+                        } else {
+                            throw new Error(response.data.comment_post.message);
+                        }
+                    }
+                } catch (error) {
+                    tempData.splice(idx, 1);
+                    SetDatacommnet(tempData);
+                    Toast.show({
+                        text: "Failed to comment this post",
+                        position: "bottom",
+                        buttonText: "Ok",
+                        duration: 3000,
+                    });
+                    // Alert.alert("" + error);
                 }
-            } catch (error) {
-                tempData.splice(idx, 1);
-                SetDatacommnet(tempData);
-
-                Alert.alert("" + error);
+            } else {
+                Toast.show({
+                    text: "Please Login",
+                    position: "bottom",
+                    buttonText: "Ok",
+                    duration: 3000,
+                });
             }
         } else {
-            Alert.alert("Please Insert a Text");
+            Toast.show({
+                text: "Please Insert a Text",
+                position: "bottom",
+                buttonText: "Ok",
+                duration: 3000,
+            });
+            // Alert.alert("Please Insert a Text");
         }
     };
 
@@ -395,20 +449,16 @@ export default function Comments(props) {
         mins = mins % 60;
         hrs = hrs % 24;
         if (yrs > 0) {
-            return yrs + " tahun yang lalu";
-        }
-        if (days > 0) {
-            return days + " hari yang lalu";
-        }
-        if (hrs > 0) {
-            return hrs + " jam yang lalu";
-        }
-        if (mins > 0) {
-            return mins + " menit yang lalu";
+            return yrs + " " + t("yearsAgo");
+        } else if (days > 0) {
+            return days + " " + t("daysAgo");
+        } else if (hrs > 0) {
+            return hrs + " " + t("hoursAgo");
+        } else if (mins > 0) {
+            return mins + " " + t("minutesAgo");
         } else {
-            return "baru saja";
+            return t("justNow");
         }
-        return days + " Days, " + hrs + " Hours, " + mins + " Minutes";
     };
 
     const OptionOpen = (data) => {
@@ -588,7 +638,11 @@ export default function Comments(props) {
 
     if (loadingfeed) {
         return (
-            <SkeletonPlaceholder speed={1000}>
+            <SkeletonPlaceholder
+                speed={1000}
+                // backgroundColor="#FFFFFF"
+                // highlightColor="#D1D1D1"
+            >
                 <SkeletonPlaceholder.Item
                     flexDirection="row"
                     justifyContent="space-between"
@@ -1182,7 +1236,9 @@ export default function Comments(props) {
                                             <Text
                                                 type="black"
                                                 size="label"
-                                                style={{ marginHorizontal: 7 }}
+                                                style={{
+                                                    marginHorizontal: 7,
+                                                }}
                                             >
                                                 {dataPost?.comment_count}
                                             </Text>
@@ -1317,6 +1373,26 @@ export default function Comments(props) {
                         keyExtractor={(item) => item.id}
                         extraData={selected}
                         contentContainerStyle={{}}
+                        ListFooterComponent={
+                            loading ? (
+                                <View
+                                    style={{
+                                        // position: 'absolute',
+                                        // bottom:0,
+                                        width: width,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        marginBottom: 30,
+                                    }}
+                                >
+                                    <ActivityIndicator
+                                        animating={loading}
+                                        size="large"
+                                        color="#209fae"
+                                    />
+                                </View>
+                            ) : null
+                        }
                     />
                 </View>
             </ScrollView>
@@ -1395,6 +1471,7 @@ export default function Comments(props) {
                     </View>
                 </View>
             </View>
+            <Root />
         </SafeAreaView>
     );
 }
