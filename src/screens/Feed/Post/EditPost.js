@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from "react";
 import {
-  View,
-  ImageBackground,
-  Dimensions,
-  Image,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
-  SafeAreaView,
-  TouchableOpacity,
-  Pressable,
-  Alert,
+	View,
+	ImageBackground,
+	Dimensions,
+	Image,
+	TextInput,
+	KeyboardAvoidingView,
+	Platform,
+	TouchableWithoutFeedback,
+	Keyboard,
+	SafeAreaView,
+	TouchableOpacity,
+	Pressable,
+	Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  CustomImage,
-  Text,
-  Button,
-  Loading,
-  Truncate,
-  StatusBar,
+	CustomImage,
+	Text,
+	Button,
+	Loading,
+	Truncate,
+	StatusBar,
+	FunImage,
 } from "../../../component";
 import { default_image, back_arrow_white } from "../../../assets/png";
 import { CheckWhite, OptionsVertWhite } from "../../../assets/svg";
@@ -39,272 +40,272 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
 
 const PostEdit = gql`
-  mutation($post_id: ID!, $caption: String) {
-    edit_post(post_id: $post_id, caption: $caption) {
-      id
-      response_time
-      message
-      code
-    }
-  }
+	mutation($post_id: ID!, $caption: String) {
+		edit_post(post_id: $post_id, caption: $caption) {
+			id
+			response_time
+			message
+			code
+		}
+	}
 `;
 
 export default function EditPost(props) {
-  const { t, i18n } = useTranslation();
-  const HeaderComponent = {
-    title: "New Post",
-    headerTintColor: "white",
-    headerTitle: "",
-    headerTransparent: true,
-    headerShown: true,
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
-    headerRight: () => (
-      <TouchableOpacity
-        onPress={() => {
-          SubmitData(data);
-        }}
-        style={{
-          paddingRight: 10,
-          flexDirection: "row",
-          alignContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          allowFontScaling={false}
-          style={{
-            color: "#FFF",
-            // fontWeight: 'bold',
-            fontFamily: "Lato-Bold",
-            fontSize: 14,
-            marginHorizontal: 10,
-            marginVertical: 10,
-          }}
-        >
-          SAVE
-        </Text>
-        <CheckWhite width={20} height={20} />
-      </TouchableOpacity>
-    ),
-  };
-  let [modellocation, setModellocation] = useState(false);
-  let [Location, setLocation] = useState({
-    address: "Add Location",
-    latitude: "",
-    longitude: "",
-  });
-  let [loadingok, setLoading] = useState(false);
-  const chosenPicture = props.route.params.file;
-  const [token, setToken] = useState(null);
-  const [dataPost, setDatapost] = useState(props.route.params.datapost);
-  // console.log(dataPost);
-  let [statusText, setStatusText] = useState(dataPost?.caption);
+	const { t, i18n } = useTranslation();
+	const HeaderComponent = {
+		title: "New Post",
+		headerTintColor: "white",
+		headerTitle: "",
+		headerTransparent: true,
+		headerShown: true,
+		headerMode: "screen",
+		headerStyle: {
+			backgroundColor: "#209FAE",
+			elevation: 0,
+			borderBottomWidth: 0,
+		},
+		headerTitleStyle: {
+			fontFamily: "Lato-Bold",
+			fontSize: 14,
+			color: "white",
+		},
+		headerRight: () => (
+			<TouchableOpacity
+				onPress={() => {
+					SubmitData(data);
+				}}
+				style={{
+					paddingRight: 10,
+					flexDirection: "row",
+					alignContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Text
+					allowFontScaling={false}
+					style={{
+						color: "#FFF",
+						// fontWeight: 'bold',
+						fontFamily: "Lato-Bold",
+						fontSize: 14,
+						marginHorizontal: 10,
+						marginVertical: 10,
+					}}
+				>
+					SAVE
+				</Text>
+				<CheckWhite width={20} height={20} />
+			</TouchableOpacity>
+		),
+	};
+	let [modellocation, setModellocation] = useState(false);
+	let [Location, setLocation] = useState({
+		address: "Add Location",
+		latitude: "",
+		longitude: "",
+	});
+	let [loadingok, setLoading] = useState(false);
+	const chosenPicture = props.route.params.file;
+	const [token, setToken] = useState(null);
+	const [dataPost, setDatapost] = useState(props.route.params.datapost);
+	// console.log(dataPost);
+	let [statusText, setStatusText] = useState(dataPost?.caption);
 
-  console.log("props", props);
+	console.log("props", props);
 
-  const [datanearby, setDataNearby] = useState([]);
-  const [MutationEdit, { loading, data, error }] = useMutation(PostEdit, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-  const [
-    LoadUserProfile,
-    {
-      data: dataprofile,
-      loading: loadingprofile,
-      error: errorprofile,
-      refetch,
-    },
-  ] = useLazyQuery(Account, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
-  };
-  const _setStatusText = (data) => {
-    setStatusText(data);
-    props.navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => {
-            SubmitData(data);
-          }}
-          style={{
-            paddingRight: 10,
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            allowFontScaling={false}
-            style={{
-              color: "#FFF",
-              // fontWeight: 'bold',
-              fontFamily: "Lato-Bold",
-              fontSize: 14,
-              marginHorizontal: 10,
-              marginVertical: 10,
-            }}
-          >
-            SAVE
-          </Text>
-          <CheckWhite width={20} height={20} />
-        </TouchableOpacity>
-      ),
-    });
-    wait(1000).then(() => {
-      props.navigation.setParams({
-        SubmitData: SubmitData,
-        text: data,
-      });
-    });
-    // props.navigation.getParam('setText');
-  };
-  const _setLocation = (data) => {
-    props.navigation.setParams({
-      SubmitData: SubmitData,
-      text: statusText,
-      location: data,
-    });
-    setLocation(data);
+	const [datanearby, setDataNearby] = useState([]);
+	const [MutationEdit, { loading, data, error }] = useMutation(PostEdit, {
+		context: {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	});
+	const [
+		LoadUserProfile,
+		{
+			data: dataprofile,
+			loading: loadingprofile,
+			error: errorprofile,
+			refetch,
+		},
+	] = useLazyQuery(Account, {
+		context: {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	});
+	const wait = (timeout) => {
+		return new Promise((resolve) => {
+			setTimeout(resolve, timeout);
+		});
+	};
+	const _setStatusText = (data) => {
+		setStatusText(data);
+		props.navigation.setOptions({
+			headerRight: () => (
+				<TouchableOpacity
+					onPress={() => {
+						SubmitData(data);
+					}}
+					style={{
+						paddingRight: 10,
+						flexDirection: "row",
+						alignContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Text
+						allowFontScaling={false}
+						style={{
+							color: "#FFF",
+							// fontWeight: 'bold',
+							fontFamily: "Lato-Bold",
+							fontSize: 14,
+							marginHorizontal: 10,
+							marginVertical: 10,
+						}}
+					>
+						SAVE
+					</Text>
+					<CheckWhite width={20} height={20} />
+				</TouchableOpacity>
+			),
+		});
+		wait(1000).then(() => {
+			props.navigation.setParams({
+				SubmitData: SubmitData,
+				text: data,
+			});
+		});
+		// props.navigation.getParam('setText');
+	};
+	const _setLocation = (data) => {
+		props.navigation.setParams({
+			SubmitData: SubmitData,
+			text: statusText,
+			location: data,
+		});
+		setLocation(data);
 
-    wait(1000).then(() => {
-      props.navigation.setParams({
-        SubmitData: SubmitData,
-        text: statusText,
-        location: data,
-      });
-    });
-  };
+		wait(1000).then(() => {
+			props.navigation.setParams({
+				SubmitData: SubmitData,
+				text: statusText,
+				location: data,
+			});
+		});
+	};
 
-  const duration = (datetime) => {
-    var date1 = new Date(datetime).getTime();
-    var date2 = new Date().getTime();
-    var msec = date2 - date1;
-    var mins = Math.floor(msec / 60000);
-    var hrs = Math.floor(mins / 60);
-    var days = Math.floor(hrs / 24);
-    var yrs = Math.floor(days / 365);
-    mins = mins % 60;
-    hrs = hrs % 24;
-    if (yrs > 0) {
-      return yrs + " " + t("yearsAgo");
-    }
-    if (days > 0) {
-      return days + " " + t("daysAgo");
-    }
-    if (hrs > 0) {
-      return hrs + " " + t("hoursAgo");
-    }
-    if (mins > 0) {
-      return mins + " " + t("minutesAgo");
-    } else {
-      return t("justNow");
-    }
-  };
-  // console.log(chosenPicture.base64);
-  const SubmitData = async (text) => {
-    // return false;
-    setLoading(true);
-    let caption = text ? text : "-";
-    // console.log(caption);
-    try {
-      let response = await MutationEdit({
-        variables: {
-          post_id: dataPost.id,
-          caption: caption,
-        },
-      });
-      if (response.data) {
-        if (response.data.edit_post.code === 200) {
-          setLoading(false);
-          // props.navigation.goBack();
-          // props.navigation.navigate("FeedScreen", { isposting: false });
+	const duration = (datetime) => {
+		var date1 = new Date(datetime).getTime();
+		var date2 = new Date().getTime();
+		var msec = date2 - date1;
+		var mins = Math.floor(msec / 60000);
+		var hrs = Math.floor(mins / 60);
+		var days = Math.floor(hrs / 24);
+		var yrs = Math.floor(days / 365);
+		mins = mins % 60;
+		hrs = hrs % 24;
+		if (yrs > 0) {
+			return yrs + " " + t("yearsAgo");
+		}
+		if (days > 0) {
+			return days + " " + t("daysAgo");
+		}
+		if (hrs > 0) {
+			return hrs + " " + t("hoursAgo");
+		}
+		if (mins > 0) {
+			return mins + " " + t("minutesAgo");
+		} else {
+			return t("justNow");
+		}
+	};
+	// console.log(chosenPicture.base64);
+	const SubmitData = async (text) => {
+		// return false;
+		setLoading(true);
+		let caption = text ? text : "-";
+		// console.log(caption);
+		try {
+			let response = await MutationEdit({
+				variables: {
+					post_id: dataPost.id,
+					caption: caption,
+				},
+			});
+			if (response.data) {
+				if (response.data.edit_post.code === 200) {
+					setLoading(false);
+					// props.navigation.goBack();
+					// props.navigation.navigate("FeedScreen", { isposting: false });
 
-          props.navigation.dispatch(
-            StackActions.replace("FeedStack", {
-              screen: "CommentsById",
-              params: {
-                post_id: dataPost.id,
-              },
-            })
-          );
-          // props.navigation.navigate("FeedStack", {
-          //   screen: "CommentsById",
-          //   params: {
-          //     post_id: dataPost.id,
-          //   },
-          // });
-        } else {
-          setLoading(false);
-          throw new Error(response.data.edit_post.message);
-        }
+					props.navigation.dispatch(
+						StackActions.replace("FeedStack", {
+							screen: "CommentsById",
+							params: {
+								post_id: dataPost.id,
+							},
+						})
+					);
+					// props.navigation.navigate("FeedStack", {
+					//   screen: "CommentsById",
+					//   params: {
+					//     post_id: dataPost.id,
+					//   },
+					// });
+				} else {
+					setLoading(false);
+					throw new Error(response.data.edit_post.message);
+				}
 
-        // Alert.alert('Succes');
-      } else {
-        throw new Error("Error Input");
-      }
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("" + error);
-    }
-  };
-  // const submit = () => {
-  // 	SubmitData();
-  // 	// props.navigation.getParam('SubmitData');
-  // };
+				// Alert.alert('Succes');
+			} else {
+				throw new Error("Error Input");
+			}
+		} catch (error) {
+			setLoading(false);
+			Alert.alert("" + error);
+		}
+	};
+	// const submit = () => {
+	// 	SubmitData();
+	// 	// props.navigation.getParam('SubmitData');
+	// };
 
-  const loadAsync = async () => {
-    let access_token = await AsyncStorage.getItem("access_token");
-    setToken(access_token);
-    LoadUserProfile();
-  };
+	const loadAsync = async () => {
+		let access_token = await AsyncStorage.getItem("access_token");
+		setToken(access_token);
+		LoadUserProfile();
+	};
 
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-    loadAsync();
-  }, []);
+	useEffect(() => {
+		props.navigation.setOptions(HeaderComponent);
+		loadAsync();
+	}, []);
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      style={{ flex: 1, backgroundColor: "#FFF" }}
-    >
-      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
+	return (
+		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : null}
+			style={{ flex: 1, backgroundColor: "#FFF" }}
+		>
+			<StatusBar backgroundColor="#209FAE" barStyle="light-content" />
 
-      <View style={{ backgroundColor: "#209FAE", height: 55 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            alignContent: "center",
-            height: 55,
-          }}
-        >
-          {/* <TouchableOpacity
+			<View style={{ backgroundColor: "#209FAE", height: 55 }}>
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "flex-end",
+						alignItems: "center",
+						alignContent: "center",
+						height: 55,
+					}}
+				>
+					{/* <TouchableOpacity
             onPress={() => {
               SubmitData();
             }}
@@ -331,11 +332,11 @@ export default function EditPost(props) {
             </Text>
             <CheckWhite width={20} height={20} />
           </TouchableOpacity> */}
-        </View>
-      </View>
-      <ScrollView style={{}}>
-        <Loading show={loadingok} />
-        {/* <NavigationEvents
+				</View>
+			</View>
+			<ScrollView style={{}}>
+				<Loading show={loadingok} />
+				{/* <NavigationEvents
 					onDidFocus={() =>
 						props.navigation.setParams({
 							SubmitData: SubmitData,
@@ -344,94 +345,94 @@ export default function EditPost(props) {
 						})
 					}
 				/> */}
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View
-            style={
-              {
-                // flex: 1,
-                // justifyContent: 'flex-start',
-              }
-            }
-          >
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                marginVertical: 15,
-                // justifyContent: 'space-evenly',
-                alignContent: "center",
-              }}
-            >
-              <Image
-                isTouchable
-                onPress={null}
-                style={{
-                  height: 35,
-                  width: 35,
-                  borderRadius: 15,
-                  alignSelf: "center",
-                  marginLeft: 15,
-                  resizeMode: "cover",
-                }}
-                source={{ uri: dataPost?.user?.picture }}
-              />
-              <View
-                style={{
-                  justifyContent: "center",
-                  marginHorizontal: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Lato-Bold",
-                    fontSize: 14,
-                    // marginTop: 7,
-                  }}
-                >
-                  {dataPost && dataPost.user
-                    ? dataPost.user.first_name + " " + dataPost.user.last_name
-                    : null}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: "Lato-Regular",
-                      fontSize: 10,
-                      // marginTop: 7,
-                    }}
-                  >
-                    {duration(dataPost.created_at)}
-                  </Text>
-                  {dataPost && dataPost.location_name ? (
-                    <View
-                      style={{
-                        marginHorizontal: 5,
-                        backgroundColor: "black",
-                        height: 4,
-                        width: 4,
-                        borderRadius: 2,
-                      }}
-                    ></View>
-                  ) : null}
-                  {dataPost && dataPost.location_name ? (
-                    <Text
-                      style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 10,
-                        // marginTop: 7,
-                      }}
-                    >
-                      <Truncate text={dataPost.location_name} length={40} />
-                    </Text>
-                  ) : null}
-                </View>
-              </View>
-              {/* <TouchableOpacity
+				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+					<View
+						style={
+							{
+								// flex: 1,
+								// justifyContent: 'flex-start',
+							}
+						}
+					>
+						<View
+							style={{
+								width: "100%",
+								flexDirection: "row",
+								marginVertical: 15,
+								// justifyContent: 'space-evenly',
+								alignContent: "center",
+							}}
+						>
+							<FunImage
+								isTouchable
+								onPress={null}
+								style={{
+									height: 35,
+									width: 35,
+									borderRadius: 15,
+									alignSelf: "center",
+									marginLeft: 15,
+									resizeMode: "cover",
+								}}
+								source={{ uri: dataPost?.user?.picture }}
+							/>
+							<View
+								style={{
+									justifyContent: "center",
+									marginHorizontal: 10,
+								}}
+							>
+								<Text
+									style={{
+										fontFamily: "Lato-Bold",
+										fontSize: 14,
+										// marginTop: 7,
+									}}
+								>
+									{dataPost && dataPost.user
+										? dataPost.user.first_name + " " + dataPost.user.last_name
+										: null}
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+									}}
+								>
+									<Text
+										style={{
+											fontFamily: "Lato-Regular",
+											fontSize: 10,
+											// marginTop: 7,
+										}}
+									>
+										{duration(dataPost.created_at)}
+									</Text>
+									{dataPost && dataPost.location_name ? (
+										<View
+											style={{
+												marginHorizontal: 5,
+												backgroundColor: "black",
+												height: 4,
+												width: 4,
+												borderRadius: 2,
+											}}
+										></View>
+									) : null}
+									{dataPost && dataPost.location_name ? (
+										<Text
+											style={{
+												fontFamily: "Lato-Regular",
+												fontSize: 10,
+												// marginTop: 7,
+											}}
+										>
+											<Truncate text={dataPost.location_name} length={40} />
+										</Text>
+									) : null}
+								</View>
+							</View>
+							{/* <TouchableOpacity
                 style={{
                   position: "absolute",
                   right: 15,
@@ -440,51 +441,51 @@ export default function EditPost(props) {
               >
                 <OptionsVertBlack height={20} width={20} />
               </TouchableOpacity> */}
-            </View>
+						</View>
 
-            <AutoHeightImage
-              width={Dimensions.get("window").width}
-              source={
-                dataPost && dataPost.assets[0].filepath
-                  ? { uri: dataPost.assets[0].filepath }
-                  : default_image
-              }
-            />
-            {/* </View> */}
+						<AutoHeightImage
+							width={Dimensions.get("window").width}
+							source={
+								dataPost && dataPost.assets[0].filepath
+									? { uri: dataPost.assets[0].filepath }
+									: default_image
+							}
+						/>
+						{/* </View> */}
 
-            <View
-              style={{
-                flexDirection: "row",
-                marginTop: 10,
-                backgroundColor: "#ffffff",
-                borderBottomColor: "#209FAE",
-                borderBottomWidth: 1,
-                marginHorizontal: 10,
-                // height: Dimensions.get('screen').height / 3,
-              }}
-            >
-              <TextInput
-                multiline
-                placeholder={"Write a caption.."}
-                maxLength={255}
-                style={{
-                  height: 75,
-                  width: (Dimensions.get("screen").width * 80) / 100,
-                  // borderBottomColor: '#f0f0f0f0',
-                  // borderBottomWidth: 1,
-                }}
-                onChangeText={(text) => _setStatusText(text)}
-                value={statusText}
-              />
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </ScrollView>
-      <LocationSelector
-        modals={modellocation}
-        setModellocation={(e) => setModellocation(e)}
-        masukan={(e) => _setLocation(e)}
-      />
-    </KeyboardAvoidingView>
-  );
+						<View
+							style={{
+								flexDirection: "row",
+								marginTop: 10,
+								backgroundColor: "#ffffff",
+								borderBottomColor: "#209FAE",
+								borderBottomWidth: 1,
+								marginHorizontal: 10,
+								// height: Dimensions.get('screen').height / 3,
+							}}
+						>
+							<TextInput
+								multiline
+								placeholder={"Write a caption.."}
+								maxLength={255}
+								style={{
+									height: 75,
+									width: (Dimensions.get("screen").width * 80) / 100,
+									// borderBottomColor: '#f0f0f0f0',
+									// borderBottomWidth: 1,
+								}}
+								onChangeText={(text) => _setStatusText(text)}
+								value={statusText}
+							/>
+						</View>
+					</View>
+				</TouchableWithoutFeedback>
+			</ScrollView>
+			<LocationSelector
+				modals={modellocation}
+				setModellocation={(e) => setModellocation(e)}
+				masukan={(e) => _setLocation(e)}
+			/>
+		</KeyboardAvoidingView>
+	);
 }

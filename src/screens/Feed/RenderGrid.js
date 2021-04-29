@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
+import { FunImage } from "../../component";
 import Video from "react-native-video";
 
 const { width, height } = Dimensions.get("screen");
@@ -49,7 +50,7 @@ export default function RenderGrid({ item, props }) {
 							paused={true}
 						/>
 					) : (
-						<Image
+						<FunImage
 							source={{
 								uri: item[0].assets[0].filepath,
 							}}
@@ -97,7 +98,7 @@ export default function RenderGrid({ item, props }) {
 								paused={true}
 							/>
 						) : (
-							<Image
+							<FunImage
 								source={{
 									uri: item[1].assets[0].filepath,
 								}}
@@ -144,7 +145,7 @@ export default function RenderGrid({ item, props }) {
 								paused={true}
 							/>
 						) : (
-							<Image
+							<FunImage
 								source={{
 									uri: item[2].assets[0].filepath,
 								}}
@@ -203,7 +204,7 @@ export default function RenderGrid({ item, props }) {
 								paused={true}
 							/>
 						) : (
-							<Image
+							<FunImage
 								source={{
 									uri: item[0].assets[0].filepath,
 								}}
@@ -250,7 +251,7 @@ export default function RenderGrid({ item, props }) {
 								paused={true}
 							/>
 						) : (
-							<Image
+							<FunImage
 								source={{
 									uri: item[1].assets[0].filepath,
 								}}
@@ -298,7 +299,7 @@ export default function RenderGrid({ item, props }) {
 							paused={true}
 						/>
 					) : (
-						<Image
+						<FunImage
 							source={{
 								uri: item[2].assets[0].filepath,
 							}}
@@ -355,7 +356,7 @@ export default function RenderGrid({ item, props }) {
 							paused={true}
 						/>
 					) : (
-						<Image
+						<FunImage
 							source={{
 								uri: item[0].assets[0].filepath,
 							}}
@@ -402,7 +403,7 @@ export default function RenderGrid({ item, props }) {
 							paused={true}
 						/>
 					) : (
-						<Image
+						<FunImage
 							source={{
 								uri: item[1].assets[0].filepath,
 							}}
@@ -449,7 +450,7 @@ export default function RenderGrid({ item, props }) {
 							paused={true}
 						/>
 					) : (
-						<Image
+						<FunImage
 							source={{
 								uri: item[2].assets[0].filepath,
 							}}
@@ -507,7 +508,7 @@ export default function RenderGrid({ item, props }) {
 							paused={true}
 						/>
 					) : (
-						<Image
+						<FunImage
 							source={{
 								uri: item[0].assets[0].filepath,
 							}}
@@ -556,7 +557,7 @@ export default function RenderGrid({ item, props }) {
 								paused={true}
 							/>
 						) : (
-							<Image
+							<FunImage
 								source={{
 									uri: item[1].assets[0].filepath,
 								}}

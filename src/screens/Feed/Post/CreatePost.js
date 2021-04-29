@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
-import { Text, Button, Loading, StatusBar } from "../../../component";
+import { Text, Button, Loading, StatusBar, FunImage } from "../../../component";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -373,12 +373,12 @@ export default function CreatePost({ navigation, route }) {
 									borderBottomWidth: 1,
 								}}
 							>
-								<Image
+								<FunImage
 									source={
 										dataprofile &&
 										(dataprofile.user_profile !== undefined || null || "")
 											? { uri: dataprofile.user_profile.picture }
-											: default_image
+											: { uri: default_image }
 									}
 									style={{
 										width: 50,
