@@ -12,6 +12,7 @@ export default function ImageBackground({
 	...otherProps
 }) {
 	let uri = source.uri;
+	console.log(uri);
 	if (!uri) {
 		console.warn("URI is required !");
 	}
@@ -26,7 +27,6 @@ export default function ImageBackground({
 				RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
 					(res) => {
 						setLoading(false);
-						console.log("CACHED");
 					}
 				);
 			} else {
