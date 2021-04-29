@@ -12,13 +12,13 @@ export default function ImageBackground({
 	imageStyle,
 	...otherProps
 }) {
-	let uri = source.uri;
-	console.log(uri);
 	let [loading, setLoading] = useState(false);
-	const extension = Platform.OS === "android" ? "file://" : "";
-	const name = sh.unique(uri);
-	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
+	let uri = source.uri;
+	let path;
 	if (uri) {
+		let extension = Platform.OS === "android" ? "file://" : "";
+		let name = sh.unique(uri);
+		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
 		RNFS.exists(path)
 			.then((exists) => {
 				if (!exists) {
