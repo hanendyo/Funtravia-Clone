@@ -23,6 +23,7 @@ import NavigateAction from "./src/NavigateAction";
 import FunImage from "./src/FunImage";
 import FunImageBackground from "./src/FunImageBackground";
 import FunImageAutoSize from "./src/FunImageAutoSize";
+import FunAnimatedImage from "./src/FunAnimatedImage";
 import CopyLink from "./src/CopyLink";
 
 export {
@@ -52,4 +53,5 @@ export {
 	FunImageBackground,
 	CopyLink,
 	FunImageAutoSize,
+	FunAnimatedImage,
 };
