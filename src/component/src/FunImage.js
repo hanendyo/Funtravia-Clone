@@ -12,12 +12,13 @@ export default function Image({
 	imageStyle,
 	...otherProps
 }) {
+	let [loading, setLoading] = useState(false);
 	let uri = source?.uri;
-	let [loading, setLoading] = useState(true);
-	const extension = Platform.OS === "android" ? "file://" : "";
-	const name = sh.unique(uri);
-	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
+	let path;
 	if (uri) {
+		let extension = Platform.OS === "android" ? "file://" : "";
+		let name = sh.unique(uri);
+		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
 		RNFS.exists(path)
 			.then((exists) => {
 				if (!exists) {
