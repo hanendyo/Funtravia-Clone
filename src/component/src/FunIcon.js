@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { Platform, Image as RNImage, useColorScheme } from "react-native";
+import * as RNFS from "react-native-fs";
+import sh from "shorthash";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ICONSERVER } from "../../config";
 import { SvgUri } from "react-native-svg";
 
@@ -13,11 +17,40 @@ export default function FunIcon({
 	const url = `${ICONSERVER}${variant[icon.charAt(0)]}/${
 		icon.split("-")[1]
 	}.svg`;
-	// console.log(url);
+	let [loading, setLoading] = useState(true);
+	const extension = Platform.OS === "android" ? "file://" : "";
+	const name = sh.unique(url);
+	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
+	RNFS.exists(path)
+		.then((exists) => {
+			if (!exists) {
+				setLoading(true);
+				RNFS.downloadFile({
+					fromUrl: url,
+					toFile: path,
+				}).promise.then((res) => {
+					setLoading(false);
+				});
+			} else {
+				setLoading(false);
+			}
+		})
+		.catch((error) => {
+			console.warn(error);
+		});
+
+	if (loading) {
+		return (
+			<SkeletonPlaceholder speed={500}>
+				<SkeletonPlaceholder.Item {...style} />
+			</SkeletonPlaceholder>
+		);
+	}
+
 	return (
 		<SvgUri
 			style={style ? style : null}
-			uri={url}
+			uri={path}
 			width={width ? width : 50}
 			height={height ? height : 50}
 			fill={fill ? fill : "#000"}

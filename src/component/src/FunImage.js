@@ -26,7 +26,6 @@ export default function Image({
 				RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
 					(res) => {
 						setLoading(false);
-						console.log("CACHED");
 					}
 				);
 			} else {
