@@ -3,6 +3,7 @@ import { Platform, ImageBackground as RNImageBackground } from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { default_image } from "../../assets/png";
 
 export default function ImageBackground({
 	children,
@@ -13,29 +14,28 @@ export default function ImageBackground({
 }) {
 	let uri = source.uri;
 	console.log(uri);
-	if (!uri) {
-		console.warn("URI is required !");
-	}
 	let [loading, setLoading] = useState(false);
 	const extension = Platform.OS === "android" ? "file://" : "";
 	const name = sh.unique(uri);
 	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
-	RNFS.exists(path)
-		.then((exists) => {
-			if (!exists) {
-				setLoading(true);
-				RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
-					(res) => {
-						setLoading(false);
-					}
-				);
-			} else {
-				setLoading(false);
-			}
-		})
-		.catch((error) => {
-			console.warn(error);
-		});
+	if (uri) {
+		RNFS.exists(path)
+			.then((exists) => {
+				if (!exists) {
+					setLoading(true);
+					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
+						(res) => {
+							setLoading(false);
+						}
+					);
+				} else {
+					setLoading(false);
+				}
+			})
+			.catch((error) => {
+				console.warn(error);
+			});
+	}
 
 	if (loading) {
 		return (
@@ -50,7 +50,7 @@ export default function ImageBackground({
 			{...otherProps}
 			imageStyle={imageStyle}
 			style={style}
-			source={{ uri: path }}
+			source={uri ? { uri: path } : default_image}
 		>
 			{children}
 		</RNImageBackground>
