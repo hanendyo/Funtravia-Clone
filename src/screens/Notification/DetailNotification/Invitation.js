@@ -572,7 +572,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="bold"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Bold",
                                         color: "#464646",
@@ -599,7 +599,7 @@ export default function Invitation({ navigation, token }) {
                             </View>
                             <Text
                                 type="regular"
-                                size="description"
+                                size="label"
                                 style={{
                                     // fontFamily: "Lato-Regular",
                                     // fontSize: 15,
@@ -656,7 +656,7 @@ export default function Invitation({ navigation, token }) {
                               item.itinerary_buddy.rejected_at == null ? (
                                 <View>
                                     <Text
-                                        size="description"
+                                        size="label"
                                         style={{
                                             // fontSize: 15,
                                             fontFamily: "lato-semibold",
@@ -778,7 +778,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="bold"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Bold",
                                         color: "#464646",
@@ -800,7 +800,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="regular"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Regular",
                                         // fontSize: 15,
@@ -837,7 +837,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="regular"
-                                    size="description"
+                                    size="label"
                                     numberOfLines={3}
                                     style={
                                         {
@@ -912,7 +912,7 @@ export default function Invitation({ navigation, token }) {
                         >
                             <Text
                                 type="regular"
-                                size="description"
+                                size="label"
                                 numberOfLines={2}
                                 style={
                                     {
@@ -998,7 +998,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="bold"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Bold",
                                         color: "#464646",
@@ -1020,7 +1020,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="regular"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Regular",
                                         // fontSize: 15,
@@ -1092,7 +1092,7 @@ export default function Invitation({ navigation, token }) {
                             item.isread == false ? "#EDF5F5" : "white",
                         // borderBottomWidth: 0.2,
                         // borderBottomColor: "#D1D1D1",
-                        borderTopWidth: 0.2,
+                        borderTopWidth: 0.1,
                         borderTopColor: "#D1D1D1",
                     }}
                 >
@@ -1154,7 +1154,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="bold"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Bold",
                                         color: "#464646",
@@ -1176,7 +1176,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="regular"
-                                    size="description"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Regular",
                                         // fontSize: 15,
@@ -1204,7 +1204,7 @@ export default function Invitation({ navigation, token }) {
                                     >
                                         <Text
                                             type="regular"
-                                            size="description"
+                                            size="label"
                                             style={{
                                                 color: "#209fae",
                                             }}
