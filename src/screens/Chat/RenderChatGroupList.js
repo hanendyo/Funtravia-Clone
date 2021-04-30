@@ -7,13 +7,21 @@ import {
     FlatList,
     Image,
 } from "react-native";
-import { Text, Button, Truncate, StatusBar, Errors } from "../../component";
+import {
+    Text,
+    Button,
+    Truncate,
+    StatusBar,
+    Errors,
+    FunImage,
+} from "../../component";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatGroupList({ dataGroupRes, navigation }) {
+    console.log(dataGroupRes);
     const dateGroup = () => {
         let date = new Date().toLocaleDateString();
         return date;
@@ -83,7 +91,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                                 alignItems: "center",
                             }}
                         >
-                            <Image
+                            <FunImage
                                 source={
                                     item.link_picture
                                         ? { uri: item.link_picture }

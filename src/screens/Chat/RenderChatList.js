@@ -7,7 +7,14 @@ import {
     FlatList,
     Image,
 } from "react-native";
-import { Text, Button, Truncate, StatusBar, Errors } from "../../component";
+import {
+    Text,
+    Button,
+    Truncate,
+    StatusBar,
+    Errors,
+    FunImage,
+} from "../../component";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
@@ -110,7 +117,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                                     alignItems: "center",
                                 }}
                             >
-                                <Image
+                                <FunImage
                                     source={{
                                         uri:
                                             item.sender_id !== user.id

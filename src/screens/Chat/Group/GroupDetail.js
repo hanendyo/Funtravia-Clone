@@ -24,6 +24,8 @@ import {
     CustomImage,
     Loading,
     StatusBar,
+    FunImage,
+    FunImageBackground,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import {
@@ -162,11 +164,11 @@ export default function GroupDetail(props) {
                     }
                 }
             >
-                <ImageBackground
+                <FunImageBackground
                     source={{ uri: dataDetail?.link_picture }}
                     style={{ width: width, height: 200 }}
                     imageStyle={{ width: width, height: 200 }}
-                ></ImageBackground>
+                ></FunImageBackground>
                 <LinearGradient
                     colors={["rgba(32, 159, 174, 1)", "rgba(211, 211, 211, 0)"]}
                     start={{ x: 0.3, y: 1 }}
@@ -304,7 +306,7 @@ export default function GroupDetail(props) {
                                     alignItems: "center",
                                 }}
                             >
-                                <Image
+                                <FunImage
                                     source={{ uri: item.picture }}
                                     style={{
                                         width: 50,
