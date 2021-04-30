@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
-import { Button, Text } from "../../component";
+import { Button, Text, FunImage } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -98,10 +98,10 @@ export default function Room({ navigation, route }) {
                         })
                     }
                 >
-                    <Image
+                    <FunImage
                         source={{ uri: route.params.picture }}
                         style={{ width: 40, height: 40, borderRadius: 20 }}
-                    ></Image>
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() =>

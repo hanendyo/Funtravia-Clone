@@ -19,6 +19,7 @@ import {
     Truncate,
     CustomImage,
     Loading,
+    FunImage,
 } from "../../../component";
 import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -197,6 +198,23 @@ export default function NewGroup(props) {
         //     picture: dataImage,
         //   })
         // );
+        // console.log(dataImage);
+        let data_kirim;
+        if (dataImage !== null) {
+            data_kirim = JSON.stringify({
+                title: title,
+                description: "",
+                member: JSON.stringify(partisipant),
+                picture: "data:image/png;base64," + dataImage,
+            });
+        } else {
+            data_kirim = JSON.stringify({
+                title: title,
+                description: "",
+                member: JSON.stringify(partisipant),
+            });
+        }
+        // console.log(data_kirim);
         try {
             let response = await fetch(RESTFULL_CHAT, {
                 method: "POST",
@@ -209,7 +227,10 @@ export default function NewGroup(props) {
                     title: title,
                     description: "",
                     member: JSON.stringify(partisipant),
-                    picture: "data:image/png;base64," + dataImage,
+                    picture:
+                        !dataImage || dataImage != "" || dataImage != null
+                            ? "data:image/png;base64," + dataImage
+                            : "",
                 }),
             });
             let responseJson = await response.json();
@@ -470,7 +491,7 @@ export default function NewGroup(props) {
                                 // width: Dimensions.get("screen").width - 20 / 5,
                             }}
                         >
-                            <Image
+                            <FunImage
                                 Pressable={true}
                                 // onPress={() => selectUser(item)}
                                 source={
