@@ -6,50 +6,51 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { default_image } from "../../assets/png";
 
 export default function Image({
-	children,
-	style,
-	source,
-	imageStyle,
-	...otherProps
+    children,
+    style,
+    source,
+    imageStyle,
+    ...otherProps
 }) {
-	let [loading, setLoading] = useState(false);
-	let uri = source?.uri;
-	let path;
-	if (uri) {
-		let extension = Platform.OS === "android" ? "file://" : "";
-		let name = sh.unique(uri);
-		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
-		RNFS.exists(path)
-			.then((exists) => {
-				if (!exists) {
-					setLoading(true);
-					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
-						(res) => {
-							setLoading(false);
-						}
-					);
-				} else {
-					setLoading(false);
-				}
-			})
-			.catch((error) => {
-				console.warn(error);
-			});
-	}
+    let [loading, setLoading] = useState(false);
+    let uri = source?.uri;
+    let path;
+    if (uri) {
+        let extension = Platform.OS === "android" ? "file://" : "";
+        let name = sh.unique(uri);
+        path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
+        RNFS.exists(path)
+            .then((exists) => {
+                if (!exists) {
+                    setLoading(true);
+                    RNFS.downloadFile({
+                        fromUrl: uri,
+                        toFile: path,
+                    }).promise.then((res) => {
+                        setLoading(false);
+                    });
+                } else {
+                    setLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+    }
 
-	if (loading) {
-		return (
-			<SkeletonPlaceholder speed={500}>
-				<SkeletonPlaceholder.Item {...style} />
-			</SkeletonPlaceholder>
-		);
-	}
+    if (loading) {
+        return (
+            <SkeletonPlaceholder speed={500}>
+                <SkeletonPlaceholder.Item {...style} />
+            </SkeletonPlaceholder>
+        );
+    }
 
-	return (
-		<RNImage
-			{...otherProps}
-			style={style}
-			source={uri ? { uri: path } : default_image}
-		/>
-	);
+    return (
+        <RNImage
+            {...otherProps}
+            style={style}
+            source={uri ? { uri: path } : default_image}
+        />
+    );
 }
