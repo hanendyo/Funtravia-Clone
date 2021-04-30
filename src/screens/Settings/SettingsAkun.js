@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  FlatList,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import React, { useState, useEffect, useRef } from "react";
+import { ScrollView } from "react-native-gesture-handler";
 import {
   View,
   Dimensions,
@@ -20,7 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   OptionsVertBlack,
   Arrowbackwhite,
-  Xhitam,
   Nextpremier,
 } from "../../assets/svg";
 import { calendar_blue } from "../../assets/png";
@@ -36,7 +29,6 @@ import {
   dateFormatYMD,
   FormatYMD,
 } from "../../component/src/dateformatter";
-import { Input, Item, Label } from "native-base";
 import City from "../../graphQL/Query/Itinerary/City";
 import { useMutation } from "@apollo/react-hooks";
 import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
@@ -44,9 +36,12 @@ import Date from "../../graphQL/Mutation/Setting/dateSettingAkun";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import HasPassword from "../../graphQL/Query/Settings/HasPassword";
 import CityInformation from "../../graphQL/Query/Cities/CitiesInformation";
+import Toast from "react-native-fast-toast";
+
 import SettingCity from "./SettingCity";
 
 export default function SettingsAkun(props) {
+  const toastRef = useRef();
   let { t, i18n } = useTranslation();
   let [modalEmail, setModalEmail] = useState(false);
   let [modalPhone, setModalPhone] = useState(false);
@@ -116,13 +111,11 @@ export default function SettingsAkun(props) {
       keyword: searchCity,
       countries_id: setting?.countries?.id,
     },
-   
   });
 
   const resultSearch = async (x) => {
     await setSearchCity(x);
     await querycity();
-  
   };
 
   const [
@@ -211,7 +204,7 @@ export default function SettingsAkun(props) {
         setModalGender(false);
         if (Platform.OS === "android") {
           ToastAndroid.show("Successfully set gender", ToastAndroid.LONG);
-        }else{
+        } else {
           Alert.alert("Successfully set gender");
         }
         let tmp_data = { ...setting };
@@ -241,8 +234,11 @@ export default function SettingsAkun(props) {
         }
         setModalBirth(false);
         if (Platform.OS === "android") {
-          ToastAndroid.show("Successfully set date of birth", ToastAndroid.LONG);
-        }else{
+          ToastAndroid.show(
+            "Successfully set date of birth",
+            ToastAndroid.LONG
+          );
+        } else {
           Alert.alert("Successfully set date of birth");
         }
         let tmp_data = { ...setting };
@@ -283,742 +279,744 @@ export default function SettingsAkun(props) {
   // Render all
 
   return (
-    <ScrollView
-      style={{
-        backgroundColor: "#F6F6F6",
-      }}
-    >
-      {/*Modal Email */}
-      <View style={styles.centeredView}>
-        <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalEmail}
-          onRequestClose={() => setModalEmail(false)}
-          onBackdropPress={() => {
-            setModalEmail(false);
-          }}
-          // style={{ height: Dimensions.get("screen").width * 0.2 }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalViewEmail}>
-              <Text
-                type="bold"
-                size="label"
-                onPress={() => emailChange()}
-                // onPress={() => {
-                //   setModalEmail(false),
-                //     props.navigation.navigate("SettingEmailChange", {
-                //       setting: setting,
-                //     });
-                // }}
-              >
-                Change Email
-              </Text>
-            </View>
-          </View>
-        </Modal>
-      </View>
-
-      {/*Modal Phone */}
-      <View style={styles.centeredView}>
-        <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalPhone}
-          onRequestClose={() => setModalPhone(false)}
-          onBackdropPress={() => {
-            setModalPhone(false);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text
-                style={{ color: "#209FAE", marginBottom: 20 }}
-                size="label"
-                type="bold"
-              >
-                Delete Phone Number
-              </Text>
-              <Text
-                type="bold"
-                size="label"
-                onPress={() => {
-                  setModalPhone(!modalPhone);
-                }}
-                onPress={() => {
-                  setModalPhone(false),
-                    props.navigation.navigate("SettingPhoneChange");
-                }}
-              >
-                Change Phone Number
-              </Text>
-            </View>
-          </View>
-        </Modal>
-      </View>
-
-      {/* Modal Birth Date */}
-
-      <Modal
-        onRequestClose={() => setModalBirth(false)}
-        onBackdropPress={() => setModalBirth(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        isVisible={modalBirth}
+    <>
+      <ScrollView
         style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
+          backgroundColor: "#F6F6F6",
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-            width: Dimensions.get("screen").width - 40,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#fff",
-              width: Dimensions.get("screen").width - 40,
-              paddingVertical: 40,
-              paddingHorizontal: 50,
-              borderRadius: 5,
+        {/*Modal Email */}
+        <View style={styles.centeredView}>
+          <Modal
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            isVisible={modalEmail}
+            onRequestClose={() => setModalEmail(false)}
+            onBackdropPress={() => {
+              setModalEmail(false);
+            }}
+            // style={{ height: Dimensions.get("screen").width * 0.2 }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalViewEmail}>
+                <Text
+                  type="bold"
+                  size="label"
+                  onPress={() => emailChange()}
+                  // onPress={() => {
+                  //   setModalEmail(false),
+                  //     props.navigation.navigate("SettingEmailChange", {
+                  //       setting: setting,
+                  //     });
+                  // }}
+                >
+                  Change Email
+                </Text>
+              </View>
+            </View>
+          </Modal>
+        </View>
+
+        {/*Modal Phone */}
+        <View style={styles.centeredView}>
+          <Modal
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            isVisible={modalPhone}
+            onRequestClose={() => setModalPhone(false)}
+            onBackdropPress={() => {
+              setModalPhone(false);
             }}
           >
-            <Text size="description" type="bold">
-              {t("birthdate")}
-            </Text>
-            <Pressable
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderBottomWidth: 1,
-                paddingVertical: 10,
-              }}
-              onPress={() => closeBirth()}
-            >
-              <Text size="description" type="regular">
-                {date ? dateFormatYMD(date) : "Birth of Date"}
-              </Text>
-              <CustomImage
-                source={calendar_blue}
-                customStyle={{ width: 20, height: 20 }}
-              />
-            </Pressable>
-            <View
-              style={{
-                marginTop: 20,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Button
-                size="medium"
-                style={{ width: "48%" }}
-                color="tertiary"
-                text="Cancel"
-                onPress={() => setModalBirth(false)}
-              ></Button>
-              <Button
-                size="medium"
-                style={{ width: "48%" }}
-                text="Save"
-                onPress={() => hasilDate(date)}
-              ></Button>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text
+                  style={{ color: "#209FAE", marginBottom: 20 }}
+                  size="label"
+                  type="bold"
+                >
+                  Delete Phone Number
+                </Text>
+                <Text
+                  type="bold"
+                  size="label"
+                  onPress={() => {
+                    setModalPhone(!modalPhone);
+                  }}
+                  onPress={() => {
+                    setModalPhone(false),
+                      props.navigation.navigate("SettingPhoneChange");
+                  }}
+                >
+                  Change Phone Number
+                </Text>
+              </View>
             </View>
-          </View>
+          </Modal>
         </View>
-      </Modal>
-      <Modal
-        onRequestClose={() => setModalBirth1(false)}
-        onBackdropPress={() => setModalBirth1(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        isVisible={modalBirth1}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
+
+        {/* Modal Birth Date */}
+
+        <Modal
+          onRequestClose={() => setModalBirth(false)}
+          onBackdropPress={() => setModalBirth(false)}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          isVisible={modalBirth}
           style={{
-            flex: 1,
             justifyContent: "center",
             alignItems: "center",
             alignSelf: "center",
             alignContent: "center",
-            width: Dimensions.get("screen").width - 40,
           }}
         >
           <View
             style={{
-              backgroundColor: "#fff",
-              width: Dimensions.get("screen").width - 40,
-              paddingVertical: 20,
+              flex: 1,
+              justifyContent: "center",
               alignItems: "center",
-              borderRadius: 5,
+              alignSelf: "center",
+              alignContent: "center",
+              width: Dimensions.get("screen").width - 40,
             }}
           >
-            <DatePicker
-              options={{}}
-              // current={startDate ? startDate : getToday()}
-              // selected={date}
-              // maximumDate={toDay()}
-              onDateChange={(x) => setDate(x)}
-              mode="calendar"
-              style={{ borderRadius: 10 }}
-            />
             <View
               style={{
-                flexDirection: "row",
-                alignSelf: "flex-end",
+                backgroundColor: "#fff",
+                width: Dimensions.get("screen").width - 40,
+                paddingVertical: 40,
+                paddingHorizontal: 50,
+                borderRadius: 5,
               }}
             >
-              <Button
-                size="small"
-                style={{ alignSelf: "flex-end" }}
-                text="Cancel"
-                variant="transparent"
-                onPress={() => closeModalBirth()}
-              ></Button>
-              <Button
-                size="small"
-                style={{ alignSelf: "flex-end" }}
-                text="Ok"
-                variant="transparent"
-                onPress={() => modalBirth1Close(date)}
-              ></Button>
+              <Text size="description" type="bold">
+                {t("birthdate")}
+              </Text>
+              <Pressable
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  paddingVertical: 10,
+                }}
+                onPress={() => closeBirth()}
+              >
+                <Text size="description" type="regular">
+                  {date ? dateFormatYMD(date) : "Birth of Date"}
+                </Text>
+                <CustomImage
+                  source={calendar_blue}
+                  customStyle={{ width: 20, height: 20 }}
+                />
+              </Pressable>
+              <View
+                style={{
+                  marginTop: 20,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  size="medium"
+                  style={{ width: "48%" }}
+                  color="tertiary"
+                  text="Cancel"
+                  onPress={() => setModalBirth(false)}
+                ></Button>
+                <Button
+                  size="medium"
+                  style={{ width: "48%" }}
+                  text="Save"
+                  onPress={() => hasilDate(date)}
+                ></Button>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-
-      {/* Modal Jenis Kelamin */}
-
-      <Modal
-        onRequestClose={() => setModalGender(false)}
-        onBackdropPress={() => setModalGender(false)}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        isVisible={modalGender}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
+        </Modal>
+        <Modal
+          onRequestClose={() => setModalBirth1(false)}
+          onBackdropPress={() => setModalBirth1(false)}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          isVisible={modalBirth1}
           style={{
-            flex: 1,
             justifyContent: "center",
             alignItems: "center",
             alignSelf: "center",
             alignContent: "center",
-            width: Dimensions.get("screen").width - 40,
           }}
         >
           <View
             style={{
-              backgroundColor: "#fff",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
               width: Dimensions.get("screen").width - 40,
-              paddingVertical: 40,
-              paddingHorizontal: 50,
-              borderRadius: 5,
             }}
           >
-            <Text size="description" type="bold">
-              {t("gender")}
-            </Text>
             <View
               style={{
-                borderBottomWidth: 1,
-              }}
-            >
-              <Picker
-                note
-                mode="dropdown"
-                style={{
-                  width: "110%",
-                  fontSize: 14,
-                  fontFamily: "Lato-Regular",
-                  marginLeft: -8,
-                  elevation: 20,
-                }}
-                selectedValue={genders}
-                onValueChange={(x) => setGender(x)}
-              >
-                <Picker.Item label={t("Male")} value="M" />
-                <Picker.Item label={t("Female")} value="F" />
-              </Picker>
-            </View>
-            <View
-              style={{
-                marginTop: 20,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Button
-                size="medium"
-                style={{ width: "48%" }}
-                color="tertiary"
-                text="Cancel"
-                onPress={() => setModalGender(false)}
-              ></Button>
-              <Button
-                size="medium"
-                style={{ width: "48%" }}
-                text="Save"
-                onPress={() => hasilGender(genders)}
-              ></Button>
-            </View>
-          </View>
-        </View>
-      </Modal>
-      {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
-      <View
-        style={{
-          flexDirection: "column",
-          marginTop: 5,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
-        }}
-      >
-        <View
-          style={{
-            paddingHorizontal: 15,
-            paddingTop: 13,
-          }}
-        >
-          <Text size="label" type="bold">
-            {t("personalData")}
-          </Text>
-        </View>
-        <Ripple
-          rippleCentered={true}
-          // onPress={() => setModelSetNegara(true)}
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 13,
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        >
-          <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-            }}
-          >
-            <Text size="description" type="regular">
-              {t("firstName")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
+                backgroundColor: "#fff",
+                width: Dimensions.get("screen").width - 40,
+                paddingVertical: 20,
                 alignItems: "center",
+                borderRadius: 5,
               }}
             >
-              <Text size="description" type="light" style={{}}>
-                <Truncate
-                  text={
-                    setting.user.first_name
-                      ? setting.user.first_name
-                      : "Not Set"
-                  }
-                  length={30}
-                />
-              </Text>
-            </View>
-          </View>
-        </Ripple>
-        <Ripple
-          rippleCentered={true}
-          // onPress={() => setModelSetNegara(true)}
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 13,
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        >
-          <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-            }}
-          >
-            <Text size="description" type="regular">
-              {t("lastName")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text size="description" type="light" style={{}}>
-                <Truncate
-                  text={
-                    setting && setting.user && setting.user?.last_name
-                      ? setting.user?.last_name
-                      : "Not Set"
-                  }
-                  length={30}
-                />
-              </Text>
-            </View>
-          </View>
-        </Ripple>
-        <Ripple
-          rippleCentered={true}
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 13,
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-          onPress={() => setModalGender(true)}
-        >
-          <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-            }}
-          >
-            <Text size="description" type="regular">
-              {t("gender")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text size="description" type="light" style={{}}>
-                {setting && setting.user && setting.user.gender
-                  ? setting.user.gender === "M"
-                    ? t("Male")
-                    : t("Female")
-                  : "Not Set"}
-              </Text>
-            </View>
-          </View>
-        </Ripple>
-        <Ripple
-          rippleCentered={true}
-          onPress={() => setModalBirth(true)}
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 13,
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        >
-          <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-            }}
-          >
-            <Text size="description" type="regular">
-              {t("birthdate")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text size="description" type="light" style={{}}>
-                {setting.user.birth_date
-                  ? dateFormat(setting.user.birth_date)
-                  : "Not Set"}
-              </Text>
-            </View>
-          </View>
-        </Ripple>
-        <Ripple
-          rippleCentered={true}
-          onPress={() => setModalCity(true)}
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 13,
-          }}
-        >
-          <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-            }}
-          >
-            <Text size="description" type="regular">
-              {t("cityOfRecidence")}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text size="description" type="light" style={{}}>
-                {setting &&
-                setting.cities &&
-                setting?.cities?.id &&
-                setting?.cities?.name
-                  ? setting?.cities?.name
-                      .toString()
-                      .toLowerCase()
-                      .replace(/\b[a-z]/g, function(letter) {
-                        return letter.toUpperCase();
-                      })
-                  : "Not Set"}
-              </Text>
-            </View>
-          </View>
-        </Ripple>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 4,
-          paddingHorizontal: 15,
-          paddingVertical: 13,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
-        }}
-      >
-        <View>
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              marginBottom: 5,
-            }}
-          >
-            {t("email")}
-          </Text>
-          {setting && setting.user && setting.user.email ? (
-            <View
-              style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
+              <DatePicker
+                options={{}}
+                // current={startDate ? startDate : getToday()}
+                // selected={date}
+                // maximumDate={toDay()}
+                onDateChange={(x) => setDate(x)}
+                mode="calendar"
+                style={{ borderRadius: 10 }}
+              />
               <View
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width - 50,
+                  alignSelf: "flex-end",
                 }}
               >
-                 <Pressable
-                 onPress={() =>
-                  props.navigation.navigate("SettingEmailChange", {
-                    setting: setting,
-                  })
-                }
-                 >
-                 <View
+                <Button
+                  size="small"
+                  style={{ alignSelf: "flex-end" }}
+                  text="Cancel"
+                  variant="transparent"
+                  onPress={() => closeModalBirth()}
+                ></Button>
+                <Button
+                  size="small"
+                  style={{ alignSelf: "flex-end" }}
+                  text="Ok"
+                  variant="transparent"
+                  onPress={() => modalBirth1Close(date)}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Modal Jenis Kelamin */}
+
+        <Modal
+          onRequestClose={() => setModalGender(false)}
+          onBackdropPress={() => setModalGender(false)}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          isVisible={modalGender}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
+              width: Dimensions.get("screen").width - 40,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#fff",
+                width: Dimensions.get("screen").width - 40,
+                paddingVertical: 40,
+                paddingHorizontal: 50,
+                borderRadius: 5,
+              }}
+            >
+              <Text size="description" type="bold">
+                {t("gender")}
+              </Text>
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                }}
+              >
+                <Picker
+                  note
+                  mode="dropdown"
                   style={{
-                    alignContent: "flex-start",
-                    justifyContent: "flex-start",
+                    width: "110%",
+                    fontSize: 14,
+                    fontFamily: "Lato-Regular",
+                    marginLeft: -8,
+                    elevation: 20,
+                  }}
+                  selectedValue={genders}
+                  onValueChange={(x) => setGender(x)}
+                >
+                  <Picker.Item label={t("Male")} value="M" />
+                  <Picker.Item label={t("Female")} value="F" />
+                </Picker>
+              </View>
+              <View
+                style={{
+                  marginTop: 20,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  size="medium"
+                  style={{ width: "48%" }}
+                  color="tertiary"
+                  text="Cancel"
+                  onPress={() => setModalGender(false)}
+                ></Button>
+                <Button
+                  size="medium"
+                  style={{ width: "48%" }}
+                  text="Save"
+                  onPress={() => hasilGender(genders)}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
+        <View
+          style={{
+            flexDirection: "column",
+            marginTop: 5,
+            backgroundColor: "#FFFFFF",
+            shadowColor: "gray",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
+          }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 15,
+              paddingTop: 13,
+            }}
+          >
+            <Text size="label" type="bold">
+              {t("personalData")}
+            </Text>
+          </View>
+          <Ripple
+            rippleCentered={true}
+            // onPress={() => setModelSetNegara(true)}
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 13,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <Text size="description" type="regular">
+                {t("firstName")}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text size="description" type="light" style={{}}>
+                  <Truncate
+                    text={
+                      setting.user.first_name
+                        ? setting.user.first_name
+                        : "Not Set"
+                    }
+                    length={30}
+                  />
+                </Text>
+              </View>
+            </View>
+          </Ripple>
+          <Ripple
+            rippleCentered={true}
+            // onPress={() => setModelSetNegara(true)}
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 13,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <Text size="description" type="regular">
+                {t("lastName")}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text size="description" type="light" style={{}}>
+                  <Truncate
+                    text={
+                      setting && setting.user && setting.user?.last_name
+                        ? setting.user?.last_name
+                        : "Not Set"
+                    }
+                    length={30}
+                  />
+                </Text>
+              </View>
+            </View>
+          </Ripple>
+          <Ripple
+            rippleCentered={true}
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 13,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+            onPress={() => setModalGender(true)}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <Text size="description" type="regular">
+                {t("gender")}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text size="description" type="light" style={{}}>
+                  {setting && setting.user && setting.user.gender
+                    ? setting.user.gender === "M"
+                      ? t("Male")
+                      : t("Female")
+                    : "Not Set"}
+                </Text>
+              </View>
+            </View>
+          </Ripple>
+          <Ripple
+            rippleCentered={true}
+            onPress={() => setModalBirth(true)}
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 13,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <Text size="description" type="regular">
+                {t("birthdate")}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text size="description" type="light" style={{}}>
+                  {setting.user.birth_date
+                    ? dateFormat(setting.user.birth_date)
+                    : "Not Set"}
+                </Text>
+              </View>
+            </View>
+          </Ripple>
+          <Ripple
+            rippleCentered={true}
+            onPress={() => setModalCity(true)}
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 13,
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <Text size="description" type="regular">
+                {t("cityOfRecidence")}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text size="description" type="light" style={{}}>
+                  {setting &&
+                  setting.cities &&
+                  setting?.cities?.id &&
+                  setting?.cities?.name
+                    ? setting?.cities?.name
+                        .toString()
+                        .toLowerCase()
+                        .replace(/\b[a-z]/g, function(letter) {
+                          return letter.toUpperCase();
+                        })
+                    : "Not Set"}
+                </Text>
+              </View>
+            </View>
+          </Ripple>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 4,
+            paddingHorizontal: 15,
+            paddingVertical: 13,
+            backgroundColor: "#FFFFFF",
+            shadowColor: "gray",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
+          }}
+        >
+          <View>
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                marginBottom: 5,
+              }}
+            >
+              {t("email")}
+            </Text>
+            {setting && setting.user && setting.user.email ? (
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "flex-end",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: Dimensions.get("screen").width - 50,
                   }}
                 >
-                  <Text
-                    type="regular"
-                    size="description"
-                    style={{
-                      alignSelf: "flex-start",
-                    }}
+                  <Pressable
+                    onPress={() =>
+                      props.navigation.navigate("SettingEmailChange", {
+                        setting: setting,
+                      })
+                    }
                   >
-                    {setting && setting.user && setting.user.email
-                      ? setting.user.email
-                      : "Not Set"}
-                  </Text>
-                  <Text type="regular" size="small">
-                    {t("emailUsed")}
-                  </Text>
+                    <View
+                      style={{
+                        alignContent: "flex-start",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      <Text
+                        type="regular"
+                        size="description"
+                        style={{
+                          alignSelf: "flex-start",
+                        }}
+                      >
+                        {setting && setting.user && setting.user.email
+                          ? setting.user.email
+                          : "Not Set"}
+                      </Text>
+                      <Text type="regular" size="small">
+                        {t("emailUsed")}
+                      </Text>
+                    </View>
+                  </Pressable>
                 </View>
-                    
-                </Pressable>
-               
-              </View>
-              {/* <OptionsVertBlack
+                {/* <OptionsVertBlack
                 width={20}
                 height={20}
                 onPress={() => {
                   setModalEmail(true);
                 }}
               /> */}
-            </View>
-          ) : (
-            <Button
-              style={{
-                width: Dimensions.get("screen").width * 0.9,
-                paddingHorizontal: 10,
-              }}
-              type="box"
-              size="medium"
-              color="tertiary"
-              text={t("AddEmail")}
-              onPress={() =>
-                props.navigation.navigate("SettingEmail", {
-                  dataEmail: setting.user,
-                })
-              }
-            />
-          )}
-        </View>
-        {setting && setting.user && setting.user.email ? (
-          <View style={{ justifyContent: "center" }}>
-            {/* <OptionsVertBlack
+              </View>
+            ) : (
+              <Button
+                style={{
+                  width: Dimensions.get("screen").width * 0.9,
+                  paddingHorizontal: 10,
+                }}
+                type="box"
+                size="medium"
+                color="tertiary"
+                text={t("AddEmail")}
+                onPress={() =>
+                  props.navigation.navigate("SettingEmail", {
+                    dataEmail: setting.user,
+                  })
+                }
+              />
+            )}
+          </View>
+          {setting && setting.user && setting.user.email ? (
+            <View style={{ justifyContent: "center" }}>
+              {/* <OptionsVertBlack
               width={15}
               height={15}
               onPress={() => {
                 setModalEmail(true);
               }}
             /> */}
-          </View>
-        ) : null}
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          // marginTop: 4,
-          // borderWidth: 1,
-          borderTopWidth: 1,
-          borderTopColor: "#D1D1D1",
-          paddingHorizontal: 15,
-          paddingVertical: 13,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
-        }}
-      >
-        <View>
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              marginBottom: 5,
-            }}
-          >
-            {t("phoneNumber")}
-          </Text>
-          {setting && setting.user && setting.user.phone ? (
-            <View
+            </View>
+          ) : null}
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            // marginTop: 4,
+            // borderWidth: 1,
+            borderTopWidth: 1,
+            borderTopColor: "#D1D1D1",
+            paddingHorizontal: 15,
+            paddingVertical: 13,
+            backgroundColor: "#FFFFFF",
+            shadowColor: "gray",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
+          }}
+        >
+          <View>
+            <Text
+              size="label"
+              type="bold"
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                alignItems: "center",
+                marginBottom: 5,
               }}
             >
+              {t("phoneNumber")}
+            </Text>
+            {setting && setting.user && setting.user.phone ? (
               <View
                 style={{
+                  justifyContent: "space-between",
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width - 50,
+                  alignItems: "center",
                 }}
               >
                 <View
                   style={{
-                    alignContent: "flex-start",
-                    justifyContent: "flex-start",
+                    flexDirection: "row",
+                    width: Dimensions.get("screen").width - 50,
                   }}
                 >
-                  <Text
-                    type="regular"
-                    size="description"
+                  <View
                     style={{
-                      alignSelf: "flex-start",
+                      alignContent: "flex-start",
+                      justifyContent: "flex-start",
                     }}
                   >
-                    {setting.user.phone}
-                  </Text>
-                  <Text type="regular" size="small">
-                    {t("phoneUsed")}
-                  </Text>
+                    <Text
+                      type="regular"
+                      size="description"
+                      style={{
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      {setting.user.phone}
+                    </Text>
+                    <Text type="regular" size="small">
+                      {t("phoneUsed")}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ) : (
-            <Button
-              style={{
-                width: Dimensions.get("screen").width * 0.9,
-                paddingHorizontal: 10,
-              }}
-              type="box"
-              size="medium"
-              color="tertiary"
-              text={t("addPhoneNumber")}
-              // onPress={() => props.navigation.navigate("SettingPhone")}
-            />
-          )}
-        </View>
-        {setting && setting.user && setting.user.phone ? (
-          <View style={{ justifyContent: "center" }}>
-            <OptionsVertBlack
-              width={15}
-              height={15}
-              onPress={() => {
-                setModalEmail(true);
-              }}
-            />
+            ) : (
+              <Button
+                style={{
+                  width: Dimensions.get("screen").width * 0.9,
+                  paddingHorizontal: 10,
+                }}
+                type="box"
+                size="medium"
+                color="tertiary"
+                text={t("addPhoneNumber")}
+                // onPress={() => props.navigation.navigate("SettingPhone")}
+                onPress={() => {
+                  toastRef?.current?.show("Comming Soon");
+                }}
+              />
+            )}
           </View>
-        ) : null}
-      </View>
-      <Pressable
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 4,
-          paddingHorizontal: 15,
-          paddingVertical: 13,
-          backgroundColor: "#FFFFFF",
-          borderBottomWidth: 1,
-          borderBottomColor: "#D1D1D1",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
-        }}
-        onPress={(x) => hasPassword(x)}
-      >
-        <Text
-          size="label"
-          type="regular"
+          {setting && setting.user && setting.user.phone ? (
+            <View style={{ justifyContent: "center" }}>
+              <OptionsVertBlack
+                width={15}
+                height={15}
+                onPress={() => {
+                  setModalEmail(true);
+                }}
+              />
+            </View>
+          ) : null}
+        </View>
+        <Pressable
           style={{
-            marginBottom: 5,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 4,
+            paddingHorizontal: 15,
+            paddingVertical: 13,
+            backgroundColor: "#FFFFFF",
+            borderBottomWidth: 1,
+            borderBottomColor: "#D1D1D1",
+            shadowColor: "gray",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: arrayShadow.shadowOpacity,
+            shadowRadius: arrayShadow.shadowRadius,
+            elevation: arrayShadow.elevation,
           }}
+          onPress={(x) => hasPassword(x)}
         >
-          {t("password")}
-        </Text>
-        <Nextpremier width={15} height={15} />
-      </Pressable>
-      {/* <Ripple
+          <Text
+            size="label"
+            type="regular"
+            style={{
+              marginBottom: 5,
+            }}
+          >
+            {t("password")}
+          </Text>
+          <Nextpremier width={15} height={15} />
+        </Pressable>
+        {/* <Ripple
         onPress={() => null}
         style={{
           flexDirection: "row",
@@ -1048,19 +1046,21 @@ export default function SettingsAkun(props) {
         </Text>
         <Nextpremier width={15} height={15} />
       </Ripple> */}
-      {datacity && datacity?.cities_search.length > 0 ? (
-        <SettingCity
-          modals={modalCity}
-          setModalCity={(e) => setModalCity(e)}
-          masukan={(e) => setSetting(e)}
-          data={datacity?.cities_search}
-          selected={setting}
-          token={token}
-          setSearchCity={(e) => resultSearch(e)}
-          searchCity={searchCity}
-        />
-      ) : null}
-    </ScrollView>
+        {datacity && datacity?.cities_search.length > 0 ? (
+          <SettingCity
+            modals={modalCity}
+            setModalCity={(e) => setModalCity(e)}
+            masukan={(e) => setSetting(e)}
+            data={datacity?.cities_search}
+            selected={setting}
+            token={token}
+            setSearchCity={(e) => resultSearch(e)}
+            searchCity={searchCity}
+          />
+        ) : null}
+      </ScrollView>
+      <Toast ref={toastRef} />
+    </>
   );
 }
 
