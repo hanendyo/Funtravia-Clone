@@ -12,34 +12,35 @@ export default function FunImageAutoSize({
 	...otherProps
 }) {
 	let url = uri;
-	if (!uri) {
-		console.warn("URI is required !");
-	}
-	let [loading, setLoading] = useState(true);
-	const extension = Platform.OS === "android" ? "file://" : "";
-	const name = sh.unique(url);
-	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
-	RNFS.exists(path)
-		.then((exists) => {
-			if (!exists) {
-				setLoading(true);
-				RNFS.downloadFile({ fromUrl: url, toFile: path }).promise.then(
-					(res) => {
-						setLoading(false);
-					}
-				);
-			} else {
+	let [loading, setLoading] = useState(false);
+	let [temp, setTemp] = useState([]);
+	let path;
+	if (url && url !== undefined) {
+		let extension = Platform.OS === "android" ? "file://" : "";
+		let name = sh.unique(url);
+		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
+		RNFS.exists(path)
+			.then((exists) => {
+				if (!exists && temp.indexOf(name) === -1) {
+					setLoading(true);
+					setTemp([...temp, name]);
+					RNFS.downloadFile({ fromUrl: url, toFile: path }).promise.then(
+						(res) => {
+							setTimeout(() => setLoading(false), 1000);
+							console.log("CACHED ANIMATED IMAGE", url);
+						}
+					);
+				}
+			})
+			.catch((error) => {
 				setLoading(false);
-			}
-		})
-		.catch((error) => {
-			console.warn(error);
-		});
-
+				console.warn(error);
+			});
+	}
 	if (loading) {
 		return (
 			<SkeletonPlaceholder speed={500}>
-				<SkeletonPlaceholder.Item {...style} />
+				<SkeletonPlaceholder.Item {...style} height={style.width} />
 			</SkeletonPlaceholder>
 		);
 	}

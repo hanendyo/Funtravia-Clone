@@ -13,26 +13,28 @@ export default function Image({
 	...otherProps
 }) {
 	let [loading, setLoading] = useState(false);
+	let [temp, setTemp] = useState([]);
 	let uri = source?.uri;
 	let path;
-	if (uri) {
+	if (uri && uri !== undefined) {
 		let extension = Platform.OS === "android" ? "file://" : "";
 		let name = sh.unique(uri);
 		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
 		RNFS.exists(path)
 			.then((exists) => {
-				if (!exists) {
+				if (!exists && temp.indexOf(name) === -1) {
 					setLoading(true);
+					setTemp([...temp, name]);
 					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
 						(res) => {
-							setLoading(false);
+							setTimeout(() => setLoading(false), 1000);
+							console.log("SUCCESS CACHE IMAGE", uri);
 						}
 					);
-				} else {
-					setLoading(false);
 				}
 			})
 			.catch((error) => {
+				setLoading(false);
 				console.warn(error);
 			});
 	}
