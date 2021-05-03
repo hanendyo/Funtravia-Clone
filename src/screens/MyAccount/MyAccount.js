@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   ImageBackground,
@@ -11,8 +11,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
-import LinearGradient from "react-native-linear-gradient";
-import { Akunsaya, default_image, SettingPutih } from "../../assets/png";
+import { Akunsaya, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { Next, Help, SettingsPutih } from "../../assets/svg";
@@ -20,8 +19,10 @@ import Logout from "../../graphQL/Mutation/Login/Logout";
 import { useTranslation } from "react-i18next";
 import { Button, Text, Truncate } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
+import Toast from "react-native-fast-toast";
 
 export default function MyAccount(props) {
+  const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t } = useTranslation();
   let [token, setToken] = useState("");
@@ -264,7 +265,9 @@ export default function MyAccount(props) {
           </Text>
           <Ripple
             onPress={() =>
-              props.navigation.navigate("AccountStack", { screen: "Wishlist" })
+              props.navigation.navigate("AccountStack", {
+                screen: "Wishlist",
+              })
             }
             style={{
               justifyContent: "space-between",
@@ -326,7 +329,18 @@ export default function MyAccount(props) {
             </View>
           </Ripple>
         </View>
-        <View
+
+        <TouchableOpacity
+          // onPress={() => {
+          //   toast.show("toast call using hook");
+          //   // Alert.alert("help");
+          // }}
+          onPress={() =>
+            toastRef.current?.show("Comming Soon", {
+              style: { backgroundColor: "#464646" },
+              textStyle: { fontSize: 14 },
+            })
+          }
           style={{
             flexDirection: "row",
             paddingVertical: 20,
@@ -337,7 +351,7 @@ export default function MyAccount(props) {
           <Text type="bold" style={{ marginLeft: 5 }}>
             Help
           </Text>
-        </View>
+        </TouchableOpacity>
         <View
           style={{
             alignItems: "center",
@@ -387,6 +401,7 @@ export default function MyAccount(props) {
           ></Button>
         </View>
       </ScrollView>
+      <Toast ref={toastRef} />
     </View>
   );
 }

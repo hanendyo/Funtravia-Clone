@@ -2,56 +2,57 @@ import { gql } from "apollo-boost";
 const country_detail = gql`
   query($id: ID!) {
     country_detail(id: $id) {
-			id
-			name
-			code
-			description
+      id
+      name
+      code
+      description
+      cover_facts
       cover
-			flag
-			images {
-				image
-			}
-			map
-			city {
-				id
-				name
-				image
-        destination{
+      flag
+      images {
+        image
+      }
+      map
+      city {
+        id
+        name
+        image
+        destination {
           id
           name
           cover
-          images{
+          images {
             image
           }
         }
-			}
-			article_header {
-				id
-				title
-				type
-				position
-				relation_id
-				content {
-					id
-					type
-					title
-					text
-					image
-					order
-				}
-			}
-			article_type {
-				id
-				name
-			}
-			journal {
-				id
-				title
-				text
-				picture
+      }
+      article_header {
+        id
+        title
+        type
+        position
+        relation_id
+        content {
+          id
+          type
+          title
+          text
+          image
+          order
+        }
+      }
+      article_type {
+        id
+        name
+      }
+      journal {
+        id
+        title
+        text
+        picture
         liked
-			}
-      about{
+      }
+      about {
         id
         type
         information_id
@@ -61,7 +62,7 @@ const country_detail = gql`
         description
         icon
       }
-      practical{
+      practical {
         id
         type
         information_id
@@ -71,7 +72,7 @@ const country_detail = gql`
         description
         icon
       }
-		}
+    }
   }
 `;
 export default country_detail;

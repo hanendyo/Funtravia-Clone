@@ -188,6 +188,7 @@ export default function Invitation({ navigation, token }) {
     let [loadings, setLoadings] = useState(false);
     // ===modalfilter===
     // console.log(token);
+
     const CarDetail = (data, dataIten) => {
         navigation.navigate("CarDetail", {
             datacar: data,
@@ -572,7 +573,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="bold"
-                                    size="title"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Bold",
                                         color: "#464646",
@@ -778,7 +779,7 @@ export default function Invitation({ navigation, token }) {
                             >
                                 <Text
                                     type="bold"
-                                    size="title"
+                                    size="label"
                                     style={{
                                         // fontFamily: "Lato-Bold",
                                         color: "#464646",
