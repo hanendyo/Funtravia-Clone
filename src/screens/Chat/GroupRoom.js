@@ -47,16 +47,7 @@ export default function Room({ navigation, route }) {
         },
         headerTitleStyle: null,
         headerLeft: () => (
-            <TouchableOpacity
-                onPress={() =>
-                    navigation.navigate("ChatStack", {
-                        screen: "GroupDetail",
-                        params: {
-                            room_id: route.params.room_id,
-                            from: route.params.from,
-                        },
-                    })
-                }
+            <View
                 style={{
                     flexDirection: "row",
                     justifyContent: "center",
@@ -67,15 +58,6 @@ export default function Room({ navigation, route }) {
                 }}
             >
                 <TouchableOpacity
-                    onPress={() =>
-                        navigation.navigate("ChatStack", {
-                            screen: "GroupDetail",
-                            params: {
-                                room_id: route.params.room_id,
-                                from: route.params.from,
-                            },
-                        })
-                    }
                     style={{
                         height: 40,
                         width: 40,
@@ -87,7 +69,7 @@ export default function Room({ navigation, route }) {
                 >
                     <Arrowbackwhite height={20} width={20} />
                 </TouchableOpacity>
-                <TouchableOpacity
+                <Pressable
                     onPress={() =>
                         navigation.navigate("ChatStack", {
                             screen: "GroupDetail",
@@ -97,24 +79,44 @@ export default function Room({ navigation, route }) {
                             },
                         })
                     }
+                    style={{
+                        flexDirection: "row",
+                        borderWidth: 1,
+                        borderColor: "#209fae",
+                        width: Dimensions.get("screen").width - 100,
+                        height: 45,
+                        alignItems: "center",
+                        backgroundColor: "#209fae",
+                        zIndex: 150,
+                    }}
                 >
-                    <FunImage
-                        source={{ uri: route.params.picture }}
-                        style={{ width: 40, height: 40, borderRadius: 20 }}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() =>
-                        navigation.navigate("ChatStack", {
-                            screen: "GroupDetail",
-                            params: {
-                                room_id: route.params.room_id,
-                                from: route.params.from,
-                            },
-                        })
-                    }
-                >
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate("ChatStack", {
+                                screen: "GroupDetail",
+                                params: {
+                                    room_id: route.params.room_id,
+                                    from: route.params.from,
+                                },
+                            })
+                        }
+                    >
+                        <FunImage
+                            source={{ uri: route.params.picture }}
+                            style={{ width: 40, height: 40, borderRadius: 20 }}
+                        />
+                    </TouchableOpacity>
+
                     <Text
+                        onPress={() =>
+                            navigation.navigate("ChatStack", {
+                                screen: "GroupDetail",
+                                params: {
+                                    room_id: route.params.room_id,
+                                    from: route.params.from,
+                                },
+                            })
+                        }
                         style={{
                             fontFamily: "Lato-Bold",
                             fontSize: 16,
@@ -125,8 +127,8 @@ export default function Room({ navigation, route }) {
                     >
                         {route.params.name}
                     </Text>
-                </TouchableOpacity>
-            </TouchableOpacity>
+                </Pressable>
+            </View>
         ),
         headerLeftContainerStyle: null,
         headerRight: null,

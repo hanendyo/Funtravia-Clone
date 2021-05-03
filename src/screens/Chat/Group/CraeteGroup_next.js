@@ -223,15 +223,7 @@ export default function NewGroup(props) {
                     Authorization: "Bearer " + token,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    title: title,
-                    description: "",
-                    member: JSON.stringify(partisipant),
-                    picture:
-                        !dataImage || dataImage != "" || dataImage != null
-                            ? "data:image/png;base64," + dataImage
-                            : "",
-                }),
+                body: data_kirim,
             });
             let responseJson = await response.json();
             console.log(responseJson);

@@ -13,6 +13,7 @@ import {
     Alert,
     Dimensions,
     ActivityIndicator,
+    Pressable,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
@@ -65,23 +66,52 @@ export default function Room({ navigation, route }) {
                 >
                     <Arrowbackwhite height={20} width={20} />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <FunImage
-                        source={{ uri: route.params.picture }}
-                        style={{ width: 40, height: 40, borderRadius: 20 }}
-                    />
-                </TouchableOpacity>
-                <Text
+                <Pressable
+                    onPress={() => {
+                        navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                                idUser: route.params.receiver,
+                            },
+                        });
+                    }}
                     style={{
-                        fontFamily: "Lato-Bold",
-                        fontSize: 14,
-                        color: "white",
-                        alignSelf: "center",
-                        paddingHorizontal: 10,
+                        flexDirection: "row",
+                        // borderWidth: 1,
+                        width: Dimensions.get("screen").width - 100,
+                        height: 45,
+                        alignItems: "center",
+                        backgroundColor: "#209fae",
+                        zIndex: 100,
                     }}
                 >
-                    {route.params.name}
-                </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                    idUser: route.params.receiver,
+                                },
+                            });
+                        }}
+                    >
+                        <FunImage
+                            source={{ uri: route.params.picture }}
+                            style={{ width: 40, height: 40, borderRadius: 20 }}
+                        />
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            fontFamily: "Lato-Bold",
+                            fontSize: 14,
+                            color: "white",
+                            alignSelf: "center",
+                            paddingHorizontal: 10,
+                        }}
+                    >
+                        {route.params.name}
+                    </Text>
+                </Pressable>
             </View>
         ),
         headerRightStyle: {
