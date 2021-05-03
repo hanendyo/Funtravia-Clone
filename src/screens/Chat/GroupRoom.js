@@ -22,7 +22,12 @@ import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import Toast from "react-native-fast-toast";
+import { RNToasty } from "react-native-toasty";
+import { useTranslation } from "react-i18next";
+
 export default function Room({ navigation, route }) {
+    const toastRef = useRef();
     console.log(route.params);
     const { width, height } = Dimensions.get("screen");
     const [room, setRoom] = useState(route.params.room_id);
@@ -35,6 +40,7 @@ export default function Room({ navigation, route }) {
     let [chat, setChat] = useState(null);
     let [message, setMessage] = useState([]);
     let flatListRef = useRef();
+    const { t } = useTranslation();
 
     const headerOptions = {
         headerShown: true,
@@ -236,7 +242,7 @@ export default function Room({ navigation, route }) {
 
     const submitChatMessage = async () => {
         if (button) {
-            if (chat && chat !== "") {
+            if (chat && chat.replace(/\s/g, "").length) {
                 await setButton(false);
                 let chatData = {
                     room: room,
@@ -260,6 +266,15 @@ export default function Room({ navigation, route }) {
                     }
                 }, 250);
                 await setButton(true);
+            } else {
+                // toastRef.current?.show(t("messagesEmpty"), {
+                //     style: { backgroundColor: "#464646" },
+                //     textStyle: { fontSize: 14 },
+                // });
+                RNToasty.Show({
+                    title: t("messagesEmpty"),
+                    position: "bottom",
+                });
             }
         }
     };
@@ -465,6 +480,7 @@ export default function Room({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+            <Toast ref={toastRef} maxToasts={2} placement="bottom" />
             <FlatList
                 ref={flatListRef}
                 data={message}

@@ -22,8 +22,13 @@ import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import Toast from "react-native-fast-toast";
+import { useTranslation } from "react-i18next";
+import { RNToasty } from "react-native-toasty";
 
 export default function Room({ navigation, route }) {
+    const { t } = useTranslation();
+    const toastRef = useRef();
     const { width, height } = Dimensions.get("screen");
     const [room, setRoom] = useState(route.params.room_id);
     const [receiver, setReceiver] = useState(route.params.receiver);
@@ -196,7 +201,7 @@ export default function Room({ navigation, route }) {
 
     const submitChatMessage = async () => {
         if (button) {
-            if (chat && chat !== "") {
+            if (chat && chat.replace(/\s/g, "").length) {
                 await setButton(false);
                 let chatData = {
                     room: room,
@@ -219,6 +224,15 @@ export default function Room({ navigation, route }) {
                     }
                 }, 250);
                 await setButton(true);
+            } else {
+                // toastRef.current?.show(t("messagesEmpty"), {
+                //     style: { backgroundColor: "#464646" },
+                //     textStyle: { fontSize: 14 },
+                // });
+                RNToasty.Show({
+                    title: t("messagesEmpty"),
+                    position: "bottom",
+                });
             }
         }
     };
@@ -472,6 +486,7 @@ export default function Room({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+            <Toast ref={toastRef} />
             <Errors
                 modals={modalError}
                 setModals={(e) => setModalError(e)}
