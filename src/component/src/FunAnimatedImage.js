@@ -25,11 +25,11 @@ export default function FunAnimatedImage({
 					setLoading(true);
 					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
 						(res) => {
-							setLoading(false);
+							// setLoading(false);
 						}
 					);
 				} else {
-					setLoading(false);
+					// setLoading(false);
 				}
 			})
 			.catch((error) => {
