@@ -6,6 +6,7 @@ import {
     Dimensions,
     FlatList,
     Image,
+    Pressable,
 } from "react-native";
 import {
     Text,
@@ -15,9 +16,8 @@ import {
     Errors,
     FunImage,
 } from "../../component";
-import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
-import { DefaultProfile, default_image } from "../../assets/png";
-import Ripple from "react-native-material-ripple";
+import { NewGroup, Kosong } from "../../assets/svg";
+import { default_image } from "../../assets/png";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatGroupList({ dataGroupRes, navigation }) {
@@ -66,7 +66,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                 data={dataGroupRes}
                 renderItem={({ item }) => (
                     <View key={`${item.id}_child`}>
-                        <Ripple
+                        <Pressable
                             onPress={() =>
                                 navigation.navigate("ChatStack", {
                                     screen: "GroupRoom",
@@ -147,7 +147,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                                     </Text>
                                 </View>
                             ) : null}
-                        </Ripple>
+                        </Pressable>
                     </View>
                 )}
                 keyExtractor={(item) => item.id}
