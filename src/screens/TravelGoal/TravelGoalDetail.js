@@ -242,7 +242,7 @@ export default function TravelGoalDetail(props) {
         </Text>
         {datadetail?.description ? (
           <Text
-            size="description"
+            size="readable"
             numberOfLines={2}
             style={{ textAlign: "justify" }}
           >
@@ -309,7 +309,9 @@ export default function TravelGoalDetail(props) {
               </Text>
             </View> */}
             {item.text ? (
-              <Text style={{ textAlign: "justify" }}>{item.text}</Text>
+              <Text size="readable" style={{ textAlign: "justify" }}>
+                {item.text}
+              </Text>
             ) : null}
           </View>
         );
@@ -401,7 +403,7 @@ export default function TravelGoalDetail(props) {
                   </Text>
                   <Text
                     numberOfLines={2}
-                    size="small"
+                    size="readable"
                     style={{
                       textAlign: "justify",
                     }}

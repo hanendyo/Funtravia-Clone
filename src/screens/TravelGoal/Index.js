@@ -245,7 +245,7 @@ export default function TravelGoal(props) {
                   {dataTop?.travelgoal_first?.title}
                 </Text>
                 <Text
-                  size="description"
+                  size="readable"
                   numberOfLines={1}
                   style={{ color: "white" }}
                 >
@@ -366,7 +366,7 @@ export default function TravelGoal(props) {
                 </Text>
                 {item?.description ? (
                   <Text
-                    size="description"
+                    size="readable"
                     numberOfLines={2}
                     style={{
                       textAlign: "justify",
