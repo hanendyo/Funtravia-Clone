@@ -32,6 +32,7 @@ import User_Post from "../../graphQL/Query/Profile/post";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -123,10 +124,9 @@ export default function myfeed(props) {
     datapost?.user_post_paging?.datas
       ? ((data = datapost?.user_post_paging?.datas),
         props?.route?.params?.post_id
-          ? ((indeks = datapost?.user_post_paging?.datas.findIndex(
+          ? (indeks = datapost?.user_post_paging?.datas.findIndex(
               (k) => k.id === props?.route?.params?.post_id
-            )),
-            console.log(indeks))
+            ))
           : null)
       : null;
   }
@@ -569,78 +569,220 @@ export default function myfeed(props) {
       });
     }
   };
-  if (data.length > 0) {
+  if (loadingpost) {
     return (
-      <View
-        style={{
-          flex: 1,
-        }}
+      <SkeletonPlaceholder
+        speed={1000}
+        // highlightColor="d1d1d1"
+        // backgroundColor="red"
       >
-        <FlatList
-          ref={ref}
-          data={data}
-          onViewableItemsChanged={onViewRef.current}
-          viewabilityConfig={viewConfigRef.current}
+        <View
           style={{
-            paddingVertical: 7,
+            padding: 10,
+            marginHorizontal: 15,
+            marginVertical: 5,
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: "#f6f6f6",
+            paddingBottom: 20,
           }}
-          // initialNumToRender={7}
-          keyExtractor={(item) => item.id}
-          // extraData={liked}
-          refreshing={refreshing}
-          showsVerticalScrollIndicator={false}
-          initialScrollIndex={indeks}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => Refresh()}
-            />
-          }
-          // ListFooterComponent={
-          //   //   loadingPost ? (
-          //   <View
-          //     style={{
-          //       // position: 'absolute',
-          //       // bottom:0,
-          //       width: width,
-          //       justifyContent: "center",
-          //       alignItems: "center",
-          //       marginBottom: 30,
-          //     }}
-          //   >
-          //     <ActivityIndicator animating={true} size="large" color="#209fae" />
-          //   </View>
-          //   //   ) : null
-          // }
-          // initialNumToRender={1}
-          onEndReachedThreshold={1}
-          onEndReached={handleOnEndReached}
-          onEndThreshold={3000}
-          renderItem={({ item, index }) => (
+        >
+          <View
+            style={{
+              // height: 200,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
             <View
               style={{
-                width: Dimensions.get("window").width - 20,
-                backgroundColor: "#FFFFFF",
-                // flex: 1,
-                marginHorizontal: 10,
-                marginVertical: 5,
-                borderRadius: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: "#EEEEEE",
-                paddingBottom: 25,
+                flexDirection: "row",
               }}
             >
+              <SkeletonPlaceholder.Item
+                width={40}
+                height={40}
+                borderRadius={20}
+              />
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  marginVertical: 15,
-                  // justifyContent: 'space-evenly',
-                  alignContent: "center",
+                  marginLeft: 20,
                 }}
               >
-                <CustomImage
-                  isTouchable
+                <SkeletonPlaceholder.Item
+                  width={120}
+                  height={15}
+                  borderRadius={5}
+                />
+                <SkeletonPlaceholder.Item
+                  marginTop={6}
+                  width={80}
+                  height={15}
+                  borderRadius={5}
+                />
+              </View>
+            </View>
+            <SkeletonPlaceholder.Item width={30} height={15} borderRadius={5} />
+          </View>
+
+          <SkeletonPlaceholder.Item
+            marginVertical={15}
+            height={Dimensions.get("window").width - 50}
+            borderRadius={15}
+          ></SkeletonPlaceholder.Item>
+
+          <SkeletonPlaceholder.Item
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            marginVertical={10}
+            // marginHorizontal={15}
+          >
+            <SkeletonPlaceholder.Item flexDirection="row">
+              <SkeletonPlaceholder.Item
+                width={50}
+                height={25}
+                borderRadius={20}
+              />
+              <SkeletonPlaceholder.Item
+                width={50}
+                height={25}
+                borderRadius={20}
+                marginLeft={20}
+              />
+            </SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              width={50}
+              height={25}
+              borderRadius={20}
+            />
+          </SkeletonPlaceholder.Item>
+          <SkeletonPlaceholder.Item>
+            <SkeletonPlaceholder.Item
+              // width={Dimensions.get("window").width - 30}
+              height={15}
+              borderRadius={4}
+            />
+            <SkeletonPlaceholder.Item
+              // width={Dimensions.get("window").width - 30}
+              height={15}
+              borderRadius={4}
+              marginTop={6}
+            />
+            <SkeletonPlaceholder.Item
+              marginTop={6}
+              width={80}
+              height={15}
+              borderRadius={4}
+            />
+          </SkeletonPlaceholder.Item>
+        </View>
+      </SkeletonPlaceholder>
+    );
+  }
+
+  return (
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      <FlatList
+        ref={ref}
+        data={data}
+        onViewableItemsChanged={onViewRef.current}
+        viewabilityConfig={viewConfigRef.current}
+        style={
+          {
+            // paddingVertical: 7,
+          }
+        }
+        // initialNumToRender={7}
+        keyExtractor={(item) => item.id}
+        // extraData={liked}
+        refreshing={refreshing}
+        showsVerticalScrollIndicator={false}
+        initialScrollIndex={indeks}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        }
+        // ListFooterComponent={
+        //   //   loadingPost ? (
+        //   <View
+        //     style={{
+        //       // position: 'absolute',
+        //       // bottom:0,
+        //       width: width,
+        //       justifyContent: "center",
+        //       alignItems: "center",
+        //       marginBottom: 30,
+        //     }}
+        //   >
+        //     <ActivityIndicator animating={true} size="large" color="#209fae" />
+        //   </View>
+        //   //   ) : null
+        // }
+        // initialNumToRender={1}
+        onEndReachedThreshold={1}
+        onEndReached={handleOnEndReached}
+        onEndThreshold={3000}
+        renderItem={({ item, index }) => (
+          <View
+            style={{
+              width: Dimensions.get("window").width - 20,
+              backgroundColor: "#FFFFFF",
+              // flex: 1,
+              marginHorizontal: 10,
+              marginVertical: 5,
+              borderRadius: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: "#EEEEEE",
+              paddingBottom: 25,
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                marginVertical: 15,
+                // justifyContent: 'space-evenly',
+                alignContent: "center",
+              }}
+            >
+              <CustomImage
+                isTouchable
+                onPress={() => {
+                  datauser.id !== users?.id
+                    ? props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: datauser.id,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "ProfileTab",
+                        params: {
+                          token: token,
+                        },
+                      });
+                }}
+                customStyle={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 15,
+                  alignSelf: "center",
+                  marginLeft: 15,
+                }}
+                customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
+                source={{ uri: datauser.picture }}
+              />
+              <View
+                style={{
+                  justifyContent: "center",
+                  marginHorizontal: 10,
+                }}
+              >
+                <Text
                   onPress={() => {
                     datauser.id !== users?.id
                       ? props.navigation.push("ProfileStack", {
@@ -656,53 +798,42 @@ export default function myfeed(props) {
                           },
                         });
                   }}
-                  customStyle={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 15,
-                    alignSelf: "center",
-                    marginLeft: 15,
+                  size="description"
+                  style={{
+                    fontFamily: "Lato-Bold",
+                    // marginTop: 7,
                   }}
-                  customImageStyle={{ resizeMode: "cover", borderRadius: 50 }}
-                  source={{ uri: datauser.picture }}
-                />
+                >
+                  {datauser.first_name}{" "}
+                  {datauser.first_name ? datauser.last_name : null}
+                </Text>
                 <View
                   style={{
-                    justifyContent: "center",
-                    marginHorizontal: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
                   <Text
-                    onPress={() => {
-                      datauser.id !== users?.id
-                        ? props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: {
-                              idUser: datauser.id,
-                            },
-                          })
-                        : props.navigation.push("ProfileStack", {
-                            screen: "ProfileTab",
-                            params: {
-                              token: token,
-                            },
-                          });
-                    }}
-                    size="description"
+                    size="small"
                     style={{
-                      fontFamily: "Lato-Bold",
+                      fontFamily: "Lato-Regular",
                       // marginTop: 7,
                     }}
                   >
-                    {datauser.first_name}{" "}
-                    {datauser.first_name ? datauser.last_name : null}
+                    {duration(item.created_at)}
                   </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
+                  {item.location_name ? (
+                    <View
+                      style={{
+                        marginHorizontal: 5,
+                        backgroundColor: "black",
+                        height: 4,
+                        width: 4,
+                        borderRadius: 2,
+                      }}
+                    ></View>
+                  ) : null}
+                  {item.location_name ? (
                     <Text
                       size="small"
                       style={{
@@ -710,396 +841,331 @@ export default function myfeed(props) {
                         // marginTop: 7,
                       }}
                     >
-                      {duration(item.created_at)}
+                      <Truncate text={item.location_name} length={40} />
                     </Text>
-                    {item.location_name ? (
-                      <View
-                        style={{
-                          marginHorizontal: 5,
-                          backgroundColor: "black",
-                          height: 4,
-                          width: 4,
-                          borderRadius: 2,
-                        }}
-                      ></View>
-                    ) : null}
-                    {item.location_name ? (
-                      <Text
-                        size="small"
-                        style={{
-                          fontFamily: "Lato-Regular",
-                          // marginTop: 7,
-                        }}
-                      >
-                        <Truncate text={item.location_name} length={40} />
-                      </Text>
-                    ) : null}
-                  </View>
+                  ) : null}
                 </View>
-                <TouchableOpacity
-                  onPress={() => OptionOpen(item)}
-                  style={{
-                    position: "absolute",
-                    right: 15,
-                    top: 2,
-                    alignSelf: "center",
-                  }}
-                >
-                  <More height={20} width={20} />
-                </TouchableOpacity>
               </View>
-              <View
+              <TouchableOpacity
+                onPress={() => OptionOpen(item)}
                 style={{
-                  marginHorizontal: 10,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  // alignItems: "center",
-                  width: Dimensions.get("window").width - 40,
-                  // height: Dimensions.get("window").width - 40,
-                  minHeight: Dimensions.get("window").width - 155,
-                  // borderWidth: 0.5,
-                  borderColor: "#EEEEEE",
-                  borderRadius: 15,
+                  position: "absolute",
+                  right: 15,
+                  top: 2,
+                  alignSelf: "center",
                 }}
               >
-                {item.is_single == false && item.itinerary !== null ? (
-                  <RenderAlbum data={item} props={props} />
-                ) : (
-                  <RenderSinglePhoto
-                    data={item}
-                    props={props}
-                    play={play}
-                    muted={muted}
-                    setMuted={(e) => setMuted(e)}
-                    isFocused={isFocused}
-                  />
-                )}
-              </View>
+                <More height={20} width={20} />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                marginHorizontal: 10,
+                alignContent: "center",
+                justifyContent: "center",
+                // alignItems: "center",
+                width: Dimensions.get("window").width - 40,
+                // height: Dimensions.get("window").width - 40,
+                minHeight: Dimensions.get("window").width - 155,
+                // borderWidth: 0.5,
+                borderColor: "#EEEEEE",
+                borderRadius: 15,
+              }}
+            >
+              {item.is_single == false && item.itinerary !== null ? (
+                <RenderAlbum data={item} props={props} />
+              ) : (
+                <RenderSinglePhoto
+                  data={item}
+                  props={props}
+                  play={play}
+                  muted={muted}
+                  setMuted={(e) => setMuted(e)}
+                  isFocused={isFocused}
+                />
+              )}
+            </View>
 
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "white",
+                marginTop: 17,
+              }}
+            >
               <View
                 style={{
-                  width: "100%",
+                  flexDirection: "row",
                   backgroundColor: "white",
-                  marginTop: 17,
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
                 }}
               >
                 <View
                   style={{
                     flexDirection: "row",
-                    backgroundColor: "white",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 10,
+                    width: "50%",
+                    alignSelf: "flex-start",
+                    alignContent: "space-between",
+                    alignItems: "center",
+                    // justifyContent: 'space-evenly',
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      width: "50%",
-                      alignSelf: "flex-start",
-                      alignContent: "space-between",
-                      alignItems: "center",
-                      // justifyContent: 'space-evenly',
-                    }}
-                  >
-                    {item.liked ? (
-                      <Button
-                        onPress={() => _unliked(item.id, index, item)}
-                        type="icon"
-                        // variant="transparent"
-                        position="left"
-                        size="small"
-                        style={{
-                          paddingHorizontal: 10,
-                          marginRight: 15,
-                          borderRadius: 16,
-                          backgroundColor: "#F2DAE5",
-                          // minidth: 70,
-                          // right: 10,
-                        }}
-                      >
-                        <LikeRed height={15} width={15} />
-                        <Text
-                          type="black"
-                          size="label"
-                          style={{ marginHorizontal: 5, color: "#BE3737" }}
-                        >
-                          {item.response_count}
-                        </Text>
-                      </Button>
-                    ) : (
-                      <Button
-                        onPress={() => _liked(item.id, index, item)}
-                        type="icon"
-                        position="left"
-                        size="small"
-                        color="tertiary"
-                        style={{
-                          paddingHorizontal: 10,
-                          marginRight: 15,
-                          borderRadius: 16,
-                          // right: 10,
-                        }}
-                      >
-                        <LikeBlack height={15} width={15} />
-                        <Text
-                          type="black"
-                          size="label"
-                          style={{ marginHorizontal: 7 }}
-                        >
-                          {item.response_count}
-                        </Text>
-                      </Button>
-                    )}
-
+                  {item.liked ? (
                     <Button
-                      onPress={() => viewcomment(item)}
+                      onPress={() => _unliked(item.id, index, item)}
                       type="icon"
-                      variant="transparent"
+                      // variant="transparent"
                       position="left"
                       size="small"
                       style={{
-                        paddingHorizontal: 2,
-
+                        paddingHorizontal: 10,
+                        marginRight: 15,
+                        borderRadius: 16,
+                        backgroundColor: "#F2DAE5",
+                        // minidth: 70,
                         // right: 10,
                       }}
                     >
-                      <CommentBlack height={15} width={15} />
+                      <LikeRed height={15} width={15} />
+                      <Text
+                        type="black"
+                        size="label"
+                        style={{ marginHorizontal: 5, color: "#BE3737" }}
+                      >
+                        {item.response_count}
+                      </Text>
+                    </Button>
+                  ) : (
+                    <Button
+                      onPress={() => _liked(item.id, index, item)}
+                      type="icon"
+                      position="left"
+                      size="small"
+                      color="tertiary"
+                      style={{
+                        paddingHorizontal: 10,
+                        marginRight: 15,
+                        borderRadius: 16,
+                        // right: 10,
+                      }}
+                    >
+                      <LikeBlack height={15} width={15} />
                       <Text
                         type="black"
                         size="label"
                         style={{ marginHorizontal: 7 }}
                       >
-                        {item.comment_count}
+                        {item.response_count}
                       </Text>
                     </Button>
-                  </View>
+                  )}
 
                   <Button
-                    onPress={() =>
-                      shareAction({ from: "feed", target: item.id })
-                    }
+                    onPress={() => viewcomment(item)}
                     type="icon"
                     variant="transparent"
                     position="left"
                     size="small"
                     style={{
-                      right: 10,
                       paddingHorizontal: 2,
+
+                      // right: 10,
                     }}
                   >
-                    <ShareBlack height={17} width={17} />
-                    {/* <Text size="small" style={{ marginLeft: 3 }}>
-										{t("share")}
-									</Text> */}
+                    <CommentBlack height={15} width={15} />
+                    <Text
+                      type="black"
+                      size="label"
+                      style={{ marginHorizontal: 7 }}
+                    >
+                      {item.comment_count}
+                    </Text>
                   </Button>
                 </View>
-                <View
+
+                <Button
+                  onPress={() => shareAction({ from: "feed", target: item.id })}
+                  type="icon"
+                  variant="transparent"
+                  position="left"
+                  size="small"
                   style={{
-                    width: "100%",
-                    padding: 10,
-                    flexDirection: "row",
+                    right: 10,
+                    paddingHorizontal: 2,
                   }}
-                  More
                 >
-                  {item.is_single == false && item.itinerary !== null ? (
-                    <View>
-                      <Pressable
-                        onPress={() => goToItinerary(item)}
-                        style={{
-                          flexDirection: "row",
-                          marginBottom: 10,
-                        }}
-                      >
-                        <View
-                          style={{
-                            backgroundColor: "#209fae",
-                            height: 23,
-                            width: 7,
-                            borderRadius: 4,
-                            marginRight: 10,
-                            marginLeft: 2,
-                          }}
-                        />
-                        <Text type="bold" size="title">
-                          {item.itinerary.name}
-                        </Text>
-                      </Pressable>
-                      {item.caption ? (
-                        <ReadMore
-                          numberOfLines={3}
-                          renderTruncatedFooter={ReadMorehendle}
-                          renderRevealedFooter={ReadLesshendle}
-                          // onReady={this._handleTextReady}
-                        >
-                          <Text
-                            size="label"
-                            style={{
-                              textAlign: "left",
-                              lineHeight: 20,
-                            }}
-                          >
-                            {item.caption}
-                          </Text>
-                        </ReadMore>
-                      ) : null}
-                    </View>
-                  ) : item.caption ? (
-                    <ReadMore
-                      numberOfLines={3}
-                      renderTruncatedFooter={ReadMorehendle}
-                      renderRevealedFooter={ReadLesshendle}
-                      // onReady={this._handleTextReady}
+                  <ShareBlack height={17} width={17} />
+                  {/* <Text size="small" style={{ marginLeft: 3 }}>
+                                    {t("share")}
+                                </Text> */}
+                </Button>
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  flexDirection: "row",
+                }}
+                More
+              >
+                {item.is_single == false && item.itinerary !== null ? (
+                  <View>
+                    <Pressable
+                      onPress={() => goToItinerary(item)}
+                      style={{
+                        flexDirection: "row",
+                        marginBottom: 10,
+                      }}
                     >
-                      <Text
-                        size="label"
+                      <View
                         style={{
-                          textAlign: "left",
-                          lineHeight: 20,
+                          backgroundColor: "#209fae",
+                          height: 23,
+                          width: 7,
+                          borderRadius: 4,
+                          marginRight: 10,
+                          marginLeft: 2,
                         }}
+                      />
+                      <Text type="bold" size="title">
+                        {item.itinerary.name}
+                      </Text>
+                    </Pressable>
+                    {item.caption ? (
+                      <ReadMore
+                        numberOfLines={3}
+                        renderTruncatedFooter={ReadMorehendle}
+                        renderRevealedFooter={ReadLesshendle}
+                        // onReady={this._handleTextReady}
                       >
                         <Text
-                          type="bold"
                           size="label"
                           style={{
-                            marginRight: 5,
+                            textAlign: "left",
+                            lineHeight: 20,
                           }}
                         >
-                          {datauser.first_name}{" "}
-                          {datauser.first_name ? datauser.last_name : null}{" "}
+                          {item.caption}
                         </Text>
-                        {item.caption}
+                      </ReadMore>
+                    ) : null}
+                  </View>
+                ) : item.caption ? (
+                  <ReadMore
+                    numberOfLines={3}
+                    renderTruncatedFooter={ReadMorehendle}
+                    renderRevealedFooter={ReadLesshendle}
+                    // onReady={this._handleTextReady}
+                  >
+                    <Text
+                      size="label"
+                      style={{
+                        textAlign: "left",
+                        lineHeight: 20,
+                      }}
+                    >
+                      <Text
+                        type="bold"
+                        size="label"
+                        style={{
+                          marginRight: 5,
+                        }}
+                      >
+                        {datauser.first_name}{" "}
+                        {datauser.first_name ? datauser.last_name : null}{" "}
                       </Text>
-                    </ReadMore>
-                  ) : null}
-                </View>
+                      {item.caption}
+                    </Text>
+                  </ReadMore>
+                ) : null}
               </View>
             </View>
-
-            // <Item item={item} selected={selected} index={index} />
-          )}
-        />
-
-        <Modal
-          onBackdropPress={() => {
-            setModalmenu(false);
-          }}
-          onRequestClose={() => setModalmenu(false)}
-          // onDismiss={() => setModalmenu(false)}
-          animationIn="fadeInDown"
-          animationOut="fadeInDown"
-          isVisible={modalmenu}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalmenu(false);
-                shareAction({
-                  from: "feed",
-                  target: selectedOption.id,
-                });
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("shareTo")}...
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalmenu(false);
-                CopyLink({
-                  from: "feed",
-                  target: selectedOption.id,
-                });
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("copyLink")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalmenu(false),
-                  props.navigation.push("FeedStack", {
-                    screen: "EditPost",
-                    params: {
-                      datapost: selectedOption,
-                    },
-                  });
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("edit")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalhapus(true);
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{ color: "#d75995" }}
-              >
-                {t("delete")}
-              </Text>
-            </TouchableOpacity>
           </View>
-        </Modal>
 
-        <Modal
-          onBackdropPress={() => {
-            setModalmenuother(false);
-          }}
-          onRequestClose={() => setModalmenuother(false)}
-          onDismiss={() => setModalmenuother(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalmenuother}
+          // <Item item={item} selected={selected} index={index} />
+        )}
+      />
+
+      <Modal
+        onBackdropPress={() => {
+          setModalmenu(false);
+        }}
+        onRequestClose={() => setModalmenu(false)}
+        // onDismiss={() => setModalmenu(false)}
+        animationIn="fadeInDown"
+        animationOut="fadeInDown"
+        isVisible={modalmenu}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 80,
+            padding: 20,
           }}
         >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
-            }}
-          >
-            {/* <TouchableOpacity
+          <TouchableOpacity
             style={{
               paddingVertical: 10,
             }}
             onPress={() => {
-              setModalmenuother(false);
+              setModalmenu(false);
+              shareAction({
+                from: "feed",
+                target: selectedOption.id,
+              });
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("shareTo")}...
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenu(false);
+              CopyLink({
+                from: "feed",
+                target: selectedOption.id,
+              });
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("copyLink")}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenu(false),
+                props.navigation.push("FeedStack", {
+                  screen: "EditPost",
+                  params: {
+                    datapost: selectedOption,
+                  },
+                });
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("edit")}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalhapus(true);
             }}
           >
             <Text
@@ -1107,10 +1173,122 @@ export default function myfeed(props) {
               type="regular"
               style={{ color: "#d75995" }}
             >
-              {t("reportThisPost")}
+              {t("delete")}
             </Text>
-          </TouchableOpacity> */}
-            {/* <TouchableOpacity
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal
+        onBackdropPress={() => {
+          setModalmenuother(false);
+        }}
+        onRequestClose={() => setModalmenuother(false)}
+        onDismiss={() => setModalmenuother(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalmenuother}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 80,
+            padding: 20,
+          }}
+        >
+          {/* <TouchableOpacity
+        style={{
+          paddingVertical: 10,
+        }}
+        onPress={() => {
+          setModalmenuother(false);
+        }}
+      >
+        <Text
+          size="description"
+          type="regular"
+          style={{ color: "#d75995" }}
+        >
+          {t("reportThisPost")}
+        </Text>
+      </TouchableOpacity> */}
+          {/* <TouchableOpacity
+        style={{
+          paddingVertical: 10,
+        }}
+        onPress={() => {
+          setModalmenuother(false);
+        }}
+      >
+        <Text size="description" type="regular" style={{}}>
+          {t("blockUser")}
+        </Text>
+      </TouchableOpacity> */}
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() =>
+              shareAction({
+                from: "feed",
+                target: selectedOption.id,
+              })
+            }
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("shareTo")}...
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => {
+              setModalmenuother(false);
+              CopyLink({
+                from: "feed",
+                target: selectedOption.id,
+              });
+            }}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("copyLink")}
+            </Text>
+          </TouchableOpacity>
+          {datasFollow &&
+          selectedOption &&
+          selectedOption.user &&
+          datasFollow.findIndex((k) => k["id"] == selectedOption?.user?.id) ==
+            -1 ? (
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => _follow(selectedOption.user.id)}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("follow")}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => _unfollow(selectedOption.user.id)}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("unfollow")}
+              </Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
             style={{
               paddingVertical: 10,
             }}
@@ -1119,135 +1297,62 @@ export default function myfeed(props) {
             }}
           >
             <Text size="description" type="regular" style={{}}>
-              {t("blockUser")}
+              {t("hidePost")}
             </Text>
-          </TouchableOpacity> */}
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() =>
-                shareAction({
-                  from: "feed",
-                  target: selectedOption.id,
-                })
-              }
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("shareTo")}...
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalmenuother(false);
-                CopyLink({
-                  from: "feed",
-                  target: selectedOption.id,
-                });
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("copyLink")}
-              </Text>
-            </TouchableOpacity>
-            {datasFollow &&
-            selectedOption &&
-            selectedOption.user &&
-            datasFollow.findIndex((k) => k["id"] == selectedOption?.user?.id) ==
-              -1 ? (
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 10,
-                }}
-                onPress={() => _follow(selectedOption.user.id)}
-              >
-                <Text size="description" type="regular" style={{}}>
-                  {t("follow")}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 10,
-                }}
-                onPress={() => _unfollow(selectedOption.user.id)}
-              >
-                <Text size="description" type="regular" style={{}}>
-                  {t("unfollow")}
-                </Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalmenuother(false);
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("hidePost")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
-        <Modal
-          onBackdropPress={() => {
-            setModalhapus(false);
-          }}
-          onRequestClose={() => setModalhapus(false)}
-          onDismiss={() => setModalhapus(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalhapus}
+      <Modal
+        onBackdropPress={() => {
+          setModalhapus(false);
+        }}
+        onRequestClose={() => setModalhapus(false)}
+        onDismiss={() => setModalhapus(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalhapus}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 60,
+            padding: 20,
           }}
         >
+          <Text>{t("alertHapusPost")}</Text>
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingVertical: 20,
+              paddingHorizontal: 40,
             }}
           >
-            <Text>{t("alertHapusPost")}</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
+            <Button
+              onPress={() => {
+                _deletepost(selectedOption);
               }}
-            >
-              <Button
-                onPress={() => {
-                  _deletepost(selectedOption);
-                }}
-                color="primary"
-                text={t("delete")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalhapus(false);
-                }}
-                color="secondary"
-                variant="bordered"
-                text={t("cancel")}
-              ></Button>
-            </View>
+              color="primary"
+              text={t("delete")}
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalhapus(false);
+              }}
+              color="secondary"
+              variant="bordered"
+              text={t("cancel")}
+            ></Button>
           </View>
-        </Modal>
-      </View>
-    );
-  } else {
-    return <Text>Loading</Text>;
-  }
+        </View>
+      </Modal>
+    </View>
+  );
 }

@@ -514,5 +514,6 @@
     "howExperience": "How was your experience at",
     "addFoto": "Add photo",
     "shareUs": "Share with us",
-    "tellUs": "Tell us your feedback"
+    "tellUs": "Tell us your feedback",
+    "messagesEmpty": "messages cannot be empty"
 }

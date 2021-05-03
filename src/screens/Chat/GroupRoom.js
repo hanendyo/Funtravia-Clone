@@ -22,7 +22,12 @@ import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import Toast from "react-native-fast-toast";
+import { RNToasty } from "react-native-toasty";
+import { useTranslation } from "react-i18next";
+
 export default function Room({ navigation, route }) {
+    const toastRef = useRef();
     console.log(route.params);
     const { width, height } = Dimensions.get("screen");
     const [room, setRoom] = useState(route.params.room_id);
@@ -35,6 +40,7 @@ export default function Room({ navigation, route }) {
     let [chat, setChat] = useState(null);
     let [message, setMessage] = useState([]);
     let flatListRef = useRef();
+    const { t } = useTranslation();
 
     const headerOptions = {
         headerShown: true,
@@ -47,16 +53,7 @@ export default function Room({ navigation, route }) {
         },
         headerTitleStyle: null,
         headerLeft: () => (
-            <TouchableOpacity
-                onPress={() =>
-                    navigation.navigate("ChatStack", {
-                        screen: "GroupDetail",
-                        params: {
-                            room_id: route.params.room_id,
-                            from: route.params.from,
-                        },
-                    })
-                }
+            <View
                 style={{
                     flexDirection: "row",
                     justifyContent: "center",
@@ -67,15 +64,6 @@ export default function Room({ navigation, route }) {
                 }}
             >
                 <TouchableOpacity
-                    onPress={() =>
-                        navigation.navigate("ChatStack", {
-                            screen: "GroupDetail",
-                            params: {
-                                room_id: route.params.room_id,
-                                from: route.params.from,
-                            },
-                        })
-                    }
                     style={{
                         height: 40,
                         width: 40,
@@ -87,7 +75,7 @@ export default function Room({ navigation, route }) {
                 >
                     <Arrowbackwhite height={20} width={20} />
                 </TouchableOpacity>
-                <TouchableOpacity
+                <Pressable
                     onPress={() =>
                         navigation.navigate("ChatStack", {
                             screen: "GroupDetail",
@@ -97,24 +85,44 @@ export default function Room({ navigation, route }) {
                             },
                         })
                     }
+                    style={{
+                        flexDirection: "row",
+                        borderWidth: 1,
+                        borderColor: "#209fae",
+                        width: Dimensions.get("screen").width - 100,
+                        height: 45,
+                        alignItems: "center",
+                        backgroundColor: "#209fae",
+                        zIndex: 150,
+                    }}
                 >
-                    <FunImage
-                        source={{ uri: route.params.picture }}
-                        style={{ width: 40, height: 40, borderRadius: 20 }}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() =>
-                        navigation.navigate("ChatStack", {
-                            screen: "GroupDetail",
-                            params: {
-                                room_id: route.params.room_id,
-                                from: route.params.from,
-                            },
-                        })
-                    }
-                >
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate("ChatStack", {
+                                screen: "GroupDetail",
+                                params: {
+                                    room_id: route.params.room_id,
+                                    from: route.params.from,
+                                },
+                            })
+                        }
+                    >
+                        <FunImage
+                            source={{ uri: route.params.picture }}
+                            style={{ width: 40, height: 40, borderRadius: 20 }}
+                        />
+                    </TouchableOpacity>
+
                     <Text
+                        onPress={() =>
+                            navigation.navigate("ChatStack", {
+                                screen: "GroupDetail",
+                                params: {
+                                    room_id: route.params.room_id,
+                                    from: route.params.from,
+                                },
+                            })
+                        }
                         style={{
                             fontFamily: "Lato-Bold",
                             fontSize: 16,
@@ -125,8 +133,8 @@ export default function Room({ navigation, route }) {
                     >
                         {route.params.name}
                     </Text>
-                </TouchableOpacity>
-            </TouchableOpacity>
+                </Pressable>
+            </View>
         ),
         headerLeftContainerStyle: null,
         headerRight: null,
@@ -234,7 +242,7 @@ export default function Room({ navigation, route }) {
 
     const submitChatMessage = async () => {
         if (button) {
-            if (chat && chat !== "") {
+            if (chat && chat.replace(/\s/g, "").length) {
                 await setButton(false);
                 let chatData = {
                     room: room,
@@ -258,6 +266,15 @@ export default function Room({ navigation, route }) {
                     }
                 }, 250);
                 await setButton(true);
+            } else {
+                // toastRef.current?.show(t("messagesEmpty"), {
+                //     style: { backgroundColor: "#464646" },
+                //     textStyle: { fontSize: 14 },
+                // });
+                RNToasty.Show({
+                    title: t("messagesEmpty"),
+                    position: "bottom",
+                });
             }
         }
     };
@@ -463,6 +480,7 @@ export default function Room({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+            <Toast ref={toastRef} maxToasts={2} placement="bottom" />
             <FlatList
                 ref={flatListRef}
                 data={message}

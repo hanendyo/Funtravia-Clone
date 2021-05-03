@@ -13,6 +13,7 @@ import {
     Alert,
     Dimensions,
     ActivityIndicator,
+    Pressable,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
@@ -21,8 +22,13 @@ import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import Toast from "react-native-fast-toast";
+import { useTranslation } from "react-i18next";
+import { RNToasty } from "react-native-toasty";
 
 export default function Room({ navigation, route }) {
+    const { t } = useTranslation();
+    const toastRef = useRef();
     const { width, height } = Dimensions.get("screen");
     const [room, setRoom] = useState(route.params.room_id);
     const [receiver, setReceiver] = useState(route.params.receiver);
@@ -65,23 +71,52 @@ export default function Room({ navigation, route }) {
                 >
                     <Arrowbackwhite height={20} width={20} />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <FunImage
-                        source={{ uri: route.params.picture }}
-                        style={{ width: 40, height: 40, borderRadius: 20 }}
-                    />
-                </TouchableOpacity>
-                <Text
+                <Pressable
+                    onPress={() => {
+                        navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                                idUser: route.params.receiver,
+                            },
+                        });
+                    }}
                     style={{
-                        fontFamily: "Lato-Bold",
-                        fontSize: 14,
-                        color: "white",
-                        alignSelf: "center",
-                        paddingHorizontal: 10,
+                        flexDirection: "row",
+                        // borderWidth: 1,
+                        width: Dimensions.get("screen").width - 100,
+                        height: 45,
+                        alignItems: "center",
+                        backgroundColor: "#209fae",
+                        zIndex: 100,
                     }}
                 >
-                    {route.params.name}
-                </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                    idUser: route.params.receiver,
+                                },
+                            });
+                        }}
+                    >
+                        <FunImage
+                            source={{ uri: route.params.picture }}
+                            style={{ width: 40, height: 40, borderRadius: 20 }}
+                        />
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            fontFamily: "Lato-Bold",
+                            fontSize: 14,
+                            color: "white",
+                            alignSelf: "center",
+                            paddingHorizontal: 10,
+                        }}
+                    >
+                        {route.params.name}
+                    </Text>
+                </Pressable>
             </View>
         ),
         headerRightStyle: {
@@ -166,7 +201,7 @@ export default function Room({ navigation, route }) {
 
     const submitChatMessage = async () => {
         if (button) {
-            if (chat && chat !== "") {
+            if (chat && chat.replace(/\s/g, "").length) {
                 await setButton(false);
                 let chatData = {
                     room: room,
@@ -189,6 +224,15 @@ export default function Room({ navigation, route }) {
                     }
                 }, 250);
                 await setButton(true);
+            } else {
+                // toastRef.current?.show(t("messagesEmpty"), {
+                //     style: { backgroundColor: "#464646" },
+                //     textStyle: { fontSize: 14 },
+                // });
+                RNToasty.Show({
+                    title: t("messagesEmpty"),
+                    position: "bottom",
+                });
             }
         }
     };
@@ -442,6 +486,7 @@ export default function Room({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+            <Toast ref={toastRef} />
             <Errors
                 modals={modalError}
                 setModals={(e) => setModalError(e)}
