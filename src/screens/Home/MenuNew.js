@@ -64,7 +64,7 @@ export default function MenuNew({ props }) {
       >
         <TouchableOpacity
           style={styles.menu}
-          onPress={() => props.navigation.navigate("listevent")}
+          onPress={() => props.navigation.navigate("listEventHome")}
         >
           <EventHome width="65" height="65" />
         </TouchableOpacity>
