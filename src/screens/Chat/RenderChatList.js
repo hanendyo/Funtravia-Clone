@@ -54,6 +54,8 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
         return dateChat;
     };
 
+    console.log(dataRes);
+
     if (dataRes && dataRes.length < 1) {
         return (
             <View style={{ flex: 1 }}>
@@ -85,7 +87,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                 data={dataRes}
                 renderItem={({ item }) => (
                     <View key={`${item.id}_child`}>
-                        {item?.recent !== null ? (
+                        {item.recent ? (
                             <TouchableOpacity
                                 onLongPress={() =>
                                     LongPressFunc(change(item), item.id)
