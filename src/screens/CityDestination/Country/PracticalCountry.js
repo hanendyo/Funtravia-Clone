@@ -19,6 +19,7 @@ import PracticalCountries from "../../../graphQL/Query/Countries/PracticalCountr
 import { TabBar, TabView } from "react-native-tab-view";
 import { Button, Text } from "../../../component";
 import { Arrowbackwhite } from "../../../assets/svg";
+import Ripple from "react-native-material-ripple";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -32,7 +33,7 @@ const SafeStatusBar = Platform.select({
 export default function PracticalInformation(props) {
   let [token, setToken] = useState("");
   const [loadings, setloadings] = useState(true);
-  const [tabIndex, setIndex] = useState(0);
+  const [tabIndex, setIndex] = useState(props.route.params.indexcountry);
   const [routes, setRoutes] = useState([0]);
   const [tabData] = useState(Array(1).fill(0));
   const [tabData1] = useState(Array(1).fill(0));
@@ -40,6 +41,7 @@ export default function PracticalInformation(props) {
   const listOffset = useRef({});
   const _tabIndex = useRef(0);
   const isListGliding = useRef(false);
+  let scrollRef = useRef();
 
   const [canScroll, setCanScroll] = useState(true);
   const headerScrollY = useRef(new Animated.Value(0)).current;
@@ -87,6 +89,12 @@ export default function PracticalInformation(props) {
   const { t, i18n } = useTranslation();
   const [actives, setActives] = useState(props.route.params.active);
   useEffect(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollToIndex({
+        index: props.route.params.indexcountry,
+        animated: true,
+      });
+    }, 3000);
     refresh();
   }, []);
 
@@ -122,8 +130,6 @@ export default function PracticalInformation(props) {
       },
     }
   );
-
-  console.log("id", props.route.params.country_id);
 
   const listPanResponder = useRef(
     PanResponder.create({
@@ -204,106 +210,105 @@ export default function PracticalInformation(props) {
 
     return (
       <View style={{ padding: 20 }}>
-        {
-          datas && datas.information_article_detail.length
-            ? datas.information_article_detail.map((i, index) => {
-                return (
-                  <View key={index}>
-                    {i.type === "image" ? (
-                      <View>
-                        {i.title ? (
-                          <Text
-                            size="label"
-                            type="bold"
-                            style={{
-                              marginBottom: 5,
-                            }}
-                          >
-                            {i.title}
-                          </Text>
-                        ) : null}
+        {datas && datas.information_article_detail.length
+          ? datas.information_article_detail.map((i, index) => {
+              return (
+                <View key={index}>
+                  {i.type === "image" ? (
+                    <View>
+                      {i.title ? (
                         <Text
-                          size="description"
-                          type="regular"
+                          size="label"
+                          type="bold"
                           style={{
-                            textAlign: "justify",
-                            lineHeight: 21,
+                            marginBottom: 5,
+                          }}
+                        >
+                          {i.title}
+                        </Text>
+                      ) : null}
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{
+                          textAlign: "justify",
+                          lineHeight: 21,
+                          color: "#464646",
+                        }}
+                      >
+                        {i.text ? i.text : ""}
+                      </Text>
+                      <View style={{ alignItems: "center" }}>
+                        <Image
+                          source={i.image ? { uri: i.image } : default_image}
+                          resizeMode={"cover"}
+                          style={{
+                            borderWidth: 0.4,
+                            borderColor: "#d3d3d3",
+                            marginVertical: 10,
+                            height: Dimensions.get("screen").width * 0.8,
+                            width: "100%",
+                          }}
+                        />
+                      </View>
+                    </View>
+                  ) : (
+                    <View>
+                      {i.title ? (
+                        <Text
+                          size="label"
+                          type="bold"
+                          style={{
+                            marginBottom: 10,
+
+                            // marginVertical: 10,
+
                             color: "#464646",
                           }}
                         >
-                          {i.text ? i.text : ""}
+                          {i.title}
                         </Text>
-                        <View style={{ alignItems: "center" }}>
-                          <Image
-                            source={i.image ? { uri: i.image } : default_image}
-                            resizeMode={"cover"}
-                            style={{
-                              borderWidth: 0.4,
-                              borderColor: "#d3d3d3",
-                              marginVertical: 10,
-                              height: Dimensions.get("screen").width * 0.8,
-                              width: "100%",
-                            }}
-                          />
-                        </View>
-                      </View>
-                    ) : (
-                      <View>
-                        {i.title ? (
-                          <Text
-                            size="label"
-                            type="bold"
-                            style={{
-                              marginBottom: 10,
-
-                              // marginVertical: 10,
-
-                              color: "#464646",
-                            }}
-                          >
-                            {i.title}
-                          </Text>
-                        ) : null}
-                        <Text
-                          size="description"
-                          type="regular"
-                          style={{
-                            lineHeight: 21,
-                            textAlign: "justify",
-                            // fontFamily: "Lato-Regular",
-                            // fontSize: 13,
-                            color: "#464646",
-                          }}
-                        >
-                          {i.text ? i.text : ""}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                );
-              })
-            : null
-          //  (
-          //   <View style={{ alignItems: "center" }}>
-          //     <Text
-          //       type="regular"
-          //       size="title"
-          //       style={{
-          //         textAlign: "justify",
-          //         color: "#464646",
-          //       }}
-          //     >
-          //       {t("noArticle")}
-          //     </Text>
-          //   </View>
-          // )
+                      ) : null}
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{
+                          lineHeight: 21,
+                          textAlign: "justify",
+                          // fontFamily: "Lato-Regular",
+                          // fontSize: 13,
+                          color: "#464646",
+                        }}
+                      >
+                        {i.text ? i.text : ""}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })
+          : null
+        //  (
+        //   <View style={{ alignItems: "center" }}>
+        //     <Text
+        //       type="regular"
+        //       size="title"
+        //       style={{
+        //         textAlign: "justify",
+        //         color: "#464646",
+        //       }}
+        //     >
+        //       {t("noArticle")}
+        //     </Text>
+        //   </View>
+        // )
         }
       </View>
     );
   };
 
   const renderScene = ({ route }) => {
-    const focused = route.key === routes[tabIndex].key;
+    const focused = route.key === routes[tabIndex];
     let numCols;
     let data;
     let renderItem;
@@ -540,7 +545,65 @@ export default function PracticalInformation(props) {
           width: "100%",
         }}
       >
-        <ScrollView
+        <FlatList
+          key={"listtabbar"}
+          ref={scrollRef}
+          data={props.navigationState.routes}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{
+            backgroundColor: "#DAF0F2",
+            borderBottomWidth: 0.5,
+          }}
+          renderItem={({ item, index }) => (
+            <Ripple
+              onPress={() => {
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  // y: 0,
+                  // x: 100,
+                  index: index,
+                  animated: true,
+                });
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#DAF0F2",
+                  alignContent: "center",
+                  paddingHorizontal: 15,
+                  width:
+                    props.navigationState.routes.length < 2
+                      ? Dimensions.get("screen").width
+                      : props.navigationState.routes.length < 3
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length < 4
+                      ? Dimensions.get("screen").width * 0.33
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 0.7,
+                      height: 38,
+                      paddingTop: 2,
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  {item.title}
+                </Text>
+              </View>
+            </Ripple>
+          )}
+        />
+        {/* <ScrollView
           horizontal={true}
           style={{
             width: "100%",
@@ -571,7 +634,7 @@ export default function PracticalInformation(props) {
             renderLabel={renderLabel}
             indicatorStyle={styles.indicator}
           />
-        </ScrollView>
+        </ScrollView> */}
       </Animated.View>
     );
   };
@@ -607,6 +670,12 @@ export default function PracticalInformation(props) {
         onIndexChange={(id) => {
           _tabIndex.current = id;
           setIndex(id);
+          scrollRef.current?.scrollToIndex({
+            // y: 0,
+            // x: 100,
+            index: id,
+            animated: true,
+          });
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
