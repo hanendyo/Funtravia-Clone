@@ -62,6 +62,7 @@ import LinearGradient from "react-native-linear-gradient";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -92,8 +93,9 @@ export default function CityDetail(props) {
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
 
-  let ToIndex = useRef();
+  let scrollRef = useRef();
   let [full, setFull] = useState(false);
+
   // console.log("bahasa", i18n.language);
   /**
    * ref
@@ -173,7 +175,7 @@ export default function CityDetail(props) {
     refreshData();
     setTimeout(() => {
       setLoadings(false);
-    }, 5000);
+    }, 2000);
   }, []);
 
   useEffect(() => {
@@ -553,6 +555,7 @@ export default function CityDetail(props) {
       Alert.alert("Please Login");
     }
   };
+
   // RenderGeneral
   const RenderGeneral = ({}) => {
     let render = [];
@@ -2607,10 +2610,6 @@ export default function CityDetail(props) {
     );
   };
 
-  const scrollTo = (config) => {
-    console.log(ToIndex.current.scrollTo(config));
-  };
-
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -2627,37 +2626,63 @@ export default function CityDetail(props) {
           width: "100%",
         }}
       >
-        <ScrollView
-          ref={ToIndex}
-          horizontal={props.navigationState.routes.length < 4 ? false : true}
+        <FlatList
+          ref={scrollRef}
+          data={props.navigationState.routes}
+          horizontal={true}
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomColor: "#209FAE",
             borderBottomWidth: 0.5,
           }}
-        >
-          <TabBar
-            {...props}
-            onTabPress={({ route, preventDefault }) => {
-              if (isListGliding.current) {
-                preventDefault();
-              }
-            }}
-            style={{
-              elevation: 0,
-              shadowOpacity: 0,
-              backgroundColor: "white",
-              height: TabBarHeight,
-            }}
-            renderLabel={renderLabel}
-            indicatorStyle={
-              props.navigationState.routes.length < 4
-                ? styles.indicatormin
-                : styles.indicatormax
-            }
-          />
-        </ScrollView>
+          renderItem={({ item, index }) => (
+            <Ripple
+              onPress={() => {
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  // y: 0,
+                  // x: 100,
+                  index: index,
+                  animated: true,
+                });
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "white",
+                  alignContent: "center",
+                  paddingHorizontal: 15,
+                  width:
+                    props.navigationState.routes.length < 2
+                      ? Dimensions.get("screen").width
+                      : props.navigationState.routes.length < 3
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length < 4
+                      ? Dimensions.get("screen").width * 0.33
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 0.7,
+                      height: 38,
+                      paddingTop: 2,
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  {item.key}
+                </Text>
+              </View>
+            </Ripple>
+          )}
+        />
       </Animated.View>
     );
   };
@@ -2670,6 +2695,12 @@ export default function CityDetail(props) {
         onIndexChange={(id) => {
           _tabIndex.current = id;
           setIndex(id);
+          scrollRef.current?.scrollToIndex({
+            // y: 0,
+            // x: 100,
+            index: id,
+            animated: true,
+          });
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
@@ -2739,202 +2770,236 @@ export default function CityDetail(props) {
 
   let [loadings, setLoadings] = useState(true);
 
-  // if (loadings) {
-  //   return (
-  //     <SkeletonPlaceholder>
-  //       <View
-  //         style={{
-  //           width: Dimensions.get("screen").width,
-  //           paddingHorizontal: 0,
-  //         }}
-  //       >
-  //         <View
-  //           style={{
-  //             height: 270,
-  //             width: "100%",
-  //             borderRadius: 10,
-  //             marginTop: 10,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 10,
-  //             width: 150,
-  //             borderRadius: 10,
-  //             marginLeft: 10,
-  //             marginTop: 10,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 10,
-  //             width: 150,
-  //             borderRadius: 10,
-  //             marginLeft: 15,
-  //             marginTop: 2,
-  //             marginBottom: 10,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 5,
-  //             width: "100%",
-  //             marginTop: 5,
-  //             borderRadius: 10,
-  //             marginBottom: 10,
-  //           }}
-  //         ></View>
-  //         <View style={{ flexDirection: "row" }}>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 10,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 10,
-  //             }}
-  //           ></View>
-  //         </View>
-  //         <View
-  //           style={{
-  //             height: 5,
-  //             width: "100%",
-  //             marginTop: 5,
-  //             borderRadius: 10,
-  //             marginBottom: 10,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 10,
-  //             width: 150,
-  //             marginTop: 10,
-  //             borderRadius: 10,
-  //             marginLeft: 20,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 8,
-  //             width: 300,
-  //             marginTop: 5,
-  //             borderRadius: 10,
-  //             marginLeft: 20,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 8,
-  //             width: 300,
-  //             marginTop: 5,
-  //             borderRadius: 10,
-  //             marginLeft: 20,
-  //           }}
-  //         ></View>
+  if (loadings) {
+    return (
+      <SkeletonPlaceholder>
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 0,
+          }}
+        >
+          <View
+            style={{
+              height: 270,
+              width: "100%",
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 150,
+              borderRadius: 10,
+              marginLeft: 10,
+              marginTop: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 150,
+              borderRadius: 10,
+              marginLeft: 15,
+              marginTop: 2,
+              marginBottom: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 5,
+              width: "100%",
+              marginTop: 5,
+              borderRadius: 10,
+              marginBottom: 10,
+            }}
+          ></View>
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 10,
+                width: 50,
+                borderRadius: 10,
+                margin: 10,
+              }}
+            ></View>
+          </View>
+          <View
+            style={{
+              height: 5,
+              width: "100%",
+              marginTop: 5,
+              borderRadius: 10,
+              marginBottom: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 150,
+              marginTop: 10,
+              borderRadius: 10,
+              marginLeft: 20,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 8,
+              width: 300,
+              marginTop: 5,
+              borderRadius: 10,
+              marginLeft: 20,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 8,
+              width: 300,
+              marginTop: 5,
+              borderRadius: 10,
+              marginLeft: 20,
+            }}
+          ></View>
 
-  //         <View
-  //           style={{
-  //             height: 10,
-  //             width: 150,
-  //             marginTop: 10,
-  //             borderRadius: 10,
-  //             marginLeft: 20,
-  //           }}
-  //         ></View>
-  //         <View
-  //           style={{
-  //             height: 8,
-  //             width: 300,
-  //             marginTop: 5,
-  //             borderRadius: 10,
-  //             marginLeft: 20,
-  //           }}
-  //         ></View>
-  //         <View style={{ flexDirection: "row", marginTop: 20 }}>
-  //           <View
-  //             style={{
-  //               height: 30,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 20,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 30,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 20,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 30,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 20,
-  //             }}
-  //           ></View>
-  //           <View
-  //             style={{
-  //               height: 30,
-  //               width: 50,
-  //               borderRadius: 10,
-  //               margin: 20,
-  //             }}
-  //           ></View>
-  //         </View>
-  //       </View>
-  //     </SkeletonPlaceholder>
-  //   );
-  // }
+          <View
+            style={{
+              height: 10,
+              width: 150,
+              marginTop: 10,
+              borderRadius: 10,
+              marginLeft: 20,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 8,
+              width: 300,
+              marginTop: 5,
+              borderRadius: 10,
+              marginLeft: 20,
+            }}
+          ></View>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+            <View
+              style={{
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                margin: 20,
+              }}
+            ></View>
+          </View>
+        </View>
+      </SkeletonPlaceholder>
+    );
+  }
   return (
     <View style={styles.container}>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
