@@ -3,18 +3,12 @@ import { Platform, Image as RNImage } from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { default_image } from "../../assets/png";
+import Video from "react-native-video";
 
-export default function Image({
-	children,
-	style,
-	source,
-	imageStyle,
-	...otherProps
-}) {
+export default function FunVideo({ style, poster, ...otherProps }) {
 	let [loading, setLoading] = useState(false);
 	let [temp, setTemp] = useState([]);
-	let uri = source?.uri;
+	let uri = poster;
 	let path;
 	if (uri && uri !== undefined) {
 		let extension = Platform.OS === "android" ? "file://" : "";
@@ -28,7 +22,7 @@ export default function Image({
 					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
 						(res) => {
 							setTimeout(() => setLoading(false), 1000);
-							console.log("SUCCESS CACHE IMAGE", uri);
+							console.log("SUCCESS CACHE IMAGE FROM VIDEO", uri);
 						}
 					);
 				}
@@ -47,5 +41,5 @@ export default function Image({
 		);
 	}
 
-	return <RNImage {...otherProps} style={style} source={{ uri: path }} />;
+	return <Video {...otherProps} style={style} poster={path} />;
 }

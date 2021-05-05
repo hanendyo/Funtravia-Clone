@@ -25,6 +25,7 @@ import FunImageBackground from "./src/FunImageBackground";
 import FunImageAutoSize from "./src/FunImageAutoSize";
 import FunAnimatedImage from "./src/FunAnimatedImage";
 import CopyLink from "./src/CopyLink";
+import FunVideo from "./src/FunVideo";
 
 export {
 	Text,
@@ -54,4 +55,5 @@ export {
 	CopyLink,
 	FunImageAutoSize,
 	FunAnimatedImage,
+	FunVideo,
 };
