@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { View, Dimensions, Image, Pressable } from "react-native";
-import { FunImage } from "../../component";
+import { View, Dimensions, Pressable } from "react-native";
+import { FunImage, FunVideo } from "../../component";
 import Video from "react-native-video";
 
 const { width, height } = Dimensions.get("screen");
@@ -24,7 +24,7 @@ export default function RenderGrid({ item, props }) {
 					}
 				>
 					{item[0].assets[0].type === "video" ? (
-						<Video
+						<FunVideo
 							ref={(ref) => {
 								videoView = ref;
 							}}
@@ -77,7 +77,7 @@ export default function RenderGrid({ item, props }) {
 						}
 					>
 						{item[1].assets[0].type === "video" ? (
-							<Video
+							<FunVideo
 								poster={item[1].assets[0].filepath.replace(
 									"output.m3u8",
 									"thumbnail.png"
@@ -124,7 +124,7 @@ export default function RenderGrid({ item, props }) {
 						}
 					>
 						{item[2].assets[0].type === "video" ? (
-							<Video
+							<FunVideo
 								poster={item[2].assets[0].filepath.replace(
 									"output.m3u8",
 									"thumbnail.png"
@@ -183,7 +183,7 @@ export default function RenderGrid({ item, props }) {
 						}
 					>
 						{item[0].assets[0].type === "video" ? (
-							<Video
+							<FunVideo
 								poster={item[0].assets[0].filepath.replace(
 									"output.m3u8",
 									"thumbnail.png"
@@ -230,7 +230,7 @@ export default function RenderGrid({ item, props }) {
 						}
 					>
 						{item[1].assets[0].type === "video" ? (
-							<Video
+							<FunVideo
 								poster={item[1].assets[0].filepath.replace(
 									"output.m3u8",
 									"thumbnail.png"
@@ -278,7 +278,7 @@ export default function RenderGrid({ item, props }) {
 					}
 				>
 					{item[2].assets[0].type === "video" ? (
-						<Video
+						<FunVideo
 							poster={item[2].assets[0].filepath.replace(
 								"output.m3u8",
 								"thumbnail.png"
@@ -335,7 +335,7 @@ export default function RenderGrid({ item, props }) {
 					}
 				>
 					{item[0].assets[0].type === "video" ? (
-						<Video
+						<FunVideo
 							poster={item[0].assets[0].filepath.replace(
 								"output.m3u8",
 								"thumbnail.png"
@@ -382,7 +382,7 @@ export default function RenderGrid({ item, props }) {
 					}
 				>
 					{item[1].assets[0].type === "video" ? (
-						<Video
+						<FunVideo
 							poster={item[0].assets[0].filepath.replace(
 								"output.m3u8",
 								"thumbnail.png"
@@ -429,7 +429,7 @@ export default function RenderGrid({ item, props }) {
 					}
 				>
 					{item[2].assets[0].type === "video" ? (
-						<Video
+						<FunVideo
 							poster={item[2].assets[0].filepath.replace(
 								"output.m3u8",
 								"thumbnail.png"
@@ -487,7 +487,7 @@ export default function RenderGrid({ item, props }) {
 					}
 				>
 					{item[0].assets[0].type === "video" ? (
-						<Video
+						<FunVideo
 							poster={item[0].assets[0].filepath.replace(
 								"output.m3u8",
 								"thumbnail.png"
@@ -536,7 +536,7 @@ export default function RenderGrid({ item, props }) {
 						style={{}}
 					>
 						{item[1].assets[0].type === "video" ? (
-							<Video
+							<FunVideo
 								poster={item[1].assets[0].filepath.replace(
 									"output.m3u8",
 									"thumbnail.png"
