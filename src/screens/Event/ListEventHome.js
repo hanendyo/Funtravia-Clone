@@ -13,12 +13,15 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
+  Pressable,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DeviceInfo from "react-native-device-info";
 import {
   Button,
+  Capital,
   CustomImage,
+  FunIcon,
   FunImageBackground,
   StatusBar as StaBar,
   Text,
@@ -27,6 +30,7 @@ import {
 import {
   Arrowbackwhite,
   Bottom,
+  Check,
   Down,
   FilterBlack,
   LikeEmpty,
@@ -45,6 +49,7 @@ import { default_image, CalenderGrey, MapIconGreen } from "../../assets/png";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
+import { Alert } from "react-native";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -70,7 +75,7 @@ export default function ListEventHome(props) {
     { key: "tab2", title: "Public Event" },
   ]);
   const [canScroll, setCanScroll] = useState(true);
-  const [tab1Data, setTab1] = useState([]);
+  const [dataEvent, setdataEvent] = useState([]);
   const [tab2Data, setTab2] = useState([]);
   const scrollY = useRef(new Animated.Value(0)).current;
   const headerScrollY = useRef(new Animated.Value(0)).current;
@@ -347,7 +352,7 @@ export default function ListEventHome(props) {
   const refresh = async () => {
     // console.log("-- start refresh");
     refreshStatusRef.current = true;
-    // await GetListEvent();
+    await getdataEvent();
     // await GetEventCategory();
     await new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -502,7 +507,7 @@ export default function ListEventHome(props) {
 
                   zIndex: 9999,
                 }}
-                onPress={() => _liked(item.id)}
+                onPress={() => _liked(item.id, item)}
               >
                 <LikeEmpty height={13} width={13} />
               </TouchableOpacity>
@@ -519,7 +524,7 @@ export default function ListEventHome(props) {
 
                   zIndex: 9999,
                 }}
-                onPress={() => _unliked(item.id)}
+                onPress={() => _unliked(item.id, item)}
               >
                 <LikeRed height={13} width={13} />
               </TouchableOpacity>
@@ -662,7 +667,7 @@ export default function ListEventHome(props) {
     switch (route.key) {
       case "tab1":
         numCols = 2;
-        data = tab1Data;
+        data = dataEvent;
         renderItem = rednerTab1Item;
         break;
       case "tab2":
@@ -842,15 +847,28 @@ export default function ListEventHome(props) {
   };
 
   let [token, setToken] = useState("");
-  let [show, setshow] = useState(true);
+  let [show, setshow] = useState(false);
+  let [modals, setModelSetNegara] = useState(false);
+  let [country, setcountry] = useState({
+    __typename: "DestinationCountryResponse",
+    checked: true,
+    code: "IDN",
+    flag: "f-indonesia",
+    id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
+    name: "Indonesia",
+    show: false,
+    sugestion: true,
+  });
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
+  let [datacountry, setdatacountry] = useState([]);
   let [search, setSearch] = useState({
     type: null,
     tag: null,
     keyword: null,
+    countries: null,
   });
 
-  const { data, loading, error } = useQuery(ListEventGQL, {
+  const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
     fetchPolicy: "network-only",
     variables: {
       keyword: search.keyword,
@@ -879,7 +897,7 @@ export default function ListEventHome(props) {
       },
     },
     onCompleted: () => {
-      setTab1(data.event_list_v2);
+      setdataEvent(data.event_list_v2);
     },
   });
 
@@ -889,6 +907,7 @@ export default function ListEventHome(props) {
       fetchPolicy: "network-only",
       onCompleted: () => {
         setdataFilterCategori(dataFillter.event_filter.type);
+        setdatacountry(dataFillter.event_filter.country);
       },
     }
   );
@@ -923,8 +942,15 @@ export default function ListEventHome(props) {
     },
   });
 
-  const _liked = async (id) => {
+  const _liked = async (id, item) => {
     if (token || token !== "") {
+      let items = { ...item };
+      items.liked = true;
+      var tempData = [...dataEvent];
+      var index = tempData.findIndex((k) => k["id"] === id);
+      tempData.splice(index, 1, items);
+      await setdataEvent(tempData);
+
       try {
         let response = await mutationliked({
           variables: {
@@ -943,15 +969,18 @@ export default function ListEventHome(props) {
             response.data.setEvent_wishlist.code === 200 ||
             response.data.setEvent_wishlist.code === "200"
           ) {
-            var tempData = [...dataEvent];
-            var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = true;
-            setDataEvent(tempData);
+            // var tempData = [...dataEvent];
+            // var index = tempData.findIndex((k) => k["id"] === id);
+            // tempData[index].liked = true;
+            // setdataEvent(tempData);
           } else {
             throw new Error(response.data.setEvent_wishlist.message);
           }
         }
       } catch (error) {
+        items.liked = false;
+        tempData.splice(index, 1, items);
+        await setdataEvent(tempData);
         Alert.alert("" + error);
       }
     } else {
@@ -959,8 +988,14 @@ export default function ListEventHome(props) {
     }
   };
 
-  const _unliked = async (id) => {
+  const _unliked = async (id, item) => {
     if (token || token !== "") {
+      let items = { ...item };
+      items.liked = false;
+      var tempData = [...dataEvent];
+      var index = tempData.findIndex((k) => k["id"] === id);
+      tempData.splice(index, 1, items);
+      await setdataEvent(tempData);
       try {
         let response = await mutationUnliked({
           variables: {
@@ -981,15 +1016,18 @@ export default function ListEventHome(props) {
             response.data.unset_wishlist.code === "200"
           ) {
             // _Refresh();
-            var tempData = [...dataEvent];
-            var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = false;
-            setDataEvent(tempData);
+            // var tempData = [...dataEvent];
+            // var index = tempData.findIndex((k) => k["id"] === id);
+            // tempData[index].liked = false;
+            // setdataEvent(tempData);
           } else {
             throw new Error(response.data.unset_wishlist.message);
           }
         }
       } catch (error) {
+        items.liked = true;
+        tempData.splice(index, 1, items);
+        await setdataEvent(tempData);
         Alert.alert("" + error);
       }
     } else {
@@ -1030,6 +1068,31 @@ export default function ListEventHome(props) {
     await setdataFilterCategori(tempe);
   };
 
+  const handlecountry = async (item) => {
+    let hasil = [];
+
+    let tempe = [...datacountry];
+    let tempes = [];
+    for (var x of tempe) {
+      let data = { ...x };
+      if (x !== item) {
+        data.checked = false;
+      } else {
+        data.checked = true;
+        hasil.push(item.id);
+      }
+      await tempes.push(data);
+    }
+    await setdatacountry(tempes);
+
+    let data = { ...search };
+    data["country"] = hasil;
+    await setSearch(data);
+
+    await setModelSetNegara(false);
+    await setcountry(item);
+  };
+
   const UpdateFilter = async () => {
     let hasil = [];
     for (var x of dataFilterCategori) {
@@ -1040,7 +1103,7 @@ export default function ListEventHome(props) {
 
     let data = { ...search };
     data["type"] = hasil;
-    await console.log(data);
+    // await console.log(data);
     await setSearch(data);
     await setshow(false);
   };
@@ -1059,6 +1122,7 @@ export default function ListEventHome(props) {
       type: null,
       tag: null,
       keyword: null,
+      countries: null,
     });
     await setshow(false);
   };
@@ -1154,19 +1218,21 @@ export default function ListEventHome(props) {
           }}
         >
           <TouchableOpacity
+            onPress={() => setModelSetNegara(true)}
             style={{
               backgroundColor: "#209fae",
               borderWidth: 2,
               borderRightWidth: 0,
               paddingVertical: 10,
-              paddingHorizontal: 15,
+              paddingHorizontal: 20,
               borderBottomLeftRadius: 20,
               borderTopStartRadius: 20,
               borderColor: "#d1d1d1",
               alignItems: "center",
               alignContent: "center",
               flexDirection: "row",
-              width: Dimensions.get("screen").width * 0.25,
+              justifyContent: "space-between",
+              width: Dimensions.get("screen").width * 0.3,
             }}
           >
             <Text
@@ -1177,7 +1243,7 @@ export default function ListEventHome(props) {
                 color: "#fff",
               }}
             >
-              Indonesia
+              {Capital({ text: country?.name })}
             </Text>
             <Down width={10} height={10} style={{ marginTop: 5 }} />
           </TouchableOpacity>
@@ -1186,14 +1252,15 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               borderWidth: 2,
               paddingVertical: 10,
-              paddingHorizontal: 15,
+              paddingHorizontal: 20,
               borderBottomRightRadius: 20,
               borderTopEndRadius: 20,
               borderColor: "#d1d1d1",
               alignItems: "center",
               alignContent: "center",
               flexDirection: "row",
-              width: Dimensions.get("screen").width * 0.25,
+              justifyContent: "space-between",
+              width: Dimensions.get("screen").width * 0.3,
             }}
           >
             <Text
@@ -1405,6 +1472,126 @@ export default function ListEventHome(props) {
               style={{ width: Dimensions.get("screen").width / 2 - 20 }}
               text={t("apply")}
             ></Button>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        onRequestClose={() => {
+          setModelSetNegara(false);
+        }}
+        animationIn="slideInRight"
+        animationOut="slideOutRight"
+        isVisible={modals}
+        style={{
+          justifyContent: "flex-end",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-start",
+              alignItems: "center",
+              alignContent: "center",
+              backgroundColor: "#209fae",
+              height: 55,
+              width: Dimensions.get("screen").width,
+              marginTop: Platform.OS === "ios" ? 0 : -20,
+            }}
+          >
+            <Button
+              type="circle"
+              color="tertiary"
+              size="large"
+              variant="transparent"
+              onPress={() => setModelSetNegara(false)}
+            >
+              <Arrowbackwhite width={20} height={20} />
+            </Button>
+            <Text
+              size="label"
+              style={{
+                color: "white",
+              }}
+            >
+              {t("country")}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              backgroundColor: "white",
+              paddingBottom: 20,
+            }}
+          >
+            <FlatList
+              // ref={slider}
+              data={datacountry}
+              renderItem={({ item, index }) => {
+                return (
+                  <Pressable
+                    onPress={() => handlecountry(item, index)}
+                    style={{
+                      paddingVertical: 15,
+                      paddingHorizontal: 20,
+                      borderBottomWidth: 0.5,
+                      borderBottomColor: "#D1D1D1",
+                      flexDirection: "row",
+                      alignContent: "center",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <View
+                        style={{
+                          marginRight: 15,
+                          elevation: 1,
+                          height: 30,
+                          width: 42,
+                          backgroundColor: "#fff",
+                          // borderWidth: 1,
+                        }}
+                      >
+                        <FunIcon
+                          icon={item.flag}
+                          height={30}
+                          width={42}
+                          variant="f"
+                          style={
+                            {
+                              // elevation: 1,
+                            }
+                          }
+                        />
+                      </View>
+                      <Text size="description">{item.name}</Text>
+                    </View>
+                    <View>
+                      {item.checked && item.checked === true ? (
+                        <Check width={20} height={15} />
+                      ) : null}
+                    </View>
+                  </Pressable>
+                );
+              }}
+              keyExtractor={(item) => item.id}
+            />
           </View>
         </View>
       </Modal>
