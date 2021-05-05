@@ -174,12 +174,11 @@ export default function myfeed(props) {
             response.data.delete_post.code === 200 ||
             response.data.delete_post.code === "200"
           ) {
-            var tempData = [...data];
-            var index = tempData.findIndex((k) => k["id"] === datas.id);
+            var index = data.findIndex((k) => k["id"] === datas.id);
             if (index > -1) {
-              tempData.splice(index, 1);
+              data.splice(index, 1);
             }
-            setdata(tempData);
+            // setdata(tempData);
           } else {
             throw new Error(response.data.delete_post.message);
           }

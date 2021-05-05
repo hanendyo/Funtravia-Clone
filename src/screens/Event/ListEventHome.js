@@ -50,6 +50,7 @@ import { dateFormatBetween } from "../../component/src/dateformatter";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import { Alert } from "react-native";
+import DatePicker from "react-native-modern-datepicker";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -849,6 +850,8 @@ export default function ListEventHome(props) {
   let [token, setToken] = useState("");
   let [show, setshow] = useState(false);
   let [modals, setModelSetNegara] = useState(false);
+  let [Modaldate, setModaldate] = useState(false);
+
   let [country, setcountry] = useState({
     __typename: "DestinationCountryResponse",
     checked: true,
@@ -1248,6 +1251,9 @@ export default function ListEventHome(props) {
             <Down width={10} height={10} style={{ marginTop: 5 }} />
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => {
+              setModaldate(true);
+            }}
             style={{
               backgroundColor: "#209fae",
               borderWidth: 2,
@@ -1593,6 +1599,42 @@ export default function ListEventHome(props) {
               keyExtractor={(item) => item.id}
             />
           </View>
+        </View>
+      </Modal>
+
+      <Modal
+        onRequestClose={() => {
+          setModaldate(false);
+        }}
+        onRequestClose={() => setModaldate(false)}
+        onBackdropPress={() => setModaldate(false)}
+        onDismiss={() => setModaldate(false)}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        isVisible={Modaldate}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            // height: 100,
+            width: Dimensions.get("screen").width - 30,
+            borderRadius: 5,
+          }}
+        >
+          <DatePicker
+            mode="monthYear"
+            style={{
+              borderRadius: 5,
+            }}
+            selectorStartingYear={2000}
+            // onMonthYearChange={(selectedDate) => setDate(selectedDate)}
+          />
+          {/* <Text>test</Text> */}
         </View>
       </Modal>
     </View>
