@@ -778,6 +778,7 @@ export default function Country(props) {
         }}
       >
         <FlatList
+          key={"flatlisttabbar"}
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={props.navigationState.routes.length < 3 ? false : true}
@@ -1180,6 +1181,7 @@ export default function Country(props) {
             >
               {renderjournal ? (
                 <ImageSlider
+                  key={"imagesliderJournal"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,

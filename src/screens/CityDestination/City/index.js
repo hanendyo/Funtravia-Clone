@@ -95,8 +95,6 @@ export default function CityDetail(props) {
 
   let scrollRef = useRef();
   let [full, setFull] = useState(false);
-
-  // console.log("bahasa", i18n.language);
   /**
    * ref
    */
@@ -1030,6 +1028,7 @@ export default function CityDetail(props) {
             >
               {renderjournal ? (
                 <ImageSlider
+                  key={"imagesliderjournal"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -2627,6 +2626,7 @@ export default function CityDetail(props) {
         }}
       >
         <FlatList
+          key={"listtabbar"}
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={true}
