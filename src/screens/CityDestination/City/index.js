@@ -44,10 +44,10 @@ import {
   Truncate,
   Text,
   FunIcon,
-  RenderMaps,
   FunImage,
   FunImageBackground,
   FunAnimatedImage,
+  RenderMaps,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
@@ -616,8 +616,6 @@ export default function CityDetail(props) {
                   }}
                   style={{
                     height: 20,
-                    // flexDirection: "row",
-                    //  borderWidth:1,
                   }}
                 >
                   <Text
@@ -925,8 +923,9 @@ export default function CityDetail(props) {
                     <ActivityIndicator color="#209FAE" animating={true} />
                   </View>
                 ) : (
+                  // <View></View>
                   <RenderMaps
-                    icon={render ? render.map : "mn-indonesia"}
+                    icon={render ? render.map : "mk-belitung"}
                     height={250}
                     width={width - 70}
                     style={{
@@ -1028,7 +1027,7 @@ export default function CityDetail(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  key={"imagesliderjournal"}
+                  listkey={"imagesliderjournal"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -1473,6 +1472,7 @@ export default function CityDetail(props) {
               }}
             >
               <ImageSlider
+                listkey={"imgsldrevent"}
                 images={
                   dataevent.event.length > 0 ? dataevent.event : [default_image]
                 }
@@ -3077,12 +3077,12 @@ export default function CityDetail(props) {
           size="medium"
           type="circle"
           variant="transparent"
-          onPress={() => setshowside(true)}
+          // onPress={() => setshowside(true)}
           style={{
             height: 50,
           }}
         >
-          <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+          {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
         </Button>
       </Animated.View>
 

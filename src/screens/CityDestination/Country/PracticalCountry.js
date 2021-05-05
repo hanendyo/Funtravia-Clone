@@ -287,22 +287,7 @@ export default function PracticalInformation(props) {
                 </View>
               );
             })
-          : null
-        //  (
-        //   <View style={{ alignItems: "center" }}>
-        //     <Text
-        //       type="regular"
-        //       size="title"
-        //       style={{
-        //         textAlign: "justify",
-        //         color: "#464646",
-        //       }}
-        //     >
-        //       {t("noArticle")}
-        //     </Text>
-        //   </View>
-        // )
-        }
+          : null}
       </View>
     );
   };
@@ -327,7 +312,6 @@ export default function PracticalInformation(props) {
       <Animated.FlatList
         scrollToOverflowEnabled={true}
         {...listPanResponder.panHandlers}
-        // numColumns={numCols}
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);

@@ -1071,7 +1071,7 @@ export default function Country(props) {
                 }}
               >
                 <RenderMaps
-                  icon={render ? render.map : ""}
+                  icon={"mk-belitung"}
                   height={250}
                   width={width - 70}
                   style={{
@@ -1181,7 +1181,7 @@ export default function Country(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  key={"imagesliderJournal"}
+                  listkey={"imagesliderJournal"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -1390,6 +1390,7 @@ export default function Country(props) {
               }}
             >
               <ImageSlider
+                listkey={"imslider"}
                 images={render?.city ? render.city : []}
                 style={{
                   borderTopLeftRadius: 5,
@@ -2313,12 +2314,12 @@ export default function Country(props) {
           size="medium"
           type="circle"
           variant="transparent"
-          onPress={() => setshowside(true)}
+          // onPress={() => setshowside(true)}
           style={{
             height: 50,
           }}
         >
-          <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+          {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
         </Button>
       </Animated.View>
       {renderTabView()}

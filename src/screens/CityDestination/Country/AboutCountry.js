@@ -92,8 +92,6 @@ export default function aboutcountry(props) {
   useEffect(() => {
     setTimeout(() => {
       scrollRef.current?.scrollToIndex({
-        // y: 0,
-        // x: 100,
         index: props.route.params.indexcountry,
         animated: true,
       });
