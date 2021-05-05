@@ -8,9 +8,6 @@ import {
   FlatList,
   Platform,
   ActivityIndicator,
-  RefreshControl,
-  Alert,
-  ScrollView,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -35,10 +32,18 @@ export default function Post(props) {
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ratio, setRatio] = useState({ width: 1, height: 1, index: 0 });
+  const [refreshing, setRefreshing] = useState(false);
+  const [allAlbums, setAllalbum] = useState([]);
+  const [page_info, setPageInfo] = useState({});
+  const [loadimg, setLoadimg] = useState(false);
+
+  let slider = useRef(null);
+  let videoView = useRef(null);
   const [ratioindex, setRatioIndex] = useState([
     { width: 1, height: 1, index: 0 },
     { width: 4, height: 5, index: 1 },
   ]);
+
   const [recent, setRecent] = useState({
     image: {
       uri:
@@ -46,23 +51,25 @@ export default function Post(props) {
     },
     location: {},
   });
-  let slider = useRef(null);
-  let videoView = useRef(null);
 
   // let newrecent = {};
-  const [refreshing, setRefreshing] = useState(false);
+
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
     wait(500).then(() => {
       setRefreshing(false);
     });
   }, []);
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
     });
   };
+
   const selectImg = async (file) => {
+    console.log("test");
+    slider.current.scrollToOffset({ index: 0 });
     // console.log(file);
     // newrecent = file;
     // Refresh();
@@ -80,6 +87,7 @@ export default function Post(props) {
       ]);
     }
     await setRecent(file);
+    // await scroll_to();
   };
 
   const pickcamera = async () => {
@@ -99,6 +107,7 @@ export default function Post(props) {
       });
     });
   };
+
   // console.log(newrecent);
   const nextFunction = async () => {
     if (recent.node.type.substr(0, 5) === "video") {
@@ -122,10 +131,20 @@ export default function Post(props) {
     }
   };
 
+  const scroll_to = () => {
+    console.log("test");
+    setTimeout(() => {
+      slider.current.scrollToOffset({ animated: true, offset: 0 });
+    }, 3000);
+  };
+
+  console.log("slider", slider);
+
   useEffect(() => {
     (async () => {
       await getAlbumRoll();
       await requestCameraPermission();
+      // await scroll_to();
     })();
   }, [selectedAlbum, props.navigation]);
 
@@ -133,7 +152,6 @@ export default function Post(props) {
     title: "Folder",
     count: 0,
   });
-  const [allAlbums, setAllalbum] = useState([]);
 
   const requestCameraPermission = async () => {
     try {
@@ -196,8 +214,7 @@ export default function Post(props) {
       console.warn(err);
     }
   };
-  const [page_info, setPageInfo] = useState({});
-  const [loadimg, setLoadimg] = useState(false);
+
   const getImageFromRoll = async (dataalbum) => {
     let dataCamera = await CameraRoll.getPhotos({
       first: 43,
@@ -322,7 +339,7 @@ export default function Post(props) {
                 paddingStart: 0,
                 alignContent: "center",
               }}
-              ref={slider}
+              // ref={slider}
               scrollEnabled={true}
               showsVerticalScrollIndicator={false}
               data={allAlbums}
@@ -488,6 +505,7 @@ export default function Post(props) {
                 paddingHorizontal: 1,
               }}
               onPress={() => selectImg(item)}
+              // onPress={() => scroll_to()}
             >
               {item.node?.type.substr(0, 5) === "video" ? (
                 <View
