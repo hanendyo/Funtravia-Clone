@@ -11,6 +11,8 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  ScrollView,
+  FlatList,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DeviceInfo from "react-native-device-info";
@@ -24,20 +26,25 @@ import {
 } from "../../component";
 import {
   Arrowbackwhite,
+  Bottom,
+  Down,
   FilterBlack,
   LikeEmpty,
   LikeRed,
   Search,
+  Xhitam,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
 import CategoryEvent from "../../graphQL/Query/Event/FilterEvent";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { default_image, CalenderGrey, MapIconGreen } from "../../assets/png";
 import { dateFormatBetween } from "../../component/src/dateformatter";
+import Modal from "react-native-modal";
+import CheckBox from "@react-native-community/checkbox";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -340,8 +347,8 @@ export default function ListEventHome(props) {
   const refresh = async () => {
     // console.log("-- start refresh");
     refreshStatusRef.current = true;
-    await GetListEvent();
-    await GetEventCategory();
+    // await GetListEvent();
+    // await GetEventCategory();
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
@@ -835,17 +842,19 @@ export default function ListEventHome(props) {
   };
 
   let [token, setToken] = useState("");
+  let [show, setshow] = useState(true);
+  let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [search, setSearch] = useState({
     type: null,
     tag: null,
     keyword: null,
   });
 
-  const [GetListEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
+  const { data, loading, error } = useQuery(ListEventGQL, {
     fetchPolicy: "network-only",
     variables: {
       keyword: search.keyword,
-      type: search.tag,
+      type: search.type,
       cities:
         search.city && search.city.length > 0
           ? search.city
@@ -874,14 +883,20 @@ export default function ListEventHome(props) {
     },
   });
 
-  const [
-    GetEventCategory,
-    { data: dataFillter, loading: loadingcat, error: errorcat },
-  ] = useLazyQuery(CategoryEvent);
+  const { data: dataFillter, loading: loadingcat, error: errorcat } = useQuery(
+    CategoryEvent,
+    {
+      fetchPolicy: "network-only",
+      onCompleted: () => {
+        setdataFilterCategori(dataFillter.event_filter.type);
+      },
+    }
+  );
 
-  const _setSearch = (datasearch) => {
-    setSearch(datasearch);
-    GetListEvent();
+  const _setSearch = async (txt) => {
+    let data = { ...search };
+    data["keyword"] = txt;
+    await setSearch(data);
   };
 
   const [
@@ -997,6 +1012,57 @@ export default function ListEventHome(props) {
     });
   };
 
+  let HEADER_MAX_HEIGHT = HeaderHeight;
+  let HEADER_MIN_HEIGHT = 55;
+  let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 30, 100],
+    extrapolate: "clamp",
+  });
+
+  const _handleCheck = async (id, index, item) => {
+    let tempe = [...dataFilterCategori];
+    let items = { ...item };
+    items.checked = !items.checked;
+    tempe.splice(index, 1, items);
+    await setdataFilterCategori(tempe);
+  };
+
+  const UpdateFilter = async () => {
+    let hasil = [];
+    for (var x of dataFilterCategori) {
+      if (x.checked === true) {
+        hasil.push(x.id);
+      }
+    }
+
+    let data = { ...search };
+    data["type"] = hasil;
+    await console.log(data);
+    await setSearch(data);
+    await setshow(false);
+  };
+
+  const ClearAllFilter = async () => {
+    let tempe = [...dataFilterCategori];
+    let tempes = [];
+    for (var x of tempe) {
+      let data = { ...x };
+      data.checked = false;
+      await tempes.push(data);
+    }
+    await setdataFilterCategori(tempes);
+
+    await setSearch({
+      type: null,
+      tag: null,
+      keyword: null,
+    });
+    await setshow(false);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
@@ -1021,7 +1087,7 @@ export default function ListEventHome(props) {
           variant="bordered"
           color="black"
           onPress={() => {
-            modalTogle();
+            setshow(true);
           }}
           style={{
             marginRight: 10,
@@ -1071,6 +1137,277 @@ export default function ListEventHome(props) {
       </View>
       {renderHeader()}
       {renderCustomRefresh()}
+      <Animated.View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          alignContent: "center",
+          alignItems: "center",
+          transform: [{ translateY: imageOpacity }],
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            paddingBottom: 20,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#209fae",
+              borderWidth: 2,
+              borderRightWidth: 0,
+              paddingVertical: 10,
+              paddingHorizontal: 15,
+              borderBottomLeftRadius: 20,
+              borderTopStartRadius: 20,
+              borderColor: "#d1d1d1",
+              alignItems: "center",
+              alignContent: "center",
+              flexDirection: "row",
+              width: Dimensions.get("screen").width * 0.25,
+            }}
+          >
+            <Text
+              size="label"
+              numberOfLines={1}
+              style={{
+                marginRight: 10,
+                color: "#fff",
+              }}
+            >
+              Indonesia
+            </Text>
+            <Down width={10} height={10} style={{ marginTop: 5 }} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#209fae",
+              borderWidth: 2,
+              paddingVertical: 10,
+              paddingHorizontal: 15,
+              borderBottomRightRadius: 20,
+              borderTopEndRadius: 20,
+              borderColor: "#d1d1d1",
+              alignItems: "center",
+              alignContent: "center",
+              flexDirection: "row",
+              width: Dimensions.get("screen").width * 0.25,
+            }}
+          >
+            <Text
+              size="label"
+              numberOfLines={1}
+              style={{
+                marginRight: 10,
+                color: "#fff",
+              }}
+            >
+              Jun - 2020
+            </Text>
+            <Down width={10} height={10} style={{ marginTop: 5 }} />
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+
+      <Modal
+        // onLayout={() => dataCountrySelect()}
+        isVisible={show}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+      >
+        <View
+          style={{
+            height: 10,
+
+            backgroundColor: "#209fae",
+          }}
+        ></View>
+        <View
+          style={{
+            flexDirection: "column",
+            height: Dimensions.get("screen").height * 0.75,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            // borderTopLeftRadius: 15,
+            // borderTopRightRadius: 15,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+              paddingHorizontal: 15,
+              paddingVertical: 20,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
+                color: "#464646",
+              }}
+            >
+              Filter
+            </Text>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                backgroundColor: "with",
+                height: 35,
+                width: 32,
+                top: 0,
+                right: 0,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
+              onPress={() => setshow(false)}
+            >
+              <Xhitam height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+          {/* ==================garis========================= */}
+          <View
+            style={{
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 1,
+            }}
+          />
+          {/* ==================garis========================= */}
+
+          <ScrollView
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+              paddingBottom: 70,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
+                color: "#464646",
+                marginTop: 10,
+              }}
+            >
+              {t("categories")}
+            </Text>
+            <FlatList
+              contentContainerStyle={{
+                paddingVertical: 15,
+                paddingRight: 10,
+                width: width - 40,
+              }}
+              data={dataFilterCategori}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  onPress={() => _handleCheck(item["id"], index, item)}
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "white",
+                    // borderColor: "#464646",
+                    width: "49%",
+                    marginRight: 3,
+                    marginBottom: 20,
+                    justifyContent: "flex-start",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <CheckBox
+                    onCheckColor="#FFF"
+                    lineWidth={2}
+                    onFillColor="#209FAE"
+                    onTintColor="#209FAE"
+                    boxType={"square"}
+                    style={{
+                      alignSelf: "center",
+                      width: Platform.select({
+                        ios: 30,
+                        android: 35,
+                      }),
+                      transform: Platform.select({
+                        ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                        android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                      }),
+                    }}
+                    onValueChange={() => _handleCheck(item["id"], index, item)}
+                    value={item["checked"]}
+                  />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 0,
+                      color: "#464646",
+                    }}
+                  >
+                    {item["name"]}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={2}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={false}
+              // extraData={selected}
+            ></FlatList>
+            {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+          </ScrollView>
+          <View
+            style={{
+              flex: 1,
+              zIndex: 6,
+              flexDirection: "row",
+              height: 80,
+              position: "absolute",
+              bottom: 0,
+              justifyContent: "space-around",
+              alignContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              width: Dimensions.get("screen").width,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              padding: 10,
+              paddingHorizontal: 10,
+            }}
+          >
+            <Button
+              variant="bordered"
+              color="secondary"
+              onPress={() => ClearAllFilter()}
+              style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+              text={t("clearAll")}
+            ></Button>
+            <Button
+              onPress={() => UpdateFilter()}
+              style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+              text={t("apply")}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
