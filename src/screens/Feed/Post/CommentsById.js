@@ -1417,6 +1417,8 @@ export default function Comments(props) {
                 height: 50,
                 width: Dimensions.get("screen").width - 130,
                 marginLeft: 20,
+                fontFamily: "Lato-Regular",
+
               }}
               onChangeText={(text) => setStatusText(text)}
               value={statusText}
