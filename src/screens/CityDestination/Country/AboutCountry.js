@@ -20,6 +20,7 @@ import { Button, Text } from "../../../component";
 import { Arrowbackwhite } from "../../../assets/svg";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -88,7 +89,7 @@ export default function aboutcountry(props) {
 
   const { t, i18n } = useTranslation();
   const [actives, setActives] = useState(props.route.params.active);
-
+  let [load, setLoad] = useState(true);
   useEffect(() => {
     setTimeout(() => {
       scrollRef.current?.scrollToIndex({
@@ -97,6 +98,12 @@ export default function aboutcountry(props) {
       });
     }, 3000);
     refresh();
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoad(false);
+    }, 2000);
   }, []);
 
   const refresh = async () => {
@@ -485,38 +492,6 @@ export default function aboutcountry(props) {
             </Ripple>
           )}
         />
-        {/* <ScrollView
-          horizontal={true}
-          style={{
-            width: "100%",
-            backgroundColor: "#DAF0F2",
-          }}
-          // contentContainerStyle={{
-          //   width:"100%"
-          // }}
-          showsHorizontalScrollIndicator={false}
-        >
-          <TabBar
-            {...props}
-            onTabPress={({ route, preventDefault }) => {
-              if (isListGliding.current) {
-                preventDefault();
-              }
-            }}
-            style={{
-              elevation: 0,
-              shadowOpacity: 0,
-              flex: 1,
-              backgroundColor: "#DAF0F2",
-              width: "100%",
-              height: TabBarHeight,
-              // borderBottomWidth: 1,
-              // borderBottomColor: "#daf0f2",
-            }}
-            renderLabel={renderLabel}
-            indicatorStyle={styles.indicator}
-          />
-        </ScrollView> */}
       </Animated.View>
     );
   };
@@ -570,6 +545,200 @@ export default function aboutcountry(props) {
     );
   };
 
+  if (load) {
+    return (
+      <SkeletonPlaceholder>
+        <View style={{ flexDirection: "row" }}>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+        </View>
+
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
+          }}
+        >
+          <View
+            style={{
+              marginTop: 10,
+              width: "80%",
+              height: 12,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 150,
+              width: "100%",
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          ></View>
+
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "80%",
+              height: 12,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 150,
+              width: "100%",
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          ></View>
+
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+        </View>
+      </SkeletonPlaceholder>
+    );
+  }
   return (
     <SafeAreaView
       style={{
