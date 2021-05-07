@@ -225,6 +225,7 @@ export default function Message({ navigation }) {
                         placeholder="Search Chat"
                         style={{
                             color: "#464646",
+                            fontFamily: "Lato-Regular",
                             height: 40,
                             width: "100%",
                         }}

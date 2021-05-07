@@ -542,12 +542,17 @@ export default function Room({ navigation, route }) {
                             onChangeText={(text) => setChat(text)}
                             style={
                                 Platform.OS == "ios"
-                                    ? { maxHeight: 100, margin: 10 }
+                                    ? {
+                                          maxHeight: 100,
+                                          margin: 10,
+                                          fontFamily: "Lato-Regular",
+                                      }
                                     : {
                                           maxHeight: 100,
                                           marginVertical: 5,
                                           marginHorizontal: 10,
                                           padding: 0,
+                                          fontFamily: "Lato-Regular",
                                       }
                             }
                         />

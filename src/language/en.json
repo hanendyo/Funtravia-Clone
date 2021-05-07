@@ -515,5 +515,6 @@
     "addFoto": "Add photo",
     "shareUs": "Share with us",
     "tellUs": "Tell us your feedback",
-    "messagesEmpty": "messages cannot be empty"
+    "messagesEmpty": "messages cannot be empty",
+    "commentPost": "Comment a post."
 }
