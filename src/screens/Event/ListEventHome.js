@@ -45,7 +45,12 @@ import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
 import CategoryEvent from "../../graphQL/Query/Event/FilterEvent";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
-import { default_image, CalenderGrey, MapIconGreen } from "../../assets/png";
+import {
+  default_image,
+  CalenderGrey,
+  MapIconGreen,
+  Eventcover,
+} from "../../assets/png";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
@@ -388,7 +393,7 @@ export default function ListEventHome(props) {
         }}
       >
         <Image
-          source={default_image}
+          source={Eventcover}
           style={{
             height: Dimensions.get("screen").height * 0.15,
             width: "100%",

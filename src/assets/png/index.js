@@ -176,3 +176,4 @@ export const activity_unesco4 = require("./files/activity_unesco4.png");
 export const activity_unesco5 = require("./files/activity_unesco5.png");
 export const activity_unesco6 = require("./files/activity_unesco6.png");
 export const activity_unesco7 = require("./files/activity_unesco7.png");
+export const Eventcover = require("./files/Eventcover.png");
