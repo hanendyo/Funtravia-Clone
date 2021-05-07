@@ -137,6 +137,7 @@ export default function myfeed(props) {
       setPlay(viewableItems[0]?.key);
     }
   });
+
   const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   const loadasync = async () => {

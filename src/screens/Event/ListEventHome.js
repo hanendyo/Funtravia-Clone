@@ -852,6 +852,27 @@ export default function ListEventHome(props) {
   let [modals, setModelSetNegara] = useState(false);
   let [Modaldate, setModaldate] = useState(false);
 
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const getdate = () => {
+    let month = new Date().getMonth();
+    return monthNames[month];
+  };
+
+  let [month, setmonth] = useState(" - ");
   let [country, setcountry] = useState({
     __typename: "DestinationCountryResponse",
     checked: true,
@@ -869,6 +890,8 @@ export default function ListEventHome(props) {
     tag: null,
     keyword: null,
     countries: null,
+    date_from: null,
+    date_until: null,
   });
 
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
@@ -890,8 +913,8 @@ export default function ListEventHome(props) {
           : null,
       price_start: null,
       price_end: null,
-      date_from: null,
-      date_until: null,
+      date_from: search.date_from,
+      date_until: search.date_until,
     },
     context: {
       headers: {
@@ -1111,6 +1134,23 @@ export default function ListEventHome(props) {
     await setshow(false);
   };
 
+  const _handledate = async (selected) => {
+    let data = selected.split(" ");
+    let month = data[1]; // January
+    let awal = new Date(data[0], parseFloat(month) - 1, 1);
+    let akhir = new Date(data[0], parseFloat(month), 1);
+
+    // console.log(awal);
+    // console.log(akhir);
+
+    let datas = { ...search };
+    datas["date_from"] = awal;
+    datas["date_until"] = akhir;
+    await setSearch(datas);
+    await setModaldate(false);
+    await setmonth(monthNames[parseFloat(month - 1)]);
+  };
+
   const ClearAllFilter = async () => {
     let tempe = [...dataFilterCategori];
     let tempes = [];
@@ -1126,6 +1166,8 @@ export default function ListEventHome(props) {
       tag: null,
       keyword: null,
       countries: null,
+      date_from: null,
+      date_until: null,
     });
     await setshow(false);
   };
@@ -1277,7 +1319,7 @@ export default function ListEventHome(props) {
                 color: "#fff",
               }}
             >
-              Jun - 2020
+              {month}
             </Text>
             <Down width={10} height={10} style={{ marginTop: 5 }} />
           </TouchableOpacity>
@@ -1632,7 +1674,7 @@ export default function ListEventHome(props) {
               borderRadius: 5,
             }}
             selectorStartingYear={2000}
-            // onMonthYearChange={(selectedDate) => setDate(selectedDate)}
+            onMonthYearChange={(selectedDate) => _handledate(selectedDate)}
           />
           {/* <Text>test</Text> */}
         </View>
