@@ -22,6 +22,7 @@ import Ripple from "react-native-material-ripple";
 import { useLazyQuery } from "@apollo/client";
 import About from "../../graphQL/Query/Cities/About";
 import { TabView, TabBar } from "react-native-tab-view";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -89,19 +90,23 @@ export default function about(props) {
   };
 
   const { t, i18n } = useTranslation();
+  let [load, setLoad] = useState(true);
   const [actives, setActives] = useState(props.route.params.active);
 
   useEffect(() => {
-    refresh();
-
     // setIndex(props.route.params.indexcity);
     setTimeout(() => {
       scrollRef.current?.scrollToIndex({
-        // y: 0,
-        // x: 100,
         index: props.route.params.indexcity,
         animated: true,
       });
+    }, 3000);
+    refresh();
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoad(false);
     }, 2000);
   }, []);
 
@@ -573,6 +578,201 @@ export default function about(props) {
       />
     );
   };
+
+  if (load) {
+    return (
+      <SkeletonPlaceholder>
+        <View style={{ flexDirection: "row" }}>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 10,
+              width: 50,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          ></View>
+        </View>
+
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
+          }}
+        >
+          <View
+            style={{
+              marginTop: 10,
+              width: "80%",
+              height: 12,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 150,
+              width: "100%",
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          ></View>
+
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "80%",
+              height: 12,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 150,
+              width: "100%",
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          ></View>
+
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+          <View
+            style={{
+              marginTop: 10,
+              width: "100%",
+              height: 10,
+              borderRadius: 5,
+            }}
+          ></View>
+        </View>
+      </SkeletonPlaceholder>
+    );
+  }
   return (
     <SafeAreaView
       style={{
