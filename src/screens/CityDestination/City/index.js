@@ -2649,13 +2649,18 @@ export default function CityDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "white",
+                  borderBottomWidth:
+                    props.navigationState.routes.length < 2 ? 0 : 2,
+                  borderBottomColor:
+                    index == tabIndex && props.navigationState.routes.length > 1
+                      ? "#209fae"
+                      : "white",
                   alignContent: "center",
-                  paddingHorizontal: 15,
+                  paddingHorizontal:
+                    props.navigationState.routes.length > 1 ? 15 : 25,
                   width:
                     props.navigationState.routes.length < 2
-                      ? Dimensions.get("screen").width
+                      ? null
                       : props.navigationState.routes.length < 3
                       ? Dimensions.get("screen").width * 0.5
                       : props.navigationState.routes.length < 4
@@ -2671,8 +2676,18 @@ export default function CityDetail(props) {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
+                      // borderWidth: 1,
+                      borderBottomWidth:
+                        props.navigationState.routes.length < 2 ? 2 : 0,
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props.navigationState.routes.length > 1
+                          ? "#white"
+                          : "#209fae",
                       height: 38,
                       paddingTop: 2,
+                      // paddingLeft:
+                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
                     },
                   ]}
