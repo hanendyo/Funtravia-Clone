@@ -42,6 +42,7 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
+import ListEventPublic from "../../graphQL/Query/Event/ListEventPublic";
 import CategoryEvent from "../../graphQL/Query/Event/FilterEvent";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
@@ -82,7 +83,7 @@ export default function ListEventHome(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   const [dataEvent, setdataEvent] = useState([]);
-  const [tab2Data, setTab2] = useState([]);
+  const [dataEventPublic, setdataEventPublic] = useState([]);
   const scrollY = useRef(new Animated.Value(0)).current;
   const headerScrollY = useRef(new Animated.Value(0)).current;
   const headerMoveScrollY = useRef(new Animated.Value(0)).current;
@@ -198,7 +199,7 @@ export default function ListEventHome(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    loadAsync();
+    // loadAsync();
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
@@ -226,6 +227,14 @@ export default function ListEventHome(props) {
       headerScrollY.removeAllListeners();
     };
   }, [routes, tabIndex]);
+
+  useEffect(() => {
+    // props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[_tabIndex.current].key;
@@ -359,6 +368,7 @@ export default function ListEventHome(props) {
     // console.log("-- start refresh");
     refreshStatusRef.current = true;
     await getdataEvent();
+    await getdataEventPublic();
     // await GetEventCategory();
     await new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -434,7 +444,12 @@ export default function ListEventHome(props) {
     );
   };
 
-  const rednerTab1Item = ({ item, index }) => {
+  const handlerepeat = (date) => {
+    let dates = date.split("-");
+    return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
+  };
+
+  const rederTab1Item = ({ item, index }) => {
     return (
       <View
         style={{
@@ -616,6 +631,8 @@ export default function ListEventHome(props) {
                 flexDirection: "row",
                 width: "100%",
                 marginBottom: 3,
+                alignContent: "center",
+                alignItems: "center",
               }}
             >
               <CustomImage
@@ -631,36 +648,30 @@ export default function ListEventHome(props) {
                 }}
                 source={CalenderGrey}
               />
-              <Text
-                size="small"
-                style={{
-                  paddingRight: 20,
-                  width: "100%",
-                }}
-              >
-                {dateFormatBetween(item.start_date, item.end_date)}
-              </Text>
+              {item.is_repeat === true ? (
+                <Text
+                  size="small"
+                  style={{
+                    paddingRight: 20,
+                    width: "100%",
+                  }}
+                >
+                  {handlerepeat(item.start_date, item.end_date)}
+                </Text>
+              ) : (
+                <Text
+                  size="small"
+                  style={{
+                    paddingRight: 20,
+                    width: "100%",
+                  }}
+                >
+                  {dateFormatBetween(item.start_date, item.end_date)}
+                </Text>
+              )}
             </View>
           </View>
         </View>
-      </View>
-    );
-  };
-
-  const rednerTab2Item = ({ item, index }) => {
-    return (
-      <View
-        style={{
-          marginLeft: index % 3 === 0 ? 0 : 10,
-          borderRadius: 16,
-          width: tab2ItemSize,
-          height: tab2ItemSize,
-          backgroundColor: "#aaa",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{index}</Text>
       </View>
     );
   };
@@ -674,12 +685,14 @@ export default function ListEventHome(props) {
       case "tab1":
         numCols = 2;
         data = dataEvent;
-        renderItem = rednerTab1Item;
+        renderItem = rederTab1Item;
         break;
       case "tab2":
-        numCols = 3;
-        data = tab2Data;
-        renderItem = rednerTab2Item;
+        numCols = 2;
+        data = dataEvent;
+
+        data = dataEventPublic;
+        // renderItem = rederTab1Item;
         break;
       default:
         return null;
@@ -858,18 +871,18 @@ export default function ListEventHome(props) {
   let [Modaldate, setModaldate] = useState(false);
 
   const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
+    "January",
+    "February",
+    "March",
+    "April",
     "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const getdate = () => {
@@ -929,6 +942,42 @@ export default function ListEventHome(props) {
     },
     onCompleted: () => {
       setdataEvent(data.event_list_v2);
+    },
+  });
+
+  const [
+    getdataEventPublic,
+    { data: dataPublic, loading: loadingPublic, error: errorPublic },
+  ] = useLazyQuery(ListEventPublic, {
+    fetchPolicy: "network-only",
+    variables: {
+      keyword: search.keyword,
+      type: search.type,
+      cities:
+        search.city && search.city.length > 0
+          ? search.city
+          : props.route.params && props.route.params.idcity
+          ? [props.route.params.idcity]
+          : null,
+      countries:
+        search.country && search.country.length > 0
+          ? search.country
+          : props.route.params && props.route.params.idcountries
+          ? [props.route.params.idcountries]
+          : null,
+      price_start: null,
+      price_end: null,
+      date_from: search.date_from,
+      date_until: search.date_until,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setdataEventPublic(dataPublic.event_list_public);
     },
   });
 
@@ -1175,6 +1224,7 @@ export default function ListEventHome(props) {
       date_until: null,
     });
     await setshow(false);
+    await setmonth(" - ");
   };
 
   return (
