@@ -9,7 +9,7 @@ import {
 	SafeAreaView,
 } from "react-native";
 import { SlideSatu, SlideDua, SlideTiga, WhiteMascot } from "../../assets/png";
-import { Xgray } from "../../assets/svg";
+import { Xblue } from "../../assets/svg";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import { FlatList } from "react-native-gesture-handler";
@@ -49,23 +49,21 @@ export default function SplashScreen(props) {
 			>
 				<View
 					style={{
-						alignSelf: "flex-end",
 						position: "absolute",
+						alignSelf: "flex-end",
 						top: 50,
-						right: 30,
-						zIndex: 2,
+						right: 25,
+						zIndex: 1,
 					}}
 				>
 					<Button
-						type="circle"
+						type="icon"
 						position="right"
-						size="small"
-						variant="bordered"
-						color="tertiary"
+						size="medium"
 						style={{
-							width: 80,
-							height: 28,
 							flexDirection: "row",
+							backgroundColor: "#D1D1D1",
+							opacity: 0.45,
 						}}
 						onPress={() =>
 							props.navigation.navigate("BottomStack", { screen: "HomeScreen" })
@@ -74,12 +72,12 @@ export default function SplashScreen(props) {
 						<Text
 							style={{
 								color: "white",
-								marginRight: 5,
+								marginRight: 10,
 								justifyContent: "center",
 								marginBottom: 1,
 							}}
 						>{`${t("skip")}`}</Text>
-						<Xgray height={10} width={10} />
+						<Xblue height={20} width={20} />
 					</Button>
 				</View>
 				<View

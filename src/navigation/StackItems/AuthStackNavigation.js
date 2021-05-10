@@ -2,6 +2,9 @@ import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../../screens/Authorization/Login";
 import SplashScreen from "../../screens/SplashScreen";
+import OnBoardScreen from "../../screens/OnBoardScreen";
+import OnBoardScreenOne from "../../screens/OnBoardScreen/OnBoardScreenOne";
+import OnBoardScreenTwo from "../../screens/OnBoardScreen/OnBoardScreenTwo";
 import RegisterScreen from "../../screens/Authorization/Register";
 import LoginGoogleScreen from "../../screens/Authorization/Google/LoginGoogle";
 import RegisterGoogleScreen from "../../screens/Authorization/Google/RegisterGoogle";
@@ -23,7 +26,34 @@ import OtpRegPhone from "../../screens/Authorization/Funtravia/OtpRegPhone";
 const AuthNav = createStackNavigator();
 export default function AuthStackNavigation() {
 	return (
-		<AuthNav.Navigator initialRouteName="SplashScreen">
+		<AuthNav.Navigator initialRouteName="OnBoardScreen">
+			<AuthNav.Screen
+				name="OnBoardScreen"
+				options={{
+					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
+				}}
+				component={OnBoardScreen}
+			/>
+			<AuthNav.Screen
+				name="OnBoardScreenOne"
+				options={{
+					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
+				}}
+				component={OnBoardScreenOne}
+			/>
+			<AuthNav.Screen
+				name="OnBoardScreenTwo"
+				options={{
+					headerShown: false,
+					headerTintColor: "black",
+					headerBackTitleVisible: false,
+				}}
+				component={OnBoardScreenTwo}
+			/>
 			<AuthNav.Screen
 				name="SplashScreen"
 				options={{

@@ -176,3 +176,7 @@ export const activity_unesco4 = require("./files/activity_unesco4.png");
 export const activity_unesco5 = require("./files/activity_unesco5.png");
 export const activity_unesco6 = require("./files/activity_unesco6.png");
 export const activity_unesco7 = require("./files/activity_unesco7.png");
+export const OnBoard_1 = require("./files/OnBoard-1.png");
+export const OnBoard_2 = require("./files/OnBoard-2.png");
+export const OnBoard_3 = require("./files/OnBoard-3.png");
+export const SplashScr = require("./files/SplashScreen.png");
