@@ -40,6 +40,7 @@ import {
   Albumgreen,
   Allpost,
   Allpostgreen,
+  Arrowbackwhite,
   Google,
   OptionsVertWhite,
   Sharegreen,
@@ -398,6 +399,12 @@ export default function OtherProfile(props) {
     extrapolate: "clamp",
   });
 
+  const imageOpacitys = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0, 0],
+    extrapolate: "clamp",
+  });
+
   const imageTranslate = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [0, -50],
@@ -543,7 +550,22 @@ export default function OtherProfile(props) {
 
       marginLeft: 10,
     },
-
+    headerLeft: () => (
+      <View>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+      </View>
+    ),
     headerRight: () => (
       <Button
         text={""}
@@ -802,6 +824,7 @@ export default function OtherProfile(props) {
               borderColor: "#FFF",
               position: "absolute",
               zIndex: 1,
+              opacity: imageOpacitys,
               transform: [
                 {
                   translateY: Platform.select({
@@ -1411,6 +1434,44 @@ export default function OtherProfile(props) {
         setdatas(1);
 
         props.navigation.setOptions({
+          headerLeft: () => (
+            <View
+              style={{
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                onPress={() => props.navigation.goBack()}
+                style={{
+                  height: 55,
+                }}
+              >
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              </Button>
+
+              <Animated.Image
+                source={
+                  data?.user_profilebyid?.picture
+                    ? { uri: data?.user_profilebyid?.picture }
+                    : DefaultProfileSquare
+                }
+                style={{
+                  width: width / 9,
+                  height: width / 9,
+                  borderRadius: width / 18,
+                  borderWidth: 2,
+                  borderColor: "#FFF",
+                  opacity: hide.current,
+                }}
+              />
+            </View>
+          ),
           headerTitle: (
             <Animated.View
               style={{
