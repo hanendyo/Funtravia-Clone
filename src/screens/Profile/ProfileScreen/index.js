@@ -521,6 +521,27 @@ export default function OtherProfile(props) {
       extrapolate: "clamp",
     })
   );
+  let hide1 = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
+  let hide2 = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
+  let hide0 = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
 
   const HeaderComponent = {
     headerShown: true,
@@ -584,8 +605,7 @@ export default function OtherProfile(props) {
   };
 
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-
+    // console.log(hide.current);
     const unsubscribe = props.navigation.addListener("focus", (data) => {
       loadAsync();
     });
@@ -777,6 +797,9 @@ export default function OtherProfile(props) {
     });
     return (
       <Animated.View
+        onLayout={() => {
+          props.navigation.setOptions(HeaderComponent);
+        }}
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
@@ -1360,6 +1383,65 @@ export default function OtherProfile(props) {
         onIndexChange={(id) => {
           _tabIndex.current = id;
           setIndex(id);
+
+          console.log(data?.user_profilebyid?.picture);
+          props.navigation.setOptions({
+            headerLeft: () => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  text={""}
+                  size="medium"
+                  type="circle"
+                  variant="transparent"
+                  onPress={() => props.navigation.goBack()}
+                  style={{
+                    height: 55,
+                  }}
+                >
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                </Button>
+
+                <Animated.Image
+                  source={
+                    data?.user_profilebyid?.picture
+                      ? { uri: data?.user_profilebyid?.picture }
+                      : DefaultProfileSquare
+                  }
+                  style={{
+                    width: width / 9,
+                    height: width / 9,
+                    borderRadius: width / 18,
+                    borderWidth: 2,
+                    borderColor: "#FFF",
+                    opacity: hide.current,
+                  }}
+                />
+              </View>
+            ),
+            headerTitle: (
+              <Animated.View
+                style={{
+                  opacity: hide.current,
+                }}
+              >
+                <Text
+                  type="bold"
+                  style={{
+                    color: "#fff",
+                  }}
+                >
+                  {data?.user_profilebyid?.first_name}{" "}
+                  {data?.user_profilebyid?.last_name}
+                </Text>
+              </Animated.View>
+            ),
+          });
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
