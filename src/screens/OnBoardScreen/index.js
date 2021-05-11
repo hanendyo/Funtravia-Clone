@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, View, Image, StyleSheet } from "react-native";
 import { SlideSatu, WhiteMascot, OnBoard_1 } from "../../assets/png/index";
 import { Sampul, Xblue } from "../../assets/svg";
 import { Text, FunImage, Button } from "../../component/index";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
+import ScreenOne from "./OnBoardScreenOne";
 
 export default function OnBoardScreen(props) {
 	const { t, i18n } = useTranslation();
 	let { height, width } = Dimensions.get("screen");
+	let [modalScreenOne, setModalScreenOne] = useState(false);
 	return (
 		<View style={{ backgroundColor: "#000" }}>
 			<Image
@@ -91,7 +93,8 @@ export default function OnBoardScreen(props) {
 						}}
 						size="medium"
 						color="secondary"
-						onPress={() => props.navigation.push("OnBoardScreenOne")}
+						// onPress={() => props.navigation.push("OnBoardScreenOne")}
+						onPress={() => setModalScreenOne(true)}
 						text={t("next")}
 					/>
 				</View>
@@ -130,6 +133,11 @@ export default function OnBoardScreen(props) {
 					</View>
 				</View>
 			</View>
+			<ScreenOne
+				modals={modalScreenOne}
+				setModalScreenOne={() => setModalScreenOne()}
+				props={props}
+			/>
 		</View>
 	);
 }

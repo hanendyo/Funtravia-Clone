@@ -7,6 +7,8 @@ import {
 	ScrollView,
 	StatusBar,
 	SafeAreaView,
+	BackHandler,
+	Alert,
 } from "react-native";
 import { SlideSatu, SlideDua, SlideTiga, WhiteMascot } from "../../assets/png";
 import { Xblue } from "../../assets/svg";
@@ -26,6 +28,16 @@ export default function SplashScreen(props) {
 		props.navigation.setOptions({
 			headerShown: false,
 		});
+		const backAction = () => {
+			BackHandler.exitApp();
+		};
+
+		const backHandler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			backAction
+		);
+
+		return () => backHandler.remove();
 	}, []);
 
 	return (
