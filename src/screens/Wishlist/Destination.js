@@ -13,7 +13,7 @@ import {
   Animated,
   ActivityIndicator,
 } from "react-native";
-import { CustomImage, FunIcon } from "../../component";
+import { CustomImage, FunIcon, FunImage } from "../../component";
 import { LikeRed, LikeEmpty, Star, PinHijau, Love } from "../../assets/svg";
 import { Ticket, MapIconGreen, default_image } from "../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
@@ -104,7 +104,7 @@ export default function Destination({
         }}
         horizontal={false}
         data={dataDes}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           console.log("item", item),
           (
             <Pressable
@@ -123,13 +123,13 @@ export default function Destination({
                       token: token,
                     });
               }}
-              // key={index}
+              key={index}
               style={{
                 borderWidth: 1,
                 borderColor: "#F3F3F3",
                 borderRadius: 10,
-                // height: 170,
-                padding: 10,
+                height: 170,
+                // padding: 10,
                 marginTop: 10,
                 width: "100%",
                 flexDirection: "row",
@@ -147,14 +147,74 @@ export default function Destination({
             >
               <View style={{ justifyContent: "center" }}>
                 {/* Image */}
-                <Image
+                <FunImage
                   source={{ uri: item.images.image }}
                   style={{
-                    width: 130,
-                    height: 160,
-                    borderRadius: 10,
+                    width: 150,
+                    height: "100%",
+                    borderBottomLeftRadius: 10,
+                    borderTopLeftRadius: 10,
                   }}
                 />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    left: 10,
+                    width: 130,
+                    zIndex: 2,
+                  }}
+                >
+                  {item.liked === true ? (
+                    <Pressable
+                      onPress={() => _unliked(item.id)}
+                      style={{
+                        backgroundColor: "#F3F3F3",
+                        height: 30,
+                        width: 30,
+                        borderRadius: 17,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Love height={15} width={15} />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() => _liked(item.id)}
+                      style={{
+                        backgroundColor: "#F3F3F3",
+                        height: 30,
+                        width: 30,
+                        borderRadius: 17,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <LikeEmpty height={15} width={15} />
+                    </Pressable>
+                  )}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "#F3F3F3",
+                      borderRadius: 3,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 5,
+                      height: 25,
+                    }}
+                  >
+                    <Star height={15} width={15} />
+                    <Text size="description" type="bold">
+                      {item.rating.substr(0, 3)}
+                    </Text>
+                  </View>
+                </View>
               </View>
 
               {/* Keterangan */}
@@ -162,72 +222,18 @@ export default function Destination({
               <View
                 style={{
                   flex: 1,
-                  paddingLeft: 10,
-                  height: 160,
+                  padding: 10,
+                  height: 170,
                   justifyContent: "space-between",
                 }}
               >
                 <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "#F3F3F3",
-                        borderRadius: 3,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingHorizontal: 5,
-                        height: 25,
-                      }}
-                    >
-                      <Star height={15} width={15} />
-                      <Text size="description" type="bold">
-                        {item.rating}
-                      </Text>
-                    </View>
-                    {item.liked === true ? (
-                      <Pressable
-                        onPress={() => _unliked(item.id)}
-                        style={{
-                          backgroundColor: "#F3F3F3",
-                          height: 34,
-                          width: 34,
-                          borderRadius: 17,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Love height={15} width={15} />
-                      </Pressable>
-                    ) : (
-                      <Pressable
-                        onPress={() => _liked(item.id)}
-                        style={{
-                          backgroundColor: "#F3F3F3",
-                          height: 34,
-                          width: 34,
-                          borderRadius: 17,
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <LikeEmpty height={15} width={15} />
-                      </Pressable>
-                    )}
-                  </View>
-
                   {/* Title */}
                   <Text
                     size="label"
                     type="bold"
                     style={{ marginTop: 2 }}
-                    numberOfLines={2}
+                    numberOfLines={1}
                   >
                     {item.name}
                   </Text>
@@ -266,25 +272,17 @@ export default function Destination({
                     <Text size="description" type="bold">
                       Great for :
                     </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        height: "100%",
-                        width: "80%",
-                      }}
-                    >
+                    <View style={{ flexDirection: "row" }}>
                       {item.greatfor.length > 0 ? (
                         item.greatfor.map((item, index) => {
                           return index < 3 ? (
-                            <View>
-                              <FunIcon
-                                key={index}
-                                icon={item.icon}
-                                fill="#464646"
-                                height={35}
-                                width={35}
-                              />
-                            </View>
+                            <FunIcon
+                              key={index}
+                              icon={item.icon}
+                              fill="#464646"
+                              height={35}
+                              width={35}
+                            />
                           ) : null;
                         })
                       ) : (

@@ -104,11 +104,11 @@ export default function about(props) {
     refresh();
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoad(false);
-    }, 2000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoad(false);
+  //   }, 1000);
+  // }, []);
 
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -579,200 +579,200 @@ export default function about(props) {
     );
   };
 
-  if (load) {
-    return (
-      <SkeletonPlaceholder>
-        <View style={{ flexDirection: "row" }}>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 50,
-              borderRadius: 10,
-              margin: 10,
-            }}
-          ></View>
-        </View>
+  // if (load) {
+  //   return (
+  //     <SkeletonPlaceholder>
+  //       <View style={{ flexDirection: "row" }}>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 10,
+  //             width: 50,
+  //             borderRadius: 10,
+  //             margin: 10,
+  //           }}
+  //         ></View>
+  //       </View>
 
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            paddingHorizontal: 15,
-          }}
-        >
-          <View
-            style={{
-              marginTop: 10,
-              width: "80%",
-              height: 12,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 150,
-              width: "100%",
-              borderRadius: 10,
-              marginTop: 10,
-            }}
-          ></View>
+  //       <View
+  //         style={{
+  //           width: Dimensions.get("screen").width,
+  //           paddingHorizontal: 15,
+  //         }}
+  //       >
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "80%",
+  //             height: 12,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 150,
+  //             width: "100%",
+  //             borderRadius: 10,
+  //             marginTop: 10,
+  //           }}
+  //         ></View>
 
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "80%",
-              height: 12,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 150,
-              width: "100%",
-              borderRadius: 10,
-              marginTop: 10,
-            }}
-          ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "80%",
+  //             height: 12,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             height: 150,
+  //             width: "100%",
+  //             borderRadius: 10,
+  //             marginTop: 10,
+  //           }}
+  //         ></View>
 
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-          <View
-            style={{
-              marginTop: 10,
-              width: "100%",
-              height: 10,
-              borderRadius: 5,
-            }}
-          ></View>
-        </View>
-      </SkeletonPlaceholder>
-    );
-  }
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //         <View
+  //           style={{
+  //             marginTop: 10,
+  //             width: "100%",
+  //             height: 10,
+  //             borderRadius: 5,
+  //           }}
+  //         ></View>
+  //       </View>
+  //     </SkeletonPlaceholder>
+  //   );
+  // }
   return (
     <SafeAreaView
       style={{
