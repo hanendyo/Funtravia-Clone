@@ -11,7 +11,7 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import { CustomImage, FunIcon } from "../../../component";
+import { CustomImage, FunIcon, FunImage } from "../../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
   LikeRed,
@@ -271,217 +271,436 @@ export default function ItineraryDestination(props) {
             paddingBottom: 120,
           }}
           horizontal={false}
-          // data={dataDes}
           renderItem={({ item, index }) => (
             <Pressable
-            onPress={() => {
-                  props?.route?.params && props?.route?.params?.iditinerary
-                    ? props.navigation.push("DestinationUnescoDetail", {
-                        id: item.id,
-                        name: item.name,
-                        token: token,
-                        iditinerary: props.route.params.iditinerary,
-                        datadayaktif: props.route.params.datadayaktif,
-                      })
-                    : props.navigation.push("DestinationUnescoDetail", {
-                        id: item.id,
-                        name: item.name,
-                        token: token,
-                      });
-                }}
-          key={index}
-          style={{
-            borderWidth: 1,
-            borderColor: "#F3F3F3",
-            borderRadius: 10,
-            // height: 170,
-            padding: 10,
-            marginTop: 10,
-            width: "100%",
-            flexDirection: "row",
-            backgroundColor: "#FFF",
-            shadowColor: "#FFF",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6.27,
-
-            elevation: 6,
-          }}
-        >
-          <View style={{ justifyContent: "center" }}>
-            {/* Image */}
-            <Image
-              source={{ uri: item.images.image }}
-              style={{
-                width: 130,
-                height: 160,
-                borderRadius: 10,
+              onPress={() => {
+                props?.route?.params && props?.route?.params?.iditinerary
+                  ? props.navigation.push("DestinationUnescoDetail", {
+                      id: item.id,
+                      name: item.name,
+                      token: token,
+                      iditinerary: props.route.params.iditinerary,
+                      datadayaktif: props.route.params.datadayaktif,
+                    })
+                  : props.navigation.push("DestinationUnescoDetail", {
+                      id: item.id,
+                      name: item.name,
+                      token: token,
+                    });
               }}
-            />
-          </View>
+              key={index}
+              style={{
+                borderWidth: 1,
+                borderColor: "#F3F3F3",
+                borderRadius: 10,
+                height: 170,
+                // padding: 10,
+                marginTop: 10,
+                width: "100%",
+                flexDirection: "row",
+                backgroundColor: "#FFF",
+                shadowColor: "#FFF",
+                shadowOffset: {
+                  width: 0,
+                  height: 5,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 6.27,
 
-          {/* Keterangan */}
-          {/* rating */}
-          <View
-            style={{
-              flex: 1,
-              paddingLeft: 10,
-              height: 160,
-              justifyContent: "space-between",
-            }}
-          >
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+                elevation: 6,
+              }}
+            >
+              <View style={{ justifyContent: "center" }}>
+                {/* Image */}
+                <FunImage
+                  source={{ uri: item.images.image }}
+                  style={{
+                    width: 150,
+                    height: "100%",
+                    borderBottomLeftRadius: 10,
+                    borderTopLeftRadius: 10,
+                  }}
+                />
                 <View
                   style={{
                     flexDirection: "row",
-                    backgroundColor: "#F3F3F3",
-                    borderRadius: 3,
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    paddingHorizontal: 5,
-                    height: 25,
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    left: 10,
+                    width: 130,
+                    zIndex: 2,
                   }}
                 >
-                  <Star height={15} width={15} />
-                  <Text size="description" type="bold">
-                    {item.rating}
-                  </Text>
+                  {item.liked === true ? (
+                    <Pressable
+                      onPress={() => _unliked(item.id)}
+                      style={{
+                        backgroundColor: "#F3F3F3",
+                        height: 30,
+                        width: 30,
+                        borderRadius: 17,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Love height={15} width={15} />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() => _liked(item.id)}
+                      style={{
+                        backgroundColor: "#F3F3F3",
+                        height: 30,
+                        width: 30,
+                        borderRadius: 17,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <LikeEmpty height={15} width={15} />
+                    </Pressable>
+                  )}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "#F3F3F3",
+                      borderRadius: 3,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 5,
+                      height: 25,
+                    }}
+                  >
+                    <Star height={15} width={15} />
+                    <Text size="description" type="bold">
+                      {item.rating.substr(0, 3)}
+                    </Text>
+                  </View>
                 </View>
-                {item.liked === true ? (
-                  <Pressable
-                    onPress={() => _unliked(item.id, index)}
-                    style={{
-                      backgroundColor: "#F3F3F3",
-                      height: 34,
-                      width: 34,
-                      borderRadius: 17,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Love height={15} width={15} />
-                  </Pressable>
-                ) : (
-                  <Pressable
-                    onPress={() => _liked(item.id, index)}
-                    style={{
-                      backgroundColor: "#F3F3F3",
-                      height: 34,
-                      width: 34,
-                      borderRadius: 17,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <LikeEmpty height={15} width={15} />
-                  </Pressable>
-                )}
               </View>
 
-              {/* Title */}
-              <Text
-                size="label"
-                type="bold"
-                style={{ marginTop: 2 }}
-                numberOfLines={2}
-              >
-                {item.name}
-              </Text>
-
-              {/* Maps */}
+              {/* Keterangan */}
+              {/* rating */}
               <View
                 style={{
-                  flexDirection: "row",
-                  marginTop: 5,
-                  alignItems: "center",
+                  flex: 1,
+                  padding: 10,
+                  height: 170,
+                  justifyContent: "space-between",
                 }}
               >
-                <PinHijau height={15} width={15} />
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ marginLeft: 5 }}
-                  numberOfLines={1}
-                >
-                  {item.cities.name}
-                </Text>
-              </View>
-            </View>
-            {/* Great for */}
+                <View>
+                  {/* Title */}
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ marginTop: 2 }}
+                    numberOfLines={1}
+                  >
+                    {item.name}
+                  </Text>
 
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: 50,
-                marginTop: 10,
-                alignItems: "flex-end",
-              }}
-            >
-              <View>
-                <Text size="description" type="bold">
-                  Great for :
-                </Text>
-                <View style={{ flexDirection: "row" }}>
-                  {item.greatfor.length > 0 ? (
-                    item.greatfor.map((item, index) => {
-                      return index < 3 ? (
-                        <FunIcon
-                          key={index}
-                          icon={item.icon}
-                          fill="#464646"
-                          height={35}
-                          width={35}
-                        />
-                      ) : null;
-                    })
-                  ) : (
-                    <Text>-</Text>
-                  )}
+                  {/* Maps */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginTop: 5,
+                      alignItems: "center",
+                    }}
+                  >
+                    <PinHijau height={15} width={15} />
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ marginLeft: 5 }}
+                      numberOfLines={1}
+                    >
+                      {item.cities.name}
+                    </Text>
+                  </View>
+                </View>
+                {/* Great for */}
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    height: 50,
+                    marginTop: 10,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <View>
+                    <Text size="description" type="bold">
+                      Great for :
+                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                      {item.greatfor.length > 0 ? (
+                        item.greatfor.map((item, index) => {
+                          return index < 3 ? (
+                            <FunIcon
+                              key={index}
+                              icon={item.icon}
+                              fill="#464646"
+                              height={35}
+                              width={35}
+                            />
+                          ) : null;
+                        })
+                      ) : (
+                        <Text>-</Text>
+                      )}
+                    </View>
+                  </View>
+                  <Button
+                    onPress={() => {
+                      props.navigation.dispatch(
+                        StackActions.replace("ItineraryStack", {
+                          screen: "ItineraryChooseday",
+                          params: {
+                            Iditinerary: props.route.params.IdItinerary,
+                            Kiriman: item.id,
+                            token: token,
+                            Position: "destination",
+                            datadayaktif: props.route.params.datadayaktif,
+                          },
+                        })
+                      );
+                    }}
+                    size="small"
+                    text={"Add"}
+                    // style={{ marginTop: 15 }}
+                  />
                 </View>
               </View>
-              <Button
-               onPress={() => {
-                    props.navigation.dispatch(
-                          StackActions.replace("ItineraryStack", {
-                            screen: "ItineraryChooseday",
-                            params: {
-                              Iditinerary: props.route.params.IdItinerary,
-                              Kiriman: item.id,
-                              token: token,
-                              Position: "destination",
-                              datadayaktif: props.route.params.datadayaktif,
-                            },
-                          })
-                        )
-                  
-                  }}
-                size="small"
-                text={"Add"}
-                // style={{ marginTop: 15 }}
-              />
-            </View>
-          </View>
-        </Pressable>
-
+            </Pressable>
           )}
-          // keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
-
-          // extraData={selected}
         />
-       
-      ) : null}
+      ) : // <FlatList
+      //   data={data.destinationList_v2}
+      //   contentContainerStyle={{
+      //     marginTop: 5,
+      //     justifyContent: "space-evenly",
+      //     paddingStart: 10,
+      //     paddingEnd: 10,
+      //     paddingBottom: 120,
+      //   }}
+      //   horizontal={false}
+      //   // data={dataDes}
+      //   renderItem={({ item, index }) => (
+      //     <Pressable
+      //     onPress={() => {
+      //           props?.route?.params && props?.route?.params?.iditinerary
+      //             ? props.navigation.push("DestinationUnescoDetail", {
+      //                 id: item.id,
+      //                 name: item.name,
+      //                 token: token,
+      //                 iditinerary: props.route.params.iditinerary,
+      //                 datadayaktif: props.route.params.datadayaktif,
+      //               })
+      //             : props.navigation.push("DestinationUnescoDetail", {
+      //                 id: item.id,
+      //                 name: item.name,
+      //                 token: token,
+      //               });
+      //         }}
+      //   key={index}
+      //   style={{
+      //     borderWidth: 1,
+      //     borderColor: "#F3F3F3",
+      //     borderRadius: 10,
+      //     // height: 170,
+      //     padding: 10,
+      //     marginTop: 10,
+      //     width: "100%",
+      //     flexDirection: "row",
+      //     backgroundColor: "#FFF",
+      //     shadowColor: "#FFF",
+      //     shadowOffset: {
+      //       width: 0,
+      //       height: 5,
+      //     },
+      //     shadowOpacity: 0.1,
+      //     shadowRadius: 6.27,
+
+      //     elevation: 6,
+      //   }}
+      // >
+      //   <View style={{ justifyContent: "center" }}>
+      //     {/* Image */}
+      //     <Image
+      //       source={{ uri: item.images.image }}
+      //       style={{
+      //         width: 130,
+      //         height: 160,
+      //         borderRadius: 10,
+      //       }}
+      //     />
+      //   </View>
+
+      //   {/* Keterangan */}
+      //   {/* rating */}
+      //   <View
+      //     style={{
+      //       flex: 1,
+      //       paddingLeft: 10,
+      //       height: 160,
+      //       justifyContent: "space-between",
+      //     }}
+      //   >
+      //     <View>
+      //       <View
+      //         style={{
+      //           flexDirection: "row",
+      //           justifyContent: "space-between",
+      //           alignItems: "center",
+      //         }}
+      //       >
+      //         <View
+      //           style={{
+      //             flexDirection: "row",
+      //             backgroundColor: "#F3F3F3",
+      //             borderRadius: 3,
+      //             justifyContent: "center",
+      //             alignItems: "center",
+      //             paddingHorizontal: 5,
+      //             height: 25,
+      //           }}
+      //         >
+      //           <Star height={15} width={15} />
+      //           <Text size="description" type="bold">
+      //             {item.rating}
+      //           </Text>
+      //         </View>
+      //         {item.liked === true ? (
+      //           <Pressable
+      //             onPress={() => _unliked(item.id, index)}
+      //             style={{
+      //               backgroundColor: "#F3F3F3",
+      //               height: 34,
+      //               width: 34,
+      //               borderRadius: 17,
+      //               justifyContent: "center",
+      //               alignItems: "center",
+      //             }}
+      //           >
+      //             <Love height={15} width={15} />
+      //           </Pressable>
+      //         ) : (
+      //           <Pressable
+      //             onPress={() => _liked(item.id, index)}
+      //             style={{
+      //               backgroundColor: "#F3F3F3",
+      //               height: 34,
+      //               width: 34,
+      //               borderRadius: 17,
+      //               justifyContent: "center",
+      //               alignItems: "center",
+      //             }}
+      //           >
+      //             <LikeEmpty height={15} width={15} />
+      //           </Pressable>
+      //         )}
+      //       </View>
+
+      //       {/* Title */}
+      //       <Text
+      //         size="label"
+      //         type="bold"
+      //         style={{ marginTop: 2 }}
+      //         numberOfLines={2}
+      //       >
+      //         {item.name}
+      //       </Text>
+
+      //       {/* Maps */}
+      //       <View
+      //         style={{
+      //           flexDirection: "row",
+      //           marginTop: 5,
+      //           alignItems: "center",
+      //         }}
+      //       >
+      //         <PinHijau height={15} width={15} />
+      //         <Text
+      //           size="description"
+      //           type="regular"
+      //           style={{ marginLeft: 5 }}
+      //           numberOfLines={1}
+      //         >
+      //           {item.cities.name}
+      //         </Text>
+      //       </View>
+      //     </View>
+      //     {/* Great for */}
+
+      //     <View
+      //       style={{
+      //         flexDirection: "row",
+      //         justifyContent: "space-between",
+      //         height: 50,
+      //         marginTop: 10,
+      //         alignItems: "flex-end",
+      //       }}
+      //     >
+      //       <View>
+      //         <Text size="description" type="bold">
+      //           Great for :
+      //         </Text>
+      //         <View style={{ flexDirection: "row" }}>
+      //           {item.greatfor.length > 0 ? (
+      //             item.greatfor.map((item, index) => {
+      //               return index < 3 ? (
+      //                 <FunIcon
+      //                   key={index}
+      //                   icon={item.icon}
+      //                   fill="#464646"
+      //                   height={35}
+      //                   width={35}
+      //                 />
+      //               ) : null;
+      //             })
+      //           ) : (
+      //             <Text>-</Text>
+      //           )}
+      //         </View>
+      //       </View>
+      //       <Button
+      //        onPress={() => {
+      //             props.navigation.dispatch(
+      //                   StackActions.replace("ItineraryStack", {
+      //                     screen: "ItineraryChooseday",
+      //                     params: {
+      //                       Iditinerary: props.route.params.IdItinerary,
+      //                       Kiriman: item.id,
+      //                       token: token,
+      //                       Position: "destination",
+      //                       datadayaktif: props.route.params.datadayaktif,
+      //                     },
+      //                   })
+      //                 )
+
+      //           }}
+      //         size="small"
+      //         text={"Add"}
+      //         // style={{ marginTop: 15 }}
+      //       />
+      //     </View>
+      //   </View>
+      // </Pressable>
+
+      //   )}
+      //   // keyExtractor={(item) => item.id}
+      //   showsHorizontalScrollIndicator={false}
+
+      //   // extraData={selected}
+      // />
+
+      null}
     </View>
   );
 }

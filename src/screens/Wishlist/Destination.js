@@ -21,6 +21,7 @@ import UnLiked from "../../graphQL/Mutation/unliked";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 export default function Destination({
   props,
@@ -89,9 +90,275 @@ export default function Destination({
   useEffect(() => {
     setTimeout(() => {
       setLoadGreat(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
+  if (loadGreat) {
+    return (
+      <SkeletonPlaceholder>
+        <View>
+          <View
+            style={{
+              width: "100%",
+              paddingStart: 10,
+              paddingEnd: 10,
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  height: 170,
+                  width: 150,
+                  borderRadius: 10,
+                  marginTop: 10,
+                }}
+              ></View>
+              <View>
+                <View
+                  style={{
+                    height: 15,
+                    width: 100,
+                    marginLeft: 10,
+                    marginTop: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 15,
+                    width: 100,
+                    marginLeft: 10,
+                    marginTop: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    marginTop: 75,
+                    height: 15,
+                    width: 80,
+                    marginLeft: 10,
+                  }}
+                ></View>
+                <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 50,
+                      marginLeft: 25,
+                      borderRadius: 5,
+                    }}
+                  ></View>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              height: 10,
+              width: "100%",
+              marginTop: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              width: "100%",
+              paddingStart: 10,
+              paddingEnd: 10,
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  height: 170,
+                  width: 150,
+                  borderRadius: 10,
+                  marginTop: 10,
+                }}
+              ></View>
+              <View>
+                <View
+                  style={{
+                    height: 15,
+                    width: 100,
+                    marginLeft: 10,
+                    marginTop: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 15,
+                    width: 100,
+                    marginLeft: 10,
+                    marginTop: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    marginTop: 75,
+                    height: 15,
+                    width: 80,
+                    marginLeft: 10,
+                  }}
+                ></View>
+                <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 50,
+                      marginLeft: 25,
+                      borderRadius: 5,
+                    }}
+                  ></View>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              height: 10,
+              width: "100%",
+              marginTop: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              width: "100%",
+              paddingStart: 10,
+              paddingEnd: 10,
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  height: 170,
+                  width: 150,
+                  borderRadius: 10,
+                  marginTop: 10,
+                }}
+              ></View>
+              <View>
+                <View
+                  style={{
+                    height: 15,
+                    width: 100,
+                    marginLeft: 10,
+                    marginTop: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    height: 15,
+                    width: 100,
+                    marginLeft: 10,
+                    marginTop: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    marginTop: 75,
+                    height: 15,
+                    width: 80,
+                    marginLeft: 10,
+                  }}
+                ></View>
+                <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 35,
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      marginTop: 2,
+                      height: 35,
+                      width: 50,
+                      marginLeft: 25,
+                      borderRadius: 5,
+                    }}
+                  ></View>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              height: 10,
+              width: "100%",
+              marginTop: 10,
+            }}
+          ></View>
+        </View>
+      </SkeletonPlaceholder>
+    );
+  }
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -273,6 +540,33 @@ export default function Destination({
                       Great for :
                     </Text>
                     <View style={{ flexDirection: "row" }}>
+                      {/* {loadGreat ? (
+                        <SkeletonPlaceholder>
+                          <View style={{ flexDirection: "row" }}>
+                            <View
+                              style={{
+                                height: 35,
+
+                                width: 35,
+                              }}
+                            ></View>
+                            <View
+                              style={{
+                                height: 35,
+                                marginLeft: 2,
+                                width: 35,
+                              }}
+                            ></View>
+                            <View
+                              style={{
+                                height: 35,
+                                marginLeft: 2,
+                                width: 35,
+                              }}
+                            ></View>
+                          </View>
+                        </SkeletonPlaceholder>
+                      ) : null} */}
                       {item.greatfor.length > 0 ? (
                         item.greatfor.map((item, index) => {
                           return index < 3 ? (
