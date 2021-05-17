@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, FlatList, Modal, Dimensions } from "react-native";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
+
 import { WebView } from "react-native-webview";
+
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
 import { Text, Button } from "../../component";
-
-export default function About(props) {
+export default function Bantuan(props) {
 	// let [param, setParam] = useState(props.navigation.getParam('params'));
 	// console.log(param);
 	// const [Param, { data, loading, error }] = useLazyQuery(getParams, {
@@ -20,12 +22,11 @@ export default function About(props) {
 	// useEffect(() => {
 	// 	Param();
 	// }, []);
-	const INJECTEDJAVASCRIPT = `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);`;
 	const HeaderComponent = {
 		title: "",
 		// headerTransparent: true,
 		headerTintColor: "white",
-		headerTitle: "About Funtravia",
+		headerTitle: "Help",
 		headerMode: "screen",
 		headerStyle: {
 			backgroundColor: "#209FAE",
@@ -62,6 +63,8 @@ export default function About(props) {
 	useEffect(() => {
 		props.navigation.setOptions(HeaderComponent);
 	}, []);
+	const INJECTEDJAVASCRIPT = `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);`;
+
 	return (
 		<WebView
 			source={{ uri: "https://funtravia.com" }}
@@ -79,8 +82,8 @@ const styles = StyleSheet.create({
 	},
 });
 
-About.navigationOptions = ({ navigation }) => ({
-	headerTitle: "About Funtravia",
+Bantuan.navigationOptions = ({ navigation }) => ({
+	headerTitle: "Bantuan",
 	headerMode: "screen",
 	headerStyle: {
 		backgroundColor: "#209FAE",

@@ -1,31 +1,16 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, FlatList, Modal, Dimensions } from "react-native";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { WebView } from "react-native-webview";
+import { back_arrow_white } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
 import { Text, Button } from "../../component";
-
-export default function About(props) {
-	// let [param, setParam] = useState(props.navigation.getParam('params'));
-	// console.log(param);
-	// const [Param, { data, loading, error }] = useLazyQuery(getParams, {
-	// 	// fetchPolicy: 'network-only',
-	// 	// context: {
-	// 	// 	headers: {
-	// 	// 		'Content-Type': 'application/json',
-	// 	// 		Authorization: `Bearer ${token}`,
-	// 	// 	},
-	// 	// },
-	// 	variables: { code: param },
-	// });
-	// useEffect(() => {
-	// 	Param();
-	// }, []);
-	const INJECTEDJAVASCRIPT = `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);`;
+export default function Privacy(props) {
 	const HeaderComponent = {
 		title: "",
 		// headerTransparent: true,
 		headerTintColor: "white",
-		headerTitle: "About Funtravia",
+		headerTitle: "Privacy and Policy",
 		headerMode: "screen",
 		headerStyle: {
 			backgroundColor: "#209FAE",
@@ -62,25 +47,16 @@ export default function About(props) {
 	useEffect(() => {
 		props.navigation.setOptions(HeaderComponent);
 	}, []);
+	const INJECTEDJAVASCRIPT = `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);`;
 	return (
 		<WebView
-			source={{ uri: "https://funtravia.com" }}
+			source={{ uri: "https://funtravia.com/privacy" }}
 			injectedJavaScript={INJECTEDJAVASCRIPT}
 		/>
 	);
 }
-const styles = StyleSheet.create({
-	main: {
-		width: Dimensions.get("window").width - 15,
-		margin: 10,
-		alignContent: "flex-start",
-		alignItems: "flex-start",
-		justifyContent: "flex-start",
-	},
-});
-
-About.navigationOptions = ({ navigation }) => ({
-	headerTitle: "About Funtravia",
+Privacy.navigationOptions = ({ navigation }) => ({
+	headerTitle: "Privacy",
 	headerMode: "screen",
 	headerStyle: {
 		backgroundColor: "#209FAE",
@@ -111,3 +87,5 @@ About.navigationOptions = ({ navigation }) => ({
 		return null;
 	},
 });
+
+const styles = StyleSheet.create({});
