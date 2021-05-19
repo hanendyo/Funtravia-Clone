@@ -1136,7 +1136,7 @@ export default function ListEventHome(props) {
 
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 30, 100],
+    outputRange: [0, 100, 100],
     extrapolate: "clamp",
   });
 

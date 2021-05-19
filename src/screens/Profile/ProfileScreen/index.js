@@ -31,6 +31,7 @@ import {
 } from "../../../assets/png";
 import Account from "../../../graphQL/Query/Profile/Other";
 import User_Post from "../../../graphQL/Query/Profile/otherpost";
+import album_post from "../../../graphQL/Query/Profile/albumPost";
 import Reviews from "../../../graphQL/Query/Profile/otherreview";
 import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
 import Itinerary2 from "../../../graphQL/Query/Profile/itinerary";
@@ -74,6 +75,7 @@ export default function OtherProfile(props) {
   let [showside, setshowside] = useState(false);
   let [token, setToken] = useState(null);
   const [dataPost, setdataPost] = useState([]);
+  const [dataalbums, setdataalbums] = useState([]);
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
   let [users, setuser] = useState(null);
@@ -141,6 +143,32 @@ export default function OtherProfile(props) {
     },
     onCompleted: () => {
       setdataPost(spreadData(dataposting.user_postbyid));
+    },
+  });
+
+  const [
+    Getdataalbum,
+    {
+      data: dataalbum,
+      loading: loadingalbum,
+      error: erroralbum,
+      refetch: refetchalbum,
+    },
+  ] = useLazyQuery(album_post, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: {
+      limit: 5,
+      offset: 0,
+      user_id: id,
+    },
+    onCompleted: () => {
+      setdataalbums(dataalbum.user_post_album.datas);
     },
   });
 
@@ -1155,7 +1183,7 @@ export default function OtherProfile(props) {
     if (tabPost === 0) {
       return dataPost;
     } else if (tabPost === 1) {
-      return dataPost;
+      return dataalbums;
     } else {
       return dataPost;
     }
@@ -1507,6 +1535,8 @@ export default function OtherProfile(props) {
         setDataUser(data.user_profilebyid);
 
         Getdatapost();
+        Getdataalbum();
+        console.log("test");
         LoadReview();
         if (position === "profile") {
           LoadTrip2();
