@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ActivePlan from "./ActivePlan";
 import FinishTrip from "./FinishTrip";
@@ -13,6 +19,7 @@ import Animated from "react-native-reanimated";
 import Ripple from "react-native-material-ripple";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ItineraryCount from "../../../graphQL/Query/Itinerary/ItineraryCount";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -220,16 +227,52 @@ export default function TripPlaning(props) {
     );
   } else {
     return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-        }}
+      // <View
+      //   style={{
+      //     flex: 1,
+      //     alignItems: "center",
+      //     alignContent: "center",
+      //     justifyContent: "center",
+      //   }}
+      // >
+      //   {/* <ActivityIndicator animating={true} color="#209fae" size="large" /> */}
+      // </View>
+
+      <Tab.Navigator
+        backBehavior="none"
+        initialRouteName="Edit"
+        // tabBarOptions={{
+        //   activeTintColor: "#209fae",
+        //   labelStyle: {
+        //     fontFamily: "Lato-Bold",
+        //   },
+        //   style: {
+        //     backgroundColor: "#ffff",
+        //   },
+        // }}
+        tabBar={(props) => (
+          <MyTabBar
+            {...props}
+            count={{ count_draf: 0, count_active: 0, count_finish: 0 }}
+          />
+        )}
       >
-        {/* <ActivityIndicator animating={true} color="#209fae" size="large" /> */}
-      </View>
+        <Tab.Screen
+          name="Edit"
+          component={() => <View></View>}
+          options={{ tabBarLabel: "Plan" }}
+        />
+        <Tab.Screen
+          name="Save"
+          component={() => <View></View>}
+          options={{ tabBarLabel: "Ongoing" }}
+        />
+        <Tab.Screen
+          name="Finish"
+          component={() => <View></View>}
+          options={{ tabBarLabel: "Finish" }}
+        />
+      </Tab.Navigator>
     );
   }
 }

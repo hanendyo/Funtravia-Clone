@@ -17,6 +17,7 @@ import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
 export default function Albums({ item, index }) {
+  console.log(item);
   return (
     <View
       style={{
@@ -42,8 +43,8 @@ export default function Albums({ item, index }) {
             height: "75%",
           }}
           source={
-            item[0]?.assets[0]?.filepath
-              ? { uri: item[0]?.assets[0]?.filepath }
+            item?.assets[0]?.filepath
+              ? { uri: item?.assets[0]?.filepath }
               : default_image
           }
         ></Image>
@@ -56,7 +57,7 @@ export default function Albums({ item, index }) {
           }}
         >
           <Text size={"label"} type="bold">
-            test
+            {item.itinerary.name}
           </Text>
         </View>
       </View>
