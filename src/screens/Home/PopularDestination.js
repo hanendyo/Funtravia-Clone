@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Image,
+  Pressable,
 } from "react-native";
 import BerandaPopuler from "../../graphQL/Query/Home/BerandaPopuler";
 import { useQuery } from "@apollo/react-hooks";
-import { Capital, Text, FunImageBackground } from "../../component";
+import { Capital, Text, FunImageBackground, FunImage } from "../../component";
 import { default_image } from "../../assets/png";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -39,71 +41,80 @@ export default function PopularDestination({ props }) {
   return (
     <SafeAreaView>
       {data && data.beranda_popularV2.length ? (
-        <TouchableOpacity
+        <View
           style={{
             width: width - 40,
             marginTop: 10,
             marginHorizontal: 20,
-            borderRadius: 5,
-            shadowColor: "rgba(0, 0, 0, 0.11);",
-            shadowOffset: { width: 0, height: 6 },
-            shadowRadius: 6,
-            shadowOpacity: 1,
-            elevation: 6,
+            zIndex: -10,
+            position: "relative",
           }}
-          onPress={() =>
-            onSelect(
-              data && data.beranda_popularV2 ? data.beranda_popularV2[0] : null
-            )
-          }
         >
-          <FunImageBackground
-            source={
-              data &&
-              data.beranda_popularV2[0] &&
-              data.beranda_popularV2[0].cover
-                ? { uri: data.beranda_popularV2[0].cover }
-                : default_image
-            }
+          <TouchableOpacity
             style={{
-              width: width - 40,
-              height: 150,
-              justifyContent: "flex-end",
+              borderRadius: 5,
+              shadowColor: "rgba(0, 0, 0, 0.11);",
+              shadowOffset: { width: 0, height: 6 },
+              shadowRadius: 6,
+              shadowOpacity: 1,
+              elevation: 6,
             }}
-            imageStyle={[styles.destinationMainImage, { height: 150 }]}
+            onPress={() =>
+              onSelect(
+                data && data.beranda_popularV2
+                  ? data.beranda_popularV2[0]
+                  : null
+              )
+            }
           >
-            <LinearGradient
-              colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 0, y: 0 }}
+            <FunImageBackground
+              source={
+                data &&
+                data.beranda_popularV2[0] &&
+                data.beranda_popularV2[0].cover
+                  ? { uri: data.beranda_popularV2[0].cover }
+                  : default_image
+              }
               style={{
-                height: "50%",
-                width: "100%",
-                alignItems: "flex-start",
-                alignContent: "flex-start",
+                width: width - 40,
+                height: 150,
                 justifyContent: "flex-end",
-                borderRadius: 5,
-                paddingHorizontal: 10,
-                paddingVertical: 10,
               }}
+              imageStyle={[styles.destinationMainImage, { height: 150 }]}
             >
-              <Text
-                size="title"
-                type="black"
+              <LinearGradient
+                colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
                 style={{
-                  zIndex: 2,
-                  color: "#fff",
+                  height: "50%",
+                  width: "100%",
+                  alignItems: "flex-start",
+                  alignContent: "flex-start",
+                  justifyContent: "flex-end",
+                  borderRadius: 5,
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
                 }}
               >
-                {data && data.beranda_popularV2[0]
-                  ? Capital({
-                      text: data.beranda_popularV2[0].name,
-                    })
-                  : ""}
-              </Text>
-            </LinearGradient>
-          </FunImageBackground>
-        </TouchableOpacity>
+                <Text
+                  size="title"
+                  type="black"
+                  style={{
+                    zIndex: 2,
+                    color: "#fff",
+                  }}
+                >
+                  {data && data.beranda_popularV2[0]
+                    ? Capital({
+                        text: data.beranda_popularV2[0].name,
+                      })
+                    : ""}
+                </Text>
+              </LinearGradient>
+            </FunImageBackground>
+          </TouchableOpacity>
+        </View>
       ) : null}
       {data && data.beranda_popularV2.length ? (
         <FlatList
