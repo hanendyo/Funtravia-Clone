@@ -29,6 +29,7 @@ import { useMutation } from "@apollo/react-hooks";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const numColumns = 2;
 
 export default function Event({
@@ -108,7 +109,221 @@ export default function Event({
     }
   };
 
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
+  let [loadevent, setLoadevent] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadevent(false);
+    }, 100);
+  }, []);
+
+  if (loadevent) {
+    return (
+      <SkeletonPlaceholder>
+        <View>
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                width: Dimensions.get("screen").width * 0.5 - 16,
+                height: Dimensions.get("window").width * 0.7,
+                borderWidth: 1,
+                borderColor: "#dedede",
+                borderRadius: 5,
+                marginLeft: 10,
+                marginTop: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 180,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "90%",
+                  height: 15,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 15,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+            </View>
+            <View
+              style={{
+                width: Dimensions.get("screen").width * 0.5 - 16,
+                height: Dimensions.get("window").width * 0.7,
+                borderWidth: 1,
+                borderColor: "#dedede",
+                borderRadius: 5,
+                marginLeft: 10,
+                marginTop: 10,
+                marginRight: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 180,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "90%",
+                  height: 15,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 15,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                width: Dimensions.get("screen").width * 0.5 - 16,
+                height: Dimensions.get("window").width * 0.7,
+                borderWidth: 1,
+                borderColor: "#dedede",
+                borderRadius: 5,
+                marginLeft: 10,
+                marginTop: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 180,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "90%",
+                  height: 15,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 15,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+            </View>
+            <View
+              style={{
+                width: Dimensions.get("screen").width * 0.5 - 16,
+                height: Dimensions.get("window").width * 0.7,
+                borderWidth: 1,
+                borderColor: "#dedede",
+                borderRadius: 5,
+                marginLeft: 10,
+                marginTop: 10,
+                marginRight: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: 180,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "90%",
+                  height: 15,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 15,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: 5,
+                  marginRight: 5,
+                  justifyContent: "center",
+                  width: "70%",
+                  height: 10,
+                }}
+              ></View>
+            </View>
+          </View>
+        </View>
+      </SkeletonPlaceholder>
+    );
+  }
 
   const _FormatData = (dataCart, numColumns) => {
     const totalRows = Math.floor(dataCart.length / numColumns);
