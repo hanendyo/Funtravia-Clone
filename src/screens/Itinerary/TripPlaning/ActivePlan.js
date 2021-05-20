@@ -21,7 +21,7 @@ import {
   TravelAlbum,
   TravelStories,
 } from "../../../assets/svg";
-import { Truncate, Text } from "../../../component";
+import { Truncate, Text, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
