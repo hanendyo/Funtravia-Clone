@@ -90,7 +90,7 @@ export default function Destination({
   useEffect(() => {
     setTimeout(() => {
       setLoadGreat(false);
-    }, 1000);
+    }, 100);
   }, []);
 
   if (loadGreat) {
