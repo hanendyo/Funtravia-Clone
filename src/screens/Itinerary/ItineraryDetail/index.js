@@ -51,6 +51,7 @@ import {
   Plane,
   Stay,
   Flights,
+  Chatnew,
 } from "../../../assets/svg";
 import {
   Button,
@@ -61,6 +62,7 @@ import {
   Truncate,
   StatusBar as CustomStatusBar,
   shareAction,
+  FunImage,
 } from "../../../component";
 import Sidebar from "../../../component/src/Sidebar";
 import {
@@ -453,7 +455,7 @@ export default function ItineraryDetail(props) {
                     >
                       <Expences height={20} width={20} />
                     </Button> */}
-          {anggota !== -1 ? (
+          {/* {anggota !== -1 ? (
             <Button
               text={""}
               size="medium"
@@ -474,7 +476,7 @@ export default function ItineraryDetail(props) {
             >
               <Chat height={20} width={20} />
             </Button>
-          ) : null}
+          ) : null} */}
           {anggota !== -1 ? (
             <Button
               text={""}
@@ -1760,6 +1762,19 @@ export default function ItineraryDetail(props) {
             flex: 1,
           }}
         />
+        {/* <FunImage
+          isTouchable
+          onPress={null}
+          style={{
+            height: 35,
+            width: 35,
+            borderRadius: 15,
+            alignSelf: "center",
+            marginLeft: 15,
+            resizeMode: "cover",
+          }}
+          source={{ uri: Cover }}
+        /> */}
         <Animated.View
           style={{
             position: "absolute",
@@ -3815,7 +3830,7 @@ export default function ItineraryDetail(props) {
     }
   };
 
-  const renderMenuBottom = () => {
+  const renderMenuBottom = (dta) => {
     switch (Anggota) {
       case "true":
         return status && status === "saved" ? (
@@ -3840,13 +3855,36 @@ export default function ItineraryDetail(props) {
               }}
             >
               <Button
+                color="tertiary"
+                type="circle"
+                style={{
+                  borderRadius: 0,
+                  width: "15%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+                onPress={() => {
+                  props.navigation.navigate("ChatStack", {
+                    screen: "GroupRoom",
+                    params: {
+                      room_id: itineraryId,
+                      name: dta ? dta.name : null,
+                      picture: Cover,
+                      is_itinerary: true,
+                    },
+                  });
+                }}
+              >
+                <Chatnew width={25} height={25} />
+              </Button>
+              <Button
                 disabled
                 text={t("addDestination")}
                 size="large"
                 style={{
                   backgroundColor: "#d3d3d3",
                   borderRadius: 0,
-                  width: "50%",
+                  width: "40%",
                   height: 56,
                   fontSize: 18,
                 }}
@@ -3855,7 +3893,7 @@ export default function ItineraryDetail(props) {
               <View
                 style={{
                   height: "100%",
-                  width: "50%",
+                  width: "45%",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -3972,6 +4010,29 @@ export default function ItineraryDetail(props) {
               }}
             >
               <Button
+                color="tertiary"
+                type="circle"
+                style={{
+                  borderRadius: 0,
+                  width: "15%",
+                  height: 56,
+                  fontSize: 18,
+                }}
+                onPress={() => {
+                  props.navigation.navigate("ChatStack", {
+                    screen: "GroupRoom",
+                    params: {
+                      room_id: itineraryId,
+                      name: dta ? dta.name : null,
+                      picture: Cover,
+                      is_itinerary: true,
+                    },
+                  });
+                }}
+              >
+                <Chatnew width={25} height={25} />
+              </Button>
+              <Button
                 onPress={() => {
                   let maxjam = datadayaktif.total_hours.split(":");
                   let jam = parseFloat(maxjam[0]);
@@ -4012,7 +4073,7 @@ export default function ItineraryDetail(props) {
                 size="large"
                 style={{
                   borderRadius: 0,
-                  width: "50%",
+                  width: "40%",
                   height: 56,
                   fontSize: 18,
                 }}
@@ -4021,7 +4082,7 @@ export default function ItineraryDetail(props) {
               <View
                 style={{
                   height: "100%",
-                  width: "50%",
+                  width: "45%",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -4313,7 +4374,7 @@ export default function ItineraryDetail(props) {
           {renderTabView()}
           {renderHeader(rData)}
           {renderCustomRefresh()}
-          {renderMenuBottom()}
+          {renderMenuBottom(rData)}
         </MenuProvider>
 
         <ImageSlide
@@ -4707,6 +4768,29 @@ export default function ItineraryDetail(props) {
             }}
           >
             <Button
+              color="tertiary"
+              type="circle"
+              style={{
+                borderRadius: 0,
+                width: "15%",
+                height: 56,
+                fontSize: 18,
+              }}
+              onPress={() => {
+                props.navigation.navigate("ChatStack", {
+                  screen: "GroupRoom",
+                  params: {
+                    room_id: itineraryId,
+                    name: dta ? dta.name : null,
+                    picture: Cover,
+                    is_itinerary: true,
+                  },
+                });
+              }}
+            >
+              <Chatnew width={25} height={25} />
+            </Button>
+            <Button
               onPress={() => {
                 setModalcustom(false);
                 let maxjam = datadayaktif.total_hours.split(":");
@@ -4748,7 +4832,7 @@ export default function ItineraryDetail(props) {
               size="large"
               style={{
                 borderRadius: 0,
-                width: "50%",
+                width: "40%",
                 height: 56,
                 fontSize: 18,
               }}
@@ -4757,7 +4841,7 @@ export default function ItineraryDetail(props) {
             <View
               style={{
                 height: "100%",
-                width: "50%",
+                width: "45%",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
