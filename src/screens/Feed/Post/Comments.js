@@ -499,6 +499,7 @@ export default function Comments(props) {
     };
 
     const duration = (datetime) => {
+        datetime = datetime.replace(" ", "T");
         var date1 = new Date(datetime).getTime();
         var date2 = new Date().getTime();
         var msec = date2 - date1;
@@ -945,7 +946,7 @@ export default function Comments(props) {
                         padding: 20,
                     }}
                 >
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={{
                             paddingVertical: 10,
                         }}
@@ -960,8 +961,8 @@ export default function Comments(props) {
                         >
                             {t("reportThisPost")}
                         </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </TouchableOpacity> */}
+                    {/* <TouchableOpacity
                         style={{
                             paddingVertical: 10,
                         }}
@@ -972,7 +973,7 @@ export default function Comments(props) {
                         <Text size="description" type="regular" style={{}}>
                             {t("blockUser")}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <TouchableOpacity
                         style={{
                             paddingVertical: 10,

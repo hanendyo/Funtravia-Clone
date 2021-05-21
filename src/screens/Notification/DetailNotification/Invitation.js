@@ -213,7 +213,7 @@ export default function Invitation({ navigation, token }) {
         },
     });
 
-    const _follow = async (id, notif_id) => {
+    const _follow = async (data, id, notif_id) => {
         if (data.isread == false) {
             updateisread(data.ids);
         }
@@ -1469,6 +1469,7 @@ export default function Invitation({ navigation, token }) {
                                     <Pressable
                                         onPress={() =>
                                             _follow(
+                                                item,
                                                 item.follow_user.user.id,
                                                 item.ids
                                             )

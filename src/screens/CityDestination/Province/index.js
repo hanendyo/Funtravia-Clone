@@ -185,7 +185,7 @@ export default function Province(props) {
             },
         }
     );
-
+    console.log("data", data);
     let list_journal = [];
     if (data && data.province_detail.journal) {
         list_journal = data.province_detail.journal;
