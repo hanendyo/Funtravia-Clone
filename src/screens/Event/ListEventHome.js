@@ -344,7 +344,17 @@ export default function ListEventHome(props) {
     }
   };
 
-  const onMomentumScrollBegin = () => {
+  let [gerakan, setgerakan] = useState(new Animated.Value(0));
+
+  const displays = gerakan.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 100],
+    extrapolate: "clamp",
+  });
+
+  let [y, sety] = useState(0);
+
+  const onMomentumScrollBegin = (e) => {
     isListGliding.current = true;
   };
 
@@ -354,6 +364,26 @@ export default function ListEventHome(props) {
   };
 
   const onScrollEndDrag = (e) => {
+    const positionX = e.nativeEvent.contentOffset.x;
+    const positionY = e.nativeEvent.contentOffset.y;
+    if (positionY < y) {
+      sety(positionY);
+      Animated.timing(gerakan, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    } else if (positionY > y) {
+      sety(positionY);
+      Animated.timing(gerakan, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
+    console.log("x : ", positionX, ", y : ", positionY);
+    console.log(y);
+
     syncScrollOffset();
 
     const offsetY = e.nativeEvent.contentOffset.y;
@@ -727,8 +757,8 @@ export default function ListEventHome(props) {
               )
             : null
         }
-        onMomentumScrollBegin={onMomentumScrollBegin}
-        onScrollEndDrag={onScrollEndDrag}
+        onMomentumScrollBegin={(e) => onMomentumScrollBegin(e)}
+        onScrollEndDrag={(e) => onScrollEndDrag(e)}
         onMomentumScrollEnd={onMomentumScrollEnd}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
@@ -1308,7 +1338,7 @@ export default function ListEventHome(props) {
           width: "100%",
           alignContent: "center",
           alignItems: "center",
-          transform: [{ translateY: imageOpacity }],
+          transform: [{ translateY: displays }],
         }}
       >
         <View
