@@ -517,5 +517,6 @@
   "tellUs": "Tell us your feedback",
   "messagesEmpty": "messages cannot be empty",
   "commentPost": "Comment a post.",
-  "setiap": "Every"
+  "setiap": "Every",
+  "notSet": "Not Set"
 }

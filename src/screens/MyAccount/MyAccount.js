@@ -277,7 +277,7 @@ export default function MyAccount(props) {
                   datauser.user_profile &&
                   datauser.user_profile.email
                     ? datauser.user_profile.email
-                    : "Not Set"
+                    : t("notSet")
                 }
                 length={30}
               />
@@ -296,7 +296,7 @@ export default function MyAccount(props) {
             <Text>
               {datauser && datauser.user_profile && datauser.user_profile.phone
                 ? datauser.user_profile.phone
-                : "Not Set"}
+                : t("notSet")}
             </Text>
           </View>
         </View>
@@ -414,7 +414,7 @@ export default function MyAccount(props) {
         >
           <Help />
           <Text type="bold" style={{ marginLeft: 5 }}>
-            Help
+            {t("help")}
           </Text>
         </TouchableOpacity>
         <View
