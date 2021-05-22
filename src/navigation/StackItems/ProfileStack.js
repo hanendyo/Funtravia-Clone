@@ -10,6 +10,7 @@ import profilesetting from "../../screens/Profile/ProfileSettings";
 import myfeed from "../../screens/Profile/Feed";
 import tripalbum from "../../screens/Profile/tripalbum";
 import tripalbumdetail from "../../screens/Profile/tripalbumdetail";
+import albumdetail from "../../screens/Profile/albumdetail";
 
 const ProfileStack = createStackNavigator();
 export default function ProfileStackNavigation(props) {
@@ -107,6 +108,16 @@ export default function ProfileStackNavigation(props) {
       <ProfileStack.Screen
         name="tripalbumdetail"
         component={tripalbumdetail}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="albumdetail"
+        component={albumdetail}
         options={{
           headerTitle: "",
           headerTransparent: true,

@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Pressable,
 } from "react-native";
 import { default_image } from "../../../../assets/png";
 import User_Post from "../../../../graphQL/Query/Profile/post";
@@ -16,10 +17,20 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
-export default function Albums({ item, index }) {
-  console.log(item);
+export default function Album({ item, index, props, token }) {
+  // console.log(item);
   return (
-    <View
+    <Pressable
+      onPress={() => {
+        props.navigation.push("albumdetail", {
+          data: item,
+          iditinerary: item.itinerary.id,
+          token: token,
+          // day_id: item.id,
+          judul: item.itinerary.name,
+          // position: position,
+        });
+      }}
       style={{
         width: "100%",
         height: width * 0.55,
@@ -61,6 +72,6 @@ export default function Albums({ item, index }) {
           </Text>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
