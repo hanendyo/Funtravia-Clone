@@ -38,6 +38,7 @@ const DataItenEx = {
 };
 
 export default function Information({ navigation }) {
+  console.log("nav : ", navigation);
   const { t, i18n } = useTranslation();
 
   const [dataIten, SetDataIten] = useState(DataItenEx);

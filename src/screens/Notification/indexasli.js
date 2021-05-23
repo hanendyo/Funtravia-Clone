@@ -17,7 +17,6 @@ import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { Header, Content, Tab, Tabs, ScrollableTab } from "native-base";
 import Information from "./DetailNotification/Information";
 import Invitation from "./DetailNotification/Invitation";
-import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 const ListNotifikasi_ = gql`
   query {
     list_notification {
@@ -156,88 +155,69 @@ export default function Notification(props) {
     },
   });
 
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <Text
-        style={[
-          focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
-        ]}
-      >
-        {route.title}
-      </Text>
-    );
-  };
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: "personal", title: "Invitation" },
-    { key: "group", title: "Information" },
-  ]);
-
-  const renderScene = ({ route }) => {
-    if (route.key == "personal") {
-      return token ? (
-        <Invitation navigation={props.navigation} token={token} />
-      ) : null;
-    } else if (route.key == "group") {
-      return null;
-      // return <Information navigation={props.navigation} />;
-    }
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <TabView
-        lazy={true}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={(props) => {
-          return (
-            <TabBar
-              {...props}
-              style={{
-                backgroundColor: "white",
-              }}
-              renderLabel={renderLabel}
-              indicatorStyle={styles.indicator}
-            />
-          );
+      <View
+        style={{
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "center",
         }}
-      />
+      >
+        <View>
+          <Tabs
+            scrollWithoutAnimation={false}
+            tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
+            tabContainerStyle={{ borderWidth: 0 }}
+            renderTabBar={() => (
+              <ScrollableTab
+                style={{ backgroundColor: "white" }}
+                tabStyle={{ backgroundColor: "transparent" }}
+                tabsContainerStyle={{
+                  backgroundColor: "white",
+                }}
+                underlineStyle={{
+                  borderColor: "#209FAE",
+                  backgroundColor: "#209FAE",
+                }}
+              />
+            )}
+          >
+            <Tab
+              heading="Notification"
+              tabStyle={{ backgroundColor: "white" }}
+              activeTabStyle={{ backgroundColor: "white" }}
+              textStyle={{
+                fontFamily: "Lato-Bold",
+                color: "#6C6C6C",
+              }}
+              activeTextStyle={{
+                fontFamily: "Lato-Bold",
+                color: "#209FAE",
+              }}
+            >
+              {token ? (
+                <Invitation navigation={props.navigation} token={token} />
+              ) : null}
+            </Tab>
+            <Tab
+              heading="Information"
+              tabStyle={{ backgroundColor: "white" }}
+              activeTabStyle={{ backgroundColor: "white" }}
+              textStyle={{
+                fontFamily: "Lato-Bold",
+                color: "#6C6C6C",
+              }}
+              activeTextStyle={{
+                fontFamily: "Lato-Bold",
+                color: "#209FAE",
+              }}
+            ></Tab>
+          </Tabs>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-  },
-  header: {
-    height: 100,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    backgroundColor: "#FFF",
-  },
-  label: {
-    fontSize: 14,
-    color: "#464646",
-    fontFamily: "Lato-Bold",
-  },
-  labelActive: {
-    fontSize: 14,
-    color: "#209FAE",
-    fontFamily: "Lato-Bold",
-  },
-  tab: {
-    elevation: 1,
-    shadowOpacity: 0.5,
-    backgroundColor: "#FFF",
-    height: 50,
-  },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
-});
+const styles = StyleSheet.create({});
