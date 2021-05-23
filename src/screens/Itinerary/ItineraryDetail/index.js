@@ -1762,19 +1762,7 @@ export default function ItineraryDetail(props) {
             flex: 1,
           }}
         />
-        {/* <FunImage
-          isTouchable
-          onPress={null}
-          style={{
-            height: 35,
-            width: 35,
-            borderRadius: 15,
-            alignSelf: "center",
-            marginLeft: 15,
-            resizeMode: "cover",
-          }}
-          source={{ uri: Cover }}
-        /> */}
+
         <Animated.View
           style={{
             position: "absolute",
