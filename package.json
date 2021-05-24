@@ -73,7 +73,7 @@
 		"react-native-tab-view": "^2.15.2",
 		"react-native-toasty": "^1.0.2",
 		"react-native-video": "^5.1.1",
-		"react-native-webview": "^11.0.3",
+		"react-native-webview": "^11.4.3",
 		"runes": "^0.4.3",
 		"shorthash": "^0.0.2",
 		"socket.io-client": "^3.0.5"

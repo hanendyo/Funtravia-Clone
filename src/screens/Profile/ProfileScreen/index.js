@@ -1412,7 +1412,7 @@ export default function OtherProfile(props) {
           _tabIndex.current = id;
           setIndex(id);
 
-          console.log(data?.user_profilebyid?.picture);
+          // console.log(data?.user_profilebyid?.picture);
           props.navigation.setOptions({
             headerLeft: () => (
               <View
@@ -1536,7 +1536,7 @@ export default function OtherProfile(props) {
 
         Getdatapost();
         Getdataalbum();
-        console.log("test");
+        // console.log("test");
         LoadReview();
         if (position === "profile") {
           LoadTrip2();
