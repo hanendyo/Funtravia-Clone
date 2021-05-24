@@ -210,9 +210,8 @@ export default function albumdetail(props) {
   let [dataImage, setImage] = useState([]);
   let [modalss, setModalss] = useState(false);
 
-  const setdataimage = async (data, inde) => {
-    // console.log("data review image trip", data);
-    // console.log("index foto", inde);
+  const setdataimage = async (data, id) => {
+    let inde = data.findIndex((k) => k["id"] === id);
     setIndex(inde);
     var tempdatas = [];
     var x = 0;
@@ -314,7 +313,7 @@ export default function albumdetail(props) {
         nestedScrollEnabled
         data={spreadData(props.route.params.data.assets)}
         renderItem={({ item, index }) => {
-          // console.log(item);
+          console.log(item);
           if (item.length > 2) {
             if (item[3].grid == 1) {
               return (
@@ -328,7 +327,7 @@ export default function albumdetail(props) {
                 >
                   <Pressable
                     onPress={() =>
-                      setdataimage(props.route.params.data.assets, index)
+                      setdataimage(props.route.params.data.assets, item[0].id)
                     }
                     style={{
                       width: ((width - 12) / 3) * 2,
@@ -373,6 +372,9 @@ export default function albumdetail(props) {
                   </Pressable>
                   <View>
                     <Pressable
+                      onPress={() =>
+                        setdataimage(props.route.params.data.assets, item[1].id)
+                      }
                       style={{
                         width: (width - 20) / 3,
                         height: (width - 20) / 3,
@@ -415,6 +417,9 @@ export default function albumdetail(props) {
                       )}
                     </Pressable>
                     <Pressable
+                      onPress={() =>
+                        setdataimage(props.route.params.data.assets, item[2].id)
+                      }
                       style={{
                         width: (width - 20) / 3,
                         height: (width - 20) / 3,
@@ -471,6 +476,9 @@ export default function albumdetail(props) {
                 >
                   <View>
                     <Pressable
+                      onPress={() =>
+                        setdataimage(props.route.params.data.assets, item[0].id)
+                      }
                       style={{
                         width: (width - 20) / 3,
                         height: (width - 20) / 3,
@@ -513,6 +521,9 @@ export default function albumdetail(props) {
                       )}
                     </Pressable>
                     <Pressable
+                      onPress={() =>
+                        setdataimage(props.route.params.data.assets, item[1].id)
+                      }
                       style={{
                         width: (width - 20) / 3,
                         height: (width - 20) / 3,
@@ -556,6 +567,9 @@ export default function albumdetail(props) {
                     </Pressable>
                   </View>
                   <Pressable
+                    onPress={() =>
+                      setdataimage(props.route.params.data.assets, item[2].id)
+                    }
                     style={{
                       width: ((width - 12) / 3) * 2,
                       height: ((width - 12) / 3) * 2,
@@ -612,6 +626,12 @@ export default function albumdetail(props) {
                     if (index < 3) {
                       return (
                         <Pressable
+                          onPress={() =>
+                            setdataimage(
+                              props.route.params.data.assets,
+                              data.id
+                            )
+                          }
                           style={{
                             width: (width - 20) / 3,
                             height: (width - 20) / 3,
@@ -673,6 +693,9 @@ export default function albumdetail(props) {
                 {item.map((data, index) => {
                   return (
                     <Pressable
+                      onPress={() =>
+                        setdataimage(props.route.params.data.assets, data.id)
+                      }
                       style={{
                         width: (width - 20) / 3,
                         height: (width - 20) / 3,
