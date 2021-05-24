@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Arrowbackwhite, Pointmapblack, Search } from "../../../assets/svg";
 import Modal from "react-native-modal";
-import { Truncate } from "../../../component";
+import { StatusBar, Truncate } from "../../../component";
 
 export default function LocationSelector({
   modals,
@@ -36,18 +36,17 @@ export default function LocationSelector({
         setModellocation(false);
       }}
       style={{
-        // backgroundColor: 'rgba(0, 0, 0, 0.25)',
         justifyContent: "flex-end",
         alignItems: "center",
         alignSelf: "center",
         alignContent: "center",
       }}
     >
+      {/* <StatusBar backgroundColor="#14646E" /> */}
       <KeyboardAvoidingView
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
-          // height: '100%',
           height: Dimensions.get("screen").height,
         }}
         // behavior={Platform.OS === 'ios' ? 'position' : null}
@@ -63,8 +62,7 @@ export default function LocationSelector({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            // marginBottom: 20,
-            marginTop: Platform.OS === "ios" ? 0 : -20,
+            marginTop: Platform.OS === "ios" ? 0 : -21,
           }}
         >
           <TouchableOpacity
