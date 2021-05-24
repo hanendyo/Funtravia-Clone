@@ -7,6 +7,7 @@ import {
   Alert,
   RefreshControl,
   FlatList,
+  Pressable,
 } from "react-native";
 import { Sharegreen, Arrowbackwhite } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -16,8 +17,9 @@ import { default_image } from "../../assets/png";
 import Uploadfoto from "../../graphQL/Mutation/Profile/Uploadfotoalbum";
 import Modal from "react-native-modal";
 import album from "../../graphQL/Query/Profile/albumdetail";
-import ImageSlide from "../../component/src/ImageSlide/sliderwithoutlist";
+import ImageSlide from "../../component/src/ImageSlide/sliderPost";
 import ImagePicker from "react-native-image-crop-picker";
+const { width, height } = Dimensions.get("screen");
 
 export default function albumdetail(props) {
   const HeaderComponent = {
@@ -65,7 +67,36 @@ export default function albumdetail(props) {
   let [modals, setmodal] = useState(false);
   let [loading, setLoading] = useState(false);
 
-  console.log(props.route.params.data.assets);
+  // console.log(props.route.params.data.assets);
+
+  const spreadData = (data) => {
+    let tmpData = [];
+    let count = 1;
+    let tmpArray = [];
+    let grid = 1;
+    for (let val of data) {
+      if (count < 3) {
+        tmpArray.push(val);
+        // console.log("masuk", tmpArray);
+        count++;
+      } else {
+        tmpArray.push(val);
+        tmpArray.push({ grid: grid });
+        grid++;
+        if (grid == 4) {
+          grid = 1;
+        }
+        tmpData.push(tmpArray);
+        count = 1;
+        tmpArray = [];
+      }
+    }
+    if (tmpArray.length) {
+      tmpData.push(tmpArray);
+    }
+
+    return tmpData;
+  };
 
   const [
     getdataalbum,
@@ -180,16 +211,16 @@ export default function albumdetail(props) {
   let [modalss, setModalss] = useState(false);
 
   const setdataimage = async (data, inde) => {
-    console.log("data review image trip", data);
-    console.log("index foto", inde);
+    // console.log("data review image trip", data);
+    // console.log("index foto", inde);
     setIndex(inde);
     var tempdatas = [];
     var x = 0;
 
-    for (var i in data.album) {
+    for (var i in data) {
       let wid = 0;
       let hig = 0;
-      Image.getSize(data.album[i].assets, (width, height) => {
+      Image.getSize(data[i].filepath, (width, height) => {
         wid = width;
         hig = height;
       });
@@ -197,17 +228,17 @@ export default function albumdetail(props) {
       tempdatas.push({
         key: i,
         selected: i === inde ? true : false,
-        url: data.album[i]?.assets ? data.album[i]?.assets : "",
+        url: data[i].filepath ? data[i].filepath : "",
         width: wid,
         height: hig,
         props: {
-          source: data.album[i]?.assets ? data.album[i]?.assets : "",
+          source: data[i].filepath ? data[i].filepath : "",
         },
-        by: data.album[i]?.photoby?.first_name,
+        by: data[i]?.photoby?.first_name,
       });
       x++;
     }
-    console.log("temp", tempdatas);
+    // console.log("temp", tempdatas);
     await setImage(tempdatas);
     await setModalss(true);
   };
@@ -281,8 +312,415 @@ export default function albumdetail(props) {
         // )}
         numColumns={3}
         nestedScrollEnabled
-        data={props.route.params.data.assets}
-        renderItem={({ item, index }) => (
+        data={spreadData(props.route.params.data.assets)}
+        renderItem={({ item, index }) => {
+          // console.log(item);
+          if (item.length > 2) {
+            if (item[3].grid == 1) {
+              return (
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    paddingHorizontal: 2.5,
+                  }}
+                >
+                  <Pressable
+                    onPress={() =>
+                      setdataimage(props.route.params.data.assets, index)
+                    }
+                    style={{
+                      width: ((width - 12) / 3) * 2,
+                      height: ((width - 12) / 3) * 2,
+                      margin: 2.5,
+                    }}
+                  >
+                    {item[0].type === "video" ? (
+                      <FunVideo
+                        poster={item[0].filepath.replace(
+                          "output.m3u8",
+                          "thumbnail.png"
+                        )}
+                        posterResizeMode={"cover"}
+                        source={{
+                          uri: item[0].filepath,
+                        }}
+                        repeat={true}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "#fff",
+                        }}
+                        resizeMode="cover"
+                        muted={true}
+                        paused={false}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 5,
+                        }}
+                        source={
+                          item[0].filepath
+                            ? { uri: item[0].filepath }
+                            : default_image
+                        }
+                      />
+                    )}
+                  </Pressable>
+                  <View>
+                    <Pressable
+                      style={{
+                        width: (width - 20) / 3,
+                        height: (width - 20) / 3,
+                        margin: 2.5,
+                      }}
+                    >
+                      {item[1].type === "video" ? (
+                        <FunVideo
+                          poster={item[1].filepath.replace(
+                            "output.m3u8",
+                            "thumbnail.png"
+                          )}
+                          posterResizeMode={"cover"}
+                          source={{
+                            uri: item[1].filepath,
+                          }}
+                          repeat={true}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                          }}
+                          resizeMode="cover"
+                          muted={true}
+                          paused={false}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: 5,
+                          }}
+                          source={
+                            item[1].filepath
+                              ? { uri: item[1].filepath }
+                              : default_image
+                          }
+                        />
+                      )}
+                    </Pressable>
+                    <Pressable
+                      style={{
+                        width: (width - 20) / 3,
+                        height: (width - 20) / 3,
+                        margin: 2.5,
+                      }}
+                    >
+                      {item[2].type === "video" ? (
+                        <FunVideo
+                          poster={item[2].filepath.replace(
+                            "output.m3u8",
+                            "thumbnail.png"
+                          )}
+                          posterResizeMode={"cover"}
+                          source={{
+                            uri: item[2].filepath,
+                          }}
+                          repeat={true}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                          }}
+                          resizeMode="cover"
+                          muted={true}
+                          paused={false}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: 5,
+                          }}
+                          source={
+                            item[2].filepath
+                              ? { uri: item[2].filepath }
+                              : default_image
+                          }
+                        />
+                      )}
+                    </Pressable>
+                  </View>
+                </View>
+              );
+            } else if (item[3].grid == 2) {
+              return (
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    paddingHorizontal: 2.5,
+                  }}
+                >
+                  <View>
+                    <Pressable
+                      style={{
+                        width: (width - 20) / 3,
+                        height: (width - 20) / 3,
+                        margin: 2.5,
+                      }}
+                    >
+                      {item[0].type === "video" ? (
+                        <FunVideo
+                          poster={item[0].filepath.replace(
+                            "output.m3u8",
+                            "thumbnail.png"
+                          )}
+                          posterResizeMode={"cover"}
+                          source={{
+                            uri: item[0].filepath,
+                          }}
+                          repeat={true}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                          }}
+                          resizeMode="cover"
+                          muted={true}
+                          paused={false}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: 5,
+                          }}
+                          source={
+                            item[0].filepath
+                              ? { uri: item[0].filepath }
+                              : default_image
+                          }
+                        />
+                      )}
+                    </Pressable>
+                    <Pressable
+                      style={{
+                        width: (width - 20) / 3,
+                        height: (width - 20) / 3,
+                        margin: 2.5,
+                      }}
+                    >
+                      {item[1].type === "video" ? (
+                        <FunVideo
+                          poster={item[1].filepath.replace(
+                            "output.m3u8",
+                            "thumbnail.png"
+                          )}
+                          posterResizeMode={"cover"}
+                          source={{
+                            uri: item[1].filepath,
+                          }}
+                          repeat={true}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                          }}
+                          resizeMode="cover"
+                          muted={true}
+                          paused={false}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: 5,
+                          }}
+                          source={
+                            item[1].filepath
+                              ? { uri: item[1].filepath }
+                              : default_image
+                          }
+                        />
+                      )}
+                    </Pressable>
+                  </View>
+                  <Pressable
+                    style={{
+                      width: ((width - 12) / 3) * 2,
+                      height: ((width - 12) / 3) * 2,
+                      margin: 2.5,
+                    }}
+                  >
+                    {item[2].type === "video" ? (
+                      <FunVideo
+                        poster={item[2].filepath.replace(
+                          "output.m3u8",
+                          "thumbnail.png"
+                        )}
+                        posterResizeMode={"cover"}
+                        source={{
+                          uri: item[2].filepath,
+                        }}
+                        repeat={true}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                        }}
+                        resizeMode="cover"
+                        muted={true}
+                        paused={false}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 5,
+                        }}
+                        source={
+                          item[2].filepath
+                            ? { uri: item[2].filepath }
+                            : default_image
+                        }
+                      />
+                    )}
+                  </Pressable>
+                </View>
+              );
+            } else {
+              return (
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    paddingHorizontal: 2.5,
+                  }}
+                >
+                  {item.map((data, index) => {
+                    if (index < 3) {
+                      return (
+                        <Pressable
+                          style={{
+                            width: (width - 20) / 3,
+                            height: (width - 20) / 3,
+                            margin: 2.5,
+                          }}
+                        >
+                          {data.type === "video" ? (
+                            <FunVideo
+                              poster={data.filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              posterResizeMode={"cover"}
+                              source={{
+                                uri: data.filepath,
+                              }}
+                              repeat={true}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                              }}
+                              resizeMode="cover"
+                              muted={true}
+                              paused={false}
+                            />
+                          ) : (
+                            <Image
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                borderRadius: 5,
+                              }}
+                              source={
+                                data.filepath
+                                  ? { uri: data.filepath }
+                                  : default_image
+                              }
+                            />
+                          )}
+                        </Pressable>
+                      );
+                    } else {
+                      null;
+                    }
+                  })}
+                </View>
+              );
+            }
+          } else {
+            return (
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  paddingHorizontal: 2.5,
+                }}
+              >
+                {item.map((data, index) => {
+                  return (
+                    <Pressable
+                      style={{
+                        width: (width - 20) / 3,
+                        height: (width - 20) / 3,
+                        margin: 2.5,
+                      }}
+                    >
+                      {data.type === "video" ? (
+                        <FunVideo
+                          poster={data.filepath.replace(
+                            "output.m3u8",
+                            "thumbnail.png"
+                          )}
+                          posterResizeMode={"cover"}
+                          source={{
+                            uri: data.filepath,
+                          }}
+                          repeat={true}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                          }}
+                          resizeMode="cover"
+                          muted={true}
+                          paused={false}
+                        />
+                      ) : (
+                        <Image
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: 5,
+                          }}
+                          source={
+                            data.filepath
+                              ? { uri: data.filepath }
+                              : default_image
+                          }
+                        />
+                      )}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            );
+          }
+        }}
+        renderItemss={({ item, index }) => (
           <TouchableOpacity
             onPress={() =>
               setdataimage(
@@ -332,6 +770,7 @@ export default function albumdetail(props) {
           ></Button>
         </View>
       ) : null}
+
       <ImageSlide
         index={index}
         name="Funtravia Images"
@@ -339,6 +778,8 @@ export default function albumdetail(props) {
         // {...props}
         show={modalss}
         dataImage={dataImage}
+        props={props}
+        token={token}
         setClose={() => setModalss(!modalss)}
       />
     </View>

@@ -222,6 +222,7 @@ import Logofuntravianew from "./files/Logofuntravianew.svg";
 import Down from "./files/down.svg";
 import FilterBlack from "./files/filterBlack.svg";
 import Chatnew from "./files/chatnew.svg";
+import Arrowrightwhite from "./files/arrowrightwhite.svg";
 
 export {
   LikeWhite,
@@ -448,4 +449,5 @@ export {
   Down,
   FilterBlack,
   Chatnew,
+  Arrowrightwhite,
 };
