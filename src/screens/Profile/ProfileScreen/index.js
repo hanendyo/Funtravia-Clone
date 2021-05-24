@@ -840,7 +840,7 @@ export default function OtherProfile(props) {
           backgroundColor: "#209fae",
         }}
       >
-        <Animated.Image
+        {/* <Animated.Image
           style={{
             // position: "absolute",
             // top: 0,
@@ -853,7 +853,7 @@ export default function OtherProfile(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={Akunsaya}
-        />
+        /> */}
         {/* <TouchableOpacity
           onPress={() => {
             console.log("test", id);
@@ -874,6 +874,7 @@ export default function OtherProfile(props) {
               borderWidth: 2,
               borderColor: "#FFF",
               position: "absolute",
+              top: 80,
               zIndex: 1,
               opacity: imageOpacitys,
               transform: [
@@ -893,11 +894,12 @@ export default function OtherProfile(props) {
         <Animated.View
           style={{
             width: "100%",
-            height: "50%",
+            height: "80%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
+            // borderWidth: 2,
             // transform: [{ translateY: imageTranslate }],
-            // paddingTop: 45,
+            marginTop: 60,
           }}
         >
           <View
@@ -905,11 +907,13 @@ export default function OtherProfile(props) {
               flexDirection: "row",
               width: "100%",
               justifyContent: "flex-end",
+
               // position: "absolute",
               // top: "32%",
               zIndex: 1,
+              // borderWidth: 1,
               paddingHorizontal: 20,
-              paddingTop: 10,
+              paddingTop: 60,
             }}
           >
             {position && position === "profile" ? (
@@ -1035,6 +1039,7 @@ export default function OtherProfile(props) {
               alignItems: "center",
               alignContent: "center",
               marginTop: 10,
+              paddingTop: 30,
             }}
           >
             <Animated.View style={{ width: "50%", opacity: opacityfrom1 }}>
