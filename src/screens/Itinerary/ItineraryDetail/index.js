@@ -3029,273 +3029,277 @@ export default function ItineraryDetail(props) {
                 //   color="#209fae"
                 //   size="large"
                 // />
-                <SkeletonPlaceholder>
-                  <View
-                    style={{
-                      // paddingHorizontal: 15,
-                      justifyContent: "space-around",
-                      flexDirection: "row",
-                    }}
-                  >
+                tabIndex === 0 ? (
+                  <SkeletonPlaceholder>
                     <View
                       style={{
-                        height: 40,
-                        width: (Dimensions.get("screen").width - 30) * 0.15,
-                        // margin: 5,
-                        borderRadius: 5,
-                      }}
-                    ></View>
-                    <View
-                      style={{
-                        marginTop: 15,
-                        alignItems: "center",
-                        alignContent: "center",
+                        // paddingHorizontal: 15,
+                        justifyContent: "space-around",
+                        flexDirection: "row",
                       }}
                     >
                       <View
                         style={{
-                          height: 10,
-                          width: 10,
-                          borderRadius: 5,
-                          marginHorizontal: 5,
-                        }}
-                      ></View>
-                      <View
-                        style={{
-                          height: 180,
-                          borderRightWidth: 1,
-                          borderColor: "#efefef",
-                        }}
-                      ></View>
-                    </View>
-                    <View>
-                      <View
-                        style={{
-                          width: (Dimensions.get("screen").width - 30) * 0.8,
-                          borderRadius: 5,
-                          // height: 100,
-                          borderWidth: 1,
-                          borderColor: "#efefef",
-                          padding: 10,
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                          }}
-                        >
-                          <View
-                            style={{
-                              height: 30,
-                              width: 30,
-                              borderRadius: 15,
-                            }}
-                          ></View>
-                          <View style={{ paddingHorizontal: 5 }}>
-                            <View
-                              style={{
-                                width: 100,
-                                height: 20,
-                                borderRadius: 5,
-                                marginBottom: 5,
-                              }}
-                            ></View>
-                            <View
-                              style={{
-                                height: 10,
-                                width: 95,
-                                borderRadius: 5,
-                              }}
-                            ></View>
-                          </View>
-                        </View>
-                        <View
-                          style={{
-                            height: 25,
-                            width: 50,
-                            borderRadius: 5,
-                            marginVertical: 5,
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            width: "100%",
-                            borderBottomWidth: 1,
-                            borderColor: "#efefef",
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            marginVertical: 5,
-                            width: "100%",
-                            height: 10,
-                            borderRadius: 5,
-                          }}
-                        ></View>
-                        <View
-                          style={{
-                            marginVertical: 5,
-                            width: "50%",
-                            height: 10,
-                            borderRadius: 5,
-                          }}
-                        ></View>
-                      </View>
-
-                      <View
-                        style={{
                           height: 40,
-                          width: 130,
-                          marginTop: 5,
+                          width: (Dimensions.get("screen").width - 30) * 0.15,
+                          // margin: 5,
                           borderRadius: 5,
-                          borderWidth: 1,
-                          borderColor: "#efefef",
-                          padding: 10,
-                          alignContent: "center",
+                        }}
+                      ></View>
+                      <View
+                        style={{
+                          marginTop: 15,
                           alignItems: "center",
-                          justifyContent: "center",
+                          alignContent: "center",
                         }}
                       >
                         <View
                           style={{
-                            width: 110,
-                            height: 15,
+                            height: 10,
+                            width: 10,
                             borderRadius: 5,
+                            marginHorizontal: 5,
+                          }}
+                        ></View>
+                        <View
+                          style={{
+                            height: 180,
+                            borderRightWidth: 1,
+                            borderColor: "#efefef",
                           }}
                         ></View>
                       </View>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      // paddingHorizontal: 15,
-                      justifyContent: "space-around",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: 40,
-                        width: (Dimensions.get("screen").width - 30) * 0.15,
-                        // margin: 5,
-                        borderRadius: 5,
-                      }}
-                    ></View>
-                    <View
-                      style={{
-                        // marginTop: 15,
-                        alignItems: "center",
-                        alignContent: "center",
-                      }}
-                    >
-                      <View
-                        style={{
-                          height: 15,
-                          borderRightWidth: 1,
-                          borderColor: "#efefef",
-                        }}
-                      ></View>
-                      <View
-                        style={{
-                          height: 10,
-                          width: 10,
-                          borderRadius: 5,
-                          marginHorizontal: 5,
-                        }}
-                      ></View>
-                      <View
-                        style={{
-                          height: 400,
-                          borderRightWidth: 1,
-                          borderColor: "#efefef",
-                        }}
-                      ></View>
-                    </View>
-                    <View>
-                      <View
-                        style={{
-                          width: (Dimensions.get("screen").width - 30) * 0.8,
-                          borderRadius: 5,
-                          // height: 100,
-                          borderWidth: 1,
-                          borderColor: "#efefef",
-                          padding: 10,
-                        }}
-                      >
+                      <View>
                         <View
                           style={{
-                            flexDirection: "row",
+                            width: (Dimensions.get("screen").width - 30) * 0.8,
+                            borderRadius: 5,
+                            // height: 100,
+                            borderWidth: 1,
+                            borderColor: "#efefef",
+                            padding: 10,
                           }}
                         >
                           <View
                             style={{
-                              height: 30,
-                              width: 30,
-                              borderRadius: 15,
+                              flexDirection: "row",
+                            }}
+                          >
+                            <View
+                              style={{
+                                height: 30,
+                                width: 30,
+                                borderRadius: 15,
+                              }}
+                            ></View>
+                            <View style={{ paddingHorizontal: 5 }}>
+                              <View
+                                style={{
+                                  width: 100,
+                                  height: 20,
+                                  borderRadius: 5,
+                                  marginBottom: 5,
+                                }}
+                              ></View>
+                              <View
+                                style={{
+                                  height: 10,
+                                  width: 95,
+                                  borderRadius: 5,
+                                }}
+                              ></View>
+                            </View>
+                          </View>
+                          <View
+                            style={{
+                              height: 25,
+                              width: 50,
+                              borderRadius: 5,
+                              marginVertical: 5,
                             }}
                           ></View>
-                          <View style={{ paddingHorizontal: 5 }}>
-                            <View
-                              style={{
-                                width: 100,
-                                height: 20,
-                                borderRadius: 5,
-                                marginBottom: 5,
-                              }}
-                            ></View>
-                            <View
-                              style={{
-                                height: 10,
-                                width: 95,
-                                borderRadius: 5,
-                              }}
-                            ></View>
-                          </View>
+                          <View
+                            style={{
+                              width: "100%",
+                              borderBottomWidth: 1,
+                              borderColor: "#efefef",
+                            }}
+                          ></View>
+                          <View
+                            style={{
+                              marginVertical: 5,
+                              width: "100%",
+                              height: 10,
+                              borderRadius: 5,
+                            }}
+                          ></View>
+                          <View
+                            style={{
+                              marginVertical: 5,
+                              width: "50%",
+                              height: 10,
+                              borderRadius: 5,
+                            }}
+                          ></View>
                         </View>
+
                         <View
                           style={{
-                            height: 25,
-                            width: 50,
+                            height: 40,
+                            width: 130,
+                            marginTop: 5,
                             borderRadius: 5,
-                            marginVertical: 5,
+                            borderWidth: 1,
+                            borderColor: "#efefef",
+                            padding: 10,
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
-                        ></View>
+                        >
+                          <View
+                            style={{
+                              width: 110,
+                              height: 15,
+                              borderRadius: 5,
+                            }}
+                          ></View>
+                        </View>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        // paddingHorizontal: 15,
+                        justifyContent: "space-around",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <View
+                        style={{
+                          height: 40,
+                          width: (Dimensions.get("screen").width - 30) * 0.15,
+                          // margin: 5,
+                          borderRadius: 5,
+                        }}
+                      ></View>
+                      <View
+                        style={{
+                          // marginTop: 15,
+                          alignItems: "center",
+                          alignContent: "center",
+                        }}
+                      >
                         <View
                           style={{
-                            width: "100%",
-                            borderBottomWidth: 1,
+                            height: 15,
+                            borderRightWidth: 1,
                             borderColor: "#efefef",
                           }}
                         ></View>
                         <View
                           style={{
-                            marginVertical: 5,
-                            width: "100%",
                             height: 10,
+                            width: 10,
                             borderRadius: 5,
+                            marginHorizontal: 5,
                           }}
                         ></View>
                         <View
                           style={{
-                            marginVertical: 5,
-                            width: "50%",
-                            height: 10,
+                            height: 400,
+                            borderRightWidth: 1,
+                            borderColor: "#efefef",
+                          }}
+                        ></View>
+                      </View>
+                      <View>
+                        <View
+                          style={{
+                            width: (Dimensions.get("screen").width - 30) * 0.8,
+                            borderRadius: 5,
+                            // height: 100,
+                            borderWidth: 1,
+                            borderColor: "#efefef",
+                            padding: 10,
+                          }}
+                        >
+                          <View
+                            style={{
+                              flexDirection: "row",
+                            }}
+                          >
+                            <View
+                              style={{
+                                height: 30,
+                                width: 30,
+                                borderRadius: 15,
+                              }}
+                            ></View>
+                            <View style={{ paddingHorizontal: 5 }}>
+                              <View
+                                style={{
+                                  width: 100,
+                                  height: 20,
+                                  borderRadius: 5,
+                                  marginBottom: 5,
+                                }}
+                              ></View>
+                              <View
+                                style={{
+                                  height: 10,
+                                  width: 95,
+                                  borderRadius: 5,
+                                }}
+                              ></View>
+                            </View>
+                          </View>
+                          <View
+                            style={{
+                              height: 25,
+                              width: 50,
+                              borderRadius: 5,
+                              marginVertical: 5,
+                            }}
+                          ></View>
+                          <View
+                            style={{
+                              width: "100%",
+                              borderBottomWidth: 1,
+                              borderColor: "#efefef",
+                            }}
+                          ></View>
+                          <View
+                            style={{
+                              marginVertical: 5,
+                              width: "100%",
+                              height: 10,
+                              borderRadius: 5,
+                            }}
+                          ></View>
+                          <View
+                            style={{
+                              marginVertical: 5,
+                              width: "50%",
+                              height: 10,
+                              borderRadius: 5,
+                            }}
+                          ></View>
+                        </View>
+
+                        <View
+                          style={{
+                            height: 40,
+                            width: 80,
+                            marginTop: 5,
                             borderRadius: 5,
                           }}
                         ></View>
                       </View>
-
-                      <View
-                        style={{
-                          height: 40,
-                          width: 80,
-                          marginTop: 5,
-                          borderRadius: 5,
-                        }}
-                      ></View>
                     </View>
-                  </View>
-                </SkeletonPlaceholder>
+                  </SkeletonPlaceholder>
+                ) : (
+                  <View></View>
+                )
               ) : dataList.length == 0 && tabIndex == 0 ? (
                 <Text></Text>
               ) : (

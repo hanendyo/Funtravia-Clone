@@ -932,6 +932,7 @@ export default function ListEventHome(props) {
     sugestion: true,
   });
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
+  let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
   let [datacountry, setdatacountry] = useState([]);
   let [search, setSearch] = useState({
     type: null,
@@ -1017,6 +1018,7 @@ export default function ListEventHome(props) {
       fetchPolicy: "network-only",
       onCompleted: () => {
         setdataFilterCategori(dataFillter.event_filter.type);
+        setdataFilterCategoris(dataFillter.event_filter.type);
         setdatacountry(dataFillter.event_filter.country);
       },
     }
@@ -1174,8 +1176,11 @@ export default function ListEventHome(props) {
     let tempe = [...dataFilterCategori];
     let items = { ...item };
     items.checked = !items.checked;
-    tempe.splice(index, 1, items);
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
     await setdataFilterCategori(tempe);
+    await setdataFilterCategoris(tempe);
   };
 
   const handlecountry = async (item) => {
@@ -1244,6 +1249,7 @@ export default function ListEventHome(props) {
       await tempes.push(data);
     }
     await setdataFilterCategori(tempes);
+    await setdataFilterCategoris(tempes);
 
     await setSearch({
       type: null,
@@ -1255,6 +1261,14 @@ export default function ListEventHome(props) {
     });
     await setshow(false);
     await setmonth(" - ");
+  };
+
+  const searchkategori = async (teks) => {
+    let searching = new RegExp(teks, "i");
+
+    let b = dataFilterCategori.filter((item) => searching.test(item.name));
+
+    setdataFilterCategoris(b);
   };
 
   return (
@@ -1276,7 +1290,7 @@ export default function ListEventHome(props) {
         }}
       >
         <Button
-          size="small"
+          size="medium"
           type="icon"
           variant="bordered"
           color="black"
@@ -1310,6 +1324,7 @@ export default function ListEventHome(props) {
             alignItems: "center",
             alignContent: "center",
             paddingHorizontal: 10,
+            paddingVertical: 5,
           }}
         >
           <Search width={15} height={15} />
@@ -1421,15 +1436,8 @@ export default function ListEventHome(props) {
       >
         <View
           style={{
-            height: 10,
-
-            backgroundColor: "#209fae",
-          }}
-        ></View>
-        <View
-          style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.75,
+            height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopLeftRadius: 15,
@@ -1473,101 +1481,154 @@ export default function ListEventHome(props) {
               <Xhitam height={15} width={15} />
             </TouchableOpacity>
           </View>
-          {/* ==================garis========================= */}
+
           <View
             style={{
-              borderBottomColor: "#D1D1D1",
-              borderBottomWidth: 1,
-            }}
-          />
-          {/* ==================garis========================= */}
-
-          <ScrollView
-            nestedScrollEnabled={true}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
-              paddingBottom: 70,
+              flexDirection: "row",
+              flex: 1,
+              borderTopWidth: 0.5,
+              borderColor: "#d1d1d1",
             }}
           >
-            <Text
-              type="bold"
-              size="title"
+            <View
               style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
-                color: "#464646",
-                marginTop: 10,
+                width: "35%",
+                borderRightWidth: 0.5,
+                borderColor: "#d1d1d1",
               }}
             >
-              {t("categories")}
-            </Text>
-            <FlatList
-              contentContainerStyle={{
-                paddingVertical: 15,
-                paddingRight: 10,
-                width: width - 40,
-              }}
-              data={dataFilterCategori}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => _handleCheck(item["id"], index, item)}
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  paddingBottom: 5,
+                }}
+              >
+                <View
                   style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    // borderColor: "#464646",
-                    width: "49%",
-                    marginRight: 3,
-                    marginBottom: 20,
-                    justifyContent: "flex-start",
-                    alignContent: "center",
-                    alignItems: "center",
+                    borderLeftColor: "#209fae",
+                    borderLeftWidth: 5,
+                    marginLeft: 5,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: "#ffff",
                   }}
                 >
-                  <CheckBox
-                    onCheckColor="#FFF"
-                    lineWidth={2}
-                    onFillColor="#209FAE"
-                    onTintColor="#209FAE"
-                    boxType={"square"}
-                    style={{
-                      alignSelf: "center",
-                      width: Platform.select({
-                        ios: 30,
-                        android: 35,
-                      }),
-                      transform: Platform.select({
-                        ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                        android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                      }),
-                    }}
-                    onValueChange={() => _handleCheck(item["id"], index, item)}
-                    value={item["checked"]}
-                  />
-
                   <Text
-                    size="label"
-                    type="regular"
+                    type="bold"
+                    size="title"
                     style={{
-                      marginLeft: 0,
+                      // fontSize: 20,
+                      // fontFamily: "Lato-Bold",
                       color: "#464646",
+                      // marginTop: 10,
                     }}
                   >
-                    {item["name"]}
+                    {t("categories")}
                   </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              // extraData={selected}
-            ></FlatList>
-            {/* <View
+                </View>
+              </View>
+            </View>
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  padding: 15,
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#daf0f2",
+                    borderRadius: 5,
+                    // flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Search width={15} height={15} />
+
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    placeholder={t("search")}
+                    style={{
+                      width: "100%",
+                      // borderWidth: 1,
+                      marginLeft: 5,
+                      padding: 0,
+                    }}
+                    // returnKeyType="search"
+                    onChangeText={(x) => searchkategori(x)}
+                    onSubmitEditing={(x) => searchkategori(x)}
+                  />
+                </View>
+              </View>
+              <ScrollView
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 15,
+                }}
+              >
+                {dataFilterCategoris.map((item, index) => (
+                  <TouchableOpacity
+                    onPress={() => _handleCheck(item["id"], index, item)}
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "white",
+                      // borderColor: "#464646",
+                      width: "49%",
+                      marginRight: 3,
+                      marginBottom: 20,
+                      justifyContent: "flex-start",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <CheckBox
+                      onCheckColor="#FFF"
+                      lineWidth={1}
+                      onFillColor="#209FAE"
+                      onTintColor="#209FAE"
+                      boxType={"square"}
+                      style={{
+                        alignSelf: "center",
+                        width: Platform.select({
+                          ios: 30,
+                          android: 35,
+                        }),
+                        transform: Platform.select({
+                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                        }),
+                      }}
+                      onValueChange={() =>
+                        _handleCheck(item["id"], index, item)
+                      }
+                      value={item["checked"]}
+                    />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 0,
+                        color: "#464646",
+                        // borderWidth: 5,
+                      }}
+                    >
+                      {item["name"]}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                {/* <View
               style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
             ></View> */}
-          </ScrollView>
+              </ScrollView>
+            </View>
+          </View>
           <View
             style={{
               flex: 1,
@@ -1597,12 +1658,12 @@ export default function ListEventHome(props) {
               variant="bordered"
               color="secondary"
               onPress={() => ClearAllFilter()}
-              style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+              style={{ width: "30%", borderColor: "#ffff" }}
               text={t("clearAll")}
             ></Button>
             <Button
               onPress={() => UpdateFilter()}
-              style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+              style={{ width: "65%" }}
               text={t("apply")}
             ></Button>
           </View>
