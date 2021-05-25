@@ -2649,18 +2649,13 @@ export default function CityDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth:
-                    props.navigationState.routes.length < 2 ? 0 : 2,
-                  borderBottomColor:
-                    index == tabIndex && props.navigationState.routes.length > 1
-                      ? "#209fae"
-                      : "white",
+                  borderBottomWidth: 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "white",
                   alignContent: "center",
-                  paddingHorizontal:
-                    props.navigationState.routes.length > 1 ? 15 : 25,
+                  paddingHorizontal: 15,
                   width:
                     props.navigationState.routes.length < 2
-                      ? null
+                      ? Dimensions.get("screen").width * 0.5
                       : props.navigationState.routes.length < 3
                       ? Dimensions.get("screen").width * 0.5
                       : props.navigationState.routes.length < 4
@@ -2677,8 +2672,7 @@ export default function CityDetail(props) {
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
                       // borderWidth: 1,
-                      borderBottomWidth:
-                        props.navigationState.routes.length < 2 ? 2 : 0,
+                      borderBottomWidth: 0,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
@@ -2791,223 +2785,222 @@ export default function CityDetail(props) {
         <View
           style={{
             width: Dimensions.get("screen").width,
-            paddingHorizontal: 0,
           }}
         >
           <View
             style={{
-              height: 270,
               width: "100%",
-              borderRadius: 10,
-              marginTop: 10,
+              height: 300,
             }}
           ></View>
           <View
             style={{
-              height: 10,
-              width: 150,
-              borderRadius: 10,
-              marginLeft: 10,
-              marginTop: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 10,
-              width: 150,
-              borderRadius: 10,
-              marginLeft: 15,
-              marginTop: 2,
-              marginBottom: 10,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 5,
               width: "100%",
-              marginTop: 5,
-              borderRadius: 10,
-              marginBottom: 10,
+              flexDirection: "row",
+              height: 50,
+              paddingHorizontal: 20,
             }}
-          ></View>
-          <View style={{ flexDirection: "row" }}>
+          >
             <View
               style={{
+                width: 60,
                 height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
+                marginTop: 20,
               }}
             ></View>
             <View
               style={{
+                width: 60,
                 height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
+                marginLeft: 20,
+                marginTop: 20,
               }}
             ></View>
             <View
               style={{
+                width: 60,
                 height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
+                marginLeft: 20,
+                marginTop: 20,
               }}
             ></View>
             <View
               style={{
+                width: 60,
                 height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
+                marginLeft: 20,
+                marginTop: 20,
               }}
             ></View>
             <View
               style={{
+                width: 60,
                 height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                height: 10,
-                width: 50,
-                borderRadius: 10,
-                margin: 10,
+                marginLeft: 20,
+                marginTop: 20,
               }}
             ></View>
           </View>
           <View
             style={{
-              height: 5,
               width: "100%",
-              marginTop: 5,
-              borderRadius: 10,
-              marginBottom: 10,
+              height: 2,
             }}
           ></View>
           <View
             style={{
-              height: 10,
-              width: 150,
-              marginTop: 10,
-              borderRadius: 10,
-              marginLeft: 20,
+              width: "100%",
+              // height:20,
+              paddingHorizontal: 20,
+              paddingVertical: 10,
             }}
-          ></View>
-          <View
-            style={{
-              height: 8,
-              width: 300,
-              marginTop: 5,
-              borderRadius: 10,
-              marginLeft: 20,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 8,
-              width: 300,
-              marginTop: 5,
-              borderRadius: 10,
-              marginLeft: 20,
-            }}
-          ></View>
-
-          <View
-            style={{
-              height: 10,
-              width: 150,
-              marginTop: 10,
-              borderRadius: 10,
-              marginLeft: 20,
-            }}
-          ></View>
-          <View
-            style={{
-              height: 8,
-              width: 300,
-              marginTop: 5,
-              borderRadius: 10,
-              marginLeft: 20,
-            }}
-          ></View>
-          <View style={{ flexDirection: "row", marginTop: 20 }}>
+          >
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: 120,
+                height: 10,
               }}
             ></View>
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: "100%",
+                marginTop: 10,
+                height: 10,
               }}
             ></View>
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: "100%",
+                marginTop: 5,
+                height: 10,
               }}
             ></View>
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
-              }}
-            ></View>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: "100%",
+                marginTop: 5,
+                height: 10,
               }}
             ></View>
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: 120,
+                marginTop: 10,
+                height: 10,
               }}
             ></View>
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: "100%",
+                marginTop: 5,
+                height: 10,
               }}
             ></View>
             <View
               style={{
-                height: 30,
-                width: 50,
-                borderRadius: 10,
-                margin: 20,
+                width: "100%",
+                height: 130,
+                marginTop: 10,
+                borderRadius: 5,
+                borderWidth: 0.5,
+                borderColor: "#dedede",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  paddingVertical: 10,
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    padding: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 30,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 30,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 30,
+                  }}
+                ></View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  paddingVertical: 10,
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    padding: 10,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 30,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 30,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    marginLeft: 30,
+                  }}
+                ></View>
+              </View>
+            </View>
+            <View
+              style={{
+                width: 120,
+                marginTop: 10,
+                height: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                width: "100%",
+                marginTop: 5,
+                height: 10,
+              }}
+            ></View>
+            <View
+              style={{
+                width: "100%",
+                height: 200,
+                marginTop: 10,
+                borderRadius: 5,
               }}
             ></View>
           </View>
