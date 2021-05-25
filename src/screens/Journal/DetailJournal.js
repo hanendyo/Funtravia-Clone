@@ -689,7 +689,7 @@ export default function DetailJournal(props) {
           >
             <View>
               <Text size={"label"} type={"bold"}>
-                Comments
+                {t("comments")}
               </Text>
             </View>
           </View>
