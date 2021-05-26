@@ -19,6 +19,7 @@ import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
+import Album from "./Album";
 import { PinHijau, Xgray, Arrowbackwhite } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { ScrollView } from "react-native-gesture-handler";
@@ -58,6 +59,7 @@ const { width, height } = Dimensions.get("screen");
 export default function CreatePost({ navigation, route }) {
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
+  let [modalAlbum, setModalAlbum] = useState(false);
   let [Location, setLocation] = useState({
     address: "Add Location",
     latitude: "",
@@ -223,7 +225,11 @@ export default function CreatePost({ navigation, route }) {
         await Geolocation.getCurrentPosition(
           (position) => _nearbyLocation(position),
           (err) => console.log(err),
-          { enableHighAccuracy: false, timeout: 8000, maximumAge: 10000 }
+          {
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 10000,
+          }
         );
       }
     })();
@@ -377,7 +383,9 @@ export default function CreatePost({ navigation, route }) {
                   source={
                     dataprofile &&
                     (dataprofile.user_profile !== undefined || null || "")
-                      ? { uri: dataprofile.user_profile.picture }
+                      ? {
+                          uri: dataprofile.user_profile.picture,
+                        }
                       : { uri: default_image }
                   }
                   style={{
@@ -420,16 +428,13 @@ export default function CreatePost({ navigation, route }) {
                 }}
               >
                 <Ripple
-                  onPress={() => setModellocation(true)}
+                  onPress={() => setModalAlbum(true)}
                   style={{
                     flexDirection: "row",
 
                     alignItems: "center",
                   }}
                 >
-                  {Location.latitude !== "" ? (
-                    <PinHijau height={15} width={15} />
-                  ) : null}
                   <Text
                     type="bold"
                     size="description"
@@ -532,6 +537,11 @@ export default function CreatePost({ navigation, route }) {
           modals={modellocation}
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
+        />
+        <Album
+          modals={modalAlbum}
+          setModalAlbum={(e) => setModalAlbum(e)}
+          // masukan={(e) => _setLocation(e)}
         />
       </View>
     </KeyboardAvoidingView>
