@@ -23,12 +23,10 @@ export default function Album({ item, index, props, token }) {
     <Pressable
       onPress={() => {
         props.navigation.push("albumdetail", {
-          data: item,
-          iditinerary: item.itinerary.id,
+          id: item.id,
+          type: item.type,
           token: token,
-          // day_id: item.id,
-          judul: item.itinerary.name,
-          // position: position,
+          judul: item.title,
         });
       }}
       style={{
@@ -53,11 +51,7 @@ export default function Album({ item, index, props, token }) {
             width: "100%",
             height: "75%",
           }}
-          source={
-            item?.assets[0]?.filepath
-              ? { uri: item?.assets[0]?.filepath }
-              : default_image
-          }
+          source={item?.cover ? { uri: item?.cover } : default_image}
         ></Image>
         <View
           style={{
@@ -68,7 +62,7 @@ export default function Album({ item, index, props, token }) {
           }}
         >
           <Text size={"label"} type="bold">
-            {item.itinerary.name}
+            {item.title}
           </Text>
         </View>
       </View>

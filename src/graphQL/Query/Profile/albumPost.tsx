@@ -8,66 +8,18 @@ const post = gql`
       }
       datas {
         id
-        caption
-        longitude
-        latitude
-        location_name
-        liked
-        comment_count
-        response_count
-        created_at
-        updated_at
-        assets {
-          id
-          type
-          filepath
-        }
+        title
+        cover
+        type
         user {
           id
-          username
           first_name
           last_name
+          username
           picture
-          ismyfeed
+          picture
         }
-        is_single
-        itinerary {
-          id
-          name
-          country {
-            id
-            name
-          }
-          city {
-            id
-            name
-          }
-          start_date
-          end_date
-          isprivate
-          status
-          cover
-          liked
-          categori {
-            id
-            name
-            icon
-            slug
-          }
-          user_created {
-            id
-            username
-            first_name
-            last_name
-            picture
-          }
-        }
-        day {
-          id
-          date
-          day
-          total_hours
-        }
+        created_at
       }
     }
   }
