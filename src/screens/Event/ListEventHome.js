@@ -1428,6 +1428,11 @@ export default function ListEventHome(props) {
 
       <Modal
         // onLayout={() => dataCountrySelect()}
+        onBackdropPress={() => {
+          setshow(false);
+        }}
+        onRequestClose={() => setshow(false)}
+        onDismiss={() => setshow(false)}
         isVisible={show}
         style={{
           justifyContent: "flex-end",
@@ -1674,6 +1679,10 @@ export default function ListEventHome(props) {
         onRequestClose={() => {
           setModelSetNegara(false);
         }}
+        onBackdropPress={() => {
+          setModelSetNegara(false);
+        }}
+        onDismiss={() => setModelSetNegara(false)}
         animationIn="slideInRight"
         animationOut="slideOutRight"
         isVisible={modals}
@@ -1794,6 +1803,10 @@ export default function ListEventHome(props) {
         onRequestClose={() => {
           setModaldate(false);
         }}
+        onBackdropPress={() => {
+          setModaldate(false);
+        }}
+        onDismiss={() => setModaldate(false)}
         onRequestClose={() => setModaldate(false)}
         onBackdropPress={() => setModaldate(false)}
         onDismiss={() => setModaldate(false)}
