@@ -24,6 +24,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ReactNativeFile } from "apollo-upload-client";
 import * as mime from "react-native-mime-types";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function ProfileSettings(props) {
   const HeaderComponent = {
@@ -401,7 +402,18 @@ export default function ProfileSettings(props) {
 
   return (
     <ScrollView contentContainerStyle={{}} showsVerticalScrollIndicator={false}>
-      <ImageBackground
+      <LinearGradient
+        start={{ x: 1, y: 1 }} //here we are defined x as start position
+        end={{ x: 0, y: 0 }} //here we can define axis but as end position
+        colors={["#209fae", "#00d5fa"]}
+        style={{
+          height: 150,
+          // justifyContent: "center",
+          // alignItems: "center",
+          // borderRadius: 5,
+        }}
+      ></LinearGradient>
+      {/* <ImageBackground
         source={Akunsaya}
         imageStyle={{
           width: Dimensions.get("screen").width,
@@ -412,7 +424,7 @@ export default function ProfileSettings(props) {
           width: Dimensions.get("screen").width,
           height: 200,
         }}
-      ></ImageBackground>
+      ></ImageBackground> */}
       <View
         style={{
           width: Dimensions.get("screen").width,

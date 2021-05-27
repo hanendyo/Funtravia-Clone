@@ -23,7 +23,7 @@ export default function World({ navigation }) {
   const { width, height } = Dimensions.get("screen");
   const HeaderHeight = (height * 34) / 100;
   const ContentHeight = (height * 66) / 100;
-  const MapHeight = (ContentHeight * 22) / 150;
+  const MapHeight = (ContentHeight * 22) / 100;
   const MapWidth = width / 2 - 20;
   const data = [
     {
@@ -74,19 +74,18 @@ export default function World({ navigation }) {
       <StatusBar backgroundColor="#14646E" barStyle="dark-content" />
       <View
         style={{
-          height: (height * 34) / 110,
+          height: HeaderHeight,
           alignItems: "center",
-          //   backgroundColor: "#FFF",
-          //   borderWidth: 1,
+          backgroundColor: "#FFF",
           paddingVertical: 15,
         }}
       >
         <Text type="bold" size="title">
           World Tourism
         </Text>
-        {/* <Text type="regular" size="label">
+        <Text type="regular" size="label">
           Get closer to your perfect destination
-        </Text> */}
+        </Text>
         <View style={{ marginVertical: 10 }}>
           <WorldMap width={HeaderHeight} height={HeaderHeight - 125} />
         </View>
@@ -105,22 +104,8 @@ export default function World({ navigation }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           alignItems: "center",
-          height: ContentHeight - 115,
-          backgroundColor: "#FFFFFF",
+          height: ContentHeight,
           marginVertical: 5,
-          shadowColor: "#FFF",
-          shadowOffset: {
-            width: 0,
-            height: 5,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 6.27,
-
-          elevation: 6,
-          marginLeft: 10,
-          //   marginTop: -5,
-          marginRight: 10,
-          borderRadius: 20,
         }}
         scrollEnabled={false}
         renderItem={({ item }) => (
@@ -131,127 +116,53 @@ export default function World({ navigation }) {
                 : Alert.alert("Cooming Soon")
             }
             style={{
+              borderWidth: 1,
+              borderColor: "#209FAE",
               borderRadius: 5,
+              alignItems: "center",
+              justifyContent: "center",
               backgroundColor: "#FFF",
               margin: 5,
-              marginTop: 10,
             }}
           >
+            {item.map}
             {item.available ? (
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginLeft: 15,
-                    marginTop: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 5,
-                      // height: 15,
-                      marginRight: 5,
-                      backgroundColor: "#209FAE",
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                    }}
-                  ></View>
-
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      color: "#464646",
-                      textAlign: "center",
-                    }}
-                  >{`${item.name}`}</Text>
-                </View>
+              <View style={{ position: "absolute" }}>
                 <Text
-                  type="regular"
-                  size="description"
+                  type="bold"
+                  size="title"
                   style={{
                     color: "#464646",
-                    marginLeft: 23,
-                    // textAlign: "center",
+                    textAlign: "center",
+                  }}
+                >{`${item.name}`}</Text>
+                <Text
+                  type="regular"
+                  size="label"
+                  style={{
+                    color: "#464646",
+                    textAlign: "center",
                   }}
                 >{`${item.count} Country`}</Text>
               </View>
-            ) : (
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginLeft: 15,
-                    marginTop: 10,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 5,
-                      // height: 15,
-                      marginRight: 5,
-                      backgroundColor: "#209FAE",
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                    }}
-                  ></View>
-
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      color: "#464646",
-                      textAlign: "center",
-                    }}
-                  >{`${item.name}`}</Text>
-                </View>
-
-                <Text
-                  type="regular"
-                  size="description"
-                  style={{
-                    color: "#464646",
-                    marginLeft: 23,
-                    // textAlign: "center",
-                  }}
-                >{`${item.count} Country`}</Text>
-              </View>
-            )}
+            ) : null}
             {!item.available ? (
               <View
                 style={{
                   position: "absolute",
-                  //   backgroundColor: "rgba(0,0,0,0.5)",
-                  width: "30%",
-                  height: "40%",
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                  width: "100%",
+                  height: "100%",
                   borderRadius: 4,
-                  left: 65,
-                  top: 70,
-                  zIndex: 999,
-                  //   justifyContent: "center",
-                  //   alignItems: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{
-                    color: "#808080",
-                    opacity: 0.4,
-                    textAlign: "center",
-                  }}
-                >
-                  Available Soon
+                <Text size="title" type="bold" style={{ color: "white" }}>
+                  Cooming Soon
                 </Text>
               </View>
             ) : null}
-            <View
-              style={{
-                justifyContent: "flex-end",
-              }}
-            >
-              {item.map}
-            </View>
           </TouchableOpacity>
         )}
       />
