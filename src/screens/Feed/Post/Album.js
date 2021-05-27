@@ -1,4 +1,3 @@
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -11,7 +10,9 @@ import {
 import { Arrowbackwhite, Select } from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { FunImage, Text } from "../../../component";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
+import { default_image } from "../../../assets/png";
 import {
   MenuContext,
   Menu,
@@ -22,28 +23,34 @@ import {
   MenuProvider,
 } from "react-native-popup-menu";
 import ChooseDay from "./ChooseDay";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryA";
 
 export default function Album({ modals, setModalAlbum }) {
   let { width, height } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
   const [select, setSelect] = useState("Itinerary Album");
-  const [album, setAlbum] = useState("");
+  const [idItinerary, setIdItinerary] = useState("");
   const [modalDay, setModalDay] = useState(false);
 
-  let dataSatu = [
-    { image: null, title: "Album 1", description: "10 photos" },
-    { image: null, title: "Album 2", description: "30 photos" },
-    { image: null, title: "Album 3", description: "50 photos" },
-    { image: null, title: "Album 4", description: "20 photos" },
-    { image: null, title: "Album 5", description: "20 photos" },
-    { image: null, title: "Album 6", description: "40 photos" },
-    { image: null, title: "Album 7", description: "20 photos" },
-    { image: null, title: "Album 8", description: "20 photos" },
-    { image: null, title: "Album 9", description: "40 photos" },
-    { image: null, title: "Album 10", description: "20 photos" },
-    { image: null, title: "Album 11", description: "20 photos" },
-    { image: null, title: "Album 12", description: "40 photos" },
-  ];
+  const [data, setData] = useState();
+
+  const { data: dataItinerary, loading, error, refetch } = useQuery(
+    ListItinerary,
+    {
+      fetchPolicy: "network-only",
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      variables: { status: "A" },
+      onCompleted: () => {
+        setData(dataItinerary.itinerary_list_active);
+      },
+    }
+  );
+
   let dataDua = [
     { image: null, title: "Album 1", description: "10 photos" },
     { image: null, title: "Album 4", description: "20 photos" },
@@ -53,8 +60,8 @@ export default function Album({ modals, setModalAlbum }) {
     { image: null, title: "Album 3", description: "50 photos" },
   ];
 
-  const Choose = (albums) => {
-    setAlbum(albums);
+  const Choose = (id) => {
+    setIdItinerary(id);
     setModalDay(true);
   };
 
@@ -207,7 +214,8 @@ export default function Album({ modals, setModalAlbum }) {
                   }}
                 >
                   {select === "Itinerary Album"
-                    ? dataSatu.map((item, index) => (
+                    ? data &&
+                      data.map((item, index) => (
                         <Pressable
                           key={index}
                           style={{
@@ -215,23 +223,34 @@ export default function Album({ modals, setModalAlbum }) {
                             width: (width - 30) / 3,
                             // borderWidth: 1,
                           }}
-                          onPress={() => Choose(item?.title)}
+                          onPress={() => Choose(item?.id)}
                         >
                           <View
                             style={{
                               height: 130,
                               width: "98%",
-                              backgroundColor: "#F6F6F6",
+                              // backgroundColor: "#F6F6F6",
                               justifyContent: "center",
                               alignItems: "center",
                               borderRadius: 5,
                             }}
                           >
-                            {/* <FunImage source={{}} /> */}
+                            <FunImage
+                              source={
+                                item && item.cover
+                                  ? { uri: item?.cover }
+                                  : default_image
+                              }
+                              style={{
+                                resizeMode: "cover",
+                                height: "100%",
+                                width: "100%",
+                              }}
+                            />
                           </View>
                           <View style={{ paddingLeft: 5, marginTop: 10 }}>
                             <Text size="label" type="regular">
-                              {item.title}
+                              {item.name}
                             </Text>
                             <Text size="description" type="light">
                               {item.description}
@@ -279,7 +298,7 @@ export default function Album({ modals, setModalAlbum }) {
       <ChooseDay
         modals={modalDay}
         setModalDay={(e) => setModalDay(e)}
-        albums={album}
+        idItinerary={idItinerary}
       />
     </Modal>
   );
