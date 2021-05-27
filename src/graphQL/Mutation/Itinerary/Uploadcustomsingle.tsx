@@ -1,5 +1,5 @@
 import { gql } from "apollo-boost";
-const Uplaodcover = gql`
+const upload_attach_custom = gql`
   mutation($file: [Upload], $custom_itinerary_id: ID!) {
     upload_attach_custom(
       file: $file
@@ -19,4 +19,4 @@ const Uplaodcover = gql`
     }
   }
 `;
-export default Uplaodcover;
+export default upload_attach_custom;

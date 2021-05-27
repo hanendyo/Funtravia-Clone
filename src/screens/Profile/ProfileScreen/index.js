@@ -67,7 +67,7 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 
-const HeaderHeight = 320 - SafeStatusBar;
+const HeaderHeight = 310 - SafeStatusBar;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
@@ -549,10 +549,10 @@ export default function OtherProfile(props) {
       extrapolate: "clamp",
     })
   );
-  let hide1 = React.useRef(
+  let hides = React.useRef(
     scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 1],
+      outputRange: [1, 0],
       extrapolate: "clamp",
     })
   );
@@ -864,39 +864,16 @@ export default function OtherProfile(props) {
         >
           <Text>tesssssssssssssssssssssssssssssssssssss</Text>
         </TouchableOpacity> */}
-        {data.picture ? (
-          <Animated.Image
-            source={data.picture ? { uri: data.picture } : DefaultProfileSquare}
-            style={{
-              width: width / 4,
-              height: width / 4,
-              borderRadius: width / 8,
-              borderWidth: 2,
-              borderColor: "#FFF",
-              position: "absolute",
-              top: 80,
-              zIndex: 1,
-              opacity: imageOpacitys,
-              transform: [
-                {
-                  translateY: Platform.select({
-                    // ios: 48,
-                    ios: imageTranslates,
-                    android: imageTranslatesA,
-                  }),
-                },
-                { translateX: imageTr },
-                { scale: imageTrans },
-              ],
-            }}
-          />
-        ) : null}
+
         <Animated.View
           style={{
             width: "100%",
             height: "80%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
+            // borderWidth: 1,
+            justifyContent: "center",
+            // paddingBottom: 10,
             // borderWidth: 2,
             // transform: [{ translateY: imageTranslate }],
             marginTop: 60,
@@ -906,16 +883,56 @@ export default function OtherProfile(props) {
             style={{
               flexDirection: "row",
               width: "100%",
-              justifyContent: "flex-end",
+              alignItems: "center",
+              alignContent: "center",
+              justifyContent: "space-between",
 
               // position: "absolute",
               // top: "32%",
               zIndex: 1,
               // borderWidth: 1,
               paddingHorizontal: 20,
-              paddingTop: 60,
+              // paddingTop: 60,
             }}
           >
+            {data.picture ? (
+              <Animated.Image
+                source={
+                  data.picture ? { uri: data.picture } : DefaultProfileSquare
+                }
+                style={{
+                  alignSelf: "flex-start",
+                  width: width / 4,
+                  height: width / 4,
+                  borderRadius: width / 8,
+                  borderWidth: 2,
+                  borderColor: "#FFF",
+                  // position: "absolute",
+                  // top: 70,
+                  zIndex: 1,
+                  opacity: imageOpacitys,
+                  transform: [
+                    // {
+                    //   translateY: Platform.select({
+                    //     // ios: 48,
+                    //     ios: imageTranslates,
+                    //     android: imageTranslatesA,
+                    //   }),
+                    // },
+                    // { translateX: imageTr },
+                    { scale: imageTrans },
+                  ],
+                }}
+              />
+            ) : (
+              <View
+                style={{
+                  width: width / 4,
+                  height: width / 4,
+                }}
+              ></View>
+            )}
+
             {position && position === "profile" ? (
               <View
                 style={{
@@ -1039,7 +1056,7 @@ export default function OtherProfile(props) {
               alignItems: "center",
               alignContent: "center",
               marginTop: 10,
-              paddingTop: 30,
+              // paddingTop: 30,
             }}
           >
             <Animated.View style={{ width: "50%", opacity: opacityfrom1 }}>
@@ -1130,6 +1147,7 @@ export default function OtherProfile(props) {
               marginTop: 10,
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
+              // borderWidth: 1,
             }}
           >
             <Text
@@ -1440,6 +1458,24 @@ export default function OtherProfile(props) {
                   <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
                 </Button>
 
+                <Animated.View
+                  style={{
+                    position: "absolute",
+                    left: 55,
+                    opacity: hides.current,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{
+                      color: "#fff",
+                    }}
+                  >
+                    Profile
+                  </Text>
+                </Animated.View>
+
                 <Animated.Image
                   source={
                     data?.user_profilebyid?.picture
@@ -1458,21 +1494,23 @@ export default function OtherProfile(props) {
               </View>
             ),
             headerTitle: (
-              <Animated.View
-                style={{
-                  opacity: hide.current,
-                }}
-              >
-                <Text
-                  type="bold"
+              <View>
+                <Animated.View
                   style={{
-                    color: "#fff",
+                    opacity: hide.current,
                   }}
                 >
-                  {data?.user_profilebyid?.first_name}{" "}
-                  {data?.user_profilebyid?.last_name}
-                </Text>
-              </Animated.View>
+                  <Text
+                    type="bold"
+                    style={{
+                      color: "#fff",
+                    }}
+                  >
+                    {data?.user_profilebyid?.first_name}{" "}
+                    {data?.user_profilebyid?.last_name}
+                  </Text>
+                </Animated.View>
+              </View>
             ),
           });
         }}
@@ -1572,6 +1610,24 @@ export default function OtherProfile(props) {
                 <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
               </Button>
 
+              <Animated.View
+                style={{
+                  position: "absolute",
+                  opacity: hides.current,
+                  left: 55,
+                }}
+              >
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{
+                    color: "#fff",
+                  }}
+                >
+                  Profile
+                </Text>
+              </Animated.View>
+
               <Animated.Image
                 source={
                   data?.user_profilebyid?.picture
@@ -1590,21 +1646,23 @@ export default function OtherProfile(props) {
             </View>
           ),
           headerTitle: (
-            <Animated.View
-              style={{
-                opacity: hide.current,
-              }}
-            >
-              <Text
-                type="bold"
+            <View>
+              <Animated.View
                 style={{
-                  color: "#fff",
+                  opacity: hide.current,
                 }}
               >
-                {data.user_profilebyid.first_name}{" "}
-                {data.user_profilebyid.last_name}
-              </Text>
-            </Animated.View>
+                <Text
+                  type="bold"
+                  style={{
+                    color: "#fff",
+                  }}
+                >
+                  {data?.user_profilebyid?.first_name}{" "}
+                  {data?.user_profilebyid?.last_name}
+                </Text>
+              </Animated.View>
+            </View>
           ),
         });
       },

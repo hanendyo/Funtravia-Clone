@@ -10,13 +10,12 @@ import {
   Pressable,
 } from "react-native";
 import { Sharegreen, Arrowbackwhite } from "../../assets/svg";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Text, Loading, shareAction } from "../../component";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../assets/png";
-import Uploadfoto from "../../graphQL/Mutation/Profile/Uploadfotoalbum";
 import Modal from "react-native-modal";
-import album from "../../graphQL/Query/Profile/albumdetail";
+import album from "../../graphQL/Query/Profile/albumdetailpost";
 import ImageSlide from "../../component/src/ImageSlide/sliderPost";
 import ImagePicker from "react-native-image-crop-picker";
 const { width, height } = Dimensions.get("screen");
@@ -59,7 +58,6 @@ export default function albumdetail(props) {
   };
 
   const { t, i18n } = useTranslation();
-  let iditinerary = props.route.params.iditinerary;
   let token = props.route.params.token;
   let day_id = props.route.params.day_id;
   let judul = props.route.params.judul;
@@ -103,7 +101,6 @@ export default function albumdetail(props) {
     { data: dataalbum, loading: loadingalbum, error: erroralbum, refetch },
   ] = useLazyQuery(album, {
     fetchPolicy: "network-only",
-
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -111,20 +108,12 @@ export default function albumdetail(props) {
       },
     },
     variables: {
-      itinerary_id: iditinerary,
-      day_id: day_id,
+      id: props?.route?.params?.id,
+      type: props?.route?.params?.type,
     },
-  });
-
-  const [
-    mutationUpload,
-    { loading: loadingupload, data: dataupload, error: errorupload },
-  ] = useMutation(Uploadfoto, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    onCompleted: () => {
+      console.log("dataalbum");
+      console.log(dataalbum);
     },
   });
 
@@ -137,71 +126,17 @@ export default function albumdetail(props) {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
-    // getdataalbum();
+    getdataalbum();
     wait(1000).then(() => setRefreshing(false));
-  };
-
-  const upload = async (data) => {
-    setmodal(false);
-    setLoading(true);
-
-    if (data) {
-      // console.log(tmpFile.base64);
-      try {
-        let response = await mutationUpload({
-          variables: {
-            itinerary_id: iditinerary,
-            day_id: day_id,
-            description: "0",
-            assets: "data:image/jpeg;base64," + data,
-          },
-        });
-        if (errorupload) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (response.data.uploadalbums.code !== 200) {
-            throw new Error(response.data.uploadalbums.message);
-          }
-          // Alert.alert(t('success'));
-          onRefresh();
-          // props.navigation.goBack();
-        }
-        setLoading(false);
-      } catch (error) {
-        Alert.alert("" + error);
-        setLoading(false);
-      }
-    }
-  };
-
-  const pickcamera = async () => {
-    ImagePicker.openCamera({
-      compressImageMaxWidth: 1024,
-      compressImageMaxHeight: 1024,
-      cropping: true,
-      freeStyleCropEnabled: true,
-      includeBase64: true,
-    }).then((image) => {
-      upload(image.data);
-    });
-  };
-  const pickGallery = async () => {
-    ImagePicker.openPicker({
-      compressImageMaxWidth: 1024,
-      compressImageMaxHeight: 1024,
-      cropping: true,
-      freeStyleCropEnabled: true,
-      includeBase64: true,
-    }).then((image) => {
-      upload(image.data);
-    });
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      onRefresh();
+      console.log("testing...");
+      getdataalbum();
+
+      // onRefresh();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -249,7 +184,7 @@ export default function albumdetail(props) {
         backgroundColor: "white",
       }}
     >
-      <Loading show={loading} />
+      {/* <Loading show={loading} /> */}
       {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}
 
       <Modal
@@ -311,7 +246,7 @@ export default function albumdetail(props) {
         // )}
         numColumns={3}
         nestedScrollEnabled
-        data={spreadData(props.route.params.data.assets)}
+        data={spreadData([])}
         renderItem={({ item, index }) => {
           console.log(item);
           if (item.length > 2) {
@@ -770,29 +705,6 @@ export default function albumdetail(props) {
         )}
         keyExtractor={(item) => item.id}
       />
-
-      {position === "profile" ? (
-        <View
-          style={{
-            height: 55,
-            justifyContent: "center",
-            alignItems: "center",
-            alignContent: "center",
-            backgroundColor: "white",
-            shadowColor: "#464646",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            elevation: 5,
-          }}
-        >
-          <Button
-            onPress={() => setmodal(true)}
-            text="Upload More Photos"
-            style={{ width: Dimensions.get("screen").width - 40 }}
-          ></Button>
-        </View>
-      ) : null}
 
       <ImageSlide
         index={index}
