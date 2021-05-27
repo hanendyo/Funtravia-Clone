@@ -18,6 +18,7 @@ import Modal from "react-native-modal";
 import album from "../../graphQL/Query/Profile/albumdetailpost";
 import ImageSlide from "../../component/src/ImageSlide/sliderPost";
 import ImagePicker from "react-native-image-crop-picker";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const { width, height } = Dimensions.get("screen");
 
 export default function albumdetail(props) {
@@ -59,13 +60,9 @@ export default function albumdetail(props) {
 
   const { t, i18n } = useTranslation();
   let token = props.route.params.token;
-  let day_id = props.route.params.day_id;
   let judul = props.route.params.judul;
-  let position = props.route.params.position;
   let [modals, setmodal] = useState(false);
-  let [loading, setLoading] = useState(false);
-
-  // console.log(props.route.params.data.assets);
+  let [dataalbums, setdata] = useState(null);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -75,7 +72,6 @@ export default function albumdetail(props) {
     for (let val of data) {
       if (count < 3) {
         tmpArray.push(val);
-        // console.log("masuk", tmpArray);
         count++;
       } else {
         tmpArray.push(val);
@@ -112,8 +108,7 @@ export default function albumdetail(props) {
       type: props?.route?.params?.type,
     },
     onCompleted: () => {
-      console.log("dataalbum");
-      console.log(dataalbum);
+      setdata(dataalbum.all_albums_post);
     },
   });
 
@@ -133,10 +128,7 @@ export default function albumdetail(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      console.log("testing...");
       getdataalbum();
-
-      // onRefresh();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -158,9 +150,9 @@ export default function albumdetail(props) {
         wid = width;
         hig = height;
       });
-      // console.log(data.album[i].photoby.first_name);
       tempdatas.push({
         key: i,
+        id: data[i].post_id,
         selected: i === inde ? true : false,
         url: data[i].filepath ? data[i].filepath : "",
         width: wid,
@@ -172,7 +164,6 @@ export default function albumdetail(props) {
       });
       x++;
     }
-    // console.log("temp", tempdatas);
     await setImage(tempdatas);
     await setModalss(true);
   };
@@ -184,9 +175,6 @@ export default function albumdetail(props) {
         backgroundColor: "white",
       }}
     >
-      {/* <Loading show={loading} /> */}
-      {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}
-
       <Modal
         onBackdropPress={() => {
           setmodal(false);
@@ -232,191 +220,34 @@ export default function albumdetail(props) {
           </TouchableOpacity>
         </View>
       </Modal>
-      <FlatList
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        stickyHeaderIndices={[0]}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 5 }}
-        // ListFooterComponentStyle={{ flex: 1, justifyContent: 'flex-end' }}
-        // ListFooterComponent={() => (
-
-        // )}
-        numColumns={3}
-        nestedScrollEnabled
-        data={spreadData([])}
-        renderItem={({ item, index }) => {
-          console.log(item);
-          if (item.length > 2) {
-            if (item[3].grid == 1) {
-              return (
-                <View
-                  style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    paddingHorizontal: 2.5,
-                  }}
-                >
-                  <Pressable
-                    onPress={() =>
-                      setdataimage(props.route.params.data.assets, item[0].id)
-                    }
+      {dataalbums ? (
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 5 }}
+          nestedScrollEnabled
+          data={spreadData(dataalbums)}
+          renderItem={({ item, index }) => {
+            // console.log(item);
+            if (item.length > 2) {
+              if (item[3].grid == 1) {
+                return (
+                  <View
                     style={{
-                      width: ((width - 12) / 3) * 2,
-                      height: ((width - 12) / 3) * 2,
-                      margin: 2.5,
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      paddingHorizontal: 2.5,
                     }}
                   >
-                    {item[0].type === "video" ? (
-                      <FunVideo
-                        poster={item[0].filepath.replace(
-                          "output.m3u8",
-                          "thumbnail.png"
-                        )}
-                        posterResizeMode={"cover"}
-                        source={{
-                          uri: item[0].filepath,
-                        }}
-                        repeat={true}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "#fff",
-                        }}
-                        resizeMode="cover"
-                        muted={true}
-                        paused={false}
-                      />
-                    ) : (
-                      <Image
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: 5,
-                        }}
-                        source={
-                          item[0].filepath
-                            ? { uri: item[0].filepath }
-                            : default_image
-                        }
-                      />
-                    )}
-                  </Pressable>
-                  <View>
                     <Pressable
-                      onPress={() =>
-                        setdataimage(props.route.params.data.assets, item[1].id)
-                      }
+                      onPress={() => setdataimage(dataalbums, item[0].id)}
                       style={{
-                        width: (width - 20) / 3,
-                        height: (width - 20) / 3,
-                        margin: 2.5,
-                      }}
-                    >
-                      {item[1].type === "video" ? (
-                        <FunVideo
-                          poster={item[1].filepath.replace(
-                            "output.m3u8",
-                            "thumbnail.png"
-                          )}
-                          posterResizeMode={"cover"}
-                          source={{
-                            uri: item[1].filepath,
-                          }}
-                          repeat={true}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                          }}
-                          resizeMode="cover"
-                          muted={true}
-                          paused={false}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: 5,
-                          }}
-                          source={
-                            item[1].filepath
-                              ? { uri: item[1].filepath }
-                              : default_image
-                          }
-                        />
-                      )}
-                    </Pressable>
-                    <Pressable
-                      onPress={() =>
-                        setdataimage(props.route.params.data.assets, item[2].id)
-                      }
-                      style={{
-                        width: (width - 20) / 3,
-                        height: (width - 20) / 3,
-                        margin: 2.5,
-                      }}
-                    >
-                      {item[2].type === "video" ? (
-                        <FunVideo
-                          poster={item[2].filepath.replace(
-                            "output.m3u8",
-                            "thumbnail.png"
-                          )}
-                          posterResizeMode={"cover"}
-                          source={{
-                            uri: item[2].filepath,
-                          }}
-                          repeat={true}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                          }}
-                          resizeMode="cover"
-                          muted={true}
-                          paused={false}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: 5,
-                          }}
-                          source={
-                            item[2].filepath
-                              ? { uri: item[2].filepath }
-                              : default_image
-                          }
-                        />
-                      )}
-                    </Pressable>
-                  </View>
-                </View>
-              );
-            } else if (item[3].grid == 2) {
-              return (
-                <View
-                  style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    paddingHorizontal: 2.5,
-                  }}
-                >
-                  <View>
-                    <Pressable
-                      onPress={() =>
-                        setdataimage(props.route.params.data.assets, item[0].id)
-                      }
-                      style={{
-                        width: (width - 20) / 3,
-                        height: (width - 20) / 3,
+                        width: ((width - 12) / 3) * 2,
+                        height: ((width - 12) / 3) * 2,
                         margin: 2.5,
                       }}
                     >
@@ -455,31 +286,216 @@ export default function albumdetail(props) {
                         />
                       )}
                     </Pressable>
+                    <View>
+                      <Pressable
+                        onPress={() => setdataimage(dataalbums, item[1].id)}
+                        style={{
+                          width: (width - 20) / 3,
+                          height: (width - 20) / 3,
+                          margin: 2.5,
+                        }}
+                      >
+                        {item[1].type === "video" ? (
+                          <FunVideo
+                            poster={item[1].filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            source={{
+                              uri: item[1].filepath,
+                            }}
+                            repeat={true}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                            resizeMode="cover"
+                            muted={true}
+                            paused={false}
+                          />
+                        ) : (
+                          <Image
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: 5,
+                            }}
+                            source={
+                              item[1].filepath
+                                ? { uri: item[1].filepath }
+                                : default_image
+                            }
+                          />
+                        )}
+                      </Pressable>
+                      <Pressable
+                        onPress={() => setdataimage(dataalbums, item[2].id)}
+                        style={{
+                          width: (width - 20) / 3,
+                          height: (width - 20) / 3,
+                          margin: 2.5,
+                        }}
+                      >
+                        {item[2].type === "video" ? (
+                          <FunVideo
+                            poster={item[2].filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            source={{
+                              uri: item[2].filepath,
+                            }}
+                            repeat={true}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                            resizeMode="cover"
+                            muted={true}
+                            paused={false}
+                          />
+                        ) : (
+                          <Image
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: 5,
+                            }}
+                            source={
+                              item[2].filepath
+                                ? { uri: item[2].filepath }
+                                : default_image
+                            }
+                          />
+                        )}
+                      </Pressable>
+                    </View>
+                  </View>
+                );
+              } else if (item[3].grid == 2) {
+                return (
+                  <View
+                    style={{
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      paddingHorizontal: 2.5,
+                    }}
+                  >
+                    <View>
+                      <Pressable
+                        onPress={() => setdataimage(dataalbums, item[0].id)}
+                        style={{
+                          width: (width - 20) / 3,
+                          height: (width - 20) / 3,
+                          margin: 2.5,
+                        }}
+                      >
+                        {item[0].type === "video" ? (
+                          <FunVideo
+                            poster={item[0].filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            source={{
+                              uri: item[0].filepath,
+                            }}
+                            repeat={true}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                            resizeMode="cover"
+                            muted={true}
+                            paused={false}
+                          />
+                        ) : (
+                          <Image
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: 5,
+                            }}
+                            source={
+                              item[0].filepath
+                                ? { uri: item[0].filepath }
+                                : default_image
+                            }
+                          />
+                        )}
+                      </Pressable>
+                      <Pressable
+                        onPress={() => setdataimage(dataalbums, item[1].id)}
+                        style={{
+                          width: (width - 20) / 3,
+                          height: (width - 20) / 3,
+                          margin: 2.5,
+                        }}
+                      >
+                        {item[1].type === "video" ? (
+                          <FunVideo
+                            poster={item[1].filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            source={{
+                              uri: item[1].filepath,
+                            }}
+                            repeat={true}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                            resizeMode="cover"
+                            muted={true}
+                            paused={false}
+                          />
+                        ) : (
+                          <Image
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: 5,
+                            }}
+                            source={
+                              item[1].filepath
+                                ? { uri: item[1].filepath }
+                                : default_image
+                            }
+                          />
+                        )}
+                      </Pressable>
+                    </View>
                     <Pressable
-                      onPress={() =>
-                        setdataimage(props.route.params.data.assets, item[1].id)
-                      }
+                      onPress={() => setdataimage(dataalbums, item[2].id)}
                       style={{
-                        width: (width - 20) / 3,
-                        height: (width - 20) / 3,
+                        width: ((width - 12) / 3) * 2,
+                        height: ((width - 12) / 3) * 2,
                         margin: 2.5,
                       }}
                     >
-                      {item[1].type === "video" ? (
+                      {item[2].type === "video" ? (
                         <FunVideo
-                          poster={item[1].filepath.replace(
+                          poster={item[2].filepath.replace(
                             "output.m3u8",
                             "thumbnail.png"
                           )}
                           posterResizeMode={"cover"}
                           source={{
-                            uri: item[1].filepath,
+                            uri: item[2].filepath,
                           }}
                           repeat={true}
                           style={{
                             width: "100%",
                             height: "100%",
-                            backgroundColor: "#fff",
                           }}
                           resizeMode="cover"
                           muted={true}
@@ -493,60 +509,78 @@ export default function albumdetail(props) {
                             borderRadius: 5,
                           }}
                           source={
-                            item[1].filepath
-                              ? { uri: item[1].filepath }
+                            item[2].filepath
+                              ? { uri: item[2].filepath }
                               : default_image
                           }
                         />
                       )}
                     </Pressable>
                   </View>
-                  <Pressable
-                    onPress={() =>
-                      setdataimage(props.route.params.data.assets, item[2].id)
-                    }
+                );
+              } else {
+                return (
+                  <View
                     style={{
-                      width: ((width - 12) / 3) * 2,
-                      height: ((width - 12) / 3) * 2,
-                      margin: 2.5,
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      paddingHorizontal: 2.5,
                     }}
                   >
-                    {item[2].type === "video" ? (
-                      <FunVideo
-                        poster={item[2].filepath.replace(
-                          "output.m3u8",
-                          "thumbnail.png"
-                        )}
-                        posterResizeMode={"cover"}
-                        source={{
-                          uri: item[2].filepath,
-                        }}
-                        repeat={true}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                        resizeMode="cover"
-                        muted={true}
-                        paused={false}
-                      />
-                    ) : (
-                      <Image
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: 5,
-                        }}
-                        source={
-                          item[2].filepath
-                            ? { uri: item[2].filepath }
-                            : default_image
-                        }
-                      />
-                    )}
-                  </Pressable>
-                </View>
-              );
+                    {item.map((data, index) => {
+                      if (index < 3) {
+                        return (
+                          <Pressable
+                            onPress={() => setdataimage(dataalbums, data.id)}
+                            style={{
+                              width: (width - 20) / 3,
+                              height: (width - 20) / 3,
+                              margin: 2.5,
+                            }}
+                          >
+                            {data.type === "video" ? (
+                              <FunVideo
+                                poster={data.filepath.replace(
+                                  "output.m3u8",
+                                  "thumbnail.png"
+                                )}
+                                posterResizeMode={"cover"}
+                                source={{
+                                  uri: data.filepath,
+                                }}
+                                repeat={true}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                }}
+                                resizeMode="cover"
+                                muted={true}
+                                paused={false}
+                              />
+                            ) : (
+                              <Image
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  borderRadius: 5,
+                                }}
+                                source={
+                                  data.filepath
+                                    ? { uri: data.filepath }
+                                    : default_image
+                                }
+                              />
+                            )}
+                          </Pressable>
+                        );
+                      } else {
+                        null;
+                      }
+                    })}
+                  </View>
+                );
+              }
             } else {
               return (
                 <View
@@ -558,159 +592,230 @@ export default function albumdetail(props) {
                   }}
                 >
                   {item.map((data, index) => {
-                    if (index < 3) {
-                      return (
-                        <Pressable
-                          onPress={() =>
-                            setdataimage(
-                              props.route.params.data.assets,
-                              data.id
-                            )
-                          }
-                          style={{
-                            width: (width - 20) / 3,
-                            height: (width - 20) / 3,
-                            margin: 2.5,
-                          }}
-                        >
-                          {data.type === "video" ? (
-                            <FunVideo
-                              poster={data.filepath.replace(
-                                "output.m3u8",
-                                "thumbnail.png"
-                              )}
-                              posterResizeMode={"cover"}
-                              source={{
-                                uri: data.filepath,
-                              }}
-                              repeat={true}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                              }}
-                              resizeMode="cover"
-                              muted={true}
-                              paused={false}
-                            />
-                          ) : (
-                            <Image
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                borderRadius: 5,
-                              }}
-                              source={
-                                data.filepath
-                                  ? { uri: data.filepath }
-                                  : default_image
-                              }
-                            />
-                          )}
-                        </Pressable>
-                      );
-                    } else {
-                      null;
-                    }
+                    return (
+                      <Pressable
+                        onPress={() => setdataimage(dataalbums, data.id)}
+                        style={{
+                          width: (width - 20) / 3,
+                          height: (width - 20) / 3,
+                          margin: 2.5,
+                        }}
+                      >
+                        {data.type === "video" ? (
+                          <FunVideo
+                            poster={data.filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            source={{
+                              uri: data.filepath,
+                            }}
+                            repeat={true}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                            resizeMode="cover"
+                            muted={true}
+                            paused={false}
+                          />
+                        ) : (
+                          <Image
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: 5,
+                            }}
+                            source={
+                              data.filepath
+                                ? { uri: data.filepath }
+                                : default_image
+                            }
+                          />
+                        )}
+                      </Pressable>
+                    );
                   })}
                 </View>
               );
             }
-          } else {
-            return (
+          }}
+          keyExtractor={(item) => item.id}
+        />
+      ) : (
+        <SkeletonPlaceholder>
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              paddingHorizontal: 2.5,
+            }}
+          >
+            <View
+              style={{
+                width: ((width - 12) / 3) * 2,
+                height: ((width - 12) / 3) * 2,
+                margin: 2.5,
+              }}
+            >
               <View
                 style={{
                   width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  paddingHorizontal: 2.5,
+                  height: "100%",
+                  borderRadius: 5,
+                }}
+              />
+            </View>
+            <View>
+              <View
+                style={{
+                  width: (width - 20) / 3,
+                  height: (width - 20) / 3,
+                  margin: 2.5,
                 }}
               >
-                {item.map((data, index) => {
-                  return (
-                    <Pressable
-                      onPress={() =>
-                        setdataimage(props.route.params.data.assets, data.id)
-                      }
-                      style={{
-                        width: (width - 20) / 3,
-                        height: (width - 20) / 3,
-                        margin: 2.5,
-                      }}
-                    >
-                      {data.type === "video" ? (
-                        <FunVideo
-                          poster={data.filepath.replace(
-                            "output.m3u8",
-                            "thumbnail.png"
-                          )}
-                          posterResizeMode={"cover"}
-                          source={{
-                            uri: data.filepath,
-                          }}
-                          repeat={true}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                          }}
-                          resizeMode="cover"
-                          muted={true}
-                          paused={false}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: 5,
-                          }}
-                          source={
-                            data.filepath
-                              ? { uri: data.filepath }
-                              : default_image
-                          }
-                        />
-                      )}
-                    </Pressable>
-                  );
-                })}
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 5,
+                  }}
+                />
               </View>
-            );
-          }
-        }}
-        renderItemss={({ item, index }) => (
-          <TouchableOpacity
-            onPress={() =>
-              setdataimage(
-                dataalbum.list_album_itinerary_day.day_album[0],
-                index
-              )
-            }
+              <View
+                onPress={() => setdataimage(dataalbums, item[2].id)}
+                style={{
+                  width: (width - 20) / 3,
+                  height: (width - 20) / 3,
+                  margin: 2.5,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 5,
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+          <View
             style={{
-              margin: 2,
-              height: (Dimensions.get("screen").width - 12) / 3,
-              width: (Dimensions.get("screen").width - 12) / 3,
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              paddingHorizontal: 2.5,
             }}
           >
-            <Image
-              source={item.filepath ? { uri: item.filepath } : default_image}
+            <View>
+              <View
+                style={{
+                  width: (width - 20) / 3,
+                  height: (width - 20) / 3,
+                  margin: 2.5,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 5,
+                  }}
+                />
+              </View>
+              <View
+                onPress={() => setdataimage(dataalbums, item[2].id)}
+                style={{
+                  width: (width - 20) / 3,
+                  height: (width - 20) / 3,
+                  margin: 2.5,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 5,
+                  }}
+                />
+              </View>
+            </View>
+            <View
               style={{
-                // margin: 2,
-                height: (Dimensions.get("screen").width - 12) / 3,
-                width: (Dimensions.get("screen").width - 12) / 3,
-                resizeMode: "cover",
+                width: ((width - 12) / 3) * 2,
+                height: ((width - 12) / 3) * 2,
+                margin: 2.5,
               }}
-            ></Image>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.id}
-      />
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 5,
+                }}
+              />
+            </View>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                width: (width - 20) / 3,
+                height: (width - 20) / 3,
+                margin: 2.5,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 5,
+                }}
+              />
+            </View>
+            <View
+              onPress={() => setdataimage(dataalbums, item[2].id)}
+              style={{
+                width: (width - 20) / 3,
+                height: (width - 20) / 3,
+                margin: 2.5,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 5,
+                }}
+              />
+            </View>
+            <View
+              onPress={() => setdataimage(dataalbums, item[2].id)}
+              style={{
+                width: (width - 20) / 3,
+                height: (width - 20) / 3,
+                margin: 2.5,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 5,
+                }}
+              />
+            </View>
+          </View>
+        </SkeletonPlaceholder>
+      )}
 
       <ImageSlide
         index={index}
         name="Funtravia Images"
         location={judul}
-        // {...props}
         show={modalss}
         dataImage={dataImage}
         props={props}
