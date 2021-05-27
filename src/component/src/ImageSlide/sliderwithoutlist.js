@@ -80,7 +80,13 @@ export default function ImageSlide({
   return (
     <Modal
       onRequestClose={() => {
-        setSlider([]), setClose();
+        setSlider([]), setClose(), setIn(0);
+      }}
+      onBackdropPress={() => {
+        setSlider([]), setClose(), setIn(0);
+      }}
+      onDismiss={() => {
+        setSlider([]), setClose(), setIn(0);
       }}
       onShow={() => {
         dataImage && dataImage.length > 0 ? setSlider(dataImage) : null;
@@ -121,7 +127,7 @@ export default function ImageSlide({
             type="circle"
             variant="transparent"
             onPress={() => {
-              setSlider([]), setClose();
+              setSlider([]), setClose(), setIn(0);
             }}
           >
             <Arrowbackwhite height={20} width={20} />

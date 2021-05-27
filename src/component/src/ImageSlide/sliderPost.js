@@ -30,15 +30,11 @@ export default function ImageSlide({
   token,
 }) {
   const { t, i18n } = useTranslation();
-  // var slidep = useRef(null);
   let [slider, setSlider] = useState([]);
   let [inde, setIn] = useState(0);
   let [preIn, setPreIn] = useState(null);
 
-  // console.log(slider);
-
   const handel_select = async (index) => {
-    // slidep.current.scrollToIndex({ animated: true, index: index });
     var tempdata = [...slider];
     for (var x of tempdata) {
       x.selected = false;
@@ -51,30 +47,12 @@ export default function ImageSlide({
 
   const handel_next = async () => {
     if (inde < slider.length - 1) {
-      // 	var i = inde + 1;
-      // 	var tempdata = [...slider];
-      // 	for (var x of tempdata) {
-      // 		x.selected = false;
-      // 	}
-      // 	// slide.current.scrollToIndex(true);
-      // 	tempdata[i].selected = true;
-      // 	setSlider(tempdata);
       setIn(inde + 1);
     }
   };
 
   const handel_prev = async () => {
-    // if (this.props.animation) {
-    // 	LayoutAnimation.configureNext(LayoutAnimation.Presets.easeIn);
-    // }
     if (inde > 0) {
-      // 	var i = inde - 1;
-      // 	var tempdata = [...slider];
-      // 	for (var x of tempdata) {
-      // 		x.selected = false;
-      // 	}
-      // 	tempdata[i].selected = true;
-      // 	setSlider(tempdata);
       setIn(inde - 1);
     }
   };
@@ -82,7 +60,13 @@ export default function ImageSlide({
   return (
     <Modal
       onRequestClose={() => {
-        setSlider([]), setClose();
+        setSlider([]), setClose(), setIn(0);
+      }}
+      onBackdropPress={() => {
+        setSlider([]), setClose(), setIn(0);
+      }}
+      onDismiss={() => {
+        setSlider([]), setClose(), setIn(0);
       }}
       onShow={() => {
         dataImage && dataImage.length > 0 ? setSlider(dataImage) : null;
@@ -93,7 +77,6 @@ export default function ImageSlide({
       isVisible={show}
       style={{
         margin: 0,
-        // backgroundColor: 'rgba(0, 0, 0, 0.25)',
         justifyContent: "flex-end",
         alignItems: "center",
         alignSelf: "center",
@@ -104,12 +87,9 @@ export default function ImageSlide({
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
-          // height: '100%',
           height: Dimensions.get("screen").height,
           backgroundColor: "black",
         }}
-        // behavior={Platform.OS === 'ios' ? 'position' : null}
-        // keyboardVerticalOffset={30}
         enabled
       >
         <View
@@ -123,7 +103,7 @@ export default function ImageSlide({
             type="circle"
             variant="transparent"
             onPress={() => {
-              setSlider([]), setClose();
+              setSlider([]), setClose(), setIn(0);
             }}
           >
             <Arrowbackwhite height={20} width={20} />
@@ -133,14 +113,12 @@ export default function ImageSlide({
           style={{
             backgroundColor: "black",
             alignItems: "center",
-            // marginBottom: 5,
           }}
         >
           <Text
             size="label"
             style={{
               color: "white",
-              //   marginBottom: 15,
             }}
           >
             Photos on trip
@@ -157,29 +135,6 @@ export default function ImageSlide({
               {location}
             </Text>
           ) : null}
-          {/* <View
-            style={{
-              backgroundColor: "#209FAE",
-              width: Dimensions.get("screen").width * 0.25,
-              height: 30,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 15,
-              opacity: 0.5,
-              marginBottom: 5,
-            }}
-          >
-            <Text
-              size="description"
-              type="bold"
-              style={{
-                color: "white",
-                paddingHorizontal: 10,
-              }}
-            >
-              {slider.length} Photos
-            </Text>
-          </View> */}
         </View>
         {slider.length > 0 ? (
           <ImageViewer
@@ -236,41 +191,10 @@ export default function ImageSlide({
                 />
               </TouchableOpacity>
             )}
-            // enableImageZoom={false}
             saveToLocalByLongPress={false}
             imageUrls={slider}
             onChange={(index) => handel_select(index)}
             index={inde}
-            // renderFooter={(index) => (
-            //   <View
-            //     style={{
-            //       marginTop: -30,
-            //       marginBottom: 10,
-            //     }}
-            //   >
-            //     {slider[index].by ? (
-            //       <Text
-            //         size="description"
-            //         type="bold"
-            //         style={{
-            //           color: "white",
-            //         }}
-            //       >
-            //         {t("photoBy") + " " + slider[index].by}
-            //       </Text>
-            //     ) : name ? (
-            //       <Text
-            //         size="description"
-            //         type="bold"
-            //         style={{
-            //           color: "white",
-            //         }}
-            //       >
-            //         {t("photoBy") + " " + name}
-            //       </Text>
-            //     ) : null}
-            //   </View>
-            // )}
           />
         ) : null}
 
@@ -287,8 +211,7 @@ export default function ImageSlide({
         >
           <TouchableOpacity
             onPress={() => {
-              //   console.log("test");
-              setClose();
+              setSlider([]), setClose(), setIn(0);
               props.navigation.push("FeedStack", {
                 screen: "CommentsById",
                 params: {
