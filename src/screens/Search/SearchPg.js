@@ -33,6 +33,7 @@ import {
     Calendargrey,
     Xhitam,
     Love,
+    Arrowbackwhite,
 } from "../../assets/svg";
 import {
     search_button,
@@ -103,15 +104,7 @@ export default function SearchPg(props, { navigation, route }) {
         },
         headerLeft: () => (
             <TouchableOpacity onPress={() => onBackPress()}>
-                <Image
-                    style={{ width: 20, height: 20 }}
-                    imageStyle={{
-                        width: 20,
-                        height: 20,
-                        resizeMode: "contain",
-                    }}
-                    source={back_arrow_white}
-                />
+                <Arrowbackwhite width={20} height={20} />
             </TouchableOpacity>
         ),
         headerLeftContainerStyle: {
