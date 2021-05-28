@@ -11,7 +11,7 @@ export default function FunImageAutoSize({
 	uri,
 	...otherProps
 }) {
-	let url = uri;
+	let url = uri + "?size=m";
 	let [loading, setLoading] = useState(false);
 	let [temp, setTemp] = useState([]);
 	let path;
@@ -19,23 +19,29 @@ export default function FunImageAutoSize({
 		let extension = Platform.OS === "android" ? "file://" : "";
 		let name = sh.unique(url);
 		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
-		RNFS.exists(path)
-			.then((exists) => {
-				if (!exists && temp.indexOf(name) === -1) {
-					setLoading(true);
-					setTemp([...temp, name]);
-					RNFS.downloadFile({ fromUrl: url, toFile: path }).promise.then(
-						(res) => {
-							setTimeout(() => setLoading(false), 1000);
-							console.log("CACHED ANIMATED IMAGE", url);
-						}
-					);
-				}
-			})
-			.catch((error) => {
-				setLoading(false);
-				console.warn(error);
-			});
+		let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]funtravia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim;
+		let check = regex.test(uri);
+		if (check) {
+			RNFS.exists(path)
+				.then((exists) => {
+					if (!exists && temp.indexOf(name) === -1) {
+						setLoading(true);
+						setTemp([...temp, name]);
+						RNFS.downloadFile({ fromUrl: url, toFile: path }).promise.then(
+							(res) => {
+								setTimeout(() => setLoading(false), 1000);
+								console.log("CACHED ANIMATED IMAGE", url);
+							}
+						);
+					}
+				})
+				.catch((error) => {
+					setLoading(false);
+					console.warn(error);
+				});
+		} else {
+			path = uri;
+		}
 	}
 	if (loading) {
 		return (

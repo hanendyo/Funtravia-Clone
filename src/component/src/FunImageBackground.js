@@ -14,29 +14,35 @@ export default function ImageBackground({
 }) {
 	let [loading, setLoading] = useState(false);
 	let [temp, setTemp] = useState([]);
-	let uri = source.uri;
+	let uri = source.uri + "?size=m";
 	let path;
 	if (uri && uri !== undefined) {
 		let extension = Platform.OS === "android" ? "file://" : "";
 		let name = sh.unique(uri);
 		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
-		RNFS.exists(path)
-			.then((exists) => {
-				if (!exists && temp.indexOf(name) === -1) {
-					setLoading(true);
-					setTemp([...temp, name]);
-					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
-						(res) => {
-							setTimeout(() => setLoading(false), 1000);
-							console.log("SUCCESS BACKGROUND CACHED", uri);
-						}
-					);
-				}
-			})
-			.catch((error) => {
-				setLoading(false);
-				console.warn(error);
-			});
+		let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]funtravia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim;
+		let check = regex.test(uri);
+		if (check) {
+			RNFS.exists(path)
+				.then((exists) => {
+					if (!exists && temp.indexOf(name) === -1) {
+						setLoading(true);
+						setTemp([...temp, name]);
+						RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
+							(res) => {
+								setTimeout(() => setLoading(false), 1000);
+								console.log("SUCCESS BACKGROUND CACHED", uri);
+							}
+						);
+					}
+				})
+				.catch((error) => {
+					setLoading(false);
+					console.warn(error);
+				});
+		} else {
+			path = source.uri;
+		}
 	}
 
 	if (loading) {
