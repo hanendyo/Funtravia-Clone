@@ -40,6 +40,7 @@ import { Text, Button } from "../../../component";
 import LinearGradient from "react-native-linear-gradient";
 import { StackActions } from "@react-navigation/routers";
 import Modal from "react-native-modal";
+import CheckBox from "@react-native-community/checkbox";
 
 export default function ItineraryDestination(props) {
   const HeaderComponent = {
@@ -87,7 +88,12 @@ export default function ItineraryDestination(props) {
     data: datafilter,
     loading: loadingfilter,
     error: errorfilter,
-  } = useQuery(filterDestination);
+  } = useQuery(filterDestination, {
+    onCompleted: () => {
+      setdataFilterCategori(datafilter.destination_filter.type);
+      setdataFilterCategoris(datafilter.destination_filter.type);
+    },
+  });
   let [token, setToken] = useState(props.route.params.token);
   let [datadayaktif] = useState(props.route.params.datadayaktif);
   let [dataDes] = useState(props.route.params.dataDes);
@@ -104,32 +110,6 @@ export default function ItineraryDestination(props) {
     cities: null,
     goodfor: null,
     facilities: null,
-  });
-
-  console.log({
-    keyword: search.keyword ? search.keyword : null,
-    // type: search.type ? search.type : null,
-    type:
-      search.type && search.type.length > 0
-        ? search.type
-        : props.route.params && props.route.params.idtype
-        ? [props.route.params.idtype]
-        : null,
-    cities:
-      search.city && search.city.length > 0
-        ? search.city
-        : props.route.params && props.route.params.idcity
-        ? [props.route.params.idcity]
-        : null,
-    countries:
-      search.country && search.country.length > 0
-        ? search.country
-        : props.route.params && props.route.params.idcountries
-        ? [props.route.params.idcountries]
-        : null,
-    goodfor: search.goodfor ? search.goodfor : null,
-    facilities: search.facilities ? search.facilities : null,
-    rating: search.rating ? search.rating : null,
   });
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
@@ -274,8 +254,24 @@ export default function ItineraryDestination(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  console.log("data", data);
-  console.log("loading", loading);
+  const searchkategori = async (teks) => {
+    let searching = new RegExp(teks, "i");
+
+    let b = dataFilterCategori.filter((item) => searching.test(item.name));
+
+    setdataFilterCategoris(b);
+  };
+
+  const _handleCheck = async (id, index, item) => {
+    let tempe = [...dataFilterCategori];
+    let items = { ...item };
+    items.checked = !items.checked;
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
+    await setdataFilterCategori(tempe);
+    await setdataFilterCategoris(tempe);
+  };
 
   return (
     <View
