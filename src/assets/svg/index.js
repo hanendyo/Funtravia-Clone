@@ -223,6 +223,9 @@ import Down from "./files/down.svg";
 import FilterBlack from "./files/filterBlack.svg";
 import Chatnew from "./files/chatnew.svg";
 import Arrowrightwhite from "./files/arrowrightwhite.svg";
+import Xgrey from "./files/Xgrey.svg";
+import NewAlbum from "./files/new_album.svg";
+import ExitingAlbum from "./files/exiting_album";
 
 export {
   LikeWhite,
@@ -450,4 +453,7 @@ export {
   FilterBlack,
   Chatnew,
   Arrowrightwhite,
+  Xgrey,
+  NewAlbum,
+  ExitingAlbum,
 };

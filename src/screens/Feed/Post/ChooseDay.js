@@ -15,19 +15,8 @@ import Ripple from "react-native-material-ripple";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 
 export default function ChooseDay({ modals, setModalDay, idItinerary }) {
-  const { t, i18n } = useTranslation();
-  const [choose, setChoose] = useState(false);
-  const [select, setSelect] = useState("Itinerary Album");
-  let dataDay = [
-    { day: "Day 1", selected: false },
-    { day: "Day 2", selected: false },
-    { day: "Day 3", selected: false },
-    { day: "Day 4", selected: false },
-    { day: "Day 5", selected: false },
-    { day: "Day 6", selected: false },
-  ];
-
-  const [data, setData] = useState(dataDay);
+  const { t } = useTranslation();
+  const [choose, setChoose] = useState();
   const [datas, setDatas] = useState();
   const {
     data: dataItinerary,
@@ -46,11 +35,10 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
     },
   });
 
-  const pilih = (day) => {
-    const tempData = [...dataDay];
-    const index = tempData.findIndex((k) => k["day"] === day);
-    tempData[index].selected = true;
-    setData(tempData);
+  const pilih = (id) => {
+    const tempData = [...datas.day];
+    const index = tempData.findIndex((k) => k["id"] === id);
+    setChoose(tempData[index].id);
   };
 
   return (
@@ -62,10 +50,7 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
         setModalDay(false);
       }}
       style={{
-        // justifyContent: "flex-end",
-        // alignItems: "center",
         alignSelf: "center",
-        // alignContent: "center",
       }}
     >
       <View
@@ -105,13 +90,12 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
               top: 0,
               left: 60,
               height: 50,
-              // position: "absolute",
               justifyContent: "center",
               marginTop: 5,
             }}
           >
             <Text size="label" type="regular" style={{ color: "#FFF" }}>
-              albums
+              {datas?.name}
             </Text>
             <Text size="description" type="light" style={{ color: "#FFF" }}>
               {t("selecDay")}
@@ -122,15 +106,14 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
-            // height: 300,
             backgroundColor: "white",
           }}
         >
           {datas &&
             datas?.day.map((item, index) => (
               <Ripple
-                // onPress={() => pilih(item?.day?.id)}
-                onPress={() => alert(`Day ${item.day}`)}
+                key={index}
+                onPress={() => pilih(item.id)}
                 style={{
                   // width: width,
                   marginHorizontal: 15,
@@ -148,7 +131,7 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
                     marginLeft: 10,
                   }}
                 >
-                  <Check height="15" width="15" />
+                  {choose === item.id ? <Check height="15" width="15" /> : null}
                 </View>
                 <View style={{ flexDirection: "row" }}>
                   <Text style={{ marginLeft: 10 }}>Day</Text>
