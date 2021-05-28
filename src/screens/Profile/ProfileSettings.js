@@ -404,13 +404,11 @@ export default function ProfileSettings(props) {
     <ScrollView contentContainerStyle={{}} showsVerticalScrollIndicator={false}>
       <LinearGradient
         start={{ x: 1, y: 1 }} //here we are defined x as start position
-        end={{ x: 0, y: 0 }} //here we can define axis but as end position
-        colors={["#209fae", "#00d5fa"]}
+        end={{ x: 0, y: -1.5 }} //here we can define axis but as end position
+        //colors={["#209fae", "#68D7E3"]}
+        colors={["#209fae", "#68D7E3"]}
         style={{
-          height: 150,
-          // justifyContent: "center",
-          // alignItems: "center",
-          // borderRadius: 5,
+          height: 140,
         }}
       ></LinearGradient>
       {/* <ImageBackground
@@ -430,11 +428,9 @@ export default function ProfileSettings(props) {
           width: Dimensions.get("screen").width,
           justifyContent: "center",
           flexDirection: "row",
-          // position: 'absolute',
           marginTop: -50,
           paddingHorizontal: 20,
           alignItems: "flex-end",
-          // borderWidth: 1,
         }}
       >
         <View
@@ -448,8 +444,8 @@ export default function ProfileSettings(props) {
             borderRadius: 60,
             borderWidth: 3,
             backgroundColor: "#B8E0E5",
-            height: 101,
-            width: 101,
+            height: 120,
+            width: 120,
 
             justifyContent: "center",
             alignItems: "center",
@@ -466,12 +462,16 @@ export default function ProfileSettings(props) {
           />
           <Button
             onPress={() => setmodal(true)}
-            style={{ position: "absolute", right: -15, bottom: 0 }}
+            style={{
+              position: "absolute",
+              right: -8,
+              bottom: 0,
+            }}
             type="circle"
             color="secondary"
-            size="small"
+            size="medium"
           >
-            <Addphoto width={15} height={15} />
+            <Addphoto width={18} height={18} />
           </Button>
         </View>
       </View>
@@ -481,7 +481,6 @@ export default function ProfileSettings(props) {
           paddingHorizontal: 20,
           width: Dimensions.get("window").width,
           justifyContent: "space-between",
-          // borderWidth: 1,
           marginTop: 20,
         }}
       >
@@ -499,6 +498,7 @@ export default function ProfileSettings(props) {
                 fontFamily: "Lato-Regular",
                 fontSize: 14,
               }}
+              ff0000
             >
               {t("firstName")}
             </Label>
