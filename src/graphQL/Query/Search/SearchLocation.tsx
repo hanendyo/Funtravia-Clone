@@ -16,6 +16,8 @@ const SearchLocationQuery = gql`
             name
             cover
             type
+            head1
+            head2
         }
     }
 `;

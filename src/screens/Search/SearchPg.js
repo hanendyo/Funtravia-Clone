@@ -378,7 +378,7 @@ export default function SearchPg(props, { navigation, route }) {
     if (dataLocation && dataLocation.search_location) {
         search_location = dataLocation.search_location;
     }
-
+    // console.log(search_location);
     const {
         data: dataCityPopuler,
         loading: loadingCityPopuler,
@@ -1283,7 +1283,17 @@ export default function SearchPg(props, { navigation, route }) {
                                                 >
                                                     {prepercase(item.name)}
                                                 </Text>
-                                                <Text>{item.type}</Text>
+                                                <Text>
+                                                    {item.type}{" "}
+                                                    {item.head1
+                                                        ? "of " +
+                                                          prepercase(item.head1)
+                                                        : null}
+                                                    {item.head2
+                                                        ? ", " +
+                                                          prepercase(item.head2)
+                                                        : null}
+                                                </Text>
                                             </View>
                                         </Pressable>
                                     )}
