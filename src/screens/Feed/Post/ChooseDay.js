@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import {
   View,
   Dimensions,
@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 
-export default function ChooseDay({ modals, setModalDay, albums }) {
+export default function ChooseDay({ modals, setModalDay, idItinerary }) {
   const { t, i18n } = useTranslation();
   const [choose, setChoose] = useState(false);
   const [select, setSelect] = useState("Itinerary Album");
@@ -27,30 +27,24 @@ export default function ChooseDay({ modals, setModalDay, albums }) {
     { day: "Day 6", selected: false },
   ];
 
-  const [
-    GetListEvent,
-    { data: dataItinerary, loading: loadingdetail, error: errordetail },
-  ] = useLazyQuery(ItineraryDetails, {
-    fetchPolicy: "network-only",
+  const [data, setData] = useState(dataDay);
+  const [datas, setDatas] = useState();
+  const {
+    data: dataItinerary,
+    loading: loadingdetail,
+    error: errordetail,
+  } = useQuery(ItineraryDetails, {
+    variables: { id: idItinerary },
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
-    variables: { id: "00f92136-4db8-4040-9110-6303eca7b537" },
+    onCompleted: () => {
+      setDatas(dataItinerary.itinerary_detail);
+    },
   });
-
-  useEffect(() => {
-    GetListEvent();
-  }),
-    [];
-
-  console.log("data itin", dataItinerary);
-
-  const [data, setData] = useState(dataDay);
-
-  console.log("data: ", data);
 
   const pilih = (day) => {
     const tempData = [...dataDay];
@@ -117,7 +111,7 @@ export default function ChooseDay({ modals, setModalDay, albums }) {
             }}
           >
             <Text size="label" type="regular" style={{ color: "#FFF" }}>
-              {albums}
+              albums
             </Text>
             <Text size="description" type="light" style={{ color: "#FFF" }}>
               {t("selecDay")}
@@ -132,28 +126,36 @@ export default function ChooseDay({ modals, setModalDay, albums }) {
             backgroundColor: "white",
           }}
         >
-          {data.map((item, index) => (
-            <Ripple
-              onPress={() => pilih(item.day)}
-              style={{
-                // width: width,
-                marginHorizontal: 15,
-                paddingVertical: 15,
-                borderBottomWidth: 1,
-                // borderColor: "rgb(80,80,80)",
-                borderColor: "#f1f1f1",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <View style={{ width: 20, marginLeft: 10 }}>
-                {item.selected === true ? (
+          {datas &&
+            datas?.day.map((item, index) => (
+              <Ripple
+                // onPress={() => pilih(item?.day?.id)}
+                onPress={() => alert(`Day ${item.day}`)}
+                style={{
+                  // width: width,
+                  marginHorizontal: 15,
+                  paddingVertical: 15,
+                  borderBottomWidth: 1,
+                  // borderColor: "rgb(80,80,80)",
+                  borderColor: "#f1f1f1",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 20,
+                    marginLeft: 10,
+                  }}
+                >
                   <Check height="15" width="15" />
-                ) : null}
-              </View>
-              <Text style={{ marginLeft: 10 }}>{item.day}</Text>
-            </Ripple>
-          ))}
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={{ marginLeft: 10 }}>Day</Text>
+                  <Text style={{ marginLeft: 10 }}>{item.day}</Text>
+                </View>
+              </Ripple>
+            ))}
         </View>
       </View>
     </Modal>
