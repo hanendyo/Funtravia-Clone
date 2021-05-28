@@ -10,6 +10,7 @@ import {
   Alert,
   Image,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
@@ -20,13 +21,15 @@ import AutoHeightImage from "react-native-auto-height-image";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
 import Album from "./Album";
-import { PinHijau, Xgray, Arrowbackwhite } from "../../../assets/svg";
+import { PinHijau, Xgray, Arrowbackwhite, Xgrey } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { ScrollView } from "react-native-gesture-handler";
 import Geolocation from "react-native-geolocation-service";
 import Video from "react-native-video";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import { ReactNativeFile } from "apollo-upload-client";
+import { useTranslation } from "react-i18next";
+import CreateAlbum from "./CreateAlbum";
 
 const PostMut = gql`
   mutation(
@@ -56,12 +59,15 @@ const PostMut = gql`
 `;
 
 const { width, height } = Dimensions.get("screen");
+
 export default function CreatePost({ navigation, route }) {
+  const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
-  let [modalAlbum, setModalAlbum] = useState(false);
+
+  let [modalCreate, setModalCreate] = useState(false);
   let [Location, setLocation] = useState({
-    address: "Add Location",
+    address: t("addLocation"),
     latitude: "",
     longitude: "",
   });
@@ -164,14 +170,12 @@ export default function CreatePost({ navigation, route }) {
         throw new Error("Error Input");
       }
     } catch (err) {
-      console.log(error);
       setLoading(false);
       Alert.alert("" + err);
     }
   };
 
   const _selectLocation = (value) => {
-    console.log(value.latitude);
     setLocation({
       address: value.name,
       latitude: value.latitude,
@@ -191,7 +195,7 @@ export default function CreatePost({ navigation, route }) {
   };
   const clearLoaction = () => {
     setLocation({
-      address: "Add Location",
+      address: t("addLocation"),
       latitude: "",
       longitude: "",
     });
@@ -265,7 +269,6 @@ export default function CreatePost({ navigation, route }) {
         }
       );
       let responseJson = await response.json();
-      // console.log(responseJson.results);
       if (responseJson.results && responseJson.results.length > 0) {
         let nearby = [];
         for (var i of responseJson.results) {
@@ -280,7 +283,6 @@ export default function CreatePost({ navigation, route }) {
           nearby.push(data);
         }
         setDataNearby(nearby);
-        // console.log(nearby);
         setLoading(false);
       } else {
         setLoading(false);
@@ -329,7 +331,10 @@ export default function CreatePost({ navigation, route }) {
             <Button size="medium" text="Post" onPress={() => SubmitData()} />
           </View>
         </View>
-        <ScrollView style={{}}>
+        <ScrollView
+          style={{ marginBottom: 90 }}
+          showsVerticalScrollIndicator={false}
+        >
           <Loading show={loadingok} />
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
@@ -375,8 +380,7 @@ export default function CreatePost({ navigation, route }) {
                 style={{
                   flexDirection: "row",
                   backgroundColor: "#ffffff",
-                  borderBottomColor: "#f0f0f0f0",
-                  borderBottomWidth: 1,
+                  alignItems: "center",
                 }}
               >
                 <FunImage
@@ -398,8 +402,10 @@ export default function CreatePost({ navigation, route }) {
                 />
                 <TextInput
                   multiline
-                  placeholder={"Write a caption.."}
+                  placeholder={`${t("writeACaption")}...`}
                   maxLength={1000}
+                  placeholderStyle={{ fontSize: 50 }}
+                  placeholderTextColor="#6C6C6C"
                   style={
                     Platform.OS == "ios"
                       ? {
@@ -409,10 +415,17 @@ export default function CreatePost({ navigation, route }) {
                           marginVertical: 5,
                           marginHorizontal: 10,
                           paddingTop: 10,
+                          fontSize: 14,
+                          fontFamily: "Lato-Regular",
                         }
                       : {
-                          height: 75,
-                          width: Dimensions.get("screen").width - 100,
+                          height: 50,
+                          width: Dimensions.get("screen").width - 90,
+                          borderRadius: 5,
+                          backgroundColor: "#f6f6f6",
+                          paddingHorizontal: 10,
+                          fontSize: 14,
+                          fontFamily: "Lato-Regular",
                         }
                   }
                   onChangeText={(text) => _setStatusText(text)}
@@ -423,16 +436,20 @@ export default function CreatePost({ navigation, route }) {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  marginTop: 10,
                   marginHorizontal: 15,
+                  paddingVertical: 5,
+                  borderBottomWidth: 1,
+                  borderColor: "#D1D1D1",
                 }}
               >
                 <Ripple
-                  onPress={() => setModalAlbum(true)}
+                  onPress={() => setModalCreate(true)}
+                  // onPress={() => setModalAlbum(true)}
                   style={{
                     flexDirection: "row",
-
                     alignItems: "center",
+                    width: "100%",
+                    borderRadius: 5,
                   }}
                 >
                   <Text
@@ -440,29 +457,21 @@ export default function CreatePost({ navigation, route }) {
                     size="description"
                     style={{
                       marginHorizontal: 5,
+                      marginVertical: 10,
                     }}
                   >
-                    {/* {Location.address} */}
-                    Add Album
+                    {t("addAlbum")}
                   </Text>
                 </Ripple>
-                {Location.latitude !== "" ? (
-                  <Ripple
-                    onPress={() => clearLoaction()}
-                    style={{
-                      padding: 5,
-                    }}
-                  >
-                    <Xgray height={15} width={15} />
-                  </Ripple>
-                ) : null}
               </View>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  marginTop: 10,
                   marginHorizontal: 15,
+                  paddingVertical: 5,
+                  borderBottomWidth: 1,
+                  borderColor: "#D1D1D1",
                 }}
               >
                 <Ripple
@@ -470,17 +479,18 @@ export default function CreatePost({ navigation, route }) {
                   style={{
                     flexDirection: "row",
                     borderRadius: 5,
+                    width: "92%",
+                    alignItems: "center",
                     alignItems: "center",
                   }}
                 >
-                  {Location.latitude !== "" ? (
-                    <PinHijau height={15} width={15} />
-                  ) : null}
+                  <PinHijau height={15} width={15} />
                   <Text
                     type="bold"
                     size="description"
                     style={{
                       marginHorizontal: 5,
+                      marginVertical: 10,
                     }}
                   >
                     {Location.address}
@@ -491,44 +501,52 @@ export default function CreatePost({ navigation, route }) {
                     onPress={() => clearLoaction()}
                     style={{
                       padding: 5,
+                      borderRadius: 10,
                     }}
                   >
-                    <Xgray height={15} width={15} />
+                    <Xgrey height={20} width={20} />
                   </Ripple>
                 ) : null}
               </View>
               <View
                 style={{
-                  borderBottomColor: "#E1E1E1",
-                  borderBottomWidth: 1,
-                  width: 150,
-                  margin: 10,
-                }}
-              ></View>
-              <View
-                style={{
                   width: "100%",
                   flexWrap: "wrap",
                   flexDirection: "row",
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 15,
                 }}
               >
-                {datanearby.map((value, index) => {
-                  return index < 5 ? (
-                    <Button
-                      onPress={() => _selectLocation(value)}
-                      type="box"
-                      variant="bordered"
-                      color="primary"
-                      size="small"
-                      style={{
-                        marginHorizontal: 2,
-                        marginVertical: 2,
-                      }}
-                      text={value.name}
-                    ></Button>
-                  ) : null;
-                })}
+                {Location.latitude === ""
+                  ? datanearby.map((value, index) => {
+                      return index < 5 ? (
+                        <Pressable
+                          key={index}
+                          onPress={() => _selectLocation(value)}
+                          style={{
+                            width: "100%",
+                            height: 50,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            borderBottomWidth: 1,
+                            borderColor: "#e1e1e1",
+                          }}
+                        >
+                          <PinHijau
+                            height={15}
+                            width={15}
+                            style={{ marginLeft: 15 }}
+                          />
+                          <Text
+                            size="description"
+                            type="light"
+                            style={{ marginLeft: 10 }}
+                          >
+                            {value.name}
+                          </Text>
+                        </Pressable>
+                      ) : null;
+                    })
+                  : null}
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -538,9 +556,10 @@ export default function CreatePost({ navigation, route }) {
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
         />
-        <Album
-          modals={modalAlbum}
-          setModalAlbum={(e) => setModalAlbum(e)}
+
+        <CreateAlbum
+          modals={modalCreate}
+          setModalCreate={(e) => setModalCreate(e)}
           // masukan={(e) => _setLocation(e)}
         />
       </View>
