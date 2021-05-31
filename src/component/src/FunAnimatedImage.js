@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Platform, Animated } from "react-native";
+import { Platform, Animated, ActivityIndicator } from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { default_image } from "../../assets/png";
 
 export default function FunAnimatedImage({
@@ -12,7 +11,7 @@ export default function FunAnimatedImage({
 	imageStyle,
 	...otherProps
 }) {
-	let [loading, setLoading] = useState(false);
+	let [loading, setLoading] = useState(true);
 	let uri = source?.uri;
 	let path;
 	if (uri) {
@@ -25,23 +24,20 @@ export default function FunAnimatedImage({
 					setLoading(true);
 					RNFS.downloadFile({ fromUrl: uri, toFile: path }).promise.then(
 						(res) => {
-							// setLoading(false);
+							setLoading(false);
 						}
 					);
 				} else {
-					// setLoading(false);
+					setLoading(false);
 				}
 			})
 			.catch((error) => {
 				console.warn(error);
 			});
 	}
+
 	if (loading) {
-		return (
-			<SkeletonPlaceholder speed={500}>
-				<SkeletonPlaceholder.Item {...style} />
-			</SkeletonPlaceholder>
-		);
+		return <ActivityIndicator />;
 	}
 
 	return (
