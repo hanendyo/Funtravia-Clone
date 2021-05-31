@@ -4,7 +4,7 @@ import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ICONSERVER } from "../../config";
-import { SvgUri } from "react-native-svg";
+import { SvgCssUri } from "react-native-svg";
 
 export default function FunIcon({
 	icon,
@@ -17,28 +17,27 @@ export default function FunIcon({
 	const url = `${ICONSERVER}${variant[icon.charAt(0)]}/${
 		icon.split("-")[1]
 	}.svg`;
-	let [loading, setLoading] = useState(false);
+	let [loading, setLoading] = useState(true);
 	const extension = Platform.OS === "android" ? "file://" : "";
 	const name = sh.unique(url);
 	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
-	console.log("ICON", url);
-	// RNFS.exists(path)
-	// 	.then((exists) => {
-	// 		if (!exists) {
-	// 			setLoading(true);
-	// 			RNFS.downloadFile({
-	// 				fromUrl: url,
-	// 				toFile: path,
-	// 			}).promise.then((res) => {
-	// 				setLoading(false);
-	// 			});
-	// 		} else {
-	// 			setLoading(false);
-	// 		}
-	// 	})
-	// 	.catch((error) => {
-	// 		console.warn(error);
-	// 	});
+	RNFS.exists(path)
+		.then((exists) => {
+			if (!exists) {
+				setLoading(true);
+				RNFS.downloadFile({
+					fromUrl: url,
+					toFile: path,
+				}).promise.then((res) => {
+					setLoading(false);
+				});
+			} else {
+				setLoading(false);
+			}
+		})
+		.catch((error) => {
+			console.warn(error);
+		});
 
 	if (loading) {
 		return (
@@ -49,12 +48,11 @@ export default function FunIcon({
 	}
 
 	return (
-		<SvgUri
-			style={style ? style : null}
-			uri={url}
+		<SvgCssUri
+			uri={path}
 			width={width ? width : 50}
 			height={height ? height : 50}
-			fill={fill ? fill : "#000"}
+			fill={fill ? fill : "#464646"}
 		/>
 	);
 }
