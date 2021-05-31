@@ -41,6 +41,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { StackActions } from "@react-navigation/routers";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
+import Searching from "../../../graphQL/Query/Search/SearchLocation";
 
 export default function ItineraryDestination(props) {
   const HeaderComponent = {
@@ -92,8 +93,13 @@ export default function ItineraryDestination(props) {
     onCompleted: () => {
       setdataFilterCategori(datafilter.destination_filter.type);
       setdataFilterCategoris(datafilter.destination_filter.type);
+      setdataFilterFacility(datafilter.destination_filter.facility);
+      setdataFilterFacilitys(datafilter.destination_filter.facility);
+      setdataFilterCountry(datafilter.destination_filter.country);
+      setdataFilterCountrys(datafilter.destination_filter.country);
     },
   });
+
   let [token, setToken] = useState(props.route.params.token);
   let [datadayaktif] = useState(props.route.params.datadayaktif);
   let [dataDes] = useState(props.route.params.dataDes);
@@ -102,14 +108,45 @@ export default function ItineraryDestination(props) {
   let [IdItinerary, setId] = useState(props.route.params.IdItinerary);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
+  let [dataFilterFacility, setdataFilterFacility] = useState([]);
+  let [dataFilterFacilitys, setdataFilterFacilitys] = useState([]);
+  let [dataFilterCountry, setdataFilterCountry] = useState([]);
+  let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
+  let [dataFilterCity, setdataFilterCity] = useState([]);
+  let [dataFilterCitys, setdataFilterCitys] = useState([]);
+
+  let [aktif, setaktif] = useState("categories");
+
+  // console.log(datafilter);
 
   let [search, setSearch] = useState({
     type: null,
     keyword: null,
     countries: null,
+    provinces: null,
     cities: null,
     goodfor: null,
     facilities: null,
+  });
+
+  let [keyword, setkeyword] = useState("");
+  let [searcountry, setsearcountry] = useState(null);
+
+  const {
+    data: datasearchlocation,
+    loading: loadingsearchlocation,
+    error: errorsearchlocation,
+  } = useQuery(Searching, {
+    variables: {
+      keyword: keyword ? keyword : "b",
+      cities_id: null,
+      province_id: null,
+      countries_id: searcountry ? searcountry : null,
+    },
+    onCompleted: () => {
+      setdataFilterCity(datasearchlocation.search_location);
+      setdataFilterCitys(datasearchlocation.search_location);
+    },
   });
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
@@ -137,6 +174,12 @@ export default function ItineraryDestination(props) {
             : props.route.params && props.route.params.idcountries
             ? [props.route.params.idcountries]
             : null,
+        provinces:
+          search.provinces && search.provinces.length > 0
+            ? search.provinces
+            : props.route.params && props.route.params.provinces
+            ? [props.route.params.provinces]
+            : null,
         goodfor: search.goodfor ? search.goodfor : null,
         facilities: search.facilities ? search.facilities : null,
         rating: search.rating ? search.rating : null,
@@ -148,7 +191,7 @@ export default function ItineraryDestination(props) {
         },
       },
       onCompleted: () => {
-        console.log(data);
+        // console.log(data);
       },
     }
   );
@@ -254,12 +297,24 @@ export default function ItineraryDestination(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const searchkategori = async (teks) => {
+  const searchs = async (teks) => {
+    setkeyword(teks);
     let searching = new RegExp(teks, "i");
 
-    let b = dataFilterCategori.filter((item) => searching.test(item.name));
+    let Categori = dataFilterCategori.filter((item) =>
+      searching.test(item.name)
+    );
+    setdataFilterCategoris(Categori);
 
-    setdataFilterCategoris(b);
+    let Facility = dataFilterFacility.filter((item) =>
+      searching.test(item.name)
+    );
+    setdataFilterFacilitys(Facility);
+
+    let countries = dataFilterCountry.filter((item) =>
+      searching.test(item.name)
+    );
+    setdataFilterCountrys(countries);
   };
 
   const _handleCheck = async (id, index, item) => {
@@ -271,6 +326,84 @@ export default function ItineraryDestination(props) {
     tempe.splice(inde, 1, items);
     await setdataFilterCategori(tempe);
     await setdataFilterCategoris(tempe);
+  };
+
+  const _handleCheckf = async (id, index, item) => {
+    let tempe = [...dataFilterFacility];
+    let items = { ...item };
+    items.checked = !items.checked;
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
+    await setdataFilterFacility(tempe);
+    await setdataFilterFacilitys(tempe);
+  };
+
+  const _handleCheckC = async (id, index, item) => {
+    let tempe = [...datafilter.destination_filter.country];
+    let items = { ...item };
+    items.checked = true;
+
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
+    setsearcountry(items.id);
+    await setdataFilterCountry(tempe);
+    await setdataFilterCountrys(tempe);
+  };
+
+  const _handleCheckCity = async (id, index, item) => {
+    let tempe = [...dataFilterCity];
+    let items = { ...item };
+    items.checked = !items.checked;
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
+    await setdataFilterCity(tempe);
+    await setdataFilterCitys(tempe);
+  };
+
+  const UpdateFilter = async () => {
+    let data = { ...search };
+    let Categori = [];
+    for (var x of dataFilterCategori) {
+      if (x.checked === true) {
+        Categori.push(x.id);
+      }
+    }
+
+    data["type"] = Categori;
+
+    let fasilitas = [];
+    for (var y of dataFilterFacility) {
+      if (y.checked === true) {
+        fasilitas.push(y.id);
+      }
+    }
+
+    data["facilities"] = fasilitas;
+
+    let Country = [];
+    for (var t of dataFilterCountry) {
+      if (t.checked === true) {
+        Country.push(t.id);
+      }
+    }
+
+    data["countries"] = Country;
+
+    // await console.log(data);
+    await setSearch(data);
+    await setshow(false);
+  };
+
+  const _setSearch = async (teks) => {
+    let data = { ...search };
+
+    data["keyword"] = teks;
+
+    // await console.log(data);
+    await setSearch(data);
   };
 
   return (
@@ -294,6 +427,8 @@ export default function ItineraryDestination(props) {
           long={long}
         />
       ) : null} */}
+
+      {/* 
       <View
         style={{
           backgroundColor: "white",
@@ -407,13 +542,12 @@ export default function ItineraryDestination(props) {
                 fontFamily: "Lato-Regular",
                 color: "#0095A7",
                 fontSize: 13,
-                // alignSelf: "center",
                 marginLeft: 5,
               }}
             >
               {t("filter")}
             </Text>
-            {/* {dataFillter.length && Filterlenght > 0 ? (
+            {dataFillter.length && Filterlenght > 0 ? (
               <View
                 style={{
                   borderRadius: 3,
@@ -437,10 +571,10 @@ export default function ItineraryDestination(props) {
                   {Filterlenght}
                 </Text>
               </View>
-            ) : null} */}
+            ) : null}
           </Button>
 
-          {/* <FlatList
+          <FlatList
             contentContainerStyle={{
               justifyContent: "space-evenly",
               marginHorizontal: 3,
@@ -450,9 +584,126 @@ export default function ItineraryDestination(props) {
             renderItem={_renderFilter}
             showsHorizontalScrollIndicator={false}
             extraData={selected}
-          ></FlatList> */}
+          ></FlatList>
+        </View>
+      </View> */}
+
+      <View
+        style={{
+          backgroundColor: "white",
+          width: Dimensions.get("screen").width,
+          zIndex: 5,
+        }}
+      >
+        <View
+          style={{
+            alignContent: "center",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 10,
+            height: 50,
+            zIndex: 5,
+            flexDirection: "row",
+            width: Dimensions.get("screen").width,
+          }}
+        >
+          <Button
+            size="small"
+            type="icon"
+            variant="bordered"
+            color="primary"
+            onPress={() => {
+              setshow(true);
+            }}
+            style={{
+              marginRight: 5,
+              width: "10%",
+              // paddingHorizontal: 10,
+            }}
+          >
+            <FilterIcon width={15} height={15} />
+            {/* 
+            <Text
+              style={{
+                fontFamily: "Lato-Regular",
+                color: "#0095A7",
+                fontSize: 13,
+                // alignSelf: "center",
+                marginLeft: 5,
+              }}
+            >
+              {t("filter")}
+            </Text> */}
+          </Button>
+
+          <View
+            style={{
+              backgroundColor: "#F0F0F0",
+              borderRadius: 5,
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            }}
+          >
+            <Search width={15} height={15} />
+
+            <TextInput
+              underlineColorAndroid="transparent"
+              placeholder={t("search")}
+              style={{
+                width: "100%",
+                // borderWidth: 1,
+                marginLeft: 5,
+                padding: 0,
+              }}
+              returnKeyType="search"
+              onChangeText={(x) => _setSearch(x)}
+              onSubmitEditing={(x) => _setSearch(x)}
+            />
+          </View>
+
+          <TouchableOpacity
+            onPress={() =>
+              props.navigation.push("ItinGoogle", {
+                dataDes: dataDes,
+                token: token,
+                datadayaktif: datadayaktif,
+                lat: lat,
+                long: long,
+              })
+            }
+            style={{
+              backgroundColor: "white",
+              borderRadius: 5,
+              borderWidth: 1,
+              width: "10%",
+              borderColor: "#F0F0F0",
+              paddingVertical: 10,
+              alignItems: "flex-start",
+              justifyContent: "center",
+              flexDirection: "row",
+              marginLeft: 10,
+            }}
+          >
+            <Google height={15} width={15} />
+            {/* <Text
+              style={{
+                marginLeft: 5,
+                fontFamily: "Lato-Regular",
+                fontSize: 14,
+                color: "#646464",
+              }}
+            >
+              {t("search")}
+            </Text> */}
+          </TouchableOpacity>
         </View>
       </View>
+
       <Modal
         // onLayout={() => dataCountrySelect()}
         onBackdropPress={() => {
@@ -476,6 +727,7 @@ export default function ItineraryDestination(props) {
             // borderTopRightRadius: 15,
           }}
         >
+          {/* bagian atas */}
           <View
             style={{
               flexDirection: "row",
@@ -513,7 +765,7 @@ export default function ItineraryDestination(props) {
               <Xhitam height={15} width={15} />
             </TouchableOpacity>
           </View>
-
+          {/* bagian side */}
           <View
             style={{
               flexDirection: "row",
@@ -522,6 +774,7 @@ export default function ItineraryDestination(props) {
               borderColor: "#d1d1d1",
             }}
           >
+            {/* kiri ..................................................... */}
             <View
               style={{
                 width: "35%",
@@ -529,7 +782,10 @@ export default function ItineraryDestination(props) {
                 borderColor: "#d1d1d1",
               }}
             >
-              <View
+              <Pressable
+                onPress={() => {
+                  setaktif("categories");
+                }}
                 style={{
                   backgroundColor: "#f6f6f6",
                   paddingBottom: 5,
@@ -537,13 +793,15 @@ export default function ItineraryDestination(props) {
               >
                 <View
                   style={{
-                    borderLeftColor: "#209fae",
-                    borderLeftWidth: 5,
-                    marginLeft: 5,
+                    borderLeftColor:
+                      aktif === "categories" ? "#209fae" : "#f6f6f6",
+                    borderLeftWidth: aktif === "categories" ? 5 : 0,
+                    marginLeft: aktif === "categories" ? 5 : 10,
                     justifyContent: "center",
                     paddingVertical: 15,
                     paddingHorizontal: 10,
-                    backgroundColor: "#ffff",
+                    backgroundColor:
+                      aktif === "categories" ? "#ffff" : "#f6f6f6",
                   }}
                 >
                   <Text
@@ -559,8 +817,117 @@ export default function ItineraryDestination(props) {
                     {t("categories")}
                   </Text>
                 </View>
-              </View>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  setaktif("facilities");
+                }}
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  paddingBottom: 5,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftColor:
+                      aktif === "facilities" ? "#209fae" : "#f6f6f6",
+                    borderLeftWidth: aktif === "facilities" ? 5 : 0,
+                    marginLeft: aktif === "facilities" ? 5 : 10,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor:
+                      aktif === "facilities" ? "#ffff" : "#f6f6f6",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      // fontSize: 20,
+                      // fontFamily: "Lato-Bold",
+                      color: "#464646",
+                      // marginTop: 10,
+                    }}
+                  >
+                    {t("facilities")}
+                  </Text>
+                </View>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  setaktif("country");
+                }}
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  paddingBottom: 5,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftColor:
+                      aktif === "country" ? "#209fae" : "#f6f6f6",
+                    borderLeftWidth: aktif === "country" ? 5 : 0,
+                    marginLeft: aktif === "country" ? 5 : 10,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: aktif === "country" ? "#ffff" : "#f6f6f6",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      // fontSize: 20,
+                      // fontFamily: "Lato-Bold",
+                      color: "#464646",
+                      // marginTop: 10,
+                    }}
+                  >
+                    {t("country")}
+                  </Text>
+                </View>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  setaktif("City");
+                }}
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  paddingBottom: 5,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftColor: aktif === "City" ? "#209fae" : "#f6f6f6",
+                    borderLeftWidth: aktif === "City" ? 5 : 0,
+                    marginLeft: aktif === "City" ? 5 : 10,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: aktif === "City" ? "#ffff" : "#f6f6f6",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      // fontSize: 20,
+                      // fontFamily: "Lato-Bold",
+                      color: "#464646",
+                      // marginTop: 10,
+                    }}
+                  >
+                    {t("City")}
+                  </Text>
+                </View>
+              </Pressable>
             </View>
+            {/* kanan................................................................ */}
             <View style={{ flex: 1 }}>
               <View
                 style={{
@@ -584,6 +951,7 @@ export default function ItineraryDestination(props) {
                   <TextInput
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
+                    Text={keyword}
                     style={{
                       width: "100%",
                       // borderWidth: 1,
@@ -591,84 +959,284 @@ export default function ItineraryDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
-                    onChangeText={(x) => searchkategori(x)}
-                    onSubmitEditing={(x) => searchkategori(x)}
+                    onChangeText={(x) => searchs(x)}
+                    onSubmitEditing={(x) => searchs(x)}
                   />
                 </View>
               </View>
-              <ScrollView
-                nestedScrollEnabled={true}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                  paddingHorizontal: 15,
-                }}
-              >
-                {dataFilterCategoris.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => _handleCheck(item["id"], index, item)}
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      // borderColor: "#464646",
-                      width: "49%",
-                      marginRight: 3,
-                      marginBottom: 20,
-                      justifyContent: "flex-start",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CheckBox
-                      onCheckColor="#FFF"
-                      lineWidth={1}
-                      onFillColor="#209FAE"
-                      onTintColor="#209FAE"
-                      boxType={"square"}
+              {aktif === "categories" ? (
+                <ScrollView
+                  // style={{ borderWidth: 1, height: 100 }}
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  {dataFilterCategoris.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
-                        alignSelf: "center",
-                        width: Platform.select({
-                          ios: 30,
-                          android: 35,
-                        }),
-                        transform: Platform.select({
-                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                        }),
-                      }}
-                      onValueChange={() =>
-                        _handleCheck(item["id"], index, item)
-                      }
-                      value={item["checked"]}
-                    />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 0,
-                        color: "#464646",
-                        // borderWidth: 5,
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        // borderColor: "#464646",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      {item["name"]}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        onValueChange={() =>
+                          _handleCheck(item["id"], index, item)
+                        }
+                        value={item["checked"]}
+                      />
 
-                {/* <View
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* <View
               style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
             ></View> */}
-              </ScrollView>
+                </ScrollView>
+              ) : aktif === "facilities" ? (
+                <ScrollView
+                  // style={{ borderWidth: 1, height: 100 }}
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  {dataFilterFacilitys.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => _handleCheckf(item["id"], index, item)}
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        // borderColor: "#464646",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        onValueChange={() =>
+                          _handleCheckf(item["id"], index, item)
+                        }
+                        value={item["checked"]}
+                      />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+                </ScrollView>
+              ) : aktif === "country" ? (
+                <ScrollView
+                  // style={{ borderWidth: 1, height: 100 }}
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  {dataFilterCountrys.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => _handleCheckC(item["id"], index, item)}
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        // borderColor: "#464646",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        onValueChange={() =>
+                          _handleCheckC(item["id"], index, item)
+                        }
+                        value={item["checked"]}
+                      />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+                </ScrollView>
+              ) : aktif === "City" ? (
+                <ScrollView
+                  // style={{ borderWidth: 1, height: 100 }}
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  {dataFilterCitys.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => _handleCheckCity(item["id"], index, item)}
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        // borderColor: "#464646",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        onValueChange={() =>
+                          _handleCheckCity(item["id"], index, item)
+                        }
+                        value={item["checked"]}
+                      />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+                </ScrollView>
+              ) : null}
             </View>
           </View>
+          {/* bagian bawah */}
           <View
             style={{
-              flex: 1,
+              // flex: 1,
               zIndex: 6,
               flexDirection: "row",
-              height: 80,
-              position: "absolute",
-              bottom: 0,
+              height: 70,
+              // borderWidth: 1,
+              // position: "absolute",
+              // bottom: 0,
               justifyContent: "space-around",
               alignContent: "center",
               alignItems: "center",
