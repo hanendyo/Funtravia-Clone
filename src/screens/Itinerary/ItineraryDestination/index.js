@@ -13,7 +13,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import { CustomImage, FunIcon, FunImage } from "../../../component";
+import { Capital, CustomImage, FunIcon, FunImage } from "../../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
   LikeRed,
@@ -163,14 +163,14 @@ export default function ItineraryDestination(props) {
             ? [props.route.params.idtype]
             : null,
         cities:
-          search.city && search.city.length > 0
-            ? search.city
+          search.cities && search.cities.length > 0
+            ? search.cities
             : props.route.params && props.route.params.idcity
             ? [props.route.params.idcity]
             : null,
         countries:
-          search.country && search.country.length > 0
-            ? search.country
+          search.countries && search.countries.length > 0
+            ? search.countries
             : props.route.params && props.route.params.idcountries
             ? [props.route.params.idcountries]
             : null,
@@ -365,14 +365,13 @@ export default function ItineraryDestination(props) {
 
   const UpdateFilter = async () => {
     let data = { ...search };
+
     let Categori = [];
     for (var x of dataFilterCategori) {
       if (x.checked === true) {
         Categori.push(x.id);
       }
     }
-
-    data["type"] = Categori;
 
     let fasilitas = [];
     for (var y of dataFilterFacility) {
@@ -381,20 +380,49 @@ export default function ItineraryDestination(props) {
       }
     }
 
-    data["facilities"] = fasilitas;
-
-    let Country = [];
+    let Countryss = [];
     for (var t of dataFilterCountry) {
       if (t.checked === true) {
-        Country.push(t.id);
+        Countryss.push(t.id);
       }
     }
 
-    data["countries"] = Country;
+    let cityss = [];
+    let province = [];
 
-    // await console.log(data);
+    for (var u of dataFilterCity) {
+      if (u.checked === true) {
+        console.log(u.type);
+        console.log(u.id);
+        if (u.type === "Province") {
+          province.push(u.id);
+        } else if (u.type === "City") {
+          cityss.push(u.id);
+        }
+      }
+    }
+
+    data["type"] = await Categori;
+    data["facilities"] = await fasilitas;
+    data["countries"] = await Countryss;
+    data["cities"] = await cityss;
+    data["provinces"] = await province;
+
+    await console.log("filter", data);
     await setSearch(data);
     await setshow(false);
+  };
+
+  const ClearAllFilter = () => {
+    setSearch({
+      type: null,
+      keyword: null,
+      countries: null,
+      provinces: null,
+      cities: null,
+      goodfor: null,
+      facilities: null,
+    });
   };
 
   const _setSearch = async (teks) => {
@@ -402,7 +430,6 @@ export default function ItineraryDestination(props) {
 
     data["keyword"] = teks;
 
-    // await console.log(data);
     await setSearch(data);
   };
 
@@ -413,181 +440,6 @@ export default function ItineraryDestination(props) {
         justifyContent: "flex-start",
       }}
     >
-      {/* {datafilter && datafilter?.destination_filter ? (
-        <FilterItin
-          type={datafilter?.destination_filter?.type}
-          country={datafilter?.destination_filter?.country}
-          facility={datafilter?.destination_filter?.facility}
-          sendBack={(e) => setSearch(e)}
-          props={props}
-          token={token}
-          datadayaktif={datadayaktif}
-          dataDes={dataDes}
-          lat={lat}
-          long={long}
-        />
-      ) : null} */}
-
-      {/* 
-      <View
-        style={{
-          backgroundColor: "white",
-          width: Dimensions.get("screen").width,
-          zIndex: 5,
-        }}
-      >
-        <View
-          style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            height: 50,
-            zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#F0F0F0",
-              borderRadius: 5,
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              alignContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            }}
-          >
-            <Search width={15} height={15} />
-
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={t("search")}
-              style={{
-                width: "100%",
-                // borderWidth: 1,
-                marginLeft: 5,
-                padding: 0,
-              }}
-              returnKeyType="search"
-              onChangeText={(x) => _setSearch(x)}
-              onSubmitEditing={(x) => _setSearch(x)}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.push("ItinGoogle", {
-                dataDes: dataDes,
-                token: token,
-                datadayaktif: datadayaktif,
-                lat: lat,
-                long: long,
-              })
-            }
-            style={{
-              backgroundColor: "white",
-              borderRadius: 5,
-              borderWidth: 1,
-              width: "30%",
-              borderColor: "#F0F0F0",
-              paddingVertical: 10,
-              alignItems: "flex-start",
-              justifyContent: "center",
-              flexDirection: "row",
-              marginLeft: 10,
-            }}
-          >
-            <Google height={15} width={15} />
-            <Text
-              style={{
-                marginLeft: 5,
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-                color: "#646464",
-              }}
-            >
-              {t("search")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            zIndex: 5,
-            marginHorizontal: 10,
-            marginBottom: 10,
-          }}
-        >
-          <Button
-            size="small"
-            type="icon"
-            variant="bordered"
-            color="primary"
-            onPress={() => {
-              setshow(true);
-            }}
-            style={{
-              marginRight: 5,
-              // paddingHorizontal: 10,
-            }}
-          >
-            <FilterIcon width={15} height={15} />
-
-            <Text
-              style={{
-                fontFamily: "Lato-Regular",
-                color: "#0095A7",
-                fontSize: 13,
-                marginLeft: 5,
-              }}
-            >
-              {t("filter")}
-            </Text>
-            {dataFillter.length && Filterlenght > 0 ? (
-              <View
-                style={{
-                  borderRadius: 3,
-                  width: 14,
-                  height: 14,
-                  backgroundColor: "#0095A7",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Lato-Regular",
-                    color: "white",
-                    fontSize: 13,
-                    alignSelf: "center",
-                  }}
-                >
-                  {Filterlenght}
-                </Text>
-              </View>
-            ) : null}
-          </Button>
-
-          <FlatList
-            contentContainerStyle={{
-              justifyContent: "space-evenly",
-              marginHorizontal: 3,
-            }}
-            horizontal={true}
-            data={dataFillter.sort(compare)}
-            renderItem={_renderFilter}
-            showsHorizontalScrollIndicator={false}
-            extraData={selected}
-          ></FlatList>
-        </View>
-      </View> */}
-
       <View
         style={{
           backgroundColor: "white",
@@ -1020,7 +872,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {item["name"]}
+                        {Capital({ text: item.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1085,7 +937,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {item["name"]}
+                        {Capital({ text: item.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1150,7 +1002,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {item["name"]}
+                        {Capital({ text: item.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1215,7 +1067,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {item["name"]}
+                        {Capital({ text: item.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1410,7 +1262,7 @@ export default function ItineraryDestination(props) {
                     style={{ marginTop: 2 }}
                     numberOfLines={1}
                   >
-                    {item.name}
+                    {Capital({ text: item.name })}
                   </Text>
 
                   {/* Maps */}
@@ -1428,7 +1280,7 @@ export default function ItineraryDestination(props) {
                       style={{ marginLeft: 5 }}
                       numberOfLines={1}
                     >
-                      {item.cities.name}
+                      {Capital({ text: item.cities.name })}
                     </Text>
                   </View>
                 </View>
