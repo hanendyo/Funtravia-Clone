@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Platform, Image as RNImage, useColorScheme } from "react-native";
+import { Platform, ActivityIndicator } from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
@@ -17,10 +17,12 @@ export default function FunIcon({
 	const url = `${ICONSERVER}${variant[icon.charAt(0)]}/${
 		icon.split("-")[1]
 	}.svg`;
-	let [loading, setLoading] = useState(true);
+	let [loading, setLoading] = useState(false);
+	let [error, setError] = useState(false);
 	const extension = Platform.OS === "android" ? "file://" : "";
 	const name = sh.unique(url);
 	const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
+	console.log(url);
 	RNFS.exists(path)
 		.then((exists) => {
 			if (!exists) {
@@ -29,22 +31,32 @@ export default function FunIcon({
 					fromUrl: url,
 					toFile: path,
 				}).promise.then((res) => {
-					setLoading(false);
+					if (res.statusCode === "200") {
+						setTimeout(() => setLoading(false), 1000);
+						console.log("SUCCESS CACHE ICON", url);
+					} else {
+						setLoading(false);
+						setError(true);
+					}
 				});
-			} else {
-				setLoading(false);
 			}
 		})
 		.catch((error) => {
-			console.warn(error);
+			setLoading(false);
+			console.log("ERROR CACHE", error);
 		});
 
 	if (loading) {
-		return (
-			<SkeletonPlaceholder speed={500}>
-				<SkeletonPlaceholder.Item {...style} />
-			</SkeletonPlaceholder>
-		);
+		return <ActivityIndicator />;
+	}
+
+	if (error) {
+		<SvgCssUri
+			uri={"https://fa12.funtravia.com/icon/users.svg"}
+			width={width ? width : 50}
+			height={height ? height : 50}
+			fill={fill ? fill : "#464646"}
+		/>;
 	}
 
 	return (

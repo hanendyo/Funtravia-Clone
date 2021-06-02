@@ -22,6 +22,7 @@ export default function ImageBackground({
 		path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
 		let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]funtravia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim;
 		let check = regex.test(uri);
+		console.log("URL", uri);
 		if (check) {
 			RNFS.exists(path)
 				.then((exists) => {
