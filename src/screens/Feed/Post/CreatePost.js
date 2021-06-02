@@ -60,11 +60,12 @@ const PostMut = gql`
 
 const { width, height } = Dimensions.get("screen");
 
-export default function CreatePost({ navigation, route }) {
+export default function CreatePost({ navigation, route, choose }) {
+  console.log("choose", choose);
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
-
+  let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
   let [Location, setLocation] = useState({
     address: t("addLocation"),
@@ -205,6 +206,9 @@ export default function CreatePost({ navigation, route }) {
     let access_token = await AsyncStorage.getItem("access_token");
     setToken(access_token);
     LoadUserProfile();
+
+    let setsetting = await AsyncStorage.getItem("setting");
+    await setSetting(JSON.parse(setsetting));
   };
 
   useEffect(() => {
@@ -286,7 +290,6 @@ export default function CreatePost({ navigation, route }) {
         setLoading(false);
       } else {
         setLoading(false);
-        // Alert.alert('Data Kosong');
       }
     } catch (error) {
       console.error(error);
@@ -386,11 +389,13 @@ export default function CreatePost({ navigation, route }) {
                 <FunImage
                   source={
                     dataprofile &&
-                    (dataprofile.user_profile !== undefined || null || "")
+                    (dataprofile.user_profile !== undefined ||
+                      dataprofile.user_profile !== null ||
+                      dataprofile.user_profile !== "")
                       ? {
                           uri: dataprofile.user_profile.picture,
                         }
-                      : { uri: default_image }
+                      : default_image
                   }
                   style={{
                     width: 50,
@@ -561,6 +566,8 @@ export default function CreatePost({ navigation, route }) {
           modals={modalCreate}
           setModalCreate={(e) => setModalCreate(e)}
           // masukan={(e) => _setLocation(e)}
+          user_id={setting?.user_id}
+          props={navigation}
         />
       </View>
     </KeyboardAvoidingView>

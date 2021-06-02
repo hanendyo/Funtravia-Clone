@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { Arrowbackwhite, Check } from "../../../assets/svg";
 import Modal from "react-native-modal";
-import { Text } from "../../../component";
+import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 
-export default function ChooseDay({ modals, setModalDay, idItinerary }) {
+export default function ChooseDay({ modals, setModalDay, idItinerary, props }) {
   const { t } = useTranslation();
   const [choose, setChoose] = useState();
   const [datas, setDatas] = useState();
@@ -23,6 +23,7 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
     loading: loadingdetail,
     error: errordetail,
   } = useQuery(ItineraryDetails, {
+    fetchPolicy: "network-only",
     variables: { id: idItinerary },
     context: {
       headers: {
@@ -30,9 +31,7 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
         Authorization: `Bearer ${token}`,
       },
     },
-    onCompleted: () => {
-      setDatas(dataItinerary.itinerary_detail);
-    },
+    onCompleted: () => setDatas(dataItinerary.itinerary_detail),
   });
 
   const pilih = (id) => {
@@ -109,6 +108,29 @@ export default function ChooseDay({ modals, setModalDay, idItinerary }) {
             backgroundColor: "white",
           }}
         >
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              position: "absolute",
+              top: Dimensions.get("screen").height - 200,
+              // bottom: 200 - 55,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Button
+              size="medium"
+              text={t("next")}
+              onPress={() => {
+                setModalDay(false),
+                  props.navigate("CreatePostScreen", {
+                    // location: recent.node.location,
+                    // type: recent.node.type.substr(0, 5),
+                    // file: recent.node.image,
+                    choose: choose,
+                  });
+              }}
+            ></Button>
+          </View>
           {datas &&
             datas?.day.map((item, index) => (
               <Ripple

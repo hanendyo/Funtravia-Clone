@@ -523,5 +523,8 @@
   "notSet": "Belum ditambahkan",
   "journal": "Jurnal",
   "selecDay": "Pilih Hari",
-  "addAlbum": "Tambah ke Album"
+  "addAlbum": "Tambah ke Album",
+  "newAlbum": "Album Baru",
+  "create": "Buat",
+  "untitle": "Tidak ada judul"
 }

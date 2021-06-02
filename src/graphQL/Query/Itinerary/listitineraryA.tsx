@@ -11,6 +11,7 @@ const ListItinerary = gql`
       isprivate
       status
       liked
+      count_album_post
       country {
         id
         name

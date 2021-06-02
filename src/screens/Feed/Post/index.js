@@ -68,11 +68,7 @@ export default function Post(props) {
   };
 
   const selectImg = async (file) => {
-    console.log("test");
     slider.current.scrollToOffset({ index: 0 });
-    // console.log(file);
-    // newrecent = file;
-    // Refresh();
     await setLoading(false);
     setRatio({ width: 1, height: 1, index: 0 });
     if (file.node.image.width > file.node.image.height) {
@@ -108,15 +104,14 @@ export default function Post(props) {
     });
   };
 
-  // console.log(newrecent);
-  const nextFunction = async () => {
-    if (recent.node.type.substr(0, 5) === "video") {
+  const nextFunction = async (type) => {
+    if (type.substr(0, 5) === "video") {
       props.navigation.navigate("CreatePostScreen", {
         location: recent.node.location,
         type: recent.node.type.substr(0, 5),
         file: recent.node.image,
       });
-    } else {
+    } else if (type.substr(0, 5) === "image") {
       let result = await ImagePicker.openCropper({
         path: recent.node.image.uri,
         width: ratio.width * 1000,
@@ -128,17 +123,16 @@ export default function Post(props) {
         type: recent.node.type.substr(0, 5),
         file: result,
       });
+    } else {
+      return null;
     }
   };
 
   const scroll_to = () => {
-    console.log("test");
     setTimeout(() => {
       slider.current.scrollToOffset({ animated: true, offset: 0 });
     }, 3000);
   };
-
-  console.log("slider", slider);
 
   useEffect(() => {
     (async () => {
@@ -229,16 +223,12 @@ export default function Post(props) {
       mediaType: "camera",
     };
     data_foto.splice(0, 0, camera);
-    // console.log(dataCamera);
     setImageRoll(data_foto);
     setPageInfo(dataCamera.page_info);
     await selectImg(data_foto[1]);
   };
 
-  // console.log(page_info);
-
   const getMoreImage = async () => {
-    console.log(page_info);
     if (!loadimg && page_info.has_next_page) {
       setLoadimg(true);
       let dataCamera = await CameraRoll.getPhotos({
@@ -251,8 +241,6 @@ export default function Post(props) {
       });
       let data_foto = dataCamera.edges;
       const datas = [...imageRoll, ...data_foto];
-      // TempImg.push(data_foto);
-      // console.log(datas);
       setImageRoll(datas);
       setPageInfo(dataCamera.page_info);
       await setLoadimg(false);
@@ -277,6 +265,7 @@ export default function Post(props) {
   const _modalGalery = () => {
     return (
       <Modal
+        animationType="fade"
         onRequestClose={() => {
           setIsVisible(false);
         }}
@@ -324,7 +313,7 @@ export default function Post(props) {
                 type="bold"
                 size="label"
                 style={{
-                  color: "464646",
+                  color: "#464646",
                   marginHorizontal: 10,
                 }}
               >
@@ -343,8 +332,9 @@ export default function Post(props) {
               scrollEnabled={true}
               showsVerticalScrollIndicator={false}
               data={allAlbums}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <Button
+                  key={index}
                   type="icon"
                   position="right"
                   variant="transparent"
@@ -357,7 +347,7 @@ export default function Post(props) {
                   <Text>{item.title}</Text>
                 </Button>
               )}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => "" + index}
             />
           ) : null}
         </View>
@@ -416,10 +406,14 @@ export default function Post(props) {
             <Comboboxdown height={10} width={10} />
           </Button>
         </View>
-
-        <Button size="medium" text="Next" onPress={() => nextFunction()} />
+        <Button
+          size="medium"
+          text="Next"
+          onPress={() => nextFunction(recent.node.type)}
+        />
       </View>
       <FlatList
+        keyExtractor={(item) => item?.node?.image?.uri}
         style={{
           paddingStart: 0,
           alignContent: "center",
@@ -496,6 +490,7 @@ export default function Post(props) {
         renderItem={({ item, index }) =>
           item.mediaType !== "camera" ? (
             <TouchableOpacity
+              key={index}
               style={{
                 alignContent: "center",
                 justifyContent: "center",
