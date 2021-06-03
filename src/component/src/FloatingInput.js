@@ -57,8 +57,10 @@ const styles = StyleSheet.create({
   },
   textInput: {
     marginTop: 15,
-    width: 300,
+    width: "100%",
     borderBottomWidth: StyleSheet.hairlineWidth,
     height: 30,
+    fontFamily: "Lato-Regular",
+    padding: 0,
   },
 });
