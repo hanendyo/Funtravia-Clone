@@ -145,10 +145,56 @@ export default function ItineraryDestination(props) {
       province_id: null,
       countries_id: searcountry ? searcountry : null,
     },
-    onCompleted: () => {
-      setdataFilterCity(datasearchlocation.searchlocation_populer);
-      setdataFilterCitys(datasearchlocation.searchlocation_populer);
+    onCompleted: async () => {
+      let datloop = [...datasearchlocation.searchlocation_populer];
+
+      for (var ix in datloop) {
+        if (
+          datloop[ix].id === props?.route?.params?.idcity ||
+          datloop[ix].id === props?.route?.params?.idcountries
+        ) {
+          let dat = { ...datloop[ix] };
+          dat.checked = true;
+          await datloop.splice(ix, 1, dat);
+        }
+      }
+
+      await setdataFilterCity(datloop);
+      await setdataFilterCitys(datloop);
     },
+  });
+
+  console.log(search);
+  console.log({
+    keyword: search.keyword ? search.keyword : null,
+    // type: search.type ? search.type : null,
+    type:
+      search.type && search.type.length > 0
+        ? search.type
+        : props.route.params && props.route.params.idtype
+        ? [props.route.params.idtype]
+        : null,
+    cities:
+      search.cities && search.cities.length > 0
+        ? search.cities
+        : props.route.params && props.route.params.idcity
+        ? [props.route.params.idcity]
+        : null,
+    countries:
+      search.countries && search.countries.length > 0
+        ? search.countries
+        : props.route.params && props.route.params.idcountries
+        ? [props.route.params.idcountries]
+        : null,
+    provinces:
+      search.provinces && search.provinces.length > 0
+        ? search.provinces
+        : props.route.params && props.route.params.provinces
+        ? [props.route.params.provinces]
+        : null,
+    goodfor: search.goodfor ? search.goodfor : null,
+    facilities: search.facilities ? search.facilities : null,
+    rating: search.rating ? search.rating : null,
   });
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
