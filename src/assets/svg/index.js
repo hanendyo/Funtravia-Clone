@@ -226,6 +226,8 @@ import Arrowrightwhite from "./files/arrowrightwhite.svg";
 import Xgrey from "./files/Xgrey.svg";
 import NewAlbum from "./files/new_album.svg";
 import ExitingAlbum from "./files/exiting_album";
+import EyeActive from "./files/mata active.svg";
+import EyeNonactive from "./files/mata nonactive.svg";
 
 export {
   LikeWhite,
@@ -456,4 +458,6 @@ export {
   Xgrey,
   NewAlbum,
   ExitingAlbum,
+  EyeActive,
+  EyeNonactive,
 };

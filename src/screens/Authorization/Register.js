@@ -11,13 +11,8 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
-import {
-  mascot_black,
-  show_password,
-  hide_password,
-  logo_google,
-  logo_facebook,
-} from "../../assets/png";
+import { mascot_black, logo_google, logo_facebook } from "../../assets/png";
+import { EyeActive, EyeNonactive } from "../../assets/svg";
 import Email from "../../graphQL/Mutation/Register/Email";
 import {
   Text,
@@ -28,6 +23,7 @@ import {
   PhoneCodeSelector,
 } from "../../component";
 import { useTranslation } from "react-i18next";
+import { TextInput } from "react-native";
 
 export default function Register({ navigation }) {
   const { t, i18n } = useTranslation();
@@ -134,7 +130,12 @@ export default function Register({ navigation }) {
         ...aler,
         show: true,
         judul: "Register Failed",
-        detail: "" + error.toString().replace("Error", "").replace(":", ""),
+        detail:
+          "" +
+          error
+            .toString()
+            .replace("Error", "")
+            .replace(":", ""),
       });
     }
   };
@@ -178,13 +179,13 @@ export default function Register({ navigation }) {
   }, []);
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={{
         flex: 1,
       }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
+      // behavior={Platform.OS === "ios" ? "padding" : null}
       // keyboardVerticalOffset={30}
-      enabled
+      // enabled
     >
       <Peringatan
         aler={aler}
@@ -193,321 +194,299 @@ export default function Register({ navigation }) {
         }
       />
       <ScrollView
-        style={[
-          styles.root,
-          {
-            paddingTop: 40,
-          },
-        ]}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+        }}
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[1]}
       >
+        <CustomImage
+          source={mascot_black}
+          customStyle={{
+            height: 180,
+            width: 180,
+            marginTop: 30,
+            alignSelf: "flex-start",
+          }}
+        />
+
+        <View style={{}}>
+          <Text type="bold" size="h5">
+            {t("createYourAccount")}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            // borderWidth: 1,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <FloatingInput
+              customTextStyle={{}}
+              value={state.first_name}
+              onChangeText={onChange("first_name")}
+              label={t("firstName")}
+            />
+            {itemvalid.first_name === false ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                  position: "absolute",
+                  bottom: -15,
+                }}
+              >
+                {`${t("inputWarningName")}${t("firstName")}`}
+              </Text>
+            ) : null}
+          </View>
+          <View style={{ flex: 1, marginLeft: 15 }}>
+            <FloatingInput
+              customTextStyle={{}}
+              value={state.last_name}
+              onChangeText={onChange("last_name")}
+              label={t("lastName")}
+            />
+          </View>
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <FloatingInput
+            value={state.email}
+            keyboardType="email-address"
+            onChangeText={onChange("email")}
+            label="Email"
+          />
+          {itemvalid.email === false ? (
+            <Text
+              type="regular"
+              size="small"
+              style={{
+                color: "#D75995",
+
+                position: "absolute",
+                bottom: -15,
+              }}
+            >
+              {`${t("inputWarningEmail")}`}
+            </Text>
+          ) : null}
+        </View>
+        <View
+          style={{
+            marginTop: 15,
+            marginBottom: 15,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => setSelector(true)}
+            style={{
+              borderBottomWidth: StyleSheet.hairlineWidth,
+
+              paddingHorizontal: 15,
+              justifyContent: "flex-end",
+            }}
+          >
+            <TextInput style={{ padding: 0 }} value={region} editable={false} />
+          </TouchableOpacity>
+          <View style={{ paddingLeft: 15, flex: 1 }}>
+            <FloatingInput
+              value={state.phone}
+              onChangeText={onChange("phone")}
+              customTextStyle={{
+                fontSize: 14,
+                padding: 0,
+              }}
+              keyboardType="number-pad"
+              label={t("phoneNumber")}
+            />
+            {itemvalid.phone === false ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                  left: 20,
+                  position: "absolute",
+                  bottom: -15,
+                }}
+              >
+                {t("inputWarningPhone")}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
+            <FloatingInput
+              customTextStyle={{}}
+              value={state.password}
+              onChangeText={onChange("password")}
+              label={t("password")}
+              secureTextEntry={hidePasswd}
+            />
+            <TouchableOpacity
+              onPress={togglePasswordTop}
+              style={{
+                // height: 35,
+                // width: 35,
+                position: "absolute",
+                top: 15,
+                right: 5,
+              }}
+            >
+              {hidePasswd ? (
+                <EyeActive width={30} height={30} />
+              ) : (
+                <EyeNonactive width={30} height={30} />
+              )}
+            </TouchableOpacity>
+          </View>
+          {itemvalid.password === false ? (
+            <Text
+              type="regular"
+              size="small"
+              style={{
+                color: "#D75995",
+
+                position: "absolute",
+                bottom: -15,
+              }}
+            >
+              {t("inputWarningPassword")}
+            </Text>
+          ) : null}
+        </View>
+        <View style={{ flex: 1, marginTop: 15 }}>
+          <View style={{ flex: 1 }}>
+            <FloatingInput
+              customTextStyle={{}}
+              value={state.password_confirmation}
+              onChangeText={onChange("password_confirmation")}
+              label={t("reEnterPassword")}
+              secureTextEntry={hidePasswdCnfrm}
+            />
+            <TouchableOpacity
+              onPress={togglePasswordBottom}
+              style={{
+                position: "absolute",
+                top: 15,
+                right: 5,
+              }}
+            >
+              {hidePasswdCnfrm ? (
+                <EyeActive width={30} height={30} />
+              ) : (
+                <EyeNonactive width={30} height={30} />
+              )}
+            </TouchableOpacity>
+          </View>
+          {itemvalid.password_confirmation === false ? (
+            <Text
+              type="regular"
+              size="small"
+              style={{
+                color: "#D75995",
+
+                position: "absolute",
+                bottom: -15,
+              }}
+            >
+              {t("inputWarningRepeatPassword")}
+            </Text>
+          ) : null}
+        </View>
+        <Button
+          style={{
+            marginTop: 40,
+            alignSelf: "center",
+            width: Dimensions.get("window").width / 1.2,
+            height: Dimensions.get("window").height / 15,
+            marginVertical: 20,
+          }}
+          color="secondary"
+          onPress={() => register()}
+          text={t("createYourAccount")}
+        />
         <View
           style={{
             alignItems: "center",
-            justifyContent: "center",
-            paddingBottom: 20,
           }}
         >
-          <View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: 50,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                marginHorizontal: 10,
+              }}
+            ></View>
+            <Text style={{}}>{t("or")}</Text>
+            <View
+              style={{
+                width: 50,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                marginHorizontal: 10,
+              }}
+            ></View>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
             <CustomImage
-              source={mascot_black}
+              source={logo_google}
+              isTouchable
+              onPress={() => externalRegister("RegisterGoogleScreen")}
               customStyle={{
-                height: 180,
-                width: 180,
-                marginTop: 30,
-                alignSelf: "flex-start",
+                marginHorizontal: 15,
+                width: 50,
+                height: 50,
               }}
             />
-
-            <View style={styles.welcomeText}>
-              <Text type="bold" size="h5">
-                {t("createYourAccount")}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                maxWidth: Dimensions.get("window").width / 1.2,
+            <CustomImage
+              source={logo_facebook}
+              isTouchable
+              onPress={() => externalRegister("RegisterFacebookScreen")}
+              customStyle={{
+                marginHorizontal: 15,
+                width: 50,
+                height: 50,
               }}
-            >
-              <View>
-                <FloatingInput
-                  customTextStyle={styles.halfTextInput}
-                  value={state.first_name}
-                  onChangeText={onChange("first_name")}
-                  label={t("firstName")}
-                />
-                {itemvalid.first_name === false ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-                      position: "absolute",
-                      bottom: -15,
-                    }}
-                  >
-                    {`${t("inputWarningName")}${t("firstName")}`}
-                  </Text>
-                ) : null}
-              </View>
-              <View>
-                <FloatingInput
-                  customTextStyle={styles.halfTextInput}
-                  value={state.last_name}
-                  onChangeText={onChange("last_name")}
-                  label={t("lastName")}
-                />
-              </View>
-            </View>
-            <View>
-              <FloatingInput
-                customTextStyle={styles.TextInput}
-                value={state.email}
-                keyboardType="email-address"
-                onChangeText={onChange("email")}
-                label="Email"
-              />
-              {itemvalid.email === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={{
-                    color: "#D75995",
-
-                    position: "absolute",
-                    bottom: -15,
-                  }}
-                >
-                  {`${t("inputWarningEmail")}`}
-                </Text>
-              ) : null}
-            </View>
-            <View
-              style={{
-                marginBottom: 20,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => setSelector(true)}
-                style={{
-                  width: Dimensions.get("screen").width * 0.15,
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  marginTop: 15,
-                }}
-              >
-                <Text
-                  size="small"
-                  style={{
-                    color: "#030303",
-                    paddingTop: 5,
-                    marginTop: 10,
-                    alignSelf: "center",
-                    height: 29,
-                  }}
-                >
-                  {region}
-                </Text>
-              </TouchableOpacity>
-              <View>
-                <FloatingInput
-                  value={state.phone}
-                  onChangeText={onChange("phone")}
-                  customTextStyle={{
-                    width: Dimensions.get("screen").width * 0.6,
-                    fontSize: 12,
-                    padding: 0,
-                  }}
-                  keyboardType="number-pad"
-                  label={t("phoneNumber")}
-                />
-                {itemvalid.phone === false ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-
-                      position: "absolute",
-                      bottom: -15,
-                    }}
-                  >
-                    {t("inputWarningPhone")}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
-
-            <View>
-              <View style={{ flexDirection: "row" }}>
-                <FloatingInput
-                  customTextStyle={styles.TextInput}
-                  value={state.password}
-                  onChangeText={onChange("password")}
-                  label={t("password")}
-                  secureTextEntry={hidePasswd}
-                />
-                <CustomImage
-                  source={hidePasswd ? show_password : hide_password}
-                  isTouchable={true}
-                  onPress={togglePasswordTop}
-                  customStyle={{
-                    height: 35,
-                    width: 35,
-                    position: "absolute",
-                    top: 15,
-                    right: 5,
-                  }}
-                  customImageStyle={{
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-              {itemvalid.password === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={{
-                    color: "#D75995",
-
-                    position: "absolute",
-                    bottom: -15,
-                  }}
-                >
-                  {t("inputWarningPassword")}
-                </Text>
-              ) : null}
-            </View>
-            <View>
-              <View style={{ flexDirection: "row" }}>
-                <FloatingInput
-                  customTextStyle={styles.TextInput}
-                  value={state.password_confirmation}
-                  onChangeText={onChange("password_confirmation")}
-                  label={t("reEnterPassword")}
-                  secureTextEntry={hidePasswdCnfrm}
-                />
-                <CustomImage
-                  source={hidePasswdCnfrm ? show_password : hide_password}
-                  isTouchable={true}
-                  onPress={togglePasswordBottom}
-                  customStyle={{
-                    height: 35,
-                    width: 35,
-                    position: "absolute",
-                    top: 15,
-                    right: 5,
-                  }}
-                  customImageStyle={{
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              </View>
-              {itemvalid.password_confirmation === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={{
-                    color: "#D75995",
-
-                    position: "absolute",
-                    bottom: -15,
-                  }}
-                >
-                  {t("inputWarningRepeatPassword")}
-                </Text>
-              ) : null}
-            </View>
-            <Button
-              style={{
-                alignSelf: "center",
-                width: Dimensions.get("window").width / 1.2,
-                height: Dimensions.get("window").height / 15,
-                marginVertical: 20,
-              }}
-              color="secondary"
-              onPress={() => register()}
-              text={t("createYourAccount")}
             />
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    width: 50,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                    marginHorizontal: 10,
-                  }}
-                ></View>
-                <Text style={styles.dividerText}>{t("or")}</Text>
-                <View
-                  style={{
-                    width: 50,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                    marginHorizontal: 10,
-                  }}
-                ></View>
-              </View>
-
-              <View style={{ flexDirection: "row" }}>
-                <CustomImage
-                  source={logo_google}
-                  isTouchable
-                  onPress={() => externalRegister("RegisterGoogleScreen")}
-                  customStyle={{
-                    marginHorizontal: 15,
-                    width: 50,
-                    height: 50,
-                  }}
-                />
-                <CustomImage
-                  source={logo_facebook}
-                  isTouchable
-                  onPress={() => externalRegister("RegisterFacebookScreen")}
-                  customStyle={{
-                    marginHorizontal: 15,
-                    width: 50,
-                    height: 50,
-                  }}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                marginTop: 20,
-                marginBottom: 40,
-                flexDirection: "column",
-              }}
-            >
-              <TouchableOpacity onPress={login}>
-                <Text style={styles.beforeSpecialText}>
-                  {`${t("alreadyHave")} `}
-                </Text>
-                <Text style={styles.specialTextButton}>{t("signIn")}</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
+
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 20,
+            marginBottom: 40,
+            flexDirection: "column",
+          }}
+        >
+          <Text style={{}}>{`${t("alreadyHave")} `}</Text>
+          <TouchableOpacity onPress={login}>
+            <Text type="bold" size="label" style={{ color: "#209fae" }}>
+              {t("signIn")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <PhoneCodeSelector
           show={selector}
           close={() => setSelector(false)}
@@ -515,48 +494,6 @@ export default function Register({ navigation }) {
           value={region}
         />
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
-
-//needfix
-const styles = StyleSheet.create({
-  dividerText: {
-    fontSize: 14,
-    fontFamily: "Lato-Regular",
-    alignSelf: "flex-end",
-    marginVertical: 10,
-  },
-  root: {
-    width: Dimensions.get("window").width,
-    // flex: 1,
-  },
-  halfTextInput: {
-    width: Dimensions.get("window").width / 2.7,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    fontFamily: "Lato-Regular",
-    padding: 0,
-  },
-  beforeSpecialText: {
-    fontSize: 14,
-    fontFamily: "Lato-Regular",
-    alignSelf: "center",
-  },
-  specialTextButton: {
-    fontFamily: "Lato-Bold",
-    marginTop: 5,
-    fontSize: 14,
-    color: "#27958B",
-    alignSelf: "center",
-  },
-  logoView: {
-    height: 180,
-    width: 180,
-    alignSelf: "flex-start",
-  },
-  welcomeText: { alignSelf: "flex-start", marginVertical: 10 },
-  TextInput: {
-    width: Dimensions.get("window").width / 1.2,
-    padding: 0,
-  },
-});
