@@ -24,20 +24,21 @@ import {
 } from "react-native-popup-menu";
 import ChooseDay from "./ChooseDay";
 import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryA";
+import ListAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Album({ modals, setModalAlbum }) {
+export default function Album({ modals, setModalAlbum, props, user_id }) {
   let { width, height } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
   const [select, setSelect] = useState("Itinerary Album");
   const [idItinerary, setIdItinerary] = useState("");
   const [modalDay, setModalDay] = useState(false);
-
   const [data, setData] = useState();
+  const [listAlbums, setListAlbums] = useState();
 
   const { data: dataItinerary, loading, error, refetch } = useQuery(
     ListItinerary,
     {
-      fetchPolicy: "network-only",
       context: {
         headers: {
           "Content-Type": "application/json",
@@ -50,6 +51,21 @@ export default function Album({ modals, setModalAlbum }) {
       },
     }
   );
+
+  const {
+    data: listAlbum,
+    loading: loadingAlbum,
+    error: errorAlbum,
+  } = useQuery(ListAlbum, {
+    variables: { user_id: user_id },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => setListAlbums(listAlbum.list_albums),
+  });
 
   let dataDua = [
     { image: null, title: "Album 1", description: "10 photos" },
@@ -253,12 +269,12 @@ export default function Album({ modals, setModalAlbum }) {
                               {item.name}
                             </Text>
                             <Text size="description" type="light">
-                              {item.description}
+                              {item.count_album_post}
                             </Text>
                           </View>
                         </Pressable>
                       ))
-                    : dataDua.map((item, index) => (
+                    : listAlbums.map((item, index) => (
                         <Pressable
                           key={index}
                           style={{
@@ -277,14 +293,25 @@ export default function Album({ modals, setModalAlbum }) {
                               borderRadius: 5,
                             }}
                           >
-                            {/* <FunImage source={{}} /> */}
+                            <FunImage
+                              source={
+                                item && item.cover
+                                  ? { uri: item?.cover }
+                                  : default_image
+                              }
+                              style={{
+                                resizeMode: "cover",
+                                height: "100%",
+                                width: "100%",
+                              }}
+                            />
                           </View>
                           <View style={{ paddingLeft: 5, marginTop: 10 }}>
                             <Text size="label" type="regular">
                               {item.title}
                             </Text>
                             <Text size="description" type="light">
-                              {item.description}
+                              {item.count_foto}
                             </Text>
                           </View>
                         </Pressable>
@@ -299,6 +326,7 @@ export default function Album({ modals, setModalAlbum }) {
         modals={modalDay}
         setModalDay={(e) => setModalDay(e)}
         idItinerary={idItinerary}
+        props={props}
       />
     </Modal>
   );

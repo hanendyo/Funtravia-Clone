@@ -521,5 +521,8 @@
   "notSet": "Not Set",
   "journal": "Journal",
   "selecDay": "Select Day",
-  "addAlbum": "Add to Album"
+  "addAlbum": "Add to Album",
+  "newAlbum": "New Album",
+  "create": "Create",
+  "untitle": "Untitle"
 }
