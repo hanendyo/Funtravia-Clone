@@ -80,7 +80,7 @@ import moment from "moment";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import DeleteActivity from "../../../graphQL/Mutation/Itinerary/DeleteActivity";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Updatecover from "../../../graphQL/Mutation/Itinerary/Updatecover";
+import Updatecover from "../../../graphQL/Mutation/Itinerary/UpdatecoverV2";
 import ChangeStatus from "../../../graphQL/Mutation/Itinerary/ChangeStatus";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
@@ -94,6 +94,7 @@ import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
 import { StackActions } from "@react-navigation/routers";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { ReactNativeFile } from "apollo-upload-client";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -502,12 +503,13 @@ export default function ItineraryDetail(props) {
   };
 
   const [
-    mutationUpload,
+    mutationUploadCover,
     { loading: loadingupload, data: dataupload, error: errorupload },
   ] = useMutation(Updatecover, {
     context: {
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     },
@@ -517,11 +519,17 @@ export default function ItineraryDetail(props) {
     setloading(true);
 
     if (data) {
+      let files = new ReactNativeFile({
+        uri: data.path,
+        type: data.mime,
+        name: "cover.jpeg",
+      });
+
       try {
-        let response = await mutationUpload({
+        let response = await mutationUploadCover({
           variables: {
             itinerary_id: itineraryId,
-            cover: "data:image/jpeg;base64," + data,
+            file: files,
           },
         });
         if (errorupload) {
@@ -529,12 +537,10 @@ export default function ItineraryDetail(props) {
         }
 
         if (response.data) {
-          if (response.data.update_cover_itinerary.code !== 200) {
-            throw new Error(response.data.update_cover_itinerary.message);
+          if (response.data.upload_cover_itinerary_v2.code !== 200) {
+            throw new Error(response.data.upload_cover_itinerary_v2.message);
           }
-          // Alert.alert(t('success'));
           startRefreshAction();
-          // props.navigation.goBack();
         }
         setloading(false);
       } catch (error) {
@@ -552,7 +558,7 @@ export default function ItineraryDetail(props) {
       // freeStyleCropEnabled: true,
       includeBase64: true,
     }).then((image) => {
-      upload(image.data);
+      upload(image);
     });
   };
 
@@ -564,7 +570,7 @@ export default function ItineraryDetail(props) {
       // freeStyleCropEnabled: true,
       includeBase64: true,
     }).then((image) => {
-      upload(image.data);
+      upload(image);
     });
   };
 
