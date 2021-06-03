@@ -4041,6 +4041,8 @@ export default function ItineraryDetail(props) {
                             : null,
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
+                        idcity: datadetail.itinerary_detail.city.id,
+                        idcountries: datadetail.itinerary_detail.country.id,
                       });
                     } else if (jam === 23 && menit === 0) {
                       props.navigation.push("itindest", {
@@ -4053,6 +4055,8 @@ export default function ItineraryDetail(props) {
                             : null,
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
+                        idcity: datadetail.itinerary_detail.city.id,
+                        idcountries: datadetail.itinerary_detail.country.id,
                       });
                     } else {
                       Alert.alert(t("alertjam"));
@@ -4800,6 +4804,8 @@ export default function ItineraryDetail(props) {
                           : null,
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
+                      idcity: datadetail.itinerary_detail.city.id,
+                      idcountries: datadetail.itinerary_detail.country.id,
                     });
                   } else if (jam === 23 && menit === 0) {
                     props.navigation.push("itindest", {
@@ -4812,6 +4818,8 @@ export default function ItineraryDetail(props) {
                           : null,
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
+                      idcity: datadetail.itinerary_detail.city.id,
+                      idcountries: datadetail.itinerary_detail.country.id,
                     });
                   } else {
                     Alert.alert(t("alertjam"));

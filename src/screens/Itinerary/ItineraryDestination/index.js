@@ -41,7 +41,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { StackActions } from "@react-navigation/routers";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
-import Searching from "../../../graphQL/Query/Search/SearchLocation";
+import Searching from "../../../graphQL/Query/Itinerary/SearchDestination";
 
 export default function ItineraryDestination(props) {
   const HeaderComponent = {
@@ -114,10 +114,12 @@ export default function ItineraryDestination(props) {
   let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
   let [dataFilterCity, setdataFilterCity] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
+  let [dataDestination, setdataDestination] = useState([]);
 
   let [aktif, setaktif] = useState("categories");
 
-  // console.log(datafilter);
+  // console.log("testing.................");
+  // console.log(props.route.params);
 
   let [search, setSearch] = useState({
     type: null,
@@ -138,14 +140,14 @@ export default function ItineraryDestination(props) {
     error: errorsearchlocation,
   } = useQuery(Searching, {
     variables: {
-      keyword: keyword ? keyword : "b",
+      keyword: keyword,
       cities_id: null,
       province_id: null,
       countries_id: searcountry ? searcountry : null,
     },
     onCompleted: () => {
-      setdataFilterCity(datasearchlocation.search_location);
-      setdataFilterCitys(datasearchlocation.search_location);
+      setdataFilterCity(datasearchlocation.searchlocation_populer);
+      setdataFilterCitys(datasearchlocation.searchlocation_populer);
     },
   });
 
@@ -192,6 +194,7 @@ export default function ItineraryDestination(props) {
       },
       onCompleted: () => {
         // console.log(data);
+        setdataDestination(data.destinationList_v2);
       },
     }
   );
@@ -381,23 +384,26 @@ export default function ItineraryDestination(props) {
     }
 
     let Countryss = [];
-    for (var t of dataFilterCountry) {
-      if (t.checked === true) {
-        Countryss.push(t.id);
-      }
-    }
+
+    // for (var t of dataFilterCountry) {
+    //   if (t.checked === true) {
+    //     Countryss.push(t.id);
+    //   }
+    // }
 
     let cityss = [];
     let province = [];
 
     for (var u of dataFilterCity) {
       if (u.checked === true) {
-        console.log(u.type);
-        console.log(u.id);
+        // console.log(u.type);
+        // console.log(u.id);
         if (u.type === "Province") {
           province.push(u.id);
         } else if (u.type === "City") {
           cityss.push(u.id);
+        } else if (u.type === "Country") {
+          Countryss.push(u.id);
         }
       }
     }
@@ -408,7 +414,7 @@ export default function ItineraryDestination(props) {
     data["cities"] = await cityss;
     data["provinces"] = await province;
 
-    await console.log("filter", data);
+    // await console.log("filter", data);
     await setSearch(data);
     await setshow(false);
   };
@@ -423,6 +429,14 @@ export default function ItineraryDestination(props) {
       goodfor: null,
       facilities: null,
     });
+    setdataFilterCategori(datafilter?.destination_filter.type);
+    setdataFilterCategoris(datafilter?.destination_filter.type);
+    setdataFilterFacility(datafilter?.destination_filter.facility);
+    setdataFilterFacilitys(datafilter?.destination_filter.facility);
+    setdataFilterCountry(datafilter?.destination_filter.country);
+    setdataFilterCountrys(datafilter?.destination_filter.country);
+    setdataFilterCity(datasearchlocation?.searchlocation_populer);
+    setdataFilterCitys(datasearchlocation?.searchlocation_populer);
   };
 
   const _setSearch = async (teks) => {
@@ -707,7 +721,7 @@ export default function ItineraryDestination(props) {
                   </Text>
                 </View>
               </Pressable>
-
+              {/* 
               <Pressable
                 onPress={() => {
                   setaktif("country");
@@ -742,7 +756,7 @@ export default function ItineraryDestination(props) {
                     {t("country")}
                   </Text>
                 </View>
-              </Pressable>
+              </Pressable> */}
 
               <Pressable
                 onPress={() => {
@@ -774,7 +788,7 @@ export default function ItineraryDestination(props) {
                       // marginTop: 10,
                     }}
                   >
-                    {t("City")}
+                    {t("location")}
                   </Text>
                 </View>
               </Pressable>
@@ -1122,9 +1136,9 @@ export default function ItineraryDestination(props) {
         </View>
       </Modal>
 
-      {data && data.destinationList_v2.length ? (
+      {dataDestination.length > 0 ? (
         <FlatList
-          data={data.destinationList_v2}
+          data={dataDestination}
           contentContainerStyle={{
             marginTop: 5,
             justifyContent: "space-evenly",
