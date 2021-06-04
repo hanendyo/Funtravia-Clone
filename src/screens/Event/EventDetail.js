@@ -652,7 +652,7 @@ export default function EventDetail(props) {
           source={
             dataevent && dataevent.images && dataevent.images.length
               ? { uri: dataevent.images[0].image }
-              : { uri: default_image }
+              : default_image
           }
           style={{ height: Dimensions.get("window").height * 0.43 }}
           imageStyle={{ resizeMode: "cover" }}

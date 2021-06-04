@@ -52,7 +52,7 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
   const eventdetail = (data) => {
     props.navigation.navigate("eventdetail", {
       data: data,
-      // event_id: data.id,
+      event_id: data.id,
       name: data.name,
       token: token,
     });
@@ -80,7 +80,9 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
           ) {
             var tempData = [...dataEvent];
             var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = true;
+            let data = { ...tempData[index] };
+            data.liked = true;
+            tempData.splice(index, 1, data);
             setDataEvent(tempData);
           } else {
             throw new Error(response.data.setEvent_wishlist.message);
@@ -118,7 +120,9 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
             // _Refresh();
             var tempData = [...dataEvent];
             var index = tempData.findIndex((k) => k["id"] === id);
-            tempData[index].liked = false;
+            let data = { ...tempData[index] };
+            data.liked = false;
+            tempData.splice(index, 1, data);
             setDataEvent(tempData);
           } else {
             throw new Error(response.data.unset_wishlist.message);

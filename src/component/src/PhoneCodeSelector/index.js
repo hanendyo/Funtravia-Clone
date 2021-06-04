@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { countryCallCode } from "./countryCallCode";
 import {
-  Modal,
+  // Modal,
   Picker,
   View,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
+import Modal from "react-native-modal";
 export default function PhoneCodeSelector({ show, close, callBack, value }) {
   const screen = Dimensions.get("screen");
   const styles = StyleSheet.create({
@@ -52,30 +53,48 @@ export default function PhoneCodeSelector({ show, close, callBack, value }) {
   });
   return (
     <View style={styles.centeredView}>
-      <Modal animationType="slide" transparent={true} visible={show}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={show}
+        onBackdropPress={close}
+        onRequestClose={close}
+        onDismiss={close}
+      >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={{ color: "black", fontWeight: "500", fontSize: 20 }}>
               Select Code
             </Text>
-            <Picker
-              selectedValue={value}
+            <View
               style={{
-                height: Platform.OS === "ios" ? screen.height / 3 : 75,
-                width: screen.width / 1.5,
+                borderWidth: 1,
+                marginVertical: 10,
+                borderRadius: 5,
+                borderColor: "#d1d1d1",
               }}
-              onValueChange={(itemValue, itemIndex) => callBack(itemValue)}
             >
-              {countryCallCode.map((value, index) => {
-                return (
-                  <Picker.Item
-                    key={index}
-                    label={value.name + " (" + value.code + ")"}
-                    value={value.code}
-                  />
-                );
-              })}
-            </Picker>
+              <Picker
+                selectedValue={value}
+                style={{
+                  height: Platform.OS === "ios" ? screen.height / 3 : 30,
+                  // height: 30,
+                  width: screen.width / 1.5,
+                  // borderWidth: 1,
+                }}
+                onValueChange={(itemValue, itemIndex) => callBack(itemValue)}
+              >
+                {countryCallCode.map((value, index) => {
+                  return (
+                    <Picker.Item
+                      key={index}
+                      label={value.name + " (" + value.code + ")"}
+                      value={value.code}
+                    />
+                  );
+                })}
+              </Picker>
+            </View>
             <TouchableOpacity
               onPress={close}
               style={{

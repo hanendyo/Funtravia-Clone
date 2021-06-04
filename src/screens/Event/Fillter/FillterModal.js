@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import Modal from "react-native-modal";
 import { Capital, CustomImage } from "../../../component";
 import CheckBox from "@react-native-community/checkbox";
@@ -8,7 +14,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 import { Picker } from "react-native";
-import { Bottom } from "../../../assets/svg";
+import { Bottom, Search } from "../../../assets/svg";
 import RenderCity from "./City";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -33,12 +39,31 @@ export default function FilterModal({
   let [id_country, setId_country] = useState(null);
 
   let [opens, setOpens] = useState(10);
-  const _handleCheck = (id, indexType) => {
-    const tempData = [...dataFilterCategori];
 
-    tempData[indexType]["checked"] = !tempData[indexType]["checked"];
+  // const _handleCheck = (id, indexType) => {
+  //   const tempData = [...dataFilterCategori];
 
-    setFilterCategori(tempData);
+  //   tempData[indexType]["checked"] = !tempData[indexType]["checked"];
+
+  //   setFilterCategori(tempData);
+  // };
+
+  const _handleCheck = async (id, index, item) => {
+    let tempe = [...dataFilterCategori];
+    let items = { ...item };
+    items.checked = !items.checked;
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
+    await setFilterCategori(tempe);
+  };
+
+  const searchkategori = async (teks) => {
+    let searching = new RegExp(teks, "i");
+
+    let b = datasfilter.filter((item) => searching.test(item.name));
+
+    setFilterCategori(b);
   };
 
   const dataCountrySelect = () => {
@@ -95,22 +120,32 @@ export default function FilterModal({
   };
 
   const ClearAllFilter = () => {
-    let tempdatasfilter = [...dataFilterCategori];
-    for (var i in tempdatasfilter) {
-      tempdatasfilter[i].checked = false;
-      tempdatasfilter[i].show = false;
+    // let tempdatasfilter = [...dataFilterCategori];
+    // for (var i in tempdatasfilter) {
+    //   tempdatasfilter[i].checked = false;
+    //   tempdatasfilter[i].show = false;
+    // }
+
+    let tempe = [...dataFilterCategori];
+    let tempes = [];
+    for (var x of tempe) {
+      let data = { ...x };
+      data.checked = false;
+      data.show = false;
+      tempes.push(data);
     }
 
-    let tempdatascountry = [...dataFilterCountry];
-    for (var i in tempdatascountry) {
-      tempdatascountry[i].checked = false;
-      tempdatascountry[i].show = false;
-    }
+    // let tempdatascountry = [...dataFilterCountry];
+    // for (var i in tempdatascountry) {
+    //   tempdatascountry[i].checked = false;
+    //   tempdatascountry[i].show = false;
+    // }
 
     setFilterCity([]);
-    setValueFilter(tempdatasfilter);
-    hitungfilter(tempdatasfilter);
-    // setClose();
+    setValueFilter(tempes);
+    hitungfilter(tempes);
+    setFilterCategori(tempes);
+    setClose();
   };
 
   const hitungfilter = (dataFillter) => {
@@ -127,6 +162,11 @@ export default function FilterModal({
 
   return (
     <Modal
+      onBackdropPress={() => {
+        setClose();
+      }}
+      onRequestClose={() => setClose()}
+      onDismiss={() => setClose()}
       onLayout={() => dataCountrySelect()}
       isVisible={show}
       style={{
@@ -137,7 +177,6 @@ export default function FilterModal({
       <View
         style={{
           height: 10,
-
           backgroundColor: "#209fae",
         }}
       ></View>
@@ -205,148 +244,152 @@ export default function FilterModal({
         />
         {/* ==================garis========================= */}
 
-        <ScrollView
-          nestedScrollEnabled={true}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            width: Dimensions.get("screen").width,
-            paddingHorizontal: 15,
-            paddingBottom: 70,
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+            borderTopWidth: 0.5,
+            borderColor: "#d1d1d1",
           }}
         >
-          <Text
-            type="bold"
-            size="title"
+          <View
             style={{
-              // fontSize: 20,
-              // fontFamily: "Lato-Bold",
-              color: "#464646",
-              marginTop: 10,
+              width: "35%",
+              borderRightWidth: 0.5,
+              borderColor: "#d1d1d1",
             }}
           >
-            {t("categories")}
-          </Text>
-          <FlatList
-            contentContainerStyle={{
-              paddingVertical: 15,
-              paddingRight: 10,
-              width: screenWidth - 40,
-            }}
-            data={dataFilterCategori}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                onPress={() => _handleCheck(item["id"], index)}
+            <View
+              style={{
+                backgroundColor: "#f6f6f6",
+                paddingBottom: 5,
+              }}
+            >
+              <View
                 style={{
-                  flexDirection: "row",
-                  backgroundColor: "white",
-                  // borderColor: "#464646",
-                  width: "49%",
-                  marginRight: 3,
-                  marginBottom: 20,
-                  justifyContent: "flex-start",
-                  alignContent: "center",
-                  alignItems: "center",
+                  borderLeftColor: "#209fae",
+                  borderLeftWidth: 5,
+                  marginLeft: 5,
+                  justifyContent: "center",
+                  paddingVertical: 15,
+                  paddingHorizontal: 10,
+                  backgroundColor: "#ffff",
                 }}
               >
-                <CheckBox
-                  onCheckColor="#FFF"
-                  lineWidth={2}
-                  onFillColor="#209FAE"
-                  onTintColor="#209FAE"
-                  boxType={"square"}
-                  style={{
-                    alignSelf: "center",
-                    width: Platform.select({
-                      ios: 30,
-                      android: 35,
-                    }),
-                    transform: Platform.select({
-                      ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                      android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                    }),
-                  }}
-                  onValueChange={() => _handleCheck(item["id"], index)}
-                  value={item["checked"]}
-                />
-
                 <Text
-                  size="label"
-                  type="regular"
+                  type="bold"
+                  size="title"
                   style={{
-                    marginLeft: 0,
+                    // fontSize: 20,
+                    // fontFamily: "Lato-Bold",
                     color: "#464646",
+                    // marginTop: 10,
                   }}
                 >
-                  {item["name"]}
+                  {t("categories")}
                 </Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-            numColumns={2}
-            showsHorizontalScrollIndicator={false}
-            scrollEnabled={false}
-            extraData={selected}
-          ></FlatList>
-          <View
-            style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
-          ></View>
-          <Text
-            type="bold"
-            size="title"
-            style={{
-              color: "#464646",
-              marginVertical: 10,
-            }}
-          >
-            {t("location")}
-          </Text>
-          <View
-            style={{
-              // The solution: Apply zIndex to any device except Android
-              ...(Platform.OS !== "android" && {
-                zIndex: 10,
-              }),
-              marginBottom: 10,
-            }}
-          >
-            <DropDownPicker
-              scrollViewProps={{
-                nestedScrollEnabled: true,
-                persistentScrollbar: true,
-              }}
-              onOpen={() => setOpens(150)}
-              onClose={() => setOpens(10)}
-              items={dataFilterCountry}
-              defaultValue={null}
-              containerStyle={{ height: 40 }}
-              style={{ backgroundColor: "#fafafa" }}
-              itemStyle={{
-                justifyContent: "flex-start",
-              }}
-              showArrow={false}
-              dropDownStyle={{
-                backgroundColor: "#fafafa",
-                height: 150,
-              }}
-              placeholder="Pilih Negara"
-              onChangeItem={(item, index) => _handleCheckc(item.value, index)}
-            />
+              </View>
+            </View>
           </View>
-          {datacity &&
-          datacity.get_filter_city_evnt &&
-          datacity.get_filter_city_evnt.length > 0 ? (
-            <RenderCity
-              data={datacity}
-              dataFilterCity={dataFilterCity}
-              setFilterCity={(x) => setFilterCity(x)}
-              props={props}
-            />
-          ) : (
-            () => {
-              setFilterCity([]);
-            }
-          )}
-        </ScrollView>
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                padding: 15,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#daf0f2",
+                  borderRadius: 5,
+                  // flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center",
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                }}
+              >
+                <Search width={15} height={15} />
+
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  placeholder={t("search")}
+                  style={{
+                    width: "100%",
+                    // borderWidth: 1,
+                    marginLeft: 5,
+                    padding: 0,
+                  }}
+                  // returnKeyType="search"
+                  onChangeText={(x) => searchkategori(x)}
+                  onSubmitEditing={(x) => searchkategori(x)}
+                />
+              </View>
+            </View>
+            <ScrollView
+              nestedScrollEnabled={true}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingHorizontal: 15,
+              }}
+            >
+              {dataFilterCategori.map((item, index) => (
+                <TouchableOpacity
+                  onPress={() => _handleCheck(item["id"], index, item)}
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "white",
+                    // borderColor: "#464646",
+                    width: "49%",
+                    marginRight: 3,
+                    marginBottom: 20,
+                    justifyContent: "flex-start",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <CheckBox
+                    onCheckColor="#FFF"
+                    lineWidth={1}
+                    onFillColor="#209FAE"
+                    onTintColor="#209FAE"
+                    boxType={"square"}
+                    style={{
+                      alignSelf: "center",
+                      width: Platform.select({
+                        ios: 30,
+                        android: 35,
+                      }),
+                      transform: Platform.select({
+                        ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                        android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                      }),
+                    }}
+                    onValueChange={() => _handleCheck(item["id"], index, item)}
+                    value={item["checked"]}
+                  />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 0,
+                      color: "#464646",
+                      // borderWidth: 5,
+                    }}
+                  >
+                    {item["name"]}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+
+              {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+            </ScrollView>
+          </View>
+        </View>
+
         <View
           style={{
             flex: 1,
@@ -376,12 +419,12 @@ export default function FilterModal({
             variant="bordered"
             color="secondary"
             onPress={() => ClearAllFilter()}
-            style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+            style={{ width: "30%", borderColor: "#ffff" }}
             text={t("clearAll")}
           ></Button>
           <Button
             onPress={() => UpdateFilter()}
-            style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+            style={{ width: "65%" }}
             text={t("apply")}
           ></Button>
         </View>
