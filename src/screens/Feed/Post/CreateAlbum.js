@@ -5,218 +5,232 @@ import {
   Platform,
   TextInput,
   KeyboardAvoidingView,
+  Modal,
+  Pressable,
 } from "react-native";
 import { NewAlbum, ExitingAlbum } from "../../../assets/svg";
-import Modal from "react-native-modal";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
 import Album from "./Album";
+import { RNToasty } from "react-native-toasty";
 
 export default function CreateAlbum({
   modals,
   setModalCreate,
   props,
   user_id,
+  setAlbum,
 }) {
   const { t } = useTranslation();
   const [modalAlbum, setModalAlbum] = useState(false);
   const [modalAlbumCreate, setModalAlbumCreate] = useState(false);
-  console.log("modalAlbumCreate", modalAlbumCreate);
+  const [text, setText] = useState("");
 
   const modal = () => {
-    console.log("truew");
-    setModalAlbum(true);
+    setModalAlbumCreate(true);
+    setModalCreate(false);
   };
 
-  const open = async () => {
-    setTimeout(() => {
-      modal();
-    }, 1000);
+  const submitAlbum = () => {
+    if (text === "" || text === null) {
+      return RNToasty.Show({
+        title: t("emptyAlbumTitle"),
+        position: "bottom",
+      });
+    }
+    RNToasty.Show({
+      title: "Judul album " + "'" + text + "'",
+      position: "bottom",
+    });
+    setAlbum(text);
+    setModalAlbumCreate(false);
+    setText("");
   };
 
-  const ModalCreate = () => {
-    return (
+  return (
+    <View
+      style={{
+        zIndex: modals || modalAlbumCreate === true ? 1 : -2,
+        opacity: 0.6,
+        position: "absolute",
+        width: Dimensions.get("screen").width,
+        height: Dimensions.get("screen").height,
+        backgroundColor: modals || modalAlbumCreate === true ? "#000" : null,
+      }}
+    >
       <Modal
-        animationType="fade"
         useNativeDriver={true}
-        // animationInTiming={5000}
-        // animationOutTiming={800}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        isVisible={modalAlbumCreate}
-        onRequestClose={() => {
-          setModalAlbumCreate(false);
-        }}
-        style={{
-          alignSelf: "center",
-        }}
+        visible={modals}
+        onRequestClose={() => setModalCreate(false)}
+        transparent={true}
+        animationType="slide"
       >
-        <KeyboardAvoidingView
-          // keyboardVerticalOffset={100}
-          style={{ flex: 1, marginBottom: 0, bottom: 0 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          // behavior="padding"
+        <Pressable
+          onPress={() => setModalCreate(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
+          }}
+        />
+        <View
+          style={{
+            // height: 170,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#FFF",
+            position: "absolute",
+            bottom: 0,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <Pressable
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 50,
+            }}
+          >
+            <ExitingAlbum height="60" width="60" />
+            <Text>Add to exiting album</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => modal()}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 50,
+            }}
+          >
+            <NewAlbum height="60" width="60" />
+            <Text>Create new album</Text>
+          </Pressable>
+        </View>
+        <Album
+          modals={modalAlbum}
+          setModalAlbum={(e) => setModalAlbum(e)}
+          props={props}
+          user_id={user_id}
+        />
+      </Modal>
+
+      <Modal
+        useNativeDriver={true}
+        visible={modalAlbumCreate}
+        onRequestClose={() => setModalAlbumCreate(false)}
+        transparent={true}
+        animationType="slide"
+      >
+        <Pressable
+          onPress={() => setModalAlbumCreate(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{
             // height: 200,
-            justifyContent: "center",
-            // paddingVertical: 80,
+            width: Dimensions.get("screen").width,
+            top: Dimensions.get("screen").height / 3,
+            position: "absolute",
+            zIndex: 15,
+            paddingHorizontal: 15,
           }}
         >
           <View
             style={{
-              flexDirection: "row",
-              // alignItems: "center",
-              // justifyContent: "space-around",
+              height: "100%",
+              width: "100%",
               backgroundColor: "#FFF",
-              width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 0 : -21,
+              borderRadius: 5,
+              paddingBottom: 15,
             }}
           >
             <View
               style={{
-                width: Dimensions.get("screen").width,
+                width: "100%",
+                paddingHorizontal: 15,
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
               }}
             >
-              <View
-                style={{
-                  width: Dimensions.get("screen").width,
-                  paddingHorizontal: 15,
-                  borderBottomWidth: 1,
-                  borderColor: "#d1d1d1",
-                  justifyContent: "center",
-                  height: 50,
+              <Text type="bold" size="title" style={{ marginVertical: 10 }}>
+                New Album
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                paddingHorizontal: 15,
+              }}
+            >
+              <TextInput
+                multiline
+                placeholder={t("untitle")}
+                maxLength={1000}
+                placeholderStyle={{ fontSize: 50 }}
+                placeholderTextColor="#6C6C6C"
+                style={
+                  Platform.OS == "ios"
+                    ? {
+                        height: 75,
+                        maxHeight: 100,
+                        marginVertical: 10,
+                        marginHorizontal: 10,
+                        paddingTop: 10,
+                        fontSize: 14,
+                        fontFamily: "Lato-Regular",
+                      }
+                    : {
+                        height: 50,
+                        borderRadius: 5,
+                        backgroundColor: "#f6f6f6",
+                        paddingHorizontal: 10,
+                        fontSize: 14,
+                        marginVertical: 10,
+                        fontFamily: "Lato-Regular",
+                      }
+                }
+                onChangeText={(text) => setText(text)}
+                value={text}
+              />
+            </View>
+            <View
+              style={{
+                width: "100%",
+                paddingHorizontal: 15,
+                justifyContent: "flex-end",
+                flexDirection: "row",
+              }}
+            >
+              <Button
+                onPress={() => {
+                  setModalAlbumCreate(false), setModalCreate(true), setText("");
                 }}
-              >
-                <Text type="bold" size="title">
-                  {t("newAlbum")}
-                </Text>
-              </View>
-              <View
-                style={{
-                  height: 70,
-                  width: Dimensions.get("screen").width,
-                  paddingHorizontal: 15,
-                  paddingVertical: 5,
-                  justifyContent: "center",
-                }}
-              >
-                <TextInput
-                  style={{ backgroundColor: "#f6f6f6" }}
-                  multiline
-                  placeholder={t("untitle") + " " + "Album"}
-                  maxLength={1000}
-                  placeholderStyle={{ fontSize: 50 }}
-                  placeholderTextColor="#6C6C6C"
-                ></TextInput>
-              </View>
-              <View
-                style={{
-                  height: 70,
-                  width: Dimensions.get("screen").width,
-                  paddingHorizontal: 15,
-                  paddingVertical: 5,
-                  justifyContent: "flex-end",
-                  flexDirection: "row",
-                }}
-              >
-                <Button
-                  onPress={() => setModalAlbumCreate(false)}
-                  size="medium"
-                  color="transparant"
-                  text={t("cancel")}
-                ></Button>
-                <Button
-                  size="medium"
-                  color="primary"
-                  text={t("create") + " " + "Album"}
-                ></Button>
-              </View>
+                size="medium"
+                color="transparant"
+                text={t("cancel")}
+              ></Button>
+              <Button
+                onPress={() => submitAlbum()}
+                size="medium"
+                color="primary"
+                text={t("create") + " " + "Album"}
+              ></Button>
             </View>
           </View>
         </KeyboardAvoidingView>
+        <Album
+          modals={modalAlbum}
+          setModalAlbum={(e) => setModalAlbum(e)}
+          props={props}
+          user_id={user_id}
+        />
       </Modal>
-    );
-  };
-  return (
-    <Modal
-      onBackdropPress={() => setModalCreate(false)}
-      useNativeDriver={true}
-      animationInTiming={500}
-      animationOutTiming={800}
-      animationIn="slideInUp"
-      animationOut="slideOutDown"
-      isVisible={modals}
-      onRequestClose={() => {
-        setModalCreate(false);
-      }}
-      style={{
-        alignSelf: "center",
-      }}
-    >
-      <View
-        style={{
-          width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").height,
-          // height: 200,
-          justifyContent: "flex-end",
-          // paddingVertical: 80,
-        }}
-      >
-        <View
-          style={{
-            borderTopWidth: 1,
-            borderColor: "#d1d1d1",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around",
-            backgroundColor: "#FFF",
-            height: 220,
-            paddingBottom: 50,
-            width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 0 : -21,
-          }}
-        >
-          <Ripple
-            onPress={() => open()}
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 30,
-            }}
-          >
-            <ExitingAlbum height="60" width="60" />
-            <Text size="label" type="regular" style={{ marginTop: 10 }}>
-              Add to exiting album
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => {
-              setModalAlbumCreate(true);
-            }}
-            style={{
-              borderRadius: 30,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <NewAlbum height="60" width="60" />
-            <Text size="label" type="regular" style={{ marginTop: 10 }}>
-              Create new album
-            </Text>
-          </Ripple>
-        </View>
-      </View>
-      <Album
-        modals={modalAlbum}
-        setModalAlbum={(e) => setModalAlbum(e)}
-        // masukan={(e) => _setLocation(e)}
-        props={props}
-        user_id={user_id}
-      />
-      <ModalCreate />
-    </Modal>
+    </View>
   );
 }

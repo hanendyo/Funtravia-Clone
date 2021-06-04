@@ -67,15 +67,6 @@ export default function Album({ modals, setModalAlbum, props, user_id }) {
     onCompleted: () => setListAlbums(listAlbum.list_albums),
   });
 
-  let dataDua = [
-    { image: null, title: "Album 1", description: "10 photos" },
-    { image: null, title: "Album 4", description: "20 photos" },
-    { image: null, title: "Album 5", description: "20 photos" },
-    { image: null, title: "Album 6", description: "40 photos" },
-    { image: null, title: "Album 2", description: "30 photos" },
-    { image: null, title: "Album 3", description: "50 photos" },
-  ];
-
   const Choose = (id) => {
     setIdItinerary(id);
     setModalDay(true);

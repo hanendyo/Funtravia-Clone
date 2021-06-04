@@ -60,8 +60,8 @@ const PostMut = gql`
 
 const { width, height } = Dimensions.get("screen");
 
-export default function CreatePost({ navigation, route, choose }) {
-  console.log("choose", choose);
+export default function CreatePost({ navigation, route }) {
+  console.log("route", route);
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
@@ -77,6 +77,7 @@ export default function CreatePost({ navigation, route, choose }) {
   const [token, setToken] = useState(null);
   const [datanearby, setDataNearby] = useState([]);
   let videoView = useRef(null);
+  let [album, setAlbum] = useState();
 
   const [MutationCreate, { loading, data, error }] = useMutation(PostMut, {
     context: {
@@ -439,8 +440,6 @@ export default function CreatePost({ navigation, route, choose }) {
               </View>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
                   marginHorizontal: 15,
                   paddingVertical: 5,
                   borderBottomWidth: 1,
@@ -448,7 +447,9 @@ export default function CreatePost({ navigation, route, choose }) {
                 }}
               >
                 <Ripple
-                  onPress={() => setModalCreate(true)}
+                  onPress={() => {
+                    album ? null : setModalCreate(true);
+                  }}
                   // onPress={() => setModalAlbum(true)}
                   style={{
                     flexDirection: "row",
@@ -462,12 +463,45 @@ export default function CreatePost({ navigation, route, choose }) {
                     size="description"
                     style={{
                       marginHorizontal: 5,
-                      marginVertical: 10,
+                      marginTop: 10,
+                      marginBottom: album ? 0 : 10,
                     }}
                   >
                     {t("addAlbum")}
                   </Text>
                 </Ripple>
+                {album ? (
+                  <View
+                    style={{
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                      }}
+                    >
+                      <Text
+                        numberOfLines={1}
+                        type="regular"
+                        size="description"
+                        style={{
+                          marginHorizontal: 5,
+                          marginVertical: 10,
+                        }}
+                      >
+                        {album}
+                      </Text>
+                    </View>
+                    <Xgrey
+                      height="30"
+                      width="30"
+                      onPress={() => setAlbum("")}
+                    />
+                  </View>
+                ) : null}
               </View>
               <View
                 style={{
@@ -565,9 +599,9 @@ export default function CreatePost({ navigation, route, choose }) {
         <CreateAlbum
           modals={modalCreate}
           setModalCreate={(e) => setModalCreate(e)}
-          // masukan={(e) => _setLocation(e)}
           user_id={setting?.user_id}
           props={navigation}
+          setAlbum={(e) => setAlbum(e)}
         />
       </View>
     </KeyboardAvoidingView>
