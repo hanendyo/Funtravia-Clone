@@ -38,7 +38,12 @@ export default function Post(props) {
   const [imageRoll, setImageRoll] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [ratio, setRatio] = useState({ width: 1, height: 1, index: 0 });
+  const [ratio, setRatio] = useState({
+    width: 1,
+    height: 1,
+    index: 0,
+    label: "S",
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [allAlbums, setAllalbum] = useState([]);
   const [page_info, setPageInfo] = useState({});
@@ -48,8 +53,8 @@ export default function Post(props) {
   let slider = useRef(null);
   let videoView = useRef(null);
   const [ratioindex, setRatioIndex] = useState([
-    { width: 1, height: 1, index: 0 },
-    { width: 4, height: 5, index: 1 },
+    { width: 1, height: 1, index: 0, label: "S" },
+    { width: 4, height: 5, index: 1, label: "P" },
   ]);
 
   const [recent, setRecent] = useState({
@@ -78,16 +83,16 @@ export default function Post(props) {
   const selectImg = async (file) => {
     slider.current.scrollToOffset({ index: 0 });
     await setLoading(false);
-    setRatio({ width: 1, height: 1, index: 0 });
+    setRatio({ width: 1, height: 1, index: 0, label: "S" });
     if (file.node.image.width > file.node.image.height) {
       setRatioIndex([
-        { width: 1, height: 1, index: 0 },
-        { width: 3, height: 2, index: 1 },
+        { width: 1, height: 1, index: 0, label: "S" },
+        { width: 3, height: 2, index: 1, label: "L" },
       ]);
     } else {
       setRatioIndex([
-        { width: 1, height: 1, index: 0 },
-        { width: 4, height: 5, index: 1 },
+        { width: 1, height: 1, index: 0, label: "S" },
+        { width: 4, height: 5, index: 1, label: "P" },
       ]);
     }
     await setRecent(file);
@@ -113,7 +118,7 @@ export default function Post(props) {
   };
 
   const nextFunction = async (type, multi) => {
-    if (multi.length <= 0) {
+    if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
         props.navigation.navigate("CreatePostScreen", {
           location: recent.node.location,
@@ -121,17 +126,24 @@ export default function Post(props) {
           file: recent.node.image,
         });
       } else if (type.substr(0, 5) === "image") {
-        let result = await ImagePicker.openCropper({
-          path: recent.node.image.uri,
-          width: ratio.width * 1000,
-          height: ratio.height * 1000,
-          // compressImageQuality: 0.7,
-        });
-        props.navigation.navigate("CreatePostScreen", {
-          location: recent.node.location,
-          type: recent.node.type.substr(0, 5),
-          file: result,
-        });
+        try {
+          let result = await ImagePicker.openCropper({
+            path: recent.node.image.uri,
+            width: ratio.width * 1000,
+            height: ratio.height * 1000,
+            // compressImageQuality: 0.7,
+          });
+          props.navigation.navigate("CreatePostScreen", {
+            location: recent.node.location,
+            type: recent.node.type.substr(0, 5),
+            file: result,
+          });
+        } catch (e) {
+          RNToasty.Show({
+            title: "Canceled",
+            position: "bottom",
+          });
+        }
       } else {
         return null;
       }
@@ -140,9 +152,12 @@ export default function Post(props) {
         location: recent.node.location,
         type: "multi",
         file: checklistVideo,
+        ratio: ratio,
       });
     }
   };
+
+  console.log("ratio", ratio);
 
   const scroll_to = () => {
     setTimeout(() => {
@@ -176,7 +191,6 @@ export default function Post(props) {
   };
 
   const backDei = () => {
-    console.log("test");
     props.navigation.goBack();
     return true;
   };
@@ -407,7 +421,6 @@ export default function Post(props) {
     let tempsVideo = [...checklistVideo];
     tempsVideo.push(item);
     setChecklistVideo(tempsVideo);
-    // setOpenLongPress(!openLongPress);
     buka.current = !buka.current;
     setRatio({ width: 1, height: 1, index: 0 });
     if (buka.current === false) {
@@ -416,7 +429,21 @@ export default function Post(props) {
   };
   console.log("checklistVideo", checklistVideo);
 
-  const selectOneVideo = (item, index) => {
+  const selectOneVideo = async (item, index) => {
+    if (item.node.image.width > item.node.image.height) {
+      setRatioIndex([
+        // { width: 1, height: 1, index: 0, label: "S" },
+        { width: 4, height: 5, index: 1, label: "P" },
+        { width: 3, height: 2, index: 1, label: "L" },
+      ]);
+    } else {
+      setRatioIndex([
+        { width: 1, height: 1, index: 0, label: "S" },
+        { width: 4, height: 5, index: 1, label: "P" },
+      ]);
+    }
+
+    await setRecent(item);
     let tempsVideo = [...checklistVideo];
     const indeks = tempsVideo.findIndex(
       (k) => k.node.image.filename === item.node.image.filename
@@ -426,7 +453,6 @@ export default function Post(props) {
       tempsVideo.splice(indeks, 1);
       if (tempsVideo.length < 1) {
         buka.current = false;
-        // setOpenLongPress(false);
       }
     } else if (tempsVideo.length < 10) {
       tempsVideo.push(item);
@@ -544,34 +570,34 @@ export default function Post(props) {
                   width: width,
                   height: width,
                   resizeMode: ratio.width == 1 ? "cover" : "contain",
+                  // resizeMode: "contain",
                 }}
               />
             )}
-            {buka.current === false ? (
-              <TouchableOpacity
-                onPress={() =>
-                  setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-                }
-                style={{
-                  backgroundColor: "#B2B2B2",
-                  position: "absolute",
-                  bottom: 0,
-                  borderRadius: 20,
-                  margin: 15,
-                  width: 40,
-                  height: 40,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {ratio.index == 0 ? (
-                  <SizeOri height={23} width={23} />
-                ) : (
-                  <SizeStrace height={23} width={23} />
-                )}
-              </TouchableOpacity>
-            ) : // setRatio(ratio)
-            null}
+            {/* {buka.current === false ? ( */}
+            <TouchableOpacity
+              onPress={() =>
+                setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+              }
+              style={{
+                backgroundColor: "#B2B2B2",
+                position: "absolute",
+                bottom: 0,
+                borderRadius: 20,
+                margin: 15,
+                width: 40,
+                height: 40,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {ratio.index == 0 ? (
+                <SizeOri height={23} width={23} />
+              ) : (
+                <SizeStrace height={23} width={23} />
+              )}
+            </TouchableOpacity>
+            {/* ) : null} */}
           </View>
         )}
         renderItem={({ item, index }) =>

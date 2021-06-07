@@ -11,9 +11,6 @@ import {
   Image,
   SafeAreaView,
   Pressable,
-  FlatList,
-  TouchableHighlight,
-  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
@@ -36,27 +33,21 @@ import CreateAlbum from "./CreateAlbum";
 
 const PostMut = gql`
   mutation(
-    $assets: [Upload]!
     $caption: String
     $latitude: String
     $longitude: String
     $location_name: String
-    $albums_id: ID
-    $itinerary_id: ID
-    $day_id: ID
-    $oriented: String
+    $type: String
+    $assets: Upload!
   ) {
     create_post(
       input: {
-        assets: $assets
         caption: $caption
         latitude: $latitude
         longitude: $longitude
         location_name: $location_name
-        albums_id: $albums_id
-        itinerary_id: $itinerary_id
-        day_id: $day_id
-        oriented: $oriented
+        type: $type
+        assets: $assets
       }
     ) {
       id
@@ -70,7 +61,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost({ navigation, route }) {
-  console.log("navigation", navigation);
+  console.log("route", route);
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
@@ -324,96 +315,6 @@ export default function CreatePost({ navigation, route }) {
     }
   };
 
-  const [Img, setImg] = useState("");
-
-  const ReviewResult = () => {
-    if (route.params.type === "video") {
-      return (
-        <Video
-          source={{
-            uri:
-              Platform.OS === "ios"
-                ? `assets-library://asset/asset.${chosenFile.filename.substring(
-                    chosenFile.filename.length - 3
-                  )}?id=${chosenFile.uri.substring(
-                    5,
-                    41
-                  )}&ext=${chosenFile.filename.substring(
-                    chosenFile.filename.length - 3
-                  )}`
-                : chosenFile.uri,
-          }}
-          ref={(ref) => {
-            videoView = ref;
-          }}
-          onBuffer={videoView?.current?.onBuffer}
-          onError={videoView?.current?.videoError}
-          style={{
-            width: width,
-            height: width,
-          }}
-          resizeMode="cover"
-        />
-      );
-    } else if (route.params.type === "image") {
-      return (
-        <AutoHeightImage
-          width={Dimensions.get("screen").width}
-          source={
-            chosenFile && chosenFile.path
-              ? {
-                  uri: chosenFile.path,
-                }
-              : default_image
-          }
-        />
-      );
-    } else {
-      return (
-        <>
-          <AutoHeightImage
-            resizeMode="cover"
-            style={{
-              marginVertical: 10,
-              borderRadius: 10,
-              marginHorizontal: 10,
-            }}
-            width={Dimensions.get("screen").width - 20}
-            height={((Dimensions.get("screen").width - 20) * 2) / 3}
-            source={Img ? { uri: Img } : default_image}
-          />
-          <FlatList
-            onLayout={() => setImg(chosenFile[0].node.image.uri)}
-            data={chosenFile}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingHorizontal: 10,
-            }}
-            renderItem={(item, index) => (
-              <TouchableOpacity
-                onPress={() => setImg(item.item.node.image.uri)}
-              >
-                <AutoHeightImage
-                  height={80}
-                  width={Dimensions.get("screen").width / 5}
-                  style={{ marginRight: 5, borderRadius: 5 }}
-                  source={
-                    item.item.node.image.uri && item.item.node.image.uri
-                      ? {
-                          uri: item.item.node.image.uri,
-                        }
-                      : default_image
-                  }
-                />
-              </TouchableOpacity>
-            )}
-          />
-        </>
-      );
-    }
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -459,8 +360,7 @@ export default function CreatePost({ navigation, route }) {
           <Loading show={loadingok} />
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
-              {ReviewResult()}
-              {/* {route.params.type === "video" ? (
+              {route.params.type === "video" ? (
                 <Video
                   source={{
                     uri:
@@ -497,7 +397,7 @@ export default function CreatePost({ navigation, route }) {
                       : default_image
                   }
                 />
-              )} */}
+              )}
               <View
                 style={{
                   flexDirection: "row",
