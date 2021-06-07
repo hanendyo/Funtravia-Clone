@@ -381,8 +381,8 @@ export default function ListEventHome(props) {
         useNativeDriver: true,
       }).start();
     }
-    console.log("x : ", positionX, ", y : ", positionY);
-    console.log(y);
+    // console.log("x : ", positionX, ", y : ", positionY);
+    // console.log(y);
 
     syncScrollOffset();
 
@@ -395,17 +395,14 @@ export default function ListEventHome(props) {
   };
 
   const refresh = async () => {
-    // console.log("-- start refresh");
     refreshStatusRef.current = true;
     await getdataEvent();
     await getdataEventPublic();
-    // await GetEventCategory();
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      // console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
@@ -479,13 +476,11 @@ export default function ListEventHome(props) {
     return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
   };
 
-  const rederTab1Item = ({ item, index }) => {
+  const rederTab1Item = ({ item, index }, position) => {
     return (
       <View
         style={{
           justifyContent: "center",
-          //   flex: 1,
-          //   width: "50%",
           width: (Dimensions.get("screen").width - 40) / 2,
           height: Dimensions.get("screen").width * 0.7,
           margin: 5,
@@ -558,7 +553,7 @@ export default function ListEventHome(props) {
 
                   zIndex: 9999,
                 }}
-                onPress={() => _liked(item.id, item)}
+                onPress={() => _liked(item.id, item, position)}
               >
                 <LikeEmpty height={13} width={13} />
               </TouchableOpacity>
@@ -575,7 +570,7 @@ export default function ListEventHome(props) {
 
                   zIndex: 9999,
                 }}
-                onPress={() => _unliked(item.id, item)}
+                onPress={() => _unliked(item.id, item, position)}
               >
                 <LikeRed height={13} width={13} />
               </TouchableOpacity>
@@ -592,9 +587,11 @@ export default function ListEventHome(props) {
           <FunImageBackground
             key={item.id}
             source={
-              item.images.length
+              item.cover
+                ? { uri: item.cover }
+                : item.images.length > 0
                 ? { uri: item.images[0].image }
-                : { uri: default_image }
+                : { default_image }
             }
             style={[styles.ImageView]}
             imageStyle={[styles.Image]}
@@ -715,14 +712,14 @@ export default function ListEventHome(props) {
       case "tab1":
         numCols = 2;
         data = dataEvent;
-        renderItem = rederTab1Item;
+        renderItem = (e) => rederTab1Item(e, "all");
         break;
       case "tab2":
         numCols = 2;
         data = dataEvent;
 
         data = dataEventPublic;
-        // renderItem = rederTab1Item;
+        renderItem = (e) => rederTab1Item(e, "public");
         break;
       default:
         return null;
@@ -1054,14 +1051,22 @@ export default function ListEventHome(props) {
     },
   });
 
-  const _liked = async (id, item) => {
+  const _liked = async (id, item, position) => {
     if (token || token !== "") {
       let items = { ...item };
       items.liked = true;
-      var tempData = [...dataEvent];
-      var index = tempData.findIndex((k) => k["id"] === id);
-      tempData.splice(index, 1, items);
-      await setdataEvent(tempData);
+
+      if (position === "all") {
+        var tempData = [...dataEvent];
+        var index = tempData.findIndex((k) => k["id"] === id);
+        tempData.splice(index, 1, items);
+        await setdataEvent(tempData);
+      } else {
+        var tempData = [...dataEventPublic];
+        var index = tempData.findIndex((k) => k["id"] === id);
+        tempData.splice(index, 1, items);
+        await setdataEventPublic(tempData);
+      }
 
       try {
         let response = await mutationliked({
@@ -1081,18 +1086,20 @@ export default function ListEventHome(props) {
             response.data.setEvent_wishlist.code === 200 ||
             response.data.setEvent_wishlist.code === "200"
           ) {
-            // var tempData = [...dataEvent];
-            // var index = tempData.findIndex((k) => k["id"] === id);
-            // tempData[index].liked = true;
-            // setdataEvent(tempData);
           } else {
             throw new Error(response.data.setEvent_wishlist.message);
           }
         }
       } catch (error) {
         items.liked = false;
-        tempData.splice(index, 1, items);
-        await setdataEvent(tempData);
+        if (position === "all") {
+          tempData.splice(index, 1, items);
+          await setdataEvent(tempData);
+        } else {
+          tempData.splice(index, 1, items);
+          await setdataEventPublic(tempData);
+        }
+
         Alert.alert("" + error);
       }
     } else {
@@ -1100,14 +1107,22 @@ export default function ListEventHome(props) {
     }
   };
 
-  const _unliked = async (id, item) => {
+  const _unliked = async (id, item, position) => {
     if (token || token !== "") {
       let items = { ...item };
       items.liked = false;
-      var tempData = [...dataEvent];
-      var index = tempData.findIndex((k) => k["id"] === id);
-      tempData.splice(index, 1, items);
-      await setdataEvent(tempData);
+
+      if (position === "all") {
+        var tempData = [...dataEvent];
+        var index = tempData.findIndex((k) => k["id"] === id);
+        tempData.splice(index, 1, items);
+        await setdataEvent(tempData);
+      } else {
+        var tempData = [...dataEventPublic];
+        var index = tempData.findIndex((k) => k["id"] === id);
+        tempData.splice(index, 1, items);
+        await setdataEventPublic(tempData);
+      }
       try {
         let response = await mutationUnliked({
           variables: {
@@ -1127,19 +1142,19 @@ export default function ListEventHome(props) {
             response.data.unset_wishlist.code === 200 ||
             response.data.unset_wishlist.code === "200"
           ) {
-            // _Refresh();
-            // var tempData = [...dataEvent];
-            // var index = tempData.findIndex((k) => k["id"] === id);
-            // tempData[index].liked = false;
-            // setdataEvent(tempData);
           } else {
             throw new Error(response.data.unset_wishlist.message);
           }
         }
       } catch (error) {
         items.liked = true;
-        tempData.splice(index, 1, items);
-        await setdataEvent(tempData);
+        if (position === "all") {
+          tempData.splice(index, 1, items);
+          await setdataEvent(tempData);
+        } else {
+          tempData.splice(index, 1, items);
+          await setdataEventPublic(tempData);
+        }
         Alert.alert("" + error);
       }
     } else {
@@ -1177,7 +1192,6 @@ export default function ListEventHome(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterCategori(tempe);
     await setdataFilterCategoris(tempe);
@@ -1218,7 +1232,6 @@ export default function ListEventHome(props) {
 
     let data = { ...search };
     data["type"] = hasil;
-    // await console.log(data);
     await setSearch(data);
     await setshow(false);
   };
@@ -1228,9 +1241,6 @@ export default function ListEventHome(props) {
     let month = data[1]; // January
     let awal = new Date(data[0], parseFloat(month) - 1, 1);
     let akhir = new Date(data[0], parseFloat(month), 1);
-
-    // console.log(awal);
-    // console.log(akhir);
 
     let datas = { ...search };
     datas["date_from"] = awal;

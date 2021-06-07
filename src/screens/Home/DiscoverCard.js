@@ -15,7 +15,7 @@ import {
 import { Text } from "../../component";
 
 const { width, height } = Dimensions.get("screen");
-export default function DiscoverCard({ props }) {
+export default function DiscoverCard({ props, token }) {
   let discoverCardsData = [
     {
       id: 1,
@@ -88,6 +88,7 @@ export default function DiscoverCard({ props }) {
         onPress={() =>
           props.navigation.navigate("ItineraryStack", {
             screen: "ItineraryPopuler",
+            params: { token: token },
           })
         }
       >

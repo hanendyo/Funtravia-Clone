@@ -732,7 +732,7 @@ export default function Home(props) {
           label={"Start Your Journey Here"}
           seeAll={false}
         />
-        <DiscoverCard props={props} />
+        <DiscoverCard props={props} token={token} />
         <HomeTitle
           title={"Fun Feed"}
           label={"Collect Moments from Your Trip"}

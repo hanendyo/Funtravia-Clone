@@ -14,6 +14,7 @@ const DetailEvent = gql`
       open
       address
       price
+      cover
       vendor {
         id
         name

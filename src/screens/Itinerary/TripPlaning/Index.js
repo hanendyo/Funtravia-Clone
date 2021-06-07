@@ -24,11 +24,13 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const Tab = createMaterialTopTabNavigator();
 
 export default function TripPlaning(props) {
+  const { t, i18n } = useTranslation();
+
   const HeaderComponent = {
     title: "Your Trip",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Your Trip",
+    headerTitle: t("youTrip"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -61,7 +63,6 @@ export default function TripPlaning(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [token, setToken] = useState(null);
   let [loading, setloading] = useState(false);
   const loadAsync = async () => {
@@ -211,17 +212,17 @@ export default function TripPlaning(props) {
         <Tab.Screen
           name="Edit"
           component={() => <PlanList props={props} token={token} />}
-          options={{ tabBarLabel: "Plan" }}
+          options={{ tabBarLabel: t("planList") }}
         />
         <Tab.Screen
           name="Save"
           component={() => <ActivePlan props={props} token={token} />}
-          options={{ tabBarLabel: "Ongoing" }}
+          options={{ tabBarLabel: t("activePlan") }}
         />
         <Tab.Screen
           name="Finish"
           component={() => <FinishTrip props={props} token={token} />}
-          options={{ tabBarLabel: "Finish" }}
+          options={{ tabBarLabel: t("finishTrip") }}
         />
       </Tab.Navigator>
     );
