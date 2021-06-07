@@ -176,7 +176,7 @@ export default function ListEvent(props) {
           },
         });
         if (loadingLike) {
-          Alert.alert("Loading!!");
+          Alert.alert(t("somethingwrong"));
         }
         if (errorLike) {
           throw new Error("Error Input");
@@ -193,7 +193,7 @@ export default function ListEvent(props) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert(t("somethingwrong"));
       }
     } else {
       Alert.alert("Please Login");
@@ -210,7 +210,7 @@ export default function ListEvent(props) {
           },
         });
         if (loadingUnLike) {
-          Alert.alert("Loading!!");
+          Alert.alert(t("somethingwrong"));
         }
         if (errorUnLike) {
           throw new Error("Error Input");
@@ -227,7 +227,7 @@ export default function ListEvent(props) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert(t("somethingwrong"));
       }
     } else {
       Alert.alert("Please Login");

@@ -67,7 +67,7 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
           },
         });
         if (loadingLike) {
-          Alert.alert("Loading!!");
+          Alert.alert(t("somethingwrong"));
         }
         if (errorLike) {
           throw new Error("Error Input");
@@ -89,7 +89,7 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert(t("somethingwrong"));
       }
     } else {
       Alert.alert("Please Login");
@@ -106,7 +106,7 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
           },
         });
         if (loadingUnLike) {
-          Alert.alert("Loading!!");
+          Alert.alert(t("somethingwrong"));
         }
         if (errorUnLike) {
           throw new Error("Error Input");
@@ -129,7 +129,7 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert(t("somethingwrong"));
       }
     } else {
       Alert.alert("Please Login");
