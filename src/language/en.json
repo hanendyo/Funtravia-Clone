@@ -525,5 +525,6 @@
   "newAlbum": "New Album",
   "create": "Create",
   "untitle": "Untitle",
-  "emptyAlbumTitle": "Album title cannot be empty"
+  "emptyAlbumTitle": "Album title cannot be empty",
+  "somethingwrong": "Something wrong"
 }

@@ -527,5 +527,6 @@
   "newAlbum": "Album Baru",
   "create": "Buat",
   "untitle": "Tidak ada judul",
-  "emptyAlbumTitle": "Judul album tidak boleh kosong"
+  "emptyAlbumTitle": "Judul album tidak boleh kosong",
+  "somethingwrong": "Terjadi kesalahan"
 }

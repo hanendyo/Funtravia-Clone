@@ -292,7 +292,7 @@ export default function OtherProfile(props) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert(t("somethingwrong"));
       }
     } else {
       Alert.alert("Please Login");
@@ -322,7 +322,7 @@ export default function OtherProfile(props) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert(t("somethingwrong"));
       }
     } else {
       Alert.alert("Please Login");

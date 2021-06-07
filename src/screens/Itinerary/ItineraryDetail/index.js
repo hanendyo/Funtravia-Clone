@@ -122,6 +122,7 @@ export default function ItineraryDetail(props) {
    */
   const { t, i18n } = useTranslation();
   let [Cover, setCover] = useState(null);
+
   const [tabIndex, setIndex] = useState(
     props.route.params.index ? props.route.params.index : 0
   );
@@ -611,15 +612,6 @@ export default function ItineraryDetail(props) {
       setloading(false);
       Alert.alert("" + error);
     }
-  };
-
-  const handlecover = () => {
-    dataList.length > 0 && datadetail.itinerary_detail.cover === null
-      ? setCover(
-          dataList[0].images !== null ? dataList[0].images : dataList[0].icon
-        )
-      : setCover(datadetail.itinerary_detail.cover);
-    return <View></View>;
   };
 
   const [
@@ -1758,7 +1750,14 @@ export default function ItineraryDetail(props) {
           ></LinearGradient>
         </Animated.View>
         <Animated.Image
-          source={Cover ? { uri: Cover } : default_image}
+          // source={Cover ? { uri: Cover } : default_image}
+          source={
+            rD.cover
+              ? { uri: rD.cover }
+              : dataList?.length && dataList[0]?.images !== null
+              ? { uri: dataList[0].images }
+              : default_image
+          }
           style={{
             opacity: imageOpacity,
             // transform: [{ translateY: imageTranslate }],
@@ -3309,7 +3308,9 @@ export default function ItineraryDetail(props) {
               ) : dataList.length == 0 && tabIndex == 0 ? (
                 <Text></Text>
               ) : (
-                <View onLayout={() => handlecover()}></View>
+                <View
+                //  onLayout={() => handlecover()}
+                ></View>
               )}
             </View>
           )}
