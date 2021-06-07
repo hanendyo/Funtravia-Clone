@@ -23,9 +23,10 @@ import Toast from "react-native-fast-toast";
 import { RNToasty } from "react-native-toasty";
 
 export default function MyAccount(props) {
+  // console.log(props);
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
   const HeaderComponent = {
     headerShown: true,
@@ -33,7 +34,7 @@ export default function MyAccount(props) {
     tabBarVisble: false,
     tabBarLabel: "My Account",
     headerTintColor: "white",
-    headerTitle: "My Account",
+    headerTitle: t("myaccount"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -105,7 +106,7 @@ export default function MyAccount(props) {
       loadAsync();
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, HeaderComponent]);
 
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
