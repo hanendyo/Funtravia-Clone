@@ -650,7 +650,9 @@ export default function EventDetail(props) {
       >
         <FunImageBackground
           source={
-            dataevent && dataevent.images && dataevent.images.length
+            dataevent?.cover
+              ? { uri: dataevent.cover }
+              : dataevent?.images?.length > 0
               ? { uri: dataevent.images[0].image }
               : default_image
           }

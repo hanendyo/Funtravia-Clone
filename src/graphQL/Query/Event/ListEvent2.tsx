@@ -34,6 +34,7 @@ const ListEventGQL = gql`
       open
       address
       price
+      cover
       vendor {
         id
         name

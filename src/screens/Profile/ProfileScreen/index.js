@@ -89,19 +89,16 @@ export default function OtherProfile(props) {
 
     if (!props.route.params.idUser) {
       await seID(user.user.id);
-      // console.log(user.user.id);
 
       await props.navigation.setParams({ idUser: user.user.id });
       setposition("profile");
     } else {
       if (props.route.params.idUser === user.user.id) {
         await seID(user.user.id);
-        // console.log(user.user.id);
 
         setposition("profile");
       } else {
         await seID(props.route.params.idUser);
-        // console.log(props.route.params.idUser);
 
         setposition("other");
       }
@@ -110,17 +107,8 @@ export default function OtherProfile(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
 
-    // await Loaddata();
     await LoadUserProfile();
-    // await Getdatapost();
-    // await LoadReview();
-    // await LoadTrip();
   };
-
-  // const Loaddata = () => {
-  //   console.log("hasil", id);
-  //   console.log("hasil", token);
-  // };
 
   const [
     Getdatapost,
@@ -229,9 +217,6 @@ export default function OtherProfile(props) {
     },
   });
 
-  // console.log(loadingtripX);
-  // console.log(datatripX);
-
   const spreadData = (data) => {
     let tmpData = [];
     let count = 1;
@@ -240,7 +225,6 @@ export default function OtherProfile(props) {
     for (let val of data) {
       if (count < 3) {
         tmpArray.push(val);
-        // console.log("masuk", tmpArray);
         count++;
       } else {
         tmpArray.push(val);
@@ -623,7 +607,6 @@ export default function OtherProfile(props) {
         variant="transparent"
         onPress={() => setshowside(true)}
         style={{
-          // backgroundColor: "rgba(0,0,0,0.3)",
           marginRight: 10,
         }}
       >
@@ -633,7 +616,6 @@ export default function OtherProfile(props) {
   };
 
   useEffect(() => {
-    // console.log(hide.current);
     const unsubscribe = props.navigation.addListener("focus", (data) => {
       loadAsync();
     });
@@ -734,7 +716,6 @@ export default function OtherProfile(props) {
   };
 
   const handlePanReleaseOrEnd = (evt, gestureState) => {
-    // console.log('handlePanReleaseOrEnd', scrollY._value);
     syncScrollOffset();
     headerScrollY.setValue(scrollY._value);
     if (Platform.OS === "ios") {
@@ -790,7 +771,6 @@ export default function OtherProfile(props) {
     syncScrollOffset();
 
     const offsetY = e.nativeEvent.contentOffset.y;
-    // console.log('onScrollEndDrag', offsetY);
     // iOS only
     if (Platform.OS === "ios") {
       if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
@@ -802,7 +782,6 @@ export default function OtherProfile(props) {
   };
 
   const refresh = async () => {
-    // console.log("-- start refresh");
     loadAsync();
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
@@ -810,7 +789,6 @@ export default function OtherProfile(props) {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      // console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
@@ -1435,7 +1413,6 @@ export default function OtherProfile(props) {
           _tabIndex.current = id;
           setIndex(id);
 
-          // console.log(data?.user_profilebyid?.picture);
           props.navigation.setOptions({
             headerLeft: () => (
               <View
@@ -1472,7 +1449,7 @@ export default function OtherProfile(props) {
                       color: "#fff",
                     }}
                   >
-                    Profile
+                    {t("profile")}
                   </Text>
                 </Animated.View>
 
@@ -1579,7 +1556,6 @@ export default function OtherProfile(props) {
 
         Getdatapost();
         Getdataalbum();
-        // console.log("test");
         LoadReview();
         if (position === "profile") {
           LoadTrip2();
@@ -1624,7 +1600,7 @@ export default function OtherProfile(props) {
                     color: "#fff",
                   }}
                 >
-                  Profile
+                  {t("profile")}
                 </Text>
               </Animated.View>
 

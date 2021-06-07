@@ -249,9 +249,11 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
           <FunImageBackground
             key={item.id}
             source={
-              item.images.length
+              item.cover
+                ? { uri: item.cover }
+                : item.images.length > 0
                 ? { uri: item.images[0].image }
-                : { uri: default_image }
+                : { default_image }
             }
             style={[styles.ImageView]}
             imageStyle={[styles.Image]}
