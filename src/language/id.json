@@ -526,5 +526,6 @@
   "addAlbum": "Tambah ke Album",
   "newAlbum": "Album Baru",
   "create": "Buat",
-  "untitle": "Tidak ada judul"
+  "untitle": "Tidak ada judul",
+  "emptyAlbumTitle": "Judul album tidak boleh kosong"
 }

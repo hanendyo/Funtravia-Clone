@@ -228,6 +228,7 @@ import NewAlbum from "./files/new_album.svg";
 import ExitingAlbum from "./files/exiting_album";
 import EyeActive from "./files/mata active.svg";
 import EyeNonactive from "./files/mata nonactive.svg";
+import AlbumFeed from "./files/album_feed";
 
 export {
   LikeWhite,
@@ -460,4 +461,5 @@ export {
   ExitingAlbum,
   EyeActive,
   EyeNonactive,
+  AlbumFeed,
 };

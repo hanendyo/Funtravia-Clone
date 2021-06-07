@@ -8,6 +8,9 @@ import {
   FlatList,
   Platform,
   ActivityIndicator,
+  ImageBackground,
+  Pressable,
+  BackHandler,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -17,6 +20,7 @@ import {
   SizeOri,
   SizeStrace,
   CameraBlue,
+  Check,
 } from "../../../assets/svg";
 import { Text, Button, StatusBar, FunImage } from "../../../component";
 import CameraRoll from "@react-native-community/cameraroll";
@@ -25,9 +29,12 @@ import { Loading } from "../../../component";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import ImagePicker from "react-native-image-crop-picker";
 import Video from "react-native-video";
+import { RNToasty } from "react-native-toasty";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("screen");
 export default function Post(props) {
+  const { t, i18n } = useTranslation();
   const [imageRoll, setImageRoll] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,6 +43,7 @@ export default function Post(props) {
   const [allAlbums, setAllalbum] = useState([]);
   const [page_info, setPageInfo] = useState({});
   const [loadimg, setLoadimg] = useState(false);
+  const [checklistVideo, setChecklistVideo] = useState([]);
 
   let slider = useRef(null);
   let videoView = useRef(null);
@@ -104,27 +112,35 @@ export default function Post(props) {
     });
   };
 
-  const nextFunction = async (type) => {
-    if (type.substr(0, 5) === "video") {
-      props.navigation.navigate("CreatePostScreen", {
-        location: recent.node.location,
-        type: recent.node.type.substr(0, 5),
-        file: recent.node.image,
-      });
-    } else if (type.substr(0, 5) === "image") {
-      let result = await ImagePicker.openCropper({
-        path: recent.node.image.uri,
-        width: ratio.width * 1000,
-        height: ratio.height * 1000,
-        // compressImageQuality: 0.7,
-      });
-      props.navigation.navigate("CreatePostScreen", {
-        location: recent.node.location,
-        type: recent.node.type.substr(0, 5),
-        file: result,
-      });
+  const nextFunction = async (type, multi) => {
+    if (multi.length <= 0) {
+      if (type.substr(0, 5) === "video") {
+        props.navigation.navigate("CreatePostScreen", {
+          location: recent.node.location,
+          type: recent.node.type.substr(0, 5),
+          file: recent.node.image,
+        });
+      } else if (type.substr(0, 5) === "image") {
+        let result = await ImagePicker.openCropper({
+          path: recent.node.image.uri,
+          width: ratio.width * 1000,
+          height: ratio.height * 1000,
+          // compressImageQuality: 0.7,
+        });
+        props.navigation.navigate("CreatePostScreen", {
+          location: recent.node.location,
+          type: recent.node.type.substr(0, 5),
+          file: result,
+        });
+      } else {
+        return null;
+      }
     } else {
-      return null;
+      props.navigation.navigate("CreatePostScreen", {
+        location: recent.node.location,
+        type: "multi",
+        file: checklistVideo,
+      });
     }
   };
 
@@ -141,6 +157,37 @@ export default function Post(props) {
       // await scroll_to();
     })();
   }, [selectedAlbum, props.navigation]);
+
+  let buka = useRef(false);
+
+  const backAction = () => {
+    if (buka.current === true) {
+      buka.current = false;
+      // setOpenLongPress(false);
+      setChecklistVideo([]);
+
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+      BackHandler.addEventListener("hardwareBackPress", backDei);
+    } else {
+      props.navigation.goBack();
+    }
+
+    return true;
+  };
+
+  const backDei = () => {
+    console.log("test");
+    props.navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
 
   const [selectedAlbum, setSelectedAlbum] = useState({
     title: "Folder",
@@ -355,6 +402,43 @@ export default function Post(props) {
     );
   };
 
+  // let dataSementara = [];
+  const selectMutiVideo = (item, index) => {
+    let tempsVideo = [...checklistVideo];
+    tempsVideo.push(item);
+    setChecklistVideo(tempsVideo);
+    // setOpenLongPress(!openLongPress);
+    buka.current = !buka.current;
+    setRatio({ width: 1, height: 1, index: 0 });
+    if (buka.current === false) {
+      setChecklistVideo([]);
+    }
+  };
+  console.log("checklistVideo", checklistVideo);
+
+  const selectOneVideo = (item, index) => {
+    let tempsVideo = [...checklistVideo];
+    const indeks = tempsVideo.findIndex(
+      (k) => k.node.image.filename === item.node.image.filename
+    );
+
+    if (indeks > -1) {
+      tempsVideo.splice(indeks, 1);
+      if (tempsVideo.length < 1) {
+        buka.current = false;
+        // setOpenLongPress(false);
+      }
+    } else if (tempsVideo.length < 10) {
+      tempsVideo.push(item);
+    } else {
+      RNToasty.Show({
+        title: "Maksimal 10 photos",
+        position: "bottom",
+      });
+    }
+    setChecklistVideo(tempsVideo);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -408,8 +492,8 @@ export default function Post(props) {
         </View>
         <Button
           size="medium"
-          text="Next"
-          onPress={() => nextFunction(recent.node.type)}
+          text={t("next")}
+          onPress={() => nextFunction(recent.node.type, checklistVideo)}
         />
       </View>
       <FlatList
@@ -463,28 +547,31 @@ export default function Post(props) {
                 }}
               />
             )}
-            <TouchableOpacity
-              onPress={() =>
-                setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-              }
-              style={{
-                backgroundColor: "#B2B2B2",
-                position: "absolute",
-                bottom: 0,
-                borderRadius: 20,
-                margin: 15,
-                width: 40,
-                height: 40,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {ratio.index == 0 ? (
-                <SizeOri height={23} width={23} />
-              ) : (
-                <SizeStrace height={23} width={23} />
-              )}
-            </TouchableOpacity>
+            {buka.current === false ? (
+              <TouchableOpacity
+                onPress={() =>
+                  setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+                }
+                style={{
+                  backgroundColor: "#B2B2B2",
+                  position: "absolute",
+                  bottom: 0,
+                  borderRadius: 20,
+                  margin: 15,
+                  width: 40,
+                  height: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {ratio.index == 0 ? (
+                  <SizeOri height={23} width={23} />
+                ) : (
+                  <SizeStrace height={23} width={23} />
+                )}
+              </TouchableOpacity>
+            ) : // setRatio(ratio)
+            null}
           </View>
         )}
         renderItem={({ item, index }) =>
@@ -500,6 +587,7 @@ export default function Post(props) {
                 paddingHorizontal: 1,
               }}
               onPress={() => selectImg(item)}
+              onLongPress={() => selectMutiVideo(item, index)}
               // onPress={() => scroll_to()}
             >
               {item.node?.type.substr(0, 5) === "video" ? (
@@ -507,29 +595,142 @@ export default function Post(props) {
                   style={{
                     zIndex: 1,
                     flex: 1,
-                    top: 5,
-                    left: 5,
-                    paddingHorizontal: 2,
                     borderRadius: 5,
                     position: "absolute",
-                    backgroundColor: "rgba(0,0,0,0.50)",
-                    borderWidth: 0.5,
-                    borderColor: "white",
+                    height: "100%",
+                    width: "100%",
                   }}
                 >
-                  <Text style={{ color: "white" }}>
-                    {_getDuration(item.node.image.playableDuration)}
-                  </Text>
+                  <View
+                    style={{
+                      zIndex: 1,
+                      // flex: 1,
+                      top: 5,
+                      left: 5,
+                      paddingHorizontal: 2,
+                      borderRadius: 5,
+                      position: "absolute",
+                      backgroundColor: "rgba(0,0,0,0.50)",
+                      borderWidth: 0.5,
+                      borderColor: "white",
+                    }}
+                  >
+                    <Text style={{ color: "white" }}>
+                      {_getDuration(item.node.image.playableDuration)}
+                    </Text>
+                  </View>
+                  {buka.current === true ? (
+                    <Pressable
+                      onPress={() => selectOneVideo(item, index)}
+                      style={{
+                        zIndex: 1,
+                        // flex: 1,
+                        bottom: 5,
+                        right: 5,
+                        borderRadius: 15,
+                        position: "absolute",
+                        backgroundColor: "rgba(0,0,0,0.50)",
+                        borderWidth: 2,
+                        borderColor: "white",
+                        height: 30,
+                        width: 30,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {checklistVideo.map((items, index) =>
+                        items.node.image.filename ==
+                        item.node.image.filename ? (
+                          <View
+                            key={index}
+                            style={{
+                              backgroundColor: "#209fae",
+                              height: 26,
+                              width: 26,
+                              borderRadius: 13,
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              size="description"
+                              type="bold"
+                              style={{ color: "#FFF" }}
+                            >
+                              {index + 1}
+                            </Text>
+                          </View>
+                        ) : null
+                      )}
+                    </Pressable>
+                  ) : null}
                 </View>
               ) : null}
-              <Image
+              <ImageBackground
                 source={{ uri: item.node.image.uri }}
                 style={{
                   height: Dimensions.get("screen").width / 4 - 1,
                   width: Dimensions.get("screen").width / 4 - 1,
                   resizeMode: "cover",
                 }}
-              />
+              >
+                <View
+                  style={{
+                    zIndex: 1,
+                    flex: 1,
+                    borderRadius: 5,
+                    position: "absolute",
+                    height: "100%",
+                    width: "100%",
+                  }}
+                >
+                  {buka.current === true ? (
+                    <Pressable
+                      onPress={() => selectOneVideo(item, index)}
+                      style={{
+                        zIndex: 1,
+                        // flex: 1,
+                        bottom: 5,
+                        right: 5,
+                        borderRadius: 15,
+                        position: "absolute",
+                        backgroundColor: "rgba(0,0,0,0.50)",
+                        borderWidth: 2,
+                        borderColor: "white",
+                        height: 30,
+                        width: 30,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {checklistVideo.map((items, index) =>
+                        items.node.image.filename ==
+                        item.node.image.filename ? (
+                          <View
+                            key={index}
+                            style={{
+                              backgroundColor: "#209fae",
+                              height: 26,
+                              width: 26,
+                              borderRadius: 13,
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              size="description"
+                              type="bold"
+                              style={{ color: "#FFF" }}
+                            >
+                              {index + 1}
+                            </Text>
+                          </View>
+                        ) : null
+                      )}
+                    </Pressable>
+                  ) : null}
+                </View>
+              </ImageBackground>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
