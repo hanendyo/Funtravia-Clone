@@ -188,7 +188,7 @@ export default function Country(props) {
     list_journal = data.country_detail.journal;
   }
 
-  console.log("data", data);
+  // console.log("data", data);
 
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -1410,139 +1410,142 @@ export default function Country(props) {
                   width: Dimensions.get("screen").width - 69,
                 }}
                 customSlide={({ index, item, style, width }) => (
-                  <View
-                    style={{
-                      width: Dimensions.get("screen").width - 69,
-                      alignItems: "center",
-                      alignContent: "center",
-                    }}
-                  >
-                    <Text
-                      size="label"
-                      type="bold"
-                      style={{
-                        textAlign: "center",
-                        marginTop: 3,
-                      }}
-                    >
-                      <Capital text={item.name} />
-                    </Text>
-                    <Ripple
-                      onPress={() => {
-                        props.navigation.navigate("CountryStack", {
-                          screen: "CityDetail",
-                          params: {
-                            data: {
-                              city_id: item.id,
-                              city_name: item.name,
-                            },
-                            exParam: true,
-                          },
-                        });
-                      }}
-                      style={{
-                        height: width * 0.4,
-                        width: "100%",
-                        borderRadius: 10,
-                        marginVertical: 2,
-                      }}
-                    >
-                      <Image
-                        style={{
-                          height: "100%",
-                          width: "100%",
-                          borderRadius: 10,
-                        }}
-                        source={
-                          item.image ? { uri: item.image } : default_image
-                        }
-                      ></Image>
-                    </Ripple>
+                  console.log("item", item),
+                  (
                     <View
                       style={{
-                        width: "100%",
-                        flexWrap: "wrap",
-                        flexDirection: "row",
-                        justifyContent: "flex-start",
+                        width: Dimensions.get("screen").width - 69,
+                        alignItems: "center",
+                        alignContent: "center",
                       }}
                     >
-                      {item.destination && item.destination.length > 0 ? (
-                        <FlatList
-                          listKey={(item, index) => "D" + index.toString()}
-                          data={item.destination}
-                          numColumns={4}
-                          renderItem={({ item, index }) => (
-                            <Ripple
-                              onPress={() => {
-                                //   props.navigation.navigate("detailStack", {
-                                //     id: item.id,
-                                //     name: item.name,
-                                //   });
-                                // }}
+                      <Text
+                        size="label"
+                        type="bold"
+                        style={{
+                          textAlign: "center",
+                          marginTop: 3,
+                        }}
+                      >
+                        <Capital text={item.name} />
+                      </Text>
+                      <Ripple
+                        onPress={() => {
+                          props.navigation.navigate("CountryStack", {
+                            screen: "CityDetail",
+                            params: {
+                              data: {
+                                city_id: item.id,
+                                city_name: item.name,
+                              },
+                              exParam: true,
+                            },
+                          });
+                        }}
+                        style={{
+                          height: width * 0.4,
+                          width: "100%",
+                          borderRadius: 10,
+                          marginVertical: 2,
+                        }}
+                      >
+                        <Image
+                          style={{
+                            height: "100%",
+                            width: "100%",
+                            borderRadius: 10,
+                          }}
+                          source={
+                            item.cover ? { uri: item.cover } : default_image
+                          }
+                        ></Image>
+                      </Ripple>
+                      <View
+                        style={{
+                          width: "100%",
+                          flexWrap: "wrap",
+                          flexDirection: "row",
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        {item.destination && item.destination.length > 0 ? (
+                          <FlatList
+                            listKey={(item, index) => "D" + index.toString()}
+                            data={item.destination}
+                            numColumns={4}
+                            renderItem={({ item, index }) => (
+                              <Ripple
+                                onPress={() => {
+                                  //   props.navigation.navigate("detailStack", {
+                                  //     id: item.id,
+                                  //     name: item.name,
+                                  //   });
+                                  // }}
 
-                                props.navigation.push(
-                                  "DestinationUnescoDetail",
-                                  {
-                                    id: item.id,
-                                    name: item.name,
-                                    token: token,
-                                  }
-                                );
-                              }}
-                              style={{
-                                // width: (width - 60) / 4,
-                                alignContent: "center",
-                                alignItems: "center",
-                                borderColor: "#209fae",
-                                padding: 2,
-                              }}
-                            >
-                              <Image
-                                style={{
-                                  borderRadius: 10,
-                                  height: (width - 80) / 4,
-                                  width: (width - 88) / 4,
+                                  props.navigation.push(
+                                    "DestinationUnescoDetail",
+                                    {
+                                      id: item.id,
+                                      name: item.name,
+                                      token: token,
+                                    }
+                                  );
                                 }}
-                                source={
-                                  item.images
-                                    ? {
-                                        uri: item.images[0].image,
-                                      }
-                                    : default_image
-                                }
-                              ></Image>
-                              <Text
-                                size="small"
-                                type="bold"
                                 style={{
-                                  textAlign: "center",
-                                  marginTop: 3,
+                                  // width: (width - 60) / 4,
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  borderColor: "#209fae",
+                                  padding: 2,
                                 }}
                               >
-                                <Truncate
-                                  text={Capital({
-                                    text: item.name,
-                                  })}
-                                  length={13}
-                                />
-                              </Text>
-                            </Ripple>
-                          )}
-                        />
-                      ) : (
-                        <View
-                          style={{
-                            flex: 1,
-                            paddingTop: 100,
-                            alignContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text>{null}</Text>
-                        </View>
-                      )}
+                                <Image
+                                  style={{
+                                    borderRadius: 10,
+                                    height: (width - 80) / 4,
+                                    width: (width - 88) / 4,
+                                  }}
+                                  source={
+                                    item.images
+                                      ? {
+                                          uri: item.images[0].image,
+                                        }
+                                      : default_image
+                                  }
+                                ></Image>
+                                <Text
+                                  size="small"
+                                  type="bold"
+                                  style={{
+                                    textAlign: "center",
+                                    marginTop: 3,
+                                  }}
+                                >
+                                  <Truncate
+                                    text={Capital({
+                                      text: item.name,
+                                    })}
+                                    length={13}
+                                  />
+                                </Text>
+                              </Ripple>
+                            )}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              flex: 1,
+                              paddingTop: 100,
+                              alignContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text>{null}</Text>
+                          </View>
+                        )}
+                      </View>
                     </View>
-                  </View>
+                  )
                 )}
                 customButtons={(position, move) => (
                   <View
