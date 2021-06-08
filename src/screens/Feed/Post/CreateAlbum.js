@@ -9,11 +9,13 @@ import {
   Pressable,
 } from "react-native";
 import { NewAlbum, ExitingAlbum } from "../../../assets/svg";
-import { Text, Button } from "../../../component";
+import { Text, Button, Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
 import Album from "./Album";
 import { RNToasty } from "react-native-toasty";
+import CreateAlbumFeed from "../../../graphQL/Mutation/Post/CreateAlbumFeed";
+import { useMutation } from "@apollo/react-hooks";
 
 export default function CreateAlbum({
   modals,
@@ -21,31 +23,67 @@ export default function CreateAlbum({
   props,
   user_id,
   setAlbum,
+  token,
+  setIdAlbums,
 }) {
   const { t } = useTranslation();
   const [modalAlbum, setModalAlbum] = useState(false);
   const [modalAlbumCreate, setModalAlbumCreate] = useState(false);
   const [text, setText] = useState("");
+  let [loadings, setLoadings] = useState(false);
 
   const modal = () => {
     setModalAlbumCreate(true);
     setModalCreate(false);
   };
 
-  const submitAlbum = () => {
+  const [MutationCreateAlbumFeed, { loading, data, error }] = useMutation(
+    CreateAlbumFeed,
+    {
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
+  );
+
+  const submitAlbum = async () => {
+    setLoadings(true);
     if (text === "" || text === null) {
       return RNToasty.Show({
         title: t("emptyAlbumTitle"),
         position: "bottom",
       });
     }
-    RNToasty.Show({
-      title: "Judul album " + "'" + text + "'",
-      position: "bottom",
-    });
-    setAlbum(text);
-    setModalAlbumCreate(false);
-    setText("");
+
+    try {
+      let response = await MutationCreateAlbumFeed({
+        variables: {
+          title: text,
+        },
+      });
+
+      if (response.data) {
+        if (
+          (response &&
+            response.data &&
+            response.data.create_albums.code === 200) ||
+          (response &&
+            response.data &&
+            response.data.create_albums.code === "200")
+        ) {
+          setIdAlbums(response.data.create_albums.id);
+          setAlbum(text);
+          setModalAlbumCreate(false);
+          setText("");
+          setLoadings(false);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -59,6 +97,7 @@ export default function CreateAlbum({
         backgroundColor: modals || modalAlbumCreate === true ? "#000" : null,
       }}
     >
+      <Loading show={loadings} />
       <Modal
         useNativeDriver={true}
         visible={modals}

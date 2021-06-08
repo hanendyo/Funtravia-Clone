@@ -11,6 +11,7 @@ import { AllPostWhite, AlbumFeed, Album } from "../../assets/svg";
 const { width, height } = Dimensions.get("screen");
 import { useTranslation } from "react-i18next";
 export default function RenderAlbum({ data, props }) {
+  console.log("data: ", data);
   const [indexAktif, setIndexAktive] = useState(0);
   const { t } = useTranslation();
   const goToItinerary = (data) => {
@@ -47,30 +48,32 @@ export default function RenderAlbum({ data, props }) {
         }}
         source={{ uri: data.assets[indexAktif].filepath }}
       >
-        <Pressable
-          onPress={() => goToItinerary(data)}
-          style={({ pressed }) => [
-            {
-              position: "absolute",
-              top: 15,
-              right: 70,
-              backgroundColor: "#040404",
-              opacity: pressed ? 1 : 0.8,
-              //   paddingHorizontal: 15,
-              borderRadius: 14,
-              height: 28,
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-            },
-          ]}
-        >
-          <AlbumFeed
-            height={17}
-            width={17}
-            style={{ marginHorizontal: 15, marginVertical: 10 }}
-          />
-        </Pressable>
+        {data.itinerary !== null ? (
+          <Pressable
+            onPress={() => goToItinerary(data)}
+            style={({ pressed }) => [
+              {
+                position: "absolute",
+                top: 15,
+                right: 70,
+                backgroundColor: "#040404",
+                opacity: pressed ? 1 : 0.8,
+                //   paddingHorizontal: 15,
+                borderRadius: 14,
+                height: 28,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              },
+            ]}
+          >
+            <AlbumFeed
+              height={17}
+              width={17}
+              style={{ marginHorizontal: 15, marginVertical: 10 }}
+            />
+          </Pressable>
+        ) : null}
         <View
           style={{
             position: "absolute",

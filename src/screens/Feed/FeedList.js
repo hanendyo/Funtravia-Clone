@@ -1002,7 +1002,7 @@ export default function FeedList({ props, token }) {
                 borderRadius: 15,
               }}
             >
-              {item.is_single == false && item.itinerary !== null ? (
+              {item.is_single == false ? (
                 <RenderAlbum data={item} props={props} />
               ) : (
                 <RenderSinglePhoto
