@@ -209,8 +209,7 @@ export default function CityDetail(props) {
         let tkn = await AsyncStorage.getItem("access_token");
         await setToken(tkn);
         await getPackageDetail();
-        console.log('testing')
-        // useEffect;
+        useEffect;
         await getJournalCity();
         await getItineraryCity();
     };
@@ -231,7 +230,6 @@ export default function CityDetail(props) {
         },
         onCompleted: () => {
             let tab = [{ key: "general", title: "General" }];
-            console.log(dataCity)
 
             // dataCity.province_detail_v2.article_header.map((item, index) => {
             //     tab.push({
@@ -244,10 +242,6 @@ export default function CityDetail(props) {
             setRoutes(tab);
         },
     });
-
-    console.log(loadingCity)
-    console.log(dataCity)
-    console.log(errorCity)
 
     let listCity = [];
     if (dataCity && dataCity.province_detail_v2) {

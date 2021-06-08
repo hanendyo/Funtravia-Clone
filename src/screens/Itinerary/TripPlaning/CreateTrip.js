@@ -108,8 +108,6 @@ export default function Trip(props) {
   let [dataCategories, setdataCategories] = useState([]);
   let [category_id, setcategory_id] = useState(null);
 
-  console.log(dataCategories);
-
   const jam = [
     1,
     2,
@@ -197,11 +195,7 @@ export default function Trip(props) {
     },
   });
 
-  console.log(loadingcity);
-  console.log(loadingcity);
-  console.log(datacity);
-  console.log(errorcity);
-  console.log(idCountry);
+
 
   const [
     querywith,
@@ -222,7 +216,6 @@ export default function Trip(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    // console.log(tkn);
     if (tkn !== null) {
       setToken(tkn);
       query();
@@ -253,19 +246,19 @@ export default function Trip(props) {
   };
 
   const Searchcity = async (text) => {
-    console.log("masuk", text);
     setCitys(text);
     querycity();
   };
 
   const Create = async () => {
+    
     try {
       let response = await mutation({
         variables: {
           countries_id: idCountry,
           cities_id: idCity,
           name: title,
-          start_date: new Date(startDate),
+          start_date: startDate,
           end_date: endDate,
           isprivate: privateToggle,
           itinerary_buddy: idwithSelected,
@@ -335,12 +328,10 @@ export default function Trip(props) {
 
   const settravel = async (item) => {
     setLoadingApp(true);
-    // setModaltravel(false);
     await setTravelWith(item.first_name);
     await setsearchtravel([]);
     var tempdata = [...withSelected];
     var inde = tempdata.findIndex((k) => k["id"] === item.id);
-    // console.log(inde);
     if (inde === -1) {
       tempdata.push({
         id: item.id,
@@ -351,8 +342,7 @@ export default function Trip(props) {
       var tempdatas = [...idwithSelected];
       tempdatas.push(item.id);
       await setIdwithSelected(tempdatas);
-      // setTravelWith('');
-      // setTravelWiths('');
+  
       setLoadingApp(false);
     } else {
       Alert.alert(item.first_name + " already with you");
@@ -494,10 +484,7 @@ export default function Trip(props) {
               borderRadius: 5,
               alignItems: "center",
               shadowColor: "#209fae",
-              // shadowOffset: { width: 1, height: 3 },
-              // shadowOpacity: 0.5,
-              // shadowRadius: 3,
-              // elevation: 3,
+
               shadowOffset: { width: 0, height: 1 },
               shadowOpacity: Platform.OS == "ios" ? 0.22 : 0,
               shadowRadius: Platform.OS == "ios" ? 2.22 : 0,
@@ -587,7 +574,6 @@ export default function Trip(props) {
                 <View
                   style={{
                     width: Dimensions.get("screen").width,
-                    // height: 15,
                     padding: 5,
                     backgroundColor: "#209fae",
                     borderTopEndRadius: 5,
@@ -600,7 +586,6 @@ export default function Trip(props) {
                       height: 30,
                       width: 30,
                       zIndex: 999,
-                      // marginBottom: 20,
                       alignItems: "center",
                       justifyContent: "center",
                     }}
@@ -670,8 +655,7 @@ export default function Trip(props) {
                             type="regular"
                             style={
                               {
-                                // fontFamily: 'Lato-Regular',
-                                // fontSize: 16,
+                               
                               }
                             }
                           >
@@ -708,7 +692,6 @@ export default function Trip(props) {
                     editable={false}
                     autoCorrect={false}
                     value={city}
-                    // onChangeText={(text) => setCity(text)}
                     label=""
                     style={{
                       fontFamily: "Lato-Regular",
@@ -1018,7 +1001,8 @@ export default function Trip(props) {
                         }}
                         onValueChange={(itemValue, itemIndex) => {
                           let dat = new Date(startDate);
-                          dat.setDate(dat.getDate() + itemValue);
+                          dat.setDate(dat.getDate() + (itemValue-1));
+               
                           setEndDate(dat);
                           setDuration(itemValue);
                           setModalEnd(false);
