@@ -614,6 +614,7 @@ export default function Post(props) {
               }}
               onPress={() => selectImg(item)}
               onLongPress={() => selectMutiVideo(item, index)}
+              delayLongPress={100}
               // onPress={() => scroll_to()}
             >
               {item.node?.type.substr(0, 5) === "video" ? (

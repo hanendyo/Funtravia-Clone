@@ -70,12 +70,12 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost({ navigation, route }) {
-  console.log("navigation", navigation);
   const { t, i18n } = useTranslation();
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
   let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
+  let [idAlbums, setIdAlbums] = useState();
   let [Location, setLocation] = useState({
     address: t("addLocation"),
     latitude: "",
@@ -137,37 +137,49 @@ export default function CreatePost({ navigation, route }) {
       Location.address == "" || Location.address == "Add Location"
         ? "0"
         : Location.address;
+    let albums_id = idAlbums ? idAlbums : null;
+    let itinerary_id = null;
+    let day_id = null;
+    let oriented = route?.params?.ratio?.label
+      ? route?.params?.ratio?.label
+      : "S";
 
-    let assets = null;
+    let assets = [];
     if (route.params.type === "video") {
-      assets = new ReactNativeFile({
+      const data = new ReactNativeFile({
         uri: chosenFile.uri,
         type: `video/${chosenFile.filename.substring(
           chosenFile.filename.length - 3
         )}`,
         name: chosenFile.filename,
       });
+      assets.push(data);
     } else if (route.params.type === "image") {
-      assets = new ReactNativeFile({
+      const data = new ReactNativeFile({
         uri: chosenFile.path,
         type: chosenFile.mime,
         name: "image.jpeg",
       });
+      assets.push(data);
     } else {
       chosenFile.map((item, index) => {
-        item.node.type.substr(0, 5) === "video"
-          ? (assets = new ReactNativeFile({
-              uri: item.node.image.uri,
-              type: `video/${item.node.image.substring(
-                item.node.image.filename.length - 3
-              )}`,
-              name: item.node.image.filename,
-            }))
-          : (assets = new ReactNativeFile({
-              uri: item.node.image.uri,
-              type: item.node.image.type,
-              name: "image.jpeg",
-            }));
+        let typeMedia = item?.node?.type?.split("/");
+        let typeExt = item?.node?.image?.filename.split(".");
+        if (typeMedia[0] === "video") {
+          const data = new ReactNativeFile({
+            uri: item?.node?.image?.uri,
+            type: `video/${typeExt[typeExt.length - 1]}`,
+            name: item?.node?.image?.filename,
+          });
+          assets.push(data);
+        } else {
+          const data = new ReactNativeFile({
+            uri: item?.node?.image?.uri,
+            type: item?.node?.type,
+            name: "image.jpeg",
+          });
+          assets.push(data);
+        }
       });
     }
 
@@ -178,10 +190,14 @@ export default function CreatePost({ navigation, route }) {
           latitude: latitude,
           longitude: longitude,
           location_name: location_name,
-          type: route.params.type,
+          albums_id: albums_id,
+          itinerary_id: itinerary_id,
+          day_id: day_id,
+          oriented: oriented,
           assets,
         },
       });
+
       if (response.data) {
         if (response.data.create_post.code === 200) {
           setLoading(false);
@@ -614,8 +630,11 @@ export default function CreatePost({ navigation, route }) {
                       </Text>
                     </View>
                     <Xgrey
-                      height="30"
-                      width="30"
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height="20"
+                      width="20"
                       onPress={() => setAlbum("")}
                     />
                   </View>
@@ -720,6 +739,8 @@ export default function CreatePost({ navigation, route }) {
           user_id={setting?.user_id}
           props={navigation}
           setAlbum={(e) => setAlbum(e)}
+          token={token}
+          setIdAlbums={(e) => setIdAlbums(e)}
         />
       </View>
     </KeyboardAvoidingView>
