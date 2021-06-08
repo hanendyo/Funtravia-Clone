@@ -86,6 +86,17 @@ export default function CityDetail(props) {
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
+  let Bln = new Date().getMonth();
+  let Bln1 = 0;
+  if (Bln < 10) {
+    Bln1 = "0" + (Bln + 1);
+  } else {
+    Bln1 = Bln + 1;
+  }
+  // let Bln1 = Bln + 1;
+  let years = new Date().getFullYear();
+
+  let datenow = years + "-" + Bln1;
 
   const [tabIndex, setIndex] = useState(0);
   const [routes, setRoutes] = useState([1]);
@@ -240,12 +251,24 @@ export default function CityDetail(props) {
       });
 
       setRoutes(tab);
-
+      let loop = 0;
       let eventavailable = [];
       if (dataCity.CitiesInformation?.event) {
         dataCity.CitiesInformation?.event.map((item, index) => {
           if (item?.event && item?.event?.length && item?.event?.length > 0) {
-            eventavailable = item;
+            loop = loop + 1;
+            // if (loop == 1) {
+            //   eventavailable = item;
+            console.log("bln", item.month);
+            console.log("now", datenow);
+            // }
+            if (item.month == datenow) {
+              eventavailable = item;
+              console.log(eventavailable);
+            }
+            if (loop == 1) {
+              eventavailable = item;
+            }
           }
         });
       }
@@ -565,10 +588,6 @@ export default function CityDetail(props) {
     }
   };
 
-  //   console.log("Month", eventavailable.month);
-  //   console.log("item", eventavailable);
-  //   console.log("Month", eventavailable.event);
-
   // RenderGeneral
   const RenderGeneral = ({}) => {
     let render = [];
@@ -581,9 +600,6 @@ export default function CityDetail(props) {
     renderjournal = list_journal;
 
     let renderItinerary = list_populer;
-    // if (eventavailable && eventavailable.event?.length > 0) {
-    //   setdataevent(eventavailable);
-    // }
 
     return (
       // Deskripsi
@@ -1627,6 +1643,7 @@ export default function CityDetail(props) {
               >
                 {render?.event
                   ? render?.event.map((item, index) => {
+                      console.log("item", item);
                       return (
                         <Ripple
                           key={"keyevent1" + index}

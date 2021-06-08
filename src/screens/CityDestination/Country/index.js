@@ -188,6 +188,8 @@ export default function Country(props) {
     list_journal = data.country_detail.journal;
   }
 
+  console.log("data", data);
+
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
@@ -802,7 +804,7 @@ export default function Country(props) {
               <View
                 style={{
                   borderBottomWidth: 2,
-                  borderBottomColor: "white",
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
                   alignContent: "center",
                   paddingHorizontal: 15,
                   width:
@@ -824,8 +826,7 @@ export default function Country(props) {
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
                       // borderWidth: 1,
-                      borderBottomWidth:
-                        props.navigationState.routes.length < 2 ? 2 : 0,
+                      borderBottomWidth: 0,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
@@ -2229,7 +2230,7 @@ export default function Country(props) {
             placeholderTextColor={"white"}
             underlineColorAndroid="transparent"
             onChangeText={(x) => setTextc(x)}
-            placeholder="Search"
+            placeholder={"Search in " + data?.country_detail?.name}
             returnKeyType="search"
             onSubmitEditing={(x) =>
               props.navigation.push("SearchPg", {
