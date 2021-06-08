@@ -17,6 +17,7 @@ const country_detail = gql`
         id
         name
         image
+        cover
         destination {
           id
           name
