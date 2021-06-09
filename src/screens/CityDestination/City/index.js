@@ -257,14 +257,9 @@ export default function CityDetail(props) {
         dataCity.CitiesInformation?.event.map((item, index) => {
           if (item?.event && item?.event?.length && item?.event?.length > 0) {
             loop = loop + 1;
-            // if (loop == 1) {
-            //   eventavailable = item;
-            console.log("bln", item.month);
-            console.log("now", datenow);
-            // }
+
             if (item.month == datenow) {
               eventavailable = item;
-              console.log(eventavailable);
             }
             if (loop == 1) {
               eventavailable = item;
@@ -1518,66 +1513,69 @@ export default function CityDetail(props) {
                   // width: Dimensions.get('screen').width - 40,
                 }}
                 customSlide={({ index, item, style, width }) => (
-                  <Ripple
-                    onPress={() => {
-                      Goto(item);
-                    }}
-                    key={index}
-                    style={{
-                      borderTopLeftRadius: 5,
-                      borderWidth: 1,
-                      borderTopRightRadius: 5,
-                    }}
-                  >
-                    <FunImageBackground
-                      source={
-                        item?.images && item?.images?.length
-                          ? {
-                              uri: item.images[0].image,
-                            }
-                          : default_image
-                      }
+                  console.log("item", item),
+                  (
+                    <Ripple
+                      onPress={() => {
+                        Goto(item);
+                      }}
+                      key={index}
                       style={{
                         borderTopLeftRadius: 5,
+                        borderWidth: 1,
                         borderTopRightRadius: 5,
-                        height: Dimensions.get("screen").width * 0.4,
-                        width: Dimensions.get("screen").width - 40,
-                        alignContent: "center",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                      }}
-                      imageStyle={{
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
-                        height: Dimensions.get("screen").width * 0.4,
-                        width: Dimensions.get("screen").width - 40,
-                        resizeMode: "cover",
                       }}
                     >
-                      <LinearGradient
-                        colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
-                        start={{ x: 0, y: 1 }}
-                        end={{ x: 0, y: 0 }}
+                      <FunImageBackground
+                        source={
+                          item.cover
+                            ? { uri: item?.cover }
+                            : item?.images?.length > 0
+                            ? { uri: item?.images[0]?.image }
+                            : { default_image }
+                        }
                         style={{
-                          height: "30%",
-                          width: "100%",
+                          borderTopLeftRadius: 5,
+                          borderTopRightRadius: 5,
+                          height: Dimensions.get("screen").width * 0.4,
+                          width: Dimensions.get("screen").width - 40,
                           alignContent: "center",
                           alignItems: "center",
                           justifyContent: "flex-end",
-                          padding: 25,
+                        }}
+                        imageStyle={{
+                          borderTopLeftRadius: 5,
+                          borderTopRightRadius: 5,
+                          height: Dimensions.get("screen").width * 0.4,
+                          width: Dimensions.get("screen").width - 40,
+                          resizeMode: "cover",
                         }}
                       >
-                        <Text
+                        <LinearGradient
+                          colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
+                          start={{ x: 0, y: 1 }}
+                          end={{ x: 0, y: 0 }}
                           style={{
-                            color: "white",
-                            textAlign: "center",
+                            height: "30%",
+                            width: "100%",
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                            padding: 25,
                           }}
                         >
-                          {item.name ? item.name : ""}
-                        </Text>
-                      </LinearGradient>
-                    </FunImageBackground>
-                  </Ripple>
+                          <Text
+                            style={{
+                              color: "white",
+                              textAlign: "center",
+                            }}
+                          >
+                            {item.name ? item.name : ""}
+                          </Text>
+                        </LinearGradient>
+                      </FunImageBackground>
+                    </Ripple>
+                  )
                 )}
                 customButtons={(position, move) => (
                   <View
@@ -1643,7 +1641,6 @@ export default function CityDetail(props) {
               >
                 {render?.event
                   ? render?.event.map((item, index) => {
-                      console.log("item", item);
                       return (
                         <Ripple
                           key={"keyevent1" + index}
