@@ -31,6 +31,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import Video from "react-native-video";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("screen");
 export default function Post(props) {
@@ -49,6 +50,12 @@ export default function Post(props) {
   const [page_info, setPageInfo] = useState({});
   const [loadimg, setLoadimg] = useState(false);
   const [checklistVideo, setChecklistVideo] = useState([]);
+  const [token, setToken] = useState(null);
+
+  const loadAsync = async () => {
+    let access_token = await AsyncStorage.getItem("access_token");
+    setToken(access_token);
+  };
 
   let slider = useRef(null);
   let videoView = useRef(null);
@@ -104,17 +111,24 @@ export default function Post(props) {
       cropping: false,
       cropperCircleOverlay: false,
       includeBase64: false,
-    }).then((image) => {
-      Refresh();
-      setRatio({ width: 1, height: 1, index: 0 });
-      setRecent({
-        node: {
-          image: { uri: image.path, filename: "camera.jpg" },
-          location: {},
-          type: image.mime,
-        },
+    })
+      .then((image) => {
+        Refresh();
+        setRatio({ width: 1, height: 1, index: 0 });
+        setRecent({
+          node: {
+            image: { uri: image.path, filename: "camera.jpg" },
+            location: {},
+            type: image.mime,
+          },
+        });
+      })
+      .catch((err) => {
+        RNToasty.Show({
+          title: "Canceled",
+          position: "bottom",
+        });
       });
-    });
   };
 
   const nextFunction = async (type, multi) => {
@@ -124,6 +138,7 @@ export default function Post(props) {
           location: recent.node.location,
           type: recent.node.type.substr(0, 5),
           file: recent.node.image,
+          token: token,
         });
       } else if (type.substr(0, 5) === "image") {
         try {
@@ -137,6 +152,7 @@ export default function Post(props) {
             location: recent.node.location,
             type: recent.node.type.substr(0, 5),
             file: result,
+            token: token,
           });
         } catch (e) {
           RNToasty.Show({
@@ -153,17 +169,16 @@ export default function Post(props) {
         type: "multi",
         file: checklistVideo,
         ratio: ratio,
+        token: token,
       });
     }
   };
 
-  console.log("ratio", ratio);
-
-  const scroll_to = () => {
-    setTimeout(() => {
-      slider.current.scrollToOffset({ animated: true, offset: 0 });
-    }, 3000);
-  };
+  // const scroll_to = () => {
+  //   setTimeout(() => {
+  //     slider.current.scrollToOffset({ animated: true, offset: 0 });
+  //   }, 3000);
+  // };
 
   useEffect(() => {
     (async () => {
@@ -196,6 +211,7 @@ export default function Post(props) {
   };
 
   useEffect(() => {
+    loadAsync();
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
@@ -427,7 +443,6 @@ export default function Post(props) {
       setChecklistVideo([]);
     }
   };
-  console.log("checklistVideo", checklistVideo);
 
   const selectOneVideo = async (item, index) => {
     if (item.node.image.width > item.node.image.height) {
@@ -519,7 +534,7 @@ export default function Post(props) {
         <Button
           size="medium"
           text={t("next")}
-          onPress={() => nextFunction(recent.node.type, checklistVideo)}
+          onPress={() => nextFunction(recent?.node?.type, checklistVideo)}
         />
       </View>
       <FlatList

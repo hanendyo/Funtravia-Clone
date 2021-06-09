@@ -13,9 +13,10 @@ import {
   Pressable,
   SafeAreaView,
   Clipboard,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
 import { CustomImage } from "../../component";
 import {
   LikeRed,
@@ -23,6 +24,8 @@ import {
   More,
   LikeBlack,
   CommentBlack,
+  ExitingAlbum,
+  NewAlbum,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -581,269 +584,57 @@ export default function FeedList({ props, token }) {
   return (
     <SafeAreaView>
       <Modal
-        onBackdropPress={() => {
-          setModalmenu(false);
-        }}
+        useNativeDriver={true}
+        visible={modalmenu}
         onRequestClose={() => setModalmenu(false)}
-        // onDismiss={() => setModalmenu(false)}
-        animationIn="fadeInDown"
-        animationOut="fadeInDown"
-        isVisible={modalmenu}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
+        transparent={true}
+        animationType="slide"
       >
+        <Pressable
+          onPress={() => setModalmenu(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            backgroundColor: "#000",
+            opacity: 0.4,
+          }}
+        />
         <View
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 80,
-            padding: 20,
+            width: Dimensions.get("screen").width - 20,
+            marginHorizontal: 10,
+            backgroundColor: "#FFF",
+            position: "relative",
+            top: -600,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
           }}
         >
-          <TouchableOpacity
+          <Pressable
+            onPress={() => modalExiting()}
             style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenu(false);
-              shareAction({
-                from: "feed",
-                target: selectedOption.id,
-              });
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 50,
             }}
           >
-            <Text size="description" type="regular" style={{}}>
-              {t("shareTo")}...
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            <ExitingAlbum height="60" width="60" />
+            <Text>Add to exiting album</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => modal()}
             style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenu(false);
-              CopyLink({
-                from: "feed",
-                target: selectedOption.id,
-              });
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 50,
             }}
           >
-            <Text size="description" type="regular" style={{}}>
-              {t("copyLink")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenu(false),
-                props.navigation.push("FeedStack", {
-                  screen: "EditPost",
-                  params: {
-                    datapost: selectedOption,
-                  },
-                });
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("edit")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalhapus(true);
-            }}
-          >
-            <Text
-              size="description"
-              type="regular"
-              style={{ color: "#d75995" }}
-            >
-              {t("delete")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
-      <Modal
-        onBackdropPress={() => {
-          setModalmenuother(false);
-        }}
-        onRequestClose={() => setModalmenuother(false)}
-        onDismiss={() => setModalmenuother(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modalmenuother}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 80,
-            padding: 20,
-          }}
-        >
-          {/* <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-            }}
-          >
-            <Text
-              size="description"
-              type="regular"
-              style={{ color: "#d75995" }}
-            >
-              {t("reportThisPost")}
-            </Text>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("blockUser")}
-            </Text>
-          </TouchableOpacity> */}
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() =>
-              shareAction({
-                from: "feed",
-                target: selectedOption.id,
-              })
-            }
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("shareTo")}...
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-              CopyLink({
-                from: "feed",
-                target: selectedOption.id,
-              });
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("copyLink")}
-            </Text>
-          </TouchableOpacity>
-          {datasFollow &&
-          selectedOption &&
-          selectedOption.user &&
-          datasFollow.findIndex((k) => k["id"] == selectedOption?.user?.id) ==
-            -1 ? (
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => _follow(selectedOption.user.id)}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("follow")}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => _unfollow(selectedOption.user.id)}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("unfollow")}
-              </Text>
-            </TouchableOpacity>
-          )}
-          {/* <TouchableOpacity
-                        style={{
-                            paddingVertical: 10,
-                        }}
-                        onPress={() => {
-                            setModalmenuother(false);
-                        }}
-                    >
-                        <Text size="description" type="regular" style={{}}>
-                            {t("hidePost")}
-                        </Text>
-                    </TouchableOpacity> */}
-        </View>
-      </Modal>
-
-      <Modal
-        onBackdropPress={() => {
-          setModalhapus(false);
-        }}
-        onRequestClose={() => setModalhapus(false)}
-        onDismiss={() => setModalhapus(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modalhapus}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
-          }}
-        >
-          <Text>{t("alertHapusPost")}</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingVertical: 20,
-              paddingHorizontal: 40,
-            }}
-          >
-            <Button
-              onPress={() => {
-                _deletepost(selectedOption);
-              }}
-              color="primary"
-              text={t("delete")}
-            ></Button>
-            <Button
-              onPress={() => {
-                setModalhapus(false);
-              }}
-              color="secondary"
-              variant="bordered"
-              text={t("cancel")}
-            ></Button>
-          </View>
+            <NewAlbum height="60" width="60" />
+            <Text>Create new album</Text>
+          </Pressable>
         </View>
       </Modal>
       <FlatList

@@ -28,7 +28,7 @@ export default function RenderSinglePhoto({
             source={{
               uri: data?.assets[0]?.filepath,
             }}
-            ref={(ref) => {
+            innerRef={(ref) => {
               videoView = ref;
             }}
             onBuffer={videoView?.current?.onBuffer}

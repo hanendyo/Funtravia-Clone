@@ -527,5 +527,6 @@
   "untitle": "Untitle",
   "emptyAlbumTitle": "Album title cannot be empty",
   "somethingwrong": "Something wrong",
-  "myaccount": "My Account"
+  "myaccount": "My Account",
+  "failPost": "Failed to post"
 }
