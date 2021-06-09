@@ -30,7 +30,7 @@ import {
   Google,
   Xhitam,
 } from "../../../assets/svg";
-import FilterItin from "./FillterItin";
+// import FilterItin from "./FillterItin";
 import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
 import filterDestination from "../../../graphQL/Query/Destination/Destinasifilter";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
@@ -204,6 +204,7 @@ export default function ItineraryDestination(props) {
       variables: {
         keyword: search.keyword ? search.keyword : null,
         // type: search.type ? search.type : null,
+        grouptype:[],
         type:
           search.type && search.type.length > 0
             ? search.type

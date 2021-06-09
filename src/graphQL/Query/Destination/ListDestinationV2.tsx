@@ -3,6 +3,7 @@ const ListDestination = gql`
     query(
         $keyword: String
         $type: [ID]
+        $grouptype: [ID]
         $countries: [ID]
         $cities: [ID]
         $provinces: [ID]
@@ -14,6 +15,7 @@ const ListDestination = gql`
             key: {
                 keyword: $keyword
                 type: $type
+                grouptype: $grouptype
                 countries: $countries
                 cities: $cities
                 provinces: $provinces
