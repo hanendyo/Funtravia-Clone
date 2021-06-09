@@ -529,5 +529,6 @@
   "untitle": "Tidak ada judul",
   "emptyAlbumTitle": "Judul album tidak boleh kosong",
   "somethingwrong": "Terjadi kesalahan",
-  "myaccount": "Akun saya"
+  "myaccount": "Akun saya",
+  "failPost": "Gagal memposting"
 }

@@ -33,6 +33,7 @@ import { request, check, PERMISSIONS } from "react-native-permissions";
 import { ReactNativeFile } from "apollo-upload-client";
 import { useTranslation } from "react-i18next";
 import CreateAlbum from "./CreateAlbum";
+import { RNToasty } from "react-native-toasty";
 
 const PostMut = gql`
   mutation(
@@ -70,25 +71,24 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost({ navigation, route }) {
-  const { t, i18n } = useTranslation();
+  const [token, setToken] = useState(route.params.token);
+  const [datanearby, setDataNearby] = useState([]);
+  const { t } = useTranslation();
+  const [Img, setImg] = useState("");
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
   let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
   let [idAlbums, setIdAlbums] = useState();
+  let [loadingok, setLoading] = useState(false);
+  let [chosenFile] = useState(route.params.file);
+  let videoView = useRef(null);
+  let [album, setAlbum] = useState();
   let [Location, setLocation] = useState({
     address: t("addLocation"),
     latitude: "",
     longitude: "",
   });
-  let [loadingok, setLoading] = useState(false);
-  let [chosenFile] = useState(route.params.file);
-  const [token, setToken] = useState(null);
-  const [datanearby, setDataNearby] = useState([]);
-  let videoView = useRef(null);
-  let [album, setAlbum] = useState();
-
-  console.log("chosenFile", chosenFile);
 
   const [MutationCreate, { loading, data, error }] = useMutation(PostMut, {
     context: {
@@ -216,7 +216,11 @@ export default function CreatePost({ navigation, route }) {
       }
     } catch (err) {
       setLoading(false);
-      Alert.alert("" + err);
+      RNToasty.Show({
+        duration: 1,
+        title: t("failPost"),
+        position: "bottom",
+      });
     }
   };
 
@@ -227,7 +231,7 @@ export default function CreatePost({ navigation, route }) {
       longitude: value.longitude,
     });
     wait(1000).then(() => {
-      navigation.setParams({
+      navigation.setParams("", {
         SubmitData: SubmitData,
         text: statusText,
         location: {
@@ -238,6 +242,7 @@ export default function CreatePost({ navigation, route }) {
       });
     });
   };
+
   const clearLoaction = () => {
     setLocation({
       address: t("addLocation"),
@@ -339,8 +344,6 @@ export default function CreatePost({ navigation, route }) {
       console.error(error);
     }
   };
-
-  const [Img, setImg] = useState("");
 
   const ReviewResult = () => {
     if (route.params.type === "video") {
@@ -728,13 +731,12 @@ export default function CreatePost({ navigation, route }) {
           </TouchableWithoutFeedback>
         </ScrollView>
         <LocationSelector
-          modals={modellocation}
+          modalaaa={modellocation}
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
         />
-
         <CreateAlbum
-          modals={modalCreate}
+          modalCreate={modalCreate}
           setModalCreate={(e) => setModalCreate(e)}
           user_id={setting?.user_id}
           props={navigation}

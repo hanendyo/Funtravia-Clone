@@ -6,10 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Pressable,
+  Modal,
 } from "react-native";
 import { Arrowbackwhite, Select } from "../../../assets/svg";
-import Modal from "react-native-modal";
-import { FunImage, Text } from "../../../component";
+// import Modal from "react-native-modal";
+import { FunImage, Text, StatusBar } from "../../../component";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -74,12 +75,11 @@ export default function Album({ modals, setModalAlbum, props, user_id }) {
 
   return (
     <Modal
-      animationIn="slideInRight"
-      animationOut="slideOutRight"
-      isVisible={modals}
-      onRequestClose={() => {
-        setModalAlbum(false);
-      }}
+      visible={modals}
+      // onRequestClose={() => {
+      //   setModalAlbum(false);
+      // }}
+      animationType="fade"
       style={{
         // justifyContent: "flex-end",
         // alignItems: "center",
@@ -87,6 +87,8 @@ export default function Album({ modals, setModalAlbum, props, user_id }) {
         // alignContent: "center",
       }}
     >
+      <StatusBar backgroundColor="#14646E" />
+
       <View
         style={{
           flex: 1,
@@ -103,7 +105,7 @@ export default function Album({ modals, setModalAlbum, props, user_id }) {
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 0 : -21,
+            marginTop: Platform.OS === "ios" ? 0 : -28,
           }}
         >
           <TouchableOpacity
