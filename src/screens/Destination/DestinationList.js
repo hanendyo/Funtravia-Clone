@@ -34,6 +34,8 @@ import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 
 export default function ItineraryDestination(props) {
+  console.log(props.route?.params);
+
   const HeaderComponent = {
     headerShown: true,
     title: "Destination",
@@ -87,6 +89,19 @@ export default function ItineraryDestination(props) {
       setdataFilterFacilitys(datafilter.destination_filter.facility);
       setdataFilterCountry(datafilter.destination_filter.country);
       setdataFilterCountrys(datafilter.destination_filter.country);
+
+      let hasil = [];
+
+      let dta = datafilter.destination_filter.type.filter(
+        (item) => item.sugestion === true
+      );
+      hasil = hasil.concat(dta);
+      let wle = datafilter.destination_filter.facility.filter(
+        (item) => item.sugestion === true
+      );
+      hasil = hasil.concat(wle);
+
+      setfiltershow(hasil);
     },
   });
 
@@ -105,13 +120,13 @@ export default function ItineraryDestination(props) {
   let [aktif, setaktif] = useState("categories");
 
   let [search, setSearch] = useState({
-    type: null,
+    type: [],
     keyword: null,
-    countries: null,
-    provinces: null,
-    cities: null,
-    goodfor: null,
-    facilities: null,
+    countries: [],
+    provinces: [],
+    cities: [],
+    goodfor: [],
+    facilities: [],
   });
 
   let [keyword, setkeyword] = useState("");
@@ -124,23 +139,34 @@ export default function ItineraryDestination(props) {
   } = useQuery(Searching, {
     variables: {
       keyword: keyword,
-      cities_id: null,
-      province_id: null,
+      cities_id: props?.route?.params?.idcity
+        ? props?.route?.params?.idcity
+        : null,
+      province_id: props?.route?.params?.idprovince
+        ? props?.route?.params?.idprovince
+        : null,
       countries_id: searcountry ? searcountry : null,
     },
     onCompleted: async () => {
       let datloop = [...datasearchlocation.searchlocation_populer];
+      let hasil = [...filtershow];
+      let wle = [];
 
       for (var ix in datloop) {
         if (
           datloop[ix].id === props?.route?.params?.idcity ||
-          datloop[ix].id === props?.route?.params?.idcountries
+          datloop[ix].id === props?.route?.params?.idcountries ||
+          datloop[ix].id === props?.route?.params?.idprovince
         ) {
           let dat = { ...datloop[ix] };
           dat.checked = true;
           await datloop.splice(ix, 1, dat);
+          await wle.push(dat);
         }
       }
+      hasil = hasil.concat(wle);
+
+      await setfiltershow(hasil);
 
       await setdataFilterCity(datloop);
       await setdataFilterCitys(datloop);
@@ -154,7 +180,9 @@ export default function ItineraryDestination(props) {
       variables: {
         keyword: search.keyword ? search.keyword : null,
         // type: search.type ? search.type : null,
-        grouptype: [],
+        grouptype: props.route?.params?.idgroup
+          ? [props.route?.params?.idgroup]
+          : [],
         type:
           search.type && search.type.length > 0
             ? search.type
@@ -176,8 +204,8 @@ export default function ItineraryDestination(props) {
         provinces:
           search.provinces && search.provinces.length > 0
             ? search.provinces
-            : props.route.params && props.route.params.provinces
-            ? [props.route.params.provinces]
+            : props.route.params && props.route.params.idprovince
+            ? [props.route.params.idprovince]
             : null,
         goodfor: search.goodfor ? search.goodfor : null,
         facilities: search.facilities ? search.facilities : null,
@@ -190,7 +218,6 @@ export default function ItineraryDestination(props) {
         },
       },
       onCompleted: () => {
-        // console.log(data);
         setdataDestination(data.destinationList_v2);
       },
     }
@@ -322,7 +349,6 @@ export default function ItineraryDestination(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterCategori(tempe);
     await setdataFilterCategoris(tempe);
@@ -333,7 +359,6 @@ export default function ItineraryDestination(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterFacility(tempe);
     await setdataFilterFacilitys(tempe);
@@ -345,7 +370,6 @@ export default function ItineraryDestination(props) {
     items.checked = true;
 
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     setsearcountry(items.id);
     await setdataFilterCountry(tempe);
@@ -357,7 +381,6 @@ export default function ItineraryDestination(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterCity(tempe);
     await setdataFilterCitys(tempe);
@@ -416,13 +439,13 @@ export default function ItineraryDestination(props) {
 
   const ClearAllFilter = () => {
     setSearch({
-      type: null,
+      type: [],
       keyword: null,
-      countries: null,
-      provinces: null,
-      cities: null,
-      goodfor: null,
-      facilities: null,
+      countries: [],
+      provinces: [],
+      cities: [],
+      goodfor: [],
+      facilities: [],
     });
     setdataFilterCategori(datafilter?.destination_filter.type);
     setdataFilterCategoris(datafilter?.destination_filter.type);
@@ -432,6 +455,19 @@ export default function ItineraryDestination(props) {
     setdataFilterCountrys(datafilter?.destination_filter.country);
     setdataFilterCity(datasearchlocation?.searchlocation_populer);
     setdataFilterCitys(datasearchlocation?.searchlocation_populer);
+
+    let hasil = [];
+
+    let dta = datafilter.destination_filter.type.filter(
+      (item) => item.sugestion === true
+    );
+    hasil = hasil.concat(dta);
+    let wle = datafilter.destination_filter.facility.filter(
+      (item) => item.sugestion === true
+    );
+    hasil = hasil.concat(wle);
+
+    setfiltershow(hasil);
   };
 
   const _setSearch = async (teks) => {
@@ -443,7 +479,6 @@ export default function ItineraryDestination(props) {
   };
 
   const _renderFilter = ({ item, index }) => {
-    // console.log(item);
     if (item.checked == true) {
       return (
         <Button
@@ -483,11 +518,81 @@ export default function ItineraryDestination(props) {
     let inde = dat.findIndex((key) => key.id === id);
     await dat.splice(inde, 1, items);
     await setfiltershow(dat);
-    await console.log(dat);
 
-    // DestinationTypeResponse
-    // DestinationFacilityResponse
-    // SearchLocation
+    let sear = { ...search };
+
+    if (ceked === true) {
+      if (item.__typename === "DestinationTypeResponse") {
+        let indexs = sear.type.findIndex((key) => key === id);
+        await sear.type.splice(indexs, 1);
+
+        let tempe = [...dataFilterCategori];
+        let inde = tempe.findIndex((key) => key.id === id);
+        tempe.splice(inde, 1, items);
+        await setdataFilterCategori(tempe);
+        await setdataFilterCategoris(tempe);
+      } else if (item.__typename === "DestinationFacilityResponse") {
+        let indexs = sear.facilities.findIndex((key) => key === id);
+        await sear.facilities.splice(indexs, 1);
+
+        let tempe = [...dataFilterFacility];
+        let inde = tempe.findIndex((key) => key.id === id);
+        tempe.splice(inde, 1, items);
+        await setdataFilterFacility(tempe);
+        await setdataFilterFacilitys(tempe);
+      } else if (item.__typename === "SearchLocation") {
+        let indexs = sear.cities.findIndex((key) => key === id);
+
+        if (item.type === "Country") {
+          await sear.countries.splice(indexs, 1);
+        } else if (item.type === "Province") {
+          await sear.provinces.splice(indexs, 1);
+        } else if (item.type === "City") {
+          await sear.cities.splice(indexs, 1);
+        }
+
+        let tempe = [...dataFilterCity];
+        let inde = tempe.findIndex((key) => key.id === id);
+        tempe.splice(inde, 1, items);
+        await setdataFilterCity(tempe);
+        await setdataFilterCitys(tempe);
+      }
+    } else {
+      if (item.__typename === "DestinationTypeResponse") {
+        await sear.type.push(id);
+
+        let tempe = [...dataFilterCategori];
+        let inde = tempe.findIndex((key) => key.id === id);
+        tempe.splice(inde, 1, items);
+        await setdataFilterCategori(tempe);
+        await setdataFilterCategoris(tempe);
+      } else if (item.__typename === "DestinationFacilityResponse") {
+        await sear.facilities.push(id);
+
+        let tempe = [...dataFilterFacility];
+        let inde = tempe.findIndex((key) => key.id === id);
+        tempe.splice(inde, 1, items);
+        await setdataFilterFacility(tempe);
+        await setdataFilterFacilitys(tempe);
+      } else if (item.__typename === "SearchLocation") {
+        if (item.type === "Country") {
+          await sear.countries.push(id);
+        } else if (item.type === "Province") {
+          await sear.provinces.push(id);
+        } else if (item.type === "City") {
+          await sear.cities.push(id);
+        }
+
+        let tempe = [...dataFilterCity];
+        let inde = tempe.findIndex((key) => key.id === id);
+        tempe.splice(inde, 1, items);
+        await setdataFilterCity(tempe);
+        await setdataFilterCitys(tempe);
+      }
+    }
+
+    await setSearch(sear);
+    await GetListDestination();
   };
 
   return (

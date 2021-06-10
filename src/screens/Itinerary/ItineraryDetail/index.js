@@ -538,9 +538,9 @@ export default function ItineraryDetail(props) {
         }
 
         if (response.data) {
-          if (response.data.upload_cover_itinerary_v2.code !== 200) {
-            throw new Error(response.data.upload_cover_itinerary_v2.message);
-          }
+          // if (response.data.upload_cover_itinerary_v2.code !== 200) {
+          //   throw new Error(response.data.upload_cover_itinerary_v2.message);
+          // }
           startRefreshAction();
         }
         setloading(false);
