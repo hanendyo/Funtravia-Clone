@@ -396,9 +396,9 @@ export default function CreatePost({ navigation, route }) {
               marginVertical: 10,
               borderRadius: 10,
               marginHorizontal: 10,
+              width: Dimensions.get("screen").width - 20,
+              height: width,
             }}
-            width={Dimensions.get("screen").width - 20}
-            height={((Dimensions.get("screen").width - 20) * 2) / 3}
             source={Img ? { uri: Img } : default_image}
           />
           <FlatList
@@ -414,9 +414,13 @@ export default function CreatePost({ navigation, route }) {
                 onPress={() => setImg(item.item.node.image.uri)}
               >
                 <AutoHeightImage
-                  height={80}
                   width={Dimensions.get("screen").width / 5}
-                  style={{ marginRight: 5, borderRadius: 5 }}
+                  style={{
+                    marginRight: 5,
+                    borderRadius: 5,
+                    height: 80,
+                    width: Dimensions.get("screen").width / 5,
+                  }}
                   source={
                     item.item.node.image.uri && item.item.node.image.uri
                       ? {
@@ -435,7 +439,7 @@ export default function CreatePost({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      behavior={Platform.OS == "ios" ? "padding" : null}
       keyboardVerticalOffset={65}
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
@@ -731,7 +735,7 @@ export default function CreatePost({ navigation, route }) {
           </TouchableWithoutFeedback>
         </ScrollView>
         <LocationSelector
-          modalaaa={modellocation}
+          modals={modellocation}
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
         />

@@ -62,6 +62,7 @@ export default function Post(props) {
   const [ratioindex, setRatioIndex] = useState([
     { width: 1, height: 1, index: 0, label: "S" },
     { width: 4, height: 5, index: 1, label: "P" },
+    { width: 3, height: 3, index: 2, label: "L" },
   ]);
 
   const [recent, setRecent] = useState({
@@ -71,6 +72,9 @@ export default function Post(props) {
     },
     location: {},
   });
+
+  console.log("recent", recent);
+  console.log("ratio", ratio);
 
   // let newrecent = {};
 
@@ -142,18 +146,22 @@ export default function Post(props) {
         });
       } else if (type.substr(0, 5) === "image") {
         try {
-          let result = await ImagePicker.openCropper({
+          ImagePicker.openCropper({
             path: recent.node.image.uri,
             width: ratio.width * 1000,
             height: ratio.height * 1000,
             // compressImageQuality: 0.7,
-          });
-          props.navigation.navigate("CreatePostScreen", {
-            location: recent.node.location,
-            type: recent.node.type.substr(0, 5),
-            file: result,
-            token: token,
-          });
+          })
+            .then((image) => {
+              console.log(image);
+              props.navigation.navigate("CreatePostScreen", {
+                location: recent.node.location,
+                type: recent.node.type.substr(0, 5),
+                file: image,
+                token: token,
+              });
+            })
+            .catch((error) => console.log(error));
         } catch (e) {
           RNToasty.Show({
             title: "Canceled",
@@ -480,6 +488,9 @@ export default function Post(props) {
     setChecklistVideo(tempsVideo);
   };
 
+  const [y, setY] = useState();
+  console.log("y", y);
+
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -579,15 +590,34 @@ export default function Post(props) {
                 resizeMode="cover"
               />
             ) : (
-              <Image
-                source={{ uri: recent.node?.image?.uri }}
+              <View
+                onLayout={(e) => {
+                  console.log("View", e.nativeEvent.layout);
+                }}
                 style={{
                   width: width,
                   height: width,
-                  resizeMode: ratio.width == 1 ? "cover" : "contain",
-                  // resizeMode: "contain",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-              />
+              >
+                <Image
+                  onLayout={(e) => {
+                    console.log("Image", e.nativeEvent.layout);
+                  }}
+                  source={{ uri: recent.node?.image?.uri }}
+                  style={{
+                    width: ratio.label == "P" ? width * (4 / 5) : width,
+                    height: ratio.label == "L" ? width * (2 / 3) : width,
+                    // width: ratio.label == "P" ? width * (4 / 5) : width,
+                    // height: ratio.label == "L" ? width * (2 / 3) : width,
+                    // width: width,
+                    // height: width,
+                    // resizeMode: ratio.width == 1 ? "cover" : "contain",
+                    // resizeMode: "contain",
+                  }}
+                />
+              </View>
             )}
             {/* {buka.current === false ? ( */}
             <TouchableOpacity

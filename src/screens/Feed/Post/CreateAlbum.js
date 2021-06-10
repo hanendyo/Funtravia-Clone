@@ -183,7 +183,7 @@ export default function CreateAlbum({
   return (
     <View
       style={{
-        zIndex: modalCreate || modalAlbumCreate === true ? 1 : -2,
+        zIndex: modalCreate || modalAlbumCreate === true ? 10 : -2,
         opacity: 0.6,
         position: "absolute",
         width: Dimensions.get("screen").width,
