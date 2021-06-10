@@ -1505,7 +1505,12 @@ export default function CityDetail(props) {
                 images={
                   dataevent?.event?.length > 0
                     ? dataevent?.event
-                    : [default_image]
+                    : [
+                        {
+                          cover: null,
+                          images: [],
+                        },
+                      ]
                 }
                 style={{
                   borderTopLeftRadius: 5,
@@ -1522,17 +1527,16 @@ export default function CityDetail(props) {
                       key={index}
                       style={{
                         borderTopLeftRadius: 5,
-                        borderWidth: 1,
                         borderTopRightRadius: 5,
                       }}
                     >
-                      <FunImageBackground
+                      <ImageBackground
                         source={
-                          item.cover
+                          item?.cover
                             ? { uri: item?.cover }
                             : item?.images?.length > 0
                             ? { uri: item?.images[0]?.image }
-                            : { default_image }
+                            : default_image
                         }
                         style={{
                           borderTopLeftRadius: 5,
@@ -1573,7 +1577,7 @@ export default function CityDetail(props) {
                             {item.name ? item.name : ""}
                           </Text>
                         </LinearGradient>
-                      </FunImageBackground>
+                      </ImageBackground>
                     </Ripple>
                   )
                 )}
@@ -2477,7 +2481,7 @@ export default function CityDetail(props) {
           source={
             dataCity && dataCity.CitiesInformation.cover
               ? { uri: dataCity.CitiesInformation.cover }
-              : default_image
+              : { default_image }
           }
         />
         <Animated.View

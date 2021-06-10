@@ -76,6 +76,18 @@ const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
+let Bln = new Date().getMonth();
+let Bln1 = 0;
+if (Bln < 10) {
+  Bln1 = "0" + (Bln + 1);
+} else {
+  Bln1 = Bln + 1;
+}
+// let Bln1 = Bln + 1;
+let years = new Date().getFullYear();
+
+let datenow = years + "-" + Bln1;
+
 let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
 let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -209,15 +221,13 @@ export default function CityDetail(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await getPackageDetail();
-    console.log("testing");
-    // useEffect;
     await getJournalCity();
     await getItineraryCity();
   };
 
   const [
     getPackageDetail,
-    { loading: loadingCity, data: dataCity, error: errorCity },
+    { loading: loadingProvince, data: dataProvince, error: errorProvince },
   ] = useLazyQuery(DetailProvince, {
     fetchPolicy: "network-only",
     variables: {
@@ -231,9 +241,9 @@ export default function CityDetail(props) {
     },
     onCompleted: () => {
       let tab = [{ key: "general", title: "General" }];
-      console.log(dataCity);
+      console.log(dataProvince);
 
-      // dataCity.province_detail_v2.article_header.map((item, index) => {
+      // dataProvince.province_detail_v2.article_header.map((item, index) => {
       //     tab.push({
       //         key: item.title,
       //         title: item.title,
@@ -242,18 +252,32 @@ export default function CityDetail(props) {
       // });
 
       setRoutes(tab);
+
+      let loop = 0;
+      let eventavailable = [];
+      if (dataProvince.province_detail_v2?.event) {
+        dataProvince.province_detail_v2?.event.map((item, index) => {
+          if (item?.event && item?.event?.length && item?.event?.length > 0) {
+            loop = loop + 1;
+
+            if (item.month == datenow) {
+              eventavailable = item;
+            }
+            if (loop == 1) {
+              eventavailable = item;
+            }
+          }
+        });
+      }
+      setdataevent(eventavailable);
     },
   });
 
-  console.log(loadingCity);
-  console.log(dataCity);
-  console.log(errorCity);
-
   let listCity = [];
-  if (dataCity && dataCity.province_detail_v2) {
+  if (dataProvince && dataProvince.province_detail_v2) {
     listCity =
-      dataCity && dataCity.province_detail_v2
-        ? dataCity.province_detail_v2
+      dataProvince && dataProvince.province_detail_v2
+        ? dataProvince.province_detail_v2
         : null;
   }
 
@@ -564,8 +588,8 @@ export default function CityDetail(props) {
   const RenderGeneral = ({}) => {
     let render = [];
     render =
-      dataCity && dataCity.province_detail_v2
-        ? dataCity.province_detail_v2
+      dataProvince && dataProvince.province_detail_v2
+        ? dataProvince.province_detail_v2
         : null;
 
     let renderjournal = [];
@@ -1482,7 +1506,14 @@ export default function CityDetail(props) {
               <ImageSlider
                 listkey={"imgsldrevent"}
                 images={
-                  dataevent.event.length > 0 ? dataevent.event : [default_image]
+                  dataevent?.event?.length > 0
+                    ? dataevent?.event
+                    : [
+                        {
+                          cover: null,
+                          images: [],
+                        },
+                      ]
                 }
                 style={{
                   borderTopLeftRadius: 5,
@@ -1500,12 +1531,12 @@ export default function CityDetail(props) {
                       borderTopRightRadius: 5,
                     }}
                   >
-                    <FunImageBackground
+                    <ImageBackground
                       source={
-                        item.images && item.images.length
-                          ? {
-                              uri: item.images[0].image,
-                            }
+                        item?.cover
+                          ? { uri: item?.cover }
+                          : item?.images?.length > 0
+                          ? { uri: item?.images[0]?.image }
                           : default_image
                       }
                       style={{
@@ -1547,7 +1578,7 @@ export default function CityDetail(props) {
                           {item.name ? item.name : ""}
                         </Text>
                       </LinearGradient>
-                    </FunImageBackground>
+                    </ImageBackground>
                   </Ripple>
                 )}
                 customButtons={(position, move) => (
@@ -1737,7 +1768,7 @@ export default function CityDetail(props) {
                 </Text>
               </Ripple>
             </View>
-            {loadingCity ? (
+            {loadingProvince ? (
               <View style={{ marginVertical: 20 }}>
                 <ActivityIndicator animating={true} color="#209FAE" />
               </View>
@@ -2439,7 +2470,7 @@ export default function CityDetail(props) {
           setClose={(e) => setshowside(false)}
         />
 
-        <FunAnimatedImage
+        <Animated.Image
           style={{
             width: "100%",
             height: "80%",
@@ -2448,8 +2479,8 @@ export default function CityDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataCity && dataCity.province_detail_v2.cover
-              ? { uri: dataCity.province_detail_v2.cover }
+            dataProvince && dataProvince.province_detail_v2.cover
+              ? { uri: dataProvince.province_detail_v2.cover }
               : default_image
           }
         />
@@ -2470,10 +2501,10 @@ export default function CityDetail(props) {
         >
           <View>
             <Text size="title" type="black" style={{ color: "white" }}>
-              {dataCity && dataCity.province_detail_v2 ? (
+              {dataProvince && dataProvince.province_detail_v2 ? (
                 <Truncate
                   text={Capital({
-                    text: dataCity.province_detail_v2.name,
+                    text: dataProvince.province_detail_v2.name,
                   })}
                   length={20}
                 ></Truncate>
@@ -2493,8 +2524,8 @@ export default function CityDetail(props) {
                 type="regular"
                 style={{ marginLeft: 5, color: "white" }}
               >
-                {dataCity && dataCity.province_detail_v2
-                  ? dataCity.province_detail_v2.countries.name.toUpperCase()
+                {dataProvince && dataProvince.province_detail_v2
+                  ? dataProvince.province_detail_v2.countries.name.toUpperCase()
                   : "-"}
               </Text>
             </View>
@@ -3081,7 +3112,7 @@ export default function CityDetail(props) {
             returnKeyType="search"
             onSubmitEditing={(x) =>
               props.navigation.push("SearchPg", {
-                idcity: dataCity.province_detail_v2.id,
+                idcity: dataProvince.province_detail_v2.id,
                 searchInput: search,
                 aktifsearch: true,
               })
