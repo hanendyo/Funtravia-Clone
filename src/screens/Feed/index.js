@@ -137,7 +137,7 @@ export default function Feed(props) {
   });
 
   if (networkStatus === NetworkStatus.refetch) {
-    return console.log("Refetching");
+    // return console.log("Refetching");
   }
   const ambil_lagi = () => {
     fetchMore({

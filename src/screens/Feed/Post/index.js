@@ -73,11 +73,6 @@ export default function Post(props) {
     location: {},
   });
 
-  console.log("recent", recent);
-  console.log("ratio", ratio);
-
-  // let newrecent = {};
-
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
     wait(500).then(() => {
@@ -153,7 +148,6 @@ export default function Post(props) {
             // compressImageQuality: 0.7,
           })
             .then((image) => {
-              console.log(image);
               props.navigation.navigate("CreatePostScreen", {
                 location: recent.node.location,
                 type: recent.node.type.substr(0, 5),
@@ -488,9 +482,6 @@ export default function Post(props) {
     setChecklistVideo(tempsVideo);
   };
 
-  const [y, setY] = useState();
-  console.log("y", y);
-
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -591,9 +582,6 @@ export default function Post(props) {
               />
             ) : (
               <View
-                onLayout={(e) => {
-                  console.log("View", e.nativeEvent.layout);
-                }}
                 style={{
                   width: width,
                   height: width,
@@ -602,9 +590,6 @@ export default function Post(props) {
                 }}
               >
                 <Image
-                  onLayout={(e) => {
-                    console.log("Image", e.nativeEvent.layout);
-                  }}
                   source={{ uri: recent.node?.image?.uri }}
                   style={{
                     width: ratio.label == "P" ? width * (4 / 5) : width,

@@ -442,8 +442,15 @@ export default function EditPost(props) {
                 paddingHorizontal: 20,
               }}
             >
-              {dataPost.is_single == false && dataPost.itinerary !== null ? (
-                <RenderAlbum data={dataPost} props={props} />
+              {dataPost.is_single === false ? (
+                <RenderAlbum
+                  data={dataPost}
+                  props={props}
+                  play={dataPost.id}
+                  muted={muted}
+                  setMuted={(e) => setMuted(e)}
+                  isFocused={isFocused}
+                />
               ) : (
                 <RenderSinglePhoto
                   data={dataPost}

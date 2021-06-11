@@ -8,6 +8,8 @@ import {
   TextProps,
   Animated,
   Pressable,
+  TouchableWithoutFeedback,
+  TouchableHighlight,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 
