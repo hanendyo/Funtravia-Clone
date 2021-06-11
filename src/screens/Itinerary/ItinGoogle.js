@@ -78,7 +78,7 @@ export default function ItinGoogle(props) {
   let [long, setlong] = useState(115.216667);
 
   const GetKota = ({ data }) => {
-    var filtered_array = data.address_components.filter(function (
+    var filtered_array = data.address_components.filter(function(
       address_component
     ) {
       return address_component.types.includes("administrative_area_level_2");
@@ -88,14 +88,13 @@ export default function ItinGoogle(props) {
   };
 
   useEffect(() => {
-    // console.log(props.route.params.lat);
-    // console.log(props.route.params.lat);
-
     props.navigation.setOptions(HeaderComponent);
-    if (props.route.params.lat && props.route.params.lat) {
-      if (props.route.params.lat !== null && props.route.params.lat !== null) {
-        setlat(props.route.params.lat);
-        setlong(props.route.params.lat);
+    if (props.route.params.lat && props.route.params.long) {
+      if (props.route.params.lat !== null && props.route.params.long !== null) {
+        console.log(props.route.params);
+
+        setlat(parseFloat(props.route.params.lat));
+        setlong(parseFloat(props.route.params.long));
       }
     } else {
       _requestLocation();
