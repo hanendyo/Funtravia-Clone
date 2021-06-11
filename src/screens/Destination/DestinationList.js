@@ -35,6 +35,7 @@ import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 
 export default function ItineraryDestination(props) {
   console.log(props.route?.params);
+  let [filtershow, setfiltershow] = useState([]);
 
   const HeaderComponent = {
     headerShown: true,
@@ -77,34 +78,6 @@ export default function ItineraryDestination(props) {
 
   let [show, setshow] = useState(false);
 
-  const {
-    data: datafilter,
-    loading: loadingfilter,
-    error: errorfilter,
-  } = useQuery(filterDestination, {
-    onCompleted: () => {
-      setdataFilterCategori(datafilter.destination_filter.type);
-      setdataFilterCategoris(datafilter.destination_filter.type);
-      setdataFilterFacility(datafilter.destination_filter.facility);
-      setdataFilterFacilitys(datafilter.destination_filter.facility);
-      setdataFilterCountry(datafilter.destination_filter.country);
-      setdataFilterCountrys(datafilter.destination_filter.country);
-
-      let hasil = [];
-
-      let dta = datafilter.destination_filter.type.filter(
-        (item) => item.sugestion === true
-      );
-      hasil = hasil.concat(dta);
-      let wle = datafilter.destination_filter.facility.filter(
-        (item) => item.sugestion === true
-      );
-      hasil = hasil.concat(wle);
-
-      setfiltershow(hasil);
-    },
-  });
-
   let [token, setToken] = useState(props.route.params.token);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
@@ -115,7 +88,6 @@ export default function ItineraryDestination(props) {
   let [dataFilterCity, setdataFilterCity] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
   let [dataDestination, setdataDestination] = useState([]);
-  let [filtershow, setfiltershow] = useState([]);
 
   let [aktif, setaktif] = useState("categories");
 
@@ -131,6 +103,52 @@ export default function ItineraryDestination(props) {
 
   let [keyword, setkeyword] = useState("");
   let [searcountry, setsearcountry] = useState(null);
+
+  const {
+    data: datafilter,
+    loading: loadingfilter,
+    error: errorfilter,
+  } = useQuery(filterDestination, {
+    onCompleted: async () => {
+      let datloop = [...datafilter.destination_filter.type];
+      let hasil = [...filtershow];
+      console.log(hasil);
+      let des = [];
+
+      for (var ix in datloop) {
+        // console.log(datloop[ix].id);
+
+        if (datloop[ix].id === props?.route?.params?.idtype) {
+          let dat = { ...datloop[ix] };
+          dat.checked = true;
+          await datloop.splice(ix, 1, dat);
+          await des.push(dat);
+        }
+      }
+      // console.log(datloop);
+
+      hasil = await hasil.concat(des);
+
+      await setdataFilterCategori(datloop);
+      await setdataFilterCategoris(datloop);
+      await setdataFilterFacility(datafilter.destination_filter.facility);
+      await setdataFilterFacilitys(datafilter.destination_filter.facility);
+      await setdataFilterCountry(datafilter.destination_filter.country);
+      await setdataFilterCountrys(datafilter.destination_filter.country);
+
+      let dta = datafilter.destination_filter.type.filter(
+        (item) => item.sugestion === true
+      );
+      hasil = hasil.concat(dta);
+      let wle = datafilter.destination_filter.facility.filter(
+        (item) => item.sugestion === true
+      );
+      hasil = await hasil.concat(wle);
+
+      await setfiltershow(hasil);
+      // await UpdateFilter();
+    },
+  });
 
   const {
     data: datasearchlocation,
@@ -170,6 +188,8 @@ export default function ItineraryDestination(props) {
 
       await setdataFilterCity(datloop);
       await setdataFilterCitys(datloop);
+
+      // await UpdateFilter();
     },
   });
 

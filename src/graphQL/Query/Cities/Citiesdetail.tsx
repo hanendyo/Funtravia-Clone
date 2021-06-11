@@ -37,7 +37,7 @@ const CitiesInformation = gql`
         }
       }
       destination_type {
-        id
+        id_type
         name
         icon
       }

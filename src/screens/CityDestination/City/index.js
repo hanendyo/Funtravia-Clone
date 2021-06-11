@@ -724,7 +724,7 @@ export default function CityDetail(props) {
                           key={"keydestination" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
-                              idtype: item.id,
+                              idtype: item.id_type,
                               idcity: render.id,
                             });
                           }}

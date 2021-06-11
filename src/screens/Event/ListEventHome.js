@@ -1233,7 +1233,7 @@ export default function ListEventHome(props) {
     let data = { ...search };
     data["type"] = hasil;
 
-    console.log(hasil);
+    // console.log(hasil);
 
     await setSearch(data);
     await setshow(false);
