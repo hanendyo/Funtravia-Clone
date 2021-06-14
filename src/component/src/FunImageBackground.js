@@ -35,7 +35,7 @@ export default function ImageBackground({
                             toFile: path,
                         }).promise.then((res) => {
                             setTimeout(() => setLoading(false), 1000);
-                            console.log("SUCCESS BACKGROUND CACHED", uri);
+                            // console.log("SUCCESS BACKGROUND CACHED", uri);
                         });
                     }
                 })

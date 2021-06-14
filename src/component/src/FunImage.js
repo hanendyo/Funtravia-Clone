@@ -34,7 +34,7 @@ export default function Image({
                             toFile: path,
                         }).promise.then((res) => {
                             setTimeout(() => setLoading(false), 1000);
-                            console.log("SUCCESS CACHE IMAGE", uri);
+                            // console.log("SUCCESS CACHE IMAGE", uri);
                         });
                     }
                 })
