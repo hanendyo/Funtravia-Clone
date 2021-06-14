@@ -1173,8 +1173,6 @@ export default function FeedList({ props, token }) {
                     size="small"
                     style={{
                       paddingHorizontal: 2,
-
-                      // right: 10,
                     }}
                   >
                     <CommentBlack height={15} width={15} />
