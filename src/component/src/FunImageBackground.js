@@ -14,15 +14,16 @@ export default function ImageBackground({
 }) {
     let [loading, setLoading] = useState(false);
     let [temp, setTemp] = useState([]);
+    let isUri = source.uri ? true : false;
     let uri = source.uri + "?size=m";
     let path;
-    if (uri && uri !== undefined) {
+    if (uri && uri !== undefined && isUri) {
         let extension = Platform.OS === "android" ? "file://" : "";
         let name = sh.unique(uri);
         path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
         let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]funtravia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim;
         let check = regex.test(uri);
-        // console.log("URL", uri);
+        console.log("URL", uri);
         if (check) {
             RNFS.exists(path)
                 .then((exists) => {
@@ -34,7 +35,7 @@ export default function ImageBackground({
                             toFile: path,
                         }).promise.then((res) => {
                             setTimeout(() => setLoading(false), 1000);
-                            // console.log("SUCCESS BACKGROUND CACHED", uri);
+                            console.log("SUCCESS BACKGROUND CACHED", uri);
                         });
                     }
                 })
@@ -60,7 +61,7 @@ export default function ImageBackground({
             {...otherProps}
             imageStyle={imageStyle}
             style={style}
-            source={{ uri: path }}
+            source={isUri ? { uri: path } : source}
         >
             {children}
         </RNImageBackground>
