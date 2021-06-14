@@ -530,5 +530,6 @@
   "emptyAlbumTitle": "Judul album tidak boleh kosong",
   "somethingwrong": "Terjadi kesalahan",
   "myaccount": "Akun saya",
-  "failPost": "Gagal memposting"
+  "failPost": "Gagal memposting",
+  "lookFor": "Cari"
 }

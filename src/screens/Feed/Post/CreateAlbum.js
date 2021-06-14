@@ -17,6 +17,9 @@ import {
   Arrowbackwhite,
   Select,
   Check,
+  Down,
+  SearchWhite,
+  Search,
 } from "../../../assets/svg";
 import { Text, Button, Loading, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -375,7 +378,7 @@ export default function CreateAlbum({
           alignSelf: "center",
         }}
       >
-        <View
+        <MenuProvider
           style={{
             flex: 1,
             width: Dimensions.get("screen").width,
@@ -385,45 +388,103 @@ export default function CreateAlbum({
           <View
             style={{
               flexDirection: "row",
-              alignSelf: "flex-start",
+              justifyContent: "space-between",
               alignItems: "center",
               alignContent: "center",
               backgroundColor: "#209fae",
               height: 55,
               width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
               marginTop: Platform.OS === "ios" ? 0 : 0,
             }}
           >
-            <TouchableOpacity
-              style={{
-                height: 55,
-                width: 55,
-                position: "absolute",
-                alignItems: "center",
-                alignContent: "center",
-                paddingTop: 20,
-              }}
-              onPress={() => setModalAlbum(false)}
-            >
-              <Arrowbackwhite width={20} height={20} />
-            </TouchableOpacity>
             <View
               style={{
-                top: 0,
-                left: 60,
-                height: 50,
-                // position: "absolute",
-                justifyContent: "center",
-                marginTop: 5,
+                height: "100%",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              <Text size="label" type="regular" style={{ color: "#FFF" }}>
-                Post
-              </Text>
-              <Text size="description" type="light" style={{ color: "#FFF" }}>
-                {`${t("Select") + " Album"}`}
-              </Text>
+              <TouchableOpacity
+                style={{
+                  height: "100%",
+                  justifyContent: "center",
+                }}
+                onPress={() => setModalAlbum(false)}
+              >
+                <Arrowbackwhite
+                  width={20}
+                  height={20}
+                  style={{ marginRight: 15 }}
+                />
+              </TouchableOpacity>
+              <View
+                style={{
+                  height: 50,
+                  justifyContent: "center",
+                }}
+              >
+                <Text size="label" type="regular" style={{ color: "#FFF" }}>
+                  Post
+                </Text>
+                <Text size="description" type="light" style={{ color: "#FFF" }}>
+                  {t("Select") + " "}
+                  {select == "Itinerary Album" ? "Itinerary" : "Album"}
+                </Text>
+              </View>
             </View>
+            <Menu
+              renderer={renderers.ContextMenu}
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <MenuTrigger
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  color: "#FFF",
+                  height: "100%",
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#FFF" }}
+                >
+                  {select ? select : "Feed Album"}
+                </Text>
+                <Down height="10" width="10" style={{ marginLeft: 5 }} />
+              </MenuTrigger>
+              <MenuOptions
+                optionsContainerStyle={{
+                  height: 80,
+                }}
+              >
+                <MenuOption
+                  onSelect={() => setSelect("Itinerary Album")}
+                  style={{
+                    height: 40,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text size="description" type="regular">
+                    Itinerary Album
+                  </Text>
+                </MenuOption>
+                <MenuOption
+                  onSelect={() => setSelect("Feed Album")}
+                  style={{
+                    height: 40,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text size="description" type="regular">
+                    Feed Album
+                  </Text>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
           </View>
           <View
             style={{
@@ -436,171 +497,159 @@ export default function CreateAlbum({
             <View
               style={{
                 width: Dimensions.get("screen").width,
-                // height: 150,
-
                 height: height - 130,
               }}
             >
-              <MenuProvider>
-                <Menu
-                  renderer={renderers.ContextMenu}
-                  style={{
-                    width: width,
-                    paddingHorizontal: 15,
-                  }}
-                >
-                  <MenuTrigger
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingVertical: 15,
-                      width: 150,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Text size="description" type="regular">
-                      {select ? select : "Feed Album"}
-                    </Text>
-                    <Select height="10" width="10" style={{ marginLeft: 5 }} />
-                  </MenuTrigger>
-                  <MenuOptions
-                    optionsContainerStyle={{
-                      // paddingBottom: 50,
-                      height: 50,
-                      // marginBottom: 10,
-                    }}
-                  >
-                    <MenuOption onSelect={() => setSelect("Itinerary Album")}>
-                      <Text size="description" type="regular">
-                        Itinerary Album
-                      </Text>
-                    </MenuOption>
-                    <MenuOption onSelect={() => setSelect("Feed Album")}>
-                      <Text size="description" type="regular">
-                        Feed Album
-                      </Text>
-                    </MenuOption>
-                  </MenuOptions>
-                </Menu>
+              <View style={{ width: width, paddingHorizontal: 15 }}>
                 <View
                   style={{
-                    borderBottomColor: 10,
-                    width: width,
-                    height: 1,
-                    opacity: 0.1,
-                    backgroundColor: "#000",
-                  }}
-                ></View>
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  style={{
-                    // flex: 1,
-                    borderBottomColor: 10,
-                    width: width,
-                    paddingHorizontal: 15,
-                    backgroundColor: "#FFF",
+                    height: 40,
+                    width: "100%",
                     marginVertical: 10,
+                    borderRadius: 5,
+                    backgroundColor: "#f6f6f6",
+                    alignItems: "center",
+                    paddingHorizontal: 10,
+                    flexDirection: "row",
                   }}
                 >
-                  <View
+                  <Search height={18} width={18} />
+                  <TextInput
+                    // value={searchtext}
+                    // onChangeText={(e) => _searchHandle(e)}
+                    // onFocus={() => showsearchpage(true)}
+                    placeholder={t("lookFor")}
+                    placeholderTextColor="#464646"
                     style={{
-                      flexDirection: "row",
-                      flexWrap: "wrap",
+                      flex: 1,
+                      color: "#000",
+                      height: 40,
+                      // width: "70%",
+                      width: "77%",
                     }}
-                  >
-                    {select === "Itinerary Album"
-                      ? data &&
-                        data.map((item, index) => (
-                          <Pressable
-                            key={index}
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  borderBottomColor: 10,
+                  width: width,
+                  height: 1,
+                  opacity: 0.1,
+                  backgroundColor: "#000",
+                }}
+              ></View>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{
+                  // flex: 1,
+                  borderBottomColor: 10,
+                  width: width,
+                  paddingHorizontal: 15,
+                  backgroundColor: "#FFF",
+                  marginVertical: 10,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {select === "Itinerary Album"
+                    ? data &&
+                      data.map((item, index) => (
+                        <Pressable
+                          key={index}
+                          style={{
+                            marginTop: 10,
+                            width: (width - 30) / 3,
+                            // borderWidth: 1,
+                          }}
+                          onPress={() => Choose(item?.id)}
+                        >
+                          <View
                             style={{
-                              marginTop: 10,
-                              width: (width - 30) / 3,
-                              // borderWidth: 1,
-                            }}
-                            onPress={() => Choose(item?.id)}
-                          >
-                            <View
-                              style={{
-                                height: 130,
-                                width: "98%",
-                                // backgroundColor: "#F6F6F6",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: 5,
-                              }}
-                            >
-                              <FunImage
-                                source={
-                                  item && item.cover
-                                    ? { uri: item?.cover }
-                                    : default_image
-                                }
-                                style={{
-                                  resizeMode: "cover",
-                                  height: "100%",
-                                  width: "100%",
-                                }}
-                              />
-                            </View>
-                            <View style={{ paddingLeft: 5, marginTop: 10 }}>
-                              <Text size="label" type="regular">
-                                {item.name}
-                              </Text>
-                              <Text size="description" type="light">
-                                {item.count_album_post}
-                              </Text>
-                            </View>
-                          </Pressable>
-                        ))
-                      : listAlbums.map((item, index) => (
-                          <Pressable
-                            key={index}
-                            style={{
-                              marginTop: 10,
-                              width: (width - 30) / 3,
-                              // borderWidth: 1,
+                              height: 130,
+                              width: "98%",
+                              // backgroundColor: "#F6F6F6",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 5,
                             }}
                           >
-                            <View
+                            <FunImage
+                              source={
+                                item && item.cover
+                                  ? { uri: item?.cover }
+                                  : default_image
+                              }
                               style={{
-                                height: 130,
-                                width: "98%",
-                                backgroundColor: "#F6F6F6",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: 5,
+                                resizeMode: "cover",
+                                height: "100%",
+                                width: "100%",
+                                borderRadius: 3,
                               }}
-                            >
-                              <FunImage
-                                source={
-                                  item && item.cover
-                                    ? { uri: item?.cover }
-                                    : default_image
-                                }
-                                style={{
-                                  resizeMode: "cover",
-                                  height: "100%",
-                                  width: "100%",
-                                }}
-                              />
-                            </View>
-                            <View style={{ paddingLeft: 5, marginTop: 10 }}>
-                              <Text size="label" type="regular">
-                                {item.title}
-                              </Text>
-                              <Text size="description" type="light">
-                                {item.count_foto}
-                              </Text>
-                            </View>
-                          </Pressable>
-                        ))}
-                  </View>
-                </ScrollView>
-              </MenuProvider>
+                            />
+                          </View>
+                          <View style={{ paddingLeft: 5, marginTop: 10 }}>
+                            <Text size="label" type="regular">
+                              {item.name}
+                            </Text>
+                            <Text size="description" type="light">
+                              {item.album_count}
+                            </Text>
+                          </View>
+                        </Pressable>
+                      ))
+                    : listAlbums.map((item, index) => (
+                        <Pressable
+                          key={index}
+                          style={{
+                            marginTop: 10,
+                            width: (width - 30) / 3,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <View
+                            style={{
+                              height: 130,
+                              width: "98%",
+                              backgroundColor: "#F6F6F6",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: 5,
+                            }}
+                          >
+                            <FunImage
+                              source={
+                                item && item.cover
+                                  ? { uri: item?.cover }
+                                  : default_image
+                              }
+                              style={{
+                                resizeMode: "cover",
+                                height: "100%",
+                                width: "100%",
+                                borderRadius: 3,
+                              }}
+                            />
+                          </View>
+                          <View style={{ paddingLeft: 5, marginTop: 10 }}>
+                            <Text size="label" type="regular">
+                              {item.title}
+                            </Text>
+                            <Text size="description" type="light">
+                              {item.count_foto}
+                            </Text>
+                          </View>
+                        </Pressable>
+                      ))}
+                </View>
+              </ScrollView>
             </View>
           </View>
-        </View>
+        </MenuProvider>
       </Modal>
 
       {/* Modal Choose Day */}

@@ -528,5 +528,6 @@
   "emptyAlbumTitle": "Album title cannot be empty",
   "somethingwrong": "Something wrong",
   "myaccount": "My Account",
-  "failPost": "Failed to post"
+  "failPost": "Failed to post",
+  "lookFor": "Search"
 }

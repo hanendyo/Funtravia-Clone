@@ -24,7 +24,13 @@ import AutoHeightImage from "react-native-auto-height-image";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
 import Album from "./Album";
-import { PinHijau, Xgray, Arrowbackwhite, Xgrey } from "../../../assets/svg";
+import {
+  PinHijau,
+  Xgray,
+  Arrowbackwhite,
+  Xgrey,
+  AlbumFeedBiru,
+} from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { ScrollView } from "react-native-gesture-handler";
 import Geolocation from "react-native-geolocation-service";
@@ -599,12 +605,13 @@ export default function CreatePost({ navigation, route }) {
                     borderRadius: 5,
                   }}
                 >
+                  <AlbumFeedBiru height={18} width={18} />
                   <Text
                     type="bold"
                     size="description"
                     style={{
                       marginHorizontal: 5,
-                      marginTop: 10,
+                      marginTop: album ? 0 : 10,
                       marginBottom: album ? 0 : 10,
                     }}
                   >
