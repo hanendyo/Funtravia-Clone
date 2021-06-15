@@ -23,7 +23,6 @@ import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
-import Album from "./Album";
 import {
   PinHijau,
   Xgray,
@@ -85,7 +84,7 @@ export default function CreatePost({ navigation, route }) {
   let [modellocation, setModellocation] = useState(false);
   let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
-  let [idAlbums, setIdAlbums] = useState();
+  let [idAlbums, setIdAlbums] = useState(route.params.id_album);
   let [loadingok, setLoading] = useState(false);
   let [chosenFile] = useState(route.params.file);
   let videoView = useRef(null);
@@ -618,7 +617,7 @@ export default function CreatePost({ navigation, route }) {
                     {t("addAlbum")}
                   </Text>
                 </Ripple>
-                {album ? (
+                {album === "Feed" ? (
                   <View
                     style={{
                       justifyContent: "space-between",
@@ -640,7 +639,10 @@ export default function CreatePost({ navigation, route }) {
                           marginVertical: 10,
                         }}
                       >
-                        {album}
+                        {album + " Album " + "--"}{" "}
+                        {route?.params?.title_album
+                          ? route?.params?.title_album
+                          : null}
                       </Text>
                     </View>
                     <Xgrey
@@ -649,7 +651,10 @@ export default function CreatePost({ navigation, route }) {
                       }}
                       height="20"
                       width="20"
-                      onPress={() => setAlbum("")}
+                      onPress={() => {
+                        setAlbum("");
+                        setIdAlbums("");
+                      }}
                     />
                   </View>
                 ) : null}

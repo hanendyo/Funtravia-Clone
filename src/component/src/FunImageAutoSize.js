@@ -39,6 +39,7 @@ export default function FunImageAutoSize({
         .catch((error) => {
           setLoading(false);
           console.warn(error);
+          console.log("error", error);
         });
     } else {
       path = uri;

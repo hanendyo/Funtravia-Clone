@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const ListAlbum = gql`
-  query($user_id: ID!) {
-    list_albums(user_id: $user_id) {
+  query($user_id: ID!, $keyword: String) {
+    list_albums(user_id: $user_id, keyword: $keyword) {
       id
       title
       cover

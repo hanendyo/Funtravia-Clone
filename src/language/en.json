@@ -529,5 +529,6 @@
   "somethingwrong": "Something wrong",
   "myaccount": "My Account",
   "failPost": "Failed to post",
-  "lookFor": "Search"
+  "lookFor": "Search",
+  "failedCreateAlbum": "Failed to create album"
 }
