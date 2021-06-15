@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import {
   SafeAreaView,
@@ -24,10 +24,12 @@ export default function Asia({ navigation }) {
   const { t, i18n } = useTranslation();
   const [changeColor, setChangeColor] = useState("#209FAE");
   const [defaultColor, setDefaultColor] = useState("#DAF0F2");
+  const [Idcountry, setIdcountry] = useState("");
   const [subContinent, setSubContinent] = useState({
     id: "142",
     label: "All",
   });
+  // console.log("sub", subContinent);
   const subContinentData = [
     // {
     //   id: "142",
@@ -61,6 +63,7 @@ export default function Asia({ navigation }) {
         subContinent={subContinent}
         colorChange={changeColor}
         defaultColor={defaultColor}
+        Idcountry={Idcountry}
         setChange={(data) => setSubContinent(data)}
       />
     ),
@@ -106,31 +109,44 @@ export default function Asia({ navigation }) {
     ),
   };
 
-  const getCountry = (data) => {
-    if (subContinent.id === "142") {
-      return (
-        data["region-code"] === subContinent.id &&
-        Country[data["alpha-3"]].available
-      );
-    } else {
-      return (
-        data["sub-region-code"] === subContinent.id &&
-        Country[data["alpha-3"]].available
-      );
-    }
+  const InitialCountry = (item) => {
+    // console.log(item);
+    let data = ISO.filter((data) => {
+      if (item) {
+        if (item.id === "142") {
+          return (
+            data["region-code"] === item.id &&
+            Country[data["alpha-3"]].available
+          );
+        } else {
+          return (
+            data["sub-region-code"] === item.id &&
+            Country[data["alpha-3"]].available
+          );
+        }
+      } else {
+        return (
+          data["region-code"] === "142" && Country[data["alpha-3"]].available
+        );
+      }
+    });
+    // console.log("d", data);
+    setCountries(data);
   };
 
-  let [countries, setCountries] = useState(ISO.filter(getCountry));
-  let [textcari, setTextcari] = useState("");
+  useEffect(() => {
+    InitialCountry();
+  }, []);
+
+  let [countries, setCountries] = useState([]);
 
   const searchcountry = async (e) => {
-    setTextcari(e);
-    let countrys = ISO.filter(getCountry);
-    let filcountry = countrys.filter((item) => {
+    let filcountry = countries.filter((item) => {
       if (item.name.toLowerCase().match(e.toLowerCase())) {
         return item;
       }
     });
+    console.log("fill", filcountry);
     setCountries(filcountry);
   };
 
@@ -183,10 +199,14 @@ export default function Asia({ navigation }) {
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
+            // console.log("itemcontinent", item),
             <TouchableOpacity
               key={index}
               onPress={() => {
-                setSubContinent(item);
+                {
+                  setSubContinent(item);
+                  InitialCountry(item);
+                }
               }}
               style={{
                 backgroundColor:
@@ -247,7 +267,6 @@ export default function Asia({ navigation }) {
           <TextInput
             underlineColorAndroid="transparent"
             placeholder={t("search")}
-            value={textcari}
             style={{
               width: "100%",
               marginLeft: 5,
@@ -261,6 +280,7 @@ export default function Asia({ navigation }) {
         <FlatList
           data={countries}
           renderItem={({ item, index }) => (
+            // console.log("itemcountry", item),
             <View
               style={{
                 paddingVertical: 15,
@@ -305,10 +325,23 @@ export default function Asia({ navigation }) {
                   alignItems: "center",
                   alignContent: "center",
                   justifyContent: "center",
-                  backgroundColor: "rgba(226, 236, 248, 0.85)",
+                  // backgroundColor: "rgba(226, 236, 248, 0.85)",
+                  backgroundColor:
+                    Idcountry == item["alpha-3"]
+                      ? "#FF0000"
+                      : "rgba(226, 236, 248, 0.85)",
                 }}
               >
                 <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    {
+                      setSubContinent({ id: item["sub-region-code"] }),
+                        setIdcountry(
+                          item["alpha-3"] === Idcountry ? null : item["alpha-3"]
+                        );
+                    }
+                  }}
                   style={{
                     height: 30,
                     width: 30,
@@ -317,7 +350,6 @@ export default function Asia({ navigation }) {
                     alignItems: "center",
                     alignContent: "center",
                     justifyContent: "center",
-
                     zIndex: 9999,
                   }}
                 >
