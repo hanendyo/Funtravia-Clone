@@ -226,7 +226,6 @@ export default function NewGroup(props) {
                 body: data_kirim,
             });
             let responseJson = await response.json();
-            console.log(responseJson);
             if (responseJson.status == true) {
                 // props.navigation.navigate("ChatStack", {
                 //     screen: "GroupRoom",

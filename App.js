@@ -41,6 +41,9 @@ PushNotification.configure({
         badge: true,
         sound: true,
     },
+    onMessage: function(notification) {
+        console.log("onmessage:", notification);
+    },
     popInitialNotification: true,
     requestPermissions: true,
 });
@@ -119,6 +122,7 @@ function App() {
         initializeFunction();
         messaging().onMessage((dNotify) => {
             let { notification, data } = dNotify;
+            console.log("ss");
             PushNotification.localNotification({
                 channelId: "default",
                 id: 0,
@@ -132,12 +136,19 @@ function App() {
                 number: 1,
             });
         });
-
         messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             console.log("BG_NF", remoteMessage);
             setDataNotifikasi(remoteMessage);
         });
         SplashScreen.hide();
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+            console.log("foregroundmsg", remoteMessage);
+        });
+
+        return unsubscribe;
     }, []);
 
     if (appLoading) {

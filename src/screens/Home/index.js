@@ -32,9 +32,11 @@ import FunFeed from "./FunFeed";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 import User_Post from "../../graphQL/Query/Profile/post";
 import { NotificationBlue } from "../../assets/svg";
+// import messaging from "@react-native-firebase/messaging";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+    // console.log("testklik notif");
     const { t } = useTranslation();
     let [token, setToken] = useState("");
     let [refresh, setRefresh] = useState(false);
@@ -100,6 +102,11 @@ export default function Home(props) {
             },
         },
     });
+    // useEffect(() => {
+    //     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    //         console.log("BG_NF", remoteMessage);
+    //     });
+    // }, []);
 
     const loadAsync = async () => {
         let tkn = await AsyncStorage.getItem("access_token");
