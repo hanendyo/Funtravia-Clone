@@ -531,5 +531,6 @@
   "somethingwrong": "Terjadi kesalahan",
   "myaccount": "Akun saya",
   "failPost": "Gagal memposting",
-  "lookFor": "Cari"
+  "lookFor": "Cari",
+  "failedCreateAlbum": "Gagal membuat album"
 }

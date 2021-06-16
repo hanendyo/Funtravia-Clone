@@ -9,6 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import {
@@ -24,7 +25,6 @@ import {
 import { Text, Button, Loading, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
-import Album from "./Album";
 import { RNToasty } from "react-native-toasty";
 import CreateAlbumFeed from "../../../graphQL/Mutation/Post/CreateAlbumFeed";
 import { useMutation } from "@apollo/react-hooks";
@@ -38,11 +38,12 @@ import {
   renderers,
   MenuProvider,
 } from "react-native-popup-menu";
-import ChooseDay from "./ChooseDay";
-import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryA";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryAll";
 import ListAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import { default_image } from "../../../assets/png";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
+import ItineraryListAlbum from "../../../graphQL/Query/Itinerary/ListAlbumItinerary";
+import ChooseAlbumItinerary from "./ChooseAlbumItinerary";
 
 export default function CreateAlbum({
   modalCreate,
@@ -54,65 +55,58 @@ export default function CreateAlbum({
   setIdAlbums,
 }) {
   const { t } = useTranslation();
-  const [tokens, setTokens] = useState(token);
   const [modalAlbum, setModalAlbum] = useState(false);
   const [modalAlbumCreate, setModalAlbumCreate] = useState(false);
+  const [newFeedAlbums, setNewFeedAlbums] = useState(false);
   const [text, setText] = useState("");
   const [select, setSelect] = useState("Itinerary Album");
   const [idItinerary, setIdItinerary] = useState("");
   const [modalDay, setModalDay] = useState(false);
-  const [data, setData] = useState();
-  const [listAlbums, setListAlbums] = useState();
-  const [choose, setChoose] = useState();
-  const [datas, setDatas] = useState();
+  const [searchText, setSearchText] = useState("");
+  const [newTextFeed, setNewTextFeed] = useState("");
   let [loadings, setLoadings] = useState(false);
 
-  const {
-    data: dataItinerary,
-    loading: loadingItinerary,
-    error,
-    refetch,
-  } = useQuery(ListItinerary, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokens}`,
-      },
-    },
-    variables: { status: "A" },
-    onCompleted: () => setData(dataItinerary.itinerary_list_active),
-  });
-
-  const {
-    data: listAlbum,
-    loading: loadingAlbum,
-    error: errorAlbum,
-  } = useQuery(ListAlbum, {
-    variables: { user_id: user_id },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    onCompleted: () => setListAlbums(listAlbum.list_albums),
-  });
-
-  const {
-    data: dataItineraryChoose,
-    loading: loadingdetail,
-    error: errordetail,
-  } = useQuery(ItineraryDetails, {
+  const [
+    QueryAlbums,
+    { data: dataItinerary, loading: loadingItinerary, error },
+  ] = useLazyQuery(ListItinerary, {
     fetchPolicy: "network-only",
-    variables: { id: idItinerary },
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
-    onCompleted: () => setDatas(dataItineraryChoose.itinerary_detail),
+    variables: { status: "A", keyword: searchText },
   });
+
+  const [
+    QueryFeed,
+    { data: listAlbum, loading: loadingAlbum, error: errorAlbum },
+  ] = useLazyQuery(ListAlbum, {
+    fetchPolicy: "network-only",
+    variables: { user_id: user_id, keyword: searchText },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  useEffect(() => {
+    QueryAlbums();
+    QueryFeed();
+  }, []);
+
+  const Choose = (id) => {
+    setIdItinerary(id);
+    setModalDay(true);
+    setTimeout(() => {
+      setModalCreate(false);
+      // setModalAlbum(false);
+    }, 500);
+  };
 
   const [
     MutationCreateAlbumFeed,
@@ -125,17 +119,6 @@ export default function CreateAlbum({
       },
     },
   });
-
-  const Choose = (id) => {
-    setIdItinerary(id);
-    setModalDay(true);
-  };
-
-  const pilih = (id) => {
-    const tempData = [...datas.day];
-    const index = tempData.findIndex((k) => k["id"] === id);
-    setChoose(tempData[index].id);
-  };
 
   const modal = () => {
     setModalAlbumCreate(true);
@@ -171,15 +154,71 @@ export default function CreateAlbum({
             response.data &&
             response.data.create_albums.code === "200")
         ) {
+          QueryFeed();
           setIdAlbums(response.data.create_albums.id);
-          setAlbum(text);
+          setAlbum("Feed");
           setModalAlbumCreate(false);
           setText("");
           setLoadings(false);
+          setTimeout(() => {
+            props.navigate("CreatePostScreen", {
+              token: token,
+              id_album: response.data.create_albums.id,
+              title_album: text,
+            });
+          }, 500);
         }
       }
     } catch (e) {
-      console.log(e);
+      RNToasty.Show({
+        title: t("failedCreateAlbum"),
+        position: "bottom",
+      });
+    }
+  };
+  const SubmitAddFeed = async (newTextFeed) => {
+    // setLoadings(true);
+    if (newTextFeed === "" || newTextFeed === null) {
+      return RNToasty.Show({
+        title: t("emptyAlbumTitle"),
+        position: "bottom",
+      });
+    }
+
+    try {
+      let response = await MutationCreateAlbumFeed({
+        variables: {
+          title: newTextFeed,
+        },
+      });
+      if (response.data) {
+        if (
+          (response &&
+            response.data &&
+            response.data.create_albums.code === 200) ||
+          (response &&
+            response.data &&
+            response.data.create_albums.code === "200")
+        ) {
+          QueryFeed();
+          setNewFeedAlbums(false);
+          setNewTextFeed("");
+        }
+      }
+    } catch (e) {
+      RNToasty.Show({
+        title: t("failedCreateAlbum"),
+        position: "bottom",
+      });
+    }
+  };
+
+  const _searchHandle = (e) => {
+    setSearchText(e);
+    if (select !== "Itinerary Album") {
+      QueryAlbums();
+    } else {
+      QueryFeed();
     }
   };
 
@@ -359,12 +398,6 @@ export default function CreateAlbum({
             </View>
           </View>
         </KeyboardAvoidingView>
-        {/* <Album
-          modals={modalAlbum}
-          setModalAlbum={(e) => setModalAlbum(e)}
-          props={props}
-          user_id={user_id}
-        /> */}
       </Modal>
 
       {/* Modal List Album */}
@@ -459,10 +492,15 @@ export default function CreateAlbum({
               <MenuOptions
                 optionsContainerStyle={{
                   height: 80,
+                  marginTop: 40,
+                  paddingHorizontal: 10,
                 }}
               >
                 <MenuOption
-                  onSelect={() => setSelect("Itinerary Album")}
+                  onSelect={() => {
+                    setSelect("Itinerary Album");
+                    setSearchText("");
+                  }}
                   style={{
                     height: 40,
                     justifyContent: "center",
@@ -473,7 +511,10 @@ export default function CreateAlbum({
                   </Text>
                 </MenuOption>
                 <MenuOption
-                  onSelect={() => setSelect("Feed Album")}
+                  onSelect={() => {
+                    setSelect("Feed Album");
+                    setSearchText("");
+                  }}
                   style={{
                     height: 40,
                     justifyContent: "center",
@@ -490,14 +531,13 @@ export default function CreateAlbum({
             style={{
               width: Dimensions.get("screen").width,
               height: Dimensions.get("screen").height,
-              // height: 300,
               backgroundColor: "white",
             }}
           >
             <View
               style={{
                 width: Dimensions.get("screen").width,
-                height: height - 130,
+                // height: height - 130,
               }}
             >
               <View style={{ width: width, paddingHorizontal: 15 }}>
@@ -515,9 +555,8 @@ export default function CreateAlbum({
                 >
                   <Search height={18} width={18} />
                   <TextInput
-                    // value={searchtext}
-                    // onChangeText={(e) => _searchHandle(e)}
-                    // onFocus={() => showsearchpage(true)}
+                    value={searchText}
+                    onChangeText={(text) => _searchHandle(text)}
                     placeholder={t("lookFor")}
                     placeholderTextColor="#464646"
                     style={{
@@ -545,33 +584,84 @@ export default function CreateAlbum({
                   // flex: 1,
                   borderBottomColor: 10,
                   width: width,
+                  // height: Dimensions.get("screen").height - 100,
                   paddingHorizontal: 15,
                   backgroundColor: "#FFF",
-                  marginVertical: 10,
                 }}
               >
                 <View
                   style={{
                     flexDirection: "row",
                     flexWrap: "wrap",
+                    width: width - 30,
+                    marginBottom: 20,
+                    flex: 1,
+                    // borderWidth: 5,
                   }}
                 >
-                  {select === "Itinerary Album"
-                    ? data &&
-                      data.map((item, index) => (
+                  {select !== "Itinerary Album" ? (
+                    <Pressable
+                      onPress={() => setNewFeedAlbums(true)}
+                      style={{
+                        marginTop: 20,
+                        width: (width - 33) / 3,
+                        // borderWidth: 1,
+                      }}
+                    >
+                      <View
+                        style={{
+                          height: (width - 33) / 3 - 10,
+                          width: (width - 33) / 3 - 10,
+                          backgroundColor: "#F6F6F6",
+                          justifyContent: "center",
+                          alignSelf: "center",
+                          alignItems: "center",
+                          alignSelf: "center",
+                          borderRadius: 5,
+                        }}
+                      >
+                        <NewAlbum height={60} width={60} />
+                      </View>
+                      <View
+                        style={{
+                          paddingHorizontal: 10,
+                          marginTop: 10,
+                        }}
+                      >
+                        <Text size="label" type="regular">
+                          {t("create") + " " + "Album"}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ) : null}
+                  {select === "Itinerary Album" ? (
+                    loadingItinerary ? (
+                      <View
+                        style={{
+                          alignSelf: "center",
+                          width: Dimensions.get("screen").width - 30,
+                          marginTop: 20,
+                        }}
+                      >
+                        <ActivityIndicator size="small" color="#209fae" />
+                      </View>
+                    ) : (
+                      dataItinerary &&
+                      dataItinerary?.itinerary_list_all.map((item, index) => (
                         <Pressable
                           key={index}
                           style={{
-                            marginTop: 10,
-                            width: (width - 30) / 3,
-                            // borderWidth: 1,
+                            marginTop: 20,
+                            width: (width - 33) / 2,
+                            alignItems: "center",
                           }}
                           onPress={() => Choose(item?.id)}
                         >
                           <View
                             style={{
-                              height: 130,
-                              width: "98%",
+                              height: (width - 33) / 2 - 30,
+                              // width: "90%",
+                              width: (width - 33) / 2 - 30,
                               // backgroundColor: "#F6F6F6",
                               justifyContent: "center",
                               alignItems: "center",
@@ -588,63 +678,105 @@ export default function CreateAlbum({
                                 resizeMode: "cover",
                                 height: "100%",
                                 width: "100%",
-                                borderRadius: 3,
+                                borderRadius: 5,
                               }}
                             />
                           </View>
-                          <View style={{ paddingLeft: 5, marginTop: 10 }}>
-                            <Text size="label" type="regular">
+                          <View
+                            style={{
+                              paddingLeft: 5,
+                              marginTop: 10,
+                              alignSelf: "flex-start",
+                              marginLeft: 8,
+                            }}
+                          >
+                            <Text
+                              numberOfLines={2}
+                              size="label"
+                              type="bold"
+                              style={{
+                                height: 45,
+                                lineHeight: 20,
+                              }}
+                            >
                               {item.name}
                             </Text>
-                            <Text size="description" type="light">
-                              {item.album_count}
+                            <Text size="description" type="regular">
+                              {item.album_count}{" "}
+                              {item.album_count > 1 ? "albums" : "album"}
                             </Text>
                           </View>
                         </Pressable>
                       ))
-                    : listAlbums.map((item, index) => (
-                        <Pressable
-                          key={index}
+                    )
+                  ) : loadingAlbum ? (
+                    <View
+                      style={{
+                        alignSelf: "center",
+                        width: Dimensions.get("screen").width - 30,
+                        marginTop: 20,
+                      }}
+                    >
+                      <ActivityIndicator size="small" color="#209fae" />
+                    </View>
+                  ) : (
+                    listAlbum &&
+                    listAlbum?.list_albums.map((item, index) => (
+                      <Pressable
+                        onPress={() => {
+                          setModalAlbum(false);
+                          setIdAlbums(item.id);
+                          setAlbum("Feed"),
+                            setTimeout(() => {
+                              props.navigate("CreatePostScreen", {
+                                token: token,
+                                id_album: item.id,
+                                title_album: item.title,
+                              });
+                            }, 500);
+                        }}
+                        key={index}
+                        style={{
+                          marginTop: 20,
+                          width: (width - 33) / 3,
+                        }}
+                      >
+                        <View
                           style={{
-                            marginTop: 10,
-                            width: (width - 30) / 3,
-                            // borderWidth: 1,
+                            height: (width - 33) / 3 - 10,
+                            width: (width - 33) / 3 - 10,
+                            backgroundColor: "#F6F6F6",
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            alignItems: "center",
+                            borderRadius: 5,
                           }}
                         >
-                          <View
+                          <FunImage
+                            source={
+                              item && item.cover
+                                ? { uri: item?.cover }
+                                : default_image
+                            }
                             style={{
-                              height: 130,
-                              width: "98%",
-                              backgroundColor: "#F6F6F6",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: 5,
+                              resizeMode: "cover",
+                              height: "100%",
+                              width: "100%",
+                              borderRadius: 3,
                             }}
-                          >
-                            <FunImage
-                              source={
-                                item && item.cover
-                                  ? { uri: item?.cover }
-                                  : default_image
-                              }
-                              style={{
-                                resizeMode: "cover",
-                                height: "100%",
-                                width: "100%",
-                                borderRadius: 3,
-                              }}
-                            />
-                          </View>
-                          <View style={{ paddingLeft: 5, marginTop: 10 }}>
-                            <Text size="label" type="regular">
-                              {item.title}
-                            </Text>
-                            <Text size="description" type="light">
-                              {item.count_foto}
-                            </Text>
-                          </View>
-                        </Pressable>
-                      ))}
+                          />
+                        </View>
+                        <View style={{ paddingLeft: 5, marginTop: 10 }}>
+                          <Text size="label" type="regular">
+                            {item.title}
+                          </Text>
+                          <Text size="description" type="light">
+                            {item.count_foto}
+                          </Text>
+                        </View>
+                      </Pressable>
+                    ))
+                  )}
                 </View>
               </ScrollView>
             </View>
@@ -652,128 +784,134 @@ export default function CreateAlbum({
         </MenuProvider>
       </Modal>
 
-      {/* Modal Choose Day */}
+      {/* create new album feed exiting */}
 
       <Modal
-        visible={modalDay}
+        useNativeDriver={true}
+        visible={newFeedAlbums}
+        onRequestClose={() => setNewFeedAlbums(false)}
+        transparent={true}
         animationType="fade"
-        onRequestClose={() => {
-          setModalDay(false);
-        }}
-        onDismiss={() => setModalDay(false)}
-        style={{
-          alignSelf: "center",
-        }}
       >
-        <View
+        <Pressable
+          onPress={() => setNewFeedAlbums(false)}
           style={{
-            flex: 1,
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
+            alignSelf: "center",
+            backgroundColor: "#000000",
+            opacity: 0.7,
+          }}
+        />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{
+            width: Dimensions.get("screen").width - 30,
+            top: Dimensions.get("screen").height / 3,
+            position: "absolute",
+            zIndex: 15,
+            alignSelf: "center",
           }}
         >
           <View
             style={{
-              flexDirection: "row",
-              alignSelf: "flex-start",
-              alignItems: "center",
-              alignContent: "center",
-              backgroundColor: "#209fae",
-              height: 55,
-              width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 0 : 0,
+              height: "100%",
+              width: "100%",
+              backgroundColor: "#FFF",
+              borderRadius: 5,
+              paddingBottom: 15,
             }}
           >
-            <TouchableOpacity
-              style={{
-                height: 55,
-                width: 55,
-                position: "absolute",
-                alignItems: "center",
-                alignContent: "center",
-                paddingTop: 20,
-              }}
-              onPress={() => setModalDay(false)}
-            >
-              <Arrowbackwhite width={20} height={20} />
-            </TouchableOpacity>
             <View
               style={{
-                top: 0,
-                left: 60,
-                height: 50,
-                justifyContent: "center",
-                marginTop: 5,
+                width: "100%",
+                paddingHorizontal: 15,
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
               }}
             >
-              <Text size="label" type="regular" style={{ color: "#FFF" }}>
-                {datas?.name}
-              </Text>
-              <Text size="description" type="light" style={{ color: "#FFF" }}>
-                {t("selecDay")}
+              <Text type="bold" size="title" style={{ marginVertical: 10 }}>
+                New Album
               </Text>
             </View>
-          </View>
-          <View
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              backgroundColor: "white",
-            }}
-          >
             <View
               style={{
-                width: Dimensions.get("screen").width,
-                position: "absolute",
-                top: Dimensions.get("screen").height - 200,
-                // bottom: 200 - 55,
+                width: "100%",
                 paddingHorizontal: 15,
               }}
             >
+              <TextInput
+                multiline
+                placeholder={t("untitle")}
+                maxLength={1000}
+                placeholderStyle={{ fontSize: 50 }}
+                placeholderTextColor="#6C6C6C"
+                style={
+                  Platform.OS == "ios"
+                    ? {
+                        height: 75,
+                        maxHeight: 100,
+                        marginVertical: 10,
+                        marginHorizontal: 10,
+                        paddingTop: 10,
+                        fontSize: 14,
+                        fontFamily: "Lato-Regular",
+                      }
+                    : {
+                        height: 50,
+                        borderRadius: 5,
+                        backgroundColor: "#f6f6f6",
+                        paddingHorizontal: 10,
+                        fontSize: 14,
+                        marginVertical: 10,
+                        fontFamily: "Lato-Regular",
+                      }
+                }
+                onChangeText={(text) => setNewTextFeed(text)}
+                value={newTextFeed}
+              />
+            </View>
+            <View
+              style={{
+                width: "100%",
+                paddingHorizontal: 15,
+                justifyContent: "flex-end",
+                flexDirection: "row",
+              }}
+            >
               <Button
-                size="medium"
-                text={t("next")}
                 onPress={() => {
-                  setModalAlbum(false);
-                  setModalDay(false);
+                  setNewFeedAlbums(false);
+                  setNewTextFeed("");
                 }}
+                size="medium"
+                color="transparant"
+                text={t("cancel")}
+              ></Button>
+              <Button
+                onPress={() => SubmitAddFeed(newTextFeed)}
+                size="medium"
+                color="primary"
+                text={t("create") + " " + "Album"}
               ></Button>
             </View>
-            {datas &&
-              datas?.day.map((item, index) => (
-                <Ripple
-                  key={index}
-                  onPress={() => pilih(item.id)}
-                  style={{
-                    // width: width,
-                    marginHorizontal: 15,
-                    paddingVertical: 15,
-                    borderBottomWidth: 1,
-                    // borderColor: "rgb(80,80,80)",
-                    borderColor: "#f1f1f1",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 20,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {choose === item.id ? (
-                      <Check height="15" width="15" />
-                    ) : null}
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={{ marginLeft: 10 }}>Day</Text>
-                    <Text style={{ marginLeft: 10 }}>{item.day}</Text>
-                  </View>
-                </Ripple>
-              ))}
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
+
+      {/* Modal Choose Day */}
+      {!idItinerary ? null : (
+        <ChooseAlbumItinerary
+          modalDay={modalDay}
+          setModalDay={(e) => setModalDay(e)}
+          setModalAlbum={(e) => {
+            setModalAlbum(e);
+          }}
+          idItinerary={idItinerary}
+          token={token}
+          props={props}
+        />
+      )}
     </View>
   );
 }
