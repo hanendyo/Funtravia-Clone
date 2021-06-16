@@ -43,7 +43,7 @@ export default function Home(props) {
     let [data, setdata] = useState(null);
     let [shareId, setShareId] = useState(props.route.params?.shareid);
     let [loadingModal, setLoadingModal] = useState(false);
-    // console.log(token);
+    console.log(token);
     const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
         Account,
         {
@@ -322,6 +322,7 @@ export default function Home(props) {
                                                 style={{
                                                     elevation: 2,
                                                     shadowColor: "#464646",
+                                                    backgroundColor: "#FFFFFF",
                                                     shadowOffset: {
                                                         width: 0,
                                                         height: 0,
@@ -356,6 +357,7 @@ export default function Home(props) {
                                                 style={{
                                                     elevation: 2,
                                                     shadowColor: "#464646",
+                                                    backgroundColor: "#FFFFFF",
                                                     shadowOffset: {
                                                         width: 0,
                                                         height: 0,
