@@ -34,8 +34,8 @@ import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 
 export default function ItineraryDestination(props) {
-  console.log(props.route?.params);
   let [filtershow, setfiltershow] = useState([]);
+  let [filtershowcity, setfiltershowcity] = useState([]);
 
   const HeaderComponent = {
     headerShown: true,
@@ -112,12 +112,9 @@ export default function ItineraryDestination(props) {
     onCompleted: async () => {
       let datloop = [...datafilter.destination_filter.type];
       let hasil = [...filtershow];
-      console.log(hasil);
       let des = [];
 
       for (var ix in datloop) {
-        // console.log(datloop[ix].id);
-
         if (datloop[ix].id === props?.route?.params?.idtype) {
           let dat = { ...datloop[ix] };
           dat.checked = true;
@@ -125,7 +122,6 @@ export default function ItineraryDestination(props) {
           await des.push(dat);
         }
       }
-      // console.log(datloop);
 
       hasil = await hasil.concat(des);
 
@@ -136,17 +132,38 @@ export default function ItineraryDestination(props) {
       await setdataFilterCountry(datafilter.destination_filter.country);
       await setdataFilterCountrys(datafilter.destination_filter.country);
 
-      let dta = datafilter.destination_filter.type.filter(
+      let dtat = datloop.filter((item) => item.sugestion === true);
+
+      for (var datan of dtat) {
+        let indx = hasil.findIndex((key) => key.id === datan.id);
+
+        if (indx !== -1) {
+          let dd = { ...datan };
+          dd.checked = true;
+          await hasil.splice(indx, 1, dd);
+        } else {
+          await hasil.push(datan);
+        }
+      }
+
+      let dtf = datafilter.destination_filter.facility.filter(
         (item) => item.sugestion === true
       );
-      hasil = hasil.concat(dta);
-      let wle = datafilter.destination_filter.facility.filter(
-        (item) => item.sugestion === true
-      );
-      hasil = await hasil.concat(wle);
+
+      for (var dataf of dtf) {
+        let indxs = hasil.findIndex((key) => key.id === dataf.id);
+
+        if (indxs !== -1) {
+          let dds = { ...dataf };
+          dds.checked = true;
+          await hasil.splice(indxs, 1, dds);
+        } else {
+          await hasil.push(dataf);
+        }
+      }
 
       await setfiltershow(hasil);
-      // await UpdateFilter();
+      // await Getsearch();
     },
   });
 
@@ -167,7 +184,7 @@ export default function ItineraryDestination(props) {
     },
     onCompleted: async () => {
       let datloop = [...datasearchlocation.searchlocation_populer];
-      let hasil = [...filtershow];
+      let hasil = [...filtershowcity];
       let wle = [];
 
       for (var ix in datloop) {
@@ -184,7 +201,7 @@ export default function ItineraryDestination(props) {
       }
       hasil = hasil.concat(wle);
 
-      await setfiltershow(hasil);
+      await setfiltershowcity(hasil);
 
       await setdataFilterCity(datloop);
       await setdataFilterCitys(datloop);
@@ -409,42 +426,60 @@ export default function ItineraryDestination(props) {
   const UpdateFilter = async () => {
     let data = { ...search };
     let filterz = [];
+    let filterd = [];
 
-    let Categori = [];
-    for (var x of dataFilterCategori) {
-      if (x.checked === true) {
-        Categori.push(x.id);
-        filterz.push(x);
-      }
-    }
+    let Categori = dataFilterCategori.filter((cat) => cat.checked === true);
+    filterz = await filterz.concat(Categori);
 
-    let fasilitas = [];
-    for (var y of dataFilterFacility) {
-      if (y.checked === true) {
-        fasilitas.push(y.id);
-        filterz.push(y);
-      }
-    }
+    // for (var x of dataFilterCategori) {
 
-    let Countryss = [];
+    //   if (x.checked === true) {
+    //     Categori.push(x.id);
+    //     filterz.push(x);
+    //   }
+    // }
 
-    let cityss = [];
-    let province = [];
+    let fasilitas = dataFilterFacility.filter((fas) => fas.checked === true);
+    filterz = await filterz.concat(fasilitas);
 
-    for (var u of dataFilterCity) {
-      if (u.checked === true) {
-        if (u.type === "Province") {
-          province.push(u.id);
-          filterz.push(u);
-        } else if (u.type === "City") {
-          cityss.push(u.id);
-          filterz.push(u);
-        } else if (u.type === "Country") {
-          Countryss.push(u.id);
-          filterz.push(u);
-        }
-      }
-    }
+    // [];
+    // for (var y of dataFilterFacility) {
+    //   if (y.checked === true) {
+    //     fasilitas.push(y.id);
+    //     filterz.push(y);
+    //   }
+    // }
+
+    let Countryss = dataFilterCity.filter(
+      (fas) => fas.type === "Country" && fas.checked === true
+    );
+
+    filterd = await filterd.concat(Countryss);
+    let cityss = dataFilterCity.filter(
+      (fasc) => fasc.type === "City" && fasc.checked === true
+    );
+
+    filterd = await filterd.concat(cityss);
+    let province = dataFilterCity.filter(
+      (fasd) => fasd.type === "Province" && fasd.checked === true
+    );
+
+    filterd = await filterd.concat(province);
+
+    // for (var u of dataFilterCity) {
+    //   if (u.checked === true) {
+    //     if (u.type === "Province") {
+    //       province.push(u.id);
+    //       filterz.push(u);
+    //     } else if (u.type === "City") {
+    //       cityss.push(u.id);
+    //       filterz.push(u);
+    //     } else if (u.type === "Country") {
+    //       Countryss.push(u.id);
+    //       filterz.push(u);
+    //     }
+    //   }
+    // }
 
     data["type"] = await Categori;
     data["facilities"] = await fasilitas;
@@ -453,6 +488,7 @@ export default function ItineraryDestination(props) {
     data["provinces"] = await province;
 
     await setfiltershow(filterz);
+    await setfiltershowcity(filterd);
     await setSearch(data);
     await setshow(false);
   };
@@ -532,12 +568,25 @@ export default function ItineraryDestination(props) {
   };
 
   const onSelectFilter = async (ceked, id, item) => {
-    let dat = [...filtershow];
+    // let dat = filtershow.concat(filtershowcity);
+    let showq = [...filtershow];
+    let showc = [...filtershowcity];
     let items = { ...item };
     items["checked"] = !ceked;
-    let inde = dat.findIndex((key) => key.id === id);
-    await dat.splice(inde, 1, items);
-    await setfiltershow(dat);
+
+    if (item.__typename === "SearchLocation") {
+      let indek = showc.findIndex((key) => key.id === id);
+      if (indek !== -1) {
+        await showc.splice(indek, 1, items);
+        await setfiltershowcity(showc);
+      }
+    } else {
+      let inde = showq.findIndex((key) => key.id === id);
+      if (inde !== -1) {
+        await showq.splice(inde, 1, items);
+        await setfiltershow(showq);
+      }
+    }
 
     let sear = { ...search };
 
@@ -723,7 +772,7 @@ export default function ItineraryDestination(props) {
               marginHorizontal: 3,
             }}
             horizontal={true}
-            data={filtershow}
+            data={filtershow.concat(filtershowcity)}
             renderItem={_renderFilter}
             showsHorizontalScrollIndicator={false}
           ></FlatList>
