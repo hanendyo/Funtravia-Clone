@@ -173,12 +173,24 @@ export default function Wishlist(props) {
     });
   }, []);
 
+  let [Skeleton, setSkeleton] = useState(false);
+  const onSubmitSearch = () => {
+    setText(textc);
+    search(textc);
+    setSkeleton(true);
+  };
+
   const onClearSearch = () => {
+    setTextc("");
     setText("");
+    search();
   };
 
   const search = async (x) => {
-    setText(x);
+    await GetEvent();
+    await GetDes();
+    await getServices();
+    await getTrans();
   };
 
   const GetEvent = () => {
@@ -192,7 +204,7 @@ export default function Wishlist(props) {
               : []
             : []
         }
-        Textcari={texts}
+        startSkeleton={Skeleton}
         token={token}
         refreshing={refreshing}
         Refresh={(e) => _Refresh(e)}
@@ -204,9 +216,16 @@ export default function Wishlist(props) {
     return (
       <Destination
         props={props}
+        destinationData={
+          !loading
+            ? dataDes && dataDes?.listdetination_wishlist?.length > 0
+              ? dataDes?.listdetination_wishlist
+              : []
+            : []
+        }
         token={token}
         refreshing={refreshing}
-        Textcari={texts}
+        startSkeleton={Skeleton}
         Refresh={(e) => _Refresh(e)}
       />
     );
@@ -309,7 +328,7 @@ export default function Wishlist(props) {
                 }}
               >
                 <TextInput
-                  value={texts}
+                  value={textc}
                   style={{
                     height: 40,
                     maxWidth: 270,
@@ -320,17 +339,17 @@ export default function Wishlist(props) {
                   underlineColorAndroid="transparent"
                   onChangeText={async (x) => {
                     {
-                      search(x);
+                      setTextc(x), setSkeleton(false);
                     }
                   }}
                   placeholder={t("searchWishlist")}
                   returnKeyType="search"
                   autoFocus={true}
-                  // onSubmitEditing={() => {
-                  //   onSubmitSearch();
-                  // }}
+                  onSubmitEditing={(x) => {
+                    onSubmitSearch();
+                  }}
                 />
-                {texts ? (
+                {textc ? (
                   <TouchableOpacity
                     onPress={() => {
                       onClearSearch();

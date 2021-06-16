@@ -10,11 +10,11 @@ export default function Maps({
   Idcountry,
 }) {
   console.log(subContinent.id, colorChange, defaultColor, setChange, Idcountry);
-  const { width, height } = Dimensions.get("screen");
+  const { width } = Dimensions.get("screen");
   return (
     <Svg
-      width={width - 30}
-      height={width - 150}
+      width={width - 25}
+      height={width - 100}
       viewBox="0 0 252 223"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -29,9 +29,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "VNM"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -70,9 +70,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "MMR"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -123,9 +123,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "LAO"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -169,9 +169,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "THA"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -215,9 +215,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "KMH"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -1331,9 +1331,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "MYS"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -1419,9 +1419,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "SIN"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -1498,9 +1498,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "IDN"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -1547,9 +1547,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "TLS"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -1598,9 +1598,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "PHI"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -1673,9 +1673,9 @@ export default function Maps({
                 ? "#209FAE"
                 : Idcountry == "BRN"
                 ? "#209FAE"
-                : "#F9F9FA"
+                : "#DAF0F2"
             }
-            stroke="#F9F9FA"
+            stroke="#DAF0F2"
             stroke-width="0.2"
             stroke-linecap="round"
             stroke-linejoin="round"

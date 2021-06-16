@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import { useState } from "react";
 import {
   SafeAreaView,
@@ -7,6 +7,8 @@ import {
   View,
   Pressable,
   TextInput,
+  BackHandler,
+  ScrollView,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import M035 from "./src/new/035";
@@ -17,11 +19,19 @@ import M145 from "./src/145";
 import M142 from "./src/142";
 import { ISO } from "../../../data/iso";
 import Country from "../../../data/country/index.json";
-import { Text, StatusBar } from "../../../../../component";
+import { Text, StatusBar, Button } from "../../../../../component";
 import Flag from "../../../data/flag";
-import { PinHijau, Search } from "../../../../../assets/svg";
+import {
+  Arrowbackwhite,
+  PinAbu,
+  PinBiru,
+  PinHijau,
+  Search,
+  Xhitam,
+} from "../../../../../assets/svg";
 export default function Asia({ navigation }) {
   const { t, i18n } = useTranslation();
+
   const [changeColor, setChangeColor] = useState("#209FAE");
   const [defaultColor, setDefaultColor] = useState("#DAF0F2");
   const [Idcountry, setIdcountry] = useState("");
@@ -29,7 +39,56 @@ export default function Asia({ navigation }) {
     id: "142",
     label: "All",
   });
-  // console.log("sub", subContinent);
+  const BackUse = useRef(subContinent);
+  const HeaderComponent = {
+    headerTitle: "Destination",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 16,
+      color: "white",
+      position: BackUse.current.id === 142 ? null : "absolute",
+      top: BackUse.current.id === 142 ? null : -15,
+    },
+
+    headerLeftContainerStyle: {
+      paddingLeft: 10,
+    },
+    headerLeft: () => (
+      <View>
+        <TouchableOpacity onPress={() => onBackPress()}>
+          <Arrowbackwhite width={20} height={20} />
+        </TouchableOpacity>
+        <View
+          style={{
+            position: "absolute",
+            left: 63,
+            top: 15,
+            width: 120,
+          }}
+        >
+          {BackUse.current.id === "142" ? null : (
+            <Text
+              style={{
+                color: "white",
+              }}
+            >
+              {BackUse.current.label}
+            </Text>
+          )}
+        </View>
+      </View>
+    ),
+
+    headerRight: () => {
+      return null;
+    },
+  };
   const subContinentData = [
     // {
     //   id: "142",
@@ -134,233 +193,323 @@ export default function Asia({ navigation }) {
     setCountries(data);
   };
 
+  // manipulasi header
+  const setHeader = (item) => {
+    if (item !== "142") {
+      navigation.setOptions(HeaderComponent);
+    } else {
+      navigation.setOptions({ headerTitle: "ASIA" });
+    }
+  };
+
+  const onBackPress = useCallback(() => {
+    if (BackUse.current.id !== "142") {
+      setSubContinent({ id: "142" });
+      InitialCountry({ id: "142" });
+      setHeader("142");
+      BackUse.current = {
+        id: "142",
+        label: "All",
+      };
+    } else {
+      console.log("tb");
+      navigation.goBack();
+    }
+    return true;
+  }, []);
+
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    };
+  }, [onBackPress]);
+
   useEffect(() => {
     InitialCountry();
   }, []);
 
   let [countries, setCountries] = useState([]);
+  let [text, setText] = useState("");
+
+  const handleSubmit = () => {
+    searchcountry(text);
+  };
 
   const searchcountry = async (e) => {
-    let filcountry = countries.filter((item) => {
-      if (item.name.toLowerCase().match(e.toLowerCase())) {
-        return item;
-      }
-    });
-    console.log("fill", filcountry);
-    setCountries(filcountry);
+    if (e) {
+      let filcountry = countries.filter((item) => {
+        if (item.name.toLowerCase().match(e.toLowerCase())) {
+          return item;
+        }
+      });
+      setCountries(filcountry);
+    } else {
+      InitialCountry(subContinent);
+    }
+  };
+
+  const onClearSearch = () => {
+    setText("");
+    searchcountry();
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
-      {/* filter region */}
-      <View
-        style={{
-          // flexDirection: "row",
-          flexWrap: "wrap",
-          marginHorizontal: 15,
-          padding: 10,
-          alignItems: "center",
-          borderColor: "#D1D1D1",
-          backgroundColor: "#FFF",
-          borderRadius: 5,
-          margin: 10,
-          // borderWidth: 3,
-          elevation: 1,
-          shadowColor: "#d3d3d3",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 1,
-          shadowRadius: 2,
-        }}
-      >
-        <View
-          style={{
-            alignSelf: "flex-start",
-          }}
-        >
-          <Text
+      <ScrollView>
+        {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
+        {/* filter region */}
+
+        {BackUse.current.id !== "142" ? null : (
+          <View
             style={{
-              paddingLeft: 10,
+              // flexDirection: "row",
+              flexWrap: "wrap",
+              marginHorizontal: 15,
+              padding: 10,
+              alignItems: "center",
+              borderColor: "#D1D1D1",
+              backgroundColor: "#FFF",
+              borderRadius: 5,
+              margin: 10,
+              // borderWidth: 3,
+              elevation: 1,
+              shadowColor: "#d3d3d3",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
             }}
-            size={"description"}
-            type={"regular"}
           >
-            Region :
-          </Text>
-        </View>
-        <FlatList
-          data={subContinentData}
-          contentContainerStyle={{
-            flexDirection: "row",
-            paddingHorizontal: 5,
-            marginTop: 5,
-          }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            // console.log("itemcontinent", item),
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                {
-                  setSubContinent(item);
-                  InitialCountry(item);
-                }
-              }}
+            <View
               style={{
-                backgroundColor:
-                  subContinent.id === item.id ? "#209FAE" : "#FFF",
-                borderWidth: 0.5,
-                borderColor:
-                  subContinent.id === item.id ? "#209FAE" : "#D1D1D1",
-                paddingVertical: 8,
-                paddingHorizontal: 15,
-                borderRadius: 5,
-                margin: 5,
-                elevation: 1,
-                shadowColor: "#d3d3d3",
-                shadowOffset: { width: 2, height: 2 },
-                shadowOpacity: 1,
-                shadowRadius: 2,
+                alignSelf: "flex-start",
               }}
             >
               <Text
-                type="bold"
-                size="description"
                 style={{
-                  color: subContinent.id === item.id ? "#FFF" : "#464646",
+                  paddingLeft: 10,
                 }}
-              >{`${item.label}`}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-      {/* akhir filter region */}
-      <View style={{ padding: 15 }}>{Components[`cm${subContinent.id}`]}</View>
-      <View
-        style={{
-          backgroundColor: "#FFF",
-          shadowColor: "#d3d3d3",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 1,
-          shadowRadius: 2,
-          margin: 15,
-          borderRadius: 10,
-          elevation: 1,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "#daf0f2",
-            borderRadius: 5,
-            margin: 15,
-            flexDirection: "row",
-            alignItems: "center",
-            alignContent: "center",
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-          }}
-        >
-          <Search width={15} height={15} />
-
-          <TextInput
-            underlineColorAndroid="transparent"
-            placeholder={t("search")}
-            style={{
-              width: "100%",
-              marginLeft: 5,
-              padding: 0,
-            }}
-            returnKeyType="search"
-            onChangeText={(x) => searchcountry(x)}
-            onSubmitEditing={(x) => searchcountry(x)}
-          />
-        </View>
-        <FlatList
-          data={countries}
-          renderItem={({ item, index }) => (
-            // console.log("itemcountry", item),
-            <View
-              style={{
-                paddingVertical: 15,
-                paddingHorizontal: 15,
-                borderBottomColor: "#dedede",
-                borderBottomWidth: 1,
-                marginVertical: 5,
+                size={"description"}
+                type={"regular"}
+              >
+                Region :
+              </Text>
+            </View>
+            <FlatList
+              data={subContinentData}
+              contentContainerStyle={{
                 flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
+                paddingHorizontal: 5,
+                marginTop: 5,
               }}
-            >
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("CountryStack", {
-                    screen: "Country",
-                    params: {
-                      data: { id: Country[item["alpha-3"]].id },
-                    },
-                  })
-                }
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  flex: 1,
-                }}
-              >
-                <Flag
-                  countryid={item["alpha-3"]}
-                  style={{ width: 50, marginRight: 15 }}
-                />
-                <Text size="label" type="reguler">
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-              <View
-                style={{
-                  height: 30,
-                  width: 30,
-                  borderRadius: 50,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  // backgroundColor: "rgba(226, 236, 248, 0.85)",
-                  backgroundColor:
-                    Idcountry == item["alpha-3"]
-                      ? "#FF0000"
-                      : "rgba(226, 236, 248, 0.85)",
-                }}
-              >
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
+                // console.log("itemcontinent", item),
                 <TouchableOpacity
                   key={index}
                   onPress={() => {
                     {
-                      setSubContinent({ id: item["sub-region-code"] }),
-                        setIdcountry(
-                          item["alpha-3"] === Idcountry ? null : item["alpha-3"]
-                        );
+                      setSubContinent(item);
+                      InitialCountry(item);
+                      setHeader(item.id);
+                      BackUse.current = item;
                     }
                   }}
                   style={{
-                    height: 30,
-                    width: 30,
-                    borderRadius: 50,
-                    alignSelf: "center",
-                    alignItems: "center",
-                    alignContent: "center",
-                    justifyContent: "center",
-                    zIndex: 9999,
+                    backgroundColor:
+                      subContinent.id === item.id ? "#209FAE" : "#FFF",
+                    borderWidth: 0.5,
+                    borderColor:
+                      subContinent.id === item.id ? "#209FAE" : "#D1D1D1",
+                    paddingVertical: 8,
+                    paddingHorizontal: 15,
+                    borderRadius: 5,
+                    margin: 5,
+                    elevation: 1,
+                    shadowColor: "#d3d3d3",
+                    shadowOffset: { width: 2, height: 2 },
+                    shadowOpacity: 1,
+                    shadowRadius: 2,
                   }}
                 >
-                  <PinHijau height={18} width={18} />
+                  <Text
+                    type="bold"
+                    size="description"
+                    style={{
+                      color: subContinent.id === item.id ? "#FFF" : "#464646",
+                    }}
+                  >{`${item.label}`}</Text>
                 </TouchableOpacity>
-              </View>
-            </View>
-          )}
-          // contentContainerStyle={{ marginHorizontal: 15 }}
-        />
-      </View>
+              )}
+            />
+          </View>
+        )}
+        {/* akhir filter region */}
+        <View style={{ padding: 0 }}>{Components[`cm${subContinent.id}`]}</View>
+        <View
+          style={{
+            backgroundColor: "#FFF",
+            shadowColor: "#d3d3d3",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+            margin: 15,
+            borderRadius: 10,
+            elevation: 1,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#daf0f2",
+              borderRadius: 5,
+              margin: 15,
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            }}
+          >
+            <Search width={15} height={15} />
+
+            <TextInput
+              underlineColorAndroid="transparent"
+              placeholder={t("search")}
+              style={{
+                width: "90%",
+                marginLeft: 5,
+                padding: 0,
+              }}
+              value={text}
+              returnKeyType="search"
+              onChangeText={(x) => setText(x)}
+              onSubmitEditing={(x) => handleSubmit(x)}
+            />
+            {text ? (
+              <TouchableOpacity
+                onPress={() => {
+                  onClearSearch();
+                }}
+              >
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#464646",
+                    padding: 3,
+                    borderRadius: 15,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Xhitam width={7} height={7} />
+                </View>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+
+          <FlatList
+            data={countries}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              console.log("Item", item),
+              (
+                <View
+                  style={{
+                    paddingVertical: 15,
+                    paddingHorizontal: 15,
+                    borderBottomColor: "#dedede",
+                    borderBottomWidth: 1,
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("CountryStack", {
+                        screen: "Country",
+                        params: {
+                          data: { id: Country[item["alpha-3"]].id },
+                        },
+                      })
+                    }
+                    key={index}
+                    style={{
+                      flexDirection: "row",
+                      flex: 1,
+                    }}
+                  >
+                    <Flag
+                      countryid={item["alpha-3"]}
+                      style={{ width: 50, marginRight: 15 }}
+                    />
+                    <Text size="label" type="reguler">
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 30,
+                      width: 30,
+                      borderRadius: 50,
+                      alignSelf: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+                      // backgroundColor: "rgba(226, 236, 248, 0.85)",
+                      backgroundColor:
+                        Idcountry == item["alpha-3"] ? "#DAF0F2" : "#F6F6F6",
+                    }}
+                  >
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        {
+                          setSubContinent({ id: item["sub-region-code"] }),
+                            setIdcountry(
+                              item["alpha-3"] === Idcountry
+                                ? null
+                                : item["alpha-3"]
+                            );
+                          setHeader(item["sub-region-code"]);
+
+                          BackUse.current = {
+                            id: item["sub-region-code"],
+                            label: item["sub-region"],
+                          };
+                        }
+                      }}
+                      style={{
+                        height: 30,
+                        width: 30,
+                        borderRadius: 50,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+                        zIndex: 9999,
+                      }}
+                    >
+                      {Idcountry == item["alpha-3"] ? (
+                        <PinBiru height={18} width={18} />
+                      ) : (
+                        <PinAbu height={18} width={18} />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )
+            )}
+            // contentContainerStyle={{ marginHorizontal: 15 }}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
