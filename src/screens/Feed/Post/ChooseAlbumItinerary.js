@@ -28,6 +28,8 @@ export default function ChooseAlbumItinerary({
   props,
   token,
   setModalAlbum,
+  setAlbum,
+  setIdAlbums,
 }) {
   const { t } = useTranslation();
   const [newItineraryAlbums, setNewItineraryAlbums] = useState(false);
@@ -94,14 +96,19 @@ export default function ChooseAlbumItinerary({
     }
   };
 
-  const pilih = async (id) => {
+  const pilih = async (id, title) => {
+    console.log("id", id);
+    console.log("title", title);
     setModalAlbum(false);
     setModalDay(false);
+    setAlbum("Itinerary");
+    setIdAlbums(id);
     setTimeout(() => {
       props.navigate("CreatePostScreen", {
         token: token,
         id_album: id,
         id_itinerary: idItinerary,
+        title_album: title,
       });
     }, 500);
   };
@@ -220,7 +227,8 @@ export default function ChooseAlbumItinerary({
                 dataItinerarys?.album_itinerary_list.map((item, index) => (
                   <Pressable
                     key={index}
-                    onPress={() => pilih(item.id)}
+                    onPress={() => pilih(item.id, item.title)}
+                    // onPress={() => console.log("item",item)}
                     style={{
                       width: (width - 33) / 3,
                       backgroundColor: "#FFF",

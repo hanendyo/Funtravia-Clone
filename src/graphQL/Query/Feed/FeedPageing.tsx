@@ -62,11 +62,17 @@ const FeedPageing = gql`
             picture
           }
         }
-        day {
+        album {
           id
-          date
-          day
-          total_hours
+          title
+          cover
+          user {
+            id
+            username
+            first_name
+            last_name
+            picture
+          }
         }
       }
     }

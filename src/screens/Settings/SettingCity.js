@@ -224,7 +224,7 @@ export default function SettingCity({
             <FlatList
               ref={slider}
               data={dataKota?.cities_search}
-              stickyHeaderIndices={[0]}
+              // stickyHeaderIndices={[0]}
               renderItem={({ item }) => (
                 <Ripple
                   onPress={() => hasil(item, selected)}
@@ -249,7 +249,7 @@ export default function SettingCity({
                       {item.name
                         .toString()
                         .toLowerCase()
-                        .replace(/\b[a-z]/g, function (letter) {
+                        .replace(/\b[a-z]/g, function(letter) {
                           return letter.toUpperCase();
                         })}
                     </Text>

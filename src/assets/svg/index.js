@@ -230,6 +230,8 @@ import EyeActive from "./files/mata active.svg";
 import EyeNonactive from "./files/mata nonactive.svg";
 import AlbumFeed from "./files/album_feed";
 import AlbumFeedBiru from "./files/album_feed_biru";
+import PinAbu from "./files/pinabu.svg";
+import PinBiru from "./files/pinbiru.svg";
 
 export {
   LikeWhite,
@@ -464,4 +466,6 @@ export {
   EyeNonactive,
   AlbumFeed,
   AlbumFeedBiru,
+  PinAbu,
+  PinBiru,
 };
