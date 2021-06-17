@@ -9,6 +9,7 @@ import {
   Alert,
   RefreshControl,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { CustomImage } from "../../component";
 import {
@@ -26,8 +27,10 @@ import {
 import { Truncate } from "../../component";
 import { MapIconGrey, MapIconGreen, default_image } from "../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/client";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { Text, Button } from "../../component";
+import Events from "../../graphQL/Query/Wishlist/Event";
 import { useTranslation } from "react-i18next";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const numColumns = 2;
@@ -36,13 +39,14 @@ export default function Event({
   props,
   dataEvent,
   token,
+  Textcari,
   Refresh,
   refreshing,
 }) {
   const { t, i18n } = useTranslation();
   let [selected] = useState(new Map());
-  // let [token, setToken] = useState('');
-  let [dataEv, setEv] = useState(dataEvent);
+  let [dataEv, setEv] = useState([]);
+  console.log("datadev", dataEv);
   const eventdetail = (data) => {
     props.route.params && props.route.params.iditinerary
       ? props.navigation.navigate("eventdetail", {
@@ -58,6 +62,22 @@ export default function Event({
           token: token,
         });
   };
+
+  const [getEvent, { loading, data: dataEven, error }] = useLazyQuery(Events, {
+    fetchPolicy: "network-only",
+    variables: {
+      keyword: Textcari !== null ? Textcari : "",
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setEv(dataEven?.listevent_wishlist);
+    },
+  });
 
   const [
     mutationUnliked,
@@ -109,221 +129,229 @@ export default function Event({
     }
   };
 
-  // useEffect(() => {}, []);
-  let [loadevent, setLoadevent] = useState(true);
-
   useEffect(() => {
-    setTimeout(() => {
-      setLoadevent(false);
-    }, 100);
+    getEvent();
   }, []);
 
-  if (loadevent) {
-    return (
-      <SkeletonPlaceholder>
-        <View>
-          <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                width: Dimensions.get("screen").width * 0.5 - 16,
-                height: Dimensions.get("window").width * 0.7,
-                borderWidth: 1,
-                borderColor: "#dedede",
-                borderRadius: 5,
-                marginLeft: 10,
-                marginTop: 10,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  height: 180,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "90%",
-                  height: 15,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 15,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-            </View>
-            <View
-              style={{
-                width: Dimensions.get("screen").width * 0.5 - 16,
-                height: Dimensions.get("window").width * 0.7,
-                borderWidth: 1,
-                borderColor: "#dedede",
-                borderRadius: 5,
-                marginLeft: 10,
-                marginTop: 10,
-                marginRight: 10,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  height: 180,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "90%",
-                  height: 15,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 15,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-            </View>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                width: Dimensions.get("screen").width * 0.5 - 16,
-                height: Dimensions.get("window").width * 0.7,
-                borderWidth: 1,
-                borderColor: "#dedede",
-                borderRadius: 5,
-                marginLeft: 10,
-                marginTop: 10,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  height: 180,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "90%",
-                  height: 15,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 15,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-            </View>
-            <View
-              style={{
-                width: Dimensions.get("screen").width * 0.5 - 16,
-                height: Dimensions.get("window").width * 0.7,
-                borderWidth: 1,
-                borderColor: "#dedede",
-                borderRadius: 5,
-                marginLeft: 10,
-                marginTop: 10,
-                marginRight: 10,
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  height: 180,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "90%",
-                  height: 15,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 15,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-              <View
-                style={{
-                  marginTop: 10,
-                  marginLeft: 5,
-                  marginRight: 5,
-                  justifyContent: "center",
-                  width: "70%",
-                  height: 10,
-                }}
-              ></View>
-            </View>
-          </View>
-        </View>
-      </SkeletonPlaceholder>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View
+  //       style={{
+  //         // position: 'absolute',
+  //         // bottom:0,
+  //         flex: 1,
+  //         width: Dimensions.get("screen").width,
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         marginHorizontal: 15,
+  //       }}
+  //     >
+  //       <ActivityIndicator animating={loading} size="large" color="#209fae" />
+  //     </View>
+  //     // <SkeletonPlaceholder>
+  //     //   <View>
+  //     //     <View style={{ flexDirection: "row" }}>
+  //     //       <View
+  //     //         style={{
+  //     //           width: Dimensions.get("screen").width * 0.5 - 16,
+  //     //           height: Dimensions.get("window").width * 0.7,
+  //     //           borderWidth: 1,
+  //     //           borderColor: "#dedede",
+  //     //           borderRadius: 5,
+  //     //           marginLeft: 10,
+  //     //           marginTop: 10,
+  //     //         }}
+  //     //       >
+  //     //         <View
+  //     //           style={{
+  //     //             width: "100%",
+  //     //             height: 180,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "90%",
+  //     //             height: 15,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 15,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //       </View>
+  //     //       <View
+  //     //         style={{
+  //     //           width: Dimensions.get("screen").width * 0.5 - 16,
+  //     //           height: Dimensions.get("window").width * 0.7,
+  //     //           borderWidth: 1,
+  //     //           borderColor: "#dedede",
+  //     //           borderRadius: 5,
+  //     //           marginLeft: 10,
+  //     //           marginTop: 10,
+  //     //           marginRight: 10,
+  //     //         }}
+  //     //       >
+  //     //         <View
+  //     //           style={{
+  //     //             width: "100%",
+  //     //             height: 180,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "90%",
+  //     //             height: 15,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 15,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //       </View>
+  //     //     </View>
+  //     //     <View style={{ flexDirection: "row" }}>
+  //     //       <View
+  //     //         style={{
+  //     //           width: Dimensions.get("screen").width * 0.5 - 16,
+  //     //           height: Dimensions.get("window").width * 0.7,
+  //     //           borderWidth: 1,
+  //     //           borderColor: "#dedede",
+  //     //           borderRadius: 5,
+  //     //           marginLeft: 10,
+  //     //           marginTop: 10,
+  //     //         }}
+  //     //       >
+  //     //         <View
+  //     //           style={{
+  //     //             width: "100%",
+  //     //             height: 180,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "90%",
+  //     //             height: 15,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 15,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //       </View>
+  //     //       <View
+  //     //         style={{
+  //     //           width: Dimensions.get("screen").width * 0.5 - 16,
+  //     //           height: Dimensions.get("window").width * 0.7,
+  //     //           borderWidth: 1,
+  //     //           borderColor: "#dedede",
+  //     //           borderRadius: 5,
+  //     //           marginLeft: 10,
+  //     //           marginTop: 10,
+  //     //           marginRight: 10,
+  //     //         }}
+  //     //       >
+  //     //         <View
+  //     //           style={{
+  //     //             width: "100%",
+  //     //             height: 180,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "90%",
+  //     //             height: 15,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 15,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //         <View
+  //     //           style={{
+  //     //             marginTop: 10,
+  //     //             marginLeft: 5,
+  //     //             marginRight: 5,
+  //     //             justifyContent: "center",
+  //     //             width: "70%",
+  //     //             height: 10,
+  //     //           }}
+  //     //         ></View>
+  //     //       </View>
+  //     //     </View>
+  //     //   </View>
+  //     // </SkeletonPlaceholder>
+  //   );
+  // }
 
   const _FormatData = (dataCart, numColumns) => {
     const totalRows = Math.floor(dataCart.length / numColumns);
@@ -566,172 +594,183 @@ export default function Event({
         flexDirection: "row",
       }}
     >
-      {/* ======================= Bagian tengah (list) ================================ */}
+      {loading ? (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            justifyContent: "center",
+            alignItems: "center",
+            marginHorizontal: 15,
+          }}
+        >
+          <ActivityIndicator animating={loading} size="large" color="#209fae" />
+        </View>
+      ) : (
+        <FlatList
+          contentContainerStyle={{
+            marginTop: 5,
+            justifyContent: "space-evenly",
+            paddingHorizontal: 5,
+            paddingBottom: 120,
+          }}
+          horizontal={false}
+          data={dataEv}
+          // renderItem={_renderItem}
 
-      <FlatList
-        contentContainerStyle={{
-          marginTop: 5,
-          justifyContent: "space-evenly",
-          paddingHorizontal: 5,
-          paddingBottom: 120,
-        }}
-        horizontal={false}
-        data={dataEv}
-        // renderItem={_renderItem}
-
-        renderItem={({ item }) => (
-          <View
-            style={{
-              justifyContent: "center",
-
-              width: Dimensions.get("screen").width * 0.5 - 16,
-              height: Dimensions.get("screen").width * 0.7,
-              margin: 6,
-              flexDirection: "column",
-              backgroundColor: "white",
-              borderRadius: 5,
-              shadowColor: "gray",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 3,
-              elevation: 3,
-            }}
-          >
+          renderItem={({ item }) => (
             <View
               style={{
-                position: "absolute",
-                top: 15,
-                left: 10,
-                right: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignContent: "center",
-                zIndex: 9999,
-              }}
-            >
-              <View
-                style={{
-                  // bottom: (9),
-                  height: 21,
-                  minWidth: 60,
-                  borderRadius: 11,
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(226, 236, 248, 0.85)",
-                  paddingHorizontal: 10,
-                }}
-              >
-                <Text
-                  size="small"
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  {item.category.name}
-                </Text>
-              </View>
-              <View
-                style={{
-                  height: 26,
-                  width: 26,
-                  borderRadius: 50,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(226, 236, 248, 0.85)",
-                  // zIndex: 999,
-                }}
-              >
-                {item.liked === false ? (
-                  <TouchableOpacity
-                    style={{
-                      height: 26,
-                      width: 26,
-                      borderRadius: 50,
-                      alignSelf: "center",
-                      alignItems: "center",
-                      alignContent: "center",
-                      justifyContent: "center",
+                justifyContent: "center",
 
-                      zIndex: 9999,
-                    }}
-                    onPress={() => _liked(item.id)}
-                  >
-                    <LikeEmpty height={13} width={13} />
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    style={{
-                      height: 26,
-                      width: 26,
-                      borderRadius: 50,
-                      alignSelf: "center",
-                      alignItems: "center",
-                      alignContent: "center",
-                      justifyContent: "center",
-
-                      zIndex: 9999,
-                    }}
-                    onPress={() => _unliked(item.id)}
-                  >
-                    <LikeRed height={13} width={13} />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => eventdetail(item)}
-              style={{
-                height: Dimensions.get("window").width * 0.47 - 16,
-              }}
-            >
-              <ImageBackground
-                key={item.id}
-                source={
-                  item.images.length
-                    ? { uri: item.images[0].image }
-                    : default_image
-                }
-                style={[styles.ImageView]}
-                imageStyle={[styles.Image]}
-              ></ImageBackground>
-            </TouchableOpacity>
-            <View
-              style={{
-                flex: 1,
+                width: Dimensions.get("screen").width * 0.5 - 16,
+                height: Dimensions.get("screen").width * 0.7,
+                margin: 6,
                 flexDirection: "column",
-                justifyContent: "space-around",
-                height: 230,
-                marginVertical: 5,
-                marginHorizontal: 10,
+                backgroundColor: "white",
+                borderRadius: 5,
+                shadowColor: "gray",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 3,
+                elevation: 3,
               }}
             >
-              <Text
-                onPress={() => eventdetail(item)}
-                size="label"
-                type="bold"
-                style={{}}
-              >
-                <Truncate text={item.name} length={27} />
-              </Text>
               <View
                 style={{
-                  height: "50%",
-                  flexDirection: "column",
-                  justifyContent: "space-around",
+                  position: "absolute",
+                  top: 15,
+                  left: 10,
+                  right: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignContent: "center",
+                  zIndex: 9999,
                 }}
               >
                 <View
                   style={{
-                    // flex: 1,
-                    flexDirection: "row",
-                    width: "100%",
-                    borderColor: "grey",
+                    // bottom: (9),
+                    height: 21,
+                    minWidth: 60,
+                    borderRadius: 11,
+                    alignSelf: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(226, 236, 248, 0.85)",
+                    paddingHorizontal: 10,
                   }}
                 >
-                  {/* <CustomImage
+                  <Text
+                    size="small"
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {item.category.name}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    height: 26,
+                    width: 26,
+                    borderRadius: 50,
+                    alignSelf: "center",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(226, 236, 248, 0.85)",
+                    // zIndex: 999,
+                  }}
+                >
+                  {item.liked === false ? (
+                    <TouchableOpacity
+                      style={{
+                        height: 26,
+                        width: 26,
+                        borderRadius: 50,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+
+                        zIndex: 9999,
+                      }}
+                      onPress={() => _liked(item.id)}
+                    >
+                      <LikeEmpty height={13} width={13} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={{
+                        height: 26,
+                        width: 26,
+                        borderRadius: 50,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+
+                        zIndex: 9999,
+                      }}
+                      onPress={() => _unliked(item.id)}
+                    >
+                      <LikeRed height={13} width={13} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => eventdetail(item)}
+                style={{
+                  height: Dimensions.get("window").width * 0.47 - 16,
+                }}
+              >
+                <ImageBackground
+                  key={item.id}
+                  source={
+                    item.images.length
+                      ? { uri: item.images[0].image }
+                      : default_image
+                  }
+                  style={[styles.ImageView]}
+                  imageStyle={[styles.Image]}
+                ></ImageBackground>
+              </TouchableOpacity>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                  height: 230,
+                  marginVertical: 5,
+                  marginHorizontal: 10,
+                }}
+              >
+                <Text
+                  onPress={() => eventdetail(item)}
+                  size="label"
+                  type="bold"
+                  style={{}}
+                >
+                  <Truncate text={item.name} length={27} />
+                </Text>
+                <View
+                  style={{
+                    height: "50%",
+                    flexDirection: "column",
+                    justifyContent: "space-around",
+                  }}
+                >
+                  <View
+                    style={{
+                      // flex: 1,
+                      flexDirection: "row",
+                      width: "100%",
+                      borderColor: "grey",
+                    }}
+                  >
+                    {/* <CustomImage
                     customStyle={{
                       width: 15,
                       height: 15,
@@ -744,26 +783,26 @@ export default function Event({
                     }}
                     source={MapIconGreen}
                   /> */}
-                  <PinHijau width={15} height={15} />
-                  <Text
-                    size="small"
+                    <PinHijau width={15} height={15} />
+                    <Text
+                      size="small"
+                      style={{
+                        width: "100%",
+                        marginLeft: 5,
+                      }}
+                    >
+                      {item.city.name}
+                    </Text>
+                  </View>
+                  <View
                     style={{
+                      // flex: 1,
+                      flexDirection: "row",
                       width: "100%",
-                      marginLeft: 5,
+                      marginBottom: 3,
                     }}
                   >
-                    {item.city.name}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    // flex: 1,
-                    flexDirection: "row",
-                    width: "100%",
-                    marginBottom: 3,
-                  }}
-                >
-                  {/* <CustomImage
+                    {/* <CustomImage
                     customStyle={{
                       width: 15,
                       height: 15,
@@ -776,30 +815,34 @@ export default function Event({
                     }}
                     source={CalenderGrey}
                   /> */}
-                  <Calendargrey width={15} height={15} />
-                  <Text
-                    size="small"
-                    style={{
-                      paddingRight: 20,
-                      width: "100%",
-                      marginLeft: 5,
-                    }}
-                  >
-                    {dateFormatBetween(item.start_date, item.end_date)}
-                  </Text>
+                    <Calendargrey width={15} height={15} />
+                    <Text
+                      size="small"
+                      style={{
+                        paddingRight: 20,
+                        width: "100%",
+                        marginLeft: 5,
+                      }}
+                    >
+                      {dateFormatBetween(item.start_date, item.end_date)}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        )}
-        numColumns={numColumns}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        extraData={selected}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
-        }
-      />
+          )}
+          numColumns={numColumns}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          extraData={selected}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => Refresh()}
+            />
+          }
+        />
+      )}
     </View>
   );
 }

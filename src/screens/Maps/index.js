@@ -20,6 +20,7 @@ import { Text } from "../../component";
 import { View } from "native-base";
 import { SvgCss } from "react-native-svg";
 export default function World({ navigation }) {
+  console.log("navigation", navigation);
   const { width, height } = Dimensions.get("screen");
   const HeaderHeight = (height * 34) / 100;
   const ContentHeight = (height * 66) / 100;
