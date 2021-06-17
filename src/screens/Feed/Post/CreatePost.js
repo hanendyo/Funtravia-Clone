@@ -39,6 +39,7 @@ import { ReactNativeFile } from "apollo-upload-client";
 import { useTranslation } from "react-i18next";
 import CreateAlbum from "./CreateAlbum";
 import { RNToasty } from "react-native-toasty";
+import DashedLine from "react-native-dashed-line";
 
 const PostMut = gql`
   mutation(
@@ -84,6 +85,7 @@ export default function CreatePost({ navigation, route }) {
   let [modellocation, setModellocation] = useState(false);
   let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
+  let [modalAlbum, setModalAlbum] = useState(false);
   let [idAlbums, setIdAlbums] = useState(route.params.id_album);
   let [loadingok, setLoading] = useState(false);
   let [chosenFile] = useState(route.params.file);
@@ -139,7 +141,7 @@ export default function CreatePost({ navigation, route }) {
     let latitude = Location.latitude !== "" ? Location.latitude : "0";
     let longitude = Location.longitude !== "" ? Location.longitude : "0";
     let location_name =
-      Location.address == "" || Location.address == "Add Location"
+      Location.address == "" || Location.address == t("addLocation")
         ? "0"
         : Location.address;
     let albums_id = idAlbums ? idAlbums : null;
@@ -289,7 +291,7 @@ export default function CreatePost({ navigation, route }) {
           (err) => console.log(err),
           {
             enableHighAccuracy: false,
-            timeout: 8000,
+            timeout: 10000,
             maximumAge: 10000,
           }
         );
@@ -462,7 +464,11 @@ export default function CreatePost({ navigation, route }) {
           }}
         >
           <Button
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              navigation.goBack();
+              setIdAlbums("");
+              setAlbum("");
+            }}
             type="circle"
             variant="transparent"
           >
@@ -594,7 +600,7 @@ export default function CreatePost({ navigation, route }) {
               >
                 <Ripple
                   onPress={() => {
-                    album ? null : setModalCreate(true);
+                    album ? null : setModalAlbum(true);
                   }}
                   // onPress={() => setModalAlbum(true)}
                   style={{
@@ -617,7 +623,7 @@ export default function CreatePost({ navigation, route }) {
                     {t("addAlbum")}
                   </Text>
                 </Ripple>
-                {album === "Feed" ? (
+                {album ? (
                   <View
                     style={{
                       justifyContent: "space-between",
@@ -639,7 +645,7 @@ export default function CreatePost({ navigation, route }) {
                           marginVertical: 10,
                         }}
                       >
-                        {album + " Album " + "--"}{" "}
+                        {album + " Album " + "-"}{" "}
                         {route?.params?.title_album
                           ? route?.params?.title_album
                           : null}
@@ -709,36 +715,48 @@ export default function CreatePost({ navigation, route }) {
                   flexWrap: "wrap",
                   flexDirection: "row",
                   paddingHorizontal: 15,
+                  // borderWidth: 1,
                 }}
               >
                 {Location.latitude === ""
                   ? datanearby.map((value, index) => {
                       return index < 5 ? (
-                        <Pressable
-                          key={index}
-                          onPress={() => _selectLocation(value)}
-                          style={{
-                            width: "100%",
-                            height: 50,
-                            flexDirection: "row",
-                            alignItems: "center",
-                            borderBottomWidth: 1,
-                            borderColor: "#e1e1e1",
-                          }}
-                        >
-                          <PinHijau
-                            height={15}
-                            width={15}
-                            style={{ marginLeft: 15 }}
-                          />
-                          <Text
-                            size="description"
-                            type="light"
-                            style={{ marginLeft: 10 }}
+                        <View key={index} style={{ width: "100%", height: 50 }}>
+                          <Pressable
+                            // key={index}
+                            onPress={() => _selectLocation(value)}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              // borderColor: "#e1e1e1",
+                              // borderBottomWidth: 1,
+                              // borderStyle: "dotted",
+                              // borderColor: "#209fae",
+                              // borderRadius: 5,
+                            }}
                           >
-                            {value.name}
-                          </Text>
-                        </Pressable>
+                            <PinHijau
+                              height={15}
+                              width={15}
+                              style={{ marginLeft: 15 }}
+                            />
+                            <Text
+                              size="description"
+                              type="light"
+                              style={{ marginLeft: 10 }}
+                            >
+                              {value.name}
+                            </Text>
+                          </Pressable>
+                          <DashedLine
+                            dashColor="#e1e1e1"
+                            dashThickness={1}
+                            dashGap={2}
+                            // dashStyle={{ borderRadius: 25 }}
+                          />
+                        </View>
                       ) : null;
                     })
                   : null}
@@ -752,8 +770,8 @@ export default function CreatePost({ navigation, route }) {
           masukan={(e) => _setLocation(e)}
         />
         <CreateAlbum
-          modalCreate={modalCreate}
-          setModalCreate={(e) => setModalCreate(e)}
+          modalAlbum={modalAlbum}
+          setModalAlbum={(e) => setModalAlbum(e)}
           user_id={setting?.user_id}
           props={navigation}
           setAlbum={(e) => setAlbum(e)}
