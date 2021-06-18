@@ -18,6 +18,7 @@ export default function RenderSinglePhoto({
   isFocused,
   muted,
   setMuted,
+  isComment,
 }) {
   let videoView = useRef(null);
   if (data?.assets[0]?.type === "video") {
@@ -46,7 +47,9 @@ export default function RenderSinglePhoto({
             }}
             resizeMode="cover"
             muted={muted}
-            paused={play === data.id && isFocused ? false : true}
+            paused={
+              isComment ? false : play === data.id && isFocused ? false : true
+            }
           />
         </TouchableWithoutFeedback>
         <View

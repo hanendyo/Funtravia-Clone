@@ -128,9 +128,7 @@ export default function EventDetail(props) {
       setDataEvent(data.event_detail);
     },
   });
-  console.log("set", loading);
-  // console.log(data);
-  // console.log(dataevent);
+
   useEffect(() => {
     if (!props.route.params.data) {
       GetDetailEvent();

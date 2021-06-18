@@ -598,31 +598,39 @@ export default function CreatePost({ navigation, route }) {
                   borderColor: "#D1D1D1",
                 }}
               >
-                <Ripple
+                <TouchableHighlight
+                  activeOpacity={0.6}
+                  underlayColor="#FFF"
                   onPress={() => {
                     album ? null : setModalAlbum(true);
                   }}
-                  // onPress={() => setModalAlbum(true)}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
                     width: "100%",
                     borderRadius: 5,
                   }}
                 >
-                  <AlbumFeedBiru height={18} width={18} />
-                  <Text
-                    type="bold"
-                    size="description"
+                  <View
                     style={{
-                      marginHorizontal: 5,
-                      marginTop: album ? 0 : 10,
-                      marginBottom: album ? 0 : 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      width: "100%",
+                      borderRadius: 5,
                     }}
                   >
-                    {t("addAlbum")}
-                  </Text>
-                </Ripple>
+                    <AlbumFeedBiru height={18} width={18} />
+                    <Text
+                      type="bold"
+                      size="description"
+                      style={{
+                        marginHorizontal: 5,
+                        marginTop: album ? 0 : 10,
+                        marginBottom: album ? 0 : 10,
+                      }}
+                    >
+                      {t("addAlbum")}
+                    </Text>
+                  </View>
+                </TouchableHighlight>
                 {album ? (
                   <View
                     style={{
