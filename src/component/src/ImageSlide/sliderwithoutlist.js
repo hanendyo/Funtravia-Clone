@@ -15,7 +15,7 @@ import Modal from "react-native-modal";
 
 import { back_arrow_white, next_putih, prev_putih } from "../../../assets/png";
 import ImageViewer from "react-native-image-zoom-viewer";
-import { Button, Text } from "../../index";
+import { Button, Text, FunImage, FunVideo } from "../../index";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite } from "../../../assets/svg";
 
@@ -230,6 +230,51 @@ export default function ImageSlide({
                 />
               </TouchableOpacity>
             )}
+            renderImage={(data) => {
+              console.log(data.type);
+              console.log(data?.source?.uri);
+              console.log({
+                width: data?.style?.width,
+                height: data?.style?.height,
+              });
+              return data.type === "video" ? (
+                <FunVideo
+                  // poster={data.uri.replace("output.m3u8", "thumbnail.png")}
+                  // paused={true}
+                  key={"video" + data.id}
+                  source={{ uri: data?.source?.uri }}
+                  muted={true}
+                  // defaultSource={default_image}
+                  style={{
+                    width: data?.style?.width,
+                    height: data?.style?.height,
+                    // marginRight: 2.5,
+                    // marginBottom: 2.5,
+                    // backgroundColor: "#f6f6f6",
+                    // justifyContent: "center",
+                    // alignItems: "center",
+                    // resizeMode: "cover",
+                  }}
+                />
+              ) : (
+                <FunImage
+                  key={"image" + data.id}
+                  source={{ uri: data?.source?.uri }}
+                  // defaultSource={default_image}
+                  style={{
+                    width: data?.style?.width,
+                    height: data?.style?.height,
+
+                    // marginRight: 2.5,
+                    // marginBottom: 2.5,
+                    // backgroundColor: "#f6f6f6",
+                    // justifyContent: "center",
+                    // alignItems: "center",
+                    // resizeMode: "cover",
+                  }}
+                />
+              );
+            }}
             // enableImageZoom={false}
             saveToLocalByLongPress={false}
             imageUrls={slider}

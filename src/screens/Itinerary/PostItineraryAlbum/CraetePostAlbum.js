@@ -38,8 +38,8 @@ const PostMut = gql`
     $longitude: String
     $location_name: String
     $assets: String!
-    $itinerary_id: ID!
-    $day_id: ID!
+    $itinerary_id: ID
+    $day_id: ID
   ) {
     create_post_itinerary_albums(
       input: {
@@ -308,6 +308,7 @@ export default function CraetePostAlbum(props) {
               <FunVideo
                 source={{ uri: item.assets }}
                 muted={true}
+                poster={item.assets.replace("output.m3u8", "thumbnail.png")}
                 paused={true}
                 style={{
                   width: 70,

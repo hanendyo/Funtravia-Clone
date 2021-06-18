@@ -41,7 +41,13 @@ const album = gql`
         is_posted
         post_id
         created_at
-        
+        upload_by{
+          id
+          username
+          first_name
+          last_name
+          picture
+        }
       }
     }
     

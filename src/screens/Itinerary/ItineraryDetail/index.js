@@ -52,6 +52,7 @@ import {
   Stay,
   Flights,
   Chatnew,
+  Play,
 } from "../../../assets/svg";
 import {
   Button,
@@ -2658,8 +2659,17 @@ export default function ItineraryDetail(props) {
                   item.posted.map((data, i) => {
                     return data.is_posted === true ? (
                       data.type === "video" ? (
-                        <View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setdataimage(item.posted, i);
+                          }}
+                        >
                           <FunVideo
+                            poster={data.filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            paused={true}
                             key={"posted" + data.id}
                             source={
                               data.filepath ? { uri: data.filepath } : null
@@ -2677,7 +2687,17 @@ export default function ItineraryDetail(props) {
                               resizeMode: "cover",
                             }}
                           />
-                        </View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              position: "absolute",
+                              bottom: tab2ItemSize / 3.2,
+                              left: tab2ItemSize / 3.2,
+                            }}
+                          >
+                            <Play width={40} height={40} />
+                          </View>
+                        </TouchableOpacity>
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
@@ -2803,14 +2823,22 @@ export default function ItineraryDetail(props) {
                   } else {
                     return data.is_posted !== true ? (
                       data.type === "video" ? (
-                        <View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setdataimage(item.unposted, i - 1);
+                          }}
+                        >
                           <FunVideo
+                            poster={data.filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            paused={true}
                             key={"unposted" + data.id}
                             source={
                               data.filepath ? { uri: data.filepath } : null
                             }
                             muted={true}
-                            // paused={true}
                             // defaultSource={default_image}
                             style={{
                               width: tab2ItemSize,
@@ -2823,7 +2851,17 @@ export default function ItineraryDetail(props) {
                               resizeMode: "cover",
                             }}
                           />
-                        </View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              position: "absolute",
+                              bottom: tab2ItemSize / 3.2,
+                              left: tab2ItemSize / 3.2,
+                            }}
+                          >
+                            <Play width={40} height={40} />
+                          </View>
+                        </TouchableOpacity>
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
@@ -2974,8 +3012,17 @@ export default function ItineraryDetail(props) {
                 }
               } else {
                 return data.type === "video" ? (
-                  <View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setdataimage(item.album, i - 1);
+                    }}
+                  >
                     <FunVideo
+                      poster={data.filepath.replace(
+                        "output.m3u8",
+                        "thumbnail.png"
+                      )}
+                      paused={true}
                       key={"album" + data.id}
                       source={data.filepath ? { uri: data.filepath } : null}
                       // defaultSource={default_image}
@@ -2991,7 +3038,17 @@ export default function ItineraryDetail(props) {
                         resizeMode: "cover",
                       }}
                     />
-                  </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        position: "absolute",
+                        bottom: tab2ItemSize / 3.2,
+                        left: tab2ItemSize / 3.2,
+                      }}
+                    >
+                      <Play width={40} height={40} />
+                    </View>
+                  </TouchableOpacity>
                 ) : (
                   <TouchableOpacity
                     onPress={() => {
@@ -4549,6 +4606,8 @@ export default function ItineraryDetail(props) {
   let judul = "";
 
   const setdataimage = async (data, inde) => {
+    // await console.log(data);
+    // await console.log(wid, hig);
     setIndexs(inde);
     var tempdatas = [];
     var x = 0;
@@ -4556,10 +4615,15 @@ export default function ItineraryDetail(props) {
       if (data[i].id !== "camera") {
         let wid = 0;
         let hig = 0;
-        Image.getSize(data[i].filepath, (width, height) => {
-          wid = width;
-          hig = height;
-        });
+        if (data[i].type !== "video") {
+          Image.getSize(data[i].filepath, (width, height) => {
+            wid = width;
+            hig = height;
+          });
+        } else {
+          wid = 500;
+          hig = 500;
+        }
 
         tempdatas.push({
           key: i,
@@ -4569,8 +4633,11 @@ export default function ItineraryDetail(props) {
           height: hig,
           props: {
             source: data[i]?.filepath ? data[i]?.filepath : "",
+            type: data[i]?.type,
           },
-          by: data[i]?.photoby?.first_name ? data[i]?.photoby?.first_name : "",
+          by: data[i]?.upload_by?.first_name
+            ? data[i]?.upload_by?.first_name
+            : "",
         });
         x++;
       }

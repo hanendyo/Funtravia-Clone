@@ -130,6 +130,7 @@ export default function PostItineraryAlbum(props) {
               <FunVideo
                 source={{ uri: item.filepath }}
                 muted={true}
+                poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
                 paused={true}
                 style={{
                   height: Dimensions.get("screen").width / 4 - 2,
