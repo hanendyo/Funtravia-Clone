@@ -239,9 +239,10 @@ export default function SearchPg(props, { navigation, route }) {
         recent_save(searchtext);
         await BackHandler.removeEventListener("hardwareBackPress", onBackPress);
 
-        props.navigation.navigate("DestinationUnescoDetail", {
+        props.navigation.push("DestinationUnescoDetail", {
             id: item.id,
             name: item.name,
+            token: token,
         });
     };
 
@@ -270,6 +271,8 @@ export default function SearchPg(props, { navigation, route }) {
     let province_id = props.route.params.province_id
         ? props.route.params.province_id
         : null;
+
+    let [user_search, Setuser_search] = useState([]);
     const {
         loading: loadingSrcuser,
         data: dataSrcuser,
@@ -290,7 +293,12 @@ export default function SearchPg(props, { navigation, route }) {
             },
         },
         notifyOnNetworkStatusChange: true,
+        onCompleted: (dataSrcuser) => {
+            Setuser_search(dataSrcuser.user_searchv2);
+        },
     });
+
+    // console.log(user_search);
 
     const {
         loading: loadingDestination,
@@ -367,11 +375,6 @@ export default function SearchPg(props, { navigation, route }) {
     let destinationSearch = [];
     if (dataDestination && dataDestination.destinationSearchv2) {
         destinationSearch = dataDestination.destinationSearchv2;
-    }
-
-    let user_search = [];
-    if (dataSrcuser && dataSrcuser.user_searchv2) {
-        user_search = dataSrcuser.user_searchv2;
     }
 
     let search_location = [];
@@ -625,8 +628,11 @@ export default function SearchPg(props, { navigation, route }) {
     //BUAT FOLLOW UNFOLLOW FUNCTION
     const _unfollow = async (id, index) => {
         if (token || token !== "") {
-            let tempStatus = [...user_search];
-            tempStatus[index].status_following = false;
+            let tempUser = [...user_search];
+            let _temStatus = { ...tempUser[index] };
+            _temStatus.status_following = false;
+            tempUser.splice(index, 1, _temStatus);
+            Setuser_search(tempUser);
             try {
                 let response = await UnfollowMutation({
                     variables: {
@@ -634,27 +640,27 @@ export default function SearchPg(props, { navigation, route }) {
                     },
                 });
 
-                // if (errorUnfolMut) {
-                // 	throw new Error("Error Input");
-                // }
+                if (errorUnfolMut) {
+                    throw new Error("Error Input");
+                }
 
                 if (response.data) {
-                    if (
-                        response.data.unfollow_user.code === 200 ||
-                        response.data.unfollow_user.code === "200"
-                    ) {
-                    } else {
+                    if (response.data.unfollow_user.code !== 200) {
                         throw new Error(response.data.unfollow_user.message);
+                    } else {
+                        console.log("berhasil");
                     }
 
                     // Alert.alert('Succes');
                 }
             } catch (error) {
-                refetchSrcuser();
-                let tempStatus = [...user_search];
-                tempStatus[index].status_following = true;
+                let temStatus = [...user_search];
+                let _temStatus = { ...temStatus[index] };
+                _temStatus.status_following = true;
+                temStatus.splice(index, 1, _temStatus);
+                Setuser_search(_temStatus);
                 RNToasty.Show({
-                    title: "" + error,
+                    title: "Failed To unFollow This User!",
                     position: "bottom",
                 });
             }
@@ -668,38 +674,36 @@ export default function SearchPg(props, { navigation, route }) {
 
     const _follow = async (id, index) => {
         if (token || token !== "") {
-            let temStatus = [...user_search];
-            temStatus[index].status_following = true;
+            let tempUser = [...user_search];
+            let _temStatus = { ...tempUser[index] };
+            _temStatus.status_following = true;
+            tempUser.splice(index, 1, _temStatus);
+            Setuser_search(tempUser);
             try {
                 let response = await FollowMutation({
                     variables: {
                         id: id,
                     },
                 });
-                // if (loadFollowMut) {
-                //     Alert.alert("Loading!!");
-                // }
+                if (errorFollowMut) {
+                    throw new Error("Error Input");
+                }
 
                 if (response.data) {
-                    if (
-                        response.data.follow_user.code === 200 ||
-                        response.data.follow_user.code === "200"
-                    ) {
-                        refetchSrcuser();
+                    if (response.data.follow_user.code !== 200) {
+                        throw new Error(response.data.follow_user.message);
                     } else {
-                        // throw new Error(response.data.follow_user.message);
-                        RNToasty.Show({
-                            title: "Failed To Follow This User!",
-                            position: "bottom",
-                        });
+                        console.log("berhasil");
                     }
                 }
             } catch (error) {
-                refetchSrcuser();
                 let temStatus = [...user_search];
-                temStatus[index].status_following = false;
+                let _temStatus = { ...temStatus[index] };
+                _temStatus.status_following = false;
+                temStatus.splice(index, 1, _temStatus);
+                Setuser_search(_temStatus);
                 RNToasty.Show({
-                    title: "" + error,
+                    title: "Failed To Follow This User!",
                     position: "bottom",
                 });
             }
@@ -738,16 +742,18 @@ export default function SearchPg(props, { navigation, route }) {
             },
         },
         notifyOnNetworkStatusChange: true,
+        onCompleted: (dataRekomendasi) => {
+            SetListrequser(dataRekomendasi.list_rekomendasi_user);
+        },
     });
-
-    let list_rekomendasi_user = [];
-    if (dataRekomendasi && dataRekomendasi.list_rekomendasi_user) {
-        list_rekomendasi_user = dataRekomendasi.list_rekomendasi_user;
-    }
+    let [list_rekomendasi_user, SetListrequser] = useState([]);
     const _unfollow_rekomendasi = async (id, index) => {
         if (token || token !== "") {
-            let tempStatus = [...list_rekomendasi_user];
-            tempStatus[index].status_following = false;
+            let temStatus = [...list_rekomendasi_user];
+            let _temStatus = { ...temStatus[index] };
+            _temStatus.status_following = false;
+            temStatus.splice(index, 1, _temStatus);
+            SetListrequser(temStatus);
             try {
                 let response = await UnfollowMutation({
                     variables: {
@@ -760,24 +766,21 @@ export default function SearchPg(props, { navigation, route }) {
                 }
 
                 if (response.data) {
-                    if (
-                        response.data.unfollow_user.code !== 200 ||
-                        response.data.unfollow_user.code !== "200"
-                    ) {
-                        let tempStatus = [...list_rekomendasi_user];
-                        tempStatus[index].status_following = true;
-
+                    if (response.data.unfollow_user.code !== 200) {
                         throw new Error(response.data.unfollow_user.message);
                     } else {
-                        refetchRekomendasi();
+                        console.log("berhasil");
+                        // refetchRekomendasi();
                     }
                 }
             } catch (error) {
-                refetchRekomendasi();
-                let tempStatus = [...list_rekomendasi_user];
-                tempStatus[index].status_following = true;
+                let temStatus = [...list_rekomendasi_user];
+                let _temStatus = { ...temStatus[index] };
+                _temStatus.status_following = true;
+                temStatus.splice(index, 1, _temStatus);
+                SetListrequser(list_rekomendasi_user);
                 RNToasty.Show({
-                    title: "" + error,
+                    title: "Failed To unFollow This User!",
                     position: "bottom",
                 });
             }
@@ -791,39 +794,39 @@ export default function SearchPg(props, { navigation, route }) {
 
     const _follow_rekomendasi = async (id, index) => {
         if (token || token !== "") {
-            // let temStatus = [...list_rekomendasi_user];
-            // let _temStatus = { ...temStatus[index] };
-            // _temStatus.status_following = true;
-            // temStatus.splice(index, 1, _temStatus);
-            // list_rekomendasi_user = temStatus;
+            let temStatus = [...list_rekomendasi_user];
+            let _temStatus = { ...temStatus[index] };
+            _temStatus.status_following = true;
+            temStatus.splice(index, 1, _temStatus);
+            SetListrequser(temStatus);
             try {
                 let response = await FollowMutation({
                     variables: {
                         id: id,
                     },
                 });
-                console.log(response);
+                if (errorUnfolMut) {
+                    throw new Error("Error Input");
+                }
+                // console.log(response);
                 if (response.data) {
-                    if (
-                        response.data.follow_user.code !== 200 ||
-                        response.data.follow_user.code !== "200"
-                    ) {
-                        console.log(response.data.follow_user.code);
-                        RNToasty.Show({
-                            title: "Failed To Follow This User!",
-                            position: "bottom",
-                        });
+                    if (response.data.follow_user.code !== 200) {
+                        throw new Error(response.data.unfollow_user.message);
                     } else {
                         console.log("berhasil");
                         // refetchRekomendasi();
                     }
                 }
             } catch (error) {
-                refetchRekomendasi();
+                // refetchRekomendasi();
                 let temStatus = [...list_rekomendasi_user];
-                temStatus[index].status_following = false;
+                let _temStatus = { ...temStatus[index] };
+                _temStatus.status_following = false;
+                temStatus.splice(index, 1, _temStatus);
+                console.log(error);
+                SetListrequser(list_rekomendasi_user);
                 RNToasty.Show({
-                    title: "" + error,
+                    title: "Failed To Follow This User!",
                     position: "bottom",
                 });
             }
@@ -1359,33 +1362,7 @@ export default function SearchPg(props, { navigation, route }) {
                                     renderItem={({ item, index }) => (
                                         <Pressable
                                             onPress={() => {
-                                                props?.route?.params &&
-                                                props?.route?.params
-                                                    ?.iditinerary
-                                                    ? props.navigation.push(
-                                                          "DestinationUnescoDetail",
-                                                          {
-                                                              id: item.id,
-                                                              name: item.name,
-                                                              token: token,
-                                                              iditinerary:
-                                                                  props.route
-                                                                      .params
-                                                                      .iditinerary,
-                                                              datadayaktif:
-                                                                  props.route
-                                                                      .params
-                                                                      .datadayaktif,
-                                                          }
-                                                      )
-                                                    : props.navigation.push(
-                                                          "DestinationUnescoDetail",
-                                                          {
-                                                              id: item.id,
-                                                              name: item.name,
-                                                              token: token,
-                                                          }
-                                                      );
+                                                gotodestinasi(item);
                                             }}
                                             key={index}
                                             style={{
@@ -1626,49 +1603,26 @@ export default function SearchPg(props, { navigation, route }) {
                                                     </View>
                                                     <Button
                                                         onPress={() => {
-                                                            props.route
-                                                                .params &&
-                                                            props.route.params
-                                                                .iditinerary
-                                                                ? props.navigation.dispatch(
-                                                                      StackActions.replace(
-                                                                          "ItineraryStack",
-                                                                          {
-                                                                              screen:
-                                                                                  "ItineraryChooseday",
-                                                                              params: {
-                                                                                  Iditinerary:
-                                                                                      props
-                                                                                          .route
-                                                                                          .params
-                                                                                          .iditinerary,
-                                                                                  Kiriman:
-                                                                                      item.id,
-                                                                                  token: token,
-                                                                                  Position:
-                                                                                      "destination",
-                                                                                  datadayaktif:
-                                                                                      props
-                                                                                          .route
-                                                                                          .params
-                                                                                          .datadayaktif,
-                                                                              },
-                                                                          }
-                                                                      )
-                                                                  )
-                                                                : props.navigation.push(
-                                                                      "ItineraryStack",
-                                                                      {
-                                                                          screen:
-                                                                              "ItineraryPlaning",
-                                                                          params: {
-                                                                              idkiriman:
-                                                                                  item.id,
-                                                                              Position:
-                                                                                  "destination",
-                                                                          },
-                                                                      }
-                                                                  );
+                                                            BackHandler.removeEventListener(
+                                                                "hardwareBackPress",
+                                                                onBackPress
+                                                            );
+                                                            recent_save(
+                                                                searchtext
+                                                            );
+                                                            props.navigation.push(
+                                                                "ItineraryStack",
+                                                                {
+                                                                    screen:
+                                                                        "ItineraryPlaning",
+                                                                    params: {
+                                                                        idkiriman:
+                                                                            item.id,
+                                                                        Position:
+                                                                            "destination",
+                                                                    },
+                                                                }
+                                                            );
                                                         }}
                                                         size="small"
                                                         text={"Add"}
