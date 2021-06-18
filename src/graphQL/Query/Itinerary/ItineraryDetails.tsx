@@ -36,6 +36,7 @@ const ItineraryDetails = gql`
           picture
           username
         }
+        
       }
       day {
         id
@@ -44,6 +45,18 @@ const ItineraryDetails = gql`
         date
         total_hours
       }
+      album{
+      id
+      title
+      cover
+      user{
+        id
+        username
+        first_name
+        last_name
+        picture
+      }
+    }
       liked
       categori {
         id

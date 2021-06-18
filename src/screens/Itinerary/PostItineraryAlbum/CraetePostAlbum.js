@@ -15,7 +15,13 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { Text, Button, StatusBar } from "../../../component";
+import {
+  Text,
+  Button,
+  StatusBar,
+  FunImage,
+  FunVideo,
+} from "../../../component";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native-gesture-handler";
 import { default_image } from "../../../assets/png";
@@ -298,15 +304,29 @@ export default function CraetePostAlbum(props) {
               marginHorizontal: 2,
             }}
           >
-            <Image
-              source={{ uri: item.assets }}
-              style={{
-                width: 70,
-                height: 70,
-                borderRadius: 10,
-                opacity: index == indexAktif ? 1 : 0.5,
-              }}
-            />
+            {item.type === "video" ? (
+              <FunVideo
+                source={{ uri: item.assets }}
+                muted={true}
+                paused={true}
+                style={{
+                  width: 70,
+                  height: 70,
+                  borderRadius: 10,
+                  opacity: index == indexAktif ? 1 : 0.5,
+                }}
+              />
+            ) : (
+              <FunImage
+                source={{ uri: item.assets }}
+                style={{
+                  width: 70,
+                  height: 70,
+                  borderRadius: 10,
+                  opacity: index == indexAktif ? 1 : 0.5,
+                }}
+              />
+            )}
           </TouchableOpacity>
         )}
       />
