@@ -92,11 +92,20 @@ export default function ItineraryDestination(props) {
   let [aktif, setaktif] = useState("categories");
 
   let [search, setSearch] = useState({
-    type: [],
+    type:
+      props.route.params && props.route.params.idtype
+        ? [props.route.params.idtype]
+        : [],
     keyword: null,
-    countries: [],
+    countries:
+      props.route.params && props.route.params.idcountries
+        ? [props.route.params.idcountries]
+        : [],
     provinces: [],
-    cities: [],
+    cities:
+      props.route.params && props.route.params.idcity
+        ? [props.route.params.idcity]
+        : [],
     goodfor: [],
     facilities: [],
   });
@@ -220,29 +229,16 @@ export default function ItineraryDestination(props) {
         grouptype: props.route?.params?.idgroup
           ? [props.route?.params?.idgroup]
           : [],
-        type:
-          search.type && search.type.length > 0
-            ? search.type
-            : props.route.params && props.route.params.idtype
-            ? [props.route.params.idtype]
-            : null,
+        type: search.type && search.type.length > 0 ? search.type : null,
         cities:
-          search.cities && search.cities.length > 0
-            ? search.cities
-            : props.route.params && props.route.params.idcity
-            ? [props.route.params.idcity]
-            : null,
+          search.cities && search.cities.length > 0 ? search.cities : null,
         countries:
           search.countries && search.countries.length > 0
             ? search.countries
-            : props.route.params && props.route.params.idcountries
-            ? [props.route.params.idcountries]
             : null,
         provinces:
           search.provinces && search.provinces.length > 0
             ? search.provinces
-            : props.route.params && props.route.params.idprovince
-            ? [props.route.params.idprovince]
             : null,
         goodfor: search.goodfor ? search.goodfor : null,
         facilities: search.facilities ? search.facilities : null,
@@ -495,11 +491,20 @@ export default function ItineraryDestination(props) {
 
   const ClearAllFilter = () => {
     setSearch({
-      type: [],
+      type:
+        props.route.params && props.route.params.idtype
+          ? [props.route.params.idtype]
+          : [],
       keyword: null,
-      countries: [],
+      countries:
+        props.route.params && props.route.params.idcountries
+          ? [props.route.params.idcountries]
+          : [],
       provinces: [],
-      cities: [],
+      cities:
+        props.route.params && props.route.params.idcity
+          ? [props.route.params.idcity]
+          : [],
       goodfor: [],
       facilities: [],
     });

@@ -12,7 +12,13 @@ import {
   Button as ButtonRn,
   ActivityIndicator,
 } from "react-native";
-import { Text, Button, StatusBar } from "../../../component";
+import {
+  Text,
+  Button,
+  StatusBar,
+  FunImage,
+  FunVideo,
+} from "../../../component";
 import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("screen");
@@ -24,9 +30,9 @@ export default function PostItineraryAlbum(props) {
   const [selectedPhoto, setSelectedPhoto] = useState([]);
   let itinerary_id = props.route.params.itinerary_id;
   const HeaderComponent = {
-    title: "Select Photos",
+    // title: "Select Photos",
     headerTintColor: "white",
-    headerTitle: "Select Photos",
+    headerTitle: "Select Photos or Videos",
     headerShown: true,
     // headerTransparent: true,
     headerMode: "screen",
@@ -53,7 +59,7 @@ export default function PostItineraryAlbum(props) {
       slcphoto.splice(index, 1);
       setSelectedPhoto(slcphoto);
     } else {
-      slcphoto.push({ id: data.id, assets: data.assets });
+      slcphoto.push({ id: data.id, assets: data.filepath, type: data.type });
       setSelectedPhoto(slcphoto);
     }
     props.navigation.setOptions({
@@ -120,14 +126,35 @@ export default function PostItineraryAlbum(props) {
             }}
             onPress={() => selectPhoto(item)}
           >
-            <Image
+            {item.type === "video" ? (
+              <FunVideo
+                source={{ uri: item.filepath }}
+                muted={true}
+                paused={true}
+                style={{
+                  height: Dimensions.get("screen").width / 4 - 2,
+                  width: Dimensions.get("screen").width / 4 - 2,
+                  resizeMode: "cover",
+                }}
+              />
+            ) : (
+              <FunImage
+                source={{ uri: item.filepath }}
+                style={{
+                  height: Dimensions.get("screen").width / 4 - 2,
+                  width: Dimensions.get("screen").width / 4 - 2,
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+            {/* <Image
               source={{ uri: item.assets }}
               style={{
                 height: Dimensions.get("screen").width / 4 - 2,
                 width: Dimensions.get("screen").width / 4 - 2,
                 resizeMode: "cover",
               }}
-            />
+            /> */}
             {selectedPhoto.findIndex((k) => k["id"] === item.id) !== -1 ? (
               <View
                 style={{

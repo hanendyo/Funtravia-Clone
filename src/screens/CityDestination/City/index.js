@@ -2470,7 +2470,7 @@ export default function CityDetail(props) {
           setClose={(e) => setshowside(false)}
         />
 
-        <FunAnimatedImage
+        <Animated.Image
           style={{
             width: "100%",
             height: "80%",
@@ -2481,7 +2481,7 @@ export default function CityDetail(props) {
           source={
             dataCity && dataCity.CitiesInformation.cover
               ? { uri: dataCity.CitiesInformation.cover }
-              : { default_image }
+              : default_image
           }
         />
         <Animated.View
