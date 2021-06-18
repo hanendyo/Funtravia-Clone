@@ -261,17 +261,20 @@ export default function TripPlaning(props) {
         <Tab.Screen
           name="Edit"
           component={() => <View></View>}
-          options={{ tabBarLabel: "Plan" }}
+          // options={{ tabBarLabel: "Plan" }}
+          options={{ tabBarLabel: t("planList") }}
         />
         <Tab.Screen
           name="Save"
           component={() => <View></View>}
-          options={{ tabBarLabel: "Ongoing" }}
+          // options={{ tabBarLabel: "Ongoing" }}
+          options={{ tabBarLabel: t("activePlan") }}
         />
         <Tab.Screen
           name="Finish"
           component={() => <View></View>}
-          options={{ tabBarLabel: "Finish" }}
+          // options={{ tabBarLabel: "Finish" }}
+          options={{ tabBarLabel: t("finishTrip") }}
         />
       </Tab.Navigator>
     );

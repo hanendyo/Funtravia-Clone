@@ -1,49 +1,52 @@
 import { gql } from "apollo-boost";
 const album = gql`
-  query($itinerary_id: ID!) {
-    itinerary_album_list(itinerary_id: $itinerary_id) {
+ query($itinerary_id:ID!){
+  itinerary_album_list_v2(itinerary_id:$itinerary_id){
+    id
+    name
+    start_date
+    end_date
+    status
+    isprivate
+    created_by
+    created_at
+    city{
       id
       name
-      start_date
-      end_date
-      status
-      isprivate
-      created_by
-      created_at
-      city {
+      latitude
+      longitude
+    }
+    country{
+      id
+      name
+      latitude
+      longitude
+    }
+    album{
+      id
+      title
+      cover
+      user{
         id
-        name
-        latitude
-        longitude
+        username
+        first_name
+        last_name
+        picture
       }
-      country {
+      media{
         id
-        name
-        latitude
-        longitude
-      }
-      day_album {
-        id
-        day
-        date
-        album {
-          id
-          day_id
-          assets
-          description
-          created_by
-          is_posted
-          photoby {
-            id
-            username
-            first_name
-            last_name
-            picture
-          }
-          created_at
-        }
+        type
+        filepath
+        order
+        is_posted
+        post_id
+        created_at
+        
       }
     }
-  }
+    
+ }  
+  
+}
 `;
 export default album;

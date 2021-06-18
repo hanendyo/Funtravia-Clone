@@ -63,6 +63,7 @@ import {
   StatusBar as CustomStatusBar,
   shareAction,
   FunImage,
+  FunVideo,
 } from "../../../component";
 import Sidebar from "../../../component/src/Sidebar";
 import {
@@ -73,6 +74,7 @@ import {
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 import Timeline from "../../../graphQL/Query/Itinerary/Timeline";
 import ItineraryDay from "./itineraryday";
+import Albumheader from "./albumheader";
 import Modal from "react-native-modal";
 import DeleteDay from "../../../graphQL/Mutation/Itinerary/DeleteDay";
 import { Textarea } from "native-base";
@@ -89,12 +91,13 @@ import album from "../../../graphQL/Query/Itinerary/album";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
-import UploadfotoAlbum from "../../../graphQL/Mutation/Profile/Uploadfotoalbum";
+import UploadfotoAlbum from "../../../graphQL/Mutation/Itinerary/Uploadalbum";
 import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
 import { StackActions } from "@react-navigation/routers";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ReactNativeFile } from "apollo-upload-client";
+import DocumentPicker from "react-native-document-picker";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -146,6 +149,7 @@ export default function ItineraryDetail(props) {
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif ? props.route.params.datadayaktif : {}
   );
+  let [dataalbumaktif, setdataalbumaktif] = useState({});
   const [dataweather, setData] = useState({});
   const [icons, setIcons] = useState({
     "01d": "w-sunny",
@@ -624,7 +628,9 @@ export default function ItineraryDetail(props) {
   ] = useMutation(UploadfotoAlbum, {
     context: {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
+
+        // "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
@@ -634,62 +640,89 @@ export default function ItineraryDetail(props) {
     ImagePicker.openCamera({
       cropping: true,
       freeStyleCropEnabled: true,
-      includeBase64: true,
+      // includeBase64: true,
       compressImageMaxWidth: 1024,
       compressImageMaxHeight: 1024,
       // compressImageQuality: 0.7,
     }).then((image) => {
-      uploadAlbum(image.data);
+      let hasil = [];
+
+      let files = new ReactNativeFile({
+        uri: image.path,
+        type: image.mime,
+        name: image.modificationDate,
+      });
+
+      hasil.push(files);
+
+      // console.log(hasil);
+      uploadAlbum(hasil);
     });
   };
 
   const pickGalleryAlbum = async () => {
-    ImagePicker.openPicker({
-      cropping: true,
-      freeStyleCropEnabled: true,
-      includeBase64: true,
-      compressImageMaxWidth: 1024,
-      compressImageMaxHeight: 1024,
-      // compressImageQuality: 0.7,
-    }).then((image) => {
-      uploadAlbum(image.data);
-    });
+    try {
+      const results = await DocumentPicker.pickMultiple({
+        type: [DocumentPicker.types.images, DocumentPicker.types.video],
+      });
+      let hasil = [];
+      for (const res of results) {
+        let files = new ReactNativeFile({
+          uri: res.uri,
+          type: res.type,
+          name: res.name,
+        });
+        hasil.push(files);
+        // await console.log(files);
+      }
+
+      // await console.log(hasil);
+      await uploadAlbum(hasil);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
   };
 
   let [idupload, setidupload] = useState(null);
 
+  // console.log(loadinguploadAlbum);
+
   const uploadAlbum = async (data) => {
+    console.log("masuk dak", data);
+    // return false;
     setmodalAlbum(false);
     setloading(true);
 
-    if (data) {
-      try {
-        let response = await mutationUploadAlbum({
-          variables: {
-            itinerary_id: itineraryId,
-            day_id: idupload,
-            description: "0",
-            assets: "data:image/jpeg;base64," + data,
-          },
-        });
-        if (errorupload) {
-          throw new Error("Error Input");
-        }
+    try {
+      let response = await mutationUploadAlbum({
+        variables: {
+          album_id: dataalbumaktif?.id,
+          itinerary_id: itineraryId,
+          file: data,
+        },
+      });
 
-        if (response.data) {
-          if (response.data.uploadalbums.code !== 200) {
-            throw new Error(response.data.uploadalbums.message);
-          }
-          // Alert.alert(t('success'));
-          startRefreshAction();
-          loadasync();
-          // props.navigation.goBack();
-        }
-        setloading(false);
-      } catch (error) {
-        Alert.alert("" + error);
-        setloading(false);
+      if (erroruploadAlbum) {
+        throw new Error("Error Input");
       }
+
+      if (response.data) {
+        if (response.data.uploadalbums.code !== 200) {
+          throw new Error(response.data.uploadalbums.message);
+        }
+        // Alert.alert(t('success'));
+        startRefreshAction();
+        loadasync();
+        // props.navigation.goBack();
+      }
+      setloading(false);
+    } catch (error) {
+      Alert.alert("" + error);
+      setloading(false);
     }
   };
 
@@ -2599,8 +2632,10 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
+    // console.log(grid);
+    // console.log(item.unposted);
     return grid !== 1 ? (
-      item.id === datadayaktif.id ? (
+      item.id === dataalbumaktif?.id ? (
         <View
           style={{
             width: "100%",
@@ -2622,34 +2657,82 @@ export default function ItineraryDetail(props) {
                 {item.posted.length > 0 ? (
                   item.posted.map((data, i) => {
                     return data.is_posted === true ? (
-                      <ImageBackground
-                        key={"posted" + data.id}
-                        source={
-                          data.assets ? { uri: data.assets } : default_image
-                        }
-                        defaultSource={default_image}
-                        style={{
-                          width: tab2ItemSize,
-                          height: tab2ItemSize,
-                          marginRight: 2.5,
-                          marginBottom: 2.5,
-                          backgroundColor: "#f6f6f6",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          resizeMode: "cover",
-                        }}
-                      >
-                        <Ripple
+                      data.type === "video" ? (
+                        <View>
+                          <FunVideo
+                            key={"posted" + data.id}
+                            source={
+                              data.filepath ? { uri: data.filepath } : null
+                            }
+                            muted={true}
+                            // defaultSource={default_image}
+                            style={{
+                              width: tab2ItemSize,
+                              height: tab2ItemSize,
+                              marginRight: 2.5,
+                              marginBottom: 2.5,
+                              backgroundColor: "#f6f6f6",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              resizeMode: "cover",
+                            }}
+                          />
+                        </View>
+                      ) : (
+                        <TouchableOpacity
                           onPress={() => {
                             setdataimage(item.posted, i);
                           }}
-                          style={{
-                            height: "100%",
-                            width: "100%",
-                          }}
-                        ></Ripple>
-                      </ImageBackground>
-                    ) : null;
+                        >
+                          <FunImage
+                            key={"posted" + data.id}
+                            source={
+                              data.filepath
+                                ? { uri: data.filepath }
+                                : default_image
+                            }
+                            // defaultSource={default_image}
+                            style={{
+                              width: tab2ItemSize,
+                              height: tab2ItemSize,
+                              marginRight: 2.5,
+                              marginBottom: 2.5,
+                              backgroundColor: "#f6f6f6",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              resizeMode: "cover",
+                            }}
+                          />
+                        </TouchableOpacity>
+                      )
+                    ) : // <ImageBackground
+                    //   key={"posted" + data.id}
+                    //   source={
+                    //     data.assets ? { uri: data.assets } : default_image
+                    //   }
+                    //   defaultSource={default_image}
+                    //   style={{
+                    //     width: tab2ItemSize,
+                    //     height: tab2ItemSize,
+                    //     marginRight: 2.5,
+                    //     marginBottom: 2.5,
+                    //     backgroundColor: "#f6f6f6",
+                    //     justifyContent: "center",
+                    //     alignItems: "center",
+                    //     resizeMode: "cover",
+                    //   }}
+                    // >
+                    //   <Ripple
+                    //     onPress={() => {
+                    //       setdataimage(item.posted, i);
+                    //     }}
+                    //     style={{
+                    //       height: "100%",
+                    //       width: "100%",
+                    //     }}
+                    //   ></Ripple>
+                    // </>
+                    null;
                   })
                 ) : (
                   <View>
@@ -2674,14 +2757,34 @@ export default function ItineraryDetail(props) {
             }}
           >
             {Anggota === "true" ? (
-              item.unposted.length - 1 > 0 ? (
+              loadinguploadAlbum === true ? (
+                <View
+                  style={{
+                    alignContent: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#d0d0d0",
+                    alignItems: "center",
+                    width: tab2ItemSize,
+                    height: tab2ItemSize,
+                    marginRight: 2.5,
+                    marginBottom: 2.5,
+                  }}
+                >
+                  <ActivityIndicator
+                    animating={true}
+                    color="#209fae"
+                    size="small"
+                  />
+                </View>
+              ) : item.unposted.length > 1 ? (
                 item.unposted.map((data, i) => {
                   if (data.id === "camera") {
                     return (
                       <TouchableOpacity
                         onPress={() => {
-                          setidupload(item.id);
+                          // setidupload(item.id);
                           setmodalAlbum(true);
+                          setdataalbumaktif({ id: item.id });
                         }}
                         style={{
                           alignContent: "center",
@@ -2699,42 +2802,91 @@ export default function ItineraryDetail(props) {
                     );
                   } else {
                     return data.is_posted !== true ? (
-                      <ImageBackground
-                        key={"posted" + data.id}
-                        source={
-                          data.assets ? { uri: data.assets } : default_image
-                        }
-                        defaultSource={default_image}
-                        style={{
-                          width: tab2ItemSize,
-                          height: tab2ItemSize,
-                          marginRight: 2.5,
-                          marginBottom: 2.5,
-                          backgroundColor: "#f6f6f6",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          resizeMode: "cover",
-                        }}
-                      >
-                        <Ripple
+                      data.type === "video" ? (
+                        <View>
+                          <FunVideo
+                            key={"unposted" + data.id}
+                            source={
+                              data.filepath ? { uri: data.filepath } : null
+                            }
+                            muted={true}
+                            // paused={true}
+                            // defaultSource={default_image}
+                            style={{
+                              width: tab2ItemSize,
+                              height: tab2ItemSize,
+                              marginRight: 2.5,
+                              marginBottom: 2.5,
+                              backgroundColor: "#f6f6f6",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              resizeMode: "cover",
+                            }}
+                          />
+                        </View>
+                      ) : (
+                        <TouchableOpacity
                           onPress={() => {
                             setdataimage(item.unposted, i - 1);
                           }}
-                          style={{
-                            height: "100%",
-                            width: "100%",
-                          }}
-                        ></Ripple>
-                      </ImageBackground>
-                    ) : null;
+                        >
+                          <FunImage
+                            key={"unposted" + data.id}
+                            source={
+                              data.filepath
+                                ? { uri: data.filepath }
+                                : default_image
+                            }
+                            // defaultSource={default_image}
+                            style={{
+                              width: tab2ItemSize,
+                              height: tab2ItemSize,
+                              marginRight: 2.5,
+                              marginBottom: 2.5,
+                              backgroundColor: "#f6f6f6",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              resizeMode: "cover",
+                            }}
+                          />
+                        </TouchableOpacity>
+                      ) // <ImageBackground
+                    ) : //   key={"posted" + data.id}
+                    //   source={
+                    //     data.assets ? { uri: data.assets } : default_image
+                    //   }
+                    //   defaultSource={default_image}
+                    //   style={{
+                    //     width: tab2ItemSize,
+                    //     height: tab2ItemSize,
+                    //     marginRight: 2.5,
+                    //     marginBottom: 2.5,
+                    //     backgroundColor: "#f6f6f6",
+                    //     justifyContent: "center",
+                    //     alignItems: "center",
+                    //     resizeMode: "cover",
+                    //   }}
+                    // >
+                    //   <Ripple
+                    //     onPress={() => {
+                    //       setdataimage(item.unposted, i - 1);
+                    //     }}
+                    //     style={{
+                    //       height: "100%",
+                    //       width: "100%",
+                    //     }}
+                    //   ></Ripple>
+                    // </ImageBackground>
+                    null;
                   }
                 })
               ) : (
                 <View>
                   <TouchableOpacity
                     onPress={() => {
-                      setidupload(item.id);
+                      // setidupload(item.id);
                       setmodalAlbum(true);
+                      setdataalbumaktif({ id: item.id });
                     }}
                     style={{
                       alignContent: "center",
@@ -2762,7 +2914,7 @@ export default function ItineraryDetail(props) {
         }}
       >
         <Text type="bold" style={{ paddingVertical: 10 }}>
-          {t("Day")} {item.day}
+          {item.title}
         </Text>
 
         <View
@@ -2773,15 +2925,35 @@ export default function ItineraryDetail(props) {
             paddingBottom: 10,
           }}
         >
-          {item.album.length - 1 > 0 ? (
+          {loadinguploadAlbum === true ? (
+            <View
+              style={{
+                alignContent: "center",
+                justifyContent: "center",
+                backgroundColor: "#d0d0d0",
+                alignItems: "center",
+                width: tab2ItemSize,
+                height: tab2ItemSize,
+                marginRight: 2.5,
+                marginBottom: 2.5,
+              }}
+            >
+              <ActivityIndicator
+                animating={true}
+                color="#209fae"
+                size="small"
+              />
+            </View>
+          ) : item.album.length - 1 > 0 ? (
             item.album.map((data, i) => {
               if (data.id === "camera") {
                 if (Anggota == "true") {
                   return (
                     <TouchableOpacity
                       onPress={() => {
-                        setidupload(item.id);
+                        // setidupload(item.id);
                         setmodalAlbum(true);
+                        setdataalbumaktif({ id: item.id });
                       }}
                       style={{
                         alignContent: "center",
@@ -2801,41 +2973,84 @@ export default function ItineraryDetail(props) {
                   return null;
                 }
               } else {
-                return (
-                  <ImageBackground
-                    key={"perday" + data.id}
-                    source={data.assets ? { uri: data.assets } : default_image}
-                    defaultSource={default_image}
-                    style={{
-                      width: tab2ItemSize,
-                      height: tab2ItemSize,
-                      marginRight: 2.5,
-                      marginBottom: 2.5,
-                      backgroundColor: "#f6f6f6",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      resizeMode: "cover",
+                return data.type === "video" ? (
+                  <View>
+                    <FunVideo
+                      key={"album" + data.id}
+                      source={data.filepath ? { uri: data.filepath } : null}
+                      // defaultSource={default_image}
+                      muted={true}
+                      style={{
+                        width: tab2ItemSize,
+                        height: tab2ItemSize,
+                        marginRight: 2.5,
+                        marginBottom: 2.5,
+                        backgroundColor: "#f6f6f6",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        resizeMode: "cover",
+                      }}
+                    />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setdataimage(item.album, i - 1);
                     }}
                   >
-                    <Ripple
-                      onPress={() => {
-                        setdataimage(item.album, i - 1);
-                      }}
+                    <FunImage
+                      key={"album" + data.id}
+                      source={
+                        data.filepath ? { uri: data.filepath } : default_image
+                      }
+                      // defaultSource={default_image}
                       style={{
-                        height: "100%",
-                        width: "100%",
+                        width: tab2ItemSize,
+                        height: tab2ItemSize,
+                        marginRight: 2.5,
+                        marginBottom: 2.5,
+                        backgroundColor: "#f6f6f6",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        resizeMode: "cover",
                       }}
-                    ></Ripple>
-                  </ImageBackground>
+                    />
+                  </TouchableOpacity>
                 );
+                // <ImageBackground
+                //   key={"perday" + data.id}
+                //   source={data.assets ? { uri: data.assets } : default_image}
+                //   defaultSource={default_image}
+                //   style={{
+                //     width: tab2ItemSize,
+                //     height: tab2ItemSize,
+                //     marginRight: 2.5,
+                //     marginBottom: 2.5,
+                //     backgroundColor: "#f6f6f6",
+                //     justifyContent: "center",
+                //     alignItems: "center",
+                //     resizeMode: "cover",
+                //   }}
+                // >
+                //   <Ripple
+                //     onPress={() => {
+                //       setdataimage(item.album, i - 1);
+                //     }}
+                //     style={{
+                //       height: "100%",
+                //       width: "100%",
+                //     }}
+                //   ></Ripple>
+                // </ImageBackground>
               }
             })
           ) : (
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  setidupload(item.id);
+                  // setidupload(item.id);
                   setmodalAlbum(true);
+                  setdataalbumaktif({ id: item.id });
                 }}
                 style={{
                   alignContent: "center",
@@ -2906,7 +3121,7 @@ export default function ItineraryDetail(props) {
 
   const spreadData = (rData) => {
     let result = [];
-    rData?.itinerary_album_list?.day_album.map((dataS, index) => {
+    rData?.itinerary_album_list_v2?.album.map((dataS, index) => {
       let tempdata = {
         posted: [],
         unposted: [{ id: "camera" }],
@@ -2914,10 +3129,10 @@ export default function ItineraryDetail(props) {
         day: "",
         id: "",
       };
-      tempdata["day"] = dataS.day;
+      tempdata["title"] = dataS.title;
       tempdata["id"] = dataS.id;
-      if (dataS.album.length > 0) {
-        dataS.album.map((item, ind) => {
+      if (dataS.media.length > 0) {
+        dataS.media.map((item, ind) => {
           if (item.is_posted === true) {
             tempdata["posted"].push(item);
           } else {
@@ -2933,7 +3148,7 @@ export default function ItineraryDetail(props) {
 
   const spreadDatas = (rData) => {
     let result = [];
-    rData.itinerary_album_list.day_album.map((dataS, index) => {
+    rData.itinerary_album_list_v2.album.map((dataS, index) => {
       let tempdata = {
         posted: [],
         unposted: [],
@@ -2941,10 +3156,10 @@ export default function ItineraryDetail(props) {
         day: "",
         id: "",
       };
-      tempdata["day"] = dataS.day;
+      tempdata["title"] = dataS.title;
       tempdata["id"] = dataS.id;
-      if (dataS.album.length > 0) {
-        dataS.album.map((item, ind) => {
+      if (dataS.media.length > 0) {
+        dataS.media.map((item, ind) => {
           if (item.is_posted === true) {
             tempdata["posted"].push(item);
           } else {
@@ -2957,6 +3172,8 @@ export default function ItineraryDetail(props) {
     });
     return result;
   };
+
+  // console.log(datadetail?.itinerary_detail);
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -3697,6 +3914,19 @@ export default function ItineraryDetail(props) {
                 size="large"
               />
             </View>
+          ) : tabIndex === 1 ? (
+            <Albumheader
+              dataAlbum={datadetail?.itinerary_detail?.album}
+              grid={grid}
+              setgrid={(e) => setgrid(e)}
+              Anggota={Anggota}
+              token={token}
+              props={props}
+              itineraryId={itineraryId}
+              startRefreshAction={(e) => startRefreshAction(e)}
+              dataalbumaktif={dataalbumaktif}
+              setdataalbumaktif={(e) => setdataalbumaktif(e)}
+            />
           ) : (
             <ItineraryDay
               dataitin={datadetail.itinerary_detail}
@@ -3963,7 +4193,7 @@ export default function ItineraryDetail(props) {
             >
               <Pressable
                 onPress={() => {
-                  goToSelectPhoto(dataAlbum, datadayaktif);
+                  goToSelectPhoto(dataAlbum, dataalbumaktif);
                 }}
                 style={({ pressed }) => [
                   {
@@ -4326,7 +4556,7 @@ export default function ItineraryDetail(props) {
       if (data[i].id !== "camera") {
         let wid = 0;
         let hig = 0;
-        Image.getSize(data[i].assets, (width, height) => {
+        Image.getSize(data[i].filepath, (width, height) => {
           wid = width;
           hig = height;
         });
@@ -4334,11 +4564,11 @@ export default function ItineraryDetail(props) {
         tempdatas.push({
           key: i,
           selected: i === inde ? true : false,
-          url: data[i]?.assets ? data[i]?.assets : "",
+          url: data[i]?.filepath ? data[i]?.filepath : "",
           width: wid,
           height: hig,
           props: {
-            source: data[i]?.assets ? data[i]?.assets : "",
+            source: data[i]?.filepath ? data[i]?.filepath : "",
           },
           by: data[i]?.photoby?.first_name ? data[i]?.photoby?.first_name : "",
         });

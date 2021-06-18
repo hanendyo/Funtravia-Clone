@@ -1057,7 +1057,7 @@ export default function OtherProfile(props) {
                 // width: Dimensions.get('window').width,
               }}
             >
-              <TouchableOpacity
+              <Pressable
                 style={{
                   alignItems: "center",
                   alignContent: "center",
@@ -1087,8 +1087,8 @@ export default function OtherProfile(props) {
                   {t("followers")}
                 </Text>
                 {/* ) : null} */}
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={{
                   alignItems: "center",
                   alignContent: "center",
@@ -1117,7 +1117,7 @@ export default function OtherProfile(props) {
                   {t("following")}
                 </Text>
                 {/* ) : null} */}
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
           <View
