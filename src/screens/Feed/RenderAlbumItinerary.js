@@ -21,6 +21,7 @@ export default function RenderAlbum({
   muted,
   isFocused,
   setMuted,
+  isComment,
 }) {
   let videoView = useRef(null);
   const [Img, setImg] = useState("");
@@ -75,7 +76,9 @@ export default function RenderAlbum({
               }}
               resizeMode="cover"
               muted={muted}
-              paused={play === data.id && isFocused ? false : true}
+              paused={
+                isComment ? false : play === data.id && isFocused ? false : true
+              }
             />
           </TouchableWithoutFeedback>
           <View

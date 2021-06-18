@@ -395,8 +395,15 @@ export default function Invitation({ navigation, token }) {
   };
 
   const handle_areaklik_comment = (data) => {
+    // navigation.push("FeedStack", {
+    //   screen: "CommentsById",
+    //   params: {
+    //     post_id: data.comment_feed.post_id,
+    //     comment_id: data.comment_feed.id,
+    //   },
+    // });
     navigation.push("FeedStack", {
-      screen: "CommentsById",
+      screen: "CommentPost",
       params: {
         post_id: data.comment_feed.post_id,
         comment_id: data.comment_feed.id,
@@ -406,6 +413,7 @@ export default function Invitation({ navigation, token }) {
       updateisread(data.ids);
     }
   };
+
   const handle_areaklik_like = (data) => {
     navigation.navigate("FeedStack", {
       screen: "CommentsById",

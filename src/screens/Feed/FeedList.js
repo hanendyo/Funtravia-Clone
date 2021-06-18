@@ -109,110 +109,122 @@ export default function FeedList({ props, token }) {
   });
 
   const _liked = async (id, index) => {
-    if (activelike) {
-      if (token) {
-        setactivelike(false);
-        feed_post_pageing[index].liked = true;
-        feed_post_pageing[index].response_count =
-          feed_post_pageing[index].response_count + 1;
-        try {
-          let response = await MutationLike({
-            variables: {
-              post_id: id,
-            },
-          });
-          if (errorLike) {
-            throw new Error("Error");
-          }
-          if (response.data) {
-            if (
-              response.data.like_post.code === 200 ||
-              response.data.like_post.code === "200"
-            ) {
-              feed_post_pageing[index].liked = true;
-              setactivelike(true);
-            } else {
-              throw new Error(response.data.like_post.message);
-            }
-          }
-        } catch (error) {
-          feed_post_pageing[index].liked = false;
+    index = feed_post_pageing.findIndex((k) => k["id"] === id);
+    if (index !== -1) {
+      if (activelike) {
+        if (token) {
+          setactivelike(false);
+          feed_post_pageing[index].liked = true;
           feed_post_pageing[index].response_count =
-            feed_post_pageing[index].response_count - 1;
-          setactivelike(true);
+            feed_post_pageing[index].response_count + 1;
+          try {
+            let response = await MutationLike({
+              variables: {
+                post_id: id,
+              },
+            });
+            if (errorLike) {
+              throw new Error("Error");
+            }
+
+            // console.log("loading", loadingLike);
+            // console.log("repsonse", response);
+            if (response.data) {
+              if (
+                response.data.like_post.code === 200 ||
+                response.data.like_post.code === "200"
+              ) {
+                feed_post_pageing[index].liked = true;
+                setactivelike(true);
+              } else {
+                throw new Error(response.data.like_post.message);
+              }
+            }
+          } catch (error) {
+            feed_post_pageing[index].liked = false;
+            feed_post_pageing[index].response_count =
+              feed_post_pageing[index].response_count - 1;
+            setactivelike(true);
+            Toast.show({
+              text: "Failed to like this post",
+              position: "bottom",
+              buttonText: "Ok",
+              duration: 3000,
+            });
+            // Alert.alert("" + error);
+          }
+        } else {
           Toast.show({
-            text: "Failed to like this post",
+            text: "Please Login",
             position: "bottom",
             buttonText: "Ok",
             duration: 3000,
           });
-          // Alert.alert("" + error);
         }
-      } else {
-        Toast.show({
-          text: "Please Login",
-          position: "bottom",
-          buttonText: "Ok",
-          duration: 3000,
-        });
       }
     }
   };
 
   const _unliked = async (id, index) => {
-    if (activelike) {
-      if (token || token !== "") {
-        setactivelike(false);
-        feed_post_pageing[index].liked = false;
-        feed_post_pageing[index].response_count =
-          feed_post_pageing[index].response_count - 1;
-        try {
-          let response = await MutationunLike({
-            variables: {
-              post_id: id,
-            },
-          });
-          // if (loadingunLike) {
-          //   Alert.alert("Loading!!");
-          // }
-          if (errorunLike) {
-            throw new Error("Error");
-          }
-
-          if (response.data) {
-            if (
-              response.data.unlike_post.code === 200 ||
-              response.data.unlike_post.code === "200"
-            ) {
-              // _Refresh();
-              feed_post_pageing[index].liked = false;
-              setactivelike(true);
-            } else {
-              throw new Error(response.data.unlike_post.message);
+    index = feed_post_pageing.findIndex((k) => k["id"] === id);
+    if (index !== -1) {
+      if (activelike) {
+        if (token || token !== "") {
+          setactivelike(false);
+          feed_post_pageing[index].liked = false;
+          feed_post_pageing[index].response_count =
+            feed_post_pageing[index].response_count - 1;
+          try {
+            let response = await MutationunLike({
+              variables: {
+                post_id: id,
+              },
+            });
+            // if (loadingunLike) {
+            //   Alert.alert("Loading!!");
+            // }
+            if (errorunLike) {
+              throw new Error("Error");
             }
 
-            // Alert.alert('Succes');
+            // console.log("loadingunLike", loadingunLike);
+            // console.log("response unlike", response);
+
+            if (response.data) {
+              if (
+                response.data.unlike_post.code === 200 ||
+                response.data.unlike_post.code === "200"
+              ) {
+                // _Refresh();
+                feed_post_pageing[index].liked = false;
+                setactivelike(true);
+              } else {
+                throw new Error(response.data.unlike_post.message);
+              }
+
+              // Alert.alert('Succes');
+            }
+          } catch (error) {
+            setactivelike(true);
+            feed_post_pageing[index].response_count =
+              feed_post_pageing[index].response_count + 1;
+            feed_post_pageing[index].liked = true;
+            Toast.show({
+              text: "Failed to unlike this post",
+              position: "bottom",
+              buttonText: "Ok",
+              duration: 3000,
+            });
           }
-        } catch (error) {
-          setactivelike(true);
-          feed_post_pageing[index].response_count =
-            feed_post_pageing[index].response_count + 1;
-          feed_post_pageing[index].liked = true;
+        } else {
+          // Alert.alert("Please Login");
           Toast.show({
-            text: "Failed to unlike this post",
+            text: "Please Login",
             position: "bottom",
             buttonText: "Ok",
             duration: 3000,
           });
         }
-      } else {
-        // Alert.alert("Please Login");
-        Toast.show({
-          text: "Please Login",
-          position: "bottom",
-          buttonText: "Ok",
-          duration: 3000,
-        });
       }
     }
   };
@@ -384,12 +396,16 @@ export default function FeedList({ props, token }) {
     });
   };
 
-  const viewcomment = (data) => {
+  const viewcomment = (data, index) => {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
         data: data,
         token: token,
+        ref: ref,
+        _liked: (e) => _liked(e),
+        _unliked: (e) => _unliked(e),
+        indeks: index,
       },
     });
   };
@@ -1181,7 +1197,7 @@ export default function FeedList({ props, token }) {
                   )}
 
                   <Button
-                    onPress={() => viewcomment(item)}
+                    onPress={() => viewcomment(item, index)}
                     type="icon"
                     variant="transparent"
                     position="left"
