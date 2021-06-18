@@ -494,33 +494,33 @@ export default function Comments(props) {
       tmpData.liked = false;
       tmpData.response_count = tmpData.response_count - 1;
       SetDataPost(tmpData);
-      try {
-        let response = await MutationunLike({
-          variables: {
-            post_id: id,
-          },
-        });
+      // try {
+      //   let response = await MutationunLike({
+      //     variables: {
+      //       post_id: id,
+      //     },
+      //   });
 
-        if (response.data) {
-          if (
-            response.data.unlike_post.code === 200 ||
-            response.data.unlike_post.code === "200"
-          ) {
-          } else {
-            throw new Error(response.data.unlike_post.message);
-          }
-        }
-      } catch (error) {
-        tmpData.liked = true;
-        tmpData.response_count = tmpData.response_count + 1;
-        SetDataPost(tmpData);
-        Toast.show({
-          text: "Failed to unlike this post",
-          position: "bottom",
-          buttonText: "Ok",
-          duration: 3000,
-        });
-      }
+      //   if (response.data) {
+      //     if (
+      //       response.data.unlike_post.code === 200 ||
+      //       response.data.unlike_post.code === "200"
+      //     ) {
+      //     } else {
+      //       throw new Error(response.data.unlike_post.message);
+      //     }
+      //   }
+      // } catch (error) {
+      //   tmpData.liked = true;
+      //   tmpData.response_count = tmpData.response_count + 1;
+      //   SetDataPost(tmpData);
+      //   Toast.show({
+      //     text: "Failed to unlike this post",
+      //     position: "bottom",
+      //     buttonText: "Ok",
+      //     duration: 3000,
+      //   });
+      // }
     } else {
       Toast.show({
         text: "Please Login",
@@ -576,7 +576,6 @@ export default function Comments(props) {
         };
         tempData.push(pushcomment);
         await setDataComment(tempData);
-        await scroll_to();
         let idx = tempData.length - 1;
         Keyboard.dismiss();
         setStatusText("");
@@ -1290,7 +1289,7 @@ export default function Comments(props) {
                               dataPost?.id,
                               props.route.params.indeks
                             );
-                            // await Refresh();
+                            await _unliked(dataPost?.id);
                           }}
                           type="icon"
                           position="left"
@@ -1322,7 +1321,7 @@ export default function Comments(props) {
                               dataPost?.id,
                               props.route.params.indeks
                             );
-                            // await _liked(dataPost?.id);
+                            await _liked(dataPost?.id);
                           }}
                           type="icon"
                           position="left"
