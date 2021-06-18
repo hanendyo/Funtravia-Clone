@@ -322,6 +322,7 @@ export default function Home(props) {
                                                 style={{
                                                     elevation: 2,
                                                     shadowColor: "#464646",
+                                                    backgroundColor: "#FFFFFF",
                                                     shadowOffset: {
                                                         width: 0,
                                                         height: 0,
@@ -356,6 +357,7 @@ export default function Home(props) {
                                                 style={{
                                                     elevation: 2,
                                                     shadowColor: "#464646",
+                                                    backgroundColor: "#FFFFFF",
                                                     shadowOffset: {
                                                         width: 0,
                                                         height: 0,
