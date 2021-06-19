@@ -452,83 +452,65 @@ export default function Comments(props) {
   };
 
   const _liked = async (id) => {
-    if (token) {
-      let tmpData = { ...dataPost };
-      tmpData.liked = true;
-      tmpData.response_count = tmpData.response_count + 1;
-      setDataPost(tmpData);
-      // try {
-      //   let response = await MutationLike({
-      //     variables: {
-      //       post_id: id,
-      //     },
-      //   });
+    let tmpData = { ...dataPost };
+    tmpData.liked = true;
+    tmpData.response_count = tmpData.response_count + 1;
+    setDataPost(tmpData);
+    // try {
+    //   let response = await MutationLike({
+    //     variables: {
+    //       post_id: id,
+    //     },
+    //   });
 
-      //   if (response.data) {
-      //     if (
-      //       response.data.like_post.code === 200 ||
-      //       response.data.like_post.code === "200"
-      //     ) {
-      //     } else {
-      //       throw new Error(response.data.delete_post.message);
-      //     }
-      //   }
-      // } catch (error) {
-      //   tmpData.liked = false;
-      //   tmpData.response_count = tmpData.response_count - 1;
-      //   SetDataPost(tmpData);
-      // }
-    } else {
-      Toast.show({
-        text: "Please Login",
-        position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
-      });
-    }
+    //   if (response.data) {
+    //     if (
+    //       response.data.like_post.code === 200 ||
+    //       response.data.like_post.code === "200"
+    //     ) {
+    //     } else {
+    //       throw new Error(response.data.delete_post.message);
+    //     }
+    //   }
+    // } catch (error) {
+    //   tmpData.liked = false;
+    //   tmpData.response_count = tmpData.response_count - 1;
+    //   SetDataPost(tmpData);
+    // }
   };
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
-      let tmpData = { ...dataPost };
-      tmpData.liked = false;
-      tmpData.response_count = tmpData.response_count - 1;
-      SetDataPost(tmpData);
-      // try {
-      //   let response = await MutationunLike({
-      //     variables: {
-      //       post_id: id,
-      //     },
-      //   });
+    let tmpData = { ...dataPost };
+    tmpData.liked = false;
+    tmpData.response_count = tmpData.response_count - 1;
+    setDataPost(tmpData);
+    // try {
+    //   let response = await MutationunLike({
+    //     variables: {
+    //       post_id: id,
+    //     },
+    //   });
 
-      //   if (response.data) {
-      //     if (
-      //       response.data.unlike_post.code === 200 ||
-      //       response.data.unlike_post.code === "200"
-      //     ) {
-      //     } else {
-      //       throw new Error(response.data.unlike_post.message);
-      //     }
-      //   }
-      // } catch (error) {
-      //   tmpData.liked = true;
-      //   tmpData.response_count = tmpData.response_count + 1;
-      //   SetDataPost(tmpData);
-      //   Toast.show({
-      //     text: "Failed to unlike this post",
-      //     position: "bottom",
-      //     buttonText: "Ok",
-      //     duration: 3000,
-      //   });
-      // }
-    } else {
-      Toast.show({
-        text: "Please Login",
-        position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
-      });
-    }
+    //   if (response.data) {
+    //     if (
+    //       response.data.unlike_post.code === 200 ||
+    //       response.data.unlike_post.code === "200"
+    //     ) {
+    //     } else {
+    //       throw new Error(response.data.unlike_post.message);
+    //     }
+    //   }
+    // } catch (error) {
+    //   tmpData.liked = true;
+    //   tmpData.response_count = tmpData.response_count + 1;
+    //   SetDataPost(tmpData);
+    //   Toast.show({
+    //     text: "Failed to unlike this post",
+    //     position: "bottom",
+    //     buttonText: "Ok",
+    //     duration: 3000,
+    //   });
+    // }
   };
 
   const create_UUID = () => {

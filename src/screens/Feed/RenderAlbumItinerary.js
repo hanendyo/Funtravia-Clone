@@ -43,6 +43,10 @@ export default function RenderAlbum({
     });
   };
 
+  const onBuffer = (isBuffer) => {
+    console.log(isBuffer);
+  };
+
   return (
     <View
       style={{
@@ -65,7 +69,8 @@ export default function RenderAlbum({
               innerRef={(ref) => {
                 videoView = ref;
               }}
-              onBuffer={videoView?.current?.onBuffer}
+              // onBuffer={videoView?.current?.onBuffer}
+              onBuffer={() => onBuffer()}
               onError={videoView?.current?.videoError}
               repeat={true}
               style={{
