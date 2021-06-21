@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import Modal from "react-native-modal";
-import { CustomImage } from "../../component";
 import {
   LikeRed,
   ShareBlack,
@@ -31,7 +30,7 @@ import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
-import { Text, Button, shareAction, CopyLink } from "../../component";
+import { Text, Button, shareAction, CopyLink, FunImage } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
@@ -60,6 +59,7 @@ const deletepost = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  console.log("props", props?.route);
   const ref = React.useRef(null);
   useScrollToTop(ref);
   const isFocused = useIsFocused();
@@ -110,7 +110,6 @@ export default function FeedList({ props, token }) {
   });
 
   const _liked = async (id, index) => {
-    console.log("like");
     index = feed_post_pageing.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
@@ -128,9 +127,6 @@ export default function FeedList({ props, token }) {
             if (errorLike) {
               throw new Error("Error");
             }
-
-            // console.log("loading", loadingLike);
-            // console.log("repsonse", response);
             if (response.data) {
               if (
                 response.data.like_post.code === 200 ||
@@ -188,9 +184,6 @@ export default function FeedList({ props, token }) {
             if (errorunLike) {
               throw new Error("Error");
             }
-
-            // console.log("loadingunLike", loadingunLike);
-            // console.log("response unlike", response);
 
             if (response.data) {
               if (
@@ -314,11 +307,14 @@ export default function FeedList({ props, token }) {
             post_id: data.id,
           },
         });
+
         if (response.data) {
           if (
             response.data.delete_post.code === 200 ||
             response.data.delete_post.code === "200"
           ) {
+            const tempdata = [...feed_post_pageing];
+            tempdata.splice(data.index, 1);
             Refresh();
           } else {
             throw new Error(response.data.delete_post.message);
@@ -400,10 +396,8 @@ export default function FeedList({ props, token }) {
 
   const countKoment = (id) => {
     const tempd = [...feed_post_pageing];
-    console.log("data comment", tempd);
     const index = tempd.findIndex((k) => k["id"] === id);
     tempd[index].comment_count = tempd[index].comment_count + 1;
-    console.log("index", index);
   };
 
   const viewcomment = (data, index) => {
@@ -423,8 +417,11 @@ export default function FeedList({ props, token }) {
 
   const [selected, setSelected] = useState(new Map());
 
-  const OptionOpen = (data) => {
-    SetOption(data);
+  const OptionOpen = (data, index) => {
+    const tempdata = { ...data };
+    tempdata.index = index;
+    SetOption(tempdata);
+
     if (data.user.id == setting?.user?.id) {
       setModalmenu(true);
     } else {
@@ -894,61 +891,57 @@ export default function FeedList({ props, token }) {
               backgroundColor: "#000",
               position: "absolute",
             }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 60,
+              marginHorizontal: 30,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 3,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
           >
             <View
               style={{
+                backgroundColor: "white",
                 width: Dimensions.get("screen").width - 60,
-                marginHorizontal: 30,
-                backgroundColor: "#FFF",
-                zIndex: 15,
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-                alignContent: "center",
-                borderRadius: 3,
-                // marginTop: Dimensions.get("screen").height / 10,
+                padding: 20,
+                justifyContent: "center",
               }}
             >
+              <Text style={{ alignSelf: "center" }}>{t("alertHapusPost")}</Text>
               <View
                 style={{
-                  backgroundColor: "white",
-                  width: Dimensions.get("screen").width - 60,
-                  padding: 20,
-                  justifyContent: "center",
-                  // alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 20,
+                  paddingHorizontal: 40,
                 }}
               >
-                <Text style={{ alignSelf: "center" }}>
-                  {t("alertHapusPost")}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingVertical: 20,
-                    paddingHorizontal: 40,
+                <Button
+                  onPress={() => {
+                    _deletepost(selectedOption);
                   }}
-                >
-                  <Button
-                    onPress={() => {
-                      _deletepost(selectedOption);
-                    }}
-                    color="primary"
-                    text={t("delete")}
-                  ></Button>
-                  <Button
-                    onPress={() => {
-                      setModalhapus(false);
-                      setModalmenu(true);
-                    }}
-                    color="secondary"
-                    variant="bordered"
-                    text={t("cancel")}
-                  ></Button>
-                </View>
+                  color="primary"
+                  text={t("delete")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalhapus(false);
+                    setModalmenu(true);
+                  }}
+                  color="secondary"
+                  variant="bordered"
+                  text={t("cancel")}
+                ></Button>
               </View>
             </View>
-          </Pressable>
+          </View>
         </Modal>
       </View>
       <FlatList
@@ -979,8 +972,15 @@ export default function FeedList({ props, token }) {
                 alignContent: "center",
               }}
             >
-              <CustomImage
+              <FunImage
                 isTouchable
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  alignSelf: "center",
+                  marginLeft: 15,
+                }}
                 onPress={() => {
                   item.user.id !== setting?.user?.id
                     ? props.navigation.push("ProfileStack", {
@@ -995,17 +995,6 @@ export default function FeedList({ props, token }) {
                           token: token,
                         },
                       });
-                }}
-                customStyle={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 15,
-                  alignSelf: "center",
-                  marginLeft: 15,
-                }}
-                customImageStyle={{
-                  resizeMode: "cover",
-                  borderRadius: 50,
                 }}
                 source={{ uri: item.user.picture }}
               />
@@ -1080,7 +1069,7 @@ export default function FeedList({ props, token }) {
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => OptionOpen(item)}
+                onPress={() => OptionOpen(item, index)}
                 style={{
                   position: "absolute",
                   right: 15,
