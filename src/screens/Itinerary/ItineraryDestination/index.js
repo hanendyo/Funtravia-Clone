@@ -29,6 +29,7 @@ import {
   Search,
   Google,
   Xhitam,
+  Select,
 } from "../../../assets/svg";
 // import FilterItin from "./FillterItin";
 import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
@@ -115,11 +116,9 @@ export default function ItineraryDestination(props) {
   let [dataFilterCity, setdataFilterCity] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
   let [dataDestination, setdataDestination] = useState([]);
+  let [datafilterAll, setdatafilterAll] = useState([]);
 
   let [aktif, setaktif] = useState("categories");
-
-  // console.log("testing.................");
-  // console.log(props.route.params);
 
   let [search, setSearch] = useState({
     type: null,
@@ -164,39 +163,6 @@ export default function ItineraryDestination(props) {
     },
   });
 
-  console.log(search);
-  console.log({
-    keyword: search.keyword ? search.keyword : null,
-    // type: search.type ? search.type : null,
-    type:
-      search.type && search.type.length > 0
-        ? search.type
-        : props.route.params && props.route.params.idtype
-        ? [props.route.params.idtype]
-        : null,
-    cities:
-      search.cities && search.cities.length > 0
-        ? search.cities
-        : props.route.params && props.route.params.idcity
-        ? [props.route.params.idcity]
-        : null,
-    countries:
-      search.countries && search.countries.length > 0
-        ? search.countries
-        : props.route.params && props.route.params.idcountries
-        ? [props.route.params.idcountries]
-        : null,
-    provinces:
-      search.provinces && search.provinces.length > 0
-        ? search.provinces
-        : props.route.params && props.route.params.provinces
-        ? [props.route.params.provinces]
-        : null,
-    goodfor: search.goodfor ? search.goodfor : null,
-    facilities: search.facilities ? search.facilities : null,
-    rating: search.rating ? search.rating : null,
-  });
-
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
     Listdestination,
     {
@@ -204,7 +170,7 @@ export default function ItineraryDestination(props) {
       variables: {
         keyword: search.keyword ? search.keyword : null,
         // type: search.type ? search.type : null,
-        grouptype:[],
+        grouptype: [],
         type:
           search.type && search.type.length > 0
             ? search.type
@@ -240,7 +206,6 @@ export default function ItineraryDestination(props) {
         },
       },
       onCompleted: () => {
-        // console.log(data);
         setdataDestination(data.destinationList_v2);
       },
     }
@@ -372,7 +337,6 @@ export default function ItineraryDestination(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterCategori(tempe);
     await setdataFilterCategoris(tempe);
@@ -383,7 +347,6 @@ export default function ItineraryDestination(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterFacility(tempe);
     await setdataFilterFacilitys(tempe);
@@ -395,7 +358,6 @@ export default function ItineraryDestination(props) {
     items.checked = true;
 
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     setsearcountry(items.id);
     await setdataFilterCountry(tempe);
@@ -407,7 +369,6 @@ export default function ItineraryDestination(props) {
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
-    // console.log(inde);
     tempe.splice(inde, 1, items);
     await setdataFilterCity(tempe);
     await setdataFilterCitys(tempe);
@@ -443,8 +404,6 @@ export default function ItineraryDestination(props) {
 
     for (var u of dataFilterCity) {
       if (u.checked === true) {
-        // console.log(u.type);
-        // console.log(u.id);
         if (u.type === "Province") {
           province.push(u.id);
         } else if (u.type === "City") {
@@ -461,7 +420,11 @@ export default function ItineraryDestination(props) {
     data["cities"] = await cityss;
     data["provinces"] = await province;
 
-    // await console.log("filter", data);
+    let dats = [...datafilterAll];
+    dats = await dats.concat(Categori);
+    dats = await dats.concat(fasilitas);
+    await setdatafilterAll(dats);
+
     await setSearch(data);
     await setshow(false);
   };
@@ -530,23 +493,30 @@ export default function ItineraryDestination(props) {
             }}
             style={{
               marginRight: 5,
-              width: "10%",
-              // paddingHorizontal: 10,
+              // width: "10%",
+              paddingHorizontal: 10,
             }}
           >
             <FilterIcon width={15} height={15} />
-            {/* 
-            <Text
+            <View
               style={{
-                fontFamily: "Lato-Regular",
-                color: "#0095A7",
-                fontSize: 13,
-                // alignSelf: "center",
+                backgroundColor: "#209fae",
                 marginLeft: 5,
+                paddingHorizontal: 5,
+                borderRadius: 2,
               }}
             >
-              {t("filter")}
-            </Text> */}
+              <Text
+                style={{
+                  fontFamily: "Lato-Regular",
+                  color: "#ffff",
+                  fontSize: 13,
+                  // alignSelf: "center",
+                }}
+              >
+                {datafilterAll.length > 0 ? datafilterAll.length : ""}
+              </Text>
+            </View>
           </Button>
 
           <View
@@ -613,6 +583,76 @@ export default function ItineraryDestination(props) {
             >
               {t("search")}
             </Text> */}
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            borderTopWidth: 0.5,
+            borderTopColor: "#d3d3d3",
+            // height: 50,
+            flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
+            paddingHorizontal: 15,
+            paddingVertical: 10,
+          }}
+        >
+          <Text>Explore :</Text>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              marginLeft: 5,
+            }}
+          >
+            <Text type="bold">Indonesia</Text>
+            <View
+              style={{
+                paddingVertical: 6,
+                paddingHorizontal: 5,
+                backgroundColor: "#dae0f2",
+                borderRadius: 30,
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: 10,
+              }}
+            >
+              <Select width="10" height="10" style={{ marginBottom: -2 }} />
+            </View>
+          </TouchableOpacity>
+          <Text
+            style={{
+              paddingHorizontal: 10,
+            }}
+            type="bold"
+          >
+            -
+          </Text>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              // marginLeft: 5,
+            }}
+          >
+            <Text type="bold">Bandung</Text>
+            <View
+              style={{
+                paddingVertical: 6,
+                paddingHorizontal: 5,
+                backgroundColor: "#dae0f2",
+                borderRadius: 30,
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: 10,
+              }}
+            >
+              <Select width="10" height="10" style={{ marginBottom: -2 }} />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
