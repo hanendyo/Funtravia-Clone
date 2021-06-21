@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
     StyleSheet,
     View,
@@ -299,6 +299,7 @@ export default function SearchPg(props, { navigation, route }) {
     });
 
     // console.log(user_search);
+    let [destinationSearch, SetdestinationSearch] = useState([]);
 
     const {
         loading: loadingDestination,
@@ -320,8 +321,12 @@ export default function SearchPg(props, { navigation, route }) {
             },
         },
         notifyOnNetworkStatusChange: true,
+        onCompleted: (dataDestination) => {
+            SetdestinationSearch(dataDestination.destinationSearchv2);
+        },
     });
 
+    let [event_search, SetEventSearch] = useState([]);
     const {
         loading: loadingEvent,
         data: dataEvent,
@@ -342,6 +347,9 @@ export default function SearchPg(props, { navigation, route }) {
             },
         },
         notifyOnNetworkStatusChange: true,
+        onCompleted: (dataEvent) => {
+            SetEventSearch(dataEvent.event_searchv2);
+        },
     });
 
     const {
@@ -367,15 +375,9 @@ export default function SearchPg(props, { navigation, route }) {
         notifyOnNetworkStatusChange: true,
     });
 
-    let event_search = [];
-    if (dataEvent && dataEvent.event_searchv2) {
-        event_search = dataEvent.event_searchv2;
-    }
-
-    let destinationSearch = [];
-    if (dataDestination && dataDestination.destinationSearchv2) {
-        destinationSearch = dataDestination.destinationSearchv2;
-    }
+    // if (dataEvent && dataEvent.event_searchv2) {
+    //     event_search = dataEvent.event_searchv2;
+    // }
 
     let search_location = [];
     if (dataLocation && dataLocation.search_location) {
@@ -422,24 +424,26 @@ export default function SearchPg(props, { navigation, route }) {
 
     const _liked = async (id, index) => {
         if (token || token !== "") {
-            destinationSearch[index].liked = true;
+            let tempdestination = [...destinationSearch];
+            let _temStatus = { ...tempdestination[index] };
+            _temStatus.liked = true;
+            tempdestination.splice(index, 1, _temStatus);
+            SetdestinationSearch(tempdestination);
             try {
                 let response = await mutationliked({
                     variables: {
                         destination_id: id,
                     },
                 });
-
+                console.log(response);
                 if (errorLike) {
                     throw new Error("Error Input");
                 }
 
                 if (response.data) {
-                    if (
-                        response.data.setDestination_wishlist.code === 200 ||
-                        response.data.setDestination_wishlist.code === "200"
-                    ) {
+                    if (response.data.setDestination_wishlist.code === "200") {
                         // refetchSrcDestination();
+                        console.log("berhasil");
                     } else {
                         throw new Error(
                             response.data.setDestination_wishlist.message
@@ -447,17 +451,32 @@ export default function SearchPg(props, { navigation, route }) {
                     }
                 }
             } catch (error) {
-                refetch();
-                Alert.alert("" + error);
+                // refetch();
+                let tempdestination = [...destinationSearch];
+                let _temStatus = { ...tempdestination[index] };
+                _temStatus.liked = false;
+                tempdestination.splice(index, 1, _temStatus);
+                SetdestinationSearch(tempdestination);
+                RNToasty.Show({
+                    title: "Failed add to favorit Destination!",
+                    position: "bottom",
+                });
             }
         } else {
-            Alert.alert("Please Login");
+            RNToasty.Show({
+                title: "Please Login",
+                position: "bottom",
+            });
         }
     };
 
     const _unliked = async (id, index) => {
         if (token || token !== "") {
-            destinationSearch[index].liked = false;
+            let tempdestination = [...destinationSearch];
+            let _temStatus = { ...tempdestination[index] };
+            _temStatus.liked = false;
+            tempdestination.splice(index, 1, _temStatus);
+            SetdestinationSearch(tempdestination);
             try {
                 let response = await mutationUnliked({
                     variables: {
@@ -465,27 +484,34 @@ export default function SearchPg(props, { navigation, route }) {
                         type: "destination",
                     },
                 });
-
+                console.log(response);
                 if (errorUnLike) {
                     throw new Error("Error Input");
                 }
 
                 if (response.data) {
-                    if (
-                        response.data.unset_wishlist.code === 200 ||
-                        response.data.unset_wishlist.code === "200"
-                    ) {
-                        // refetchSrcDestination();
+                    if (response.data.unset_wishlist.code === "200") {
+                        console.log("berhasil");
                     } else {
                         throw new Error(response.data.unset_wishlist.message);
                     }
                 }
             } catch (error) {
-                Alert.alert("" + error);
+                let tempdestination = [...destinationSearch];
+                let _temStatus = { ...tempdestination[index] };
+                _temStatus.liked = true;
+                tempdestination.splice(index, 1, _temStatus);
+                SetdestinationSearch(tempdestination);
+                RNToasty.Show({
+                    title: "Failed remove favorit Destination!",
+                    position: "bottom",
+                });
             }
         } else {
-            refetch();
-            Alert.alert("Please Login");
+            RNToasty.Show({
+                title: "Please Login",
+                position: "bottom",
+            });
         }
     };
 
@@ -533,23 +559,23 @@ export default function SearchPg(props, { navigation, route }) {
 
     const _likedevent = async (id, index) => {
         if (token || token !== "") {
-            event_search[index].liked = true;
+            let tempEvent = [...event_search];
+            let _temStatus = { ...tempEvent[index] };
+            _temStatus.liked = true;
+            tempEvent.splice(index, 1, _temStatus);
+            SetEventSearch(tempEvent);
             try {
                 let response = await mutationlikedEvent({
                     variables: {
                         event_id: id,
                     },
                 });
-
                 if (errorLike) {
                     throw new Error("Error Input");
                 }
 
                 if (response.data) {
-                    if (
-                        response.data.setEvent_wishlist.code === 200 ||
-                        response.data.setEvent_wishlist.code === "200"
-                    ) {
+                    if (response.data.setEvent_wishlist.code === "200") {
                         // refetchSrcEvent();
                     } else {
                         throw new Error(
@@ -558,17 +584,32 @@ export default function SearchPg(props, { navigation, route }) {
                     }
                 }
             } catch (error) {
-                Alert.alert("" + error);
+                let tempEvent = [...event_search];
+                let _temStatus = { ...tempEvent[index] };
+                _temStatus.liked = true;
+                tempEvent.splice(index, 1, _temStatus);
+                SetEventSearch(tempEvent);
+                RNToasty.Show({
+                    title: "Failed add favorit Event!",
+                    position: "bottom",
+                });
             }
         } else {
-            event_search[index].liked = false;
-            Alert.alert("Please Login");
+            // event_search[index].liked = false;
+            RNToasty.Show({
+                title: "Please Login",
+                position: "bottom",
+            });
         }
     };
 
     const _unlikedevent = async (id, index) => {
         if (token || token !== "") {
-            event_search[index].liked = false;
+            let tempEvent = [...event_search];
+            let _temStatus = { ...tempEvent[index] };
+            _temStatus.liked = false;
+            tempEvent.splice(index, 1, _temStatus);
+            SetEventSearch(tempEvent);
             try {
                 let response = await mutationUnlikedEvent({
                     variables: {
@@ -580,24 +621,28 @@ export default function SearchPg(props, { navigation, route }) {
                 if (errorUnLike) {
                     throw new Error("Error Input");
                 }
-
-                if (response.data) {
-                    if (
-                        response.data.unset_wishlist.code === 200 ||
-                        response.data.unset_wishlist.code === "200"
-                    ) {
-                        // _Refresh();
-                        // refetchSrcEvent();
-                    } else {
-                        throw new Error(response.data.unset_wishlist.message);
-                    }
+                console.log(response);
+                if (response.data.unset_wishlist.code === "200") {
+                    console.log("berhasil");
+                } else {
+                    throw new Error(response.data.unset_wishlist.message);
                 }
             } catch (error) {
-                event_search[index].liked = true;
-                Alert.alert("" + error);
+                let tempEvent = [...event_search];
+                let _temStatus = { ...tempEvent[index] };
+                _temStatus.liked = true;
+                tempEvent.splice(index, 1, _temStatus);
+                SetEventSearch(tempEvent);
+                RNToasty.Show({
+                    title: "Failed remove favorit Event!",
+                    position: "bottom",
+                });
             }
         } else {
-            Alert.alert("Please Login");
+            RNToasty.Show({
+                title: "Please Login",
+                position: "bottom",
+            });
         }
     };
 
@@ -1421,7 +1466,8 @@ export default function SearchPg(props, { navigation, route }) {
                                                         <Pressable
                                                             onPress={() =>
                                                                 _unliked(
-                                                                    item.id
+                                                                    item.id,
+                                                                    index
                                                                 )
                                                             }
                                                             style={{
@@ -1444,7 +1490,10 @@ export default function SearchPg(props, { navigation, route }) {
                                                     ) : (
                                                         <Pressable
                                                             onPress={() =>
-                                                                _liked(item.id)
+                                                                _liked(
+                                                                    item.id,
+                                                                    index
+                                                                )
                                                             }
                                                             style={{
                                                                 backgroundColor:
