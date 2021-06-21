@@ -21,6 +21,9 @@ export default function RenderSinglePhoto({
   isComment,
 }) {
   let videoView = useRef(null);
+  const onBuffer = (isBuffer) => {
+    console.log("isBuffer", isBuffer);
+  };
   if (data?.assets[0]?.type === "video") {
     return (
       <View key={`FEED_${data.id}`}>
@@ -37,7 +40,8 @@ export default function RenderSinglePhoto({
             innerRef={(ref) => {
               videoView = ref;
             }}
-            onBuffer={videoView?.current?.onBuffer}
+            // onBuffer={videoView?.current?.onBuffer}
+            onBuffer={() => onBuffer()}
             onError={videoView?.current?.videoError}
             repeat={true}
             style={{

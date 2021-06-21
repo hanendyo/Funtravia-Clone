@@ -145,21 +145,21 @@ export default function FeedList({ props, token }) {
             feed_post_pageing[index].response_count =
               feed_post_pageing[index].response_count - 1;
             setactivelike(true);
-            Toast.show({
-              text: "Failed to like this post",
-              position: "bottom",
-              buttonText: "Ok",
-              duration: 3000,
-            });
+            // Toast.show({
+            //   text: "Failed to like this post",
+            //   position: "bottom",
+            //   buttonText: "Ok",
+            //   duration: 3000,
+            // });
             // Alert.alert("" + error);
           }
         } else {
-          Toast.show({
-            text: "Please Login",
-            position: "bottom",
-            buttonText: "Ok",
-            duration: 3000,
-          });
+          // Toast.show({
+          //   text: "Please Login",
+          //   position: "bottom",
+          //   buttonText: "Ok",
+          //   duration: 3000,
+          // });
         }
       }
     }
@@ -209,21 +209,21 @@ export default function FeedList({ props, token }) {
             feed_post_pageing[index].response_count =
               feed_post_pageing[index].response_count + 1;
             feed_post_pageing[index].liked = true;
-            Toast.show({
-              text: "Failed to unlike this post",
-              position: "bottom",
-              buttonText: "Ok",
-              duration: 3000,
-            });
+            // Toast.show({
+            //   text: "Failed to unlike this post",
+            //   position: "bottom",
+            //   buttonText: "Ok",
+            //   duration: 3000,
+            // });
           }
         } else {
           // Alert.alert("Please Login");
-          Toast.show({
-            text: "Please Login",
-            position: "bottom",
-            buttonText: "Ok",
-            duration: 3000,
-          });
+          // Toast.show({
+          //   text: "Please Login",
+          //   position: "bottom",
+          //   buttonText: "Ok",
+          //   duration: 3000,
+          // });
         }
       }
     }
