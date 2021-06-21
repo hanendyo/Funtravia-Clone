@@ -726,6 +726,7 @@ export default function CityDetail(props) {
                             props.navigation.push("DestinationList", {
                               idtype: item.id_type,
                               idcity: render.id,
+                              token: token,
                             });
                           }}
                           style={{
