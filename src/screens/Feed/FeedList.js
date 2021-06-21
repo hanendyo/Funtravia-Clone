@@ -69,6 +69,7 @@ export default function FeedList({ props, token }) {
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
+  let [koment, setKoment] = useState("");
 
   const { t, i18n } = useTranslation();
   let { width, height } = Dimensions.get("screen");
@@ -109,6 +110,7 @@ export default function FeedList({ props, token }) {
   });
 
   const _liked = async (id, index) => {
+    console.log("like");
     index = feed_post_pageing.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
@@ -396,6 +398,14 @@ export default function FeedList({ props, token }) {
     });
   };
 
+  const countKoment = (id) => {
+    const tempd = [...feed_post_pageing];
+    console.log("data comment", tempd);
+    const index = tempd.findIndex((k) => k["id"] === id);
+    tempd[index].comment_count = tempd[index].comment_count + 1;
+    console.log("index", index);
+  };
+
   const viewcomment = (data, index) => {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
@@ -406,6 +416,7 @@ export default function FeedList({ props, token }) {
         _liked: (e) => _liked(e),
         _unliked: (e) => _unliked(e),
         indeks: index,
+        countKoment: (e) => countKoment(e),
       },
     });
   };

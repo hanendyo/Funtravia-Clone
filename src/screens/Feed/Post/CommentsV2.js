@@ -579,14 +579,13 @@ export default function Comments(props) {
           if (response.data) {
             if (response.data.comment_post.code === 200) {
               const tempData = [...dataComment];
+              const tempDataPost = { ...dataPost };
               dataPost.comment_count = dataPost.comment_count + 1;
               tempData[idx] = response.data.comment_post.data;
               tempData[idx].is_send = true;
               setDataComment(tempData);
               scroll_to();
-              // Refresh();
-              // commmentEnd();
-              // console.log("slider", slider.current.litRef.scrollToEnd());
+              props.route.params.countKoment(tempDataPost.id);
             } else {
               throw new Error(response.data.comment_post.message);
             }
@@ -1226,6 +1225,7 @@ export default function Comments(props) {
                         setMuted={(e) => setMuted(e)}
                         isFocused={isFocused}
                         isComment={true}
+                        index
                       />
                     ) : (
                       <RenderSinglePhoto

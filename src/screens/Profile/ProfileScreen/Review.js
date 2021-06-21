@@ -10,7 +10,7 @@ import {
 import { default_image } from "../../../assets/png";
 import User_Post from "../../../graphQL/Query/Profile/post";
 import { HotelIcon, Kosong, Sharegreen } from "../../../assets/svg";
-import { Button, Text } from "../../../component";
+import { Button, Text, FunImageBackground } from "../../../component";
 import { useQuery } from "@apollo/client";
 
 export default function Review({ item, index }) {
@@ -90,7 +90,7 @@ export default function Review({ item, index }) {
                 onSelect(item.images);
               }}
             >
-              <ImageBackground
+              <FunImageBackground
                 source={{ uri: item.images[0] }}
                 style={{
                   alignSelf: "center",
@@ -103,7 +103,7 @@ export default function Review({ item, index }) {
                   resizeMode: "cover",
                   borderRadius: 5,
                 }}
-              ></ImageBackground>
+              ></FunImageBackground>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ width: "40%" }}
@@ -111,7 +111,7 @@ export default function Review({ item, index }) {
                 onSelect(item.images);
               }}
             >
-              <ImageBackground
+              <FunImageBackground
                 source={{ uri: item.images[1] }}
                 style={{
                   alignSelf: "center",
@@ -139,7 +139,7 @@ export default function Review({ item, index }) {
                   {`+ ${item.images.length - 1} `}
                 </Text>
                 {/* </TouchableOpacity> */}
-              </ImageBackground>
+              </FunImageBackground>
             </TouchableOpacity>
           </View>
         ) : (
@@ -148,7 +148,7 @@ export default function Review({ item, index }) {
               onSelect(item.images);
             }}
           >
-            <ImageBackground
+            <FunImageBackground
               source={{ uri: item.images[0] }}
               style={{
                 alignSelf: "center",
@@ -160,7 +160,7 @@ export default function Review({ item, index }) {
                 resizeMode: "cover",
                 borderRadius: 5,
               }}
-            ></ImageBackground>
+            ></FunImageBackground>
           </TouchableOpacity>
         )
       ) : null}
