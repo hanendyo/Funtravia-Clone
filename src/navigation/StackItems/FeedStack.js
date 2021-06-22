@@ -11,6 +11,8 @@ import SearchPageFeed from "../../screens/Feed/SearchPageFeed";
 // import SearchPageFeed from "../../screens/Feed/SearchPageFeedcopy";
 import SearchFeedByTag from "../../screens/Feed/SearchFeedByTag";
 import SearchFeedByLocation from "../../screens/Feed/SearchFeedByLocation";
+import CreateListAlbum from "../../screens/Feed/Post/CreateAlbum";
+import ChooseAlbumItinerary from "../../screens/Feed/Post/ChooseAlbumItinerary";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
@@ -102,6 +104,26 @@ export default function FeedStackNavigation() {
           headerTitle: "",
           headerTransparent: true,
 
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="CreateListAlbum"
+        component={CreateListAlbum}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="ChooseAlbumItinerary"
+        component={ChooseAlbumItinerary}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
           headerTintColor: "white",
           headerBackTitleVisible: false,
         }}

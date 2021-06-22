@@ -59,7 +59,7 @@ const deletepost = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  console.log("props", props?.route);
+  console.log("props feedlist", props);
   const ref = React.useRef(null);
   useScrollToTop(ref);
   const isFocused = useIsFocused();

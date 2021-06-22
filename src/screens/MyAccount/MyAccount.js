@@ -23,7 +23,6 @@ import Toast from "react-native-fast-toast";
 import { RNToasty } from "react-native-toasty";
 
 export default function MyAccount(props) {
-  // console.log(props);
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
