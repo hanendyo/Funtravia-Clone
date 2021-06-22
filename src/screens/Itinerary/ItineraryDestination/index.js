@@ -43,6 +43,8 @@ import { StackActions } from "@react-navigation/routers";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../../graphQL/Query/Itinerary/SearchDestination";
+import Continent from "../../../graphQL/Query/Countries/Continent";
+import Countryss from "../../../graphQL/Query/Countries/CountryListSrc";
 
 export default function ItineraryDestination(props) {
   const HeaderComponent = {
@@ -85,6 +87,10 @@ export default function ItineraryDestination(props) {
   const { t, i18n } = useTranslation();
 
   let [show, setshow] = useState(false);
+  let [showCountry, setshowCountry] = useState(false);
+  let [showCity, setshowCity] = useState(false);
+  let [keyword, setkeyword] = useState("");
+  let [dataKota, setdataKota] = useState();
 
   const {
     data: datafilter,
@@ -98,6 +104,46 @@ export default function ItineraryDestination(props) {
       setdataFilterFacilitys(datafilter.destination_filter.facility);
       setdataFilterCountry(datafilter.destination_filter.country);
       setdataFilterCountrys(datafilter.destination_filter.country);
+    },
+  });
+
+  const {
+    data: dataContinen,
+    loading: loadingcontinen,
+    error: errorcontinen,
+  } = useQuery(Continent, {
+    onCompleted: async () => {
+      let dats = [...dataContinen?.continent_type];
+      let ind = dats.findIndex((k) => k.name === "Asia");
+      let x = { ...dats[ind] };
+      x["checked"] = true;
+      await dats.splice(ind, 1, x);
+      await setdataContinent(dats);
+    },
+  });
+
+  const {
+    data: dataCountry,
+    loading: loadingcountry,
+    error: errorcountry,
+  } = useQuery(Countryss, {
+    variables: {
+      continent_id: null,
+      keyword: keyword,
+    },
+    onCompleted: async () => {
+      let xc = [];
+      for (var datx of dataCountry?.list_country_src) {
+        let item = { ...datx };
+        if (item.id === props?.route?.params?.idcountries) {
+          item["checked"] = true;
+          setdataKota(item);
+        } else {
+          item["checked"] = false;
+        }
+        await xc.push(item);
+      }
+      await setdataCountrys(xc);
     },
   });
 
@@ -117,20 +163,30 @@ export default function ItineraryDestination(props) {
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
   let [dataDestination, setdataDestination] = useState([]);
   let [datafilterAll, setdatafilterAll] = useState([]);
+  let [dataContinent, setdataContinent] = useState([]);
+  let [dataCountrys, setdataCountrys] = useState([]);
 
   let [aktif, setaktif] = useState("categories");
 
   let [search, setSearch] = useState({
-    type: null,
+    type:
+      props.route.params && props.route.params.idtype
+        ? [props.route.params.idtype]
+        : [],
     keyword: null,
-    countries: null,
-    provinces: null,
-    cities: null,
-    goodfor: null,
-    facilities: null,
+    countries:
+      props.route.params && props.route.params.idcountries
+        ? [props.route.params.idcountries]
+        : [],
+    provinces: [],
+    cities:
+      props.route.params && props.route.params.idcity
+        ? [props.route.params.idcity]
+        : [],
+    goodfor: [],
+    facilities: [],
   });
 
-  let [keyword, setkeyword] = useState("");
   let [searcountry, setsearcountry] = useState(null);
 
   const {
@@ -142,9 +198,12 @@ export default function ItineraryDestination(props) {
       keyword: keyword,
       cities_id: null,
       province_id: null,
-      countries_id: searcountry ? searcountry : null,
+      countries_id: [dataKota?.id ? dataKota?.id : null],
     },
     onCompleted: async () => {
+      console.log("masukkk", dataKota);
+      console.log("masukkk", datasearchlocation);
+
       let datloop = [...datasearchlocation.searchlocation_populer];
 
       for (var ix in datloop) {
@@ -170,30 +229,19 @@ export default function ItineraryDestination(props) {
       variables: {
         keyword: search.keyword ? search.keyword : null,
         // type: search.type ? search.type : null,
-        grouptype: [],
-        type:
-          search.type && search.type.length > 0
-            ? search.type
-            : props.route.params && props.route.params.idtype
-            ? [props.route.params.idtype]
-            : null,
+        grouptype: props.route?.params?.idgroup
+          ? [props.route?.params?.idgroup]
+          : [],
+        type: search.type && search.type.length > 0 ? search.type : null,
         cities:
-          search.cities && search.cities.length > 0
-            ? search.cities
-            : props.route.params && props.route.params.idcity
-            ? [props.route.params.idcity]
-            : null,
+          search.cities && search.cities.length > 0 ? search.cities : null,
         countries:
           search.countries && search.countries.length > 0
             ? search.countries
-            : props.route.params && props.route.params.idcountries
-            ? [props.route.params.idcountries]
             : null,
         provinces:
           search.provinces && search.provinces.length > 0
             ? search.provinces
-            : props.route.params && props.route.params.provinces
-            ? [props.route.params.provinces]
             : null,
         goodfor: search.goodfor ? search.goodfor : null,
         facilities: search.facilities ? search.facilities : null,
@@ -420,9 +468,10 @@ export default function ItineraryDestination(props) {
     data["cities"] = await cityss;
     data["provinces"] = await province;
 
-    let dats = [...datafilterAll];
+    let dats = [];
     dats = await dats.concat(Categori);
     dats = await dats.concat(fasilitas);
+
     await setdatafilterAll(dats);
 
     await setSearch(data);
@@ -431,13 +480,22 @@ export default function ItineraryDestination(props) {
 
   const ClearAllFilter = () => {
     setSearch({
-      type: null,
+      type:
+        props.route.params && props.route.params.idtype
+          ? [props.route.params.idtype]
+          : [],
       keyword: null,
-      countries: null,
-      provinces: null,
-      cities: null,
-      goodfor: null,
-      facilities: null,
+      countries:
+        props.route.params && props.route.params.idcountries
+          ? [props.route.params.idcountries]
+          : [],
+      provinces: [],
+      cities:
+        props.route.params && props.route.params.idcity
+          ? [props.route.params.idcity]
+          : [],
+      goodfor: [],
+      facilities: [],
     });
     setdataFilterCategori(datafilter?.destination_filter.type);
     setdataFilterCategoris(datafilter?.destination_filter.type);
@@ -455,6 +513,31 @@ export default function ItineraryDestination(props) {
     data["keyword"] = teks;
 
     await setSearch(data);
+  };
+
+  const _handleCheckCountry = async (id, index, item) => {
+    let xc = [];
+    for (var datx of dataCountry?.list_country_src) {
+      let item = { ...datx };
+      if (item.id === id) {
+        item["checked"] = true;
+      } else {
+        item["checked"] = false;
+      }
+      await xc.push(item);
+    }
+    console.log(xc);
+    await setdataCountrys(xc);
+  };
+
+  const ApplyCountry = async () => {
+    let index = dataCountrys.findIndex((key) => key.checked === true);
+    let item = { ...dataCountrys[index] };
+    let ser = { ...search };
+    ser["countries"] = [item.id];
+    await setSearch(ser);
+    await setshowCountry(false);
+    await setdataKota(item);
   };
 
   return (
@@ -489,7 +572,7 @@ export default function ItineraryDestination(props) {
             variant="bordered"
             color="primary"
             onPress={() => {
-              setshow(true);
+              setshow(true), searchs("");
             }}
             style={{
               marginRight: 5,
@@ -498,25 +581,27 @@ export default function ItineraryDestination(props) {
             }}
           >
             <FilterIcon width={15} height={15} />
-            <View
-              style={{
-                backgroundColor: "#209fae",
-                marginLeft: 5,
-                paddingHorizontal: 5,
-                borderRadius: 2,
-              }}
-            >
-              <Text
+            {datafilterAll.length > 0 ? (
+              <View
                 style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#ffff",
-                  fontSize: 13,
-                  // alignSelf: "center",
+                  backgroundColor: "#209fae",
+                  marginLeft: 5,
+                  paddingHorizontal: 5,
+                  borderRadius: 2,
                 }}
               >
-                {datafilterAll.length > 0 ? datafilterAll.length : ""}
-              </Text>
-            </View>
+                <Text
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    color: "#ffff",
+                    fontSize: 13,
+                    // alignSelf: "center",
+                  }}
+                >
+                  {datafilterAll?.length}
+                </Text>
+              </View>
+            ) : null}
           </Button>
 
           <View
@@ -599,6 +684,9 @@ export default function ItineraryDestination(props) {
         >
           <Text>Explore :</Text>
           <TouchableOpacity
+            onPress={() => {
+              setshowCountry(true), searchs("");
+            }}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -606,7 +694,9 @@ export default function ItineraryDestination(props) {
               marginLeft: 5,
             }}
           >
-            <Text type="bold">Indonesia</Text>
+            <Text type="bold">
+              <Capital text={dataKota?.name ? dataKota?.name : ""} />
+            </Text>
             <View
               style={{
                 paddingVertical: 6,
@@ -631,6 +721,9 @@ export default function ItineraryDestination(props) {
             -
           </Text>
           <TouchableOpacity
+            onPress={() => {
+              setshowCity(true), searchs("");
+            }}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -844,7 +937,7 @@ export default function ItineraryDestination(props) {
                   </Text>
                 </View>
               </Pressable> */}
-
+              {/* 
               <Pressable
                 onPress={() => {
                   setaktif("City");
@@ -879,6 +972,7 @@ export default function ItineraryDestination(props) {
                   </Text>
                 </View>
               </Pressable>
+             */}
             </View>
             {/* kanan................................................................ */}
             <View style={{ flex: 1 }}>
@@ -973,7 +1067,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {Capital({ text: item.name })}
+                        {Capital({ text: item?.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1038,7 +1132,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {Capital({ text: item.name })}
+                        {Capital({ text: item?.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1103,7 +1197,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {Capital({ text: item.name })}
+                        {Capital({ text: item?.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1168,7 +1262,7 @@ export default function ItineraryDestination(props) {
                           // borderWidth: 5,
                         }}
                       >
-                        {Capital({ text: item.name })}
+                        {Capital({ text: item?.name })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -1363,7 +1457,7 @@ export default function ItineraryDestination(props) {
                     style={{ marginTop: 2 }}
                     numberOfLines={1}
                   >
-                    {Capital({ text: item.name })}
+                    {Capital({ text: item?.name })}
                   </Text>
 
                   {/* Maps */}
@@ -1381,7 +1475,7 @@ export default function ItineraryDestination(props) {
                       style={{ marginLeft: 5 }}
                       numberOfLines={1}
                     >
-                      {Capital({ text: item.cities.name })}
+                      {Capital({ text: item?.cities.name })}
                     </Text>
                   </View>
                 </View>
@@ -1444,6 +1538,491 @@ export default function ItineraryDestination(props) {
           showsHorizontalScrollIndicator={false}
         />
       ) : null}
+
+      {/* // modalcountry */}
+
+      <Modal
+        // onLayout={() => dataCountrySelect()}
+        onBackdropPress={() => {
+          setshowCountry(false);
+        }}
+        onRequestClose={() => setshowCountry(false)}
+        onDismiss={() => setshowCountry(false)}
+        isVisible={showCountry}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            height: Dimensions.get("screen").height * 0.6,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            // borderTopLeftRadius: 15,
+            // borderTopRightRadius: 15,
+          }}
+        >
+          {/* bagian atas */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+              paddingHorizontal: 15,
+              paddingVertical: 20,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#d3d3d3",
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
+                color: "#464646",
+              }}
+            >
+              {t("country")}
+            </Text>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                backgroundColor: "with",
+                height: 35,
+                width: 32,
+                top: 0,
+                right: 0,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
+              onPress={() => setshowCountry(false)}
+            >
+              <Xhitam height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              padding: 15,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#F0F0F0",
+                borderRadius: 5,
+                // flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+              }}
+            >
+              <Search width={15} height={15} />
+
+              <TextInput
+                underlineColorAndroid="transparent"
+                placeholder={t("search")}
+                Text={keyword}
+                style={{
+                  width: "100%",
+                  // borderWidth: 1,
+                  marginLeft: 5,
+                  padding: 0,
+                }}
+                // returnKeyType="search"
+                onChangeText={(x) => searchs(x)}
+                onSubmitEditing={(x) => searchs(x)}
+              />
+            </View>
+          </View>
+          {/* bagian side */}
+
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              borderTopWidth: 0.5,
+              borderColor: "#d1d1d1",
+            }}
+          >
+            {/* kiri ..................................................... */}
+            <View
+              style={{
+                width: "35%",
+                borderRightWidth: 0.5,
+                borderColor: "#d1d1d1",
+              }}
+            >
+              {dataContinent?.map((item, index) => {
+                return (
+                  <Pressable
+                    onPress={() => {
+                      setaktif("categories");
+                    }}
+                    style={{
+                      backgroundColor: "#f6f6f6",
+                      paddingBottom: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        borderLeftColor:
+                          item.checked === true ? "#209fae" : "#f6f6f6",
+                        borderLeftWidth: item.checked === true ? 5 : 0,
+                        marginLeft: item.checked === true ? 5 : 10,
+                        justifyContent: "center",
+                        paddingVertical: 15,
+                        paddingHorizontal: 10,
+                        backgroundColor:
+                          item.checked === true ? "#ffff" : "#f6f6f6",
+                      }}
+                    >
+                      <Text
+                        type="bold"
+                        size="title"
+                        style={{
+                          // fontSize: 20,
+                          // fontFamily: "Lato-Bold",
+                          color: "#464646",
+                          // marginTop: 10,
+                        }}
+                      >
+                        <Capital text={item?.name} />
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {/* kanan................................................................ */}
+            <View style={{ flex: 1 }}>
+              <ScrollView
+                // style={{ borderWidth: 1, height: 100 }}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 15,
+                  paddingTop: 10,
+                }}
+              >
+                {dataCountrys.map((item, index) => (
+                  <TouchableOpacity
+                    onPress={() => _handleCheckCountry(item["id"], index, item)}
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor:
+                        item.checked === true ? "#daf0f2" : "#ffff",
+                      // borderColor: "#464646",
+                      width: "100%",
+                      marginRight: 3,
+                      // marginBottom: 20,
+                      justifyContent: "flex-start",
+                      alignContent: "center",
+                      alignItems: "center",
+                      // borderWidth: 1,
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type={item.checked === true ? "bold" : "regular"}
+                      style={{
+                        marginLeft: 0,
+                        color: "#464646",
+                        // borderWidth: 5,
+                      }}
+                    >
+                      {Capital({ text: item?.name })}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+              </ScrollView>
+            </View>
+          </View>
+          {/* bagian bawah */}
+          <View
+            style={{
+              // flex: 1,
+              zIndex: 6,
+              flexDirection: "row",
+              height: 70,
+              // borderWidth: 1,
+              // position: "absolute",
+              // bottom: 0,
+              justifyContent: "space-around",
+              alignContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              width: Dimensions.get("screen").width,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              padding: 10,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Button
+              onPress={() => ApplyCountry()}
+              style={{ width: "100%" }}
+              text={t("apply")}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
+
+      {/* modalcity */}
+
+      <Modal
+        // onLayout={() => dataCountrySelect()}
+        onBackdropPress={() => {
+          setshowCity(false);
+        }}
+        onRequestClose={() => setshowCity(false)}
+        onDismiss={() => setshowCity(false)}
+        isVisible={showCity}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            height: Dimensions.get("screen").height * 0.6,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            // borderTopLeftRadius: 15,
+            // borderTopRightRadius: 15,
+          }}
+        >
+          {/* bagian atas */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+              paddingHorizontal: 15,
+              paddingVertical: 20,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#d3d3d3",
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
+                color: "#464646",
+              }}
+            >
+              <Capital text={t("city")} />
+            </Text>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                backgroundColor: "with",
+                height: 35,
+                width: 32,
+                top: 0,
+                right: 0,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
+              onPress={() => setshowCity(false)}
+            >
+              <Xhitam height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              padding: 15,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#F0F0F0",
+                borderRadius: 5,
+                // flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+              }}
+            >
+              <Search width={15} height={15} />
+
+              <TextInput
+                underlineColorAndroid="transparent"
+                placeholder={t("search")}
+                Text={keyword}
+                style={{
+                  width: "100%",
+                  // borderWidth: 1,
+                  marginLeft: 5,
+                  padding: 0,
+                }}
+                // returnKeyType="search"
+                onChangeText={(x) => searchs(x)}
+                onSubmitEditing={(x) => searchs(x)}
+              />
+            </View>
+          </View>
+          {/* bagian side */}
+
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              borderTopWidth: 0.5,
+              borderColor: "#d1d1d1",
+            }}
+          >
+            {/* kiri ..................................................... */}
+            <View
+              style={{
+                width: "35%",
+                borderRightWidth: 0.5,
+                borderColor: "#d1d1d1",
+              }}
+            >
+              {dataKota ? (
+                <Pressable
+                  style={{
+                    backgroundColor: "#f6f6f6",
+                    paddingBottom: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      borderLeftColor: "#209fae",
+                      borderLeftWidth: 5,
+                      marginLeft: 5,
+                      justifyContent: "center",
+                      paddingVertical: 15,
+                      paddingHorizontal: 10,
+                      backgroundColor: "#ffff",
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      size="title"
+                      style={{
+                        // fontSize: 20,
+                        // fontFamily: "Lato-Bold",
+                        color: "#464646",
+                        // marginTop: 10,
+                      }}
+                    >
+                      <Capital text={dataKota?.name} />
+                    </Text>
+                  </View>
+                </Pressable>
+              ) : null}
+            </View>
+            {/* kanan................................................................ */}
+            <View style={{ flex: 1 }}>
+              <ScrollView
+                // style={{ borderWidth: 1, height: 100 }}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 15,
+                  paddingTop: 10,
+                }}
+              >
+                {dataFilterCitys.map((item, index) => (
+                  <TouchableOpacity
+                    onPress={() => _handleCheckCity(item["id"], index, item)}
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor:
+                        item.checked === true ? "#daf0f2" : "#ffff",
+                      // borderColor: "#464646",
+                      width: "100%",
+                      marginRight: 3,
+                      // marginBottom: 20,
+                      justifyContent: "flex-start",
+                      alignContent: "center",
+                      alignItems: "center",
+                      // borderWidth: 1,
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type={item.checked === true ? "bold" : "regular"}
+                      style={{
+                        marginLeft: 0,
+                        color: "#464646",
+                        // borderWidth: 5,
+                      }}
+                    >
+                      {Capital({ text: item?.name })}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                {/* <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+            ></View> */}
+              </ScrollView>
+            </View>
+          </View>
+          {/* bagian bawah */}
+          <View
+            style={{
+              // flex: 1,
+              zIndex: 6,
+              flexDirection: "row",
+              height: 70,
+              // borderWidth: 1,
+              // position: "absolute",
+              // bottom: 0,
+              justifyContent: "space-around",
+              alignContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              width: Dimensions.get("screen").width,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              padding: 10,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Button
+              // onPress={() => ApplyCity()}
+              style={{ width: "100%" }}
+              text={t("apply")}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
