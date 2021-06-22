@@ -205,13 +205,15 @@ export default function CreatePost({ navigation, route }) {
         },
       });
 
+      console.log("response", response);
+
       if (response.data) {
         if (response.data.create_post.code === 200) {
           setLoading(false);
           navigation.navigate("BottomStack", {
             screen: "FeedScreen",
             params: {
-              isposting: true,
+              isPost: true,
             },
           });
         } else {
