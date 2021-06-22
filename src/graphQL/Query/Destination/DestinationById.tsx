@@ -4,6 +4,7 @@ const DestinationById = gql`
     destinationById(id: $id) {
       id
       name
+      cover
       phone1
       phone2
       email1
@@ -44,6 +45,7 @@ const DestinationById = gql`
       greatfor {
         id
         name
+        slug
         icon
       }
       review {
@@ -57,6 +59,8 @@ const DestinationById = gql`
         }
         ulasan
         rating
+        created_at
+        updated_at
         image {
           image
         }
@@ -97,11 +101,27 @@ const DestinationById = gql`
           name
         }
         greatfor {
-          label
+          id
+          name
+          slug
           icon
         }
         images {
           image
+        }
+      }
+      article_header {
+        id
+        title
+        type
+        position
+        content {
+          id
+          type
+          title
+          text
+          image
+          order
         }
       }
     }

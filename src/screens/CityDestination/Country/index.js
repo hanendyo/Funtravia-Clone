@@ -810,11 +810,11 @@ export default function Country(props) {
                   width:
                     props.navigationState.routes.length < 2
                       ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 3
-                      ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 4
-                      ? Dimensions.get("screen").width * 0.33
-                      : null,
+                      : // : props.navigationState.routes.length < 3
+                        // ? Dimensions.get("screen").width * 0.5
+                        // : props.navigationState.routes.length < 4
+                        // ? Dimensions.get("screen").width * 0.33
+                        null,
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "flex-end",
