@@ -1519,68 +1519,65 @@ export default function CityDetail(props) {
                   // width: Dimensions.get('screen').width - 40,
                 }}
                 customSlide={({ index, item, style, width }) => (
-                  console.log("ITEM EVENT", item),
-                  (
-                    <Ripple
-                      onPress={() => {
-                        Goto(item);
-                      }}
-                      key={index}
+                  <Ripple
+                    onPress={() => {
+                      Goto(item);
+                    }}
+                    key={index}
+                    style={{
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                    }}
+                  >
+                    <ImageBackground
+                      source={
+                        item?.cover
+                          ? { uri: item?.cover }
+                          : item?.images?.length > 0
+                          ? { uri: item?.images[0]?.image }
+                          : default_image
+                      }
                       style={{
                         borderTopLeftRadius: 5,
                         borderTopRightRadius: 5,
+                        height: Dimensions.get("screen").width * 0.4,
+                        width: Dimensions.get("screen").width - 40,
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                      }}
+                      imageStyle={{
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        height: Dimensions.get("screen").width * 0.4,
+                        width: Dimensions.get("screen").width - 40,
+                        resizeMode: "cover",
                       }}
                     >
-                      <ImageBackground
-                        source={
-                          item?.cover
-                            ? { uri: item?.cover }
-                            : item?.images?.length > 0
-                            ? { uri: item?.images[0]?.image }
-                            : default_image
-                        }
+                      <LinearGradient
+                        colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
+                        start={{ x: 0, y: 1 }}
+                        end={{ x: 0, y: 0 }}
                         style={{
-                          borderTopLeftRadius: 5,
-                          borderTopRightRadius: 5,
-                          height: Dimensions.get("screen").width * 0.4,
-                          width: Dimensions.get("screen").width - 40,
+                          height: "30%",
+                          width: "100%",
                           alignContent: "center",
                           alignItems: "center",
                           justifyContent: "flex-end",
-                        }}
-                        imageStyle={{
-                          borderTopLeftRadius: 5,
-                          borderTopRightRadius: 5,
-                          height: Dimensions.get("screen").width * 0.4,
-                          width: Dimensions.get("screen").width - 40,
-                          resizeMode: "cover",
+                          padding: 25,
                         }}
                       >
-                        <LinearGradient
-                          colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
-                          start={{ x: 0, y: 1 }}
-                          end={{ x: 0, y: 0 }}
+                        <Text
                           style={{
-                            height: "30%",
-                            width: "100%",
-                            alignContent: "center",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                            padding: 25,
+                            color: "white",
+                            textAlign: "center",
                           }}
                         >
-                          <Text
-                            style={{
-                              color: "white",
-                              textAlign: "center",
-                            }}
-                          >
-                            {item.name ? item.name : ""}
-                          </Text>
-                        </LinearGradient>
-                      </ImageBackground>
-                    </Ripple>
-                  )
+                          {item.name ? item.name : ""}
+                        </Text>
+                      </LinearGradient>
+                    </ImageBackground>
+                  </Ripple>
                 )}
                 customButtons={(position, move) => (
                   <View
@@ -2696,11 +2693,11 @@ export default function CityDetail(props) {
                   width:
                     props.navigationState.routes.length < 2
                       ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 3
-                      ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 4
-                      ? Dimensions.get("screen").width * 0.33
-                      : null,
+                      : // : props.navigationState.routes.length < 3
+                        // ? Dimensions.get("screen").width * 0.5
+                        // : props.navigationState.routes.length < 4
+                        // ? Dimensions.get("screen").width * 0.33
+                        null,
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "flex-end",
