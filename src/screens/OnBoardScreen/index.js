@@ -47,7 +47,8 @@ export default function OnBoardScreen(props) {
         <View style={{ backgroundColor: "#000" }}>
           <Image
             style={{
-              height: height * 0.92,
+              // flex:1,
+              height: height,
               width: width,
               resizeMode: "cover",
               backgroundColor: "#000",
@@ -55,6 +56,7 @@ export default function OnBoardScreen(props) {
             }}
             source={item.image}
           />
+       
           {index === 2 ? null : (
             <View
               style={{
