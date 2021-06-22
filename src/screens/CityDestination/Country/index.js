@@ -830,7 +830,7 @@ export default function Country(props) {
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
-                          ? "#white"
+                          ? "white"
                           : "#209fae",
                       height: 38,
                       paddingTop: 2,
@@ -1201,7 +1201,7 @@ export default function Country(props) {
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
-                    <View>
+                    <View key={"tetts" + index}>
                       {item.map((dataX, index) => {
                         return (
                           <Pressable
@@ -1401,7 +1401,7 @@ export default function Country(props) {
               }}
             >
               <ImageSlider
-                listkey={"imslider"}
+                key={"imslider"}
                 images={render?.city ? render.city : []}
                 style={{
                   borderTopLeftRadius: 5,
@@ -1410,142 +1410,140 @@ export default function Country(props) {
                   width: Dimensions.get("screen").width - 69,
                 }}
                 customSlide={({ index, item, style, width }) => (
-                  console.log("item", item),
-                  (
-                    <View
+                  <View
+                    key={"aaas" + index}
+                    style={{
+                      width: Dimensions.get("screen").width - 69,
+                      alignItems: "center",
+                      alignContent: "center",
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type="bold"
                       style={{
-                        width: Dimensions.get("screen").width - 69,
-                        alignItems: "center",
-                        alignContent: "center",
+                        textAlign: "center",
+                        marginTop: 3,
                       }}
                     >
-                      <Text
-                        size="label"
-                        type="bold"
-                        style={{
-                          textAlign: "center",
-                          marginTop: 3,
-                        }}
-                      >
-                        <Capital text={item.name} />
-                      </Text>
-                      <Ripple
-                        onPress={() => {
-                          props.navigation.navigate("CountryStack", {
-                            screen: "CityDetail",
-                            params: {
-                              data: {
-                                city_id: item.id,
-                                city_name: item.name,
-                              },
-                              exParam: true,
+                      <Capital text={item.name} />
+                    </Text>
+                    <Ripple
+                      onPress={() => {
+                        props.navigation.navigate("CountryStack", {
+                          screen: "CityDetail",
+                          params: {
+                            data: {
+                              city_id: item.id,
+                              city_name: item.name,
                             },
-                          });
-                        }}
+                            exParam: true,
+                          },
+                        });
+                      }}
+                      style={{
+                        height: width * 0.4,
+                        width: "100%",
+                        borderRadius: 10,
+                        marginVertical: 2,
+                      }}
+                    >
+                      <Image
                         style={{
-                          height: width * 0.4,
+                          height: "100%",
                           width: "100%",
                           borderRadius: 10,
-                          marginVertical: 2,
                         }}
-                      >
-                        <Image
-                          style={{
-                            height: "100%",
-                            width: "100%",
-                            borderRadius: 10,
-                          }}
-                          source={
-                            item.cover ? { uri: item.cover } : default_image
-                          }
-                        ></Image>
-                      </Ripple>
-                      <View
-                        style={{
-                          width: "100%",
-                          flexWrap: "wrap",
-                          flexDirection: "row",
-                          justifyContent: "flex-start",
-                        }}
-                      >
-                        {item.destination && item.destination.length > 0 ? (
-                          <FlatList
-                            listKey={(item, index) => "D" + index.toString()}
-                            data={item.destination}
-                            numColumns={4}
-                            renderItem={({ item, index }) => (
-                              <Ripple
-                                onPress={() => {
-                                  //   props.navigation.navigate("detailStack", {
-                                  //     id: item.id,
-                                  //     name: item.name,
-                                  //   });
-                                  // }}
+                        source={
+                          item.cover ? { uri: item.cover } : default_image
+                        }
+                      ></Image>
+                    </Ripple>
+                    <View
+                      style={{
+                        width: "100%",
+                        flexWrap: "wrap",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      {item.destination && item.destination.length > 0 ? (
+                        <FlatList
+                          listKey={(item, index) => "D" + index.toString()}
+                          data={item.destination}
+                          numColumns={4}
+                          renderItem={({ item, index }) => (
+                            <Ripple
+                              onPress={() => {
+                                //   props.navigation.navigate("detailStack", {
+                                //     id: item.id,
+                                //     name: item.name,
+                                //   });
+                                // }}
 
-                                  props.navigation.push(
-                                    "DestinationUnescoDetail",
-                                    {
-                                      id: item.id,
-                                      name: item.name,
-                                      token: token,
-                                    }
-                                  );
-                                }}
+                                props.navigation.push(
+                                  "DestinationUnescoDetail",
+                                  {
+                                    id: item.id,
+                                    name: item.name,
+                                    token: token,
+                                  }
+                                );
+                              }}
+                              style={{
+                                // width: (width - 60) / 4,
+                                alignContent: "center",
+                                alignItems: "center",
+                                borderColor: "#209fae",
+                                padding: 2,
+                              }}
+                            >
+                              <Image
                                 style={{
-                                  // width: (width - 60) / 4,
-                                  alignContent: "center",
-                                  alignItems: "center",
-                                  borderColor: "#209fae",
-                                  padding: 2,
+                                  borderRadius: 10,
+                                  height: (width - 80) / 4,
+                                  width: (width - 88) / 4,
+                                }}
+                                source={
+                                  item.images
+                                    ? {
+                                        uri: item.images[0].image,
+                                      }
+                                    : default_image
+                                }
+                              ></Image>
+                              <Text
+                                size="small"
+                                type="bold"
+                                style={{
+                                  textAlign: "center",
+                                  marginTop: 3,
                                 }}
                               >
-                                <Image
-                                  style={{
-                                    borderRadius: 10,
-                                    height: (width - 80) / 4,
-                                    width: (width - 88) / 4,
-                                  }}
-                                  source={
-                                    item.images
-                                      ? {
-                                          uri: item.images[0].image,
-                                        }
-                                      : default_image
-                                  }
-                                ></Image>
-                                <Text
-                                  size="small"
-                                  type="bold"
-                                  style={{
-                                    textAlign: "center",
-                                    marginTop: 3,
-                                  }}
-                                >
-                                  <Truncate
-                                    text={Capital({
-                                      text: item.name,
-                                    })}
-                                    length={13}
-                                  />
-                                </Text>
-                              </Ripple>
-                            )}
-                          />
-                        ) : (
-                          <View
-                            style={{
-                              flex: 1,
-                              paddingTop: 100,
-                              alignContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Text>{null}</Text>
-                          </View>
-                        )}
-                      </View>
+                                <Truncate
+                                  text={Capital({
+                                    text: item.name,
+                                  })}
+                                  length={13}
+                                />
+                              </Text>
+                            </Ripple>
+                          )}
+                        />
+                      ) : (
+                        <View
+                          style={{
+                            flex: 1,
+                            paddingTop: 100,
+                            alignContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text>{null}</Text>
+                        </View>
+                      )}
                     </View>
-                  )
+                  </View>
                 )}
                 customButtons={(position, move) => (
                   <View
@@ -1904,9 +1902,7 @@ export default function Country(props) {
                 </View>;
               } else {
                 return (
-                  <View
-                  //   key={"artikel"+index}
-                  >
+                  <View key={"artikel" + index}>
                     {i.type === "image" ? (
                       <View>
                         {i.title ? (
@@ -1996,6 +1992,7 @@ export default function Country(props) {
   const renderTabView = () => {
     return (
       <TabView
+        key={"tabviews"}
         onSwipeStart={() => setCanScroll(false)}
         onSwipeEnd={() => setCanScroll(true)}
         onIndexChange={(id) => {
