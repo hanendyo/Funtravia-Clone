@@ -41,7 +41,6 @@ import LinearGradient from "react-native-linear-gradient";
 import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 
 export default function CreateAlbum(props) {
-  console.log("props create album", props);
   const { t } = useTranslation();
   const [newFeedAlbums, setNewFeedAlbums] = useState(false);
   const [select, setSelect] = useState("Itinerary Album");

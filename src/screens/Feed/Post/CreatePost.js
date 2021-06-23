@@ -155,7 +155,7 @@ export default function CreatePost(props) {
         ? "0"
         : Location.address;
     let albums_id = idAlbums ? idAlbums : null;
-    let itinerary_id = null;
+    let itinerary_id = idItin ? idItin : null;
     let day_id = null;
     let oriented = props?.route?.params?.ratio?.label
       ? props?.route?.params?.ratio?.label
@@ -219,7 +219,6 @@ export default function CreatePost(props) {
         if (response.data.create_post.code === 200) {
           setLoading(false);
           props.navigation.navigate("BottomStack", {
-            // ispost: true,
             screen: "FeedScreen",
             params: {
               isPost: true,
