@@ -34,18 +34,47 @@ export default function DetailJournal(props) {
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
   const { t } = useTranslation();
-  let title = (
-    <Text size="label" type="regular" style={{ color: "#FFF" }}>
-      {dataPopuler?.title}
-    </Text>
+  let title = () => (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        alignContent: "center",
+        // justifyContent: "center",
+        // borderWidth: 1,
+        width: Dimensions.get("screen").width - 70,
+      }}
+    >
+      {/* <Text>test</Text> */}
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+      <Text
+        size="label"
+        type="regular"
+        numberOfLines={1}
+        style={{ color: "#FFF", flex: 1 }}
+      >
+        {dataPopuler?.title}
+      </Text>
+    </View>
   );
 
   const HeaderComponent = {
     headerShown: true,
-    title: "Journal Detail",
+    title: "",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Journal Detail",
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -176,7 +205,7 @@ export default function DetailJournal(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    props.navigation.setOptions({ headerTitle: title });
+    props.navigation.setOptions({ headerLeft: title });
     loadAsync();
   }, []);
 

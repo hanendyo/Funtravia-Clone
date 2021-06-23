@@ -39,8 +39,8 @@ export default function OnBoardScreen(props) {
       listkey={"imagesliderjournal"}
       images={dataImage ? dataImage : []}
       style={{
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
+        // borderTopLeftRadius: 5,
+        // borderTopRightRadius: 5,
         backgroundColor: "#white",
       }}
       customSlide={({ index, item, style, width, move, position }) => (

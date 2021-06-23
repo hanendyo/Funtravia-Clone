@@ -18,6 +18,7 @@ import {
   Picker,
   ImageBackground,
   Pressable,
+  Modal as Modalss,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { TabView, TabBar } from "react-native-tab-view";
@@ -564,7 +565,7 @@ export default function ItineraryDetail(props) {
       // freeStyleCropEnabled: true,
       includeBase64: true,
     }).then((image) => {
-      upload(image);
+      setmodalcover(false), upload(image);
     });
   };
 
@@ -576,47 +577,8 @@ export default function ItineraryDetail(props) {
       // freeStyleCropEnabled: true,
       includeBase64: true,
     }).then((image) => {
-      upload(image);
+      setmodalcover(false), upload(image);
     });
-  };
-
-  const [
-    mutationUpdateCover,
-    { loading: loadingcover, data: datacover, error: errorcover },
-  ] = useMutation(Updatecover, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const Updatecovers = async (url) => {
-    setloading(true);
-    try {
-      let response = await mutationUpdateCover({
-        variables: {
-          itinerary_id: itineraryId,
-          cover: url,
-        },
-      });
-
-      if (errorcover) {
-        throw new Error("Error Input");
-      }
-      if (response.data) {
-        if (response.data.update_cover_itinerary.code !== 200) {
-          throw new Error(response.data.update_cover_itinerary.message);
-        } else {
-          startRefreshAction();
-        }
-      }
-      setloading(false);
-    } catch (error) {
-      setloading(false);
-      Alert.alert("" + error);
-    }
   };
 
   const [
@@ -655,6 +617,7 @@ export default function ItineraryDetail(props) {
       });
 
       hasil.push(files);
+      setmodalAlbum(false);
 
       // console.log(hasil);
       uploadAlbum(hasil);
@@ -676,7 +639,7 @@ export default function ItineraryDetail(props) {
         hasil.push(files);
         // await console.log(files);
       }
-
+      await setmodalAlbum(false);
       // await console.log(hasil);
       await uploadAlbum(hasil);
     } catch (err) {
@@ -5508,59 +5471,71 @@ export default function ItineraryDetail(props) {
           </View>
         </Modal>
 
-        <Modal
+        <Modalss
           onBackdropPress={() => {
             setmodalcover(false);
           }}
           onRequestClose={() => setmodalcover(false)}
           onDismiss={() => setmodalcover(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalcover}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
+          // animationIn="fadeIn"
+          // animationOut="fadeOut"
+          visible={modalcover}
+          transparent={true}
         >
-          <View
+          <Pressable
+            onPress={() => {
+              setmodalcover(false);
+            }}
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              height: Dimensions.get("screen").height,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+              // opacity: 0.7,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
             }}
           >
-            <TouchableOpacity
+            <View
               style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setmodalcover(false), pickcamera();
+                backgroundColor: "white",
+                height: 100,
+                width: Dimensions.get("screen").width - 60,
+                padding: 20,
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ color: "#d75995" }}
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10,
+                }}
+                onPress={() => {
+                  pickcamera();
+                }}
               >
-                {t("OpenCamera")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setmodalcover(false), pickGallery();
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("OpenGallery")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#d75995" }}
+                >
+                  {t("OpenCamera")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10,
+                }}
+                onPress={() => {
+                  pickGallery();
+                }}
+              >
+                <Text size="description" type="regular" style={{}}>
+                  {t("OpenGallery")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modalss>
 
         <Modal
           onBackdropPress={() => {
@@ -5590,7 +5565,7 @@ export default function ItineraryDetail(props) {
                 paddingVertical: 10,
               }}
               onPress={() => {
-                setmodalAlbum(false), pickcameraAlbum();
+                pickcameraAlbum();
               }}
             >
               <Text
@@ -5606,7 +5581,7 @@ export default function ItineraryDetail(props) {
                 paddingVertical: 10,
               }}
               onPress={() => {
-                setmodalAlbum(false), pickGalleryAlbum();
+                pickGalleryAlbum();
               }}
             >
               <Text size="description" type="regular" style={{}}>

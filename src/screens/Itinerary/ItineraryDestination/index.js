@@ -91,6 +91,7 @@ export default function ItineraryDestination(props) {
   let [showCity, setshowCity] = useState(false);
   let [keyword, setkeyword] = useState("");
   let [dataKota, setdataKota] = useState();
+  let [dataNegara, setdataNegara] = useState();
 
   const {
     data: datafilter,
@@ -137,7 +138,8 @@ export default function ItineraryDestination(props) {
         let item = { ...datx };
         if (item.id === props?.route?.params?.idcountries) {
           item["checked"] = true;
-          setdataKota(item);
+          setdataNegara(item);
+          // setdataKota(item);
         } else {
           item["checked"] = false;
         }
@@ -160,6 +162,7 @@ export default function ItineraryDestination(props) {
   let [dataFilterCountry, setdataFilterCountry] = useState([]);
   let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
   let [dataFilterCity, setdataFilterCity] = useState([]);
+  let [dataFilterCityfull, setdataFilterCityfull] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
   let [dataDestination, setdataDestination] = useState([]);
   let [datafilterAll, setdatafilterAll] = useState([]);
@@ -198,25 +201,27 @@ export default function ItineraryDestination(props) {
       keyword: keyword,
       cities_id: null,
       province_id: null,
-      countries_id: [dataKota?.id ? dataKota?.id : null],
+      countries_id: dataNegara?.id ? dataNegara?.id : null,
     },
     onCompleted: async () => {
-      console.log("masukkk", dataKota);
-      console.log("masukkk", datasearchlocation);
+      // console.log("masukkk", dataKota);
+      // console.log("masukkk", datasearchlocation);
 
       let datloop = [...datasearchlocation.searchlocation_populer];
 
       for (var ix in datloop) {
         if (
-          datloop[ix].id === props?.route?.params?.idcity ||
-          datloop[ix].id === props?.route?.params?.idcountries
+          datloop[ix].id === props?.route?.params?.idcity
+          // || datloop[ix].id === props?.route?.params?.idcountries
         ) {
           let dat = { ...datloop[ix] };
           dat.checked = true;
+          await setdataKota(dat);
           await datloop.splice(ix, 1, dat);
         }
       }
 
+      await setdataFilterCityfull(datasearchlocation.searchlocation_populer);
       await setdataFilterCity(datloop);
       await setdataFilterCitys(datloop);
     },
@@ -422,6 +427,19 @@ export default function ItineraryDestination(props) {
     await setdataFilterCitys(tempe);
   };
 
+  const _handleCheckCitySingle = async (id, index, item) => {
+    // console.log("masuk", dataFilterCityfull);
+    let tempe = [...dataFilterCityfull];
+    // return false;
+
+    let items = { ...item };
+    items.checked = !items.checked;
+    let inde = tempe.findIndex((key) => key.id === id);
+    tempe.splice(inde, 1, items);
+    await setdataFilterCity(tempe);
+    await setdataFilterCitys(tempe);
+  };
+
   const UpdateFilter = async () => {
     let data = { ...search };
 
@@ -537,6 +555,29 @@ export default function ItineraryDestination(props) {
     ser["countries"] = [item.id];
     await setSearch(ser);
     await setshowCountry(false);
+    await setdataNegara(item);
+  };
+
+  const ApplyCity = async () => {
+    let index = dataFilterCitys.findIndex((key) => key.checked === true);
+    let item = { ...dataFilterCitys[index] };
+    let ser = { ...search };
+
+    console.log(item);
+    ser["countries"] = [];
+    ser["provinces"] = [];
+    ser["cities"] = [];
+
+    if (item.type === "Province") {
+      ser["provinces"] = [item.id];
+    } else if (item.type === "City") {
+      ser["cities"] = [item.id];
+    } else if (item.type === "Country") {
+      ser["countries"] = [item.id];
+    }
+
+    await setSearch(ser);
+    await setshowCity(false);
     await setdataKota(item);
   };
 
@@ -695,7 +736,7 @@ export default function ItineraryDestination(props) {
             }}
           >
             <Text type="bold">
-              <Capital text={dataKota?.name ? dataKota?.name : ""} />
+              <Capital text={dataNegara?.name ? dataNegara?.name : ""} />
             </Text>
             <View
               style={{
@@ -714,7 +755,7 @@ export default function ItineraryDestination(props) {
           </TouchableOpacity>
           <Text
             style={{
-              paddingHorizontal: 10,
+              paddingHorizontal: 5,
             }}
             type="bold"
           >
@@ -731,7 +772,9 @@ export default function ItineraryDestination(props) {
               // marginLeft: 5,
             }}
           >
-            <Text type="bold">Bandung</Text>
+            <Text type="bold">
+              <Capital text={dataKota?.name ? dataKota?.name : ""} />
+            </Text>
             <View
               style={{
                 paddingVertical: 6,
@@ -1052,6 +1095,7 @@ export default function ItineraryDestination(props) {
                             android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                           }),
                         }}
+                        onChange={() => _handleCheck(item["id"], index, item)}
                         onValueChange={() =>
                           _handleCheck(item["id"], index, item)
                         }
@@ -1117,6 +1161,7 @@ export default function ItineraryDestination(props) {
                             android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                           }),
                         }}
+                        onChange={() => _handleCheckf(item["id"], index, item)}
                         onValueChange={() =>
                           _handleCheckf(item["id"], index, item)
                         }
@@ -1182,6 +1227,7 @@ export default function ItineraryDestination(props) {
                             android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                           }),
                         }}
+                        onChange={() => _handleCheckC(item["id"], index, item)}
                         onValueChange={() =>
                           _handleCheckC(item["id"], index, item)
                         }
@@ -1247,6 +1293,9 @@ export default function ItineraryDestination(props) {
                             android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                           }),
                         }}
+                        onChange={() =>
+                          _handleCheckCity(item["id"], index, item)
+                        }
                         onValueChange={() =>
                           _handleCheckCity(item["id"], index, item)
                         }
@@ -1904,7 +1953,7 @@ export default function ItineraryDestination(props) {
                 borderColor: "#d1d1d1",
               }}
             >
-              {dataKota ? (
+              {dataNegara ? (
                 <Pressable
                   style={{
                     backgroundColor: "#f6f6f6",
@@ -1932,7 +1981,7 @@ export default function ItineraryDestination(props) {
                         // marginTop: 10,
                       }}
                     >
-                      <Capital text={dataKota?.name} />
+                      <Capital text={dataNegara?.name} />
                     </Text>
                   </View>
                 </Pressable>
@@ -1951,7 +2000,9 @@ export default function ItineraryDestination(props) {
               >
                 {dataFilterCitys.map((item, index) => (
                   <TouchableOpacity
-                    onPress={() => _handleCheckCity(item["id"], index, item)}
+                    onPress={() =>
+                      _handleCheckCitySingle(item["id"], index, item)
+                    }
                     style={{
                       flexDirection: "row",
                       backgroundColor:
@@ -2016,7 +2067,7 @@ export default function ItineraryDestination(props) {
             }}
           >
             <Button
-              // onPress={() => ApplyCity()}
+              onPress={() => ApplyCity()}
               style={{ width: "100%" }}
               text={t("apply")}
             ></Button>
