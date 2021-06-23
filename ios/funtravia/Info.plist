@@ -90,6 +90,10 @@
 	<string>Funtravia would like to save photos from the app to your gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>For Make Feed And Change Profile Picture</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>For usage mic</string>
+	<key>UIDocumentPickerViewController</key>
+	<string>For usage file picker</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Black.ttf</string>

@@ -99,9 +99,10 @@ export default function ImageSlide({
       >
         <View
           style={{
-            height: 55,
+            height: 70,
             backgroundColor: "black",
             marginTop: 10,
+            justifyContent: "flex-end",
           }}
         >
           <Button

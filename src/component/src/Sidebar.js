@@ -5,8 +5,10 @@ import {
   FlatList,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Modal,
+  Pressable,
 } from "react-native";
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
 import { Home, Xhitam } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../index";
@@ -19,6 +21,7 @@ export default function Sidebar({ show, Data, setClose, props }) {
       // onSwipeStart={() => {
       // 	setClose();
       // }}
+      transparent={true}
       onBackdropPress={() => {
         setClose();
       }}
@@ -29,7 +32,7 @@ export default function Sidebar({ show, Data, setClose, props }) {
         setClose();
       }}
       swipeDirection={"right"}
-      isVisible={show}
+      visible={show}
       animationIn="slideInRight"
       animationOut="slideOutRight"
       style={{
@@ -39,11 +42,15 @@ export default function Sidebar({ show, Data, setClose, props }) {
         margin: 0,
       }}
     >
-      <KeyboardAvoidingView
+      <Pressable
+        onPress={() => {
+          setClose();
+        }}
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
           height: Dimensions.get("screen").height,
+          backgroundColor: "rgba(0,0,0,0.7)",
           justifyContent: "flex-end",
           alignContent: "flex-end",
           alignItems: "flex-end",
@@ -116,7 +123,7 @@ export default function Sidebar({ show, Data, setClose, props }) {
             </TouchableOpacity>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </Pressable>
     </Modal>
   );
 }
