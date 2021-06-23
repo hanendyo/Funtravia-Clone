@@ -92,9 +92,13 @@ export default function Following(props) {
         },
     });
 
-    const _unfollow = async (id, status) => {
-        setLoading(true);
-        if (token || token !== "") {
+    const _unfollow = async (id, index) => {
+        if (token) {
+            let tempUser = [...data];
+            let _temStatus = { ...tempUser[index] };
+            _temStatus.status_following = false;
+            tempUser.splice(index, 1, _temStatus);
+            setdata(tempUser);
             try {
                 let response = await UnfollowMutation({
                     variables: {
@@ -104,45 +108,51 @@ export default function Following(props) {
                 if (errorUnfolMut) {
                     throw new Error("Error Input");
                 }
-
+                console.log(response);
                 if (response.data) {
                     if (
                         response.data.unfollow_user.code === 200 ||
                         response.data.unfollow_user.code === "200"
                     ) {
-                        loadAsync();
-                        setSelectedStatus("0");
+                        console.log("berhasil");
                     } else {
                         throw new Error(response.data.unfollow_user.message);
                     }
                 }
-                setLoading(false);
             } catch (error) {
                 RNToasty.Show({
                     title: error,
                     position: "bottom",
                 });
-                setLoading(false);
+                let tempUser = [...data];
+                let _temStatus = { ...tempUser[index] };
+                _temStatus.status_following = true;
+                tempUser.splice(index, 1, _temStatus);
+                setdata(tempUser);
             }
         } else {
             RNToasty.Show({
                 title: "Please Login",
                 position: "bottom",
             });
-            setLoading(false);
         }
     };
 
-    const _follow = async (id, status) => {
-        setLoading(true);
+    const _follow = async (id, index) => {
+        // setLoading(true);
         if (token) {
+            let tempUser = [...data];
+            let _temStatus = { ...tempUser[index] };
+            _temStatus.status_following = true;
+            tempUser.splice(index, 1, _temStatus);
+            setdata(tempUser);
             try {
                 let response = await FollowMutation({
                     variables: {
                         id: id,
                     },
                 });
-
+                console.log(response);
                 if (errorFollowMut) {
                     throw new Error("Error Input");
                 }
@@ -152,108 +162,29 @@ export default function Following(props) {
                         response.data.follow_user.code === 200 ||
                         response.data.follow_user.code === "200"
                     ) {
-                        loadAsync();
-                        setSelectedStatus("1");
+                        console.log("berhasil");
                     } else {
                         throw new Error(response.data.follow_user.message);
                     }
                 }
-                setLoading(false);
             } catch (error) {
-                Alert.alert("" + error);
-                setLoading(false);
+                RNToasty.Show({
+                    title: "Failed To Follow This User!",
+                    position: "bottom",
+                });
+                let tempUser = [...data];
+                let _temStatus = { ...tempUser[index] };
+                _temStatus.status_following = false;
+                tempUser.splice(index, 1, _temStatus);
+                setdata(tempUser);
             }
         } else {
-            Alert.alert("Please Login");
-            setLoading(false);
+            RNToasty.Show({
+                title: "Please Login",
+                position: "bottom",
+            });
+            // setLoading(false);
         }
-    };
-
-    const RenderNameList = ({
-        idUser,
-        first_name,
-        last_name,
-        picture,
-        username,
-        bio,
-        status,
-    }) => {
-        return (
-            <View
-                style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignContent: "center",
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                }}
-            >
-                <TouchableOpacity
-                    onPress={() =>
-                        props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: { idUser: idUser, token: token },
-                        })
-                    }
-                    style={{ flexDirection: "row" }}
-                >
-                    <Image
-                        source={{ uri: picture }}
-                        style={{
-                            resizeMode: "cover",
-                            height: 50,
-                            width: 50,
-                            borderRadius: 25,
-                        }}
-                    />
-                    <View style={{ marginLeft: 20 }}>
-                        <Text
-                            style={{ fontSize: 12, fontFamily: "Lato-Regular" }}
-                        >
-                            {first_name + " " + last_name}
-                        </Text>
-                        <Text
-                            style={{ fontSize: 10, fontFamily: "lato-light" }}
-                        >
-                            {`@${username}`}
-                        </Text>
-                        {/* <Text style={{ fontSize: 10, fontFamily: 'lato-light' }}>
-							{bio}
-						</Text> */}
-                    </View>
-                </TouchableOpacity>
-
-                <View style={{}}>
-                    {/* {data && (status && selectedStatus) === '0' && id === selectedId ? (
-						<Button
-							size='small'
-							type='circle'
-							style={{ width: 100 }}
-							text='Follow'
-							onPress={() => {
-								_follow(id, status),
-								setSelectedStatus(status),
-								setSelectedId(id);
-							}}></Button>
-						) : ( */}
-                    <Button
-                        size="small"
-                        type="circle"
-                        variant="bordered"
-                        style={{ width: 100 }}
-                        onPress={() => {
-                            _unfollow(idUser, status),
-                                setSelectedStatus(status),
-                                setSelectedId(idUser);
-                        }}
-                        text="Unfollow"
-                    ></Button>
-                    {/* )} */}
-                </View>
-            </View>
-        );
     };
 
     return (
