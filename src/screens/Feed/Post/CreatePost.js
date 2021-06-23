@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Dimensions,
@@ -76,8 +76,8 @@ const PostMut = gql`
 
 const { width, height } = Dimensions.get("screen");
 
-export default function CreatePost({ navigation, route }) {
-  const [token, setToken] = useState(route.params.token);
+export default function CreatePost(props) {
+  const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
   const { t } = useTranslation();
   const [Img, setImg] = useState("");
@@ -86,11 +86,13 @@ export default function CreatePost({ navigation, route }) {
   let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
   let [modalAlbum, setModalAlbum] = useState(false);
-  let [idAlbums, setIdAlbums] = useState(route.params.id_album);
+  let [idAlbums, setIdAlbums] = useState({});
+  let [idItin, setIdItin] = useState({});
   let [loadingok, setLoading] = useState(false);
-  let [chosenFile] = useState(route.params.file);
+  let [chosenFile] = useState(props?.route.params.file);
   let videoView = useRef(null);
-  let [album, setAlbum] = useState();
+  let [album, setAlbum] = useState("");
+
   let [Location, setLocation] = useState({
     address: t("addLocation"),
     latitude: "",
@@ -105,6 +107,14 @@ export default function CreatePost({ navigation, route }) {
       },
     },
   });
+
+  const [refreshing, setRefreshing] = useState(false);
+  const Refresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   const [
     LoadUserProfile,
@@ -147,12 +157,12 @@ export default function CreatePost({ navigation, route }) {
     let albums_id = idAlbums ? idAlbums : null;
     let itinerary_id = null;
     let day_id = null;
-    let oriented = route?.params?.ratio?.label
-      ? route?.params?.ratio?.label
+    let oriented = props?.route?.params?.ratio?.label
+      ? props?.route?.params?.ratio?.label
       : "S";
 
     let assets = [];
-    if (route.params.type === "video") {
+    if (props?.route.params.type === "video") {
       const data = new ReactNativeFile({
         uri: chosenFile.uri,
         type: `video/${chosenFile.filename.substring(
@@ -161,7 +171,7 @@ export default function CreatePost({ navigation, route }) {
         name: chosenFile.filename,
       });
       assets.push(data);
-    } else if (route.params.type === "image") {
+    } else if (props?.route.params.type === "image") {
       const data = new ReactNativeFile({
         uri: chosenFile.path,
         type: chosenFile.mime,
@@ -205,12 +215,11 @@ export default function CreatePost({ navigation, route }) {
         },
       });
 
-      console.log("response", response);
-
       if (response.data) {
         if (response.data.create_post.code === 200) {
           setLoading(false);
-          navigation.navigate("BottomStack", {
+          props.navigation.navigate("BottomStack", {
+            // ispost: true,
             screen: "FeedScreen",
             params: {
               isPost: true,
@@ -239,17 +248,17 @@ export default function CreatePost({ navigation, route }) {
       latitude: value.latitude,
       longitude: value.longitude,
     });
-    wait(1000).then(() => {
-      navigation.setParams("", {
-        SubmitData: SubmitData,
-        text: statusText,
-        location: {
-          address: value.name,
-          latitude: value.latitude,
-          longitude: value.longitude,
-        },
-      });
-    });
+    // wait(1000).then(() => {
+    //   props?.navigation.setParams("", {
+    //     SubmitData: SubmitData,
+    //     text: statusText,
+    //     location: {
+    //       address: value.name,
+    //       latitude: value.latitude,
+    //       longitude: value.longitude,
+    //     },
+    //   });
+    // });
   };
 
   const clearLoaction = () => {
@@ -299,18 +308,21 @@ export default function CreatePost({ navigation, route }) {
         );
       }
     })();
-    // navigation.setOptions(HeaderComponent);
+    setAlbum(props.route.params.album);
+    setIdAlbums(props.route.params.id_album);
+    setIdItin(props.route.params.id_itin);
+    // props?.navigation.setOptions(HeaderComponent);
     loadAsync();
   }, []);
 
   const _nearbyLocation = async (position) => {
     let latitude =
-      route.params.location && route.params.location.latitude
-        ? route.params.location.latitude
+      props?.route.params.location && props?.route.params.location.latitude
+        ? props?.route.params.location.latitude
         : position.coords.latitude;
     let longitude =
-      route.params.location && route.params.location.longitude
-        ? route.params.location.longitude
+      props?.route.params.location && props?.route.params.location.longitude
+        ? props?.route.params.location.longitude
         : position.coords.longitude;
 
     try {
@@ -355,7 +367,7 @@ export default function CreatePost({ navigation, route }) {
   };
 
   const ReviewResult = () => {
-    if (route.params.type === "video") {
+    if (props?.route.params.type === "video") {
       return (
         <Video
           source={{
@@ -383,7 +395,7 @@ export default function CreatePost({ navigation, route }) {
           resizeMode="cover"
         />
       );
-    } else if (route.params.type === "image") {
+    } else if (props?.route.params.type === "image") {
       return (
         <AutoHeightImage
           width={Dimensions.get("screen").width}
@@ -448,8 +460,8 @@ export default function CreatePost({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS == "ios" ? "padding" : null}
-      keyboardVerticalOffset={65}
+      // behavior={Platform.OS == "ios" ? "padding" : null}
+      // keyboardVerticalOffset={65}
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -467,7 +479,7 @@ export default function CreatePost({ navigation, route }) {
         >
           <Button
             onPress={() => {
-              navigation.goBack();
+              props?.navigation.goBack();
               setIdAlbums("");
               setAlbum("");
             }}
@@ -496,7 +508,7 @@ export default function CreatePost({ navigation, route }) {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
               {ReviewResult()}
-              {/* {route.params.type === "video" ? (
+              {/* {props?.route.params.type === "video" ? (
                 <Video
                   source={{
                     uri:
@@ -604,7 +616,18 @@ export default function CreatePost({ navigation, route }) {
                   activeOpacity={0.6}
                   underlayColor="#FFF"
                   onPress={() => {
-                    album ? null : setModalAlbum(true);
+                    album
+                      ? null
+                      : props.navigation.push("FeedStack", {
+                          screen: "CreateListAlbum",
+                          params: {
+                            user_id: setting?.user_id,
+                            token: token,
+                            file: props.route.params.file,
+                            type: props.route.params.type,
+                            location: props.route.params.location,
+                          },
+                        });
                   }}
                   style={{
                     width: "100%",
@@ -656,8 +679,8 @@ export default function CreatePost({ navigation, route }) {
                         }}
                       >
                         {album + " Album " + "-"}{" "}
-                        {route?.params?.title_album
-                          ? route?.params?.title_album
+                        {props?.route?.params?.title_album
+                          ? props?.route?.params?.title_album
                           : null}
                       </Text>
                     </View>
@@ -779,15 +802,15 @@ export default function CreatePost({ navigation, route }) {
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
         />
-        <CreateAlbum
+        {/* <CreateAlbum
           modalAlbum={modalAlbum}
           setModalAlbum={(e) => setModalAlbum(e)}
           user_id={setting?.user_id}
-          props={navigation}
+          props={props?.navigation}
           setAlbum={(e) => setAlbum(e)}
           token={token}
           setIdAlbums={(e) => setIdAlbums(e)}
-        />
+        /> */}
       </View>
     </KeyboardAvoidingView>
   );

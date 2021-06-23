@@ -9,6 +9,7 @@ import {
   Image,
   Alert,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
@@ -31,6 +32,7 @@ export default function Message({ navigation }) {
   const [dataGroup, setDataGroup] = useState([]);
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [active, setActive] = useState("personal");
+  const [loading, setLoading] = useState(true);
 
   const HeaderComponent = {
     tabBarBadge: null,
@@ -46,6 +48,7 @@ export default function Message({ navigation }) {
   }, []);
 
   const getRoom = async (access_token) => {
+    // setLoading(true);
     let response = await fetch(`${CHATSERVER}/api/personal/list`, {
       method: "GET",
       headers: {
@@ -55,9 +58,9 @@ export default function Message({ navigation }) {
       },
     });
     let dataResponse = await response.json();
-    console.log(dataResponse);
     await setData(dataResponse);
     await setDataRes(dataResponse);
+    await setLoading(false);
   };
 
   const getRoomGroup = async (access_token) => {
@@ -124,7 +127,6 @@ export default function Message({ navigation }) {
         },
       }
     );
-    console.log(response);
     await AsyncStorage.removeItem("history_" + room_id);
     getRoom(token);
   };
@@ -142,7 +144,6 @@ export default function Message({ navigation }) {
     let newDataGroup = dataGroup.filter(function(str) {
       return str.title.toLowerCase().includes(text.toLowerCase());
     });
-    console.log(newDataGroup);
     setDataGroupRes(newDataGroup);
     // }
   };
@@ -168,10 +169,6 @@ export default function Message({ navigation }) {
     { key: "group", title: "Group" },
   ]);
 
-  // const renderScene = SceneMap({
-  // 	personal: Personal,
-  // 	group: Group,
-  // });
   const renderScene = ({ route }) => {
     if (route.key == "personal") {
       return (
@@ -223,24 +220,30 @@ export default function Message({ navigation }) {
           />
         </View>
       </View>
-      <TabView
-        lazy={true}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={(props) => {
-          return (
-            <TabBar
-              {...props}
-              style={{
-                backgroundColor: "white",
-              }}
-              renderLabel={renderLabel}
-              indicatorStyle={styles.indicator}
-            />
-          );
-        }}
-      />
+      {loading ? (
+        <View style={{ height: 50, justifyContent: "center" }}>
+          <ActivityIndicator size="small" color="#209fae" />
+        </View>
+      ) : (
+        <TabView
+          lazy={true}
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          renderTabBar={(props) => {
+            return (
+              <TabBar
+                {...props}
+                style={{
+                  backgroundColor: "white",
+                }}
+                renderLabel={renderLabel}
+                indicatorStyle={styles.indicator}
+              />
+            );
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 }

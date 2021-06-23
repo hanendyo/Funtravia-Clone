@@ -8,8 +8,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   TextInput,
+  SafeAreaView,
+  StatusBar,
+  ActivityIndicator,
 } from "react-native";
-import { Arrowbackwhite, NewAlbum } from "../../../assets/svg";
+import { StackActions } from "@react-navigation/routers";
+import { Arrowbackwhite, NewAlbum, Search } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import Modal from "react-native-modal";
 import { Text, Button, FunImage } from "../../../component";
@@ -21,27 +25,69 @@ import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 const { width, height } = Dimensions.get("screen");
 import { RNToasty } from "react-native-toasty";
 
-export default function ChooseAlbumItinerary({
-  modalDay,
-  setModalDay,
-  idItinerary,
-  props,
-  token,
-  setModalAlbum,
-  setAlbum,
-  setIdAlbums,
-}) {
+export default function ChooseAlbumItinerary(props) {
   const { t } = useTranslation();
   const [newItineraryAlbums, setNewItineraryAlbums] = useState(false);
   const [datas, setDatas] = useState();
   const [text, setText] = useState("");
-  const {
-    data: dataItinerarys,
-    loading: loadingdetail,
-    error: errordetail,
-    refetch,
-  } = useQuery(ItineraryAlbums, {
-    variables: { itinerary_id: idItinerary, keyword: "" },
+  const [searchText, setSearchText] = useState("");
+  const [id_itinerary, setId_itinerary] = useState(
+    props.route.params.idItinerary
+  );
+
+  const HeaderComponent = {
+    headerShown: true,
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <View style={{ flexDirection: "row" }}>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+        <View style={{ marginLeft: 5 }}>
+          <Text size="label" type="bold" style={{ color: "#FFF" }}>
+            Post
+          </Text>
+          <Text size="description" type="regular" style={{ color: "#FFF" }}>
+            {t("Select") + " Album Itinerary"}
+          </Text>
+        </View>
+      </View>
+    ),
+  };
+
+  const [
+    QueryAlbum,
+    { data: dataItinerarys, loading: loadingdetail, error: errordetail },
+  ] = useLazyQuery(ItineraryAlbums, {
+    fetchPolicy: "network-only",
+    variables: {
+      itinerary_id: id_itinerary,
+      keyword: searchText,
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -49,6 +95,12 @@ export default function ChooseAlbumItinerary({
       },
     },
   });
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    QueryAlbum();
+  }, []);
+
   const [
     MutationCreateAlbumItinerary,
     { loading: loadingMutation, data: dataMutation, error: errorMutation },
@@ -72,23 +124,22 @@ export default function ChooseAlbumItinerary({
     try {
       let response = await MutationCreateAlbumItinerary({
         variables: {
-          itinerary_id: idItinerary,
+          itinerary_id: id_itinerary,
           title: text,
         },
       });
 
       if (response.data) {
         if (
-          (response &&
-            response.data &&
-            response.data.create_itinerary_album.code === 200) ||
-          (response &&
-            response.data &&
-            response.data.create_itinerary_album.code === "200")
+          response &&
+          response.data &&
+          response.data.create_itinerary_album.code === 200
         ) {
-          refetch();
+          QueryAlbum();
           setNewItineraryAlbums(false);
           setText("");
+        } else {
+          console.log("error");
         }
       }
     } catch (e) {
@@ -96,21 +147,27 @@ export default function ChooseAlbumItinerary({
     }
   };
 
+  const _searchHandle = (e) => {
+    setSearchText(e);
+    QueryAlbum();
+  };
+
   const pilih = async (id, title) => {
-    console.log("id", id);
-    console.log("title", title);
-    setModalAlbum(false);
-    setModalDay(false);
-    setAlbum("Itinerary");
-    setIdAlbums(id);
-    setTimeout(() => {
-      props.navigate("CreatePostScreen", {
-        token: token,
-        id_album: id,
-        id_itinerary: idItinerary,
-        title_album: title,
-      });
-    }, 500);
+    props.navigation.dispatch(
+      StackActions.replace("FeedStack", {
+        screen: "CreatePostScreen",
+        params: {
+          token: token,
+          id_itin: props.route.params.idItinerary,
+          id_album: id,
+          title_album: title,
+          file: props.route.params.file,
+          type: props.route.params.type,
+          location: props.route.params.location,
+          album: "Itinerary",
+        },
+      })
+    );
   };
 
   const closeItinerary = async () => {
@@ -119,154 +176,150 @@ export default function ChooseAlbumItinerary({
   };
 
   return (
-    <View>
-      <Modal
-        visible={modalDay}
-        animationType="fade"
-        onRequestClose={() => {
-          setModalDay(false);
-        }}
-        onDismiss={() => setModalDay(false)}
+    <SafeAreaView
+      style={{
+        flex: 1,
+      }}
+    >
+      <View
         style={{
-          alignSelf: "center",
-          zIndex: 3,
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 15,
+          backgroundColor: "#fff",
+          borderBottomWidth: 2,
+          borderColor: "#e1e1e1",
         }}
       >
         <View
           style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
+            height: 40,
+            marginVertical: 10,
+            borderRadius: 5,
+            backgroundColor: "#f6f6f6",
+            alignItems: "center",
+            paddingHorizontal: 10,
+            flexDirection: "row",
           }}
         >
-          <View
+          <Search height={18} width={18} />
+          <TextInput
+            value={searchText}
+            onChangeText={(text) => _searchHandle(text)}
+            placeholder={t("lookFor")}
+            placeholderTextColor="#464646"
             style={{
-              flexDirection: "row",
-              alignSelf: "flex-start",
-              alignItems: "center",
-              alignContent: "center",
-              backgroundColor: "#209fae",
-              height: 55,
-              width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 0 : 38,
+              flex: 1,
+              color: "#000",
+              height: 40,
+              // width: "70%",
+              width: "77%",
             }}
-          >
-            <TouchableOpacity
+          />
+        </View>
+      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          width: Dimensions.get("screen").width,
+          // height: Dimensions.get("screen").height,
+          paddingHorizontal: 15,
+          backgroundColor: "#FFF",
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            height: Dimensions.get("screen").height,
+            flexWrap: "wrap",
+            width: Dimensions.get("screen").width - 30,
+          }}
+        >
+          {loadingdetail ? (
+            <View
               style={{
-                height: 55,
-                width: 55,
-                position: "absolute",
+                width: "100%",
+                marginTop: 20,
                 alignItems: "center",
-                alignContent: "center",
-                paddingTop: 20,
-              }}
-              onPress={() => closeItinerary()}
-            >
-              <Arrowbackwhite width={20} height={20} />
-            </TouchableOpacity>
-            <View
-              style={{
-                top: 0,
-                left: 60,
-                height: 50,
-                justifyContent: "center",
-                marginTop: 5,
+                alignSelf: "center",
               }}
             >
-              <Text size="label" type="regular" style={{ color: "#FFF" }}>
-                Itinerary Albums
-              </Text>
-              <Text size="description" type="light" style={{ color: "#FFF" }}>
-                {t("Select") + " " + "album"}
-              </Text>
+              <ActivityIndicator size={"small"} color="#209fae" />
             </View>
-          </View>
-          <ScrollView
-            contentContainerStyle={{
-              width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
-              backgroundColor: "#FFF",
-            }}
-          >
-            <View
+          ) : (
+            <Pressable
+              onPress={() => setNewItineraryAlbums(true)}
               style={{
-                flexDirection: "row",
-                height: Dimensions.get("screen").height,
-                flexWrap: "wrap",
-                width: Dimensions.get("screen").width - 30,
-                // borderWidth: 1,
+                width: (width - 33) / 3,
+                backgroundColor: "#FFF",
+                marginTop: 20,
               }}
             >
-              <Pressable
-                onPress={() => setNewItineraryAlbums(true)}
+              <View
                 style={{
-                  width: (width - 33) / 3,
-                  backgroundColor: "#FFF",
-                  marginTop: 20,
+                  width: width / 3 - 20,
+                  height: width / 3 - 20,
+                  alignSelf: "center",
+                  backgroundColor: "#ECECEC",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 5,
                 }}
               >
-                <View
+                <NewAlbum height={60} width={60} />
+              </View>
+              <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
+                <Text size="label" type="bold">
+                  Create Album
+                </Text>
+              </View>
+            </Pressable>
+          )}
+          {dataItinerarys &&
+            dataItinerarys?.album_itinerary_list.map((item, index) =>
+              loadingdetail ? (
+                <View style={{ marginTop: 20 }}>
+                  <ActivityIndicator size={"small"} color="#209fae" />
+                </View>
+              ) : (
+                <Pressable
+                  key={index}
+                  onPress={() => pilih(item.id, item.title)}
                   style={{
-                    width: width / 3 - 20,
-                    height: width / 3 - 20,
-                    alignSelf: "center",
-                    backgroundColor: "#ECECEC",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 5,
+                    width: (width - 33) / 3,
+                    backgroundColor: "#FFF",
+                    marginTop: 20,
                   }}
                 >
-                  <NewAlbum height={60} width={60} />
-                </View>
-                <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
-                  <Text size="label" type="bold">
-                    Create Album
-                  </Text>
-                </View>
-              </Pressable>
-              {dataItinerarys &&
-                dataItinerarys?.album_itinerary_list.map((item, index) => (
-                  <Pressable
-                    key={index}
-                    onPress={() => pilih(item.id, item.title)}
-                    // onPress={() => console.log("item",item)}
+                  <View
                     style={{
-                      width: (width - 33) / 3,
-                      backgroundColor: "#FFF",
-                      marginTop: 20,
+                      width: width / 3 - 20,
+                      height: width / 3 - 20,
+                      alignSelf: "center",
                     }}
                   >
-                    <View
+                    <FunImage
+                      source={item.url ? { uri: item.cover } : default_image}
                       style={{
-                        width: width / 3 - 20,
-                        height: width / 3 - 20,
-                        alignSelf: "center",
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: 5,
                       }}
-                    >
-                      <FunImage
-                        source={item.url ? { uri: item.cover } : default_image}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: 5,
-                        }}
-                      />
-                    </View>
-                    <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
-                      <Text size="label" type="bold">
-                        {item.title}
-                      </Text>
-                      <Text size="description" type="light">
-                        {item.count_media}{" "}
-                        {item.count_media > 1 ? "photos" : "photo"}
-                      </Text>
-                    </View>
-                  </Pressable>
-                ))}
-            </View>
-          </ScrollView>
+                    />
+                  </View>
+                  <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
+                    <Text size="label" type="bold">
+                      {item.title}
+                    </Text>
+                    <Text size="description" type="light">
+                      {item.count_media} {" " + t("photo")}
+                      {/* {item.count_media > 1 ? "photos" : "photo"} */}
+                    </Text>
+                  </View>
+                </Pressable>
+              )
+            )}
         </View>
-      </Modal>
-
+      </ScrollView>
       <Modal
         useNativeDriver={true}
         visible={newItineraryAlbums}
@@ -380,6 +433,6 @@ export default function ChooseAlbumItinerary({
           </View>
         </KeyboardAvoidingView>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }

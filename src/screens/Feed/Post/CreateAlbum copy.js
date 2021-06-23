@@ -31,6 +31,15 @@ import { RNToasty } from "react-native-toasty";
 import CreateAlbumFeed from "../../../graphQL/Mutation/Post/CreateAlbumFeed";
 import { useMutation } from "@apollo/react-hooks";
 const { width, height } = Dimensions.get("screen");
+import {
+  MenuContext,
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers,
+  MenuProvider,
+} from "react-native-popup-menu";
 import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryAll";
 import ListAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import { default_image } from "../../../assets/png";
@@ -41,7 +50,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 
 export default function CreateAlbum(props) {
-  console.log("props create album", props);
+  console.log("props", props);
   const { t } = useTranslation();
   const [newFeedAlbums, setNewFeedAlbums] = useState(false);
   const [select, setSelect] = useState("Itinerary Album");
@@ -50,13 +59,13 @@ export default function CreateAlbum(props) {
   const [searchText, setSearchText] = useState("");
   const [newTextFeed, setNewTextFeed] = useState("");
   let [loadings, setLoadings] = useState(false);
-  const [index, setIndex] = React.useState(0);
 
   const HeaderComponent = {
     headerShown: true,
+    title: "Practical Information",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: "Essentials - Practical Information",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -74,31 +83,24 @@ export default function CreateAlbum(props) {
       marginLeft: 10,
     },
     headerLeft: () => (
-      <View style={{ flexDirection: "row" }}>
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-        >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        </Button>
-        <View style={{ marginLeft: 5 }}>
-          <Text size="label" type="bold" style={{ color: "#FFF" }}>
-            Post
-          </Text>
-          <Text size="description" type="regular" style={{ color: "#FFF" }}>
-            {t("Select") + " Album"}
-          </Text>
-        </View>
-      </View>
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
     ),
   };
 
-  useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-  }, []);
+  // useEffect(() => {
+  //   props.navigate.setOptions(HeaderComponent);
+  // }, []);
 
   const [
     QueryAlbums,
@@ -119,7 +121,7 @@ export default function CreateAlbum(props) {
     { data: listAlbum, loading: loadingAlbum, error: errorAlbum },
   ] = useLazyQuery(ListAlbum, {
     fetchPolicy: "network-only",
-    variables: { user_id: props?.route?.params?.user_id, keyword: searchText },
+    variables: { user_id: user_id, keyword: searchText },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -134,16 +136,6 @@ export default function CreateAlbum(props) {
   }, []);
 
   const Choose = (id) => {
-    props.navigation.push("FeedStack", {
-      screen: "ChooseAlbumItinerary",
-      params: {
-        idItinerary: id,
-        token: token,
-        file: props.route.params.file,
-        type: props.route.params.type,
-        location: props.route.params.location,
-      },
-    });
     setIdItinerary(id);
     setModalDay(true);
   };
@@ -219,6 +211,7 @@ export default function CreateAlbum(props) {
     );
   };
 
+  const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "itinerary", title: "Itinerary Album" },
     { key: "feed", title: "Feed Album" },
@@ -357,41 +350,39 @@ export default function CreateAlbum(props) {
               // borderWidth: 5,
             }}
           >
-            {loadingAlbum ? null : (
-              <Pressable
-                onPress={() => setNewFeedAlbums(true)}
+            <Pressable
+              onPress={() => setNewFeedAlbums(true)}
+              style={{
+                marginTop: 20,
+                width: (width - 33) / 3,
+                // borderWidth: 1,
+              }}
+            >
+              <View
                 style={{
-                  marginTop: 20,
-                  width: (width - 33) / 3,
-                  // borderWidth: 1,
+                  height: (width - 33) / 3 - 10,
+                  width: (width - 33) / 3 - 10,
+                  backgroundColor: "#F6F6F6",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  alignItems: "center",
+                  alignSelf: "center",
+                  borderRadius: 5,
                 }}
               >
-                <View
-                  style={{
-                    height: (width - 33) / 3 - 10,
-                    width: (width - 33) / 3 - 10,
-                    backgroundColor: "#F6F6F6",
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    alignItems: "center",
-                    alignSelf: "center",
-                    borderRadius: 5,
-                  }}
-                >
-                  <NewAlbum height={60} width={60} />
-                </View>
-                <View
-                  style={{
-                    paddingHorizontal: 10,
-                    marginTop: 10,
-                  }}
-                >
-                  <Text size="label" type="regular">
-                    {t("create") + " " + "Album"}
-                  </Text>
-                </View>
-              </Pressable>
-            )}
+                <NewAlbum height={60} width={60} />
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  marginTop: 10,
+                }}
+              >
+                <Text size="label" type="regular">
+                  {t("create") + " " + "Album"}
+                </Text>
+              </View>
+            </Pressable>
 
             {loadingAlbum ? (
               <View
@@ -408,18 +399,16 @@ export default function CreateAlbum(props) {
               listAlbum?.list_albums.map((item, index) => (
                 <Pressable
                   onPress={() => {
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CreatePostScreen",
-                      params: {
-                        token: token,
-                        id_album: item.id,
-                        title_album: item.title,
-                        album: "Feed",
-                        file: props.route.params.file,
-                        type: props.route.params.type,
-                        location: props.route.params.location,
-                      },
-                    });
+                    setModalAlbum(false);
+                    setIdAlbums(item.id);
+                    setAlbum("Feed"),
+                      setTimeout(() => {
+                        props.navigate("CreatePostScreen", {
+                          token: token,
+                          id_album: item.id,
+                          title_album: item.title,
+                        });
+                      }, 500);
                   }}
                   key={index}
                   style={{
@@ -457,7 +446,7 @@ export default function CreateAlbum(props) {
                       {item.title}
                     </Text>
                     <Text size="description" type="light">
-                      {item.count_foto} {t("photo")}
+                      {item.count_foto}
                     </Text>
                   </View>
                 </Pressable>
@@ -478,55 +467,107 @@ export default function CreateAlbum(props) {
       <Loading show={loadings} />
       <View
         style={{
+          flex: 1,
           width: Dimensions.get("screen").width,
-          paddingHorizontal: 15,
-          backgroundColor: "#fff",
+          height: Dimensions.get("screen").height,
         }}
       >
         <View
           style={{
-            height: 40,
-            marginVertical: 10,
-            borderRadius: 5,
-            backgroundColor: "#f6f6f6",
-            alignItems: "center",
-            paddingHorizontal: 10,
             flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignContent: "center",
+            backgroundColor: "#209fae",
+            height: 55,
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
           }}
         >
-          <Search height={18} width={18} />
-          <TextInput
-            value={searchText}
-            onChangeText={(text) => _searchHandle(text)}
-            placeholder={t("lookFor")}
-            placeholderTextColor="#464646"
+          <View
             style={{
-              flex: 1,
-              color: "#000",
-              height: 40,
-              // width: "70%",
-              width: "77%",
+              height: "100%",
+              flexDirection: "row",
+              alignItems: "center",
             }}
-          />
-        </View>
-      </View>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={(props) => {
-          return (
-            <TabBar
-              {...props}
+          >
+            <TouchableOpacity
               style={{
-                backgroundColor: "white",
+                height: "100%",
+                justifyContent: "center",
               }}
-              renderLabel={renderLabel}
-              indicatorStyle={styles.indicator}
+              onPress={() => setModalAlbum(false)}
+            >
+              <Arrowbackwhite
+                width={20}
+                height={20}
+                style={{ marginRight: 15 }}
+              />
+            </TouchableOpacity>
+            <View
+              style={{
+                height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text size="label" type="regular" style={{ color: "#FFF" }}>
+                Post
+              </Text>
+              <Text size="description" type="light" style={{ color: "#FFF" }}>
+                {t("Select") + " "}
+                {select == "Itinerary Album" ? "Itinerary" : "Album"}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={{ width: width, paddingHorizontal: 15 }}>
+          <View
+            style={{
+              height: 40,
+              width: "100%",
+              marginVertical: 10,
+              borderRadius: 5,
+              backgroundColor: "#f6f6f6",
+              alignItems: "center",
+              paddingHorizontal: 10,
+              flexDirection: "row",
+            }}
+          >
+            <Search height={18} width={18} />
+            <TextInput
+              value={searchText}
+              onChangeText={(text) => _searchHandle(text)}
+              placeholder={t("lookFor")}
+              placeholderTextColor="#464646"
+              style={{
+                flex: 1,
+                color: "#000",
+                height: 40,
+                // width: "70%",
+                width: "77%",
+              }}
             />
-          );
-        }}
-      />
+          </View>
+        </View>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          renderTabBar={(props) => {
+            return (
+              <TabBar
+                {...props}
+                style={{
+                  backgroundColor: "white",
+                }}
+                renderLabel={renderLabel}
+                indicatorStyle={styles.indicator}
+              />
+            );
+          }}
+        />
+      </View>
+      {/* </Modal> */}
 
       {/* create new album feed exiting */}
 
@@ -644,7 +685,7 @@ export default function CreateAlbum(props) {
       </Modal>
 
       {/* Modal Choose Day */}
-      {/* {!idItinerary ? null : (
+      {!idItinerary ? null : (
         <ChooseAlbumItinerary
           modalDay={modalDay}
           setModalDay={(e) => setModalDay(e)}
@@ -657,7 +698,7 @@ export default function CreateAlbum(props) {
           setAlbum={(e) => setAlbum(e)}
           setIdAlbums={(e) => setIdAlbums(e)}
         />
-      )} */}
+      )}
     </SafeAreaView>
   );
 }

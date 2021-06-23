@@ -153,6 +153,10 @@ export default function Post(props) {
                 type: recent.node.type.substr(0, 5),
                 file: image,
                 token: token,
+                id_album: "",
+                title_album: "",
+                album: "",
+                id_itin: "",
               });
             })
             .catch((error) => console.log(error));

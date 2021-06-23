@@ -530,5 +530,6 @@
   "myaccount": "My Account",
   "failPost": "Failed to post",
   "lookFor": "Search",
-  "failedCreateAlbum": "Failed to create album"
+  "failedCreateAlbum": "Failed to create album",
+  "photo": "Photo"
 }

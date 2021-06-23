@@ -1,6 +1,6 @@
 import { gql } from "apollo-boost";
 const listitineraryAll = gql`
-  query($status: String, $keyword: String) {
+  query($status: [String], $keyword: String) {
     #   status : A/D/F
     itinerary_list_all(status: $status, keyword: $keyword) {
       id

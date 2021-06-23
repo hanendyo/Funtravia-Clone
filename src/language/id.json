@@ -532,5 +532,6 @@
   "myaccount": "Akun saya",
   "failPost": "Gagal memposting",
   "lookFor": "Cari",
-  "failedCreateAlbum": "Gagal membuat album"
+  "failedCreateAlbum": "Gagal membuat album",
+  "photo": "Foto"
 }
