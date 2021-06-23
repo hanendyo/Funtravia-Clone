@@ -12,11 +12,11 @@ import {
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import M035 from "./src/new/035";
-import M143 from "./src/143";
-import M034 from "./src/034";
-import M030 from "./src/030";
-import M145 from "./src/145";
-import M142 from "./src/142";
+import M143 from "./src/new/143";
+import M034 from "./src/new/034";
+import M030 from "./src/new/030";
+import M145 from "./src/new/145";
+import M142 from "./src/new/142";
 import { ISO } from "../../../data/iso";
 import Country from "../../../data/country/index.json";
 import { Text, StatusBar, Button } from "../../../../../component";
@@ -350,7 +350,9 @@ export default function Asia({ navigation }) {
           </View>
         )}
         {/* akhir filter region */}
-        <View style={{ padding: 0 }}>{Components[`cm${subContinent.id}`]}</View>
+        <View style={{ marginTop: BackUse.current.id === "142" ? -30 : 0 }}>
+          {Components[`cm${subContinent.id}`]}
+        </View>
         <View
           style={{
             backgroundColor: "#FFF",
@@ -358,6 +360,7 @@ export default function Asia({ navigation }) {
             shadowOffset: { width: 2, height: 2 },
             shadowOpacity: 1,
             shadowRadius: 2,
+            marginTop: BackUse.current.id === "142" ? -15 : 0,
             margin: 15,
             borderRadius: 10,
             elevation: 1,
@@ -449,7 +452,11 @@ export default function Asia({ navigation }) {
                       countryid={item["alpha-3"]}
                       style={{ width: 50, marginRight: 15 }}
                     />
-                    <Text size="label" type="reguler">
+                    <Text
+                      size="label"
+                      type="reguler"
+                      style={{ marginLeft: 20 }}
+                    >
                       {item.name}
                     </Text>
                   </TouchableOpacity>
