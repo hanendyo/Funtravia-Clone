@@ -63,13 +63,16 @@ import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
+import { RNToasty } from "react-native-toasty";
+import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
+const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
-  ios: 44,
+  ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
 const tab1ItemSize = (width - 30) / 2;
@@ -185,7 +188,12 @@ export default function CityDetail(props) {
     setTimeout(() => {
       setLoadings(false);
     }, 2000);
-  }, []);
+    const Journalitinerarydata = props.navigation.addListener("focus", () => {
+      getJournalCity();
+      getItineraryCity;
+    });
+    return Journalitinerarydata;
+  }, [props.navigation]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -290,6 +298,7 @@ export default function CityDetail(props) {
     }
   };
 
+  let [list_journal, setList_journal] = useState({});
   const [
     getJournalCity,
     { loading: loadingjournal, data: dataJournal, error: errorjournal },
@@ -304,8 +313,12 @@ export default function CityDetail(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      setList_journal(dataJournal.journal_by_city);
+    },
   });
 
+  let [list_populer, setList_populer] = useState({});
   const [
     getItineraryCity,
     { loading: loadingitinerary, data: dataItinerary, error: errorItinerary },
@@ -320,17 +333,10 @@ export default function CityDetail(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      setList_populer(dataItinerary.itinerary_populer_by_city);
+    },
   });
-
-  let list_populer = [];
-  if (dataItinerary && dataItinerary.itinerary_populer_by_city) {
-    list_populer = dataItinerary.itinerary_populer_by_city;
-  }
-
-  let list_journal = [];
-  if (dataJournal && dataJournal.journal_by_city) {
-    list_journal = dataJournal.journal_by_city;
-  }
 
   const listPanResponder = useRef(
     PanResponder.create({
@@ -430,8 +436,7 @@ export default function CityDetail(props) {
   // liked journal
   const _likedjournal = async (id, index, item) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token || token !== "") {
-      list_journal[fiindex].liked = true;
+    if (token) {
       try {
         let response = await mutationlikedJournal({
           variables: {
@@ -446,11 +451,12 @@ export default function CityDetail(props) {
           throw new Error("Error Input");
         }
         if (response.data) {
+          getJournalCity();
           if (
             response.data.like_journal.code === 200 ||
             response.data.like_journal.code === "200"
           ) {
-            list_journal[fiindex].liked = true;
+            // list_journal[fiindex].liked = true;
           } else {
             throw new Error(response.data.message);
           }
@@ -458,19 +464,25 @@ export default function CityDetail(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
-        list_journal[fiindex].liked = false;
+        getJournalCity();
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   // unliked journal
   const _unlikedjournal = async (id, index) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token || token !== "") {
-      list_journal[fiindex].liked = false;
+    if (token) {
+      // list_journal[fiindex].liked = false;
       try {
         let response = await mutationUnlikedJournal({
           variables: {
@@ -485,6 +497,7 @@ export default function CityDetail(props) {
         }
 
         if (response.data) {
+          getJournalCity();
           if (
             response.data.unlike_journal.code === 200 ||
             response.data.unlike_journal.code === "200"
@@ -495,20 +508,21 @@ export default function CityDetail(props) {
           }
         }
       } catch (error) {
-        list_journal[fiindex].response_count =
-          list_journal[fiindex].response_count - 1;
-        list_journal[fiindex].liked = true;
+        getJournalCity();
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _likeditinerary = async (id, index) => {
-    if (token || token !== "") {
-      list_populer[index].liked = true;
-      list_populer[index].response_count =
-        list_populer[index].response_count - 1;
+    if (token) {
       try {
         let response = await mutationliked({
           variables: {
@@ -523,11 +537,11 @@ export default function CityDetail(props) {
           throw new Error("Error Input");
         }
         if (response.data) {
+          getItineraryCity();
           if (
             response.data.setItineraryFavorit.code === 200 ||
             response.data.setItineraryFavorit.code === "200"
           ) {
-            list_populer[index].liked = true;
           } else {
             throw new Error(response.data.setItineraryFavorit.message);
           }
@@ -535,21 +549,23 @@ export default function CityDetail(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
-        list_populer[index].liked = false;
-        list_populer[index].response_count =
-          list_populer[index].response_count + 1;
+        getItineraryCity();
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unlikeditinerary = async (id, index) => {
-    if (token || token !== "") {
-      list_populer[index].liked = false;
-      list_populer[index].response_count =
-        list_populer[index].response_count + 1;
+    if (token) {
+      getItineraryCity();
       try {
         let response = await mutationUnliked({
           variables: {
@@ -568,18 +584,21 @@ export default function CityDetail(props) {
             response.data.unsetItineraryFavorit.code === 200 ||
             response.data.unsetItineraryFavorit.code === "200"
           ) {
-            list_populer[index].liked = false;
           } else {
             throw new Error(response.data.unsetItineraryFavorit.message);
           }
         }
       } catch (error) {
-        list_populer[index].liked = true;
-        list_populer[index].response_count =
-          list_populer[index].response_count - 1;
+        getItineraryCity();
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
