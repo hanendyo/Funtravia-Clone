@@ -42,6 +42,7 @@ import { Text, Button, shareAction, FunImageBackground } from "../../component";
 import { StackActions } from "@react-navigation/native";
 import DetailEvent from "../../graphQL/Query/Event/DetailEvent";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { RNToasty } from "react-native-toasty";
 
 export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
@@ -139,26 +140,36 @@ export default function EventDetail(props) {
   }, []);
 
   const addToPlan = () => {
-    props.route.params && props.route.params.iditinerary
-      ? props.navigation.dispatch(
-          StackActions.replace("ItineraryStack", {
-            screen: "ItineraryChooseday",
+    if (token && token !== "" && token !== null) {
+      props.route.params && props.route.params.iditinerary
+        ? props.navigation.dispatch(
+            StackActions.replace("ItineraryStack", {
+              screen: "ItineraryChooseday",
+              params: {
+                Iditinerary: props.route.params.iditinerary,
+                Kiriman: event_id,
+                token: token,
+                Position: "Event",
+                datadayaktif: props.route.params.datadayaktif,
+              },
+            })
+          )
+        : props.navigation.navigate("ItineraryStack", {
+            screen: "ItineraryPlaning",
             params: {
-              Iditinerary: props.route.params.iditinerary,
-              Kiriman: event_id,
-              token: token,
+              idkiriman: event_id,
               Position: "Event",
-              datadayaktif: props.route.params.datadayaktif,
             },
-          })
-        )
-      : props.navigation.navigate("ItineraryStack", {
-          screen: "ItineraryPlaning",
-          params: {
-            idkiriman: event_id,
-            Position: "Event",
-          },
-        });
+          });
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
   };
 
   const toggleModal = () => {
@@ -487,7 +498,7 @@ export default function EventDetail(props) {
   });
 
   const _liked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       var tempData = { ...dataevent };
       tempData.liked = true;
       setDataEvent(tempData);
@@ -523,12 +534,18 @@ export default function EventDetail(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       var tempData = { ...dataevent };
       tempData.liked = false;
       setDataEvent(tempData);
@@ -565,7 +582,13 @@ export default function EventDetail(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 

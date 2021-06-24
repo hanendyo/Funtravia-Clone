@@ -533,5 +533,6 @@
   "failPost": "Gagal memposting",
   "lookFor": "Cari",
   "failedCreateAlbum": "Gagal membuat album",
-  "photo": "Foto"
+  "photo": "Foto",
+  "pleaselogin": "Silahkan Login dahulu"
 }

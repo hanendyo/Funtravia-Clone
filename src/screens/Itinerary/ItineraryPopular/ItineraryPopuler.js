@@ -35,6 +35,7 @@ import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import Ripple from "react-native-material-ripple";
 import Skeletonindex from "./Skeletonindex";
+import { RNToasty } from "react-native-toasty";
 
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
@@ -239,7 +240,7 @@ export default function ItineraryPopuler(props) {
     let items = { ...item };
     let list_populers = [...list_populer];
     // console.log(list_populers[index]);
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       items.liked = true;
       await list_populers.splice(index, 1, items);
       await setlist_populer(list_populers);
@@ -279,14 +280,20 @@ export default function ItineraryPopuler(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id, index, item) => {
     let items = { ...item };
     let list_populers = [...list_populer];
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       items.liked = false;
       await list_populers.splice(index, 1, items);
       await setlist_populer(list_populers);
@@ -319,7 +326,13 @@ export default function ItineraryPopuler(props) {
         await setlist_populer(list_populers);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 

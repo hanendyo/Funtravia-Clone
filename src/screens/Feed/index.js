@@ -98,7 +98,7 @@ export default function Feed(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
     if (tkn === null) {
-      Alert.alert("Silahkan Login terlebih dahulu");
+      Alert.alert(t("pleaselogin"));
       props.navigation.navigate("HomeScreen");
     }
     LoadFeed();

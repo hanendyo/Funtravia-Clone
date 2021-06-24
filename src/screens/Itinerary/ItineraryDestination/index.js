@@ -45,6 +45,7 @@ import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../../graphQL/Query/Itinerary/SearchDestination";
 import Continent from "../../../graphQL/Query/Countries/Continent";
 import Countryss from "../../../graphQL/Query/Countries/CountryListSrc";
+import { RNToasty } from "react-native-toasty";
 
 export default function ItineraryDestination(props) {
   const HeaderComponent = {
@@ -289,7 +290,7 @@ export default function ItineraryDestination(props) {
   });
 
   const _liked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationliked({
           variables: {
@@ -319,12 +320,18 @@ export default function ItineraryDestination(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -353,7 +360,13 @@ export default function ItineraryDestination(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 

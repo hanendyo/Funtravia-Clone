@@ -32,6 +32,7 @@ import { StackActions } from "@react-navigation/routers";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
+import { RNToasty } from "react-native-toasty";
 
 export default function ItineraryDestination(props) {
   let [filtershow, setfiltershow] = useState([]);
@@ -281,7 +282,7 @@ export default function ItineraryDestination(props) {
   });
 
   const _liked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationliked({
           variables: {
@@ -311,12 +312,18 @@ export default function ItineraryDestination(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -345,7 +352,13 @@ export default function ItineraryDestination(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
@@ -1547,26 +1560,36 @@ export default function ItineraryDestination(props) {
                   </View>
                   <Button
                     onPress={() => {
-                      props.route.params && props.route.params.iditinerary
-                        ? props.navigation.dispatch(
-                            StackActions.replace("ItineraryStack", {
-                              screen: "ItineraryChooseday",
+                      if (token && token !== "" && token !== null) {
+                        props.route.params && props.route.params.iditinerary
+                          ? props.navigation.dispatch(
+                              StackActions.replace("ItineraryStack", {
+                                screen: "ItineraryChooseday",
+                                params: {
+                                  Iditinerary: props.route.params.iditinerary,
+                                  Kiriman: item.id,
+                                  token: token,
+                                  Position: "destination",
+                                  datadayaktif: props.route.params.datadayaktif,
+                                },
+                              })
+                            )
+                          : props.navigation.push("ItineraryStack", {
+                              screen: "ItineraryPlaning",
                               params: {
-                                Iditinerary: props.route.params.iditinerary,
-                                Kiriman: item.id,
-                                token: token,
+                                idkiriman: item.id,
                                 Position: "destination",
-                                datadayaktif: props.route.params.datadayaktif,
                               },
-                            })
-                          )
-                        : props.navigation.push("ItineraryStack", {
-                            screen: "ItineraryPlaning",
-                            params: {
-                              idkiriman: item.id,
-                              Position: "destination",
-                            },
-                          });
+                            });
+                      } else {
+                        props.navigation.navigate("AuthStack", {
+                          screen: "LoginScreen",
+                        });
+                        RNToasty.Show({
+                          title: t("pleaselogin"),
+                          position: "bottom",
+                        });
+                      }
                     }}
                     size="small"
                     text={"Add"}

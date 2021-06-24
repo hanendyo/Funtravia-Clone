@@ -531,5 +531,7 @@
   "failPost": "Failed to post",
   "lookFor": "Search",
   "failedCreateAlbum": "Failed to create album",
-  "photo": "Photo"
+  "photo": "Photo",
+  "pleaselogin": "Please Login"
+
 }
