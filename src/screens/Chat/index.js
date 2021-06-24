@@ -90,7 +90,7 @@ export default function Message({ navigation }) {
     }
 
     if (token === null) {
-      Alert.alert("Silahkan login terlebih dahulu");
+      Alert.alert(t("pleaselogin"));
       navigation.navigate("HomeScreen");
     }
   };

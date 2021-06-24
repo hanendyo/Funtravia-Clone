@@ -57,6 +57,7 @@ import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import { Alert } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
+import { RNToasty } from "react-native-toasty";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -1052,7 +1053,7 @@ export default function ListEventHome(props) {
   });
 
   const _liked = async (id, item, position) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       let items = { ...item };
       items.liked = true;
 
@@ -1103,12 +1104,18 @@ export default function ListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id, item, position) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       let items = { ...item };
       items.liked = false;
 
@@ -1158,7 +1165,13 @@ export default function ListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 

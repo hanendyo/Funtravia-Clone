@@ -18,6 +18,7 @@ import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { useTranslation } from "react-i18next";
 import { Text, FunImageBackground } from "../../component";
+import { RNToasty } from "react-native-toasty";
 const numColumns = 2;
 
 export default function List({ props, datanya, Refresh, refreshing, token }) {
@@ -59,7 +60,7 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
   };
 
   const _liked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationliked({
           variables: {
@@ -92,12 +93,18 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -132,7 +139,13 @@ export default function List({ props, datanya, Refresh, refreshing, token }) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 

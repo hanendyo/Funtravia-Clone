@@ -57,6 +57,7 @@ import ImageSlide from "../../../component/src/ImageSlide";
 import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import DeviceInfo from "react-native-device-info";
+import { RNToasty } from "react-native-toasty";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -85,16 +86,16 @@ export default function OtherProfile(props) {
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
-    await setuser(user.user);
+    await setuser(user?.user);
 
     if (!props.route.params.idUser) {
-      await seID(user.user.id);
+      await seID(user?.user?.id);
 
-      await props.navigation.setParams({ idUser: user.user.id });
+      await props.navigation.setParams({ idUser: user?.user?.id });
       setposition("profile");
     } else {
-      if (props.route.params.idUser === user.user.id) {
-        await seID(user.user.id);
+      if (props.route.params.idUser === user?.user?.id) {
+        await seID(user?.user?.id);
 
         setposition("profile");
       } else {
@@ -105,6 +106,16 @@ export default function OtherProfile(props) {
     }
 
     let tkn = await AsyncStorage.getItem("access_token");
+    if (tkn === null) {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+
     await setToken(tkn);
 
     await LoadUserProfile();

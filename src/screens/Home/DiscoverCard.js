@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   ImageBackground,
@@ -7,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
+import { RNToasty } from "react-native-toasty";
 import {
   Travel_Ideas,
   Travel_Itinerary,
@@ -16,6 +18,8 @@ import { Text } from "../../component";
 
 const { width, height } = Dimensions.get("screen");
 export default function DiscoverCard({ props, token }) {
+  const { t, i18n } = useTranslation();
+
   let discoverCardsData = [
     {
       id: 1,
@@ -51,11 +55,21 @@ export default function DiscoverCard({ props, token }) {
     >
       <Pressable
         key={discoverCardsData[0].id}
-        onPress={() =>
-          props.navigation.navigate("TravelIdeaStack", {
-            screen: "TravelIdeas",
-          })
-        }
+        onPress={() => {
+          if (token && token !== "" && token !== null) {
+            props.navigation.navigate("TravelIdeaStack", {
+              screen: "TravelIdeas",
+            });
+          } else {
+            props.navigation.navigate("AuthStack", {
+              screen: "LoginScreen",
+            });
+            RNToasty.Show({
+              title: t("pleaselogin"),
+              position: "bottom",
+            });
+          }
+        }}
       >
         <ImageBackground
           source={discoverCardsData[0].background_image}
@@ -85,12 +99,22 @@ export default function DiscoverCard({ props, token }) {
 
       <Pressable
         key={discoverCardsData[1].id}
-        onPress={() =>
-          props.navigation.navigate("ItineraryStack", {
-            screen: "ItineraryPopuler",
-            params: { token: token },
-          })
-        }
+        onPress={() => {
+          if (token && token !== "" && token !== null) {
+            props.navigation.navigate("ItineraryStack", {
+              screen: "ItineraryPopuler",
+              params: { token: token },
+            });
+          } else {
+            props.navigation.navigate("AuthStack", {
+              screen: "LoginScreen",
+            });
+            RNToasty.Show({
+              title: t("pleaselogin"),
+              position: "bottom",
+            });
+          }
+        }}
       >
         <ImageBackground
           source={discoverCardsData[1].background_image}
@@ -119,11 +143,21 @@ export default function DiscoverCard({ props, token }) {
       </Pressable>
       <Pressable
         key={discoverCardsData[2].id}
-        onPress={() =>
-          props.navigation.navigate("JournalStackNavigation", {
-            screen: "Journal",
-          })
-        }
+        onPress={() => {
+          if (token && token !== "" && token !== null) {
+            props.navigation.navigate("JournalStackNavigation", {
+              screen: "Journal",
+            });
+          } else {
+            props.navigation.navigate("AuthStack", {
+              screen: "LoginScreen",
+            });
+            RNToasty.Show({
+              title: t("pleaselogin"),
+              position: "bottom",
+            });
+          }
+        }}
       >
         <ImageBackground
           source={discoverCardsData[2].background_image}

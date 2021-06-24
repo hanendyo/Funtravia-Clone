@@ -3,9 +3,13 @@ import { Dimensions, Image, View, TouchableOpacity } from "react-native";
 import { Text, Button, Truncate, FunVideo } from "../../component";
 import { CommentWhite, LikeWhite, Play } from "../../assets/svg";
 import LinearGradient from "react-native-linear-gradient";
+import { RNToasty } from "react-native-toasty";
+import { useTranslation } from "react-i18next";
 
 const { width, height } = Dimensions.get("screen");
-export default function RenderVideo({ data, user, navigation }) {
+export default function RenderVideo({ data, user, navigation, token }) {
+  const { t, i18n } = useTranslation();
+
   let videoView = useRef(null);
   if (data.assets[0].type === "video") {
     return (
@@ -44,17 +48,27 @@ export default function RenderVideo({ data, user, navigation }) {
             position: "absolute",
           }}
           onPress={() => {
-            data.user.id !== user?.id
-              ? navigation.push("ProfileStack", {
-                  screen: "otherprofile",
-                  params: {
-                    idUser: data.user.id,
-                  },
-                })
-              : navigation.push("ProfileStack", {
-                  screen: "ProfileTab",
-                  params: { token: token },
-                });
+            if (token && token !== "" && token !== null) {
+              data.user.id !== user?.id
+                ? navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: data.user.id,
+                    },
+                  })
+                : navigation.push("ProfileStack", {
+                    screen: "ProfileTab",
+                    params: { token: token },
+                  });
+            } else {
+              props.navigation.navigate("AuthStack", {
+                screen: "LoginScreen",
+              });
+              RNToasty.Show({
+                title: t("pleaselogin"),
+                position: "bottom",
+              });
+            }
           }}
         >
           <Image
@@ -226,17 +240,27 @@ export default function RenderVideo({ data, user, navigation }) {
             position: "absolute",
           }}
           onPress={() => {
-            data.user.id !== user?.id
-              ? navigation.push("ProfileStack", {
-                  screen: "otherprofile",
-                  params: {
-                    idUser: data.user.id,
-                  },
-                })
-              : navigation.push("ProfileStack", {
-                  screen: "ProfileTab",
-                  params: { token: token },
-                });
+            if (token && token !== "" && token !== null) {
+              data.user.id !== user?.id
+                ? navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: data.user.id,
+                    },
+                  })
+                : navigation.push("ProfileStack", {
+                    screen: "ProfileTab",
+                    params: { token: token },
+                  });
+            } else {
+              props.navigation.navigate("AuthStack", {
+                screen: "LoginScreen",
+              });
+              RNToasty.Show({
+                title: t("pleaselogin"),
+                position: "bottom",
+              });
+            }
           }}
         >
           <Image

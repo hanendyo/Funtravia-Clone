@@ -53,9 +53,14 @@ import FacilityModal from "./FacilityModal";
 import ServiceModal from "./ServiceModal";
 import DeviceInfo from "react-native-device-info";
 import IndexSkeleton from "./IndexSkeleton";
+import { RNToasty } from "react-native-toasty";
+import { useTranslation } from "react-i18next";
+
 let PullToRefreshDist = 150;
 
 const Index = (props) => {
+  const { t, i18n } = useTranslation();
+
   /**
    * stats
    */
@@ -68,16 +73,16 @@ const Index = (props) => {
   let { width, height } = Dimensions.get("screen");
   let TabBarHeight = 48;
   let Notch = DeviceInfo.hasNotch();
-  let SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: StatusBar.currentHeight,
-  });
+  // let SafeStatusBar = Platform.select({
+  //   ios: Notch ? 48 : 20,
+  //   android: StatusBar.currentHeight,
+  // });
+
+  let SafeStatusBar = 0;
+
   let HeaderHeight = Platform.select({
-    ios: Notch
-      ? 457 + tambahan + tambahan1 + tambahan2 - unesco - 48
-      : 457 + tambahan + tambahan1 + tambahan2 - unesco - 20,
-    android:
-      440 + tambahan + tambahan1 + tambahan2 - unesco - StatusBar.currentHeight,
+    ios: 457 + tambahan + tambahan1 + tambahan2 - unesco,
+    android: 440 + tambahan + tambahan1 + tambahan2 - unesco,
   });
   let [newHeight, setNewHeight] = useState(0);
   let scrollRef = useRef();
@@ -174,21 +179,21 @@ const Index = (props) => {
       setDataDestination(data.destinationById);
       props.navigation.setOptions({
         headerTitle: (
-          <Animated.View
+          // <Animated.View
+          // style={{
+          // }}
+          // >
+          <Animated.Text
+            size="label"
+            type="bold"
             style={{
               opacity: hide.current,
+              color: "#fff",
             }}
           >
-            <Animated.Text
-              size="label"
-              type="bold"
-              style={{
-                color: "#fff",
-              }}
-            >
-              {data?.destinationById?.name}
-            </Animated.Text>
-          </Animated.View>
+            {data?.destinationById?.name} testing
+          </Animated.Text>
+          // </Animated.View>
         ),
       });
     },
@@ -484,7 +489,7 @@ const Index = (props) => {
   });
 
   const _liked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       var tempData = { ...dataDestination };
       tempData.liked = true;
       setDataDestination(tempData);
@@ -520,12 +525,18 @@ const Index = (props) => {
         alert("" + error);
       }
     } else {
-      alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       var tempData = { ...dataDestination };
       tempData.liked = false;
       setDataDestination(tempData);
@@ -560,7 +571,13 @@ const Index = (props) => {
         alert("" + error);
       }
     } else {
-      alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
@@ -1041,31 +1058,66 @@ const Index = (props) => {
     );
   };
 
-  const addToPlan = () => {
-    props?.route?.params && props?.route?.params?.iditinerary
-      ? props.navigation.dispatch(
-          StackActions.replace("ItineraryStack", {
-            screen: "ItineraryChooseday",
-            params: {
-              Iditinerary: props?.route?.params?.iditinerary,
-              Kiriman: data?.destinationById.id,
-              token: token,
-              Position: "destination",
-              datadayaktif: props.route.params.datadayaktif,
-            },
-          })
-        )
-      : props.navigation.navigate("ItineraryStack", {
-          screen: "ItineraryPlaning",
-          params: {
-            idkiriman: data?.destinationById?.id,
-            Position: "destination",
-          },
-        });
+  const addToPlan = (kiriman) => {
+    if (token && token !== null && token !== "") {
+      if (kiriman) {
+        props?.route?.params && props?.route?.params?.iditinerary
+          ? props.navigation.dispatch(
+              StackActions.replace("ItineraryStack", {
+                screen: "ItineraryChooseday",
+                params: {
+                  Iditinerary: props?.route?.params?.iditinerary,
+                  Kiriman: kiriman.id,
+                  token: token,
+                  Position: "destination",
+                  datadayaktif: props.route.params.datadayaktif,
+                },
+              })
+            )
+          : props.navigation.navigate("ItineraryStack", {
+              screen: "ItineraryPlaning",
+              params: {
+                idkiriman: kiriman.id,
+                Position: "destination",
+              },
+            });
+      } else {
+        props?.route?.params && props?.route?.params?.iditinerary
+          ? props.navigation.dispatch(
+              StackActions.replace("ItineraryStack", {
+                screen: "ItineraryChooseday",
+                params: {
+                  Iditinerary: props?.route?.params?.iditinerary,
+                  Kiriman: data?.destinationById.id,
+                  token: token,
+                  Position: "destination",
+                  datadayaktif: props.route.params.datadayaktif,
+                },
+              })
+            )
+          : props.navigation.navigate("ItineraryStack", {
+              screen: "ItineraryPlaning",
+              params: {
+                idkiriman: data?.destinationById?.id,
+                Position: "destination",
+              },
+            });
+      }
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
   };
 
   const renderGeneral = ({ item, index, props }) => {
-    return <Generals data={item} props={props} addTo={addToPlan} />;
+    return (
+      <Generals data={item} props={props} addTo={addToPlan} token={token} />
+    );
   };
 
   const renderReview = ({ item, props }) => {
@@ -1238,7 +1290,7 @@ const Index = (props) => {
     return (
       <Animated.FlatList
         scrollToOverflowEnabled={true}
-        // scrollEnabled={canScroll}
+        scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
         numColumns={numCols}
         ref={(ref) => {
@@ -1414,28 +1466,6 @@ const Index = (props) => {
             index: id,
             animated: true,
           });
-          console.log("naik");
-          props.navigation.setOptions({
-            headerTitle: (
-              <Animated.View
-                style={
-                  {
-                    //   opacity: hide.current,
-                  }
-                }
-              >
-                <Animated.Text
-                  size="label"
-                  type="bold"
-                  style={{
-                    color: "#000000",
-                  }}
-                >
-                  {data?.destinationById?.name}
-                </Animated.Text>
-              </Animated.View>
-            ),
-          });
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
@@ -1520,7 +1550,7 @@ const Index = (props) => {
 
   return (
     <View style={styles.container}>
-      <Satbar backgroundColor="#14646E" />
+      {/* <Satbar backgroundColor="#14646E" /> */}
 
       {renderTabView()}
       {renderHeader()}
