@@ -226,7 +226,7 @@ export default function Asia({ navigation }) {
     return () => {
       BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     };
-  }, [onBackPress]);
+  }, [navigation, onBackPress]);
 
   useEffect(() => {
     InitialCountry();
@@ -419,48 +419,73 @@ export default function Asia({ navigation }) {
             data={countries}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              console.log("Item", item),
-              (
+              <View
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 15,
+                  borderBottomColor: "#dedede",
+                  borderBottomWidth: 1,
+                  marginVertical: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("CountryStack", {
+                      screen: "Country",
+                      params: {
+                        data: { id: Country[item["alpha-3"]].id },
+                      },
+                    })
+                  }
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                  }}
+                >
+                  <Flag
+                    countryid={item["alpha-3"]}
+                    style={{ width: 50, marginRight: 15 }}
+                  />
+                  <Text size="label" type="reguler" style={{ marginLeft: 20 }}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
                 <View
                   style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 15,
-                    borderBottomColor: "#dedede",
-                    borderBottomWidth: 1,
-                    marginVertical: 5,
-                    flexDirection: "row",
+                    height: 30,
+                    width: 30,
+                    borderRadius: 50,
+                    alignSelf: "center",
                     alignItems: "center",
-                    justifyContent: "space-between",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    // backgroundColor: "rgba(226, 236, 248, 0.85)",
+                    backgroundColor:
+                      Idcountry == item["alpha-3"] ? "#DAF0F2" : "#F6F6F6",
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("CountryStack", {
-                        screen: "Country",
-                        params: {
-                          data: { id: Country[item["alpha-3"]].id },
-                        },
-                      })
-                    }
                     key={index}
-                    style={{
-                      flexDirection: "row",
-                      flex: 1,
+                    onPress={() => {
+                      {
+                        setSubContinent({ id: item["sub-region-code"] }),
+                          setIdcountry(
+                            item["alpha-3"] === Idcountry
+                              ? null
+                              : item["alpha-3"]
+                          );
+                        setHeader(item["sub-region-code"]);
+
+                        BackUse.current = {
+                          id: item["sub-region-code"],
+                          label: item["sub-region"],
+                        };
+                      }
                     }}
-                  >
-                    <Flag
-                      countryid={item["alpha-3"]}
-                      style={{ width: 50, marginRight: 15 }}
-                    />
-                    <Text
-                      size="label"
-                      type="reguler"
-                      style={{ marginLeft: 20 }}
-                    >
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                  <View
                     style={{
                       height: 30,
                       width: 30,
@@ -469,49 +494,17 @@ export default function Asia({ navigation }) {
                       alignItems: "center",
                       alignContent: "center",
                       justifyContent: "center",
-                      // backgroundColor: "rgba(226, 236, 248, 0.85)",
-                      backgroundColor:
-                        Idcountry == item["alpha-3"] ? "#DAF0F2" : "#F6F6F6",
+                      zIndex: 9999,
                     }}
                   >
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => {
-                        {
-                          setSubContinent({ id: item["sub-region-code"] }),
-                            setIdcountry(
-                              item["alpha-3"] === Idcountry
-                                ? null
-                                : item["alpha-3"]
-                            );
-                          setHeader(item["sub-region-code"]);
-
-                          BackUse.current = {
-                            id: item["sub-region-code"],
-                            label: item["sub-region"],
-                          };
-                        }
-                      }}
-                      style={{
-                        height: 30,
-                        width: 30,
-                        borderRadius: 50,
-                        alignSelf: "center",
-                        alignItems: "center",
-                        alignContent: "center",
-                        justifyContent: "center",
-                        zIndex: 9999,
-                      }}
-                    >
-                      {Idcountry == item["alpha-3"] ? (
-                        <PinBiru height={18} width={18} />
-                      ) : (
-                        <PinAbu height={18} width={18} />
-                      )}
-                    </TouchableOpacity>
-                  </View>
+                    {Idcountry == item["alpha-3"] ? (
+                      <PinBiru height={18} width={18} />
+                    ) : (
+                      <PinAbu height={18} width={18} />
+                    )}
+                  </TouchableOpacity>
                 </View>
-              )
+              </View>
             )}
             // contentContainerStyle={{ marginHorizontal: 15 }}
           />

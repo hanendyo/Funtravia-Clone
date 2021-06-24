@@ -186,7 +186,11 @@ export default function CityDetail(props) {
     setTimeout(() => {
       setLoadings(false);
     }, 2000);
-  }, []);
+    const Journaldata = props.navigation.addListener("focus", () => {
+      getJournalCity();
+    });
+    return Journaldata;
+  }, [props.navigation]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -291,6 +295,7 @@ export default function CityDetail(props) {
     }
   };
 
+  let [list_journal, setList_journal] = useState({});
   const [
     getJournalCity,
     { loading: loadingjournal, data: dataJournal, error: errorjournal },
@@ -304,6 +309,9 @@ export default function CityDetail(props) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+    },
+    onCompleted: () => {
+      setList_journal(dataJournal.journal_by_city);
     },
   });
 
@@ -326,11 +334,6 @@ export default function CityDetail(props) {
   let list_populer = [];
   if (dataItinerary && dataItinerary.itinerary_populer_by_province) {
     list_populer = dataItinerary.itinerary_populer_by_province;
-  }
-
-  let list_journal = [];
-  if (dataJournal && dataJournal.journal_by_province) {
-    list_journal = dataJournal.journal_by_province;
   }
 
   const listPanResponder = useRef(
@@ -431,8 +434,7 @@ export default function CityDetail(props) {
   // liked journal
   const _likedjournal = async (id, index, item) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token || token !== "") {
-      list_journal[fiindex].liked = true;
+    if (token) {
       try {
         let response = await mutationlikedJournal({
           variables: {
@@ -447,11 +449,11 @@ export default function CityDetail(props) {
           throw new Error("Error Input");
         }
         if (response.data) {
+          getJournalCity();
           if (
             response.data.like_journal.code === 200 ||
             response.data.like_journal.code === "200"
           ) {
-            list_journal[fiindex].liked = true;
           } else {
             throw new Error(response.data.message);
           }
@@ -459,19 +461,24 @@ export default function CityDetail(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
-        list_journal[fiindex].liked = false;
+        getJournalCity();
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   // unliked journal
   const _unlikedjournal = async (id, index) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token || token !== "") {
-      list_journal[fiindex].liked = false;
+    if (token) {
       try {
         let response = await mutationUnlikedJournal({
           variables: {
@@ -486,6 +493,7 @@ export default function CityDetail(props) {
         }
 
         if (response.data) {
+          getJournalCity();
           if (
             response.data.unlike_journal.code === 200 ||
             response.data.unlike_journal.code === "200"
@@ -496,12 +504,16 @@ export default function CityDetail(props) {
           }
         }
       } catch (error) {
-        list_journal[fiindex].response_count =
-          list_journal[fiindex].response_count - 1;
-        list_journal[fiindex].liked = true;
+        getJournalCity();
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
@@ -1596,8 +1608,8 @@ export default function CityDetail(props) {
                     //   props.navigation.navigate("Abouts");
                     // }}
                   >
-                    {(dataevent.event.length > 0
-                      ? dataevent.event
+                    {(dataevent?.event?.length > 0
+                      ? dataevent?.event
                       : [default_image]
                     ).map((image, index) => {
                       return (

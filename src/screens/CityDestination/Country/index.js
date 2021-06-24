@@ -43,6 +43,7 @@ import { Text, Button } from "../../../component";
 import { FunIcon, Loading, Sidebar } from "../../../component";
 // import Sidebar from "../../../component/src/Sidebar";
 import CountrisInformation from "../../../graphQL/Query/Countries/Countrydetail";
+import CountrisJournal from "../../../graphQL/Query/Countries/CountryJournal";
 import { useTranslation } from "react-i18next";
 import ImageSlider from "react-native-image-slider";
 import { TouchableHighlight } from "react-native-gesture-handler";
@@ -50,6 +51,7 @@ import { TabBar, TabView } from "react-native-tab-view";
 import likedJournal from "../../../graphQL/Mutation/Journal/likedJournal";
 import unlikedJournal from "../../../graphQL/Mutation/Journal/unlikedJournal";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { RNToasty } from "react-native-toasty";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -183,16 +185,30 @@ export default function Country(props) {
     }
   );
 
-  let list_journal = [];
-  if (data && data.country_detail.journal) {
-    list_journal = data.country_detail.journal;
-  }
-
-  // console.log("data", data);
+  let [list_journal, setListJournal] = useState({});
+  const [
+    getJournal,
+    { loading: loadingJournal, data: dataJournal, error: errorJournal },
+  ] = useLazyQuery(CountrisJournal, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.data.id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setListJournal(dataJournal.journal_by_country);
+    },
+  });
 
   const refresh = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
+    await getJournal();
     await getPackageDetail();
   };
 
@@ -201,7 +217,9 @@ export default function Country(props) {
     setTimeout(() => {
       setLoadings(false);
     }, 2000);
-  }, []);
+    const Journaldata = props.navigation.addListener("focus", () => {});
+    return Journaldata;
+  }, [props.navigation]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -510,10 +528,7 @@ export default function Country(props) {
   });
 
   const _likedjournal = async (id, index, item) => {
-    let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-
-    if (token || token !== "") {
-      list_journal[fiindex].liked = true;
+    if (token) {
       try {
         let response = await mutationlikedJournal({
           variables: {
@@ -528,11 +543,11 @@ export default function Country(props) {
           throw new Error("Error Input");
         }
         if (response.data) {
+          getJournal();
           if (
             response.data.like_journal.code === 200 ||
             response.data.like_journal.code === "200"
           ) {
-            list_journal[fiindex].liked = true;
           } else {
             throw new Error(response.data.message);
           }
@@ -540,11 +555,17 @@ export default function Country(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
-        list_journal[fiindex].liked = false;
+        getJournal();
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
@@ -566,9 +587,7 @@ export default function Country(props) {
   });
 
   const _unlikedjournal = async (id, index) => {
-    let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token || token !== "") {
-      list_journal[fiindex].liked = false;
+    if (token) {
       try {
         let response = await mutationUnlikedJournal({
           variables: {
@@ -582,22 +601,26 @@ export default function Country(props) {
           throw new Error("Error Input");
         }
         if (response.data) {
+          getJournal();
           if (
             response.data.unlike_journal.code === 200 ||
             response.data.unlike_journal.code === "200"
           ) {
-            list_journal[fiindex].liked = false;
           } else {
             throw new Error(response.data.unlike_journal.message);
           }
         }
       } catch (error) {
-        list_journal[fiindex].response_count =
-          list_journal[fiindex].response_count - 1;
-        list_journal[fiindex].liked = true;
+        getJournal();
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
@@ -932,8 +955,7 @@ export default function Country(props) {
     let render = [];
     render = data && data.country_detail ? data.country_detail : null;
     let renderjournal = [];
-    renderjournal =
-      data && data.country_detail.journal ? data.country_detail.journal : null;
+    renderjournal = list_journal;
 
     return (
       <View>
