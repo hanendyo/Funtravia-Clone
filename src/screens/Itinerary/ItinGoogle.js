@@ -330,7 +330,7 @@ export default function ItinGoogle(props) {
               height: 50,
               width: Dimensions.get("screen").width,
               // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 0 : -20,
+              marginTop: Platform.OS === "ios" ? 20 : -20,
             }}
           >
             <TouchableOpacity

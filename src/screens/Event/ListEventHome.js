@@ -1738,7 +1738,7 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               height: 55,
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 0 : -20,
+              marginTop: Platform.OS === "ios" ? 20 : -20,
             }}
           >
             <Button
