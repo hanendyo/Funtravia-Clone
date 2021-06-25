@@ -13,34 +13,22 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import {
-  NewAlbum,
-  ExitingAlbum,
-  Arrowbackwhite,
-  Select,
-  Check,
-  Down,
-  SearchWhite,
-  Search,
-} from "../../../assets/svg";
+import { useLazyQuery } from "@apollo/client";
+import { NewAlbum, Arrowbackwhite, Search } from "../../../assets/svg";
 import { Text, Button, Loading, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
-import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import CreateAlbumFeed from "../../../graphQL/Mutation/Post/CreateAlbumFeed";
 import { useMutation } from "@apollo/react-hooks";
-const { width, height } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen");
 import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryAll";
 import ListAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import { default_image } from "../../../assets/png";
-import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
-import ItineraryListAlbum from "../../../graphQL/Query/Itinerary/ListAlbumItinerary";
-import ChooseAlbumItinerary from "./ChooseAlbumItinerary";
 import LinearGradient from "react-native-linear-gradient";
-import { TabBar, SceneMap, TabView } from "react-native-tab-view";
+import { TabBar, TabView } from "react-native-tab-view";
 
 export default function CreateAlbum(props) {
+  console.log("creat album props", props);
   const { t } = useTranslation();
   const [newFeedAlbums, setNewFeedAlbums] = useState(false);
   const [select, setSelect] = useState("Itinerary Album");
@@ -133,7 +121,7 @@ export default function CreateAlbum(props) {
   }, []);
 
   const Choose = (id) => {
-    props.navigation.push("FeedStack", {
+    props.navigation.navigate("FeedStack", {
       screen: "ChooseAlbumItinerary",
       params: {
         idItinerary: id,
@@ -407,18 +395,31 @@ export default function CreateAlbum(props) {
               listAlbum?.list_albums.map((item, index) => (
                 <Pressable
                   onPress={() => {
-                    props.navigation.navigate("FeedStack", {
-                      screen: "CreatePostScreen",
-                      params: {
-                        token: token,
-                        id_album: item.id,
-                        title_album: item.title,
-                        album: "Feed",
-                        file: props.route.params.file,
-                        type: props.route.params.type,
-                        location: props.route.params.location,
-                      },
-                    });
+                    props.route.params.isAlbum === false
+                      ? props.navigation.navigate("FeedStack", {
+                          screen: "CreatePostScreen",
+                          params: {
+                            token: token,
+                            id_album: item.id,
+                            title_album: item.title,
+                            album: "Feed",
+                            file: props.route.params.file,
+                            type: props.route.params.type,
+                            location: props.route.params.location,
+                          },
+                        })
+                      : props.navigation.navigate("FeedStack", {
+                          screen: "ListFotoAlbums",
+                          params: {
+                            token: token,
+                            id_album: item.id,
+                            title_album: item.title,
+                            album: "Feed",
+                            file: props.route.params.file,
+                            type: props.route.params.type,
+                            location: props.route.params.location,
+                          },
+                        });
                   }}
                   key={index}
                   style={{

@@ -5,6 +5,7 @@ import Video from "react-native-video";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderGrid({ item, props }) {
+  console.log("item render", item);
   let videoView = useRef(null);
   if (item.length == 4 && item[3].grid == 1) {
     return (

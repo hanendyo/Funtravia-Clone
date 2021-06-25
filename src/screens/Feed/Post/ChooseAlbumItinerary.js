@@ -153,21 +153,19 @@ export default function ChooseAlbumItinerary(props) {
   };
 
   const pilih = async (id, title) => {
-    props.navigation.dispatch(
-      StackActions.replace("FeedStack", {
-        screen: "CreatePostScreen",
-        params: {
-          token: token,
-          id_itin: props.route.params.idItinerary,
-          id_album: id,
-          title_album: title,
-          file: props.route.params.file,
-          type: props.route.params.type,
-          location: props.route.params.location,
-          album: "Itinerary",
-        },
-      })
-    );
+    props.navigation.navigate("FeedStack", {
+      screen: "CreatePostScreen",
+      params: {
+        token: token,
+        id_itin: props.route.params.idItinerary,
+        id_album: id,
+        title_album: title,
+        file: props.route.params.file,
+        type: props.route.params.type,
+        location: props.route.params.location,
+        album: "Itinerary",
+      },
+    });
   };
 
   const closeItinerary = async () => {
