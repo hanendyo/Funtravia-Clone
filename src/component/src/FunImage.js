@@ -17,7 +17,7 @@ export default function Image({
 	let [loading, setLoading] = useState(false);
 	let [temp, setTemp] = useState([]);
 	let isUri = source.uri ? true : false;
-	let uri = source.uri + "?size=l";
+	let uri = source.uri + "?size=m";
 	let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]funtravia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim;
 	let hvdm = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)/gim;
 	let chvdm = hvdm.test(uri);

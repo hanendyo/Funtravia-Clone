@@ -15,68 +15,66 @@ export default function ArticleView({ data }) {
 					return (
 						<View key={index}>
 							{i.type === "image" ? (
-								<View>
-									<Text
-										size="title"
-										type="bold"
+								<View style={{ marginVertical: 10 }}>
+									{i.title ? (
+										<Text size="label" type="bold">
+											{i.title}
+										</Text>
+									) : null}
+
+									<View
 										style={{
-											// fontSize: (18),
-											marginVertical: 10,
-											// fontFamily: "Lato-Bold",
-											color: "#464646",
+											alignItems: "center",
 										}}
 									>
-										{i.title}
-									</Text>
-									<Text
-										type="regular"
-										size="description"
-										style={{
-											textAlign: "justify",
-											// fontFamily: "Lato-Regular",
-											// fontSize: (13),
-											color: "#464646",
-										}}
-									>
-										{i.text}
-									</Text>
-									<View style={{ alignItems: "center" }}>
 										<FunImage
-											source={{ uri: i.image }}
+											source={i.image ? { uri: i.image } : default_image}
 											resizeMode={"cover"}
 											style={{
-												marginVertical: 20,
-												height: imageHeight,
-												width: imageWidth,
+												borderWidth: 0.4,
+												borderColor: "#d3d3d3",
+												marginTop: 5,
+												height: Dimensions.get("screen").width * 0.4,
+												width: "100%",
 											}}
 										/>
 									</View>
-								</View>
-							) : (
-								<View>
 									<Text
-										size="title"
-										type="bold"
-										style={{
-											// fontSize: (18),
-											marginVertical: 10,
-											// fontFamily: "Lato-Bold",
-											color: "#464646",
-										}}
-									>
-										{i.title}
-									</Text>
-									<Text
+										size="small"
 										type="regular"
-										size="description"
 										style={{
 											textAlign: "justify",
-											// fontFamily: "Lato-Regular",
-											// fontSize: (13),
+											marginTop: 5,
 											color: "#464646",
 										}}
 									>
-										{i.text}
+										{i.text ? i.text : ""}
+									</Text>
+								</View>
+							) : (
+								<View style={{ marginVertical: 10 }}>
+									{i.title ? (
+										<Text
+											size="label"
+											type="bold"
+											style={{
+												marginBottom: 5,
+												color: "#464646",
+											}}
+										>
+											{i.title}
+										</Text>
+									) : null}
+									<Text
+										size="readable"
+										type="regular"
+										style={{
+											marginTop: 5,
+											textAlign: "justify",
+											color: "#464646",
+										}}
+									>
+										{i.text ? i.text : ""}
 									</Text>
 								</View>
 							)}
