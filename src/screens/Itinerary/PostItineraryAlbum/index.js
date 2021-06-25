@@ -26,9 +26,11 @@ const { width } = Dimensions.get("screen");
 export default function PostItineraryAlbum(props) {
   const { t } = useTranslation();
   const [dataalbums, setAllalbum] = useState(props.route.params.data_album);
-  console.log(dataalbums);
+  const [album_id, setalbum_id] = useState(props.route.params.album_id);
+  const [token, settoken] = useState(props.route.params.token);
   const [selectedPhoto, setSelectedPhoto] = useState([]);
   let itinerary_id = props.route.params.itinerary_id;
+
   const HeaderComponent = {
     // title: "Select Photos",
     headerTintColor: "white",
@@ -93,7 +95,8 @@ export default function PostItineraryAlbum(props) {
       params: {
         selectedPhoto: data,
         itinerary_id: itinerary_id,
-        day_id: dataalbums[0].day_id,
+        album_id: album_id,
+        token: token,
       },
     });
   };

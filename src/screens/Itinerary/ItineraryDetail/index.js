@@ -3168,6 +3168,8 @@ export default function ItineraryDetail(props) {
   };
 
   const spreadDatas = (rData) => {
+    console.log("data spread", rData);
+
     let result = [];
     rData.itinerary_album_list_v2.album.map((dataS, index) => {
       let tempdata = {
@@ -3179,6 +3181,7 @@ export default function ItineraryDetail(props) {
       };
       tempdata["title"] = dataS.title;
       tempdata["id"] = dataS.id;
+      tempdata["album_id"] = dataS.id;
       if (dataS.media.length > 0) {
         dataS.media.map((item, ind) => {
           if (item.is_posted === true) {
@@ -4063,8 +4066,9 @@ export default function ItineraryDetail(props) {
     });
   };
 
-  const goToSelectPhoto = async (album, dayaktif) => {
+  const goToSelectPhoto = async (album, dayaktif, tkn) => {
     let data = await spreadDatas(album);
+
     let index = data.findIndex((k) => k["id"] === dayaktif.id);
     let albumselected = data[index].unposted;
     if (albumselected.length > 0) {
@@ -4072,7 +4076,9 @@ export default function ItineraryDetail(props) {
         screen: "SelectAlbumsPost",
         params: {
           data_album: albumselected,
-          itinerary_id: dayaktif.itinerary_id,
+          itinerary_id: itineraryId,
+          album_id: data[index].album_id,
+          token: tkn,
         },
       });
     } else {
@@ -4214,7 +4220,7 @@ export default function ItineraryDetail(props) {
             >
               <Pressable
                 onPress={() => {
-                  goToSelectPhoto(dataAlbum, dataalbumaktif);
+                  goToSelectPhoto(dataAlbum, dataalbumaktif, token);
                 }}
                 style={({ pressed }) => [
                   {
