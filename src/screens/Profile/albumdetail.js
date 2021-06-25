@@ -159,6 +159,7 @@ export default function albumdetail(props) {
         height: hig,
         props: {
           source: data[i].filepath ? data[i].filepath : "",
+          type: data[i]?.type,
         },
         by: data[i]?.photoby?.first_name,
       });

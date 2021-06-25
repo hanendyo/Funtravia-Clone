@@ -18,7 +18,13 @@ import { back_arrow_white, next_putih, prev_putih } from "../../../assets/png";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { Button, Text, FunImage, FunVideo } from "../../index";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, Play, Mute, Unmute } from "../../../assets/svg";
+import {
+  Arrowbackwhite,
+  Arrowrightwhite,
+  Play,
+  Mute,
+  Unmute,
+} from "../../../assets/svg";
 
 export default function ImageSlide({
   index,
@@ -217,7 +223,7 @@ export default function ImageSlide({
               ) : null;
             }}
             renderImage={(data) => {
-              return data.type === "video" ? (
+              return data?.type === "video" ? (
                 <>
                   <FunVideo
                     onPress={() => setPaused(true)}

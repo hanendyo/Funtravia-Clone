@@ -15,10 +15,10 @@ import Modal from "react-native-modal";
 
 import { back_arrow_white, next_putih, prev_putih } from "../../../assets/png";
 import ImageViewer from "react-native-image-zoom-viewer";
-import { Button, Text } from "../../index";
+import { Button, Text, FunImage, FunVideo } from "../../index";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite, Arrowrightwhite } from "../../../assets/svg";
-
+import { Play, Mute, Unmute } from "../../../assets/svg";
 export default function ImageSlide({
   index,
   show,
@@ -94,9 +94,10 @@ export default function ImageSlide({
       >
         <View
           style={{
-            height: 55,
+            height: 70,
             backgroundColor: "black",
             marginTop: 10,
+            justifyContent: "flex-end",
           }}
         >
           <Button
@@ -139,62 +140,141 @@ export default function ImageSlide({
         {slider.length > 0 ? (
           <ImageViewer
             renderIndicator={() => <View></View>}
-            renderArrowLeft={() => (
-              <TouchableOpacity
-                style={{
-                  height: 30,
-                  width: 30,
-                  borderRadius: 15,
-                  backgroundColor: "rgba(240, 240, 240, 0.5)",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  marginLeft: 15,
-                }}
-                onPress={() => {
-                  handel_prev();
-                }}
-              >
-                <Image
+            renderArrowLeft={() => {
+              return slider.length > 1 ? (
+                <TouchableOpacity
                   style={{
-                    resizeMode: "contain",
-                    height: 15,
-                    width: 15,
-                    marginRight: 5,
+                    height: 30,
+                    width: 30,
+                    borderRadius: 15,
+                    backgroundColor: "rgba(240, 240, 240, 0.5)",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    marginLeft: 15,
                   }}
-                  source={prev_putih}
-                />
-              </TouchableOpacity>
-            )}
-            renderArrowRight={() => (
-              <TouchableOpacity
-                style={{
-                  height: 30,
-                  width: 30,
-                  borderRadius: 15,
-                  backgroundColor: "rgba(240, 240, 240, 0.5)",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  marginRight: 15,
-                }}
-                onPress={() => handel_next()}
-              >
-                <Image
+                  onPress={() => {
+                    handel_prev();
+                  }}
+                >
+                  <Image
+                    style={{
+                      resizeMode: "contain",
+                      height: 15,
+                      width: 15,
+                      marginRight: 5,
+                    }}
+                    source={prev_putih}
+                  />
+                </TouchableOpacity>
+              ) : null;
+            }}
+            renderArrowRight={() => {
+              return slider.length > 1 ? (
+                <TouchableOpacity
                   style={{
-                    resizeMode: "contain",
-                    height: 15,
-                    width: 15,
-                    marginLeft: 5,
+                    height: 30,
+                    width: 30,
+                    borderRadius: 15,
+                    backgroundColor: "rgba(240, 240, 240, 0.5)",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    marginRight: 15,
                   }}
-                  source={next_putih}
-                />
-              </TouchableOpacity>
-            )}
+                  onPress={() => handel_next()}
+                >
+                  <Image
+                    style={{
+                      resizeMode: "contain",
+                      height: 15,
+                      width: 15,
+                      marginLeft: 5,
+                    }}
+                    source={next_putih}
+                  />
+                </TouchableOpacity>
+              ) : null;
+            }}
             saveToLocalByLongPress={false}
             imageUrls={slider}
             onChange={(index) => handel_select(index)}
             index={inde}
+            renderImage={(data) => {
+              return data?.type === "video" ? (
+                <>
+                  <FunVideo
+                    onPress={() => setPaused(true)}
+                    paused={paused}
+                    key={"video" + data.id}
+                    source={{ uri: data?.source?.uri }}
+                    muted={muted}
+                    repeat={true}
+                    style={{
+                      width: data?.style?.width,
+                      height: data?.style?.height,
+                    }}
+                  />
+                  {paused === true ? (
+                    <TouchableOpacity
+                      onPress={() => setPaused(!paused)}
+                      style={{
+                        flexDirection: "row",
+                        position: "absolute",
+                        bottom: data?.style?.height / 2.3,
+                        left: data?.style?.width / 2.1,
+                      }}
+                    >
+                      <Play width={40} height={40} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => setPaused(!paused)}
+                      style={{
+                        flexDirection: "row",
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        width: data?.style?.width,
+                        height: data?.style?.height,
+                      }}
+                    ></TouchableOpacity>
+                  )}
+                  <TouchableOpacity
+                    onPress={() => setMuted(!muted)}
+                    style={{
+                      padding: 20,
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.50)",
+                        borderRadius: 15,
+                        padding: 5,
+                      }}
+                    >
+                      {muted ? (
+                        <Mute width="15" height="15" />
+                      ) : (
+                        <Unmute width="15" height="15" />
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <FunImage
+                  key={"image" + data.id}
+                  source={{ uri: data?.source?.uri }}
+                  style={{
+                    width: data?.style?.width,
+                    height: data?.style?.height,
+                  }}
+                />
+              );
+            }}
           />
         ) : null}
 
