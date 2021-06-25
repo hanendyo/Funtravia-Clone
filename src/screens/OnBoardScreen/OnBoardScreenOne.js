@@ -55,7 +55,7 @@ export default function OnBoardScreenOne({ props, modals, setModalScreenOne }) {
             backgroundColor: "#000",
             height: height,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 0 : -20,
+            marginTop: Platform.OS === "ios" ? 20 : -20,
           }}
         >
           <Image

@@ -8,6 +8,7 @@ import {
   Pressable,
   ToastAndroid,
   Alert,
+  Modal as ModalRN,
 } from "react-native";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -355,27 +356,25 @@ export default function SettingsAkun(props) {
 
         {/* Modal Birth Date */}
 
-        <Modal
+        <ModalRN
           onRequestClose={() => setModalBirth(false)}
           onBackdropPress={() => setModalBirth(false)}
           animationIn="slideInUp"
           animationOut="slideOutDown"
-          isVisible={modalBirth}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
+          visible={modalBirth}
+          transparent={true}
         >
-          <View
+          <Pressable
+            onPress={() => setModalBirth(false)}
             style={{
+              backgroundColor: "rgba(0,0,0,0.7)",
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
               alignSelf: "center",
               alignContent: "center",
-              width: Dimensions.get("screen").width - 40,
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
             }}
           >
             <View
@@ -430,29 +429,27 @@ export default function SettingsAkun(props) {
                 ></Button>
               </View>
             </View>
-          </View>
-        </Modal>
-        <Modal
+          </Pressable>
+        </ModalRN>
+        <ModalRN
           onRequestClose={() => setModalBirth1(false)}
           onBackdropPress={() => setModalBirth1(false)}
           animationIn="slideInUp"
           animationOut="slideOutDown"
-          isVisible={modalBirth1}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
+          visible={modalBirth1}
+          transparent={true}
         >
-          <View
+          <Pressable
+            onPress={() => setModalBirth1(false)}
             style={{
+              backgroundColor: "rgba(0,0,0,0.7)",
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
               alignSelf: "center",
               alignContent: "center",
-              width: Dimensions.get("screen").width - 40,
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
             }}
           >
             <View
@@ -495,8 +492,8 @@ export default function SettingsAkun(props) {
                 ></Button>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Pressable>
+        </ModalRN>
 
         {/* Modal Jenis Kelamin */}
 

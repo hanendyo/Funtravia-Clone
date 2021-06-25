@@ -134,7 +134,7 @@ export default function SettingCurrency({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 0 : -20,
+            marginTop: Platform.OS === "ios" ? 20 : -20,
           }}
         >
           <Button
@@ -196,7 +196,7 @@ export default function SettingCurrency({
                         {item.code}
                       </Text>
                     </View>
-                    <Text size="description">{item.countries.name}</Text>
+                    <Text size="description">{item?.countries?.name}</Text>
                   </View>
                   <View>
                     {item.selected && item.selected == true ? (
