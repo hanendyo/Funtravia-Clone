@@ -26,6 +26,7 @@ const { width, height } = Dimensions.get("screen");
 import { RNToasty } from "react-native-toasty";
 
 export default function ChooseAlbumItinerary(props) {
+  console.log("props chhos", props);
   const { t } = useTranslation();
   const [newItineraryAlbums, setNewItineraryAlbums] = useState(false);
   const [datas, setDatas] = useState();
@@ -153,19 +154,33 @@ export default function ChooseAlbumItinerary(props) {
   };
 
   const pilih = async (id, title) => {
-    props.navigation.navigate("FeedStack", {
-      screen: "CreatePostScreen",
-      params: {
-        token: token,
-        id_itin: props.route.params.idItinerary,
-        id_album: id,
-        title_album: title,
-        file: props.route.params.file,
-        type: props.route.params.type,
-        location: props.route.params.location,
-        album: "Itinerary",
-      },
-    });
+    props.route.params.isAlbum === false
+      ? props.navigation.navigate("FeedStack", {
+          screen: "CreatePostScreen",
+          params: {
+            token: token,
+            id_itin: props.route.params.idItinerary,
+            id_album: id,
+            title_album: title,
+            file: props.route.params.file,
+            type: props.route.params.type,
+            location: props.route.params.location,
+            album: "Itinerary",
+          },
+        })
+      : props.navigation.navigate("FeedStack", {
+          screen: "ListFotoAlbums",
+          params: {
+            token: token,
+            id_album: id,
+            title_album: title,
+            album: "Itinerary",
+            file: props.route.params.file,
+            type: props.route.params.type,
+            location: props.route.params.location,
+            post_id: props.route.params.post_id,
+          },
+        });
   };
 
   const closeItinerary = async () => {

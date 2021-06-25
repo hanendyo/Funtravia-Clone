@@ -865,7 +865,7 @@ export default function DetailJournal(props) {
                       }}
                     >
                       <Text size="label" type="bold">
-                        View all comments
+                        {t("ViewAll")}
                       </Text>
                       <PanahBulat
                         height={20}

@@ -533,5 +533,18 @@
   "failedCreateAlbum": "Failed to create album",
   "photo": "Photo",
   "pleaselogin": "Please Login",
-  "TagAlbum": "Tag photo to album"
+  "TagAlbum": "Tag photo to album",
+  "ViewAll": "View all comments",
+  "January": "January",
+  "February": "February",
+  "March": "March",
+  "April": "April",
+  "May": "May",
+  "June": "June",
+  "Juli": "July",
+  "August": "August",
+  "September": "September",
+  "October": "October",
+  "November": "November",
+  "December": "December"
 }

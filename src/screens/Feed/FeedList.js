@@ -160,6 +160,12 @@ export default function FeedList({ props, isPost }) {
   });
 
   const SubmitData = async () => {
+    console.log("ref", ref);
+    // setTimeout(() => {
+    //   if (ref) {
+    //     ref.current.scrollToIndex({ animated: true, index: 0 });
+    //   }
+    // }, 1000);
     try {
       let response = await MutationCreate({
         variables: {
@@ -174,10 +180,14 @@ export default function FeedList({ props, isPost }) {
           assets: props?.route?.params?.assets,
         },
       });
+      console.log("response", response);
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
           Refresh();
+          if (ref) {
+            ref.current.scrollToIndex({ animated: true, index: 0 });
+          }
         } else {
           throw new Error(response.data.create_post.message);
         }
@@ -457,6 +467,10 @@ export default function FeedList({ props, isPost }) {
   useEffect(() => {
     loadAsync();
     if (props.route.params) {
+      if (props.route.params.isItinerary === true) {
+        Refresh();
+      }
+
       if (props.route.params.isPost === true) {
         SubmitData();
         // refetch();
@@ -823,6 +837,7 @@ export default function FeedList({ props, isPost }) {
                         type: "",
                         location: "",
                         isAlbum: true,
+                        post_id: selectedOption?.id,
                       },
                     });
                 }}
@@ -1368,7 +1383,6 @@ export default function FeedList({ props, isPost }) {
                   padding: 10,
                   flexDirection: "row",
                 }}
-                More
               >
                 {item.is_single == false && item.itinerary !== null ? (
                   <View>
@@ -1442,7 +1456,7 @@ export default function FeedList({ props, isPost }) {
                       </ReadMore>
                     ) : null}
                   </View>
-                ) : item.caption ? (
+                ) : item?.caption ? (
                   <ReadMore
                     numberOfLines={3}
                     renderTruncatedFooter={ReadMorehendle}
@@ -1466,7 +1480,7 @@ export default function FeedList({ props, isPost }) {
                         {item.user.first_name}{" "}
                         {item.user.first_name ? item.user.last_name : null}{" "}
                       </Text>
-                      {item.caption}
+                      {item?.caption}
                     </Text>
                   </ReadMore>
                 ) : null}

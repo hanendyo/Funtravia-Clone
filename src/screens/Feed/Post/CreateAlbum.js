@@ -121,16 +121,33 @@ export default function CreateAlbum(props) {
   }, []);
 
   const Choose = (id) => {
-    props.navigation.navigate("FeedStack", {
-      screen: "ChooseAlbumItinerary",
-      params: {
-        idItinerary: id,
-        token: token,
-        file: props.route.params.file,
-        type: props.route.params.type,
-        location: props.route.params.location,
-      },
-    });
+    props.route.params.isAlbum === true
+      ? props.navigation.navigate("FeedStack", {
+          screen: "ChooseAlbumItinerary",
+          params: {
+            idItinerary: id,
+            token: token,
+            file: props.route.params.file,
+            type: props.route.params.type,
+            location: props.route.params.location,
+            token: token,
+            post_id: props.route.params.post_id,
+            isAlbum: true,
+          },
+        })
+      : props.navigation.navigate("FeedStack", {
+          screen: "ChooseAlbumItinerary",
+          params: {
+            idItinerary: id,
+            token: token,
+            file: props.route.params.file,
+            type: props.route.params.type,
+            location: props.route.params.location,
+            token: token,
+            post_id: props.route.params.post_id,
+            isAlbum: false,
+          },
+        });
     setIdItinerary(id);
     setModalDay(true);
   };
@@ -418,6 +435,7 @@ export default function CreateAlbum(props) {
                             file: props.route.params.file,
                             type: props.route.params.type,
                             location: props.route.params.location,
+                            post_id: props.route.params.post_id,
                           },
                         });
                   }}
@@ -582,6 +600,7 @@ export default function CreateAlbum(props) {
               style={{
                 width: "100%",
                 paddingHorizontal: 15,
+                // backgroundColor: "#f6f6f6",
               }}
             >
               <TextInput
@@ -590,28 +609,17 @@ export default function CreateAlbum(props) {
                 maxLength={1000}
                 placeholderStyle={{ fontSize: 50 }}
                 placeholderTextColor="#6C6C6C"
-                style={
-                  Platform.OS == "ios"
-                    ? {
-                        height: 75,
-                        maxHeight: 100,
-                        marginVertical: 10,
-                        marginHorizontal: 10,
-                        paddingTop: 10,
-                        fontSize: 14,
-                        fontFamily: "Lato-Regular",
-                      }
-                    : {
-                        height: 50,
-                        borderRadius: 5,
-                        backgroundColor: "#f6f6f6",
-                        paddingHorizontal: 10,
-                        fontSize: 14,
-                        marginVertical: 10,
-                        fontFamily: "Lato-Regular",
-                      }
-                }
+                style={{
+                  height: 50,
+                  borderRadius: 5,
+                  paddingHorizontal: 10,
+                  fontSize: 14,
+                  marginVertical: 10,
+                  fontFamily: "Lato-Regular",
+                  backgroundColor: "#f6f6f6",
+                }}
                 onChangeText={(text) => setNewTextFeed(text)}
+                onSubmitEditing={(text) => setNewTextFeed(text)}
                 value={newTextFeed}
               />
             </View>

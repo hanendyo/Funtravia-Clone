@@ -41,6 +41,7 @@ export default function Feed(props) {
   let { width, height } = Dimensions.get("screen");
 
   const spreadData = (data) => {
+    console.log("data", data);
     let tmpData = [];
     let count = 1;
     let tmpArray = [];
@@ -113,8 +114,6 @@ export default function Feed(props) {
       dataPost.feed_post_populer_paging.datas
     );
   }
-
-  console.log("dataPost", dataPost);
 
   const {
     loading: loadingSrcuser,
