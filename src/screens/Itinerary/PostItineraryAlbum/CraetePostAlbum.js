@@ -25,45 +25,19 @@ import {
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native-gesture-handler";
 import { default_image } from "../../../assets/png";
-import Account from "../../../graphQL/Query/Home/Account";
+import PostMut from "../../../graphQL/Mutation/Itinerary/PostToFeed";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("screen");
-const PostMut = gql`
-  mutation(
-    $caption: String
-    $latitude: String
-    $longitude: String
-    $location_name: String
-    $assets: String!
-    $itinerary_id: ID
-    $day_id: ID
-  ) {
-    create_post_itinerary_albums(
-      input: {
-        caption: $caption
-        latitude: $latitude
-        longitude: $longitude
-        location_name: $location_name
-        assets: $assets
-        itinerary_id: $itinerary_id
-        day_id: $day_id
-      }
-    ) {
-      id
-      response_time
-      message
-      code
-    }
-  }
-`;
 
 export default function CraetePostAlbum(props) {
   let itinerary_id = props.route.params.itinerary_id;
   let selectedPhoto = props.route.params.selectedPhoto;
-  let day_id = props.route.params.day_id;
+  let album_id = props.route.params.album_id;
+  let token = props.route.params.token;
+
   const [indexAktif, setIndexAktive] = useState(0);
   let [statusText, setStatusText] = useState("");
   let [loadingok, setLoading] = useState(false);
@@ -77,7 +51,6 @@ export default function CraetePostAlbum(props) {
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
-  // console.log(setting);
   const HeaderComponent = {
     title: "Select Photos",
     headerTintColor: "white",
@@ -132,6 +105,7 @@ export default function CraetePostAlbum(props) {
       },
     },
   });
+
   const _setStatusText = async (text) => {
     setStatusText(text);
     await props.navigation.setOptions({
@@ -183,27 +157,39 @@ export default function CraetePostAlbum(props) {
       ),
     });
     let caption = statusText ? statusText : "-";
-    let latitude = Location.latitude !== "" ? Location.latitude : "0";
-    let longitude = Location.longitude !== "" ? Location.longitude : "0";
+    let latitude = Location?.latitude !== "" ? Location?.latitude : "0";
+    let longitude = Location?.longitude !== "" ? Location?.longitude : "0";
     let location_name =
-      Location.address == "" || Location.address == "Add Location"
+      Location?.address == "" || Location?.address == "Add Location"
         ? "0"
         : Location.address;
     try {
       let response = await MutationCreate({
         variables: {
           caption: caption,
-          latitude: latitude,
-          longitude: longitude,
-          location_name: location_name,
+          latitude: 0,
+          longitude: 0,
+          location_name: 0,
           assets: JSON.stringify(selectedPhoto),
           itinerary_id: itinerary_id,
-          day_id: day_id,
+          album_id: album_id,
         },
       });
+
       if (response.data) {
         if (response.data.create_post_itinerary_albums.code === 200) {
-          props.navigation.navigate("FeedScreen", { isposting: true });
+          props.navigation.navigate("BottomStack", {
+            screen: "FeedBottomScreen",
+            params: {
+              screen: "FeedScreen",
+              params: {
+                isPost: false,
+                isItinerary: true,
+              },
+            },
+          });
+
+          // props.navigation.navigate("FeedScreen", { isposting: true });
         } else {
           throw new Error(response.data.create_post_itinerary_albums.message);
         }
