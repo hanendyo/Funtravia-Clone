@@ -534,5 +534,6 @@
   "lookFor": "Cari",
   "failedCreateAlbum": "Gagal membuat album",
   "photo": "Foto",
-  "pleaselogin": "Silahkan Login dahulu"
+  "pleaselogin": "Silahkan Login dahulu",
+  "TagAlbum": "Hubungkan post ke album"
 }

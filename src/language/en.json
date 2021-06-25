@@ -532,6 +532,6 @@
   "lookFor": "Search",
   "failedCreateAlbum": "Failed to create album",
   "photo": "Photo",
-  "pleaselogin": "Please Login"
-
+  "pleaselogin": "Please Login",
+  "TagAlbum": "Tag photo to album"
 }

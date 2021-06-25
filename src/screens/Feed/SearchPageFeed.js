@@ -114,6 +114,8 @@ export default function Feed(props) {
     );
   }
 
+  console.log("dataPost", dataPost);
+
   const {
     loading: loadingSrcuser,
     data: dataSrcuser,
