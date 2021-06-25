@@ -95,6 +95,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
 import UploadfotoAlbum from "../../../graphQL/Mutation/Itinerary/Uploadalbum";
 import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
+import ImageSliders from "../../../component/src/ImageSlide/sliderPost";
 import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
 import { StackActions } from "@react-navigation/routers";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
@@ -2624,7 +2625,7 @@ export default function ItineraryDetail(props) {
                       data.type === "video" ? (
                         <TouchableOpacity
                           onPress={() => {
-                            setdataimage(item.posted, i);
+                            setdataimagepost(item.posted, i);
                           }}
                         >
                           <FunVideo
@@ -2664,7 +2665,7 @@ export default function ItineraryDetail(props) {
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
-                            setdataimage(item.posted, i);
+                            setdataimagepost(item.posted, i);
                           }}
                         >
                           <FunImage
@@ -4566,6 +4567,7 @@ export default function ItineraryDetail(props) {
   let [indexs, setIndexs] = useState(0);
   let [dataImage, setImage] = useState([]);
   let [modalss, setModalss] = useState(false);
+  let [modalsss, setModalsss] = useState(false);
   let judul = "";
 
   const setdataimage = async (data, inde) => {
@@ -4609,6 +4611,48 @@ export default function ItineraryDetail(props) {
     await setModalss(true);
   };
 
+  const setdataimagepost = async (data, inde) => {
+    await console.log(data);
+    // await console.log(wid, hig);
+    setIndexs(inde);
+    var tempdatas = [];
+    var x = 0;
+    for (var i in data) {
+      if (data[i].id !== "camera") {
+        let wid = 0;
+        let hig = 0;
+        if (data[i].type !== "video") {
+          Image.getSize(data[i].filepath, (width, height) => {
+            wid = width;
+            hig = height;
+          });
+        } else {
+          wid = 500;
+          hig = 500;
+        }
+
+        tempdatas.push({
+          key: i,
+          id: data[i].post_id,
+          selected: i === inde ? true : false,
+          url: data[i]?.filepath ? data[i]?.filepath : "",
+          width: wid,
+          height: hig,
+          props: {
+            source: data[i]?.filepath ? data[i]?.filepath : "",
+            type: data[i]?.type,
+          },
+          by: data[i]?.upload_by?.first_name
+            ? data[i]?.upload_by?.first_name
+            : "",
+        });
+        x++;
+      }
+    }
+    await setImage(tempdatas);
+    await setModalsss(true);
+  };
+
   if (loadingdetail) {
     return (
       <View
@@ -4648,6 +4692,18 @@ export default function ItineraryDetail(props) {
           show={modalss}
           dataImage={dataImage}
           setClose={() => setModalss(!modalss)}
+        />
+
+        <ImageSliders
+          index={indexs}
+          name="Funtravia Images"
+          location={datadetail?.itinerary_detail?.name}
+          // {...props}
+          show={modalsss}
+          dataImage={dataImage}
+          props={props}
+          token={token}
+          setClose={() => setModalsss(!modalsss)}
         />
 
         <Modal
