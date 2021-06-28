@@ -61,7 +61,7 @@ export default function RenderAlbum({
                 "output.m3u8",
                 "thumbnail.png"
               )}
-              posterResizeMode={"cover"}
+              posterResizeMode={"contain"}
               // source={{
               //   uri: data?.assets[0]?.filepath,
               // }}
@@ -79,7 +79,7 @@ export default function RenderAlbum({
                 borderRadius: 15,
                 marginHorizontal: 10,
               }}
-              resizeMode="cover"
+              resizeMode="contain"
               muted={muted}
               paused={
                 isComment ? false : play === data.id && isFocused ? false : true

@@ -93,7 +93,10 @@ const PostMut = gql`
   }
 `;
 
-export default function FeedList({ props, isPost }) {
+export default function FeedList({ props, token }) {
+  console.log("props feed", props);
+  console.log("props token", token);
+  const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   useScrollToTop(ref);
   const isFocused = useIsFocused();
@@ -105,7 +108,6 @@ export default function FeedList({ props, isPost }) {
   let [activelike, setactivelike] = useState(true);
   let [koment, setKoment] = useState("");
 
-  const { t, i18n } = useTranslation();
   let { width, height } = Dimensions.get("screen");
   const [
     MutationLike,
@@ -318,6 +320,8 @@ export default function FeedList({ props, isPost }) {
     }
   };
 
+  console.log("token feed", token);
+
   const {
     loading: loadingPost,
     data: dataPost,
@@ -339,6 +343,8 @@ export default function FeedList({ props, isPost }) {
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
+
+  console.log("dataPost", dataPost);
 
   let feed_post_pageing = [];
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
@@ -465,7 +471,7 @@ export default function FeedList({ props, isPost }) {
   };
 
   useEffect(() => {
-    loadAsync();
+    console.log("use1");
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
         Refresh();
@@ -478,35 +484,11 @@ export default function FeedList({ props, isPost }) {
         console.log("else");
       }
     }
-  }, [props.route.params]);
-
-  // useEffect(() => {
-  //   const unsubscribe = props.navigation.addListener(
-  //     "focus",
-  //     (data, target) => {
-  //       console.log("post", props);
-  //       console.log("post1", props?.route);
-  //       console.log("post2", props?.route?.params);
-  //       console.log("post3", props?.route?.params?.isPost);
-  //       let ispost = props?.route?.params?.isPost;
-  //       if (ispost == true) {
-  //         console.log("submit data");
-  //         SubmitData();
-  //       } else {
-  //         console.log("use2");
-  //       }
-  //     }
-  //   );
-  //   return unsubscribe;
-  // }, [props.navigation]);
-
-  let [liked, setLiked] = useState(false);
-
-  const createPost = () => {
-    props.navigation.push("FeedStack", {
-      screen: "Post",
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
     });
-  };
+    return unsubscribe;
+  }, [props.route.params]);
 
   const countKoment = (id) => {
     const tempd = [...feed_post_pageing];

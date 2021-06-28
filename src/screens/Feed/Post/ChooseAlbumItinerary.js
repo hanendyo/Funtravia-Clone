@@ -394,28 +394,17 @@ export default function ChooseAlbumItinerary(props) {
                 maxLength={1000}
                 placeholderStyle={{ fontSize: 50 }}
                 placeholderTextColor="#6C6C6C"
-                style={
-                  Platform.OS == "ios"
-                    ? {
-                        height: 75,
-                        maxHeight: 100,
-                        marginVertical: 10,
-                        marginHorizontal: 10,
-                        paddingTop: 10,
-                        fontSize: 14,
-                        fontFamily: "Lato-Regular",
-                      }
-                    : {
-                        height: 50,
-                        borderRadius: 5,
-                        backgroundColor: "#f6f6f6",
-                        paddingHorizontal: 10,
-                        fontSize: 14,
-                        marginVertical: 10,
-                        fontFamily: "Lato-Regular",
-                      }
-                }
+                style={{
+                  height: 50,
+                  borderRadius: 5,
+                  paddingHorizontal: 10,
+                  fontSize: 14,
+                  marginVertical: 10,
+                  fontFamily: "Lato-Regular",
+                  backgroundColor: "#f6f6f6",
+                }}
                 onChangeText={(text) => setText(text)}
+                onSubmitEditing={(text) => setText(text)}
                 value={text}
               />
             </View>
