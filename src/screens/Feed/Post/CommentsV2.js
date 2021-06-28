@@ -62,8 +62,10 @@ import { useTranslation } from "react-i18next";
 import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
+import DeviceInfo from "react-native-device-info";
 
 export default function Comments(props) {
+  const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState();
   const [dataComment, setDataComment] = useState();
@@ -437,7 +439,7 @@ export default function Comments(props) {
           }
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         RNToasty.Show({
           title: "Failed to delete this post",
           position: "bottom",
@@ -570,7 +572,7 @@ export default function Comments(props) {
           });
 
           if (loadingcmnt) {
-            console.log("loading comment");
+            // console.log("loading comment");
           }
 
           if (errorcmnt) {
@@ -591,7 +593,7 @@ export default function Comments(props) {
             }
           }
         } catch (error) {
-          console.log("error", error);
+          // console.log("error", error);
           tempData.splice(idx, 1);
           setDataComment(tempData);
           RNToasty.Show({
@@ -666,7 +668,7 @@ export default function Comments(props) {
           }
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         RNToasty.Show({
           title: "Gagal unfollow",
           position: "bottom",
@@ -707,7 +709,7 @@ export default function Comments(props) {
           }
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         RNToasty.Show({
           title: "Gagal follow",
           position: "bottom",
@@ -811,11 +813,11 @@ export default function Comments(props) {
   }
 
   return (
-    <KeyboardAvoidingView
-      // behavior={Platform.OS == "ios" ? "padding" : "height"}
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "#F6F6F6",
+        justifyContent: "space-between",
       }}
     >
       <Modal
@@ -1091,255 +1093,219 @@ export default function Comments(props) {
           </View>
         </View>
       </Modal>
-      <View
-        style={{
-          width: Dimensions.get("window").width - 20,
+
+      <FlatList
+        onViewableItemsChanged={onViewRef.current}
+        viewabilityConfig={viewConfigRef.current}
+        onScrollToIndexFailed={() => scroll_to_index(indeks)}
+        keyboardShouldPersistTaps="always"
+        showsVerticalScrollIndicator={false}
+        ref={slider}
+        data={dataComment}
+        renderItem={({ item }) => {
+          return <Item dataComment={item} />;
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        }
+        keyExtractor={(item) => item.id}
+        extraData={selected}
+        contentContainerStyle={{
           backgroundColor: "#FFFFFF",
-          borderBottomColor: "#EEEEEE",
           marginHorizontal: 10,
           marginTop: 10,
-          paddingBottom: 60,
-          borderRadius: 15,
+          borderTopStartRadius: 15,
+          borderTopEndRadius: 15,
           minHeight: Dimensions.get("window").height - 70,
         }}
-      >
-        <FlatList
-          onViewableItemsChanged={onViewRef.current}
-          // onContentSizeChange={() => commmentEnd()}
-          viewabilityConfig={viewConfigRef.current}
-          style={{ marginBottom: 20 }}
-          onScrollToIndexFailed={() => scroll_to_index(indeks)}
-          keyboardShouldPersistTaps="always"
-          showsVerticalScrollIndicator={false}
-          ref={slider}
-          data={dataComment}
-          renderItem={({ item }) => {
-            return <Item dataComment={item} />;
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => Refresh()}
-            />
-          }
-          keyExtractor={(item) => item.id}
-          extraData={selected}
-          contentContainerStyle={{}}
-          ListHeaderComponent={
-            dataPost == null && queryLoadingPost ? (
-              <ActivityIndicator
-                animating={true}
-                size="large"
-                color="#209fae"
-              />
-            ) : (
-              <>
-                <View
+        ListHeaderComponent={
+          dataPost == null && queryLoadingPost ? (
+            <ActivityIndicator animating={true} size="large" color="#209fae" />
+          ) : (
+            <>
+              <View
+                style={{
+                  width: Dimensions.get("window").width - 40,
+                  flexDirection: "row",
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
+                  alignContent: "center",
+                }}
+              >
+                <Pressable
+                  onPress={() => {
+                    dataPost?.user?.id !== setting?.user?.id
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: dataPost?.user?.id,
+                          },
+                        })
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                          params: { token: token },
+                        });
+                  }}
                   style={{
-                    width: Dimensions.get("window").width - 40,
                     flexDirection: "row",
-                    marginVertical: 10,
-                    paddingHorizontal: 10,
-                    alignContent: "center",
                   }}
                 >
-                  <Pressable
-                    onPress={() => {
-                      dataPost?.user?.id !== setting?.user?.id
-                        ? props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: {
-                              idUser: dataPost?.user?.id,
-                            },
-                          })
-                        : props.navigation.push("ProfileStack", {
-                            screen: "ProfileTab",
-                            params: { token: token },
-                          });
-                    }}
+                  <FunImage
+                    isTouchable
                     style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <FunImage
-                      isTouchable
-                      style={{
-                        height: 35,
-                        width: 35,
-                        borderRadius: 18,
-                        alignSelf: "center",
-                        resizeMode: "cover",
-                      }}
-                      source={{
-                        uri: dataPost?.user?.picture,
-                      }}
-                    />
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        marginHorizontal: 10,
-                      }}
-                    >
-                      <Text type={"bold"} style={{}}>
-                        {dataPost?.user?.first_name}{" "}
-                        {dataPost?.user?.first_name
-                          ? dataPost?.user?.last_name
-                          : null}
-                      </Text>
-                      <Text size={"small"} style={{}}>
-                        {/* {duration(dataPost?.created_at)} */}
-                        {props?.route?.params?.time}
-                      </Text>
-                    </View>
-                  </Pressable>
-                  <TouchableOpacity
-                    onPress={() => {
-                      OptionOpen(dataPost);
-                    }}
-                    style={{
-                      position: "absolute",
-                      right: 0,
+                      height: 35,
+                      width: 35,
+                      borderRadius: 18,
                       alignSelf: "center",
+                      resizeMode: "cover",
+                    }}
+                    source={{
+                      uri: dataPost?.user?.picture,
+                    }}
+                  />
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      marginHorizontal: 10,
                     }}
                   >
-                    <More height={20} width={20} />
-                  </TouchableOpacity>
-                </View>
-                <View
+                    <Text type={"bold"} style={{}}>
+                      {dataPost?.user?.first_name}{" "}
+                      {dataPost?.user?.first_name
+                        ? dataPost?.user?.last_name
+                        : null}
+                    </Text>
+                    <Text size={"small"} style={{}}>
+                      {/* {duration(dataPost?.created_at)} */}
+                      {props?.route?.params?.time}
+                    </Text>
+                  </View>
+                </Pressable>
+                <TouchableOpacity
+                  onPress={() => {
+                    OptionOpen(dataPost);
+                  }}
                   style={{
-                    marginHorizontal: 10,
-                    alignContent: "center",
-                    justifyContent: "center",
-                    width: Dimensions.get("window").width - 40,
-                    minHeight: Dimensions.get("window").width - 155,
-                    borderColor: "#EEEEEE",
-                    borderRadius: 15,
+                    position: "absolute",
+                    right: 0,
+                    alignSelf: "center",
                   }}
                 >
-                  {dataPost ? (
-                    dataPost?.is_single === false ? (
-                      <RenderAlbum
-                        data={dataPost}
-                        props={props}
-                        play={play}
-                        muted={muted}
-                        setMuted={(e) => setMuted(e)}
-                        isFocused={isFocused}
-                        isComment={true}
-                        index
-                      />
-                    ) : (
-                      <RenderSinglePhoto
-                        data={dataPost}
-                        props={props}
-                        play={play}
-                        muted={muted}
-                        setMuted={(e) => setMuted(e)}
-                        isFocused={isFocused}
-                        isComment={true}
-                      />
-                    )
-                  ) : null}
-                </View>
+                  <More height={20} width={20} />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  marginHorizontal: 10,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  width: Dimensions.get("window").width - 40,
+                  minHeight: Dimensions.get("window").width - 155,
+                  borderColor: "#EEEEEE",
+                  borderRadius: 15,
+                }}
+              >
+                {dataPost ? (
+                  dataPost?.is_single === false ? (
+                    <RenderAlbum
+                      data={dataPost}
+                      props={props}
+                      play={play}
+                      muted={muted}
+                      setMuted={(e) => setMuted(e)}
+                      isFocused={isFocused}
+                      isComment={true}
+                      index
+                    />
+                  ) : (
+                    <RenderSinglePhoto
+                      data={dataPost}
+                      props={props}
+                      play={play}
+                      muted={muted}
+                      setMuted={(e) => setMuted(e)}
+                      isFocused={isFocused}
+                      isComment={true}
+                    />
+                  )
+                ) : null}
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  marginTop: 17,
+                }}
+              >
                 <View
                   style={{
-                    width: "100%",
+                    flexDirection: "row",
                     backgroundColor: "white",
-                    marginTop: 17,
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
                   }}
                 >
                   <View
                     style={{
                       flexDirection: "row",
-                      backgroundColor: "white",
-                      justifyContent: "space-between",
-                      paddingHorizontal: 10,
+                      width: "50%",
+                      alignSelf: "flex-start",
+                      alignContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        width: "50%",
-                        alignSelf: "flex-start",
-                        alignContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      {dataPost?.liked ? (
-                        <Button
-                          onPress={async () => {
-                            await props.route.params._unliked(
-                              dataPost?.id,
-                              props.route.params.indeks
-                            );
-                            await _unliked(dataPost?.id);
-                          }}
-                          type="icon"
-                          position="left"
-                          size="small"
-                          style={{
-                            paddingHorizontal: 10,
-                            marginRight: 15,
-                            borderRadius: 16,
-                            backgroundColor: "#F2DAE5",
-                          }}
-                        >
-                          <LikeRed height={15} width={15} />
-                          <Text
-                            type="black"
-                            size="label"
-                            style={{
-                              marginHorizontal: 5,
-                              color: "#BE3737",
-                            }}
-                          >
-                            {dataPost?.response_count}
-                          </Text>
-                        </Button>
-                      ) : (
-                        <Button
-                          // onPress={() => _liked(dataPost?.id)}
-                          onPress={async () => {
-                            await props.route.params._liked(
-                              dataPost?.id,
-                              props.route.params.indeks
-                            );
-                            await _liked(dataPost?.id);
-                          }}
-                          type="icon"
-                          position="left"
-                          size="small"
-                          color="tertiary"
-                          style={{
-                            paddingHorizontal: 10,
-                            marginRight: 15,
-                            borderRadius: 16,
-                          }}
-                        >
-                          <LikeBlack height={15} width={15} />
-                          <Text
-                            type="black"
-                            size="label"
-                            style={{
-                              marginHorizontal: 7,
-                            }}
-                          >
-                            {dataPost?.response_count}
-                          </Text>
-                        </Button>
-                      )}
-
+                    {dataPost?.liked ? (
                       <Button
-                        // onPress={() => console.log("dataPost")}
+                        onPress={async () => {
+                          await props.route.params._unliked(
+                            dataPost?.id,
+                            props.route.params.indeks
+                          );
+                          await _unliked(dataPost?.id);
+                        }}
                         type="icon"
-                        variant="transparent"
                         position="left"
                         size="small"
                         style={{
-                          paddingHorizontal: 2,
+                          paddingHorizontal: 10,
+                          marginRight: 15,
+                          borderRadius: 16,
+                          backgroundColor: "#F2DAE5",
                         }}
                       >
-                        <CommentBlack height={15} width={15} />
+                        <LikeRed height={15} width={15} />
+                        <Text
+                          type="black"
+                          size="label"
+                          style={{
+                            marginHorizontal: 5,
+                            color: "#BE3737",
+                          }}
+                        >
+                          {dataPost?.response_count}
+                        </Text>
+                      </Button>
+                    ) : (
+                      <Button
+                        // onPress={() => _liked(dataPost?.id)}
+                        onPress={async () => {
+                          await props.route.params._liked(
+                            dataPost?.id,
+                            props.route.params.indeks
+                          );
+                          await _liked(dataPost?.id);
+                        }}
+                        type="icon"
+                        position="left"
+                        size="small"
+                        color="tertiary"
+                        style={{
+                          paddingHorizontal: 10,
+                          marginRight: 15,
+                          borderRadius: 16,
+                        }}
+                      >
+                        <LikeBlack height={15} width={15} />
                         <Text
                           type="black"
                           size="label"
@@ -1347,136 +1313,154 @@ export default function Comments(props) {
                             marginHorizontal: 7,
                           }}
                         >
-                          {dataPost?.comment_count}
+                          {dataPost?.response_count}
                         </Text>
                       </Button>
-                    </View>
+                    )}
 
                     <Button
-                      onPress={() =>
-                        shareAction({
-                          from: "feed",
-                          target: dataPost?.id,
-                        })
-                      }
+                      // onPress={() => console.log("dataPost")}
                       type="icon"
                       variant="transparent"
                       position="left"
                       size="small"
+                      style={{
+                        paddingHorizontal: 2,
+                      }}
                     >
-                      <ShareBlack height={17} width={17} />
-                      {/* <Text size="small" style={{ marginLeft: 3 }}>
-                        {t("share")}
-                      </Text> */}
+                      <CommentBlack height={15} width={15} />
+                      <Text
+                        type="black"
+                        size="label"
+                        style={{
+                          marginHorizontal: 7,
+                        }}
+                      >
+                        {dataPost?.comment_count}
+                      </Text>
                     </Button>
                   </View>
-                  <View
-                    style={{
-                      width: "100%",
-                      padding: 10,
-                      flexDirection: "row",
-                    }}
+
+                  <Button
+                    onPress={() =>
+                      shareAction({
+                        from: "feed",
+                        target: dataPost?.id,
+                      })
+                    }
+                    type="icon"
+                    variant="transparent"
+                    position="left"
+                    size="small"
                   >
-                    {dataPost?.is_single == false ? (
-                      <View>
-                        {dataPost?.itinerary !== null ? (
-                          <Pressable
-                            onPress={() => goToItinerary(dataPost)}
-                            style={{
-                              flexDirection: "row",
-                              marginBottom: 10,
-                            }}
-                          >
-                            <View
-                              style={{
-                                backgroundColor: "#209fae",
-                                height: 23,
-                                width: 7,
-                                borderRadius: 4,
-                                marginRight: 10,
-                                marginLeft: 2,
-                              }}
-                            />
-                            <Text type="bold" size="title">
-                              {dataPost?.itinerary?.name}
-                            </Text>
-                          </Pressable>
-                        ) : null}
-                        {dataPost?.caption ? (
-                          <ReadMore
-                            numberOfLines={3}
-                            renderTruncatedFooter={ReadMorehendle}
-                            renderRevealedFooter={ReadLesshendle}
-                          >
-                            <Text
-                              size="label"
-                              style={{
-                                textAlign: "left",
-                                lineHeight: 20,
-                              }}
-                            >
-                              {dataPost?.caption}
-                            </Text>
-                          </ReadMore>
-                        ) : null}
-                      </View>
-                    ) : dataPost?.caption ? (
-                      <ReadMore
-                        numberOfLines={3}
-                        renderTruncatedFooter={ReadMorehendle}
-                        renderRevealedFooter={ReadLesshendle}
-                      >
-                        <Text
-                          size="label"
+                    <ShareBlack height={17} width={17} />
+                    {/* <Text size="small" style={{ marginLeft: 3 }}>
+                      {t("share")}
+                    </Text> */}
+                  </Button>
+                </View>
+                <View
+                  style={{
+                    width: "100%",
+                    padding: 10,
+                    flexDirection: "row",
+                  }}
+                >
+                  {dataPost?.is_single == false ? (
+                    <View>
+                      {dataPost?.itinerary !== null ? (
+                        <Pressable
+                          onPress={() => goToItinerary(dataPost)}
                           style={{
-                            textAlign: "left",
-                            lineHeight: 20,
+                            flexDirection: "row",
+                            marginBottom: 10,
                           }}
                         >
+                          <View
+                            style={{
+                              backgroundColor: "#209fae",
+                              height: 23,
+                              width: 7,
+                              borderRadius: 4,
+                              marginRight: 10,
+                              marginLeft: 2,
+                            }}
+                          />
+                          <Text type="bold" size="title">
+                            {dataPost?.itinerary?.name}
+                          </Text>
+                        </Pressable>
+                      ) : null}
+                      {dataPost?.caption ? (
+                        <ReadMore
+                          numberOfLines={3}
+                          renderTruncatedFooter={ReadMorehendle}
+                          renderRevealedFooter={ReadLesshendle}
+                        >
                           <Text
-                            type="bold"
                             size="label"
                             style={{
-                              marginRight: 5,
+                              textAlign: "left",
+                              lineHeight: 20,
                             }}
                           >
-                            {dataPost?.user?.first_name}{" "}
-                            {dataPost?.user?.first_name
-                              ? dataPost?.user?.last_name
-                              : null}{" "}
+                            {dataPost?.caption}
                           </Text>
-                          {dataPost?.caption}
+                        </ReadMore>
+                      ) : null}
+                    </View>
+                  ) : dataPost?.caption ? (
+                    <ReadMore
+                      numberOfLines={3}
+                      renderTruncatedFooter={ReadMorehendle}
+                      renderRevealedFooter={ReadLesshendle}
+                    >
+                      <Text
+                        size="label"
+                        style={{
+                          textAlign: "left",
+                          lineHeight: 20,
+                        }}
+                      >
+                        <Text
+                          type="bold"
+                          size="label"
+                          style={{
+                            marginRight: 5,
+                          }}
+                        >
+                          {dataPost?.user?.first_name}{" "}
+                          {dataPost?.user?.first_name
+                            ? dataPost?.user?.last_name
+                            : null}{" "}
                         </Text>
-                      </ReadMore>
-                    ) : null}
-                  </View>
+                        {dataPost?.caption}
+                      </Text>
+                    </ReadMore>
+                  ) : null}
                 </View>
-              </>
-            )
-          }
-        />
-        {/* ) : null} */}
-      </View>
-      {/* </ScrollView> */}
-      <View
+              </View>
+            </>
+          )
+        }
+      />
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Notch ? 90 : 65}
         style={{
-          position: "absolute",
-          bottom: 0,
-          paddingBottom: 10,
           width: Dimensions.get("window").width,
-          backgroundColor: "#F6F6F6",
-          justifyContent: "center",
-          alignItems: "center",
+
+          paddingHorizontal: 10,
         }}
       >
         <View
           style={{
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "#ffffff",
             borderBottomRightRadius: 15,
             borderBottomLeftRadius: 15,
-            marginHorizontal: 18,
             paddingVertical: 10,
-            width: Dimensions.get("screen").width - 20,
+            marginBottom: 10,
           }}
         >
           <View
@@ -1485,8 +1469,8 @@ export default function Comments(props) {
               marginHorizontal: 10,
               borderRadius: 50,
               backgroundColor: "#F6F6F6",
-              width: Dimensions.get("screen").width - 50,
               alignItems: "center",
+              alignContent: "center",
             }}
           >
             <TextInput
@@ -1501,7 +1485,6 @@ export default function Comments(props) {
               }
               maxLength={1000}
               style={{
-                height: 50,
                 width: Dimensions.get("screen").width - 130,
                 marginLeft: 20,
                 fontFamily: "Lato-Regular",
@@ -1533,8 +1516,8 @@ export default function Comments(props) {
             </Pressable>
           </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

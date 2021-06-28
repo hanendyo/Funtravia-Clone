@@ -86,14 +86,12 @@
 	<string>For Suggest Destination And Set Post Position</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>For Suggest Destination And Set Post Position</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>For usage mic</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Funtravia would like to save photos from the app to your gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>For Make Feed And Change Profile Picture</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>For usage mic</string>
-	<key>UIDocumentPickerViewController</key>
-	<string>For usage file picker</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Black.ttf</string>
@@ -127,6 +125,8 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>UIDocumentPickerViewController</key>
+	<string>For usage file picker</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

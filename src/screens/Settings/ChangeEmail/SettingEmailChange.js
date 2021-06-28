@@ -7,8 +7,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import changeEmail from "../../../graphQL/Mutation/Setting/changeEmail";
 import { useMutation } from "@apollo/client";
+import DeviceInfo from "react-native-device-info";
 
 export default function SettingEmailChange(props) {
+  const Notch = DeviceInfo.hasNotch();
   let [token, setToken] = useState("");
   let { t } = useTranslation();
   let [setting, setSetting] = useState("");
@@ -117,6 +119,7 @@ export default function SettingEmailChange(props) {
         backgroundColor: "white",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Notch ? 90 : 65}
       enabled
     >
       <Loading show={loadingEmail} />
