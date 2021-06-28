@@ -132,7 +132,7 @@
   "others": "Lainnya",
   "ticketAndAccommodation": "Tiket Pesawat dan Akomodasi",
   "people": "Orang",
-  "follow": "Follow",
+  "follow": "Mengikuti",
   "recent": "Baru-baru ini",
   "accommodation": "Akomodasi",
   "noDataRecent": "Oops.. Data Tidak Ditemukan",
@@ -535,5 +535,18 @@
   "failedCreateAlbum": "Gagal membuat album",
   "photo": "Foto",
   "pleaselogin": "Silahkan Login dahulu",
-  "TagAlbum": "Hubungkan post ke album"
+  "TagAlbum": "Hubungkan post ke album",
+  "ViewAll": "Lihat semua komentar",
+  "January": "Januari",
+  "February": "Februari",
+  "March": "Maret",
+  "April": "April",
+  "May": "Mei",
+  "June": "Juni",
+  "Juli": "Juli",
+  "August": "Agustus",
+  "September": "September",
+  "October": "Oktober",
+  "November": "November",
+  "December": "Desember"
 }

@@ -1374,7 +1374,6 @@ export default function Comments(props) {
                       width: "100%",
                       padding: 10,
                       flexDirection: "row",
-                      borderRadius: 20,
                     }}
                   >
                     {dataPost?.is_single == false ? (

@@ -32,7 +32,7 @@ export default function JournalComment(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Comment",
+    headerTitle: t("comments"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
