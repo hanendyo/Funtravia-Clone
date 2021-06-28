@@ -24,9 +24,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
+import DeviceInfo from "react-native-device-info";
 
 export default function Room({ navigation, route }) {
-  console.log("route group room", route);
+  const Notch = DeviceInfo.hasNotch();
+  // console.log("route group room", route);
   const { width, height } = Dimensions.get("screen");
   const [room, setRoom] = useState(route.params.room_id);
   const [from, setfrom] = useState(route.params.from);
@@ -217,7 +219,7 @@ export default function Room({ navigation, route }) {
       }
     );
     let responseJson = await response.json();
-    console.log(room);
+    // console.log(room);
     if (responseJson.data) {
       await AsyncStorage.setItem(
         "history_" + room,
@@ -454,7 +456,7 @@ export default function Room({ navigation, route }) {
       />
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={65}
+        keyboardVerticalOffset={Notch ? 90 : 65}
       >
         <View
           style={{

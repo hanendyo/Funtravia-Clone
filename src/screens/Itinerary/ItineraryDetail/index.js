@@ -620,7 +620,6 @@ export default function ItineraryDetail(props) {
       hasil.push(files);
       setmodalAlbum(false);
 
-      // console.log(hasil);
       uploadAlbum(hasil);
     });
   };
@@ -638,10 +637,8 @@ export default function ItineraryDetail(props) {
           name: res.name,
         });
         hasil.push(files);
-        // await console.log(files);
       }
       await setmodalAlbum(false);
-      // await console.log(hasil);
       await uploadAlbum(hasil);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -654,10 +651,7 @@ export default function ItineraryDetail(props) {
 
   let [idupload, setidupload] = useState(null);
 
-  // console.log(loadinguploadAlbum);
-
   const uploadAlbum = async (data) => {
-    console.log("masuk dak", data);
     // return false;
     setmodalAlbum(false);
     setloading(true);
@@ -2597,8 +2591,6 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
-    // console.log(grid);
-    // console.log(item.unposted);
     return grid !== 1 ? (
       item.id === dataalbumaktif?.id ? (
         <View
@@ -3168,8 +3160,6 @@ export default function ItineraryDetail(props) {
   };
 
   const spreadDatas = (rData) => {
-    console.log("data spread", rData);
-
     let result = [];
     rData.itinerary_album_list_v2.album.map((dataS, index) => {
       let tempdata = {
@@ -3196,8 +3186,6 @@ export default function ItineraryDetail(props) {
     });
     return result;
   };
-
-  // console.log(datadetail?.itinerary_detail);
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -4577,8 +4565,6 @@ export default function ItineraryDetail(props) {
   let judul = "";
 
   const setdataimage = async (data, inde) => {
-    // await console.log(data);
-    // await console.log(wid, hig);
     setIndexs(inde);
     var tempdatas = [];
     var x = 0;
@@ -4618,8 +4604,6 @@ export default function ItineraryDetail(props) {
   };
 
   const setdataimagepost = async (data, inde) => {
-    await console.log(data);
-    // await console.log(wid, hig);
     setIndexs(inde);
     var tempdatas = [];
     var x = 0;
