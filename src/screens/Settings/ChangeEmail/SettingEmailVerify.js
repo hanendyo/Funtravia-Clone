@@ -40,8 +40,7 @@ export default function SettingEmailVerify(props) {
   });
 
   const HeaderComponent = {
-    headerTitle: "Verifiy Email",
-    // headerTitle: t("ChangeEmail"),
+    headerTitle: t("verify") + " Email",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -156,7 +155,7 @@ export default function SettingEmailVerify(props) {
 
   const hitungMundur = () => {
     var timeleft = 30;
-    var downloadTimer = setInterval(function () {
+    var downloadTimer = setInterval(function() {
       timeleft -= 1;
       setTimer(timeleft);
       if (timeleft === 0) {

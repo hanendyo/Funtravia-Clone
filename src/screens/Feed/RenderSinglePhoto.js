@@ -33,7 +33,7 @@ export default function RenderSinglePhoto({
               "output.m3u8",
               "thumbnail.png"
             )}
-            posterResizeMode={"cover"}
+            posterResizeMode={"contain"}
             source={{
               uri: data?.assets[0]?.filepath,
             }}
@@ -49,7 +49,7 @@ export default function RenderSinglePhoto({
               height: width,
               borderRadius: 15,
             }}
-            resizeMode="cover"
+            resizeMode="contain"
             muted={muted}
             paused={
               isComment ? false : play === data.id && isFocused ? false : true
