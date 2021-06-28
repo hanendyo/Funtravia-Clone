@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, CustomImage, Text, Truncate } from "../../component";
+import { Button, CustomImage, FunImage, Text, Truncate } from "../../component";
 import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { Loading } from "../../component";
@@ -276,7 +276,72 @@ export default function TravelGoalDetail(props) {
           <View
             style={{ paddingHorizontal: 20, width: "100%", marginBottom: 20 }}
           >
-            {item?.title ? (
+            {item.type === "image" ? (
+              <View style={{ marginVertical: 10 }}>
+                {item.title ? (
+                  <Text size="label" type="bold">
+                    {item.title}
+                  </Text>
+                ) : null}
+
+                <View
+                  style={{
+                    alignItems: "center",
+                  }}
+                >
+                  <FunImage
+                    source={item.image ? { uri: item.image } : default_image}
+                    resizeMode={"cover"}
+                    style={{
+                      borderWidth: 0.4,
+                      borderColor: "#d3d3d3",
+                      marginTop: 5,
+                      height: Dimensions.get("screen").width * 0.4,
+                      width: "100%",
+                    }}
+                  />
+                </View>
+                <Text
+                  size="small"
+                  type="regular"
+                  style={{
+                    textAlign: "justify",
+                    marginTop: 5,
+                    color: "#464646",
+                  }}
+                >
+                  {item.text ? item.text : ""}
+                </Text>
+              </View>
+            ) : (
+              <View style={{ marginVertical: 10 }}>
+                {item.title ? (
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{
+                      marginBottom: 5,
+                      color: "#464646",
+                    }}
+                  >
+                    {i.title}
+                  </Text>
+                ) : null}
+                <Text
+                  size="readable"
+                  type="regular"
+                  style={{
+                    marginTop: 5,
+                    textAlign: "justify",
+                    color: "#464646",
+                  }}
+                >
+                  {item.text ? item.text : ""}
+                </Text>
+              </View>
+            )}
+
+            {/* {item?.title ? (
               <Text size="label" type="bold" style={{}}>
                 {item?.title ? item?.title : null}
               </Text>
@@ -291,8 +356,9 @@ export default function TravelGoalDetail(props) {
                   marginVertical: 10,
                 }}
               ></Image>
-            ) : null}
-            {/* <View
+            ) : null} */}
+
+            {/* <ViewArticle
               style={{
                 flexDirection: "row",
                 alignContent: "center",
@@ -307,12 +373,12 @@ export default function TravelGoalDetail(props) {
               <Text type="light" size="small" style={{ fontStyle: "italic" }}>
                 {getdate(item.)}
               </Text>
-            </View> */}
-            {item.text ? (
+            </ViewArticle> */}
+            {/* {item.text ? (
               <Text size="readable" style={{ textAlign: "justify" }}>
                 {item.text}
               </Text>
-            ) : null}
+            ) : null} */}
           </View>
         );
       })}

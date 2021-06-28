@@ -101,9 +101,8 @@ export default function Message({ navigation }) {
   const LongPressFunc = (item, room_id) => {
     Alert.alert(
       "Confirm",
-      `Are you sure to delete message with ${item.first_name} ${
-        item.last_name ? item.last_name : ""
-      }`,
+      t("AlertDelMessage") +
+        `${item.first_name} ${item.last_name ? item.last_name : ""}`,
       [
         {
           text: "Cancel",
@@ -210,7 +209,7 @@ export default function Message({ navigation }) {
           <Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
           <TextInput
             onChangeText={(e) => _searchHandle(e)}
-            placeholder="Search Chat"
+            placeholder="Search"
             style={{
               color: "#464646",
               fontFamily: "Lato-Regular",

@@ -546,5 +546,6 @@
   "September": "September",
   "October": "October",
   "November": "November",
-  "December": "December"
+  "December": "December",
+  "AlertDelMessage": "Are you sure to delete message with "
 }
