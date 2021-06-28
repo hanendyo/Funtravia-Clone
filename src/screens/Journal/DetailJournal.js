@@ -566,6 +566,24 @@ export default function DetailJournal(props) {
                   return (
                     <View key={index}>
                       <View style={{ marginTop: 30 }}>
+                        {item.title ? (
+                          <View
+                            style={{
+                              marginTop: 10,
+                              marginBottom: 10,
+                              alignSelf: "center",
+                              width: Dimensions.get("window").width * 0.9,
+                            }}
+                          >
+                            <Text
+                              size={"title"}
+                              type={"bold"}
+                              style={{ textAlign: "justify", lineHeight: 20 }}
+                            >
+                              {item.title ? item.title : null}
+                            </Text>
+                          </View>
+                        ) : null}
                         {item.image ? (
                           <Image
                             source={item.image ? { uri: item.image } : null}
@@ -576,23 +594,7 @@ export default function DetailJournal(props) {
                           />
                         ) : null}
                       </View>
-                      {item.title ? (
-                        <View
-                          style={{
-                            marginTop: 20,
-                            alignSelf: "center",
-                            width: Dimensions.get("window").width * 0.9,
-                          }}
-                        >
-                          <Text
-                            size={"title"}
-                            type={"bold"}
-                            style={{ textAlign: "justify", lineHeight: 20 }}
-                          >
-                            {item.title ? item.title : null}
-                          </Text>
-                        </View>
-                      ) : null}
+
                       {item.text ? (
                         <View
                           style={{
@@ -602,7 +604,7 @@ export default function DetailJournal(props) {
                           }}
                         >
                           <Text
-                            size="readable"
+                            size="small"
                             type="regular"
                             style={{ textAlign: "left", lineHeight: 20 }}
                           >

@@ -425,7 +425,7 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   const _liked = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       try {
         let response = await mutationliked({
           variables: {
@@ -453,20 +453,18 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
   };
 
   const _unliked = async (id, index) => {
-    if (token) {
-      // let tempdestination = [...destinationSearch];
-      // let _temStatus = { ...tempdestination[index] };
-      // _temStatus.liked = false;
-      // tempdestination.splice(index, 1, _temStatus);
-      // SetdestinationSearch(tempdestination);
+    if (token && token !== null && token !== "") {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -500,8 +498,11 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
@@ -546,7 +547,7 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const _likedevent = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       let tempEvent = [...event_search];
       let _temStatus = { ...tempEvent[index] };
       _temStatus.liked = true;
@@ -581,16 +582,18 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
-      // event_search[index].liked = false;
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
   };
 
   const _unlikedevent = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       let tempEvent = [...event_search];
       let _temStatus = { ...tempEvent[index] };
       _temStatus.liked = false;
@@ -625,8 +628,11 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
@@ -658,7 +664,7 @@ export default function SearchPg(props, { navigation, route }) {
 
   //BUAT FOLLOW UNFOLLOW FUNCTION
   const _unfollow = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index] };
       _temStatus.status_following = false;
@@ -696,15 +702,18 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
   };
 
   const _follow = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index] };
       _temStatus.status_following = true;
@@ -739,8 +748,11 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
@@ -777,7 +789,7 @@ export default function SearchPg(props, { navigation, route }) {
   });
   let [list_rekomendasi_user, SetListrequser] = useState([]);
   const _unfollow_rekomendasi = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       let temStatus = [...list_rekomendasi_user];
       let _temStatus = { ...temStatus[index] };
       _temStatus.status_following = false;
@@ -814,15 +826,18 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
   };
 
   const _follow_rekomendasi = async (id, index) => {
-    if (token) {
+    if (token && token !== null && token !== "") {
       let temStatus = [...list_rekomendasi_user];
       let _temStatus = { ...temStatus[index] };
       _temStatus.status_following = true;
@@ -860,8 +875,11 @@ export default function SearchPg(props, { navigation, route }) {
         });
       }
     } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
       RNToasty.Show({
-        title: "Please Login",
+        title: t("pleaselogin"),
         position: "bottom",
       });
     }
