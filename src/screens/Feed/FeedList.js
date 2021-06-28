@@ -514,7 +514,7 @@ export default function FeedList({ props, isPost }) {
     tempd[index].comment_count = tempd[index].comment_count + 1;
   };
 
-  const viewcomment = (data, index) => {
+  const viewcomment = (data, index, time) => {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
@@ -525,6 +525,7 @@ export default function FeedList({ props, isPost }) {
         _unliked: (e) => _unliked(e),
         indeks: index,
         countKoment: (e) => countKoment(e),
+        time: time,
       },
     });
   };
@@ -1335,7 +1336,9 @@ export default function FeedList({ props, isPost }) {
                   )}
 
                   <Button
-                    onPress={() => viewcomment(item, index)}
+                    onPress={() =>
+                      viewcomment(item, index, duration(item.created_at))
+                    }
                     type="icon"
                     variant="transparent"
                     position="left"
