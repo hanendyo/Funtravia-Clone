@@ -2,9 +2,29 @@ import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 import { PensilPutih } from "../../../assets/svg";
 import { Button } from "../../../component";
+import { useTranslation } from "react-i18next";
+import { RNToasty } from "react-native-toasty";
 
-export default function BottomButton({ routed, props, data, addTo }) {
+export default function BottomButton({ routed, props, data, token, addTo }) {
+  const { t, i18n } = useTranslation();
   let lengthartikel = data.article_header.length + 1;
+  console.log("token", token);
+
+  const Ceklogin = () => {
+    if (token) {
+      props.navigation.navigate("DestinationUnescoReview", {
+        data: data,
+      });
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+  };
 
   return (
     <View
@@ -21,11 +41,7 @@ export default function BottomButton({ routed, props, data, addTo }) {
               paddingHorizontal: 15,
             }}
             size="large"
-            onPress={() =>
-              props.navigation.navigate("DestinationUnescoReview", {
-                data: data,
-              })
-            }
+            onPress={() => Ceklogin()}
           >
             <PensilPutih height={15} width={15} />
           </Button>
