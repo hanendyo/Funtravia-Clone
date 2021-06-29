@@ -9,6 +9,7 @@ import {
     Platform,
     AlertIOS,
     TouchableOpacity,
+    Modal,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -26,6 +27,7 @@ import {
     Memberblue,
     PlusCircle,
     ArrowRightBlue,
+    PensilPutih,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -34,6 +36,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Item } from "native-base";
 import Swipeout from "react-native-swipeout";
 import RenderMemberList from "./RenderMemberList";
+import { CHATSERVER, RESTFULL_API } from "../../../config";
+import { RNToasty } from "react-native-toasty";
 
 export default function GroupDetail(props) {
     let { width } = Dimensions.get("screen");
@@ -42,6 +46,12 @@ export default function GroupDetail(props) {
     const [from, setfrom] = useState(props.route.params.from);
     const [dataDetail, setDatadetail] = useState();
     const [loading, setLoading] = useState(true);
+    const [modalkick, setModalkick] = useState(false);
+    const [modalmakeadmin, setModalmakeadmin] = useState(false);
+    const [modalremoveadmin, setModalremoveadmin] = useState(false);
+    const [modalrename, setModalrename] = useState(false);
+    const [selected, setSelected] = useState(false);
+    const [indexActive, setIndexActive] = useState(null);
     const headerOptions = {
         headerShown: true,
         headerTransparent: true,
@@ -150,6 +160,113 @@ export default function GroupDetail(props) {
         });
     };
 
+    const _kickMember = async (user_id) => {
+        setIndexActive(null);
+        let data_kirim = JSON.stringify({
+            group_id: dataDetail.id,
+            user_id: user_id,
+        });
+        try {
+            let response = await fetch(
+                `${RESTFULL_API}room/group/kick_member_group`,
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "application/json",
+                    },
+                    body: data_kirim,
+                }
+            );
+            let responseJson = await response.json();
+            if (responseJson.status == true) {
+                getUserAndToken();
+            } else {
+                //   setloading(false);
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            // setloading(false);
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            console.log(error);
+        }
+    };
+
+    const _makeAdmin = async (user_id) => {
+        setIndexActive(null);
+        let data_kirim = JSON.stringify({
+            group_id: dataDetail.id,
+            user_id: user_id,
+        });
+        try {
+            let response = await fetch(`${RESTFULL_API}room/group/add_admin`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer " + token,
+                    "Content-Type": "application/json",
+                },
+                body: data_kirim,
+            });
+            let responseJson = await response.json();
+            if (responseJson.status == true) {
+                getUserAndToken();
+            } else {
+                //   setloading(false);
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            // setloading(false);
+            console.log(error);
+        }
+    };
+    const _removeAdmin = async (user_id) => {
+        setIndexActive(null);
+        let data_kirim = JSON.stringify({
+            group_id: dataDetail.id,
+            user_id: user_id,
+        });
+        try {
+            let response = await fetch(
+                `${RESTFULL_API}room/group/remove_admin`,
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "application/json",
+                    },
+                    body: data_kirim,
+                }
+            );
+            let responseJson = await response.json();
+            if (responseJson.status == true) {
+                getUserAndToken();
+            } else {
+                //   setloading(false);
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            // setloading(false);
+            console.log(error);
+        }
+    };
+
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
@@ -190,17 +307,15 @@ export default function GroupDetail(props) {
                         imageStyle={{ width: width, height: 200 }}
                     ></FunImageBackground>
                 )}
-                <LinearGradient
-                    colors={["rgba(32, 159, 174, 1)", "rgba(211, 211, 211, 0)"]}
-                    start={{ x: 0.3, y: 1 }}
-                    end={{ x: 1, y: 1 }}
+                <View
                     style={{
                         height: 40,
                         width: width,
                         paddingHorizontal: 15,
                         alignItems: "center",
                         flexDirection: "row",
-                        // justifyContent: "space-between",
+                        backgroundColor: "#209FAE",
+                        justifyContent: "space-between",
                     }}
                 >
                     <Text
@@ -224,15 +339,27 @@ export default function GroupDetail(props) {
                         >
                             <ArrowRightBlue width={30} height={30} />
                         </Pressable>
-                    ) : null}
-                </LinearGradient>
+                    ) : (
+                        <Pressable
+                            onPress={() => {
+                                setModalrename();
+                            }}
+                            style={{
+                                width: "10%",
+                                alignItems: "flex-end",
+                            }}
+                        >
+                            <PensilPutih width={20} height={20} />
+                        </Pressable>
+                    )}
+                </View>
             </View>
-            <View
+            {/* <View
                 style={{
                     backgroundColor: "#f3f3f3",
                     height: 10,
                 }}
-            />
+            /> */}
 
             <View
                 style={{
@@ -284,12 +411,314 @@ export default function GroupDetail(props) {
                                 mydata={mydata}
                                 props={props}
                                 dataDetail={dataDetail}
+                                getUserAndToken={() => getUserAndToken()}
+                                token={token}
+                                setModalkick={(e) => setModalkick(e)}
+                                setModalmakeadmin={(e) => setModalmakeadmin(e)}
+                                setSelected={(e) => setSelected(e)}
+                                setIndexActive={(e) => setIndexActive(e)}
+                                setModalremoveadmin={(e) =>
+                                    setModalremoveadmin(e)
+                                }
+                                indexActive={indexActive}
                             />
                         )}
                         keyExtractor={(item) => item.id}
                     />
                 ) : null}
             </View>
+
+            {/* modal kick */}
+            <Modal
+                useNativeDriver={true}
+                visible={modalkick}
+                onRequestClose={() => setModalkick(false)}
+                transparent={true}
+                animationType="fade"
+            >
+                <Pressable
+                    onPress={() => setModalkick(false)}
+                    style={{
+                        width: Dimensions.get("screen").width,
+                        height: Dimensions.get("screen").height,
+                        justifyContent: "center",
+                        opacity: 0.7,
+                        backgroundColor: "#000",
+                        position: "absolute",
+                    }}
+                />
+                <View
+                    style={{
+                        width: Dimensions.get("screen").width - 60,
+                        marginHorizontal: 30,
+                        backgroundColor: "#FFF",
+                        zIndex: 15,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        alignContent: "center",
+                        borderRadius: 3,
+                        marginTop: Dimensions.get("screen").height / 3,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "white",
+                            width: Dimensions.get("screen").width - 60,
+                            padding: 20,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{ alignSelf: "center" }}>
+                            {t("alertHapusMember")}
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingVertical: 20,
+                                paddingHorizontal: 40,
+                            }}
+                        >
+                            <Button
+                                onPress={() => {
+                                    _kickMember(selected.user_id);
+                                    setModalkick(false);
+                                }}
+                                color="primary"
+                                text={t("delete")}
+                            ></Button>
+                            <Button
+                                onPress={() => {
+                                    setModalkick(false);
+                                }}
+                                color="secondary"
+                                variant="bordered"
+                                text={t("cancel")}
+                            ></Button>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/* modal make admin */}
+            <Modal
+                useNativeDriver={true}
+                visible={modalmakeadmin}
+                onRequestClose={() => setModalmakeadmin(false)}
+                transparent={true}
+                animationType="fade"
+            >
+                <Pressable
+                    onPress={() => setModalmakeadmin(false)}
+                    style={{
+                        width: Dimensions.get("screen").width,
+                        height: Dimensions.get("screen").height,
+                        justifyContent: "center",
+                        opacity: 0.7,
+                        backgroundColor: "#000",
+                        position: "absolute",
+                    }}
+                />
+                <View
+                    style={{
+                        width: Dimensions.get("screen").width - 60,
+                        marginHorizontal: 30,
+                        backgroundColor: "#FFF",
+                        zIndex: 15,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        alignContent: "center",
+                        borderRadius: 3,
+                        marginTop: Dimensions.get("screen").height / 3,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "white",
+                            width: Dimensions.get("screen").width - 60,
+                            padding: 20,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{ alignSelf: "center" }}>
+                            {t("alertMakeAdmin")}
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingVertical: 20,
+                                paddingHorizontal: 40,
+                            }}
+                        >
+                            <Button
+                                onPress={() => {
+                                    _makeAdmin(selected.user_id);
+                                    setModalmakeadmin(false);
+                                }}
+                                color="primary"
+                                text={t("makeAdmin")}
+                            ></Button>
+                            <Button
+                                onPress={() => {
+                                    setModalmakeadmin(false);
+                                }}
+                                color="secondary"
+                                variant="bordered"
+                                text={t("cancel")}
+                            ></Button>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/* modal remove_admin */}
+            <Modal
+                useNativeDriver={true}
+                visible={modalremoveadmin}
+                onRequestClose={() => setModalremoveadmin(false)}
+                transparent={true}
+                animationType="fade"
+            >
+                <Pressable
+                    onPress={() => setModalremoveadmin(false)}
+                    style={{
+                        width: Dimensions.get("screen").width,
+                        height: Dimensions.get("screen").height,
+                        justifyContent: "center",
+                        opacity: 0.7,
+                        backgroundColor: "#000",
+                        position: "absolute",
+                    }}
+                />
+                <View
+                    style={{
+                        width: Dimensions.get("screen").width - 60,
+                        marginHorizontal: 30,
+                        backgroundColor: "#FFF",
+                        zIndex: 15,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        alignContent: "center",
+                        borderRadius: 3,
+                        marginTop: Dimensions.get("screen").height / 3,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "white",
+                            width: Dimensions.get("screen").width - 60,
+                            padding: 20,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{ alignSelf: "center" }}>
+                            {t("alertRemoveAdmin")}
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingVertical: 20,
+                                paddingHorizontal: 40,
+                            }}
+                        >
+                            <Button
+                                onPress={() => {
+                                    _removeAdmin(selected.user_id);
+                                    setModalremoveadmin(false);
+                                }}
+                                color="primary"
+                                text={t("removeAdmin")}
+                            ></Button>
+                            <Button
+                                onPress={() => {
+                                    setModalremoveadmin(false);
+                                }}
+                                color="secondary"
+                                variant="bordered"
+                                text={t("cancel")}
+                            ></Button>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/* modal rename */}
+            <Modal
+                useNativeDriver={true}
+                visible={modalrename}
+                onRequestClose={() => setModalrename(false)}
+                transparent={true}
+                animationType="fade"
+            >
+                <Pressable
+                    onPress={() => setModalrename(false)}
+                    style={{
+                        width: Dimensions.get("screen").width,
+                        height: Dimensions.get("screen").height,
+                        justifyContent: "center",
+                        opacity: 0.7,
+                        backgroundColor: "#000",
+                        position: "absolute",
+                    }}
+                />
+                <View
+                    style={{
+                        width: Dimensions.get("screen").width - 60,
+                        marginHorizontal: 30,
+                        backgroundColor: "#FFF",
+                        zIndex: 15,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        alignContent: "center",
+                        borderRadius: 3,
+                        marginTop: Dimensions.get("screen").height / 3,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "white",
+                            width: Dimensions.get("screen").width - 60,
+                            padding: 20,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{ alignSelf: "center" }}>
+                            {t("alertRemoveAdmin")}
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingVertical: 20,
+                                paddingHorizontal: 40,
+                            }}
+                        >
+                            <Button
+                                onPress={() => {
+                                    _removeAdmin(selected.user_id);
+                                    setModalrename(false);
+                                }}
+                                color="primary"
+                                text={t("removeAdmin")}
+                            ></Button>
+                            <Button
+                                onPress={() => {
+                                    setModalrename(false);
+                                }}
+                                color="secondary"
+                                variant="bordered"
+                                text={t("cancel")}
+                            ></Button>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 }
