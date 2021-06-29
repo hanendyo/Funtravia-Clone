@@ -26,6 +26,8 @@ import {
     FunImageBackground,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { CHATSERVER, RESTFULL_API } from "../../../config";
+import { RNToasty } from "react-native-toasty";
 
 export default function RenderMemberList({
     item,
@@ -33,17 +35,26 @@ export default function RenderMemberList({
     mydata,
     props,
     dataDetail,
+    getUserAndToken,
+    token,
+    setModalkick,
+    setModalmakeadmin,
+    setSelected,
+    setIndexActive,
+    indexActive,
+    setModalremoveadmin,
 }) {
     const { t } = useTranslation();
 
-    const swipeoutBtnsx = (idbuddy) => {
+    const swipeoutBtnsx = (item) => {
         return [
             {
                 backgroundColor: "#f6f6f6",
                 component: (
                     <TouchableOpacity
                         onPress={() => {
-                            setAdmin(idbuddy, iditin);
+                            setModalremoveadmin(true);
+                            setSelected(item);
                         }}
                         style={{
                             height: "100%",
@@ -69,7 +80,8 @@ export default function RenderMemberList({
                 component: (
                     <TouchableOpacity
                         onPress={() => {
-                            // DeleteBuddy(idbuddy, iditin);
+                            setModalkick(true);
+                            setSelected(item);
                         }}
                         style={{
                             height: "100%",
@@ -96,14 +108,15 @@ export default function RenderMemberList({
         ];
     };
 
-    const swipeoutBtn = (idbuddy, iditin) => {
+    const swipeoutBtn = (item) => {
         return [
             {
                 backgroundColor: "#f6f6f6",
                 component: (
                     <TouchableOpacity
                         onPress={() => {
-                            setAdmin(idbuddy, iditin);
+                            setModalmakeadmin(true);
+                            setSelected(item);
                         }}
                         style={{
                             height: "100%",
@@ -129,7 +142,8 @@ export default function RenderMemberList({
                 component: (
                     <TouchableOpacity
                         onPress={() => {
-                            DeleteBuddy(idbuddy, iditin);
+                            setModalkick(true);
+                            setSelected(item);
                         }}
                         style={{
                             height: "100%",
@@ -148,7 +162,7 @@ export default function RenderMemberList({
             },
         ];
     };
-    console.log(mydata);
+    // console.log(mydata);
     if (dataDetail && dataDetail.type == "itinerary") {
         return (
             <Pressable
@@ -216,10 +230,14 @@ export default function RenderMemberList({
         if (mydata.user_id !== item.user_id) {
             return (
                 <Swipeout
+                    onOpen={() => setIndexActive(index)}
+                    close={indexActive !== index}
+                    backgroundColor={"#f6f6f6"}
+                    // onClose={() => setIndexActive(-1)}
                     right={
                         item.isadmin == true
-                            ? swipeoutBtnsx(item.id)
-                            : swipeoutBtn(item.id)
+                            ? swipeoutBtnsx(item)
+                            : swipeoutBtn(item)
                     }
                 >
                     <Pressable
