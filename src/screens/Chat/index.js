@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  TextInput,
-  Dimensions,
-  TouchableOpacity,
-  SafeAreaView,
-  FlatList,
-  Image,
-  Alert,
-  StyleSheet,
-  ActivityIndicator,
+	View,
+	TextInput,
+	Dimensions,
+	TouchableOpacity,
+	SafeAreaView,
+	FlatList,
+	Image,
+	Alert,
+	StyleSheet,
+	ActivityIndicator,
 } from "react-native";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
@@ -22,259 +22,277 @@ import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import ChatGroupList from "./RenderChatGroupList";
 import ChatList from "./RenderChatList";
 
+//TRY SOCKET
+import io from "socket.io-client";
+//TRY SOCKET
+
 export default function Message({ navigation }) {
-  const { width, height } = Dimensions.get("screen");
-  const { t } = useTranslation();
-  const [user, setUser] = useState({});
-  const [token, setToken] = useState(null);
-  const [data, setData] = useState([]);
-  const [dataRes, setDataRes] = useState([]);
-  const [dataGroup, setDataGroup] = useState([]);
-  const [dataGroupRes, setDataGroupRes] = useState([]);
-  const [active, setActive] = useState("personal");
-  const [loading, setLoading] = useState(true);
+	const { width, height } = Dimensions.get("screen");
+	const { t } = useTranslation();
+	const [user, setUser] = useState({});
+	const [token, setToken] = useState(null);
+	const [data, setData] = useState([]);
+	const [dataRes, setDataRes] = useState([]);
+	const [dataGroup, setDataGroup] = useState([]);
+	const [dataGroupRes, setDataGroupRes] = useState([]);
+	const [loading, setLoading] = useState(true);
 
-  const HeaderComponent = {
-    tabBarBadge: null,
-  };
+	//TRY SOCKET
+	const socket = io(CHATSERVER);
+	// TRY SOCKET
 
-  useEffect(() => {
-    navigation.setOptions(HeaderComponent);
-    getUserAndToken();
-    const unsubscribe = navigation.addListener("focus", () => {
-      getUserAndToken();
-    });
-    return unsubscribe;
-  }, []);
+	const HeaderComponent = {
+		tabBarBadge: null,
+	};
 
-  const getRoom = async (access_token) => {
-    // setLoading(true);
-    let response = await fetch(`${CHATSERVER}/api/personal/list`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    let dataResponse = await response.json();
-    await setData(dataResponse);
-    await setDataRes(dataResponse);
-    await setLoading(false);
-  };
+	useEffect(() => {
+		navigation.setOptions(HeaderComponent);
+		getUserAndToken();
+		socket.on("new_chat_group", (data) => {
+			getRoomGroup();
+		});
+		socket.on("new_chat_personal", (data) => {
+			getRoom();
+		});
+		return () => socket.disconnect();
+	}, []);
 
-  const getRoomGroup = async (access_token) => {
-    let response = await fetch(`${CHATSERVER}/api/group/list`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    let dataResponse = await response.json();
-    await setDataGroup(dataResponse);
-    await setDataGroupRes(dataResponse);
-  };
+	const getRoom = async () => {
+		let token = await AsyncStorage.getItem("access_token");
+		let response = await fetch(`${CHATSERVER}/api/personal/list`, {
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+		});
+		let dataResponse = await response.json();
+		for (let i of dataResponse) {
+			socket.emit("join", i.id);
+		}
+		await setData(dataResponse);
+		await setDataRes(dataResponse);
+		await setLoading(false);
+	};
 
-  const getUserAndToken = async () => {
-    let setting = JSON.parse(await AsyncStorage.getItem("setting"));
-    if (setting) {
-      await setUser(setting.user);
-    }
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
-      await getRoom(token);
-      await getRoomGroup(token);
-    }
+	const getRoomGroup = async () => {
+		console.log("EXEC");
+		let token = await AsyncStorage.getItem("access_token");
+		let response = await fetch(`${CHATSERVER}/api/group/list`, {
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+		});
+		let dataResponse = await response.json();
+		for (let i of dataResponse) {
+			socket.emit("join", i.group);
+		}
+		await setDataGroup(dataResponse);
+		await setDataGroupRes(dataResponse);
+	};
 
-    if (token === null) {
-      Alert.alert(t("pleaselogin"));
-      navigation.navigate("HomeScreen");
-    }
-  };
+	const getUserAndToken = async () => {
+		let setting = JSON.parse(await AsyncStorage.getItem("setting"));
+		if (setting) {
+			await setUser(setting.user);
+		}
+		let token = await AsyncStorage.getItem("access_token");
+		if (token) {
+			await setToken(token);
+			await getRoom();
+			await getRoomGroup();
+		}
 
-  const [messages, setMessages] = useState("");
-  const [modalError, setModalError] = useState(false);
+		if (token === null) {
+			Alert.alert(t("pleaselogin"));
+			navigation.navigate("HomeScreen");
+		}
+	};
 
-  const LongPressFunc = (item, room_id) => {
-    Alert.alert(
-      "Confirm",
-      t("AlertDelMessage") +
-        `${item.first_name} ${item.last_name ? item.last_name : ""}`,
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Canceled"),
-          style: "cancel",
-        },
-        { text: "OK", onPress: () => DeleteChat(item.id, room_id) },
-      ]
-    );
-  };
+	const [messages, setMessages] = useState("");
+	const [modalError, setModalError] = useState(false);
 
-  const DeleteChat = async (id, room_id) => {
-    let response = await fetch(
-      `${CHATSERVER}/api/personal/delete?receiver_id=${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    await AsyncStorage.removeItem("history_" + room_id);
-    getRoom(token);
-  };
+	const LongPressFunc = (item, room_id) => {
+		Alert.alert(
+			"Confirm",
+			t("AlertDelMessage") +
+				`${item.first_name} ${item.last_name ? item.last_name : ""}`,
+			[
+				{
+					text: "Cancel",
+					onPress: () => console.log("Canceled"),
+					style: "cancel",
+				},
+				{ text: "OK", onPress: () => DeleteChat(item.id, room_id) },
+			]
+		);
+	};
 
-  const _searchHandle = (text) => {
-    // if (active == "personal") {
-    let newData = data.filter(function(str) {
-      let strData = str.sender.id === user.id ? str.receiver : str.sender;
-      return strData.first_name.toLowerCase().includes(text.toLowerCase());
-    });
-    setDataRes(newData);
-    // }
+	const DeleteChat = async (id, room_id) => {
+		let response = await fetch(
+			`${CHATSERVER}/api/personal/delete?receiver_id=${id}`,
+			{
+				method: "DELETE",
+				headers: {
+					Accept: "application/json",
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		await AsyncStorage.removeItem("history_" + room_id);
+		getRoom(token);
+	};
 
-    // if (active == "group") {
-    let newDataGroup = dataGroup.filter(function(str) {
-      return str.title.toLowerCase().includes(text.toLowerCase());
-    });
-    setDataGroupRes(newDataGroup);
-    // }
-  };
+	const _searchHandle = (text) => {
+		// if (active == "personal") {
+		let newData = data.filter(function(str) {
+			let strData = str.sender.id === user.id ? str.receiver : str.sender;
+			return strData.first_name.toLowerCase().includes(text.toLowerCase());
+		});
+		setDataRes(newData);
+		// }
 
-  const HeaderHeight = width + 5;
+		// if (active == "group") {
+		let newDataGroup = dataGroup.filter(function(str) {
+			return str.title.toLowerCase().includes(text.toLowerCase());
+		});
+		setDataGroupRes(newDataGroup);
+		// }
+	};
 
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <Text
-        style={[
-          focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
-        ]}
-      >
-        {route.title}
-      </Text>
-    );
-  };
+	const HeaderHeight = width + 5;
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: "personal", title: "Personal" },
-    { key: "group", title: "Group" },
-  ]);
+	const renderLabel = ({ route, focused }) => {
+		return (
+			<Text
+				style={[
+					focused ? styles.labelActive : styles.label,
+					{ opacity: focused ? 1 : 0.7 },
+				]}
+			>
+				{route.title}
+			</Text>
+		);
+	};
 
-  const renderScene = ({ route }) => {
-    if (route.key == "personal") {
-      return (
-        <ChatList
-          dataRes={dataRes}
-          user={user}
-          navigation={navigation}
-          LongPressFunc={(item, room_id) => {
-            LongPressFunc(item, room_id);
-          }}
-        />
-      );
-    } else if (route.key == "group") {
-      return (
-        <ChatGroupList dataGroupRes={dataGroupRes} navigation={navigation} />
-      );
-    }
-  };
+	const [index, setIndex] = React.useState(0);
+	const [routes] = React.useState([
+		{ key: "personal", title: "Personal" },
+		{ key: "group", title: "Group" },
+	]);
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle="dark-content" />
-      <Errors
-        modals={modalError}
-        setModals={(e) => setModalError(e)}
-        message={messages}
-      />
-      <View style={{ backgroundColor: "#209FAE" }}>
-        <View
-          style={{
-            margin: 15,
-            backgroundColor: "#FFFFFF",
-            flexDirection: "row",
-            borderRadius: 3,
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
-          <TextInput
-            onChangeText={(e) => _searchHandle(e)}
-            placeholder="Search"
-            style={{
-              color: "#464646",
-              fontFamily: "Lato-Regular",
-              height: 40,
-              width: "100%",
-            }}
-          />
-        </View>
-      </View>
-      {loading ? (
-        <View style={{ height: 50, justifyContent: "center" }}>
-          <ActivityIndicator size="small" color="#209fae" />
-        </View>
-      ) : (
-        <TabView
-          lazy={true}
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={(props) => {
-            return (
-              <TabBar
-                {...props}
-                style={{
-                  backgroundColor: "white",
-                }}
-                renderLabel={renderLabel}
-                indicatorStyle={styles.indicator}
-              />
-            );
-          }}
-        />
-      )}
-    </SafeAreaView>
-  );
+	const renderScene = ({ route }) => {
+		if (route.key == "personal") {
+			return (
+				<ChatList
+					dataRes={dataRes}
+					user={user}
+					navigation={navigation}
+					LongPressFunc={(item, room_id) => {
+						LongPressFunc(item, room_id);
+					}}
+				/>
+			);
+		} else if (route.key == "group") {
+			return (
+				<ChatGroupList dataGroupRes={dataGroupRes} navigation={navigation} />
+			);
+		}
+	};
+
+	return (
+		<SafeAreaView style={{ flex: 1 }}>
+			<StatusBar barStyle="dark-content" />
+			<Errors
+				modals={modalError}
+				setModals={(e) => setModalError(e)}
+				message={messages}
+			/>
+			<View style={{ backgroundColor: "#209FAE" }}>
+				<View
+					style={{
+						margin: 15,
+						backgroundColor: "#FFFFFF",
+						flexDirection: "row",
+						borderRadius: 3,
+						alignContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
+					<TextInput
+						onChangeText={(e) => _searchHandle(e)}
+						placeholder="Search"
+						style={{
+							color: "#464646",
+							fontFamily: "Lato-Regular",
+							height: 40,
+							width: "100%",
+						}}
+					/>
+				</View>
+			</View>
+			{loading ? (
+				<View style={{ height: 50, justifyContent: "center" }}>
+					<ActivityIndicator size="small" color="#209fae" />
+				</View>
+			) : (
+				<TabView
+					lazy={true}
+					navigationState={{ index, routes }}
+					renderScene={renderScene}
+					onIndexChange={setIndex}
+					renderTabBar={(props) => {
+						return (
+							<TabBar
+								{...props}
+								style={{
+									backgroundColor: "white",
+								}}
+								renderLabel={renderLabel}
+								indicatorStyle={styles.indicator}
+							/>
+						);
+					}}
+				/>
+			)}
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-  },
-  header: {
-    height: 100,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    backgroundColor: "#FFF",
-  },
-  label: {
-    fontSize: 14,
-    color: "#464646",
-    fontFamily: "Lato-Bold",
-  },
-  labelActive: {
-    fontSize: 14,
-    color: "#209FAE",
-    fontFamily: "Lato-Bold",
-  },
-  tab: {
-    elevation: 1,
-    shadowOpacity: 0.5,
-    backgroundColor: "#FFF",
-    height: 50,
-  },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+	container: {
+		flex: 1,
+		backgroundColor: "#FFF",
+	},
+	header: {
+		height: 100,
+		width: "100%",
+		alignItems: "center",
+		justifyContent: "center",
+		position: "absolute",
+		backgroundColor: "#FFF",
+	},
+	label: {
+		fontSize: 14,
+		color: "#464646",
+		fontFamily: "Lato-Bold",
+	},
+	labelActive: {
+		fontSize: 14,
+		color: "#209FAE",
+		fontFamily: "Lato-Bold",
+	},
+	tab: {
+		elevation: 1,
+		shadowOpacity: 0.5,
+		backgroundColor: "#FFF",
+		height: 50,
+	},
+	indicator: { backgroundColor: "#209FAE", height: 3 },
 });
