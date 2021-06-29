@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get("screen");
 export default function RenderGrid({ item, props }) {
   let videoView = useRef(null);
 
-  if (item.length == 4 && item[3].grid == 1) {
+  if (item.length == 4 && item[3]?.grid == 1) {
     return (
       <View
         style={{
@@ -161,7 +161,7 @@ export default function RenderGrid({ item, props }) {
       </View>
     );
   }
-  if (item.length == 4 && item[3].grid == 2) {
+  if (item.length == 4 && item[3]?.grid == 2) {
     return (
       <View
         style={{
@@ -311,7 +311,7 @@ export default function RenderGrid({ item, props }) {
       </View>
     );
   }
-  if (item.length == 4 && item[3].grid == 3) {
+  if (item.length == 4 && item[3]?.grid == 3) {
     return (
       <View
         style={{
@@ -454,7 +454,7 @@ export default function RenderGrid({ item, props }) {
     );
   }
   if (item.length < 3) {
-    grid = 1;
+    let grid = 1;
     return (
       <View
         style={{

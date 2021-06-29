@@ -5,6 +5,7 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { Arrowbackwhite } from "../../assets/svg";
@@ -17,11 +18,9 @@ import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
 
 export default function ListFotoAlbums(props) {
-  console.log("props foto", props);
   const { t } = useTranslation();
   const [show, setShow] = useState(true);
   const [token, setToken] = useState(props.route.params.token);
-  console.log("show", show);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -105,13 +104,7 @@ export default function ListFotoAlbums(props) {
       },
     },
     variables: { album_id: props.route.params.id_album },
-    onCompleted: () => console.log("dataFotoAlbum didalam", dataFotoAlbum),
   });
-
-  console.log("dataFotoAlbum", dataFotoAlbum);
-  console.log("loadingFotoAlbum", loadingFotoAlbum);
-  console.log("errorFotoAlbum", errorFotoAlbum);
-  console.log("props.route.params.id_album", props.route.params.id_album);
 
   const [
     MutationAddAlbumFeed,
@@ -126,7 +119,6 @@ export default function ListFotoAlbums(props) {
   });
 
   const SubmitAdd = async () => {
-    console.log("submit");
     try {
       let response = await MutationAddAlbumFeed({
         variables: {
@@ -135,14 +127,12 @@ export default function ListFotoAlbums(props) {
         },
       });
 
-      console.log("response", response);
       if (response.data) {
         if (
           response &&
           response.data &&
           response.data.link_post_to_album.code === 200
         ) {
-          console.log("berhasil");
           await QueryFotoAlbum();
           await setShow(false);
           await RNToasty.Show({
@@ -155,7 +145,6 @@ export default function ListFotoAlbums(props) {
         }
       }
     } catch (e) {
-      console.log(e);
       RNToasty.Show({
         title: t("failedCreateAlbum"),
         position: "bottom",
@@ -195,8 +184,10 @@ export default function ListFotoAlbums(props) {
     lis_foto = spreadData(dataFotoAlbum.detail_media_album);
   }
 
+  const [tinggi, setTinggi] = useState(0);
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, paddingBottom: tinggi }}>
       <FlatList
         data={lis_foto}
         renderItem={({ item, index }) => (
@@ -210,6 +201,10 @@ export default function ListFotoAlbums(props) {
       />
       {show ? (
         <View
+          onLayout={(event) => {
+            const heig = event?.nativeEvent?.layout;
+            setTinggi(heig.height);
+          }}
           style={{
             position: "absolute",
             width: Dimensions.get("screen").width,
