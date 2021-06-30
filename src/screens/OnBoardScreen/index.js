@@ -17,7 +17,6 @@ import { Sampul, Xblue } from "../../assets/svg";
 import { Text, FunImage, Button } from "../../component/index";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
-import ScreenOne from "./OnBoardScreenOne";
 import ImageSlider from "react-native-image-slider";
 
 export default function OnBoardScreen(props) {
@@ -56,7 +55,7 @@ export default function OnBoardScreen(props) {
             }}
             source={item.image}
           />
-       
+
           {index === 2 ? null : (
             <View
               style={{
@@ -129,11 +128,6 @@ export default function OnBoardScreen(props) {
               </Text>
             </View>
           </View>
-          <ScreenOne
-            modals={modalScreenOne}
-            setModalScreenOne={() => setModalScreenOne()}
-            props={props}
-          />
         </View>
       )}
       customButtons={(position, move) => (

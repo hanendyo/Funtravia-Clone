@@ -353,9 +353,11 @@ export default function ChooseAlbumItinerary(props) {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{
-            // height: 200,
-            width: Dimensions.get("screen").width - 10,
-            paddingHorizontal: 20,
+            width:
+              Platform.OS == "ios"
+                ? Dimensions.get("screen").width - 10
+                : Dimensions.get("screen").width - 40,
+            paddingHorizontal: Platform.OS == "ios" ? 20 : 0,
             top: Dimensions.get("screen").height / 3,
             position: "absolute",
             zIndex: 15,

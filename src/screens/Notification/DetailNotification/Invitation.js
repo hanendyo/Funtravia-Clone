@@ -2,52 +2,28 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   StyleSheet,
-  ImageBackground,
   Dimensions,
-  TextInput,
   FlatList,
   Pressable,
-  Image,
-  Alert,
+  RefreshControl,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import {
-  Text,
-  Button,
-  CustomImage,
-  Truncate,
-  Loading,
-  FunImage,
-} from "../../../component";
-
+import { Text, Button, Loading, FunImage } from "../../../component";
 import { default_image } from "../../../assets/png";
 import { gql } from "apollo-boost";
-import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
   dateFormatForNotif,
   dateFormats,
 } from "../../../component/src/dateformatter";
-import {
-  MapSVG,
-  Star,
-  LikeRed,
-  LikeEmpty,
-  Option_blue,
-  Adduser,
-  AlertSuccess,
-  AlerIcon,
-  Play,
-} from "../../../assets/svg";
-// import InvitationNotif from '../../../graphQL/Query/Notification/InvitationNotif';
+import { Star, Play } from "../../../assets/svg";
 import AcceptInvitation from "../../../graphQL/Mutation/Notification/AcceptInvitation";
 import RejectInvitation from "../../../graphQL/Mutation/Notification/RejectInvitation";
 import IsRead from "../../../graphQL/Mutation/Notification/IsRead";
-import ListNotifikasi from "../../../graphQL/Query/Notification/ListNotifikasi_";
 import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
-import Video from "react-native-video";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { RNToasty } from "react-native-toasty";
 
-import Ripple from "react-native-material-ripple";
 const InvitationNotif = gql`
   query {
     list_notivication_invite {
@@ -190,12 +166,10 @@ export default function Invitation({ navigation, token }) {
   let videoView = useRef(null);
   const { t, i18n } = useTranslation();
   let [datanotif, SetDataNotif] = useState([]);
-  // console.log(datanotif);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);
   let [loadings, setLoadings] = useState(false);
-  // ===modalfilter===
-  // console.log(token);
+  const [refreshing, setRefreshing] = useState(false);
 
   const CarDetail = (data, dataIten) => {
     navigation.navigate("CarDetail", {
@@ -217,14 +191,18 @@ export default function Invitation({ navigation, token }) {
   });
 
   const _follow = async (data, id, notif_id) => {
-    if (data.isread == false) {
-      updateisread(data.ids);
-    }
     if (token) {
-      // var tempData = [...datanotif];
-      // var index = tempData.findIndex((k) => k["ids"] === notif_id);
-      // tempData[index].follow_user.user.status_following = true;
-      // SetDataNotif(tempData);
+      var tempData = [...datanotif];
+      var index = tempData.findIndex((k) => k["ids"] === notif_id);
+      var _tempData = { ...tempData[index] };
+      var _tempFollow = { ..._tempData.follow_user };
+      var _tempUser = { ..._tempFollow.user };
+      _tempUser.status_following = true;
+      _tempFollow.user = _tempUser;
+      _tempData.follow_user = _tempFollow;
+      _tempData.isread = true;
+      tempData.splice(index, 1, _tempData);
+      SetDataNotif(tempData);
       try {
         let response = await FollowMutation({
           variables: {
@@ -234,19 +212,27 @@ export default function Invitation({ navigation, token }) {
         if (errorFollowMut) {
           throw new Error("Error Input");
         }
-        // refetch();
-        // setLoading(false);
       } catch (error) {
         var tempData = [...datanotif];
         var index = tempData.findIndex((k) => k["ids"] === notif_id);
-        tempData[index].follow_user.user.status_following = true;
+        var _tempData = { ...tempData[index] };
+        var _tempFollow = { ..._tempData.follow_user };
+        var _tempUser = { ..._tempFollow.user };
+        _tempUser.status_following = false;
+        _tempFollow.user = _tempUser;
+        _tempData.follow_user = _tempFollow;
+        tempData.splice(index, 1, _tempData);
         SetDataNotif(tempData);
-        Alert.alert("" + error);
-        // setLoading(false);
+        RNToasty.Show({
+          title: "Something wrong",
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("Please Login");
-      // setLoading(false);
+      RNToasty.Show({
+        title: "Please Login",
+        position: "bottom",
+      });
     }
   };
 
@@ -303,14 +289,10 @@ export default function Invitation({ navigation, token }) {
       if (errorInvit) {
         throw new Error("Error Input");
       }
-      // console.log(response.data);
       if (response.data) {
         if (response.data.reject_buddy.code !== 200) {
           throw new Error(response.data.reject_buddy.message);
         }
-
-        // console.log(response.data.reject_buddy.data_itin.start_date);
-        // Alert.alert('Succes');
         await GetListInvitation();
         await setLoadings(false);
       }
@@ -320,7 +302,6 @@ export default function Invitation({ navigation, token }) {
     }
   };
   const getdate = (start, end) => {
-    // console.log(start);
     start = start.split(" ");
     end = end.split(" ");
 
@@ -362,8 +343,9 @@ export default function Invitation({ navigation, token }) {
   const updateisread = async (notif_id) => {
     var tempData = [...datanotif];
     var index = tempData.findIndex((k) => k["ids"] === notif_id);
-    console.log(tempData[index].isread);
-    tempData[index].isread = true;
+    var _tempRead = { ...tempData[index] };
+    _tempRead.isread = true;
+    tempData.splice(index, 1, _tempRead);
     SetDataNotif(tempData);
     try {
       let response = await mutationIsRead({
@@ -372,14 +354,13 @@ export default function Invitation({ navigation, token }) {
         },
       });
 
-      // console.log(response);
       if (response.data) {
         if (response.data.update_read.code !== 200) {
           // var tempData = [...datanotif];
           // var index = tempData.findIndex((k) => k["ids"] === notif_id);
           // tempData[index].isread = true;
           // SetDataNotif(tempData);
-          throw new Error(response.data.reject_buddy.message);
+          // throw new Error(response?.data?.reject_buddy?.message);
         } else {
           // var tempData = [...datanotif];
           // var index = tempData.findIndex((k) => k["ids"] === notif_id);
@@ -388,11 +369,16 @@ export default function Invitation({ navigation, token }) {
         }
       }
     } catch (error) {
-      // var tempData = [...datanotif];
-      // var index = tempData.findIndex((k) => k["ids"] === notif_id);
-      // tempData[index].isread = false;
-      // SetDataNotif(tempData);
-      // alert('' + error);
+      var tempData = [...datanotif];
+      var index = tempData.findIndex((k) => k["ids"] === notif_id);
+      var _tempRead = { ...tempData[index] };
+      _tempRead.isread = false;
+      tempData.splice(index, 1, _tempRead);
+      SetDataNotif(tempData);
+      RNToasty.Show({
+        title: "Something wrong",
+        position: "bottom",
+      });
     }
   };
 
@@ -417,17 +403,10 @@ export default function Invitation({ navigation, token }) {
   };
 
   const handle_areaklik_like = (data) => {
-    // navigation.navigate("FeedStack", {
-    //     screen: "CommentsById",
-    //     params: {
-    //         post_id: data.like_feed.post_id,
-    //     },
-    // });
-    navigation.push("FeedStack", {
-      screen: "CommentPost",
+    navigation.navigate("FeedStack", {
+      screen: "CommentsById",
       params: {
         post_id: data.like_feed.post_id,
-        //   comment_id: data.comment_feed.id,
       },
     });
     if (data.isread == false) {
@@ -480,6 +459,20 @@ export default function Invitation({ navigation, token }) {
       SetDataNotif(datasnotif.list_notification);
     },
   });
+
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const Refresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(1000).then(() => {
+      GetListInvitation();
+      setRefreshing(false);
+    });
+  }, []);
 
   useEffect(() => {
     GetListInvitation();
@@ -740,7 +733,6 @@ export default function Invitation({ navigation, token }) {
   }
   const RenderTrans = ({ item }) => {
     if (item.notification_type == "itinerary_buddy" && item.itinerary_buddy) {
-      // console.log(item.created_at);
       return (
         <Pressable
           onPress={() => handle_areaklik_buddy(item)}
@@ -1341,7 +1333,8 @@ export default function Invitation({ navigation, token }) {
         <Pressable
           onPress={() => handle_areaklik_follow(item)}
           style={{
-            backgroundColor: item.isread == false ? "#EDF5F5" : "white",
+            backgroundColor: item?.isread == false ? "#EDF5F5" : "white",
+            // backgroundColor: console.log("color", item.ids, item?.isread),
             // borderBottomWidth: 0.2,
             // borderBottomColor: "#D1D1D1",
             borderTopWidth: 0.2,
@@ -1436,7 +1429,7 @@ export default function Invitation({ navigation, token }) {
                 >
                   {t("startedFollowingYou")}
                 </Text>
-                {item.follow_user.user?.status_following == false ? (
+                {item?.follow_user.user?.status_following == false ? (
                   <Pressable
                     onPress={() =>
                       _follow(item, item.follow_user.user.id, item.ids)
@@ -1501,6 +1494,12 @@ export default function Invitation({ navigation, token }) {
           renderItem={({ item }) => <RenderTrans item={item} />}
           keyExtractor={(item) => item.ids}
           showsHorizontalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => Refresh()}
+            />
+          }
         />
       ) : null}
     </View>

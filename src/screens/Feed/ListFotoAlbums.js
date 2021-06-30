@@ -140,6 +140,20 @@ export default function ListFotoAlbums(props) {
             position: "bottom",
             duration: 1,
           });
+          setTimeout(() => {
+            props.navigation.navigate("BottomStack", {
+              screen: "FeedBottomScreen",
+              params: {
+                screen: "FeedScreen",
+                params: {
+                  isTag: true,
+                  isPost: false,
+                  isComment: false,
+                  isItinerary: false,
+                },
+              },
+            });
+          }, 1000);
         } else {
           console.log("gagal");
         }
@@ -148,6 +162,7 @@ export default function ListFotoAlbums(props) {
       RNToasty.Show({
         title: t("failedCreateAlbum"),
         position: "bottom",
+        duration: 1,
       });
     }
   };

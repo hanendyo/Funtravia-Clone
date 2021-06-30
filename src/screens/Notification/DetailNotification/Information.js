@@ -38,9 +38,7 @@ const DataItenEx = {
 };
 
 export default function Information({ navigation }) {
-  console.log("nav : ", navigation);
   const { t, i18n } = useTranslation();
-
   const [dataIten, SetDataIten] = useState(DataItenEx);
   let detailId = navigation.getParam("id");
   let city = navigation.getParam("city");
@@ -59,6 +57,7 @@ export default function Information({ navigation }) {
   };
 
   const RenderTrans = ({ item }) => {
+    console.log("item", item);
     return (
       <View
         style={{
