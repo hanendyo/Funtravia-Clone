@@ -1155,9 +1155,15 @@ const Index = (props) => {
                 return (
                   <View key={index}>
                     {i.type === "image" ? (
-                      <View style={{ marginVertical: 10 }}>
+                      <View style={{ marginVertical: 5 }}>
                         {i.title ? (
-                          <Text size="label" type="bold">
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{
+                              marginBottom: 15,
+                            }}
+                          >
                             {i.title}
                           </Text>
                         ) : null}
@@ -1180,25 +1186,25 @@ const Index = (props) => {
                           />
                         </View>
                         <Text
-                          size="small"
-                          type="regular"
+                          size="description"
+                          type="light"
                           style={{
-                            textAlign: "justify",
+                            textAlign: "left",
                             marginTop: 5,
-                            color: "#464646",
+                            color: "#616161",
                           }}
                         >
                           {i.text ? i.text : ""}
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View style={{ marginVertical: 5 }}>
                         {i.title ? (
                           <Text
                             size="label"
                             type="bold"
                             style={{
-                              marginBottom: 5,
+                              // marginBottom: 5,
                               color: "#464646",
                             }}
                           >
@@ -1210,7 +1216,8 @@ const Index = (props) => {
                           type="regular"
                           style={{
                             marginTop: 5,
-                            textAlign: "justify",
+                            lineHeight: 20,
+                            textAlign: "left",
                             color: "#464646",
                           }}
                         >

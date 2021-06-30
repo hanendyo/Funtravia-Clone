@@ -233,9 +233,9 @@ export default function TravelGoalDetail(props) {
         </View>
         <Text
           type={"bold"}
-          size="label"
+          size="title"
           style={{
-            marginBottom: 10,
+            marginBottom: 5,
           }}
         >
           {datadetail?.title}
@@ -274,12 +274,18 @@ export default function TravelGoalDetail(props) {
       {datadetail?.content?.map((item, index) => {
         return (
           <View
-            style={{ paddingHorizontal: 20, width: "100%", marginBottom: 20 }}
+            style={{ paddingHorizontal: 20, width: "100%", marginBottom: 10 }}
           >
             {item.type === "image" ? (
-              <View style={{ marginVertical: 10 }}>
+              <View style={{ marginVertical: 0 }}>
                 {item.title ? (
-                  <Text size="label" type="bold">
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{
+                      marginBottom: 15,
+                    }}
+                  >
                     {item.title}
                   </Text>
                 ) : null}
@@ -302,25 +308,25 @@ export default function TravelGoalDetail(props) {
                   />
                 </View>
                 <Text
-                  size="small"
-                  type="regular"
+                  size="description"
+                  type="light"
                   style={{
-                    textAlign: "justify",
+                    textAlign: "left",
                     marginTop: 5,
-                    color: "#464646",
+                    color: "#616161",
                   }}
                 >
                   {item.text ? item.text : ""}
                 </Text>
               </View>
             ) : (
-              <View style={{ marginVertical: 10 }}>
+              <View style={{ marginVertical: 5 }}>
                 {item.title ? (
                   <Text
                     size="label"
                     type="bold"
                     style={{
-                      marginBottom: 5,
+                      // marginBottom: 5,
                       color: "#464646",
                     }}
                   >
@@ -331,8 +337,9 @@ export default function TravelGoalDetail(props) {
                   size="readable"
                   type="regular"
                   style={{
-                    marginTop: 5,
-                    textAlign: "justify",
+                    // marginTop: 5,
+                    lineHeight: 20,
+                    textAlign: "left",
                     color: "#464646",
                   }}
                 >
@@ -385,7 +392,7 @@ export default function TravelGoalDetail(props) {
 
       {/* more related */}
       {datarelated.length > 0 ? (
-        <View style={{ paddingHorizontal: 20 }}>
+        <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
           <View
             style={{
               flexDirection: "row",

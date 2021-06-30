@@ -2251,7 +2251,7 @@ export default function CityDetail(props) {
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View style={{ marginVertical: 5 }}>
                         {i.title ? (
                           <Text
                             size="label"
@@ -2268,7 +2268,7 @@ export default function CityDetail(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            marginTop: 10,
+                            // marginTop: 10,
                             lineHeight: 20,
                             textAlign: "left",
                             color: "#464646",
