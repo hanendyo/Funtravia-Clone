@@ -10,6 +10,7 @@ import {
     AlertIOS,
     TouchableOpacity,
     Modal,
+    TextInput,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -28,6 +29,7 @@ import {
     PlusCircle,
     ArrowRightBlue,
     PensilPutih,
+    AddParticipant,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -45,6 +47,7 @@ export default function GroupDetail(props) {
     const [room, setRoom] = useState(props.route.params.room_id);
     const [from, setfrom] = useState(props.route.params.from);
     const [dataDetail, setDatadetail] = useState();
+    const [textName, setTextName] = useState(null);
     const [loading, setLoading] = useState(true);
     const [modalkick, setModalkick] = useState(false);
     const [modalmakeadmin, setModalmakeadmin] = useState(false);
@@ -111,12 +114,13 @@ export default function GroupDetail(props) {
         let dataResponse = await response.json();
         if (dataResponse.status == true) {
             await setDatadetail(dataResponse.grup);
+            await setTextName(dataResponse.grup.title);
             var inde = dataResponse.grup.buddy.findIndex(
                 (k) => k["user_id"] === data_setting.user.id
             );
-            console.log(inde);
+            // console.log(inde);
             await setMydata(dataResponse.grup.buddy[inde]);
-            console.log(inde);
+            // console.log(inde);
             await setLoading(false);
         } else {
             await setLoading(false);
@@ -127,7 +131,7 @@ export default function GroupDetail(props) {
             }
         }
     };
-    console.log(dataDetail);
+    // console.log(dataDetail);
     let [setting, setSetting] = useState();
 
     const getUserAndToken = async () => {
@@ -239,6 +243,44 @@ export default function GroupDetail(props) {
         try {
             let response = await fetch(
                 `${RESTFULL_API}room/group/remove_admin`,
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "application/json",
+                    },
+                    body: data_kirim,
+                }
+            );
+            let responseJson = await response.json();
+            if (responseJson.status == true) {
+                getUserAndToken();
+            } else {
+                //   setloading(false);
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            // setloading(false);
+            console.log(error);
+        }
+    };
+
+    const _renameGroup = async (text) => {
+        setIndexActive(null);
+        console.log(text);
+        let data_kirim = JSON.stringify({
+            group_id: dataDetail.id,
+            title: text,
+        });
+        try {
+            let response = await fetch(
+                `${RESTFULL_API}room/group/rename_group`,
                 {
                     method: "POST",
                     headers: {
@@ -404,6 +446,58 @@ export default function GroupDetail(props) {
                         contentContainerStyle={{
                             backgroundColor: "#FFFFFF",
                         }}
+                        ListHeaderComponent={() => (
+                            <Pressable
+                                onPress={() =>
+                                    props.navigation.navigate("ChatStack", {
+                                        screen: "AddMember",
+                                        params: {
+                                            dataBuddy: dataDetail.buddy,
+                                            token: token,
+                                            id_group: dataDetail.id,
+                                        },
+                                    })
+                                }
+                                style={{
+                                    flexDirection: "row",
+                                    paddingVertical: 10,
+                                    borderBottomColor: "#EEEEEE",
+                                    backgroundColor: "#FFFFFF",
+                                    borderBottomWidth: 1,
+                                    paddingHorizontal: 15,
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <View
+                                        source={{ uri: default_image }}
+                                        style={{
+                                            backgroundColor: "#DAF0F2",
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: 25,
+                                            marginRight: 20,
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <AddParticipant
+                                            width={25}
+                                            height={25}
+                                        />
+                                    </View>
+                                    <View>
+                                        <Text>{t("addParticipant")}</Text>
+                                    </View>
+                                </View>
+                            </Pressable>
+                        )}
                         renderItem={({ item, index }) => (
                             <RenderMemberList
                                 item={item}
@@ -684,36 +778,80 @@ export default function GroupDetail(props) {
                         style={{
                             backgroundColor: "white",
                             width: Dimensions.get("screen").width - 60,
-                            padding: 20,
+                            paddingVertical: 15,
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ alignSelf: "center" }}>
-                            {t("alertRemoveAdmin")}
-                        </Text>
+                        <View
+                            style={{
+                                paddingHorizontal: 15,
+                                paddingBottom: 20,
+                                borderBottomWidth: 1,
+                                borderBottomColor: "#D1D1D1",
+                            }}
+                        >
+                            <Text
+                                size="title"
+                                type="bold"
+                                style={{ alignSelf: "flex-start" }}
+                            >
+                                {t("newGroupName")}
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                // borderColor: "#D1D1D1",
+                                width: width - 100,
+                                marginVertical: 15,
+                                alignSelf: "center",
+                                backgroundColor: "#f6f6f6",
+                            }}
+                        >
+                            <TextInput
+                                value={textName}
+                                placeholder="Group name"
+                                placeholderTextColor="#6C6C6C"
+                                onChangeText={(text) => setTextName(text)}
+                                maxLength={25}
+                                style={
+                                    Platform.OS == "ios"
+                                        ? { maxHeight: 100, margin: 10 }
+                                        : {
+                                              maxHeight: 100,
+                                              marginVertical: 5,
+                                              marginHorizontal: 10,
+                                              padding: 0,
+                                          }
+                                }
+                            />
+                        </View>
                         <View
                             style={{
                                 flexDirection: "row",
-                                justifyContent: "space-between",
-                                paddingVertical: 20,
-                                paddingHorizontal: 40,
+                                justifyContent: "flex-end",
+                                // paddingVertical: 15,
+                                paddingHorizontal: 15,
                             }}
                         >
                             <Button
                                 onPress={() => {
-                                    _removeAdmin(selected.user_id);
                                     setModalrename(false);
+                                    setTextName(dataDetail?.title);
                                 }}
-                                color="primary"
-                                text={t("removeAdmin")}
+                                size="medium"
+                                color="transparant"
+                                text={t("cancel")}
                             ></Button>
                             <Button
                                 onPress={() => {
+                                    _renameGroup(textName);
                                     setModalrename(false);
                                 }}
-                                color="secondary"
-                                variant="bordered"
-                                text={t("cancel")}
+                                style={{
+                                    marginLeft: 10,
+                                }}
+                                color="primary"
+                                text={t("submit")}
                             ></Button>
                         </View>
                     </View>

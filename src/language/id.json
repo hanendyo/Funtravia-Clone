@@ -554,5 +554,7 @@
     "removeAdmin": "Hapus Admin",
     "alertHapusMember": "Apakah anda ingin mengeluarkan anggota ini?",
     "alertMakeAdmin": "Apakah Anda ingin anggota ini menjadi admin?",
-    "alertRemoveAdmin": "Apakah Anda ingin menghapus anggota ini dari admin?"
+    "alertRemoveAdmin": "Apakah Anda ingin menghapus anggota ini dari admin?",
+    "newGroupName": "Nama Grup Baru",
+    "addParticipant": "Tambah anggota"
 }

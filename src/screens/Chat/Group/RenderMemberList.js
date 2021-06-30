@@ -167,10 +167,10 @@ export default function RenderMemberList({
         return (
             <Pressable
                 onPress={() =>
-                    props.navigation.push("ProfileStack", {
+                    props.navigation.navigate("ProfileStack", {
                         screen: "otherprofile",
                         params: {
-                            idUser: item.id,
+                            idUser: item.user_id,
                         },
                     })
                 }
@@ -242,10 +242,10 @@ export default function RenderMemberList({
                 >
                     <Pressable
                         onPress={() =>
-                            props.navigation.push("ProfileStack", {
+                            props.navigation.navigate("ProfileStack", {
                                 screen: "otherprofile",
                                 params: {
-                                    idUser: item.id,
+                                    idUser: item.user_id,
                                 },
                             })
                         }
@@ -304,10 +304,10 @@ export default function RenderMemberList({
             return (
                 <Pressable
                     onPress={() =>
-                        props.navigation.push("ProfileStack", {
+                        props.navigation.navigate("ProfileStack", {
                             screen: "otherprofile",
                             params: {
-                                idUser: item.id,
+                                idUser: item.user_id,
                             },
                         })
                     }
