@@ -2232,19 +2232,19 @@ export default function CityDetail(props) {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 5,
+                              marginTop: 10,
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
                           />
                         </View>
                         <Text
-                          size="small"
-                          type="regular"
+                          size="description"
+                          type="light"
                           style={{
-                            textAlign: "justify",
+                            textAlign: "left",
                             marginTop: 5,
-                            color: "#464646",
+                            color: "#616161",
                           }}
                         >
                           {i.text ? i.text : ""}
@@ -2257,7 +2257,7 @@ export default function CityDetail(props) {
                             size="label"
                             type="bold"
                             style={{
-                              marginBottom: 5,
+                              // marginBottom: 5,
                               color: "#464646",
                             }}
                           >
@@ -2268,8 +2268,9 @@ export default function CityDetail(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            marginTop: 5,
-                            textAlign: "justify",
+                            marginTop: 10,
+                            lineHeight: 20,
+                            textAlign: "left",
                             color: "#464646",
                           }}
                         >

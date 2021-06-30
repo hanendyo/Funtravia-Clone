@@ -1938,17 +1938,17 @@ export default function Country(props) {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 5,
+                              marginTop: 10,
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
                           />
                         </View>
                         <Text
-                          size="small"
-                          type="regular"
+                          size="description"
+                          type="light"
                           style={{
-                            textAlign: "justify",
+                            textAlign: "left",
                             marginTop: 5,
                             color: "#464646",
                           }}
@@ -1957,7 +1957,7 @@ export default function Country(props) {
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View style={{ marginVertical: 5 }}>
                         {i.title ? (
                           <Text
                             size="label"
@@ -1974,8 +1974,9 @@ export default function Country(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            marginTop: 5,
-                            textAlign: "justify",
+                            // marginTop: 5,
+                            textAlign: "left",
+                            lineHeight: 20,
                             color: "#464646",
                           }}
                         >

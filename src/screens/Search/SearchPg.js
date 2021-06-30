@@ -425,86 +425,92 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   const _liked = async (id, index) => {
-    if (token && token !== null && token !== "") {
-      try {
-        let response = await mutationliked({
-          variables: {
-            destination_id: id,
-          },
-        });
-        console.log(response);
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
-
-        if (response.data) {
-          GetListDestination();
-          if (response.data.setDestination_wishlist.code === "200") {
-            console.log("berhasil");
-          } else {
-            throw new Error(response.data.setDestination_wishlist.message);
+    if (loadingLike == false) {
+      if (token && token !== null && token !== "") {
+        try {
+          let response = await mutationliked({
+            variables: {
+              destination_id: id,
+            },
+          });
+          // console.log(response);
+          if (errorLike) {
+            throw new Error("Error Input");
           }
+
+          if (response.data) {
+            GetListDestination();
+            if (response.data.setDestination_wishlist.code === "200") {
+              // console.log("berhasil");
+            } else {
+              throw new Error(response.data.setDestination_wishlist.message);
+            }
+          }
+        } catch (error) {
+          GetListDestination();
+          // RNToasty.Show({
+          //   title: "Failed add to favorit Destination!",
+          //   position: "bottom",
+          // });
         }
-      } catch (error) {
-        GetListDestination();
+      } else {
+        props.navigation.navigate("AuthStack", {
+          screen: "LoginScreen",
+        });
         RNToasty.Show({
-          title: "Failed add to favorit Destination!",
+          title: t("pleaselogin"),
           position: "bottom",
         });
       }
-    } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
     }
   };
 
-  const _unliked = async (id, index) => {
-    if (token && token !== null && token !== "") {
-      try {
-        let response = await mutationUnliked({
-          variables: {
-            id: id,
-            type: "destination",
-          },
-        });
-        console.log(response);
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
+  console.log("loadingunlike", loadingUnLike);
 
-        if (response.data) {
-          GetListDestination();
-          if (response.data.unset_wishlist.code === "200") {
-            console.log("berhasil");
-          } else {
-            throw new Error(response.data.unset_wishlist.message);
+  const _unliked = async (id, index) => {
+    if (loadingUnLike == false) {
+      if (token && token !== null && token !== "") {
+        try {
+          let response = await mutationUnliked({
+            variables: {
+              id: id,
+              type: "destination",
+            },
+          });
+          // console.log(response);
+          if (errorUnLike) {
+            throw new Error("Error Input");
           }
+
+          if (response.data) {
+            GetListDestination();
+            if (response.data.unset_wishlist.code === "200") {
+              // console.log("berhasil");
+            } else {
+              throw new Error(response.data.unset_wishlist.message);
+            }
+          }
+        } catch (error) {
+          GetListDestination();
+          // let tempdestination = [...destinationSearch];
+          // let _temStatus = { ...tempdestination[index] };
+          // _temStatus.liked = true;
+          // tempdestination.splice(index, 1, _temStatus);
+          // SetdestinationSearch(tempdestination);
+          // RNToasty.Show({
+          //   title: "Failed remove favorit Destination!",
+          //   position: "bottom",
+          // });
         }
-      } catch (error) {
-        GetListDestination();
-        // let tempdestination = [...destinationSearch];
-        // let _temStatus = { ...tempdestination[index] };
-        // _temStatus.liked = true;
-        // tempdestination.splice(index, 1, _temStatus);
-        // SetdestinationSearch(tempdestination);
+      } else {
+        props.navigation.navigate("AuthStack", {
+          screen: "LoginScreen",
+        });
         RNToasty.Show({
-          title: "Failed remove favorit Destination!",
+          title: t("pleaselogin"),
           position: "bottom",
         });
       }
-    } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
     }
   };
 
@@ -857,7 +863,7 @@ export default function SearchPg(props, { navigation, route }) {
           if (response.data.follow_user.code !== 200) {
             throw new Error(response.data.unfollow_user.message);
           } else {
-            console.log("berhasil");
+            // console.log("berhasil");
             // refetchRekomendasi();
           }
         }
@@ -1420,7 +1426,9 @@ export default function SearchPg(props, { navigation, route }) {
                           </Pressable>
                         ) : (
                           <Pressable
-                            onPress={() => _liked(item.id, index)}
+                            onPress={() =>
+                              loadingLike ? null : _liked(item.id, index)
+                            }
                             style={{
                               backgroundColor: "#F3F3F3",
                               height: 30,
