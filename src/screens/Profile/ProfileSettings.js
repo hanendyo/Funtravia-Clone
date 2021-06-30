@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   BackHandler,
+  KeyboardAvoidingView,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Button, Text, Loading } from "../../component";
@@ -25,8 +26,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ReactNativeFile } from "apollo-upload-client";
 import * as mime from "react-native-mime-types";
 import LinearGradient from "react-native-linear-gradient";
+import DeviceInfo from "react-native-device-info";
 
 export default function ProfileSettings(props) {
+  const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     title: "",
     headerTransparent: true,
@@ -423,6 +426,7 @@ export default function ProfileSettings(props) {
           height: 200,
         }}
       ></ImageBackground> */}
+
       <View
         style={{
           width: Dimensions.get("screen").width,
@@ -724,7 +728,9 @@ export default function ProfileSettings(props) {
           {seting.current?.user?.phone ? seting.current.user.phone : "-"}
         </Text>
       </View>
-      <View
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : null}
+        keyboardVerticalOffset={Notch ? 90 : 65}
         style={{
           // flexDirection: 'row',
           paddingHorizontal: 20,
@@ -732,6 +738,7 @@ export default function ProfileSettings(props) {
           justifyContent: "space-between",
           // borderWidth: 1,
           marginVertical: 20,
+          marginTop: 100,
         }}
       >
         <Button
@@ -748,7 +755,7 @@ export default function ProfileSettings(props) {
             _handlesave();
           }}
         />
-      </View>
+      </KeyboardAvoidingView>
       <Loading show={loading} />
       <Modal
         onBackdropPress={() => {
