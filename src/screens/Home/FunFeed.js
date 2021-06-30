@@ -61,11 +61,19 @@ export default function SearchFeed({ props }) {
                 borderRadius: 5,
               }}
               onPress={() =>
-                props.navigation.navigate("FeedStack", {
-                  screen: "CommentsById",
+                // props.navigation.navigate("FeedStack", {
+                //   screen: "CommentsById",
+                //   params: {
+                //     post_id: item.id,
+                //     token: token,
+                //   },
+                // })
+
+                props.navigation.push("FeedStack", {
+                  screen: "CommentPost",
                   params: {
                     post_id: item.id,
-                    token: token,
+                    //   comment_id: data.comment_feed.id,
                   },
                 })
               }
