@@ -554,5 +554,6 @@
     "alertMakeAdmin": "Do you want to make this member an admin?",
     "alertRemoveAdmin": "Do you want to remove this member from admin?",
     "newGroupName": "New Group Name",
-    "addParticipant": "Add participants"
+    "addParticipant": "Add participants",
+    "stopFollow": "Unfollow"
 }

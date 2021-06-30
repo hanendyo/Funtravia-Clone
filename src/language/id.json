@@ -556,5 +556,6 @@
     "alertMakeAdmin": "Apakah Anda ingin anggota ini menjadi admin?",
     "alertRemoveAdmin": "Apakah Anda ingin menghapus anggota ini dari admin?",
     "newGroupName": "Nama Grup Baru",
-    "addParticipant": "Tambah anggota"
+    "addParticipant": "Tambah anggota",
+    "stopFollow": "Berhenti mengikuti"
 }

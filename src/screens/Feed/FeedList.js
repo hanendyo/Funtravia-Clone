@@ -94,8 +94,6 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  console.log("props feed", props);
-  console.log("props token", token);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   useScrollToTop(ref);
@@ -106,7 +104,7 @@ export default function FeedList({ props, token }) {
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
-  let [koment, setKoment] = useState("");
+  let [waktu, setWaktu] = useState("");
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -162,12 +160,11 @@ export default function FeedList({ props, token }) {
   });
 
   const SubmitData = async () => {
-    console.log("ref", ref);
-    // setTimeout(() => {
-    //   if (ref) {
-    //     ref.current.scrollToIndex({ animated: true, index: 0 });
-    //   }
-    // }, 1000);
+    setTimeout(() => {
+      if (ref) {
+        ref.current.scrollToIndex({ animated: true, index: 0 });
+      }
+    }, 1000);
     try {
       let response = await MutationCreate({
         variables: {
@@ -182,14 +179,18 @@ export default function FeedList({ props, token }) {
           assets: props?.route?.params?.assets,
         },
       });
-      console.log("response", response);
+      if (loadingMutationPost) {
+        console.log("loading", loadingMutationPost);
+      }
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
           Refresh();
-          if (ref) {
-            ref.current.scrollToIndex({ animated: true, index: 0 });
-          }
+          setTimeout(() => {
+            if (ref) {
+              ref.current.scrollToIndex({ animated: true, index: 0 });
+            }
+          });
         } else {
           throw new Error(response.data.create_post.message);
         }
@@ -320,8 +321,6 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  console.log("token feed", token);
-
   const {
     loading: loadingPost,
     data: dataPost,
@@ -343,8 +342,6 @@ export default function FeedList({ props, token }) {
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
-
-  console.log("dataPost", dataPost);
 
   let feed_post_pageing = [];
   if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
@@ -399,6 +396,8 @@ export default function FeedList({ props, token }) {
     }
   };
 
+  console.log("dataPost", dataPost);
+
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
@@ -411,19 +410,31 @@ export default function FeedList({ props, token }) {
           },
         });
 
+        console.log("response", response);
+        console.log("error", errordelete);
+
         if (response.data) {
           if (
             response.data.delete_post.code === 200 ||
             response.data.delete_post.code === "200"
           ) {
             const tempdata = [...feed_post_pageing];
+            console.log("tempdata", tempdata);
             tempdata.splice(data.index, 1);
-            Refresh();
+            feed_post_pageing = tempdata;
+            console.log("tempdata after", tempdata);
+            await Refresh();
+            setTimeout(() => {
+              if (ref) {
+                ref.current.scrollToIndex({ animated: true, index: 0 });
+              }
+            }, 800);
           } else {
             throw new Error(response.data.delete_post.message);
           }
         }
       } catch (error) {
+        console.log("error", error);
         Toast.show({
           text: "Failed to delete this post",
           position: "bottom",
@@ -471,26 +482,31 @@ export default function FeedList({ props, token }) {
   };
 
   useEffect(() => {
-    console.log("use1");
+    loadAsync();
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
         Refresh();
       }
 
       if (props.route.params.isPost === true) {
+        console.log("submit");
         SubmitData();
         // refetch();
-      } else {
-        console.log("else");
+      }
+
+      if (props.route.params.isComment === true) {
+        // Refresh();
+        if (ref) {
+          ref.current.scrollToIndex({ animated: true, index: 0 });
+        }
       }
     }
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
+    const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
   }, [props.route.params]);
 
   const countKoment = (id) => {
+    console.log("id comment", id);
     const tempd = [...feed_post_pageing];
     const index = tempd.findIndex((k) => k["id"] === id);
     tempd[index].comment_count = tempd[index].comment_count + 1;
@@ -514,7 +530,7 @@ export default function FeedList({ props, token }) {
 
   const [selected, setSelected] = useState(new Map());
 
-  const OptionOpen = (data, index) => {
+  const OptionOpen = (data, index, setting) => {
     const tempdata = { ...data };
     tempdata.index = index;
     SetOption(tempdata);
@@ -797,6 +813,7 @@ export default function FeedList({ props, token }) {
                       screen: "EditPost",
                       params: {
                         datapost: selectedOption,
+                        time: duration(selectedOption?.created_at),
                       },
                     });
                 }}
@@ -1190,7 +1207,7 @@ export default function FeedList({ props, token }) {
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => OptionOpen(item, index)}
+                onPress={() => OptionOpen(item, index, setting)}
                 style={{
                   position: "absolute",
                   right: 15,

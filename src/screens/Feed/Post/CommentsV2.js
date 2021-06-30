@@ -433,7 +433,25 @@ export default function Comments(props) {
             response.data.delete_post.code === 200 ||
             response.data.delete_post.code === "200"
           ) {
-            props.navigation.goBack();
+            // props.navigation.goBack();
+            props.navigation.navigate("BottomStack", {
+              screen: "FeedBottomScreen",
+              params: {
+                screen: "FeedScreen",
+                params: {
+                  isItinerary: true,
+                  // caption: caption,
+                  // latitude: latitude,
+                  // longitude: longitude,
+                  // location_name: location_name,
+                  // albums_id: albums_id,
+                  // itinerary_id: itinerary_id,
+                  // day_id: day_id,
+                  // oriented: oriented,
+                  // assets: assets,
+                },
+              },
+            });
           } else {
             throw new Error(response.data.delete_post.message);
           }
@@ -587,13 +605,12 @@ export default function Comments(props) {
               tempData[idx].is_send = true;
               setDataComment(tempData);
               scroll_to();
-              props.route.params.countKoment(tempDataPost.id);
+              props?.route?.params?.countKoment(tempDataPost.id);
             } else {
               throw new Error(response.data.comment_post.message);
             }
           }
         } catch (error) {
-          // console.log("error", error);
           tempData.splice(idx, 1);
           setDataComment(tempData);
           RNToasty.Show({
@@ -1017,8 +1034,12 @@ export default function Comments(props) {
                 }}
                 onPress={() => _unfollow(selectedOption.user.id)}
               >
-                <Text size="description" type="regular" style={{}}>
-                  {t("unfollow")}
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#d75995" }}
+                >
+                  {t("stopFollow")}
                 </Text>
               </TouchableOpacity>
             )}
