@@ -7,17 +7,14 @@ import {
 	SafeAreaView,
 	KeyboardAvoidingView,
 	Platform,
-	Image,
 	FlatList,
 	StatusBar,
-	Alert,
 	Dimensions,
-	ActivityIndicator,
 	Pressable,
 } from "react-native";
 import io from "socket.io-client";
 import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
-import { Button, Text, Errors, FunImage } from "../../component";
+import { Button, Text, Errors, FunImage, StickerModal } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -124,23 +121,6 @@ export default function Room({ navigation, route }) {
 		headerRightStyle: {
 			paddingRight: 20,
 		},
-	};
-
-	useEffect(() => {
-		socket.emit("join", room);
-		navigation.setOptions(navigationOptions);
-		if (init) {
-			getUserToken();
-			// setConnection();
-		}
-		socket.on("new_chat_personal", (data) => {
-			setChatHistory(data);
-		});
-		return () => socket.disconnect();
-	}, []);
-
-	const setConnection = () => {
-		socket.emit("join", room);
 	};
 
 	const getUserToken = async () => {
@@ -444,11 +424,25 @@ export default function Room({ navigation, route }) {
 
 	const [messages, setMessages] = useState("");
 	const [modalError, setModalError] = useState(false);
+	const [stickerModal, setStickerModal] = useState(false);
 
-	const modals = () => {
-		setModalError(true);
-		setMessages("Sticker Coming Soon");
+	useEffect(() => {
+		socket.emit("join", room);
+		navigation.setOptions(navigationOptions);
+		if (init) {
+			getUserToken();
+			// setConnection();
+		}
+		socket.on("new_chat_personal", (data) => {
+			setChatHistory(data);
+		});
+		return () => socket.disconnect();
+	}, []);
+
+	const setConnection = () => {
+		socket.emit("join", room);
 	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="#14646E" barStyle="light-content" />
@@ -487,8 +481,7 @@ export default function Room({ navigation, route }) {
 						size="medium"
 						variant="transparent"
 						style={{ width: 50, height: 50 }}
-						// onPress={() => Alert.alert("Sticker Cooming Soon")}
-						onPress={() => modals()}
+						onPress={() => setStickerModal(!stickerModal)}
 					>
 						<Smile height={35} width={35} />
 					</Button>
@@ -535,6 +528,10 @@ export default function Room({ navigation, route }) {
 					</Button>
 				</View>
 			</KeyboardAvoidingView>
+			<StickerModal
+				visible={stickerModal}
+				setVisible={() => setStickerModal(false)}
+			/>
 		</SafeAreaView>
 	);
 }
