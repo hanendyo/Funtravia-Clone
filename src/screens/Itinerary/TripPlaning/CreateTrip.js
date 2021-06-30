@@ -195,8 +195,6 @@ export default function Trip(props) {
     },
   });
 
-
-
   const [
     querywith,
     { loading: loadingwith, data: datawith, error: errorwith },
@@ -251,7 +249,6 @@ export default function Trip(props) {
   };
 
   const Create = async () => {
-    
     try {
       let response = await mutation({
         variables: {
@@ -342,7 +339,7 @@ export default function Trip(props) {
       var tempdatas = [...idwithSelected];
       tempdatas.push(item.id);
       await setIdwithSelected(tempdatas);
-  
+
       setLoadingApp(false);
     } else {
       Alert.alert(item.first_name + " already with you");
@@ -352,13 +349,14 @@ export default function Trip(props) {
 
   const setstart = async (x) => {
     await setStartDate(x);
-    await setEndDate(new Date(x));
+    await setEndDate(x);
     await setMinimum(x);
     await setModal(false);
     {
       endDate ? setdur(x, endDate) : null;
     }
   };
+
   const setEnd = async (x) => {
     await setEndDate(x);
     await setModalEnd(false);
@@ -368,11 +366,6 @@ export default function Trip(props) {
   };
   let [modal, setModal] = useState(false);
   let [modalEnd, setModalEnd] = useState(false);
-
-  const parseDate = (str) => {
-    var mdy = str.split("/");
-    return new Date(mdy[1], mdy[0] - 1, mdy[2]);
-  };
 
   const datediff = (start, end) => {
     start = start.split(" ");
@@ -390,27 +383,6 @@ export default function Trip(props) {
     setDuration(x);
   };
 
-  const onSelect = useCallback(
-    (id) => {
-      let newSelected = new Map(selected);
-      newSelected.set(id, !selected.get(id));
-      setSelected(newSelected);
-    },
-    [selected]
-  );
-
-  const togglePublic = () => {
-    var x = publicToggle;
-    var y = privateToggle;
-    setPrivateToggle(!y);
-    setPublicToggle(!x);
-  };
-  const togglePrivate = () => {
-    var x = privateToggle;
-    var y = publicToggle;
-    setPublicToggle(!y);
-    setPrivateToggle(!x);
-  };
   const createItinerary = () => {
     setLoadingApp(true);
     if (!idCountry) {
@@ -650,15 +622,7 @@ export default function Trip(props) {
                           }}
                           onPress={() => setcont(item.id, item.name)}
                         >
-                          <Text
-                            size="title"
-                            type="regular"
-                            style={
-                              {
-                               
-                              }
-                            }
-                          >
+                          <Text size="title" type="regular" style={{}}>
                             {item.name}
                           </Text>
                         </TouchableOpacity>
@@ -916,7 +880,7 @@ export default function Trip(props) {
                   current={startDate ? startDate : getToday()}
                   selected={startDate ? startDate : getToday()}
                   minimumDate={getToday()}
-                  maximumDate={endDate}
+                  // maximumDate={endDate}
                   onDateChange={(x) => setstart(x)}
                   mode="calendar"
                   minuteInterval={30}
@@ -1001,9 +965,21 @@ export default function Trip(props) {
                         }}
                         onValueChange={(itemValue, itemIndex) => {
                           let dat = new Date(startDate);
-                          dat.setDate(dat.getDate() + (itemValue-1));
-               
-                          setEndDate(dat);
+
+                          dat.setDate(dat.getDate() + (itemValue - 1));
+
+                          let bln = parseFloat(dat.getMonth()) + 1;
+                          let hr = dat.getDate();
+
+                          let hasil =
+                            "" +
+                            dat.getFullYear() +
+                            "/" +
+                            (bln < 10 ? "0" + bln : bln) +
+                            "/" +
+                            (hr < 10 ? "0" + hr : hr);
+
+                          setEndDate(hasil);
                           setDuration(itemValue);
                           setModalEnd(false);
                         }}

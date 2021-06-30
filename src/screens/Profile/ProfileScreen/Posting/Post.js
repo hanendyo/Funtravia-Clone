@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
+import { Play } from "../../../../assets/svg";
 const { width, height } = Dimensions.get("screen");
 import { FunVideo } from "../../../../component";
 
@@ -41,27 +42,59 @@ export default function Posts({ item, index, navigation, user }) {
             }}
           >
             {item[0]?.assets[0]?.type === "video" ? (
-              <FunVideo
-                poster={item[0]?.assets[0]?.filepath.replace(
-                  "output.m3u8",
-                  "thumbnail.png"
-                )}
-                posterResizeMode={"cover"}
-                source={{
-                  uri: item[0]?.assets[0]?.filepath,
-                }}
-                repeat={true}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "#fff",
-                  borderRadius: 5,
-                }}
-                resizeMode="cover"
-                muted={true}
-                paused={true}
-              />
+              <>
+                <FunVideo
+                  poster={item[0]?.assets[0]?.filepath.replace(
+                    "output.m3u8",
+                    "thumbnail.png"
+                  )}
+                  posterResizeMode={"contain"}
+                  paused={true}
+                  key={"posted" + item.id}
+                  source={{
+                    uri: item[0]?.assets[0]?.filepath,
+                  }}
+                  muted={true}
+                  // defaultSource={default_image}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderRadius: 5,
+                  }}
+                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    position: "absolute",
+                    bottom: "43%",
+                    left: "43%",
+                  }}
+                >
+                  <Play width={40} height={40} />
+                </View>
+              </>
             ) : (
+              // <FunVideo
+              //   poster={item[0]?.assets[0]?.filepath.replace(
+              //     "output.m3u8",
+              //     "thumbnail.png"
+              //   )}
+              //   posterResizeMode={"cover"}
+              //   source={{
+              //     uri: item[0]?.assets[0]?.filepath,
+              //   }}
+              //   repeat={true}
+              //   style={{
+              //     width: "100%",
+              //     height: "100%",
+              //     backgroundColor: "#fff",
+              //     borderRadius: 5,
+              //   }}
+              //   resizeMode="cover"
+              //   muted={true}
+              //   paused={true}
+              // />
               <Image
                 style={{
                   width: "100%",
@@ -101,27 +134,59 @@ export default function Posts({ item, index, navigation, user }) {
               }}
             >
               {item[1]?.assets[0] && item[1]?.assets[0]?.type === "video" ? (
-                <FunVideo
-                  poster={item[1]?.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  source={{
-                    uri: item[1]?.assets[0] && item[1]?.assets[0]?.filepath,
-                  }}
-                  repeat={true}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 5,
-                  }}
-                  resizeMode="cover"
-                  muted={true}
-                  paused={true}
-                />
+                <>
+                  <FunVideo
+                    poster={item[1]?.assets[0]?.filepath.replace(
+                      "output.m3u8",
+                      "thumbnail.png"
+                    )}
+                    posterResizeMode={"contain"}
+                    paused={true}
+                    key={"posted" + item.id}
+                    source={{
+                      uri: item[1]?.assets[0] && item[1]?.assets[0]?.filepath,
+                    }}
+                    muted={true}
+                    // defaultSource={default_image}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      position: "absolute",
+                      bottom: "35%",
+                      left: "35%",
+                    }}
+                  >
+                    <Play width={40} height={40} />
+                  </View>
+                </>
               ) : (
+                // <FunVideo
+                //   poster={item[1]?.assets[0]?.filepath.replace(
+                //     "output.m3u8",
+                //     "thumbnail.png"
+                //   )}
+                //   posterResizeMode={"cover"}
+                //   source={{
+                //     uri: item[1]?.assets[0] && item[1]?.assets[0]?.filepath,
+                //   }}
+                //   repeat={true}
+                //   style={{
+                //     width: "100%",
+                //     height: "100%",
+                //     backgroundColor: "#fff",
+                //     borderRadius: 5,
+                //   }}
+                //   resizeMode="cover"
+                //   muted={true}
+                //   paused={true}
+                // />
                 <Image
                   style={{
                     width: "100%",
@@ -162,27 +227,59 @@ export default function Posts({ item, index, navigation, user }) {
               }}
             >
               {item[2]?.assets[0]?.type === "video" ? (
-                <FunVideo
-                  poster={item[2]?.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  source={{
-                    uri: item[2]?.assets[0]?.filepath,
-                  }}
-                  repeat={true}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 5,
-                  }}
-                  resizeMode="cover"
-                  muted={true}
-                  paused={true}
-                />
+                <>
+                  <FunVideo
+                    poster={item[2]?.assets[0]?.filepath.replace(
+                      "output.m3u8",
+                      "thumbnail.png"
+                    )}
+                    posterResizeMode={"contain"}
+                    paused={true}
+                    key={"posted" + item.id}
+                    source={{
+                      uri: item[2]?.assets[0]?.filepath,
+                    }}
+                    muted={true}
+                    // defaultSource={default_image}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      position: "absolute",
+                      bottom: "35%",
+                      left: "35%",
+                    }}
+                  >
+                    <Play width={40} height={40} />
+                  </View>
+                </>
               ) : (
+                // <FunVideo
+                //   poster={item[2]?.assets[0]?.filepath.replace(
+                //     "output.m3u8",
+                //     "thumbnail.png"
+                //   )}
+                //   posterResizeMode={"cover"}
+                //   source={{
+                //     uri: item[2]?.assets[0]?.filepath,
+                //   }}
+                //   repeat={true}
+                //   style={{
+                //     width: "100%",
+                //     height: "100%",
+                //     backgroundColor: "#fff",
+                //     borderRadius: 5,
+                //   }}
+                //   resizeMode="cover"
+                //   muted={true}
+                //   paused={true}
+                // />
                 <Image
                   style={{
                     width: "100%",
@@ -237,27 +334,59 @@ export default function Posts({ item, index, navigation, user }) {
               }}
             >
               {item[0]?.assets[0]?.type === "video" ? (
-                <FunVideo
-                  poster={item[0]?.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  source={{
-                    uri: item[0]?.assets[0]?.filepath,
-                  }}
-                  repeat={true}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 5,
-                  }}
-                  resizeMode="cover"
-                  muted={true}
-                  paused={false}
-                />
+                <>
+                  <FunVideo
+                    poster={item[0]?.assets[0]?.filepath.replace(
+                      "output.m3u8",
+                      "thumbnail.png"
+                    )}
+                    posterResizeMode={"contain"}
+                    paused={true}
+                    key={"posted" + item.id}
+                    source={{
+                      uri: item[0]?.assets[0]?.filepath,
+                    }}
+                    muted={true}
+                    // defaultSource={default_image}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      position: "absolute",
+                      bottom: "35%",
+                      left: "35%",
+                    }}
+                  >
+                    <Play width={40} height={40} />
+                  </View>
+                </>
               ) : (
+                // <FunVideo
+                //   poster={item[0]?.assets[0]?.filepath.replace(
+                //     "output.m3u8",
+                //     "thumbnail.png"
+                //   )}
+                //   posterResizeMode={"cover"}
+                //   source={{
+                //     uri: item[0]?.assets[0]?.filepath,
+                //   }}
+                //   repeat={true}
+                //   style={{
+                //     width: "100%",
+                //     height: "100%",
+                //     backgroundColor: "#fff",
+                //     borderRadius: 5,
+                //   }}
+                //   resizeMode="cover"
+                //   muted={true}
+                //   paused={false}
+                // />
                 <Image
                   style={{
                     width: "100%",
@@ -298,27 +427,59 @@ export default function Posts({ item, index, navigation, user }) {
               }}
             >
               {item[1]?.assets[0]?.type === "video" ? (
-                <FunVideo
-                  poster={item[1]?.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  source={{
-                    uri: item[1]?.assets[0]?.filepath,
-                  }}
-                  repeat={true}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 5,
-                  }}
-                  resizeMode="cover"
-                  muted={true}
-                  paused={false}
-                />
+                <>
+                  <FunVideo
+                    poster={item[1]?.assets[0]?.filepath.replace(
+                      "output.m3u8",
+                      "thumbnail.png"
+                    )}
+                    posterResizeMode={"contain"}
+                    paused={true}
+                    key={"posted" + item.id}
+                    source={{
+                      uri: item[1]?.assets[0]?.filepath,
+                    }}
+                    muted={true}
+                    // defaultSource={default_image}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      position: "absolute",
+                      bottom: "35%",
+                      left: "35%",
+                    }}
+                  >
+                    <Play width={40} height={40} />
+                  </View>
+                </>
               ) : (
+                // <FunVideo
+                //   poster={item[1]?.assets[0]?.filepath.replace(
+                //     "output.m3u8",
+                //     "thumbnail.png"
+                //   )}
+                //   posterResizeMode={"cover"}
+                //   source={{
+                //     uri: item[1]?.assets[0]?.filepath,
+                //   }}
+                //   repeat={true}
+                //   style={{
+                //     width: "100%",
+                //     height: "100%",
+                //     backgroundColor: "#fff",
+                //     borderRadius: 5,
+                //   }}
+                //   resizeMode="cover"
+                //   muted={true}
+                //   paused={false}
+                // />
                 <Image
                   style={{
                     width: "100%",
@@ -360,27 +521,59 @@ export default function Posts({ item, index, navigation, user }) {
             }}
           >
             {item[2]?.assets[0]?.type === "video" ? (
-              <FunVideo
-                poster={item[2]?.assets[0]?.filepath.replace(
-                  "output.m3u8",
-                  "thumbnail.png"
-                )}
-                posterResizeMode={"cover"}
-                source={{
-                  uri: item[2]?.assets[0]?.filepath,
-                }}
-                repeat={true}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "#fff",
-                  borderRadius: 5,
-                }}
-                resizeMode="cover"
-                muted={true}
-                paused={false}
-              />
+              <>
+                <FunVideo
+                  poster={item[2]?.assets[0]?.filepath.replace(
+                    "output.m3u8",
+                    "thumbnail.png"
+                  )}
+                  posterResizeMode={"contain"}
+                  paused={true}
+                  key={"posted" + item.id}
+                  source={{
+                    uri: item[2]?.assets[0]?.filepath,
+                  }}
+                  muted={true}
+                  // defaultSource={default_image}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderRadius: 5,
+                  }}
+                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    position: "absolute",
+                    bottom: "43%",
+                    left: "43%",
+                  }}
+                >
+                  <Play width={40} height={40} />
+                </View>
+              </>
             ) : (
+              // <FunVideo
+              //   poster={item[2]?.assets[0]?.filepath.replace(
+              //     "output.m3u8",
+              //     "thumbnail.png"
+              //   )}
+              //   posterResizeMode={"cover"}
+              //   source={{
+              //     uri: item[2]?.assets[0]?.filepath,
+              //   }}
+              //   repeat={true}
+              //   style={{
+              //     width: "100%",
+              //     height: "100%",
+              //     backgroundColor: "#fff",
+              //     borderRadius: 5,
+              //   }}
+              //   resizeMode="cover"
+              //   muted={true}
+              //   paused={false}
+              // />
               <Image
                 style={{
                   width: "100%",
@@ -435,27 +628,59 @@ export default function Posts({ item, index, navigation, user }) {
                   }}
                 >
                   {data.assets[0]?.type === "video" ? (
-                    <FunVideo
-                      poster={data.assets[0]?.filepath.replace(
-                        "output.m3u8",
-                        "thumbnail.png"
-                      )}
-                      posterResizeMode={"cover"}
-                      source={{
-                        uri: data.assets[0]?.filepath,
-                      }}
-                      repeat={true}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        borderRadius: 5,
-                      }}
-                      resizeMode="cover"
-                      muted={true}
-                      paused={false}
-                    />
+                    <>
+                      <FunVideo
+                        poster={data.assets[0]?.filepath.replace(
+                          "output.m3u8",
+                          "thumbnail.png"
+                        )}
+                        posterResizeMode={"contain"}
+                        paused={true}
+                        key={"posted" + data.id}
+                        source={{
+                          uri: data.assets[0]?.filepath,
+                        }}
+                        muted={true}
+                        // defaultSource={default_image}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "#fff",
+                          borderRadius: 5,
+                        }}
+                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          position: "absolute",
+                          bottom: "35%",
+                          left: "35%",
+                        }}
+                      >
+                        <Play width={40} height={40} />
+                      </View>
+                    </>
                   ) : (
+                    // <FunVideo
+                    //   poster={data.assets[0]?.filepath.replace(
+                    //     "output.m3u8",
+                    //     "thumbnail.png"
+                    //   )}
+                    //   posterResizeMode={"cover"}
+                    //   source={{
+                    //     uri: data.assets[0]?.filepath,
+                    //   }}
+                    //   repeat={true}
+                    //   style={{
+                    //     width: "100%",
+                    //     height: "100%",
+                    //     backgroundColor: "#fff",
+                    //     borderRadius: 5,
+                    //   }}
+                    //   resizeMode="cover"
+                    //   muted={true}
+                    //   paused={false}
+                    // />
                     <Image
                       style={{
                         width: "100%",
@@ -517,27 +742,59 @@ export default function Posts({ item, index, navigation, user }) {
               }}
             >
               {data.assets[0]?.type === "video" ? (
-                <FunVideo
-                  poster={data.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  source={{
-                    uri: data.assets[0]?.filepath,
-                  }}
-                  repeat={true}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 5,
-                  }}
-                  resizeMode="cover"
-                  muted={true}
-                  paused={false}
-                />
+                <>
+                  <FunVideo
+                    poster={data.assets[0]?.filepath.replace(
+                      "output.m3u8",
+                      "thumbnail.png"
+                    )}
+                    posterResizeMode={"contain"}
+                    paused={true}
+                    key={"posted" + data.id}
+                    source={{
+                      uri: data.assets[0]?.filepath,
+                    }}
+                    muted={true}
+                    // defaultSource={default_image}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      position: "absolute",
+                      bottom: "35%",
+                      left: "35%",
+                    }}
+                  >
+                    <Play width={40} height={40} />
+                  </View>
+                </>
               ) : (
+                // <FunVideo
+                //   poster={data.assets[0]?.filepath.replace(
+                //     "output.m3u8",
+                //     "thumbnail.png"
+                //   )}
+                //   posterResizeMode={"cover"}
+                //   source={{
+                //     uri: data.assets[0]?.filepath,
+                //   }}
+                //   repeat={true}
+                //   style={{
+                //     width: "100%",
+                //     height: "100%",
+                //     backgroundColor: "#fff",
+                //     borderRadius: 5,
+                //   }}
+                //   resizeMode="cover"
+                //   muted={true}
+                //   paused={false}
+                // />
                 <Image
                   style={{
                     width: "100%",
