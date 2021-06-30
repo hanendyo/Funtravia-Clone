@@ -1198,7 +1198,9 @@ export default function Comments(props) {
                     </Text>
                     <Text size={"small"} style={{}}>
                       {/* {duration(dataPost?.created_at)} */}
-                      {props?.route?.params?.time}
+                      {props?.route?.params?.time
+                        ? props?.route?.params?.time
+                        : duration(dataPost?.created_at)}
                     </Text>
                   </View>
                 </Pressable>
