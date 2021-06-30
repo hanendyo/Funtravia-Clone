@@ -33,6 +33,8 @@ export default function ImageSlide({
   let [slider, setSlider] = useState([]);
   let [inde, setIn] = useState(0);
   let [preIn, setPreIn] = useState(null);
+  let [paused, setPaused] = useState(true);
+  let [muted, setMuted] = useState(false);
 
   const handel_select = async (index) => {
     var tempdata = [...slider];
@@ -293,12 +295,19 @@ export default function ImageSlide({
             onPress={() => {
               setSlider([]), setClose(), setIn(0);
               props.navigation.push("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: dataImage[inde].id,
-                  token: token,
+                  //   comment_id: data.comment_feed.id,
                 },
               });
+              // props.navigation.push("FeedStack", {
+              //   screen: "CommentsById",
+              //   params: {
+              //     post_id: dataImage[inde].id,
+              //     token: token,
+              //   },
+              // });
             }}
             style={{
               borderWidth: 1,

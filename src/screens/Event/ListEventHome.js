@@ -804,12 +804,18 @@ export default function ListEventHome(props) {
             shadowOpacity: 0,
             backgroundColor: "#fff",
             height: TabBarHeight,
+            // borderWidth: 1,
+            padding: 0,
           }}
           renderLabel={({ route, focused }) => (
             <Text
               size="label"
               type="bold"
-              style={{ opacity: focused ? 1 : 0.5 }}
+              style={{
+                opacity: focused ? 1 : 0.5,
+                //  borderWidth: 1,
+                margin: 0,
+              }}
             >
               {route.title}
             </Text>
@@ -1312,7 +1318,9 @@ export default function ListEventHome(props) {
         style={{
           flexDirection: "row",
           zIndex: 5,
-          padding: 15,
+          paddingHorizontal: 15,
+          paddingTop: 15,
+          paddingBottom: 5,
           backgroundColor: "#fff",
           position: "absolute",
           top: 0,
