@@ -372,7 +372,7 @@ export default function Post(props) {
             backgroundColor: "white",
             justifyContent: "space-between",
             paddingHorizontal: 10,
-            paddingTop: 10,
+            paddingTop: Platform.OS == "ios" ? 60 : 10,
             paddingBottom: 10,
           }}
         >

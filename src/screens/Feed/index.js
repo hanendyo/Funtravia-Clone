@@ -120,9 +120,7 @@ export default function Feed(props) {
     });
   };
 
-  console.log("token", token);
   if (token) {
-    console.log("test");
     return (
       <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
         {token ? <FeedList props={props} token={token} /> : null}

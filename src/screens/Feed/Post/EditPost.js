@@ -17,9 +17,10 @@ import {
   Truncate,
   StatusBar,
   FunImage,
+  Button,
 } from "../../../component";
 import { default_image } from "../../../assets/png";
-import { CheckWhite } from "../../../assets/svg";
+import { CheckWhite, Arrowbackwhite } from "../../../assets/svg";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -65,6 +66,21 @@ export default function EditPost(props) {
       fontSize: 14,
       color: "white",
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+          marginLeft: 5,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
     headerRight: () => (
       <TouchableOpacity
         onPress={() => {
@@ -400,7 +416,8 @@ export default function EditPost(props) {
                       // marginTop: 7,
                     }}
                   >
-                    {duration(dataPost.created_at)}
+                    {/* {duration(dataPost.created_at)} */}
+                    {props?.route?.params?.time}
                   </Text>
                   {dataPost && dataPost.location_name ? (
                     <View

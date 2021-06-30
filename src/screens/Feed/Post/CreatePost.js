@@ -427,8 +427,8 @@ export default function CreatePost(props) {
 
   return (
     <KeyboardAvoidingView
-      // behavior={Platform.OS == "ios" ? "padding" : null}
-      // keyboardVerticalOffset={65}
+      // behavior={Platform.OS == "ios" ? null : null}
+      // keyboardVerticalOffset={100}
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -475,45 +475,7 @@ export default function CreatePost(props) {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
               {ReviewResult()}
-              {/* {props?.route.params.type === "video" ? (
-                <Video
-                  source={{
-                    uri:
-                      Platform.OS === "ios"
-                        ? `assets-library://asset/asset.${chosenFile.filename.substring(
-                            chosenFile.filename.length - 3
-                          )}?id=${chosenFile.uri.substring(
-                            5,
-                            41
-                          )}&ext=${chosenFile.filename.substring(
-                            chosenFile.filename.length - 3
-                          )}`
-                        : chosenFile.uri,
-                  }}
-                  ref={(ref) => {
-                    videoView = ref;
-                  }}
-                  onBuffer={videoView?.current?.onBuffer}
-                  onError={videoView?.current?.videoError}
-                  style={{
-                    width: width,
-                    height: width,
-                  }}
-                  resizeMode="cover"
-                />
-              ) : (
-                <AutoHeightImage
-                  width={Dimensions.get("screen").width}
-                  source={
-                    chosenFile && chosenFile.path
-                      ? {
-                          uri: chosenFile.path,
-                        }
-                      : default_image
-                  }
-                />
-              )} */}
-              <View
+              <KeyboardAvoidingView
                 style={{
                   flexDirection: "row",
                   backgroundColor: "#ffffff",
@@ -539,38 +501,31 @@ export default function CreatePost(props) {
                     marginRight: 15,
                   }}
                 />
-                <TextInput
-                  multiline
-                  placeholder={`${t("writeACaption")}...`}
-                  maxLength={1000}
-                  placeholderStyle={{ fontSize: 50 }}
-                  placeholderTextColor="#6C6C6C"
-                  style={
-                    Platform.OS == "ios"
-                      ? {
-                          height: 75,
-                          width: Dimensions.get("screen").width - 100,
-                          maxHeight: 100,
-                          marginVertical: 5,
-                          marginHorizontal: 10,
-                          paddingTop: 10,
-                          fontSize: 14,
-                          fontFamily: "Lato-Regular",
-                        }
-                      : {
-                          height: 50,
-                          width: Dimensions.get("screen").width - 90,
-                          borderRadius: 5,
-                          backgroundColor: "#f6f6f6",
-                          paddingHorizontal: 10,
-                          fontSize: 14,
-                          fontFamily: "Lato-Regular",
-                        }
-                  }
-                  onChangeText={(text) => _setStatusText(text)}
-                  value={statusText}
-                />
-              </View>
+                <View
+                  style={{
+                    backgroundColor: "#f6f6f6",
+                    width: "77%",
+                    maxHeight: 60,
+                    minHeight: 30,
+                    borderRadius: 5,
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  <TextInput
+                    multiline
+                    placeholder={`${t("writeACaption")}...`}
+                    maxLength={1000}
+                    placeholderStyle={{ fontSize: 30 }}
+                    onChangeText={(text) => _setStatusText(text)}
+                    onSubmitEditing={(text) => _setStatusText(text)}
+                    value={statusText}
+                    style={{
+                      borderWidth: 0,
+                      width: "100%",
+                    }}
+                  />
+                </View>
+              </KeyboardAvoidingView>
               <View
                 style={{
                   marginHorizontal: 15,

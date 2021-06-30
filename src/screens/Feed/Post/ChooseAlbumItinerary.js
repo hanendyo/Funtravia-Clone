@@ -354,7 +354,8 @@ export default function ChooseAlbumItinerary(props) {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{
             // height: 200,
-            width: Dimensions.get("screen").width - 40,
+            width: Dimensions.get("screen").width - 10,
+            paddingHorizontal: 20,
             top: Dimensions.get("screen").height / 3,
             position: "absolute",
             zIndex: 15,
