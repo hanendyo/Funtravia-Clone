@@ -369,7 +369,7 @@ export default function TravelGoal(props) {
                     size="readable"
                     numberOfLines={2}
                     style={{
-                      textAlign: "justify",
+                      textAlign: "left",
                     }}
                   >
                     {item?.description}
