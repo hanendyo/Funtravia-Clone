@@ -27,6 +27,8 @@ static void InitializeFlipper(UIApplication *application) {
 #import "RCTLinkingManager.h"
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
+#import "SDImageCodersManager.h"
+#import <SDWebImageWebPCoder/SDImageWebPCoder.h>
 
 
 @implementation AppDelegate
@@ -65,7 +67,7 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [RNSplashScreen show];
-  
+  [SDImageCodersManager.sharedManager addCoder:SDImageWebPCoder.sharedCoder];
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
   return YES;

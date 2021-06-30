@@ -26,6 +26,7 @@ import FunImageAutoSize from "./src/FunImageAutoSize";
 import FunAnimatedImage from "./src/FunAnimatedImage";
 import CopyLink from "./src/CopyLink";
 import FunVideo from "./src/FunVideo";
+import StickerModal from "./src/Sticker/StickerModal";
 
 export {
 	Text,
@@ -56,4 +57,5 @@ export {
 	FunImageAutoSize,
 	FunAnimatedImage,
 	FunVideo,
+	StickerModal,
 };
