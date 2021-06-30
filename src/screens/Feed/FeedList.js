@@ -500,6 +500,17 @@ export default function FeedList({ props, token }) {
           ref.current.scrollToIndex({ animated: true, index: 0 });
         }
       }
+      if (props.route.params.isTag === true) {
+        console.log("tag");
+        setRefreshing(true);
+        setTimeout(() => {
+          refetch();
+          if (ref) {
+            ref.current.scrollToIndex({ animated: true, index: 0 });
+          }
+          setRefreshing(false);
+        }, 800);
+      }
     }
     const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;

@@ -136,7 +136,6 @@ export default function Notification(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await GetListNotif();
-    console.log(tkn);
   };
 
   useEffect(() => {
