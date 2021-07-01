@@ -144,8 +144,14 @@ export default function GroupDetail(props) {
         }
     };
     useEffect(() => {
-        getUserAndToken();
         props.navigation.setOptions(headerOptions);
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener("focus", () => {
+            getUserAndToken();
+        });
+        return unsubscribe;
     }, []);
 
     const [layout, setLayout] = useState();
@@ -446,58 +452,60 @@ export default function GroupDetail(props) {
                         contentContainerStyle={{
                             backgroundColor: "#FFFFFF",
                         }}
-                        ListHeaderComponent={() => (
-                            <Pressable
-                                onPress={() =>
-                                    props.navigation.navigate("ChatStack", {
-                                        screen: "AddMember",
-                                        params: {
-                                            dataBuddy: dataDetail.buddy,
-                                            token: token,
-                                            id_group: dataDetail.id,
-                                        },
-                                    })
-                                }
-                                style={{
-                                    flexDirection: "row",
-                                    paddingVertical: 10,
-                                    borderBottomColor: "#EEEEEE",
-                                    backgroundColor: "#FFFFFF",
-                                    borderBottomWidth: 1,
-                                    paddingHorizontal: 15,
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <View
+                        ListHeaderComponent={() =>
+                            dataDetail && dataDetail.type !== "itinerary" ? (
+                                <Pressable
+                                    onPress={() =>
+                                        props.navigation.navigate("ChatStack", {
+                                            screen: "AddMember",
+                                            params: {
+                                                dataBuddy: dataDetail.buddy,
+                                                token: token,
+                                                id_group: dataDetail.id,
+                                            },
+                                        })
+                                    }
                                     style={{
                                         flexDirection: "row",
+                                        paddingVertical: 10,
+                                        borderBottomColor: "#EEEEEE",
+                                        backgroundColor: "#FFFFFF",
+                                        borderBottomWidth: 1,
+                                        paddingHorizontal: 15,
+                                        justifyContent: "space-between",
                                         alignItems: "center",
                                     }}
                                 >
                                     <View
-                                        source={{ uri: default_image }}
                                         style={{
-                                            backgroundColor: "#DAF0F2",
-                                            width: 50,
-                                            height: 50,
-                                            borderRadius: 25,
-                                            marginRight: 20,
-                                            justifyContent: "center",
+                                            flexDirection: "row",
                                             alignItems: "center",
                                         }}
                                     >
-                                        <AddParticipant
-                                            width={25}
-                                            height={25}
-                                        />
+                                        <View
+                                            source={{ uri: default_image }}
+                                            style={{
+                                                backgroundColor: "#DAF0F2",
+                                                width: 50,
+                                                height: 50,
+                                                borderRadius: 25,
+                                                marginRight: 20,
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <AddParticipant
+                                                width={25}
+                                                height={25}
+                                            />
+                                        </View>
+                                        <View>
+                                            <Text>{t("addParticipant")}</Text>
+                                        </View>
                                     </View>
-                                    <View>
-                                        <Text>{t("addParticipant")}</Text>
-                                    </View>
-                                </View>
-                            </Pressable>
-                        )}
+                                </Pressable>
+                            ) : null
+                        }
                         renderItem={({ item, index }) => (
                             <RenderMemberList
                                 item={item}
