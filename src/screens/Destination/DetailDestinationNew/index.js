@@ -13,6 +13,7 @@ import {
   Pressable,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -39,8 +40,10 @@ import {
   StatusBar as Satbar,
   shareAction,
   FunImage,
+  FunIcon,
 } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
+import ListDesAnother from "../../../graphQL/Query/Destination/ListDesAnother";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Generals from "./Generals";
@@ -56,6 +59,7 @@ import DeviceInfo from "react-native-device-info";
 import IndexSkeleton from "./IndexSkeleton";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
+import ImageSlide from "../../../component/src/ImageSlide";
 
 let PullToRefreshDist = 150;
 
@@ -72,7 +76,10 @@ const Index = (props) => {
   let [tambahan2, setTambahan2] = useState(0);
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
   let { width, height } = Dimensions.get("screen");
-  let TabBarHeight = 75;
+  let TabBarHeight = Platform.select({
+    ios: 75 + 17,
+    android: 75 + 12,
+  });
   let Notch = DeviceInfo.hasNotch();
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
@@ -115,6 +122,15 @@ const Index = (props) => {
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState(props.route.params.token);
   let [dataDestination, setDataDestination] = useState(data);
+  let [more, setMore] = useState(false);
+  // const { t } = useTranslation();
+  let [lines, setLines] = useState(3);
+  let [dataAnother, setDataAnother] = useState({});
+  let [gambar, setGambar] = useState([]);
+  let [modalss, setModalss] = useState(false);
+  const layoutText = (e) => {
+    setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
+  };
 
   const HeaderComponent = {
     headerShown: true,
@@ -164,6 +180,7 @@ const Index = (props) => {
     },
     onCompleted: () => {
       let tab = [{ key: "general", title: "General" }];
+      tab.push({ key: "review", title: "Review" });
 
       data?.destinationById?.article_header.map((item, index) => {
         tab.push({
@@ -172,8 +189,6 @@ const Index = (props) => {
           data: item.content,
         });
       });
-
-      tab.push({ key: "review", title: "Review" });
 
       setRoutes(tab);
 
@@ -199,7 +214,30 @@ const Index = (props) => {
       });
     },
   });
-  console.log("data", dataDestination);
+
+  let [anotherDes, setAnotherDes] = useState([]);
+
+  const [
+    fetchDataAnotherDes,
+    {
+      data: dataDesAnother,
+      loading: loadingDesAnother,
+      error: errorDesAnother,
+    },
+  ] = useLazyQuery(ListDesAnother, {
+    variables: { id: props.route.params.id },
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setAnotherDes(dataDesAnother.destination_another_place);
+    },
+  });
+  console.log("data", anotherDes);
 
   const headerPanResponder = useRef(
     PanResponder.create({
@@ -277,7 +315,7 @@ const Index = (props) => {
 
     headerScrollY.addListener(({ value }) => {
       listRefArr.current.forEach((item) => {
-        console.log("item", item);
+        // console.log("item", item);
         if (item.key !== routes[_tabIndex].key) {
           return;
         }
@@ -450,6 +488,7 @@ const Index = (props) => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await fetchData();
+    await fetchDataAnotherDes();
 
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
@@ -1115,9 +1154,781 @@ const Index = (props) => {
     }
   };
 
-  const renderGeneral = ({ item, index, props }) => {
+  // const renderGeneral = ({ item, index, props }) => {
+  //   return (
+  //     <Generals data={item} props={props} addTo={addToPlan} token={token} />
+  //   );
+  // };
+
+  const [
+    mutationlikedAnother,
+    {
+      loading: loadingLikeAnother,
+      data: dataLikeAnother,
+      error: errorLikeAnother,
+    },
+  ] = useMutation(Liked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnlikedAnother,
+    {
+      loading: loadingUnLikeAnother,
+      data: dataUnLikeAnother,
+      error: errorUnLikeAnother,
+    },
+  ] = useMutation(unLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _likedAnother = async (id) => {
+    if (token && token !== "" && token !== null) {
+      // var tempData = { ...dataAnother };
+      // var index = tempData.another_place.findIndex((k) => k["id"] === id);
+      // tempData.another_place[index].liked = true;
+      // setDataAnother(tempData);
+      try {
+        let response = await mutationlikedAnother({
+          variables: {
+            destination_id: id,
+            qty: 1,
+          },
+        });
+        if (loadingLike) {
+          alert("Loading!!");
+        }
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          fetchDataAnotherDes();
+          if (
+            response.data.setDestination_wishlist.code === 200 ||
+            response.data.setDestination_wishlist.code === "200"
+          ) {
+            // var tempData = { ...dataAnother };
+            // var index = tempData.another_place.findIndex((k) => k["id"] === id);
+            // tempData.another_place[index].liked = true;
+            // setDataAnother(tempData);
+          } else {
+            throw new Error(response.data.setDestination_wishlist.message);
+          }
+        }
+      } catch (error) {
+        // var tempData = { ...dataAnother };
+        // var index = tempData.another_place.findIndex((k) => k["id"] === id);
+        // tempData.another_place[index].liked = false;
+        // setDataAnother(tempData);
+        fetchDataAnotherDes();
+        // alert("" + error);
+      }
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+  };
+
+  const _unlikedAnother = async (id) => {
+    if (token && token !== "" && token !== null) {
+      // var tempData = { ...dataAnother };
+      // var index = tempData.another_place.findIndex((k) => k["id"] === id);
+      // tempData.another_place[index].liked = false;
+      // setDataAnother(tempData);
+      try {
+        let response = await mutationUnlikedAnother({
+          variables: {
+            destination_id: id,
+          },
+        });
+        if (loadingUnLike) {
+          alert("Loading!!");
+        }
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          fetchDataAnotherDes();
+          if (
+            response.data.unset_wishlist_destinasi.code === 200 ||
+            response.data.unset_wishlist_destinasi.code === "200"
+          ) {
+            // var tempData = { ...dataAnother };
+            // var index = tempData.another_place.findIndex((k) => k["id"] === id);
+            // tempData.another_place[index].liked = false;
+            // setDataAnother(tempData);
+          } else {
+            throw new Error(response.data.unset_wishlist_destinasi.message);
+          }
+        }
+      } catch (error) {
+        fetchDataAnotherDes();
+        // var tempData = { ...dataAnother };
+        // var index = tempData.another_place.findIndex((k) => k["id"] === id);
+        // tempData.another_place[index].liked = true;
+        // setDataAnother(tempData);
+        // alert("" + error);
+      }
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+  };
+
+  const ImagesSlider = async (data) => {
+    var tempdatas = [];
+    var x = 0;
+
+    for (var i in data.images) {
+      let wid = 0;
+      let hig = 0;
+      Image.getSize(data.images[i].image, (width, height) => {
+        wid = width;
+        hig = height;
+      });
+      tempdatas.push({
+        key: i,
+        url: data.images[i].image ? data.images[i].image : "",
+        width: wid,
+        height: hig,
+        props: {
+          source: data.images[i].image ? data.images[i].image : "",
+        },
+      });
+      x++;
+    }
+    await setGambar(tempdatas);
+    await setModalss(true);
+  };
+
+  const renderGeneral = () => {
     return (
-      <Generals data={item} props={props} addTo={addToPlan} token={token} />
+      <View>
+        <ImageSlide
+          show={modalss}
+          dataImage={gambar}
+          setClose={() => setModalss(false)}
+        />
+        {dataDestination?.description ? (
+          <View
+            style={{
+              minHeight: 30,
+              marginTop: 10,
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Text
+              size="readable"
+              type="regular"
+              style={{
+                lineHeight: 20,
+                textAlign: "left",
+              }}
+              numberOfLines={lines}
+              onTextLayout={layoutText}
+            >
+              {dataDestination?.description}
+            </Text>
+            {more && (
+              <Text
+                size="readable"
+                type="regular"
+                onPress={() => {
+                  setLines(0);
+                  setMore(false);
+                }}
+                style={{ color: "#209FAE" }}
+              >
+                {t("readMore")}
+              </Text>
+            )}
+            {!more && (
+              <Text
+                size="readable"
+                type="regular"
+                onPress={() => {
+                  setLines(3);
+                }}
+                style={{ color: "#209FAE" }}
+              >
+                {t("readless")}
+              </Text>
+            )}
+          </View>
+        ) : null}
+
+        {/* View GreatFor */}
+        {dataDestination && dataDestination.greatfor.length > 0 ? (
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+              // paddingVertical: 10,
+            }}
+          >
+            <View
+              style={{
+                marginTop: 10,
+                borderRadius: 10,
+                minHeight: 50,
+                justifyContent: "center",
+                padding: 10,
+                backgroundColor: "#FFF",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 5,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 6.27,
+
+                elevation: 6,
+              }}
+            >
+              <Text
+                size="description"
+                type="bold"
+                style={{ textAlign: "center" }}
+              >
+                Great For
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
+              >
+                {dataDestination &&
+                  dataDestination.greatfor.map((item, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          marginTop: 10,
+                          width: (width - 50) / 4,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <View
+                          style={{
+                            height: 60,
+                            width: 60,
+                            borderRadius: 30,
+                            backgroundColor: "#F6F6F6",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FunIcon icon={item?.icon} height={40} width={40} />
+                        </View>
+                        <Text
+                          size="small"
+                          type="light"
+                          style={{ marginTop: 5 }}
+                        >
+                          {item?.name}
+                        </Text>
+                      </View>
+                    );
+                  })}
+              </View>
+            </View>
+          </View>
+        ) : null}
+
+        {dataDestination && dataDestination.core_facilities.length > 0 ? (
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+              // paddingTop: 10,
+            }}
+          >
+            <View
+              style={{
+                marginTop: 10,
+                borderRadius: 10,
+                minHeight: 50,
+                justifyContent: "center",
+                padding: 10,
+                backgroundColor: "#FFF",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 5,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 6.27,
+
+                elevation: 6,
+              }}
+            >
+              <Text
+                size="description"
+                type="bold"
+                style={{ textAlign: "center" }}
+              >
+                Public Facility
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
+              >
+                {dataDestination &&
+                  dataDestination.core_facilities.map((item, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        marginTop: 10,
+                        width: (width - 50) / 4,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          height: 60,
+                          width: 60,
+                          borderRadius: 30,
+                          backgroundColor: "#F6F6F6",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FunIcon icon={item?.icon} height={40} width={40} />
+                      </View>
+                      <Text size="small" type="light" style={{ marginTop: 5 }}>
+                        {item?.name}
+                      </Text>
+                    </View>
+                  ))}
+              </View>
+            </View>
+          </View>
+        ) : null}
+
+        {/* Moview */}
+        {dataDestination && dataDestination.movie_location.length > 0 ? (
+          <>
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                paddingHorizontal: 15,
+                marginTop: 20,
+              }}
+            >
+              <Text size="label" type="bold">
+                Movie Location
+              </Text>
+            </View>
+            <ScrollView
+              contentContainerStyle={{
+                // width: Dimensions.get("screen").width,
+                paddingLeft: 15,
+                paddingRight: 10,
+                paddingBottom: 20,
+              }}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              spara
+            >
+              {dataDestination &&
+                dataDestination.movie_location.map((item, index) => (
+                  <Pressable
+                    onPress={() => {
+                      props.navigation.push("TravelIdeaStack", {
+                        screen: "Detail_movie",
+                        params: {
+                          movie_id: item.id,
+                          token: token,
+                        },
+                      });
+                    }}
+                    key={index}
+                    style={{
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: "#F3F3F3",
+                      // height: 150,
+                      marginTop: 10,
+                      marginBottom: 10,
+                      flexDirection: "row",
+                      // width: Dimensions.get("screen").width * 0.9,
+                      width: Dimensions.get("screen").width * 0.9,
+                      padding: 10,
+                      backgroundColor: "#FFF",
+                      shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 5,
+                      },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 6.27,
+
+                      elevation: 6,
+                      marginRight: 5,
+                    }}
+                  >
+                    <FunImage
+                      source={{ uri: item?.cover }}
+                      style={{ height: 150, width: 100 }}
+                    />
+                    <View
+                      style={{
+                        flex: 1,
+                        height: "100%",
+                        marginLeft: 10,
+                        paddingVertical: 5,
+                      }}
+                    >
+                      <Text size="title" type="bold">
+                        {item?.title}
+                      </Text>
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{
+                          lineHeight: 18,
+                          textAlign: "justify",
+                          marginTop: 8,
+                        }}
+                        numberOfLines={6}
+                      >
+                        {item?.description}
+                      </Text>
+                    </View>
+                  </Pressable>
+                ))}
+            </ScrollView>
+          </>
+        ) : null}
+
+        {/* Photo */}
+        {dataDestination && dataDestination.images ? (
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Text size="label" type="bold">
+              Photos
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 10,
+                width: "100%",
+                height: 80,
+              }}
+            >
+              {dataDestination
+                ? dataDestination.images.map((item, index) => {
+                    if (index < 3) {
+                      return (
+                        <FunImage
+                          key={index + "1"}
+                          source={{ uri: item.image }}
+                          style={{
+                            // // width: Dimensions.get("screen").width * 0.15,
+                            // width: Dimensions.get("screen").width * 0.22,
+                            width: (Dimensions.get("screen").width - 40) / 4,
+                            height: "100%",
+                            marginLeft: 2,
+                          }}
+                        />
+                      );
+                    } else if (
+                      index === 3 &&
+                      dataDestination.images.length > 4
+                    ) {
+                      return (
+                        <Ripple
+                          key={index + "2"}
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          onPress={() => ImagesSlider(data)}
+                        >
+                          <FunImage
+                            key={index}
+                            source={{ uri: item.image }}
+                            style={{
+                              opacity: 0.9,
+                              // width: Dimensions.get("screen").width * 0.22,
+                              width: (Dimensions.get("screen").width - 40) / 4,
+                              height: "100%",
+                              opacity: 0.32,
+                              marginLeft: 2,
+                              backgroundColor: "#000",
+                            }}
+                          />
+                          <Text
+                            size="title"
+                            type="regular"
+                            style={{
+                              position: "absolute",
+                              right: 40,
+                              alignSelf: "center",
+                              color: "#FFF",
+                              top: 30,
+                            }}
+                          >
+                            {"+" + (dataDestination.images.length - 4)}
+                          </Text>
+                        </Ripple>
+                      );
+                    } else if (index === 3) {
+                      return (
+                        <FunImage
+                          key={index + "3"}
+                          source={{ uri: item.image }}
+                          style={{
+                            // width: Dimensions.get("screen").width * 0.22,
+                            width: (Dimensions.get("screen").width - 40) / 4,
+                            height: "100%",
+                            marginLeft: 2,
+                          }}
+                        />
+                      );
+                    } else {
+                      null;
+                    }
+                  })
+                : null}
+            </View>
+          </View>
+        ) : null}
+        {/* Another Place */}
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            paddingHorizontal: 15,
+            marginTop: 20,
+            marginBottom: 50,
+          }}
+        >
+          {anotherDes?.length > 0 ? (
+            <Text size="label" type="bold">
+              Nearby Places
+            </Text>
+          ) : null}
+          {anotherDes &&
+            anotherDes?.map((item, index) =>
+              dataDestination.id !== item.id ? (
+                <Pressable
+                  onPress={() =>
+                    props.navigation.push("DestinationUnescoDetail", {
+                      id: item.id,
+                      name: item.name,
+                      token: token,
+                    })
+                  }
+                  key={index}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#F3F3F3",
+                    borderRadius: 10,
+                    height: 170,
+                    // padding: 10,
+                    marginTop: 10,
+                    width: "100%",
+                    flexDirection: "row",
+                    backgroundColor: "#FFF",
+                    shadowColor: "#FFF",
+                    shadowOffset: {
+                      width: 0,
+                      height: 5,
+                    },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 6.27,
+
+                    elevation: 6,
+                  }}
+                >
+                  <View style={{ justifyContent: "center" }}>
+                    {/* Image */}
+                    <FunImage
+                      source={{ uri: item.images.image }}
+                      style={{
+                        width: 150,
+                        height: "100%",
+                        borderBottomLeftRadius: 10,
+                        borderTopLeftRadius: 10,
+                      }}
+                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        position: "absolute",
+                        top: 10,
+                        right: 10,
+                        left: 10,
+                        width: 130,
+                        zIndex: 2,
+                      }}
+                    >
+                      {item.liked === true ? (
+                        <Pressable
+                          onPress={() => _unlikedAnother(item.id)}
+                          style={{
+                            backgroundColor: "#F3F3F3",
+                            height: 30,
+                            width: 30,
+                            borderRadius: 17,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Love height={15} width={15} />
+                        </Pressable>
+                      ) : (
+                        <Pressable
+                          onPress={() => _likedAnother(item.id)}
+                          style={{
+                            backgroundColor: "#F3F3F3",
+                            height: 30,
+                            width: 30,
+                            borderRadius: 17,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <LikeEmpty height={15} width={15} />
+                        </Pressable>
+                      )}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "#F3F3F3",
+                          borderRadius: 3,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 5,
+                          height: 25,
+                        }}
+                      >
+                        <Star height={15} width={15} />
+                        <Text size="description" type="bold">
+                          {item.rating.substr(0, 3)}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Keterangan */}
+                  {/* rating */}
+                  <View
+                    style={{
+                      flex: 1,
+                      padding: 10,
+                      height: 170,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View>
+                      {/* Title */}
+                      <Text
+                        size="label"
+                        type="bold"
+                        style={{ marginTop: 2 }}
+                        numberOfLines={1}
+                      >
+                        {item.name}
+                      </Text>
+
+                      {/* Maps */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 5,
+                          alignItems: "center",
+                        }}
+                      >
+                        <PinHijau height={15} width={15} />
+                        <Text
+                          size="description"
+                          type="regular"
+                          style={{ marginLeft: 5 }}
+                          numberOfLines={1}
+                        >
+                          {item.cities.name}
+                        </Text>
+                      </View>
+                    </View>
+                    {/* Great for */}
+
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        height: 50,
+                        marginTop: 10,
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <View>
+                        <Text size="description" type="bold">
+                          Great for :
+                        </Text>
+                        <View style={{ flexDirection: "row" }}>
+                          {item.greatfor.length > 0 ? (
+                            item.greatfor.map((item, index) => {
+                              return index < 3 ? (
+                                <FunIcon
+                                  key={index}
+                                  icon={item.icon}
+                                  fill="#464646"
+                                  height={35}
+                                  width={35}
+                                />
+                              ) : null;
+                            })
+                          ) : (
+                            <Text>-</Text>
+                          )}
+                        </View>
+                      </View>
+                      <Button
+                        onPress={() => addTo(item)}
+                        size="small"
+                        text={"Add"}
+                        // style={{ marginTop: 15 }}
+                      />
+                    </View>
+                  </View>
+                </Pressable>
+              ) : null
+            )}
+        </View>
+      </View>
     );
   };
 
@@ -1155,15 +1966,9 @@ const Index = (props) => {
                 return (
                   <View key={index}>
                     {i.type === "image" ? (
-                      <View style={{ marginVertical: 5 }}>
+                      <View style={{ marginVertical: 10 }}>
                         {i.title ? (
-                          <Text
-                            size="label"
-                            type="bold"
-                            style={{
-                              marginBottom: 15,
-                            }}
-                          >
+                          <Text size="label" type="bold">
                             {i.title}
                           </Text>
                         ) : null}
@@ -1179,7 +1984,7 @@ const Index = (props) => {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 5,
+                              marginTop: 10,
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -1198,7 +2003,7 @@ const Index = (props) => {
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 5 }}>
+                      <View style={{ marginVertical: 10 }}>
                         {i.title ? (
                           <Text
                             size="label"
@@ -1215,7 +2020,7 @@ const Index = (props) => {
                           size="readable"
                           type="regular"
                           style={{
-                            marginTop: 5,
+                            // marginTop: 10,
                             lineHeight: 20,
                             textAlign: "left",
                             color: "#464646",

@@ -32,7 +32,7 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
         alignItems: "flex-end",
       }}
     >
-      {routed === lengthartikel ? (
+      {routed === 1 ? (
         <View style={{ position: "absolute", top: -75, right: 15, zIndex: 10 }}>
           <Button
             color="primary"
