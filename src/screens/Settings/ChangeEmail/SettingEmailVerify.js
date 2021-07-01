@@ -8,14 +8,19 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native-gesture-handler";
 import { useMutation } from "@apollo/client";
 import verifyEmail from "../../../graphQL/Mutation/Setting/verifyEmail";
 import RESEND from "../../../graphQL/Mutation/Register/ResendOtpRegEmail";
+import DeviceInfo from "react-native-device-info";
 
 export default function SettingEmailVerify(props) {
+  const Notch = DeviceInfo.hasNotch();
   let [token, setToken] = useState("");
   let { t, i18n } = useTranslation();
   let [setting, setSetting] = useState("");
@@ -186,7 +191,7 @@ export default function SettingEmailVerify(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Loading show={loadingVerify} />
       {/* Modal Phone
       <View style={styles.centeredView}>
@@ -225,246 +230,278 @@ export default function SettingEmailVerify(props) {
           </View>
         </Modal>
       </View> */}
-      <View
-        style={{
-          width: Dimensions.get("screen").width * 0.9,
-          marginHorizontal: 20,
-          marginTop: 20,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <LogoEmail height={200} width={200} />
-        <Text size="title" type="bold">
-          {t("verifyEmail")}
-        </Text>
-        <Text
+      <ScrollView>
+        <View
           style={{
-            textAlign: "center",
-            marginVertical: 10,
-            flexWrap: "wrap-reverse",
+            width: Dimensions.get("screen").width * 0.9,
+            marginHorizontal: 20,
+            marginTop: 20,
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          size="description"
-          type="regular"
         >
-          {t("verifyOtp") + " " + props.route.params.emailNew}
-        </Text>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingTop: 10,
-          width: "100%",
-          justifyContent: "space-evenly",
-          alignContent: "center",
-          marginVertical: 25,
-          // borderWidth: 1,
-        }}
-      >
-        <TextInput
-          ref={refBox1}
-          autoFocus={true}
-          style={{
-            backgroundColor: "#f3f3f3",
-            fontFamily: "Lato-Bold",
-            fontSize: 30,
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            padding: 0,
-            textAlign: "center",
-          }}
-          text={state.onebox}
-          keyboardType="number-pad"
-          maxLength={1}
-          blurOnSubmit={false}
-          onChangeText={(e) =>
-            onHandleChange(e, "onebox", null, refBox2, null, "twobox")
-          }
-          onKeyPress={(e) => {
-            if (e.nativeEvent.key === "Backspace") {
-              refBox1 && refBox1.current && refBox1.current.focus();
-            }
-          }}
-        />
-        <TextInput
-          ref={refBox2}
-          style={{
-            backgroundColor: "#f3f3f3",
-            fontFamily: "Lato-Bold",
-            fontSize: 30,
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            padding: 0,
-            textAlign: "center",
-          }}
-          text={state.twobox}
-          keyboardType="number-pad"
-          maxLength={1}
-          blurOnSubmit={false}
-          onChangeText={(e) =>
-            onHandleChange(e, "twobox", "onebox", refBox3, refBox1, "threebox")
-          }
-          onKeyPress={(e) => {
-            if (e.nativeEvent.key === "Backspace" && state["twobox"] === null) {
-              refBox1 && refBox1.current && refBox1.current.focus();
-            }
-          }}
-        />
-        <TextInput
-          ref={refBox3}
-          style={{
-            backgroundColor: "#f3f3f3",
-            fontFamily: "Lato-Bold",
-            fontSize: 30,
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            padding: 0,
-            textAlign: "center",
-          }}
-          text={state.threebox}
-          keyboardType="number-pad"
-          maxLength={1}
-          blurOnSubmit={false}
-          onChangeText={(e) =>
-            onHandleChange(e, "threebox", "twobox", refBox4, refBox2, "fourbox")
-          }
-          onKeyPress={(e) => {
-            if (
-              e.nativeEvent.key === "Backspace" &&
-              state["threebox"] === null
-            ) {
-              refBox2 && refBox2.current && refBox2.current.focus();
-            }
-          }}
-        />
-        <TextInput
-          ref={refBox4}
-          style={{
-            backgroundColor: "#f3f3f3",
-            fontFamily: "Lato-Bold",
-            fontSize: 30,
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            padding: 0,
-            textAlign: "center",
-          }}
-          text={state.fourbox}
-          keyboardType="number-pad"
-          maxLength={1}
-          blurOnSubmit={false}
-          onChangeText={(e) =>
-            onHandleChange(
-              e,
-              "fourbox",
-              "threebox",
-              refBox5,
-              refBox3,
-              "fivebox"
-            )
-          }
-          onKeyPress={(e) => {
-            if (
-              e.nativeEvent.key === "Backspace" &&
-              state["fourbox"] === null
-            ) {
-              refBox3 && refBox3.current && refBox3.current.focus();
-            }
-          }}
-        />
-        <TextInput
-          ref={refBox5}
-          style={{
-            backgroundColor: "#f3f3f3",
-            fontFamily: "Lato-Bold",
-            fontSize: 30,
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            padding: 0,
-            textAlign: "center",
-          }}
-          text={state.fivebox}
-          keyboardType="number-pad"
-          maxLength={1}
-          blurOnSubmit={false}
-          onChangeText={(e) =>
-            onHandleChange(e, "fivebox", "fourbox", refBox6, refBox4, "sixbox")
-          }
-          onKeyPress={(e) => {
-            if (
-              e.nativeEvent.key === "Backspace" &&
-              state["fivebox"] === null
-            ) {
-              refBox4 && refBox4.current && refBox4.current.focus();
-            }
-          }}
-        />
-        <TextInput
-          ref={refBox6}
-          style={{
-            backgroundColor: "#f3f3f3",
-            fontFamily: "Lato-Bold",
-            fontSize: 30,
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            padding: 0,
-            textAlign: "center",
-          }}
-          text={state.sixbox}
-          keyboardType="number-pad"
-          maxLength={1}
-          blurOnSubmit={false}
-          onChangeText={(e) =>
-            onHandleChange(e, "sixbox", "fivebox", null, refBox5)
-          }
-          onKeyPress={(e) => {
-            if (e.nativeEvent.key === "Backspace" && state["sixbox"] === null) {
-              refBox5 && refBox5.current && refBox5.current.focus();
-            }
-          }}
-        />
-      </View>
-      <View
-        style={{
-          marginHorizontal: 20,
-          // marginVertical: Dimensions.get("screen").height * 0.15,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Button
-          type="box"
-          size="medium"
-          color="secondary"
-          text={t("verify")}
-          onPress={() => resultVerifyEmail()}
-          style={{ width: "100%" }}
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-          marginBottom: 30,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Text size="description">{t("didntReceive")}</Text>
-        <TouchableOpacity
-          onPress={() => resendOTP()}
-          disabled={Timer === 0 ? false : true}
-        >
-          <Text size="description" type="black" style={{ color: "#209FAE" }}>
-            {`${t("resend")} ${Timer > 0 ? Timer : ""}`}
+          <LogoEmail height={200} width={200} />
+          <Text size="title" type="bold">
+            {t("verifyEmail")}
           </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <Text
+            style={{
+              textAlign: "center",
+              marginVertical: 10,
+              flexWrap: "wrap-reverse",
+            }}
+            size="description"
+            type="regular"
+          >
+            {t("verifyOtp") + " " + props.route.params.emailNew}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingTop: 10,
+            width: "100%",
+            justifyContent: "space-evenly",
+            alignContent: "center",
+            marginVertical: 25,
+            // borderWidth: 1,
+          }}
+        >
+          <TextInput
+            ref={refBox1}
+            autoFocus={true}
+            style={{
+              backgroundColor: "#f3f3f3",
+              fontFamily: "Lato-Bold",
+              fontSize: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              padding: 0,
+              textAlign: "center",
+            }}
+            text={state.onebox}
+            keyboardType="number-pad"
+            maxLength={1}
+            blurOnSubmit={false}
+            onChangeText={(e) =>
+              onHandleChange(e, "onebox", null, refBox2, null, "twobox")
+            }
+            onKeyPress={(e) => {
+              if (e.nativeEvent.key === "Backspace") {
+                refBox1 && refBox1.current && refBox1.current.focus();
+              }
+            }}
+          />
+          <TextInput
+            ref={refBox2}
+            style={{
+              backgroundColor: "#f3f3f3",
+              fontFamily: "Lato-Bold",
+              fontSize: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              padding: 0,
+              textAlign: "center",
+            }}
+            text={state.twobox}
+            keyboardType="number-pad"
+            maxLength={1}
+            blurOnSubmit={false}
+            onChangeText={(e) =>
+              onHandleChange(
+                e,
+                "twobox",
+                "onebox",
+                refBox3,
+                refBox1,
+                "threebox"
+              )
+            }
+            onKeyPress={(e) => {
+              if (
+                e.nativeEvent.key === "Backspace" &&
+                state["twobox"] === null
+              ) {
+                refBox1 && refBox1.current && refBox1.current.focus();
+              }
+            }}
+          />
+          <TextInput
+            ref={refBox3}
+            style={{
+              backgroundColor: "#f3f3f3",
+              fontFamily: "Lato-Bold",
+              fontSize: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              padding: 0,
+              textAlign: "center",
+            }}
+            text={state.threebox}
+            keyboardType="number-pad"
+            maxLength={1}
+            blurOnSubmit={false}
+            onChangeText={(e) =>
+              onHandleChange(
+                e,
+                "threebox",
+                "twobox",
+                refBox4,
+                refBox2,
+                "fourbox"
+              )
+            }
+            onKeyPress={(e) => {
+              if (
+                e.nativeEvent.key === "Backspace" &&
+                state["threebox"] === null
+              ) {
+                refBox2 && refBox2.current && refBox2.current.focus();
+              }
+            }}
+          />
+          <TextInput
+            ref={refBox4}
+            style={{
+              backgroundColor: "#f3f3f3",
+              fontFamily: "Lato-Bold",
+              fontSize: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              padding: 0,
+              textAlign: "center",
+            }}
+            text={state.fourbox}
+            keyboardType="number-pad"
+            maxLength={1}
+            blurOnSubmit={false}
+            onChangeText={(e) =>
+              onHandleChange(
+                e,
+                "fourbox",
+                "threebox",
+                refBox5,
+                refBox3,
+                "fivebox"
+              )
+            }
+            onKeyPress={(e) => {
+              if (
+                e.nativeEvent.key === "Backspace" &&
+                state["fourbox"] === null
+              ) {
+                refBox3 && refBox3.current && refBox3.current.focus();
+              }
+            }}
+          />
+          <TextInput
+            ref={refBox5}
+            style={{
+              backgroundColor: "#f3f3f3",
+              fontFamily: "Lato-Bold",
+              fontSize: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              padding: 0,
+              textAlign: "center",
+            }}
+            text={state.fivebox}
+            keyboardType="number-pad"
+            maxLength={1}
+            blurOnSubmit={false}
+            onChangeText={(e) =>
+              onHandleChange(
+                e,
+                "fivebox",
+                "fourbox",
+                refBox6,
+                refBox4,
+                "sixbox"
+              )
+            }
+            onKeyPress={(e) => {
+              if (
+                e.nativeEvent.key === "Backspace" &&
+                state["fivebox"] === null
+              ) {
+                refBox4 && refBox4.current && refBox4.current.focus();
+              }
+            }}
+          />
+          <TextInput
+            ref={refBox6}
+            style={{
+              backgroundColor: "#f3f3f3",
+              fontFamily: "Lato-Bold",
+              fontSize: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              padding: 0,
+              textAlign: "center",
+            }}
+            text={state.sixbox}
+            keyboardType="number-pad"
+            maxLength={1}
+            blurOnSubmit={false}
+            onChangeText={(e) =>
+              onHandleChange(e, "sixbox", "fivebox", null, refBox5)
+            }
+            onKeyPress={(e) => {
+              if (
+                e.nativeEvent.key === "Backspace" &&
+                state["sixbox"] === null
+              ) {
+                refBox5 && refBox5.current && refBox5.current.focus();
+              }
+            }}
+          />
+        </View>
+        <View
+          style={{
+            marginHorizontal: 20,
+            // marginVertical: Dimensions.get("screen").height * 0.15,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            type="box"
+            size="medium"
+            color="secondary"
+            text={t("verify")}
+            onPress={() => resultVerifyEmail()}
+            style={{ width: "100%" }}
+          />
+        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : null}
+          // keyboardVerticalOffset={Notch ? 90 : 65}
+          keyboardVerticalOffset={130}
+          style={{
+            marginTop: 10,
+            marginBottom: 30,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text size="description">{t("didntReceive")}</Text>
+          <TouchableOpacity
+            onPress={() => resendOTP()}
+            disabled={Timer === 0 ? false : true}
+          >
+            <Text size="description" type="black" style={{ color: "#209FAE" }}>
+              {`${t("resend")} ${Timer > 0 ? Timer : ""}`}
+            </Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
