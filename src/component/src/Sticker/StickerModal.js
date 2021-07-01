@@ -54,7 +54,6 @@ export default function StickerModal({ visible, setVisible }) {
 			method: "GET",
 			headers: {
 				Accept: "application/json",
-				Authorization: "Bearer " + access_token,
 				"Content-Type": "application/json",
 			},
 		});
