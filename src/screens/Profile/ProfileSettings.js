@@ -426,335 +426,337 @@ export default function ProfileSettings(props) {
           height: 200,
         }}
       ></ImageBackground> */}
-
-      <View
-        style={{
-          width: Dimensions.get("screen").width,
-          justifyContent: "center",
-          flexDirection: "row",
-          marginTop: -50,
-          paddingHorizontal: 20,
-          alignItems: "flex-end",
-        }}
-      >
-        <View
-          style={{
-            // position: 'absolute',
-            shadowOpacity: 0.5,
-            shadowColor: "#d3d3d3",
-            elevation: 4,
-            alignSelf: "center",
-            borderColor: "white",
-            borderRadius: 60,
-            borderWidth: 3,
-            backgroundColor: "#B8E0E5",
-            height: 120,
-            width: 120,
-
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={{ uri: dataImagepatch.current }}
-            style={{
-              borderRadius: 60,
-              resizeMode: "cover",
-              height: "100%",
-              width: "100%",
-            }}
-          />
-          <Button
-            onPress={() => setmodal(true)}
-            style={{
-              position: "absolute",
-              right: -8,
-              bottom: 0,
-            }}
-            type="circle"
-            color="secondary"
-            size="medium"
-          >
-            <Addphoto width={18} height={18} />
-          </Button>
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          marginTop: 20,
-        }}
-      >
-        <View style={{ width: "45%" }}>
-          <Item
-            floatingLabel
-            style={
-              {
-                // marginVertical: 10,
-              }
-            }
-          >
-            <Label
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-              ff0000
-            >
-              {t("firstName")}
-            </Label>
-            <Input
-              maxLength={20}
-              style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.current.first_name ? data.current.first_name : ""}
-              onChangeText={(text) => _handleOnChange(text, "first_name")}
-              keyboardType="default"
-            />
-          </Item>
-          {dataerror && dataerror.first_name === true ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-              }}
-            >
-              {t("inputWarningName")}
-              {t("firstName")}
-            </Text>
-          ) : null}
-        </View>
-        <View style={{ width: "45%" }}>
-          <Item
-            floatingLabel
-            style={
-              {
-                // marginVertical: 10,
-              }
-            }
-          >
-            <Label
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-            >
-              {t("lastName")}
-            </Label>
-            <Input
-              maxLength={20}
-              style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.current.last_name ? data.current.last_name : ""}
-              onChangeText={(text) => _handleOnChange(text, "last_name")}
-              keyboardType="default"
-            />
-          </Item>
-          {dataerror && dataerror.last_name === true ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-              }}
-            >
-              {t("inputWarningName")}
-              {t("lastName")}
-            </Text>
-          ) : null}
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          marginTop: 20,
-        }}
-      >
-        <View style={{ width: "100%" }}>
-          <Item
-            floatingLabel
-            style={
-              {
-                // marginVertical: 10,
-              }
-            }
-          >
-            <Label
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-            >
-              {t("username")}
-            </Label>
-            <Input
-              maxLength={30}
-              style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.current.username ? data.current.username : ""}
-              onChangeText={(text) => _handleOnChange(text, "username")}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="default"
-            />
-          </Item>
-          {dataerror && dataerror.username === true ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-              }}
-            >
-              {/* {t("inputWarningName")} */}
-              {t("username")} {t("min6char")}
-            </Text>
-          ) : null}
-          {datausername && datausername.user_check.isused === true ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-              }}
-            >
-              *{t("Usernameisused")}
-            </Text>
-          ) : null}
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          marginTop: 20,
-        }}
-      >
-        <View style={{ width: "100%" }}>
-          <Item
-            floatingLabel
-            style={
-              {
-                // marginVertical: 10,
-              }
-            }
-          >
-            <Label
-              style={{
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-            >
-              {t("Bio")}
-            </Label>
-            <Input
-              maxLength={160}
-              style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-              value={data.current.bio ? data.current.bio : ""}
-              onChangeText={(text) => _handleOnChange(text, "bio")}
-              keyboardType="default"
-            />
-          </Item>
-          {dataerror && dataerror.bio === true ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-              }}
-            >
-              *{t("bio ditolak")}
-            </Text>
-          ) : null}
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          marginTop: 20,
-        }}
-      >
-        <View
-          style={{
-            width: "100%",
-            borderBottomWidth: 1,
-            borderBottomColor: "#d3d3d3",
-          }}
-        >
-          <Text type="bold" size="title">
-            {t("accountInformation")}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          // flexDirection: 'row',
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          marginTop: 10,
-        }}
-      >
-        <Text style={{ color: "#A6A6A6" }}>{t("emailAddress")}</Text>
-        <Text size="description">
-          {seting.current?.user?.email ? seting.current.user.email : "-"}
-        </Text>
-      </View>
-      <View
-        style={{
-          // flexDirection: 'row',
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          marginTop: 10,
-        }}
-      >
-        <Text style={{ color: "#A6A6A6" }}>{t("phoneNumber")}</Text>
-        <Text size="description">
-          {seting.current?.user?.phone ? seting.current.user.phone : "-"}
-        </Text>
-      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : null}
-        keyboardVerticalOffset={Notch ? 90 : 65}
-        style={{
-          // flexDirection: 'row',
-          paddingHorizontal: 20,
-          width: Dimensions.get("window").width,
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          marginVertical: 20,
-          marginTop: 100,
-        }}
+        keyboardVerticalOffset={Notch ? 275 : 65}
       >
-        <Button
-          color="secondary"
-          style={{}}
-          text={t("save")}
-          //   onPress={() => {
-          //     _handlesave();
-          //   }}
-          onPress={() => {
-            BackHandler.removeEventListener("hardwareBackPress", backAction);
-            BackHandler.addEventListener("hardwareBackPress", handleBack);
-
-            _handlesave();
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            justifyContent: "center",
+            flexDirection: "row",
+            marginTop: -50,
+            paddingHorizontal: 20,
+            alignItems: "flex-end",
           }}
-        />
+        >
+          <View
+            style={{
+              // position: 'absolute',
+              shadowOpacity: 0.5,
+              shadowColor: "#d3d3d3",
+              elevation: 4,
+              alignSelf: "center",
+              borderColor: "white",
+              borderRadius: 60,
+              borderWidth: 3,
+              backgroundColor: "#B8E0E5",
+              height: 120,
+              width: 120,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={{ uri: dataImagepatch.current }}
+              style={{
+                borderRadius: 60,
+                resizeMode: "cover",
+                height: "100%",
+                width: "100%",
+              }}
+            />
+            <Button
+              onPress={() => setmodal(true)}
+              style={{
+                position: "absolute",
+                right: -8,
+                bottom: 0,
+              }}
+              type="circle"
+              color="secondary"
+              size="medium"
+            >
+              <Addphoto width={18} height={18} />
+            </Button>
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            marginTop: 20,
+          }}
+        >
+          <View style={{ width: "45%" }}>
+            <Item
+              floatingLabel
+              style={
+                {
+                  // marginVertical: 10,
+                }
+              }
+            >
+              <Label
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                }}
+                ff0000
+              >
+                {t("firstName")}
+              </Label>
+              <Input
+                maxLength={20}
+                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                value={data.current.first_name ? data.current.first_name : ""}
+                onChangeText={(text) => _handleOnChange(text, "first_name")}
+                keyboardType="default"
+              />
+            </Item>
+            {dataerror && dataerror.first_name === true ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                {t("inputWarningName")}
+                {t("firstName")}
+              </Text>
+            ) : null}
+          </View>
+          <View style={{ width: "45%" }}>
+            <Item
+              floatingLabel
+              style={
+                {
+                  // marginVertical: 10,
+                }
+              }
+            >
+              <Label
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                }}
+              >
+                {t("lastName")}
+              </Label>
+              <Input
+                maxLength={20}
+                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                value={data.current.last_name ? data.current.last_name : ""}
+                onChangeText={(text) => _handleOnChange(text, "last_name")}
+                keyboardType="default"
+              />
+            </Item>
+            {dataerror && dataerror.last_name === true ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                {t("inputWarningName")}
+                {t("lastName")}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            // borderWidth: 1,
+            marginTop: 20,
+          }}
+        >
+          <View style={{ width: "100%" }}>
+            <Item
+              floatingLabel
+              style={
+                {
+                  // marginVertical: 10,
+                }
+              }
+            >
+              <Label
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                }}
+              >
+                {t("username")}
+              </Label>
+              <Input
+                maxLength={30}
+                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                value={data.current.username ? data.current.username : ""}
+                onChangeText={(text) => _handleOnChange(text, "username")}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+              />
+            </Item>
+            {dataerror && dataerror.username === true ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                {/* {t("inputWarningName")} */}
+                {t("username")} {t("min6char")}
+              </Text>
+            ) : null}
+            {datausername && datausername.user_check.isused === true ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                *{t("Usernameisused")}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            // borderWidth: 1,
+            marginTop: 20,
+          }}
+        >
+          <View style={{ width: "100%" }}>
+            <Item
+              floatingLabel
+              style={
+                {
+                  // marginVertical: 10,
+                }
+              }
+            >
+              <Label
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                }}
+              >
+                {t("Bio")}
+              </Label>
+              <Input
+                maxLength={160}
+                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                value={data.current.bio ? data.current.bio : ""}
+                onChangeText={(text) => _handleOnChange(text, "bio")}
+                keyboardType="default"
+              />
+            </Item>
+            {dataerror && dataerror.bio === true ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                *{t("bio ditolak")}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            // borderWidth: 1,
+            marginTop: 20,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d3d3d3",
+            }}
+          >
+            <Text type="bold" size="title">
+              {t("accountInformation")}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            // flexDirection: 'row',
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            // borderWidth: 1,
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: "#A6A6A6" }}>{t("emailAddress")}</Text>
+          <Text size="description">
+            {seting.current?.user?.email ? seting.current.user.email : "-"}
+          </Text>
+        </View>
+        <View
+          style={{
+            // flexDirection: 'row',
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            // borderWidth: 1,
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: "#A6A6A6" }}>{t("phoneNumber")}</Text>
+          <Text size="description">
+            {seting.current?.user?.phone ? seting.current.user.phone : "-"}
+          </Text>
+        </View>
+        <View
+          style={{
+            // flexDirection: 'row',
+            paddingHorizontal: 20,
+            width: Dimensions.get("window").width,
+            justifyContent: "space-between",
+            // borderWidth: 1,
+            marginVertical: 20,
+            marginTop: 15,
+          }}
+        >
+          <Button
+            color="secondary"
+            style={{}}
+            text={t("save")}
+            //   onPress={() => {
+            //     _handlesave();
+            //   }}
+            onPress={() => {
+              BackHandler.removeEventListener("hardwareBackPress", backAction);
+              BackHandler.addEventListener("hardwareBackPress", handleBack);
+
+              _handlesave();
+            }}
+          />
+        </View>
       </KeyboardAvoidingView>
       <Loading show={loading} />
       <Modal
