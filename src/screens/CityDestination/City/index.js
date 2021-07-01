@@ -2251,7 +2251,7 @@ export default function CityDetail(props) {
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 5 }}>
+                      <View style={{ marginVertical: 10 }}>
                         {i.title ? (
                           <Text
                             size="label"
