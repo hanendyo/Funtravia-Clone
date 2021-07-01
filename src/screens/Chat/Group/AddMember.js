@@ -17,6 +17,8 @@ import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 import saveBuddy from "../../../graphQL/Mutation/Itinerary/AddBuddy";
 import { useTranslation } from "react-i18next";
+import { RNToasty } from "react-native-toasty";
+import { CHATSERVER, RESTFULL_API } from "../../../config";
 
 export default function AddMember(props) {
     const { t, i18n } = useTranslation();
@@ -106,36 +108,53 @@ export default function AddMember(props) {
     const _save = async () => {
         setloading(true);
         if (dataNew.length > 0) {
+            let user_id = JSON.stringify(dataNew);
+            let data_kirim = JSON.stringify({
+                group_id: props.route.params.id_group,
+                user_id: user_id,
+            });
             try {
-                let response = await mutationAddBuddy({
-                    variables: {
-                        user_id: dataNew,
-                        itinerary_id: props.route.params.id_group,
-                        isadmin: false,
-                    },
-                });
-
-                setloading(false);
+                let response = await fetch(
+                    `${RESTFULL_API}room/group/invite_member_group`,
+                    {
+                        method: "POST",
+                        headers: {
+                            Accept: "application/json",
+                            Authorization: "Bearer " + token,
+                            "Content-Type": "application/json",
+                        },
+                        body: data_kirim,
+                    }
+                );
+                let responseJson = await response.json();
+                console.log(responseJson);
+                if (responseJson.status == true) {
+                    props.navigation.goBack();
+                    RNToasty.Show({
+                        duration: 1,
+                        title: "sukses add new member",
+                        position: "bottom",
+                    });
+                } else {
+                    //   setloading(false);
+                    throw new Error(responseJson.message);
+                }
             } catch (error) {
-                setloading(false);
-                Alert.alert("" + error);
+                console.log(error);
+                RNToasty.Show({
+                    duration: 1,
+                    title: "error : someting wrong!",
+                    position: "bottom",
+                });
+                props.navigation.goBack();
+                // setloading(false);
+                console.log(error);
             }
+            setloading(false);
         } else {
+            props.navigation.goBack();
             // GetListEvent();
             setloading(false);
-
-            props.navigation.navigate("ItineraryBuddy", {
-                id_group: props.route.params.id_group,
-                token: props.route.params.token,
-                dataitin:
-                    datadetail && datadetail.itinerary_detail
-                        ? datadetail
-                        : null,
-                databuddy:
-                    datadetail && datadetail.itinerary_detail
-                        ? datadetail.itinerary_detail.buddy
-                        : null,
-            });
         }
     };
 

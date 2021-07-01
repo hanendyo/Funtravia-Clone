@@ -21,10 +21,11 @@ import { Button, Text, FunImage } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER } from "../../config";
+import { CHATSERVER, API_DOMAIN } from "../../config";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
+import { default_image } from "../../assets/png";
 
 export default function Room({ navigation, route }) {
     const Notch = DeviceInfo.hasNotch();
@@ -40,6 +41,8 @@ export default function Room({ navigation, route }) {
     let [chat, setChat] = useState(null);
     let [message, setMessage] = useState([]);
     let flatListRef = useRef();
+    const [dataDetail, setDatadetail] = useState();
+    console.log(dataDetail);
     const { t } = useTranslation();
 
     const headerOptions = {
@@ -155,6 +158,139 @@ export default function Room({ navigation, route }) {
         },
     };
 
+    const getDetailGroup = async (access_token) => {
+        let response = await fetch(
+            `${API_DOMAIN}/api/room/group/groupdetail?group_id=${route.params.room_id}&from=${route.params.from}`,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${access_token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        let dataResponse = await response.json();
+        if (dataResponse.status == true) {
+            await setDatadetail(dataResponse.grup);
+            console.log(dataResponse.grup.link_picture);
+            let update_header = {
+                headerLeft: () => (
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignContent: "center",
+                            alignItems: "center",
+                            marginVertical: 10,
+                            // borderWidth: 1,
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                height: 40,
+                                width: 40,
+                                justifyContent: "center",
+                                alignContent: "center",
+                                alignItems: "center",
+                            }}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <Arrowbackwhite height={20} width={20} />
+                        </TouchableOpacity>
+                        <Pressable
+                            onPress={() => {
+                                BackHandler.addEventListener(
+                                    "hardwareBackPress",
+                                    onBackPress
+                                );
+                                navigation.navigate("ChatStack", {
+                                    screen: "GroupDetail",
+                                    params: {
+                                        room_id: route.params.room_id,
+                                        from: route.params.from,
+                                    },
+                                });
+                            }}
+                            style={{
+                                flexDirection: "row",
+                                borderWidth: 1,
+                                borderColor: "#209fae",
+                                width: Dimensions.get("screen").width - 100,
+                                height: 45,
+                                alignItems: "center",
+                                backgroundColor: "#209fae",
+                                zIndex: 150,
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => {
+                                    BackHandler.addEventListener(
+                                        "hardwareBackPress",
+                                        onBackPress
+                                    );
+                                    navigation.navigate("ChatStack", {
+                                        screen: "GroupDetail",
+                                        params: {
+                                            room_id: route.params.room_id,
+                                            from: route.params.from,
+                                        },
+                                    });
+                                }}
+                            >
+                                <Image
+                                    source={
+                                        dataResponse.grup &&
+                                        dataResponse.grup.link_picture
+                                            ? {
+                                                  uri:
+                                                      dataResponse.grup
+                                                          .link_picture,
+                                              }
+                                            : default_image
+                                    }
+                                    style={{
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: 20,
+                                    }}
+                                />
+                            </TouchableOpacity>
+
+                            <Text
+                                onPress={() => {
+                                    BackHandler.addEventListener(
+                                        "hardwareBackPress",
+                                        onBackPress
+                                    );
+                                    navigation.navigate("ChatStack", {
+                                        screen: "GroupDetail",
+                                        params: {
+                                            room_id: route.params.room_id,
+                                            from: route.params.from,
+                                        },
+                                    });
+                                }}
+                                style={{
+                                    fontFamily: "Lato-Bold",
+                                    fontSize: 16,
+                                    color: "white",
+                                    alignSelf: "center",
+                                    paddingHorizontal: 10,
+                                }}
+                            >
+                                {dataResponse.grup?.title}
+                            </Text>
+                        </Pressable>
+                    </View>
+                ),
+            };
+            navigation.setOptions(update_header);
+        } else {
+            console.log("failed get detail group");
+        }
+    };
+
     const myStateRef = React.useRef(route.params?.is_itinerary);
     const data_group_picture = useRef("");
     const data_group_name = useRef("");
@@ -170,6 +306,10 @@ export default function Room({ navigation, route }) {
 
     useEffect(() => {
         navigation.addListener("focus", () => {
+            if (init) {
+                getUserToken();
+                // setConnection();
+            }
             BackHandler.addEventListener("hardwareBackPress", onBackPress);
         });
 
@@ -181,10 +321,10 @@ export default function Room({ navigation, route }) {
     useEffect(() => {
         socket.emit("join", room);
         navigation.setOptions(headerOptions);
-        if (init) {
-            getUserToken();
-            // setConnection();
-        }
+        // if (init) {
+        //     getUserToken();
+        //     // setConnection();
+        // }
         socket.on("new_chat_group", (data) => {
             setChatHistory(data);
         });
@@ -201,6 +341,7 @@ export default function Room({ navigation, route }) {
         setUser(JSON.parse(data).user);
         let token = await AsyncStorage.getItem("access_token");
         if (token) {
+            await getDetailGroup(token);
             await setToken(token);
             await initialHistory(token);
         }
@@ -248,7 +389,7 @@ export default function Room({ navigation, route }) {
             );
             await setMessage(responseJson.data);
             await setTimeout(function() {
-                if (flatListRef) {
+                if (flatListRef.current) {
                     flatListRef.current.scrollToEnd({ animated: true });
                 }
             }, 250);
@@ -278,7 +419,7 @@ export default function Room({ navigation, route }) {
                 await socket.emit("message", chatData);
                 await setChat("");
                 await setTimeout(function() {
-                    if (flatListRef) {
+                    if (flatListRef.current) {
                         flatListRef.current.scrollToEnd({ animated: true });
                     }
                 }, 250);
