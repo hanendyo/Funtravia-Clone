@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Dimensions, Text } from "react-native";
 import * as RNFS from "react-native-fs";
-import AnimatedPlayer from "react-native-animated-webp";
 const { width, height } = Dimensions.get("screen");
 
 export default function StickerScreen({ navigation, route }) {
@@ -147,7 +146,8 @@ export default function StickerScreen({ navigation, route }) {
 				autoplay={true}
 				loop={true}
 				style={{ width: size, height: size }}
-			/>
+			/>{" "}
+			*/}
 		</View>
 	);
 }
