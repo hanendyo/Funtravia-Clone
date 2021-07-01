@@ -61,7 +61,7 @@ import { RNToasty } from "react-native-toasty";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 48;
+const TabBarHeight = 43;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
@@ -1319,7 +1319,7 @@ export default function ListEventHome(props) {
           flexDirection: "row",
           zIndex: 5,
           paddingHorizontal: 15,
-          paddingTop: 15,
+          paddingTop: 10,
           paddingBottom: 5,
           backgroundColor: "#fff",
           position: "absolute",
@@ -1335,7 +1335,9 @@ export default function ListEventHome(props) {
             setshow(true);
           }}
           style={{
-            marginRight: 10,
+            marginRight: 5,
+            borderRadius: 3,
+
             // paddingHorizontal: 10,
           }}
         >
@@ -1355,7 +1357,7 @@ export default function ListEventHome(props) {
         <View
           style={{
             backgroundColor: "#F0F0F0",
-            borderRadius: 5,
+            borderRadius: 3,
             flex: 1,
             flexDirection: "row",
             alignItems: "center",
