@@ -11,10 +11,11 @@ import {
   ImageBackground,
   FlatList,
   Pressable,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Button, Text, CustomImage, Loading } from "../../../component";
 import { default_image, search_button } from "../../../assets/png";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/client";
 import {
   Arrowbackwhite,
   CheckWhite,
@@ -24,16 +25,20 @@ import {
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DeviceInfo from "react-native-device-info";
 
 export default function NewGroup({ navigation }) {
+  const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
   let [search, setSearch] = useState("");
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
+  let [DataBuddy, setDataBuddy] = useState([]);
+
   const [
     querywith,
-    { loading: loadingwith, data: DataBuddy, error: errorwith },
+    { loading: loadingwith, data: DataBuddys, error: errorwith },
   ] = useLazyQuery(TravelWith, {
     fetchPolicy: "network-only",
     variables: {
@@ -44,6 +49,9 @@ export default function NewGroup({ navigation }) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+    },
+    onCompleted: () => {
+      setDataBuddy(DataBuddys.search_travelwith);
     },
   });
 
@@ -136,31 +144,12 @@ export default function NewGroup({ navigation }) {
     <SafeAreaView
       style={{
         flex: 1,
+        backgroundColor: "white",
         // borderWidth: 1,
       }}
     >
-      <Loading show={loading} />
-      {userSelected.length > 0 ? (
-        <Pressable
-          onPress={() => next_createGrup(userSelected)}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            borderWidth: 1.5,
-            borderColor: "#FFF",
-            backgroundColor: "#209FAE",
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1,
-          }}
-        >
-          <ArrowRight width={20} height={20} />
-        </Pressable>
-      ) : null}
+      {/* <Loading show={loading} /> */}
+
       <View
         style={{
           backgroundColor: "white",
@@ -213,6 +202,7 @@ export default function NewGroup({ navigation }) {
               }}
               value={search}
               onChangeText={(text) => _setSearch(text)}
+              onSubmitEditing={(text) => _setSearch(text)}
             />
           </View>
         </View>
@@ -266,122 +256,128 @@ export default function NewGroup({ navigation }) {
           />
         ) : null}
       </View>
-      <ScrollView
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : null}
+        keyboardVerticalOffset={Notch ? 90 : 65}
         style={{
           backgroundColor: "#fff",
+          flex: 1,
         }}
       >
-        {loadingwith ? (
-          <View style={{ paddingVertical: 20 }}>
-            <ActivityIndicator animating={true} color="#209FAE" />
-          </View>
-        ) : DataBuddy && DataBuddy.search_travelwith.length > 1 ? (
-          <View style={{ width: Dimensions.get("screen").width }}>
-            <FlatList
-              scrollEnabled={false}
-              data={DataBuddy.search_travelwith}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => selectUser(item)}
+        <FlatList
+          style={{}}
+          data={DataBuddy}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{}}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              onPress={() => selectUser(item)}
+              style={{
+                flexDirection: "row",
+                width: Dimensions.get("screen").width,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+                alignContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+              >
+                <ImageBackground
+                  source={
+                    item && item.picture ? { uri: item.picture } : default_image
+                  }
                   style={{
-                    flexDirection: "row",
-                    width: Dimensions.get("screen").width,
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignContent: "center",
+                    resizeMode: "cover",
+                    height: 50,
+                    width: 50,
+                    borderRadius: 25,
+                  }}
+                  imageStyle={{
+                    height: 50,
+                    width: 50,
+                    borderRadius: 25,
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignContent: "center",
-                    }}
-                  >
-                    <ImageBackground
-                      source={
-                        item && item.picture
-                          ? { uri: item.picture }
-                          : default_image
-                      }
+                  {userSelected.findIndex((k) => k["id"] === item.id) !== -1 ? (
+                    <View
                       style={{
-                        resizeMode: "cover",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 25,
-                      }}
-                      imageStyle={{
-                        height: 50,
-                        width: 50,
-                        borderRadius: 25,
+                        width: 20,
+                        height: 20,
+                        borderRadius: 10,
+                        borderWidth: 1.5,
+                        borderColor: "#FFF",
+                        backgroundColor: "#209fae",
+                        position: "absolute",
+                        bottom: 0,
+                        right: -5,
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      {userSelected.findIndex((k) => k["id"] === item.id) !==
-                      -1 ? (
-                        <View
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 10,
-                            borderWidth: 1.5,
-                            borderColor: "#FFF",
-                            backgroundColor: "#209fae",
-                            position: "absolute",
-                            bottom: 0,
-                            right: -5,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <CheckWhite width={10} height={10} />
-                        </View>
-                      ) : null}
-                    </ImageBackground>
-                    <View>
-                      <Text
-                        size="label"
-                        type="bold"
-                        style={{
-                          marginLeft: 20,
-                        }}
-                        numberOfLines={1}
-                      >
-                        {item.first_name} {item.last_name ? item.last_name : ""}
-                      </Text>
-
-                      <Text
-                        size="small"
-                        type="regular"
-                        style={{
-                          marginLeft: 20,
-                        }}
-                      >
-                        @{item.username}
-                      </Text>
+                      <CheckWhite width={10} height={10} />
                     </View>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        ) : (
-          //   <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-          <View
+                  ) : null}
+                </ImageBackground>
+                <View>
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{
+                      marginLeft: 20,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {item.first_name} {item.last_name ? item.last_name : ""}
+                  </Text>
+
+                  <Text
+                    size="small"
+                    type="regular"
+                    style={{
+                      marginLeft: 20,
+                    }}
+                  >
+                    @{item.username}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        {/* tombol */}
+        {userSelected.length > 0 ? (
+          <Pressable
+            onPress={() => next_createGrup(userSelected)}
             style={{
-              alignItems: "center",
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              borderWidth: 1.5,
+              borderColor: "#FFF",
+              backgroundColor: "#209FAE",
+              position: "relative",
+              bottom: 90,
+              marginBottom: -60,
+              right: 15,
               justifyContent: "center",
-              //   marginTop: 20,
+              alignItems: "center",
+              alignSelf: "flex-end",
+              zIndex: 1,
             }}
           >
-            <Text size="label" type="bold">
-              Tidak ada data
-            </Text>
-          </View>
-        )}
-      </ScrollView>
+            <ArrowRight width={20} height={20} />
+          </Pressable>
+        ) : null}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
