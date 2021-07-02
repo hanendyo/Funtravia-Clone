@@ -77,7 +77,7 @@ const Index = (props) => {
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
   let { width, height } = Dimensions.get("screen");
   let TabBarHeight = Platform.select({
-    ios: 75 + 17,
+    ios: 75 + 15,
     android: 75 + 12,
   });
   let Notch = DeviceInfo.hasNotch();

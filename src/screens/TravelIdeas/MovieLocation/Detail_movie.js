@@ -16,7 +16,7 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
@@ -52,6 +52,7 @@ import ListDestinationByMovie from "../../../graphQL/Query/TravelIdeas/ListDesti
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../../graphQL/Mutation/unliked";
 import Ripple from "react-native-material-ripple";
+import { RNToasty } from "react-native-toasty";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -61,80 +62,13 @@ const SafeStatusBar = Platform.select({
   ios: 44,
   android: StatusBar.currentHeight,
 });
-const tab2ItemSize = (width - 40) / 3;
-const PullToRefreshDist = 150;
-
-const data_film = [
-  {
-    id: "1",
-    judul: "The Raid",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: the_raid,
-  },
-  {
-    id: "2",
-    judul: "Merantau",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: merantau,
-  },
-  {
-    id: "3",
-    judul: "The Raid 2",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: the_raid_2,
-  },
-  {
-    id: "4",
-    judul: "Wiro Sableng",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: wiro_sableng,
-  },
-  {
-    id: "5",
-    judul: "Headshot",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: headshot,
-  },
-  {
-    id: "6",
-    judul: "Gundala",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: gundala,
-  },
-  {
-    id: "7",
-    judul: "Night Bus",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: night_bus,
-  },
-  {
-    id: "8",
-    judul: "Serigala Terakhir",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: serigala_terakhir,
-  },
-  {
-    id: "9",
-    judul: "Hit & Run",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: hit_n_run,
-  },
-];
 
 export default function Detail_movie(props, { navigation, route }) {
   console.log("props", props);
   let [token, setToken] = useState(props.route.params.token);
   let movie_id = props.route.params.movie_id;
   let [canScroll, setCanScroll] = useState(true);
+  let [movie_byid, setMoviebyid] = useState({});
   const { t } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -142,7 +76,7 @@ export default function Detail_movie(props, { navigation, route }) {
     tabBarVisble: false,
     tabBarLabel: "Unesco",
     headerTintColor: "white",
-    headerTitle: movie_byid?.title,
+    headerTitle: movie_byid.title,
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -155,66 +89,63 @@ export default function Detail_movie(props, { navigation, route }) {
       color: "white",
     },
   };
-  /**
-   * stats
-   */
-  /**
-   * ref
-   */
-  const { data, loading, error, refetch } = useQuery(ListDestinationByMovie, {
+
+  let [listdestinasi_bymovie, setlistdestinasi_bymovie] = useState([]);
+  const [fetchDataAnotherDes, { data, loading, error }] = useLazyQuery(
+    ListDestinationByMovie,
+    {
+      variables: {
+        movie_id: movie_id,
+      },
+      fetchPolicy: "network-only",
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      onCompleted: () => {
+        setlistdestinasi_bymovie(data.listdestinasi_bymovie);
+      },
+    }
+  );
+  // console.log("des", listdestinasi_bymovie);
+
+  const [
+    refetchmovie,
+    { data: datamovie, loading: loadingmovie, error: errormovie },
+  ] = useLazyQuery(MovieLocationByIDQuery, {
     variables: {
       movie_id: movie_id,
     },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
-  });
-
-  let listdestinasi_bymovie = [];
-  if (data && data.listdestinasi_bymovie) {
-    listdestinasi_bymovie = data.listdestinasi_bymovie;
-  }
-
-  // console.log(listdestinasi_bymovie);
-  const {
-    data: datamovie,
-    loading: loadingmovie,
-    error: errormovie,
-    refetch: refetchmovie,
-  } = useQuery(MovieLocationByIDQuery, {
-    variables: {
-      movie_id: movie_id,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    onCompleted: () => {
+      setMoviebyid(datamovie.movie_byid);
     },
   });
-
-  let movie_byid = [];
-  if (datamovie && datamovie.movie_byid) {
-    movie_byid = datamovie.movie_byid;
-  }
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
-    await refetch();
+    await refetchmovie();
+    await fetchDataAnotherDes();
   };
-  console.log("tkn", token);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // console.log("test");
-    // loadAsync();
     props.navigation.setOptions(HeaderComponent);
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation, HeaderComponent]);
 
   const [
     mutationliked,
@@ -241,15 +172,14 @@ export default function Detail_movie(props, { navigation, route }) {
   });
 
   const _liked = async (id, index) => {
-    if (token || token !== "") {
-      listdestinasi_bymovie[index].liked = true;
+    console.log("masuklike");
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationliked({
           variables: {
             destination_id: id,
           },
         });
-        console.log(response);
         if (loadingLike) {
           Alert.alert("Loading!!");
         }
@@ -258,6 +188,7 @@ export default function Detail_movie(props, { navigation, route }) {
         }
 
         if (response.data) {
+          fetchDataAnotherDes();
           if (
             response.data.setDestination_wishlist.code === 200 ||
             response.data.setDestination_wishlist.code === "200"
@@ -268,17 +199,21 @@ export default function Detail_movie(props, { navigation, route }) {
           }
         }
       } catch (error) {
-        refetch();
-        Alert.alert("" + error);
+        fetchDataAnotherDes();
       }
     } else {
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   const _unliked = async (id, index) => {
-    if (token || token !== "") {
-      listdestinasi_bymovie[index].liked = false;
+    if (token && token !== "" && token !== null) {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -294,21 +229,27 @@ export default function Detail_movie(props, { navigation, route }) {
         }
 
         if (response.data) {
+          fetchDataAnotherDes();
           if (
             response.data.unset_wishlist.code === 200 ||
             response.data.unset_wishlist.code === "200"
           ) {
-            refetch();
           } else {
             throw new Error(response.data.unset_wishlist.message);
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        fetchDataAnotherDes();
       }
     } else {
       refetch();
-      Alert.alert("Please Login");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
