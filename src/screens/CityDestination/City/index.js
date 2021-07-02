@@ -1802,6 +1802,7 @@ export default function CityDetail(props) {
                   <View
                     style={{
                       height: 145,
+                      // borderWidth: 1,
                       marginTop: 0,
                       width: Dimensions.get("screen").width - 40,
                       marginRight: 5,
@@ -1814,13 +1815,18 @@ export default function CityDetail(props) {
                           width: 0,
                           height: 1,
                         },
-                        shadowOpacity: arrayShadow.shadowOpacity,
-                        shadowRadius: arrayShadow.shadowRadius,
-                        elevation: arrayShadow.elevation,
-                        borderWidth: 0,
+                        backgroundColor: "#FFF",
+                        shadowColor: "#000",
+                        shadowOffset: {
+                          width: 0,
+                          height: 5,
+                        },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 6.27,
+                        elevation: 6,
                         width: "95%",
                         justifyContent: "space-between",
-                        backgroundColor: "#F7F7F7",
+                        // backgroundColor: "#F7F7F7",
                         overflow: "hidden",
                       }}
                     >
@@ -1844,7 +1850,7 @@ export default function CityDetail(props) {
                           borderTopRightRadius: 5,
                           flexDirection: "row",
                           zIndex: -1,
-                          // borderWidth: 2,
+                          // borderWidth: 1,
                           // widht: Dimensions.get("screen").width * 0.33,
                         }}
                       >
@@ -1923,6 +1929,7 @@ export default function CityDetail(props) {
                             width: "65%",
                             paddingHorizontal: 10,
                             backgroundColor: "#FFFFFF",
+                            // borderWidth: 1,
                             marginVertical: 2,
                             // borderWidth: 1,
                             overflow: "hidden",

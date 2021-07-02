@@ -339,7 +339,7 @@ export default function Detail_movie(props, { navigation, route }) {
               borderRadius: 20,
               // borderWidth: 1,
               borderColor: "grey",
-              paddingVertical: 20,
+              paddingVertical: 0,
               paddingHorizontal: 45,
               justifyContent: "center",
               alignContent: "center",
@@ -363,6 +363,8 @@ export default function Detail_movie(props, { navigation, route }) {
               style={{
                 color: "white",
                 marginLeft: 10,
+                // borderWidth: 1,
+                paddingVertical: 0,
               }}
             >
               {t("share")}

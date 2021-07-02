@@ -9,10 +9,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery } from "@apollo/react-hooks";
 import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
 import RenderPost from "./RenderPost";
+import { RNToasty } from "react-native-toasty";
+import { useTranslation } from "react-i18next";
 
 const { width, height } = Dimensions.get("screen");
 export default function SearchFeed({ props }) {
+  const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
+
+  console.log("token", token);
   let [users, setuser] = useState(null);
 
   const [
@@ -39,6 +44,26 @@ export default function SearchFeed({ props }) {
     loadAsync();
   }, []);
 
+  const Ceklogin = (id) => {
+    if (token && token !== null && token !== "") {
+      props.navigation.push("FeedStack", {
+        screen: "CommentPost",
+        params: {
+          post_id: id,
+          //   comment_id: data.comment_feed.id,
+        },
+      });
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+  };
+
   return (
     <>
       {dataPost && dataPost.feed_post_populer.length > 0 ? (
@@ -60,7 +85,8 @@ export default function SearchFeed({ props }) {
                 marginLeft: 0,
                 borderRadius: 5,
               }}
-              onPress={() =>
+              onPress={
+                () => Ceklogin(item.id)
                 // props.navigation.navigate("FeedStack", {
                 //   screen: "CommentsById",
                 //   params: {
@@ -68,14 +94,6 @@ export default function SearchFeed({ props }) {
                 //     token: token,
                 //   },
                 // })
-
-                props.navigation.push("FeedStack", {
-                  screen: "CommentPost",
-                  params: {
-                    post_id: item.id,
-                    //   comment_id: data.comment_feed.id,
-                  },
-                })
               }
             >
               <RenderPost

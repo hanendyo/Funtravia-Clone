@@ -208,6 +208,22 @@ export default function MyAccount(props) {
                 ? datauser.user_profile.username
                 : null}
             </Text>
+            <Button
+              text={t("seemyprofile")}
+              size="small"
+              style={{
+                width: "60%",
+                height: "18%",
+                marginTop: 15,
+              }}
+              onPress={() => {
+                // console.log(datauser.user_profile.id);
+                props.navigation.push("ProfileStack", {
+                  screen: "ProfileTab",
+                  params: { token: token },
+                });
+              }}
+            ></Button>
           </View>
         </View>
         <View

@@ -76,11 +76,13 @@ const Index = (props) => {
   let [tambahan2, setTambahan2] = useState(0);
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
   let { width, height } = Dimensions.get("screen");
-  let TabBarHeight = Platform.select({
-    ios: 75 + 15,
-    android: 75 + 12,
-  });
   let Notch = DeviceInfo.hasNotch();
+  let TabBarHeight = Platform.select({
+    ios: Notch ? 55 : 55,
+    android: 55,
+  });
+  // let TabBarHeight = 75;
+
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
     android: StatusBar.currentHeight,
@@ -257,22 +259,22 @@ const Index = (props) => {
         handlePanReleaseOrEnd(evt, gestureState);
       },
       onPanResponderMove: (evt, gestureState) => {
-        const curListRef = listRefArr.current.find(
-          (ref) => ref.key === routes[_tabIndex.current].key
+        const curListRef = listRefArr?.current.find(
+          (ref) => ref.key === routes[_tabIndex.current]?.key
         );
 
         const headerScrollOffset = -gestureState.dy + headerScrollStart.current;
-        if (curListRef.value) {
+        if (curListRef?.value) {
           // scroll up
           if (headerScrollOffset > 0) {
-            curListRef.value.scrollToOffset({
+            curListRef?.value.scrollToOffset({
               offset: headerScrollOffset,
               animated: false,
             });
             // start pull down
           } else {
             if (Platform.OS === "ios") {
-              curListRef.value.scrollToOffset({
+              curListRef?.value.scrollToOffset({
                 offset: headerScrollOffset / 3,
                 animated: false,
               });
@@ -309,14 +311,14 @@ const Index = (props) => {
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
-      const curRoute = routes[tabIndex].key;
+      const curRoute = routes[tabIndex]?.key;
       listOffset.current[curRoute] = value;
     });
 
     headerScrollY.addListener(({ value }) => {
       listRefArr.current.forEach((item) => {
         // console.log("item", item);
-        if (item.key !== routes[_tabIndex].key) {
+        if (item.key !== routes[_tabIndex]?.key) {
           return;
         }
         if (value > HeaderHeight || value < 0) {
@@ -341,7 +343,7 @@ const Index = (props) => {
    *  helper functions
    */
   const syncScrollOffset = () => {
-    const curRouteKey = routes[_tabIndex.current].key;
+    const curRouteKey = routes[_tabIndex.current]?.key;
 
     listRefArr.current.forEach((item) => {
       if (item.key !== curRouteKey) {
@@ -655,8 +657,8 @@ const Index = (props) => {
 
     return (
       <Animated.View
-        // {...headerPanResponder.panHandlers}
-        // style={[styles.header, { transform: [{ translateY: y }] }]}
+        {...headerPanResponder.panHandlers}
+        style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
@@ -2063,7 +2065,7 @@ const Index = (props) => {
   };
 
   const renderScene = ({ route }) => {
-    const focused = route.key === routes[tabIndex].key;
+    const focused = route.key === routes[tabIndex]?.key;
     let numCols;
     let data;
     let renderItem;
@@ -2350,7 +2352,7 @@ const Index = (props) => {
 
   return (
     <View style={styles.container}>
-      {/* <Satbar backgroundColor="#14646E" /> */}
+      <Satbar backgroundColor="#14646E" />
 
       {renderTabView()}
       {renderHeader()}
