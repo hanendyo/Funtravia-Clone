@@ -213,6 +213,7 @@ export default function ImageSlide({
                     muted={muted}
                     repeat={true}
                     style={{
+                      resizeMode: "contain",
                       width: data?.style?.width,
                       height: data?.style?.height,
                     }}

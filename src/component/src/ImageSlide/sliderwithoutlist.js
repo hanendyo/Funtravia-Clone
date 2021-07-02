@@ -235,6 +235,7 @@ export default function ImageSlide({
                     style={{
                       width: data?.style?.width,
                       height: data?.style?.height,
+                      resizeMode: "contain",
                     }}
                   />
                   {paused === true ? (

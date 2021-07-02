@@ -54,6 +54,7 @@ import {
   Flights,
   Chatnew,
   Play,
+  PlayVideo,
 } from "../../../assets/svg";
 import {
   Button,
@@ -438,7 +439,7 @@ export default function ItineraryDetail(props) {
     setStatus(
       dta.status === "D" ? "edit" : dta.status === "F" ? "finish" : "saved"
     );
-    let anggota = dta.buddy.findIndex((k) => k["user_id"] === users.id);
+    let anggota = dta.buddy.findIndex((k) => k["user_id"] === users?.id);
     props.navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: "row" }}>
@@ -2645,13 +2646,23 @@ export default function ItineraryDetail(props) {
                           />
                           <View
                             style={{
-                              flexDirection: "row",
+                              // flexDirection: "row",
                               position: "absolute",
-                              bottom: tab2ItemSize / 3.2,
-                              left: tab2ItemSize / 3.2,
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "rgba(0,0,0,0.6)",
+                              justifyContent: "flex-end",
+                              // borderRadius: 5,
+
+                              // bottom: "35%",
+                              // left: "35%",
                             }}
                           >
-                            <Play width={40} height={40} />
+                            <PlayVideo
+                              width={15}
+                              height={15}
+                              style={{ margin: 10 }}
+                            />
                           </View>
                         </TouchableOpacity>
                       ) : (
@@ -2809,13 +2820,23 @@ export default function ItineraryDetail(props) {
                           />
                           <View
                             style={{
-                              flexDirection: "row",
+                              // flexDirection: "row",
                               position: "absolute",
-                              bottom: tab2ItemSize / 3.2,
-                              left: tab2ItemSize / 3.2,
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "rgba(0,0,0,0.6)",
+                              justifyContent: "flex-end",
+                              // borderRadius: 5,
+
+                              // bottom: "35%",
+                              // left: "35%",
                             }}
                           >
-                            <Play width={40} height={40} />
+                            <PlayVideo
+                              width={15}
+                              height={15}
+                              style={{ margin: 10 }}
+                            />
                           </View>
                         </TouchableOpacity>
                       ) : (
@@ -2996,13 +3017,23 @@ export default function ItineraryDetail(props) {
                     />
                     <View
                       style={{
-                        flexDirection: "row",
+                        // flexDirection: "row",
                         position: "absolute",
-                        bottom: tab2ItemSize / 3.2,
-                        left: tab2ItemSize / 3.2,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0,0,0,0.6)",
+                        justifyContent: "flex-end",
+                        // borderRadius: 5,
+
+                        // bottom: "35%",
+                        // left: "35%",
                       }}
                     >
-                      <Play width={40} height={40} />
+                      <PlayVideo
+                        width={15}
+                        height={15}
+                        style={{ margin: 10 }}
+                      />
                     </View>
                   </TouchableOpacity>
                 ) : (

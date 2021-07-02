@@ -20,6 +20,7 @@ import {
   FunVideo,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { PlayVideo } from "../../../assets/svg";
 
 const { width } = Dimensions.get("screen");
 
@@ -130,17 +131,35 @@ export default function PostItineraryAlbum(props) {
             onPress={() => selectPhoto(item)}
           >
             {item.type === "video" ? (
-              <FunVideo
-                source={{ uri: item.filepath }}
-                muted={true}
-                poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
-                paused={true}
-                style={{
-                  height: Dimensions.get("screen").width / 4 - 2,
-                  width: Dimensions.get("screen").width / 4 - 2,
-                  resizeMode: "cover",
-                }}
-              />
+              <>
+                <FunVideo
+                  source={{ uri: item.filepath }}
+                  muted={true}
+                  poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
+                  paused={true}
+                  style={{
+                    height: Dimensions.get("screen").width / 4 - 2,
+                    width: Dimensions.get("screen").width / 4 - 2,
+                    resizeMode: "contain",
+                  }}
+                />
+                <View
+                  style={{
+                    // flexDirection: "row",
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    justifyContent: "flex-end",
+                    // borderRadius: 5,
+
+                    // bottom: "35%",
+                    // left: "35%",
+                  }}
+                >
+                  <PlayVideo width={15} height={15} style={{ margin: 10 }} />
+                </View>
+              </>
             ) : (
               <FunImage
                 source={{ uri: item.filepath }}

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
-import { Play } from "../../../../assets/svg";
+import { Play, PlayVideo } from "../../../../assets/svg";
 const { width, height } = Dimensions.get("screen");
 import { FunVideo } from "../../../../component";
 
@@ -65,13 +65,18 @@ export default function Posts({ item, index, navigation, user }) {
                 />
                 <View
                   style={{
-                    flexDirection: "row",
+                    // flexDirection: "row",
                     position: "absolute",
-                    bottom: "43%",
-                    left: "43%",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    justifyContent: "flex-end",
+                    borderRadius: 5,
+                    // bottom: "35%",
+                    // left: "35%",
                   }}
                 >
-                  <Play width={40} height={40} />
+                  <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                 </View>
               </>
             ) : (
@@ -157,13 +162,19 @@ export default function Posts({ item, index, navigation, user }) {
                   />
                   <View
                     style={{
-                      flexDirection: "row",
+                      // flexDirection: "row",
                       position: "absolute",
-                      bottom: "35%",
-                      left: "35%",
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+
+                      // bottom: "35%",
+                      // left: "35%",
                     }}
                   >
-                    <Play width={40} height={40} />
+                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                   </View>
                 </>
               ) : (
@@ -250,13 +261,19 @@ export default function Posts({ item, index, navigation, user }) {
                   />
                   <View
                     style={{
-                      flexDirection: "row",
+                      // flexDirection: "row",
                       position: "absolute",
-                      bottom: "35%",
-                      left: "35%",
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+
+                      // bottom: "35%",
+                      // left: "35%",
                     }}
                   >
-                    <Play width={40} height={40} />
+                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                   </View>
                 </>
               ) : (
@@ -357,13 +374,19 @@ export default function Posts({ item, index, navigation, user }) {
                   />
                   <View
                     style={{
-                      flexDirection: "row",
+                      // flexDirection: "row",
                       position: "absolute",
-                      bottom: "35%",
-                      left: "35%",
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+
+                      // bottom: "35%",
+                      // left: "35%",
                     }}
                   >
-                    <Play width={40} height={40} />
+                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                   </View>
                 </>
               ) : (
@@ -450,13 +473,19 @@ export default function Posts({ item, index, navigation, user }) {
                   />
                   <View
                     style={{
-                      flexDirection: "row",
+                      // flexDirection: "row",
                       position: "absolute",
-                      bottom: "35%",
-                      left: "35%",
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+
+                      // bottom: "35%",
+                      // left: "35%",
                     }}
                   >
-                    <Play width={40} height={40} />
+                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                   </View>
                 </>
               ) : (
@@ -544,13 +573,19 @@ export default function Posts({ item, index, navigation, user }) {
                 />
                 <View
                   style={{
-                    flexDirection: "row",
+                    // flexDirection: "row",
                     position: "absolute",
-                    bottom: "43%",
-                    left: "43%",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    justifyContent: "flex-end",
+                    borderRadius: 5,
+
+                    // bottom: "35%",
+                    // left: "35%",
                   }}
                 >
-                  <Play width={40} height={40} />
+                  <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                 </View>
               </>
             ) : (
@@ -651,13 +686,23 @@ export default function Posts({ item, index, navigation, user }) {
                       />
                       <View
                         style={{
-                          flexDirection: "row",
+                          // flexDirection: "row",
                           position: "absolute",
-                          bottom: "35%",
-                          left: "35%",
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "rgba(0,0,0,0.6)",
+                          justifyContent: "flex-end",
+                          borderRadius: 5,
+
+                          // bottom: "35%",
+                          // left: "35%",
                         }}
                       >
-                        <Play width={40} height={40} />
+                        <PlayVideo
+                          width={15}
+                          height={15}
+                          style={{ margin: 10 }}
+                        />
                       </View>
                     </>
                   ) : (
@@ -765,13 +810,19 @@ export default function Posts({ item, index, navigation, user }) {
                   />
                   <View
                     style={{
-                      flexDirection: "row",
+                      // flexDirection: "row",
                       position: "absolute",
-                      bottom: "35%",
-                      left: "35%",
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0,0,0,0.6)",
+                      justifyContent: "flex-end",
+                      borderRadius: 5,
+
+                      // bottom: "35%",
+                      // left: "35%",
                     }}
                   >
-                    <Play width={40} height={40} />
+                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
                   </View>
                 </>
               ) : (
