@@ -1918,7 +1918,7 @@ export default function Country(props) {
                 </View>;
               } else {
                 return (
-                  <View key={"artikel" + index}>
+                  <View key={index}>
                     {i.type === "image" ? (
                       <View style={{ marginVertical: 10 }}>
                         {i.title ? (
@@ -1950,20 +1950,20 @@ export default function Country(props) {
                           style={{
                             textAlign: "left",
                             marginTop: 5,
-                            color: "#464646",
+                            color: "#616161",
                           }}
                         >
                           {i.text ? i.text : ""}
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 5 }}>
+                      <View style={{ marginVertical: 10 }}>
                         {i.title ? (
                           <Text
                             size="label"
                             type="bold"
                             style={{
-                              marginBottom: 5,
+                              // marginBottom: 5,
                               color: "#464646",
                             }}
                           >
@@ -1974,9 +1974,9 @@ export default function Country(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            // marginTop: 5,
-                            textAlign: "left",
+                            // marginTop: 10,
                             lineHeight: 20,
+                            textAlign: "left",
                             color: "#464646",
                           }}
                         >
