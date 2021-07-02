@@ -41,7 +41,7 @@ export default function Asia({ navigation }) {
   });
   const BackUse = useRef(subContinent);
   const HeaderComponent = {
-    headerTitle: "Destination",
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -60,28 +60,40 @@ export default function Asia({ navigation }) {
       paddingLeft: 10,
     },
     headerLeft: () => (
-      <View>
-        <TouchableOpacity onPress={() => onBackPress()}>
-          <Arrowbackwhite width={20} height={20} />
-        </TouchableOpacity>
-        <View
-          style={{
-            position: "absolute",
-            left: 63,
-            top: 15,
-            width: 120,
-          }}
-        >
-          {BackUse.current.id === "142" ? null : (
-            <Text
-              style={{
-                color: "white",
-              }}
-            >
-              {BackUse.current.label}
-            </Text>
-          )}
+      <View style={{ flexDirection: "row" }}>
+        <View>
+          <TouchableOpacity onPress={() => onBackPress()}>
+            <Arrowbackwhite width={20} height={20} />
+          </TouchableOpacity>
         </View>
+        {BackUse.current.id === "142" ? null : (
+          <View
+            style={{
+              position: "absolute",
+              left: 63,
+              top: -8,
+              width: 120,
+            }}
+          >
+            <Text
+              size="label"
+              type="regular"
+              numberOfLines={1}
+              style={{ color: "#FFF", flex: 1 }}
+            >
+              Destination
+            </Text>
+            <View style={{}}>
+              <Text
+                style={{
+                  color: "white",
+                }}
+              >
+                {BackUse.current.label}
+              </Text>
+            </View>
+          </View>
+        )}
       </View>
     ),
 
@@ -275,6 +287,7 @@ export default function Asia({ navigation }) {
               backgroundColor: "#FFF",
               borderRadius: 5,
               margin: 10,
+              zIndex: 999999,
               // borderWidth: 3,
               elevation: 1,
               shadowColor: "#d3d3d3",
