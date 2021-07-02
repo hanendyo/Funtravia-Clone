@@ -28,6 +28,7 @@ import likepost from "../../graphQL/Mutation/Post/likepost";
 import FeedPost from "../../graphQL/Query/Feed/FeedPost";
 import FeedList from "./FeedList";
 import { useTranslation } from "react-i18next";
+import { RNToasty } from "react-native-toasty";
 
 export default function Feed(props) {
   const { t } = useTranslation();
@@ -101,17 +102,23 @@ export default function Feed(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     if (tkn == null) {
-      Alert.alert(t("pleaselogin"));
-      props.navigation.navigate("HomeScreen");
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
     }
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    loadAsync();
-    // const unsubscribe = props.navigation.addListener("focus", (data) => {
-    // });
-    // return unsubscribe;
+
+    const unsubscribe = props.navigation.addListener("focus", (data) => {
+      loadAsync();
+    });
+    return unsubscribe;
   }, [props.navigation]);
 
   const createPost = () => {
