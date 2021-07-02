@@ -1,5 +1,9 @@
 import * as React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import LoginScreen from "../../screens/Authorization/Login";
 import SplashScreen from "../../screens/SplashScreen";
 import OnBoardScreen from "../../screens/OnBoardScreen";
@@ -24,7 +28,15 @@ import OtpRegPhone from "../../screens/Authorization/Funtravia/OtpRegPhone";
 const AuthNav = createStackNavigator();
 export default function AuthStackNavigation() {
   return (
-    <AuthNav.Navigator initialRouteName="OnBoardScreen">
+    <AuthNav.Navigator
+      initialRouteName="OnBoardScreen"
+      screenOptions={{
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+        ...TransitionPresets.SlideFromRightIOS,
+      }}
+      animation="fade"
+    >
       <AuthNav.Screen
         name="OnBoardScreen"
         options={{

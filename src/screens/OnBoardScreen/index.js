@@ -7,11 +7,11 @@ import {
   TouchableHighlight,
 } from "react-native";
 import {
-  SlideSatu,
   WhiteMascot,
   OnBoard_1,
   OnBoard_2,
   OnBoard_3,
+  SlideSatu,
 } from "../../assets/png/index";
 import { Sampul, Xblue } from "../../assets/svg";
 import { Text, FunImage, Button } from "../../component/index";
@@ -32,6 +32,11 @@ export default function OnBoardScreen(props) {
     },
     { image: OnBoard_2, title: "Travel with\nfriends.", description: null },
     { image: OnBoard_3, title: "Travel goal\ndigger.", description: null },
+    {
+      image: SlideSatu,
+      title: "TRAVEL\nNEVER BEEN\nTHIS EASY.",
+      description: null,
+    },
   ];
   return (
     <ImageSlider
@@ -43,7 +48,11 @@ export default function OnBoardScreen(props) {
         backgroundColor: "#white",
       }}
       customSlide={({ index, item, style, width, move, position }) => (
-        <View style={{ backgroundColor: "#000" }}>
+        <View
+          style={{
+            backgroundColor: "#000",
+          }}
+        >
           <Image
             style={{
               // flex:1,
@@ -51,12 +60,12 @@ export default function OnBoardScreen(props) {
               width: width,
               resizeMode: "cover",
               backgroundColor: "#000",
-              opacity: 0.25,
+              opacity: index === 3 ? 1 : 0.25,
             }}
             source={item.image}
           />
 
-          {index === 2 ? null : (
+          {index === 3 ? (
             <View
               style={{
                 position: "absolute",
@@ -77,8 +86,8 @@ export default function OnBoardScreen(props) {
                   borderRadius: 30,
                 }}
                 onPress={() =>
-                  props.navigation.navigate("AuthStack", {
-                    screen: "SplashScreen",
+                  props.navigation.navigate("BottomStack", {
+                    screen: "HomeScreen",
                   })
                 }
               >
@@ -94,7 +103,8 @@ export default function OnBoardScreen(props) {
                 >{`${t("skip")}`}</Text>
               </Button>
             </View>
-          )}
+          ) : null}
+
           <View
             style={{
               // flex: 1,
@@ -103,7 +113,7 @@ export default function OnBoardScreen(props) {
               position: "absolute",
               justifyContent: "flex-end",
               borderColor: "#000",
-              bottom: 175,
+              bottom: 250,
             }}
           >
             <View style={{ paddingHorizontal: 14, width: width }}>
@@ -137,22 +147,57 @@ export default function OnBoardScreen(props) {
             bottom: 50,
           }}
         >
-          <Button
-            style={{
-              marginVertical: 10,
-              marginHorizontal: 15,
-            }}
-            size="medium"
-            color="secondary"
-            onPress={() =>
-              position === 2
-                ? props.navigation.navigate("AuthStack", {
-                    screen: "SplashScreen",
-                  })
-                : move(position + 1)
-            }
-            text={t("next")}
-          />
+          {position === 3 ? (
+            <View style={{ marginBottom: 10 }}>
+              <Button
+                style={{
+                  marginVertical: 10,
+                  marginHorizontal: 15,
+                }}
+                size="medium"
+                color="secondary"
+                onPress={() => props.navigation.navigate("LoginScreen")}
+                // onPress={() =>
+                //   position === 2
+                //     ? props.navigation.navigate("AuthStack", {
+                //         screen: "SplashScreen",
+                //       })
+                //     : move(position + 1)
+                // }
+                text={t("signIn")}
+              />
+              <Button
+                style={{
+                  marginVertical: 10,
+                  marginHorizontal: 15,
+                  backgroundColor: "#fff0",
+                  borderColor: "white",
+                  borderWidth: 1,
+                }}
+                size="medium"
+                // color="secondary"
+                onPress={() => props.navigation.navigate("RegisterScreen")}
+                text={t("createYourAccount")}
+              />
+            </View>
+          ) : (
+            <Button
+              style={{
+                marginVertical: 10,
+                marginHorizontal: 15,
+              }}
+              size="medium"
+              color="secondary"
+              onPress={() =>
+                position === 3
+                  ? props.navigation.navigate("AuthStack", {
+                      screen: "SplashScreen",
+                    })
+                  : move(position + 1)
+              }
+              text={t("next")}
+            />
+          )}
 
           <View
             style={{
@@ -176,7 +221,7 @@ export default function OnBoardScreen(props) {
                     style={{
                       height: position === index ? 5 : 5,
                       width:
-                        position === index ? width / 3 - 15 : width / 3 - 15,
+                        position === index ? width / 4 - 15 : width / 4 - 15,
                       borderRadius: position === index ? 7 : 3,
                       backgroundColor:
                         position === index ? "#D75995" : "#d3d3d3",

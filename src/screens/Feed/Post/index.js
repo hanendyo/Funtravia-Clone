@@ -22,6 +22,7 @@ import {
   CameraBlue,
   Check,
 } from "../../../assets/svg";
+import { default_image } from "../../../assets/png";
 import { Text, Button, StatusBar, FunImage } from "../../../component";
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
@@ -32,9 +33,13 @@ import Video from "react-native-video";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ImageCropper from "react-native-simple-image-cropper";
+import { useIsFocused } from "@react-navigation/native";
 
 const { width } = Dimensions.get("screen");
 export default function Post(props) {
+  const isFocused = useIsFocused();
+  const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
   const [imageRoll, setImageRoll] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -133,6 +138,14 @@ export default function Post(props) {
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
+        // ImagePicker.openPicker({
+        //   mediaType: "video",
+        //   // uri: recent.node.image,
+        //   compressImageQuality: 0.6,
+        // }).then((video) => {
+        //   console.log("video", video);
+        // });
+
         props.navigation.navigate("CreatePostScreen", {
           location: recent.node.location,
           type: recent.node.type.substr(0, 5),
@@ -145,7 +158,7 @@ export default function Post(props) {
             path: recent.node.image.uri,
             width: ratio.width * 1000,
             height: ratio.height * 1000,
-            // compressImageQuality: 0.7,
+            compressImageQuality: 0.5,
           })
             .then((image) => {
               props.navigation.navigate("CreatePostScreen", {
@@ -486,6 +499,10 @@ export default function Post(props) {
     setChecklistVideo(tempsVideo);
   };
 
+  const durationTime = (data) => {
+    data.currentTime < 60.0 ? setTime(false) : setTime(true);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -576,6 +593,9 @@ export default function Post(props) {
                 ref={(ref) => {
                   videoView = ref;
                 }}
+                onProgress={durationTime}
+                paused={props.route.name == "Post" && isFocused ? false : true}
+                repeat={time ? true : false}
                 onBuffer={videoView?.current?.onBuffer}
                 onError={videoView?.current?.videoError}
                 style={{
@@ -587,13 +607,14 @@ export default function Post(props) {
             ) : (
               <View
                 style={{
-                  width: width,
                   height: width,
-                  justifyContent: "center",
+                  width: width,
                   alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <Image
+                  // resizeMode="contain"
                   source={{ uri: recent.node?.image?.uri }}
                   style={{
                     width: ratio.label == "P" ? width * (4 / 5) : width,
@@ -606,6 +627,16 @@ export default function Post(props) {
                     // resizeMode: "contain",
                   }}
                 />
+                {/* <ImageCropper
+                  style={{
+                    width: width,
+                    height: width,
+                    borderWidth: 5,
+                  }}
+                  imageUri={recent.node?.image?.uri}
+                  setCropperParams={() => setCropperParams}
+                  resizeMode="contain"
+                /> */}
               </View>
             )}
             {/* {buka.current === false ? ( */}

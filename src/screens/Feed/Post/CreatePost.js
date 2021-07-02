@@ -41,6 +41,7 @@ import { useTranslation } from "react-i18next";
 import CreateAlbum from "./CreateAlbum";
 import { RNToasty } from "react-native-toasty";
 import DashedLine from "react-native-dashed-line";
+import { useIsFocused } from "@react-navigation/native";
 
 const PostMut = gql`
   mutation(
@@ -79,6 +80,7 @@ const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
   console.log("props create post", props);
+  const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
   const { t } = useTranslation();
@@ -333,6 +335,12 @@ export default function CreatePost(props) {
     }
   };
 
+  const [time, setTime] = useState(false);
+
+  const durationTime = (data) => {
+    data.currentTime < 60.0 ? setTime(false) : setTime(true);
+  };
+
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {
       return (
@@ -353,6 +361,9 @@ export default function CreatePost(props) {
           ref={(ref) => {
             videoView = ref;
           }}
+          onProgress={durationTime}
+          paused={isFocused ? false : true}
+          repeat={time ? true : false}
           onBuffer={videoView?.current?.onBuffer}
           onError={videoView?.current?.videoError}
           style={{
