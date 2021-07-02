@@ -14,6 +14,7 @@ import {
   ImageBackground,
   TextInput,
   Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import {
   Text,
@@ -29,6 +30,7 @@ import PostMut from "../../../graphQL/Mutation/Itinerary/PostToFeed";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Mute, PlayVideo, Unmute } from "../../../assets/svg";
 
 const { width } = Dimensions.get("screen");
 
@@ -230,6 +232,8 @@ export default function CraetePostAlbum(props) {
       Alert.alert("" + error);
     }
   };
+  let [muted, setMuted] = useState(false);
+  console.log(selectedPhoto);
 
   return (
     <ScrollView
@@ -239,43 +243,110 @@ export default function CraetePostAlbum(props) {
       }}
     >
       <View style={{}}></View>
-      <ImageBackground
-        source={{ uri: selectedPhoto[indexAktif].assets }}
-        style={{
-          width: width - 20,
-          height: width - 120,
-          borderRadius: 15,
-          margin: 10,
-        }}
-        imageStyle={{
-          borderRadius: 15,
-          resizeMode: "cover",
-        }}
-      >
-        <View
-          style={{
-            position: "absolute",
-            top: 15,
-            right: 10,
-            backgroundColor: "#040404",
-            opacity: 0.8,
-            paddingHorizontal: 10,
-            borderRadius: 13,
-            height: 25,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            type="bold"
+      {selectedPhoto[indexAktif].type === "video" ? (
+        <View>
+          <TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
+            <FunVideo
+              poster={selectedPhoto[indexAktif].assets.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"contain"}
+              source={{
+                uri: selectedPhoto[indexAktif].assets,
+              }}
+              repeat={true}
+              style={{
+                width: width - 20,
+                height: width - 120,
+                borderRadius: 15,
+                margin: 10,
+              }}
+              resizeMode="contain"
+              muted={muted}
+              paused={false}
+            />
+          </TouchableWithoutFeedback>
+          <View
             style={{
-              color: "white",
+              padding: 5,
+              position: "absolute",
+              backgroundColor: "rgba(0, 0, 0, 0.50)",
+              bottom: 15,
+              right: 15,
+              borderRadius: 15,
             }}
           >
-            {indexAktif + 1} / {selectedPhoto.length}
-          </Text>
+            {muted ? (
+              <Mute width="15" height="15" />
+            ) : (
+              <Unmute width="15" height="15" />
+            )}
+          </View>
+          <View
+            style={{
+              position: "absolute",
+              top: 25,
+              right: 20,
+              backgroundColor: "#040404",
+              opacity: 0.8,
+              paddingHorizontal: 10,
+              borderRadius: 13,
+              height: 25,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              type="bold"
+              style={{
+                color: "white",
+              }}
+            >
+              {indexAktif + 1} / {selectedPhoto.length}
+            </Text>
+          </View>
         </View>
-      </ImageBackground>
+      ) : (
+        <ImageBackground
+          source={{ uri: selectedPhoto[indexAktif].assets }}
+          style={{
+            width: width - 20,
+            height: width - 120,
+            borderRadius: 15,
+            margin: 10,
+          }}
+          imageStyle={{
+            borderRadius: 15,
+            resizeMode: "cover",
+          }}
+        >
+          <View
+            style={{
+              position: "absolute",
+              top: 15,
+              right: 10,
+              backgroundColor: "#040404",
+              opacity: 0.8,
+              paddingHorizontal: 10,
+              borderRadius: 13,
+              height: 25,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              type="bold"
+              style={{
+                color: "white",
+              }}
+            >
+              {indexAktif + 1} / {selectedPhoto.length}
+            </Text>
+          </View>
+        </ImageBackground>
+      )}
+
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -291,18 +362,36 @@ export default function CraetePostAlbum(props) {
             }}
           >
             {item.type === "video" ? (
-              <FunVideo
-                source={{ uri: item.assets }}
-                muted={true}
-                poster={item.assets.replace("output.m3u8", "thumbnail.png")}
-                paused={true}
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 10,
-                  opacity: index == indexAktif ? 1 : 0.5,
-                }}
-              />
+              <>
+                <FunVideo
+                  source={{ uri: item.assets }}
+                  muted={true}
+                  poster={item.assets.replace("output.m3u8", "thumbnail.png")}
+                  paused={true}
+                  style={{
+                    width: 70,
+                    height: 70,
+                    borderRadius: 10,
+                    opacity: index == indexAktif ? 1 : 0.5,
+                  }}
+                />
+                <View
+                  style={{
+                    // flexDirection: "row",
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    justifyContent: "flex-end",
+                    borderRadius: 10,
+
+                    // bottom: "35%",
+                    // left: "35%",
+                  }}
+                >
+                  <PlayVideo width={15} height={15} style={{ margin: 5 }} />
+                </View>
+              </>
             ) : (
               <FunImage
                 source={{ uri: item.assets }}
