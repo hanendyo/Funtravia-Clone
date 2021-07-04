@@ -24,9 +24,26 @@ export default function RenderSinglePhoto({
   const onBuffer = (isBuffer) => {
     console.log("isBuffer", isBuffer);
   };
+
+  const [time, setTime] = useState(false);
+
+  const durationTime = (data) => {
+    data.currentTime < 60.0 ? setTime(false) : setTime(true);
+  };
+
+  const [heightScaled, setHeightScaled] = useState(width);
+  const [oriented, setOriented] = useState("");
+
   if (data?.assets[0]?.type === "video") {
     return (
-      <View key={`FEED_${data.id}`}>
+      <View
+        key={`FEED_${data.id}`}
+        style={{
+          borderWidth: 1,
+          borderColor: "#f6f6f6",
+          borderRadius: 10,
+        }}
+      >
         <TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
           <FunVideo
             poster={data?.assets[0]?.filepath.replace(
@@ -43,13 +60,28 @@ export default function RenderSinglePhoto({
             // onBuffer={videoView?.current?.onBuffer}
             onBuffer={() => onBuffer()}
             onError={videoView?.current?.videoError}
+            onLoad={(response) => {
+              console.log("resposne", response);
+              // const { widths, heights } = response.naturalSize;
+              const heightScaled =
+                response.naturalSize.height *
+                (Dimensions.get("screen").width / response.naturalSize.width);
+              response.naturalSize.orientation =
+                response.naturalSize.height > response.naturalSize.width
+                  ? "portrait"
+                  : "landscape";
+              setOriented(response.naturalSize.orientation);
+              setHeightScaled(heightScaled);
+            }}
+            onProgress={durationTime}
             repeat={true}
             style={{
               width: width - 40,
-              height: width,
+              // height: width,
+              height: oriented === "portrait" ? width : heightScaled,
               borderRadius: 15,
             }}
-            resizeMode="contain"
+            resizeMode={oriented === "portrait" ? "cover" : "contain"}
             muted={muted}
             paused={
               isComment ? false : play === data.id && isFocused ? false : true

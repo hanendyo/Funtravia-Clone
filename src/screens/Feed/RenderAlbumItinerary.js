@@ -47,6 +47,12 @@ export default function RenderAlbum({
     console.log(isBuffer);
   };
 
+  const [time, setTime] = useState(false);
+
+  const durationTime = (data) => {
+    data.currentTime < 60.0 ? setTime(false) : setTime(true);
+  };
+
   return (
     <View
       style={{
@@ -72,6 +78,7 @@ export default function RenderAlbum({
               // onBuffer={videoView?.current?.onBuffer}
               onBuffer={() => onBuffer()}
               onError={videoView?.current?.videoError}
+              onProgress={durationTime}
               repeat={true}
               style={{
                 width: width - 40,

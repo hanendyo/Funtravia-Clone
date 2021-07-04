@@ -396,8 +396,6 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  console.log("dataPost", dataPost);
-
   const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
@@ -410,19 +408,14 @@ export default function FeedList({ props, token }) {
           },
         });
 
-        console.log("response", response);
-        console.log("error", errordelete);
-
         if (response.data) {
           if (
             response.data.delete_post.code === 200 ||
             response.data.delete_post.code === "200"
           ) {
             const tempdata = [...feed_post_pageing];
-            console.log("tempdata", tempdata);
             tempdata.splice(data.index, 1);
             feed_post_pageing = tempdata;
-            console.log("tempdata after", tempdata);
             await Refresh();
             setTimeout(() => {
               if (ref) {
@@ -434,7 +427,6 @@ export default function FeedList({ props, token }) {
           }
         }
       } catch (error) {
-        console.log("error", error);
         Toast.show({
           text: "Failed to delete this post",
           position: "bottom",
@@ -485,6 +477,8 @@ export default function FeedList({ props, token }) {
     loadAsync();
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
+        console.log("itinerary");
+
         Refresh();
       }
 
@@ -496,6 +490,7 @@ export default function FeedList({ props, token }) {
 
       if (props.route.params.isComment === true) {
         // Refresh();
+        console.log("comment");
         if (ref) {
           ref.current.scrollToIndex({ animated: true, index: 0 });
         }
@@ -517,7 +512,6 @@ export default function FeedList({ props, token }) {
   }, [props.route.params]);
 
   const countKoment = (id) => {
-    console.log("id comment", id);
     const tempd = [...feed_post_pageing];
     const index = tempd.findIndex((k) => k["id"] === id);
     tempd[index].comment_count = tempd[index].comment_count + 1;

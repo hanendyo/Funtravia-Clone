@@ -1,5 +1,8 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import Postscreen from "../../screens/Feed/Post";
 import CreatePostScreen from "../../screens/Feed/Post/CreatePost";
 // import CommentPost from "../../screens/Feed/Post/Comments";
@@ -18,7 +21,13 @@ import ListFotoAlbums from "../../screens/Feed/ListFotoAlbums";
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
   return (
-    <FeedStack.Navigator>
+    <FeedStack.Navigator
+      screenOptions={{
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+        ...TransitionPresets.FadeFromBottomAndroid,
+      }}
+    >
       <FeedStack.Screen
         name="Post"
         component={Postscreen}

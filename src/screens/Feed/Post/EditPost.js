@@ -256,7 +256,7 @@ export default function EditPost(props) {
 
           props.navigation.dispatch(
             StackActions.replace("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: dataPost.id,
               },
