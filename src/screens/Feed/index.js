@@ -101,15 +101,15 @@ export default function Feed(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
-    if (tkn == null) {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
-    }
+    // if (tkn == null) {
+    //   props.navigation.navigate("AuthStack", {
+    //     screen: "LoginScreen",
+    //   });
+    //   RNToasty.Show({
+    //     title: t("pleaselogin"),
+    //     position: "bottom",
+    //   });
+    // }
   };
 
   useEffect(() => {
@@ -122,29 +122,42 @@ export default function Feed(props) {
   }, [props.navigation]);
 
   const createPost = () => {
-    props.navigation.navigate("FeedStack", {
-      screen: "Post",
-    });
+    if (token && token !== null && token !== "") {
+      props.navigation.navigate("FeedStack", {
+        screen: "Post",
+      });
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
   };
 
-  if (token) {
+  if (token !== "hshs") {
     return (
       <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-        {token ? <FeedList props={props} token={token} /> : null}
+        <FeedList props={props} token={token} />
         <Pressable style={styles.fab} onPress={createPost}>
           <PostButton height={50} width={50} />
         </Pressable>
       </View>
     );
   }
-
-  return (
-    <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-      <Pressable style={styles.fab} onPress={createPost}>
-        <PostButton height={50} width={50} />
-      </Pressable>
-    </View>
-  );
+  if (token && token !== null && token !== "") {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
+        {token ? (
+          <Pressable style={styles.fab} onPress={createPost}>
+            <PostButton height={50} width={50} />
+          </Pressable>
+        ) : null}
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
