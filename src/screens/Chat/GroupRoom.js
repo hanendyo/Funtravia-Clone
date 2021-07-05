@@ -80,7 +80,7 @@ export default function Room({ navigation, route }) {
                 </TouchableOpacity>
                 <Pressable
                     onPress={() => {
-                        BackHandler.addEventListener(
+                        BackHandler.removeEventListener(
                             "hardwareBackPress",
                             onBackPress
                         );
@@ -105,7 +105,7 @@ export default function Room({ navigation, route }) {
                 >
                     <TouchableOpacity
                         onPress={() => {
-                            BackHandler.addEventListener(
+                            BackHandler.removeEventListener(
                                 "hardwareBackPress",
                                 onBackPress
                             );
@@ -126,7 +126,7 @@ export default function Room({ navigation, route }) {
 
                     <Text
                         onPress={() => {
-                            BackHandler.addEventListener(
+                            BackHandler.removeEventListener(
                                 "hardwareBackPress",
                                 onBackPress
                             );
@@ -173,7 +173,7 @@ export default function Room({ navigation, route }) {
         let dataResponse = await response.json();
         if (dataResponse.status == true) {
             await setDatadetail(dataResponse.grup);
-            console.log(dataResponse.grup.link_picture);
+            console.log(dataResponse.grup);
             let update_header = {
                 headerLeft: () => (
                     <View
@@ -200,7 +200,7 @@ export default function Room({ navigation, route }) {
                         </TouchableOpacity>
                         <Pressable
                             onPress={() => {
-                                BackHandler.addEventListener(
+                                BackHandler.removeEventListener(
                                     "hardwareBackPress",
                                     onBackPress
                                 );
@@ -225,7 +225,7 @@ export default function Room({ navigation, route }) {
                         >
                             <TouchableOpacity
                                 onPress={() => {
-                                    BackHandler.addEventListener(
+                                    BackHandler.removeEventListener(
                                         "hardwareBackPress",
                                         onBackPress
                                     );
@@ -240,14 +240,15 @@ export default function Room({ navigation, route }) {
                             >
                                 <Image
                                     source={
-                                        dataResponse.grup &&
-                                        dataResponse.grup.link_picture
+                                        route.params.from !== "itinerary"
                                             ? {
                                                   uri:
                                                       dataResponse.grup
                                                           .link_picture,
                                               }
-                                            : default_image
+                                            : {
+                                                  uri: dataResponse.grup.cover,
+                                              }
                                     }
                                     style={{
                                         width: 40,
@@ -259,7 +260,7 @@ export default function Room({ navigation, route }) {
 
                             <Text
                                 onPress={() => {
-                                    BackHandler.addEventListener(
+                                    BackHandler.removeEventListener(
                                         "hardwareBackPress",
                                         onBackPress
                                     );
@@ -294,7 +295,6 @@ export default function Room({ navigation, route }) {
     const myStateRef = React.useRef(route.params?.is_itinerary);
     const data_group_picture = useRef("");
     const data_group_name = useRef("");
-    console.log(data_group_name.current);
     const onBackPress = useCallback(() => {
         if (myStateRef.current == true) {
             navigation.goBack();
@@ -321,10 +321,10 @@ export default function Room({ navigation, route }) {
     useEffect(() => {
         socket.emit("join", room);
         navigation.setOptions(headerOptions);
-        // if (init) {
-        //     getUserToken();
-        //     // setConnection();
-        // }
+        if (init) {
+            getUserToken();
+            // setConnection();
+        }
         socket.on("new_chat_group", (data) => {
             setChatHistory(data);
         });

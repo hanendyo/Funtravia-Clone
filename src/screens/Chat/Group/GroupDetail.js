@@ -30,6 +30,7 @@ import {
     ArrowRightBlue,
     PensilPutih,
     AddParticipant,
+    OptionsVertWhite,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -40,6 +41,7 @@ import Swipeout from "react-native-swipeout";
 import RenderMemberList from "./RenderMemberList";
 import { CHATSERVER, RESTFULL_API } from "../../../config";
 import { RNToasty } from "react-native-toasty";
+import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 
 export default function GroupDetail(props) {
     let { width } = Dimensions.get("screen");
@@ -86,14 +88,47 @@ export default function GroupDetail(props) {
                 <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
             </Button>
         ),
-        headerRight: () => (
-            <View
-                style={{
-                    flex: 1,
-                    flexDirection: "row",
-                }}
-            ></View>
-        ),
+        headerRight: () => {
+            let _menu = null;
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        paddingHorizontal: 10,
+                    }}
+                >
+                    <Menu
+                        ref={(ref) => (_menu = ref)}
+                        button={
+                            <Pressable onPress={() => _menu.show()}>
+                                <OptionsVertWhite
+                                    height={20}
+                                    width={20}
+                                ></OptionsVertWhite>
+                            </Pressable>
+                        }
+                        style={{
+                            width: 200,
+                        }}
+                    >
+                        <MenuItem onPress={() => _menu.hide()}>
+                            {t("changeCoverGroup")}
+                        </MenuItem>
+                        <MenuDivider />
+                        <MenuItem
+                            onPress={() => {
+                                _leftGroup(props.route.params.room_id);
+                                _menu.hide();
+                            }}
+                        >
+                            {t("leftGroup")}
+                        </MenuItem>
+                    </Menu>
+                </View>
+            );
+        },
     };
     let toast = useRef();
     let [mydata, setMydata] = useState();
@@ -192,6 +227,11 @@ export default function GroupDetail(props) {
             let responseJson = await response.json();
             if (responseJson.status == true) {
                 getUserAndToken();
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success Left Group",
+                    position: "bottom",
+                });
             } else {
                 //   setloading(false);
                 throw new Error(responseJson.message);
@@ -204,6 +244,48 @@ export default function GroupDetail(props) {
                 position: "bottom",
             });
             console.log(error);
+        }
+    };
+
+    const _leftGroup = async (group_id) => {
+        setIndexActive(null);
+        let data_kirim = JSON.stringify({
+            group_id: group_id,
+        });
+        try {
+            let response = await fetch(`${RESTFULL_API}room/group/left_group`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer " + token,
+                    "Content-Type": "application/json",
+                },
+                body: data_kirim,
+            });
+            let responseJson = await response.json();
+            console.log(responseJson);
+            if (responseJson.status == true) {
+                props.navigation.navigate("BottomStack", {
+                    screen: "ChatBottomScreen",
+                    params: {
+                        screen: "FeedScreen",
+                        params: {
+                            page: 1,
+                        },
+                    },
+                });
+            } else {
+                //   setloading(false);
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            // setloading(false);
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            // console.log(error);
         }
     };
 
@@ -403,11 +485,11 @@ export default function GroupDetail(props) {
                 </View>
             </View>
             {/* <View
-                style={{
-                    backgroundColor: "#f3f3f3",
-                    height: 10,
-                }}
-            /> */}
+                    style={{
+                        backgroundColor: "#f3f3f3",
+                        height: 10,
+                    }}
+                /> */}
 
             <View
                 style={{
