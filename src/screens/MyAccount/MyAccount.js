@@ -116,10 +116,7 @@ export default function MyAccount(props) {
 
   return (
     <View style={{ zIndex: -1 }}>
-      <ScrollView
-        // style={{ backgroundColor: "#F6F6F7" }}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
             backgroundColor: "#FFFFFF",
@@ -133,15 +130,6 @@ export default function MyAccount(props) {
             paddingBottom: 10,
             borderRadius: 10,
             flexDirection: "row",
-            // shadowColor: "#000",
-            // shadowOffset: {
-            //   width: 0,
-            //   height: 5,
-            // },
-            // shadowOpacity: 0.1,
-            // shadowRadius: 6.27,
-
-            // elevation: 6,
             shadowColor: "#FFF",
             shadowOffset: {
               width: 0,
@@ -153,7 +141,12 @@ export default function MyAccount(props) {
             elevation: 6,
           }}
         >
-          <View>
+          <View
+            style={{
+              marginBottom: 10,
+              marginTop: 10,
+            }}
+          >
             <Pressable
               onPress={() => {
                 // console.log(datauser.user_profile.id);
@@ -190,7 +183,9 @@ export default function MyAccount(props) {
           <View
             style={{
               width: 200,
+              height: 120,
               marginLeft: 15,
+              // borderWidth: 1,
               justifyContent: "center",
             }}
           >
@@ -213,7 +208,7 @@ export default function MyAccount(props) {
               size="small"
               style={{
                 width: "60%",
-                height: "18%",
+                height: "25%",
                 marginTop: 15,
               }}
               onPress={() => {
@@ -437,6 +432,7 @@ export default function MyAccount(props) {
           style={{
             alignItems: "center",
             marginBottom: 10,
+            height: 150,
           }}
         >
           <Button

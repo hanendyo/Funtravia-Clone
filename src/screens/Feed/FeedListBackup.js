@@ -34,7 +34,6 @@ import { Text, Button, shareAction, CopyLink, FunImage } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
-import FeedPageingPopular from "../../graphQL/Query/Feed/FeedPopularPaging";
 import ReadMore from "react-native-read-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
@@ -48,7 +47,6 @@ import { Toast, Root } from "native-base";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import { isPunctuatorToken } from "graphql/language/lexer";
-
 // import Clipboard from "@react-native-clipboard/clipboard";
 
 const deletepost = gql`
@@ -212,7 +210,7 @@ export default function FeedList({ props, token }) {
     index = feed_post_pageing.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token && token !== "" && token !== null) {
+        if (token) {
           setactivelike(false);
           feed_post_pageing[index].liked = true;
           feed_post_pageing[index].response_count =
@@ -251,13 +249,12 @@ export default function FeedList({ props, token }) {
             // Alert.alert("" + error);
           }
         } else {
-          props.navigation.navigate("AuthStack", {
-            screen: "LoginScreen",
-          });
-          RNToasty.Show({
-            title: t("pleaselogin"),
-            position: "bottom",
-          });
+          // Toast.show({
+          //   text: "Please Login",
+          //   position: "bottom",
+          //   buttonText: "Ok",
+          //   duration: 3000,
+          // });
         }
       }
     }
@@ -267,7 +264,7 @@ export default function FeedList({ props, token }) {
     index = feed_post_pageing.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token && token !== "" && token !== null) {
+        if (token || token !== "") {
           setactivelike(false);
           feed_post_pageing[index].liked = false;
           feed_post_pageing[index].response_count =
@@ -312,13 +309,13 @@ export default function FeedList({ props, token }) {
             // });
           }
         } else {
-          props.navigation.navigate("AuthStack", {
-            screen: "LoginScreen",
-          });
-          RNToasty.Show({
-            title: t("pleaselogin"),
-            position: "bottom",
-          });
+          // Alert.alert("Please Login");
+          // Toast.show({
+          //   text: "Please Login",
+          //   position: "bottom",
+          //   buttonText: "Ok",
+          //   duration: 3000,
+          // });
         }
       }
     }
@@ -329,7 +326,7 @@ export default function FeedList({ props, token }) {
     data: dataPost,
     error: errorPost,
     fetchMore,
-    refetch: refetchLogin,
+    refetch,
     networkStatus,
   } = useQuery(FeedPageing, {
     variables: {
@@ -346,50 +343,16 @@ export default function FeedList({ props, token }) {
     notifyOnNetworkStatusChange: true,
   });
 
-  const {
-    loading: loadingPostPopular,
-    data: dataPostPopular,
-    error: errorPostPopular,
-    refetch: refetchPostPopular,
-    fetchMore: fetchmorepopular,
-    networkStatus: networkStatusPopular,
-  } = useQuery(FeedPageingPopular, {
-    variables: {
-      limit: 3,
-      offset: 0,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    // pollInterval: 5500,
-    notifyOnNetworkStatusChange: true,
-  });
-
   let feed_post_pageing = [];
-  if (token && token !== "" && token !== null) {
-    if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
-      feed_post_pageing = dataPost.feed_post_pageing.datas;
-    }
-  } else {
-    if (
-      dataPostPopular &&
-      dataPostPopular &&
-      "datas" in dataPostPopular.feed_post_populer_paging
-    ) {
-      feed_post_pageing = dataPostPopular.feed_post_populer_paging.datas;
-    }
+  if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
+    feed_post_pageing = dataPost.feed_post_pageing.datas;
   }
-  // console.log("Popular", feed_post_pageing);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
-    refetchLogin();
-    refetchPostPopular();
+    refetch();
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -400,7 +363,6 @@ export default function FeedList({ props, token }) {
     });
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
-    console.log("prev", prev);
     if (
       prev.feed_post_pageing.datas.length <
       fetchMoreResult.feed_post_pageing.page_info.offset
@@ -421,29 +383,15 @@ export default function FeedList({ props, token }) {
     }
   };
   const handleOnEndReached = () => {
-    if (token && token !== "" && token !== null) {
-      if (dataPost.feed_post_pageing.page_info.hasNextPage) {
-        if (fetchMore) {
-          return fetchMore({
-            variables: {
-              limit: 3,
-              offset: dataPost.feed_post_pageing.page_info.offset,
-            },
-            updateQuery: onUpdate,
-          });
-        }
-      }
-    } else {
-      if (dataPostPopular.feed_post_populer_paging.page_info.hasNextPage) {
-        if (fetchmorepopular) {
-          return fetchmorepopular({
-            variables: {
-              limit: 3,
-              offset: dataPostPopular.feed_post_populer_paging.page_info.offset,
-            },
-            updateQuery: onUpdate,
-          });
-        }
+    if (dataPost.feed_post_pageing.page_info.hasNextPage) {
+      if (fetchMore) {
+        return fetchMore({
+          variables: {
+            limit: 3,
+            offset: dataPost.feed_post_pageing.page_info.offset,
+          },
+          updateQuery: onUpdate,
+        });
       }
     }
   };
@@ -452,7 +400,7 @@ export default function FeedList({ props, token }) {
     setModalhapus(false);
     setModalmenu(false);
 
-    if (token && token !== "" && token !== null) {
+    if (token || token !== "") {
       try {
         let response = await Mutationdeletepost({
           variables: {
@@ -487,12 +435,11 @@ export default function FeedList({ props, token }) {
         });
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
+      Toast.show({
+        text: "Please Login",
         position: "bottom",
+        buttonText: "Ok",
+        duration: 3000,
       });
     }
   };
