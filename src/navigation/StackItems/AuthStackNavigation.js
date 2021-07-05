@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   createStackNavigator,
   CardStyleInterpolators,
@@ -24,12 +25,20 @@ import OtpLoginPhone from "../../screens/Authorization/Funtravia/OtpLoginPhone";
 import RegisterPhone from "../../screens/Authorization/Funtravia/RegisterPhone";
 import ConfirmRegNumber from "../../screens/Authorization/Funtravia/ConfirmRegNumber";
 import OtpRegPhone from "../../screens/Authorization/Funtravia/OtpRegPhone";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthNav = createStackNavigator();
-export default function AuthStackNavigation() {
+export default function AuthStackNavigation(props) {
+  console.log("props aut", props?.route?.params?.isFirst);
+
   return (
     <AuthNav.Navigator
-      initialRouteName="OnBoardScreen"
+      initialRouteName={
+        props?.route?.params?.isFirst == "false"
+          ? "SplashScreen"
+          : "OnBoardScreen"
+      }
+      // initialRouteName="SplashScreen"
       screenOptions={{
         gestureEnabled: true,
         gestureDirection: "horizontal",

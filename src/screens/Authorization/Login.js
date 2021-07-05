@@ -20,6 +20,7 @@ import {
   show_password,
   hide_password,
 } from "../../assets/png";
+import { Arrowbackblack } from "../../assets/svg";
 import LOG_IN from "../../graphQL/Mutation/Login/Login";
 import { useTranslation } from "react-i18next";
 import {
@@ -110,15 +111,48 @@ export default function Login({ navigation }) {
     setHidePasswd(!hidePasswd);
   };
 
-  const NavigationComponent = {
-    title: "",
+  const HeaderComponent = {
     headerShown: true,
-    headerMode: "screen",
+    // title: "About",
     headerTransparent: true,
+    // headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackblack height={20} width={20}></Arrowbackblack>
+      </Button>
+    ),
   };
 
   useEffect(() => {
-    navigation.setOptions(NavigationComponent);
+    navigation.setOptions(HeaderComponent);
+    // navigation.setOptions(NavigationComponent);
+    AsyncStorage.setItem("isFirst", "false");
   }, []);
 
   return (

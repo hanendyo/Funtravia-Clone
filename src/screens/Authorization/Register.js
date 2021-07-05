@@ -176,6 +176,7 @@ export default function Register({ navigation }) {
 
   useEffect(() => {
     navigation.setOptions(NavigationComponent);
+    AsyncStorage.setItem("isFirst", "false");
   }, []);
 
   return (

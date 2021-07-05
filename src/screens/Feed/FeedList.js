@@ -400,7 +400,6 @@ export default function FeedList({ props, token }) {
     });
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
-    console.log("prev", prev);
     if (
       prev.feed_post_pageing.datas.length <
       fetchMoreResult.feed_post_pageing.page_info.offset
@@ -686,8 +685,9 @@ export default function FeedList({ props, token }) {
 
   const _unfollow = async (id, status) => {
     setModalmenuother(false);
+    console.log("token feed unfoll", token);
 
-    if (token || token !== "") {
+    if (token) {
       try {
         let response = await UnfollowMutation({
           variables: {
@@ -715,12 +715,13 @@ export default function FeedList({ props, token }) {
         Alert.alert("" + error);
       }
     } else {
-      // Alert.alert("Please Login");
-      Toast.show({
-        text: "Please Login",
+      RNToasty.Show({
+        duration: 1,
+        title: "Please Login",
         position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
+      });
+      props.navigation.push("AuthStack", {
+        screen: "LoginScreen",
       });
     }
   };
@@ -738,14 +739,16 @@ export default function FeedList({ props, token }) {
   });
 
   const _follow = async (id, status) => {
+    console.log("token feed follow", token);
     setModalmenuother(false);
-    if (token || token !== "") {
+    if (token) {
       try {
         let response = await FollowMutation({
           variables: {
             id: id,
           },
         });
+
         if (loadFollowMut) {
           Alert.alert("Loading!!");
         }
@@ -766,12 +769,10 @@ export default function FeedList({ props, token }) {
         Alert.alert("" + error);
       }
     } else {
-      // Alert.alert("Please Login");
-      Toast.show({
-        text: "Please Login",
+      RNToasty.Show({
+        duration: 1,
+        title: "Please Login",
         position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
       });
     }
   };
