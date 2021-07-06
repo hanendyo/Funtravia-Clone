@@ -234,6 +234,8 @@ import PinAbu from "./files/pinabu.svg";
 import PinBiru from "./files/pinbiru.svg";
 import AddParticipant from "./files/add_people.svg";
 import PlayVideo from "./files/play_video.svg";
+import DestinationReview from "./files/destinasiReview.svg";
+import AccomodationReview from "./files/hotelReview.svg";
 
 export {
   LikeWhite,
@@ -472,4 +474,6 @@ export {
   PinBiru,
   AddParticipant,
   PlayVideo,
+  DestinationReview,
+  AccomodationReview,
 };

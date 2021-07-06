@@ -1306,6 +1306,12 @@ export default function ListEventHome(props) {
     setdataFilterCategoris(b);
   };
 
+  const cekData = (data) => {
+    let dat = dataFilterCategori.filter((k) => k.checked === true);
+    console.log(dat);
+    return dat.length;
+  };
+
   return (
     <View style={{ flex: 1 }}>
       {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
@@ -1353,6 +1359,26 @@ export default function ListEventHome(props) {
           >
             {t("filter")}
           </Text>
+
+          <View
+            style={{
+              backgroundColor: "#209fae",
+              marginLeft: 5,
+              paddingHorizontal: 5,
+              borderRadius: 2,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Lato-Regular",
+                color: "#ffff",
+                fontSize: 13,
+                // alignSelf: "center",
+              }}
+            >
+              {cekData(dataFilterCategori)}
+            </Text>
+          </View>
         </Button>
         <View
           style={{
