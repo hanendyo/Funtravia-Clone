@@ -21,6 +21,21 @@ const province_detail = gql`
         description
         icon
       }
+      article_header {
+        id
+        title
+        type
+        position
+        relation_id
+        content {
+          id
+          type
+          title
+          text
+          image
+          order
+        }
+      }
       journal {
         id
         title
