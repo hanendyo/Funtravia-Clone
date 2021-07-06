@@ -1217,7 +1217,7 @@ export default function OtherProfile(props) {
       case "tab2":
         numCols = 1;
         data = dataReview;
-        renderItem = (e) => Review(e, onSelect);
+        renderItem = (e) => Review(e, onSelect, props, token);
         paddingHorizontal = 0;
         break;
       case "tab3":

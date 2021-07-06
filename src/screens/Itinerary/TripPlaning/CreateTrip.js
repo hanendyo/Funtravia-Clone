@@ -432,8 +432,7 @@ export default function Trip(props) {
       <ScrollView
         style={{
           zIndex: 100,
-          // position: 'absolute',
-          // top: 0,
+
           width: Dimensions.get("screen").width,
           height: Dimensions.get("screen").height - 50,
         }}
@@ -443,7 +442,6 @@ export default function Trip(props) {
         <View
           style={{
             alignItems: "center",
-            // height: Dimensions.get('screen').height,
             justifyContent: "space-between",
           }}
         >
@@ -724,9 +722,7 @@ export default function Trip(props) {
                     width: Dimensions.get("screen").width,
                     minHeight: Dimensions.get("screen").height * 0.5,
 
-                    // height: Dimensions.get('screen').width - 40,
                     backgroundColor: "white",
-                    // borderRadius: 5,
                     shadowColor: "#000",
                     shadowOffset: {
                       width: 0,
@@ -736,7 +732,6 @@ export default function Trip(props) {
                     shadowRadius: 3.84,
                     elevation: 5,
                     paddingHorizontal: 20,
-                    // paddingVertical: 10,
                   }}
                 >
                   <Item
@@ -771,12 +766,8 @@ export default function Trip(props) {
                   {datacity && datacity.cities_search.length > 0 ? (
                     <FlatList
                       style={{
-                        // position: 'absolute',
-                        // top: 60,
                         width: "100%",
                         maxHeight: Dimensions.get("screen").width - 40,
-
-                        // height: '100%',
                       }}
                       showsVerticalScrollIndicator={false}
                       keyExtractor={(item, index) => `${index}`}
@@ -784,7 +775,6 @@ export default function Trip(props) {
                       renderItem={({ item }) => (
                         <TouchableOpacity
                           style={{
-                            // backgroundColor: 'white',
                             width: "100%",
                             padding: 10,
                           }}
@@ -843,38 +833,6 @@ export default function Trip(props) {
                   paddingHorizontal: 20,
                 }}
               >
-                {/* <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignSelf: "center",
-                    alignContent: "center",
-                    width: Dimensions.get("screen").width - 40,
-                    // height: Dimensions.get('screen').width - 40,
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                  }}
-                > */}
-                {/* <TouchableOpacity
-										style={{
-											alignSelf: 'flex-end',
-											height: 30,
-											width: 30,
-											zIndex: 999,
-											marginBottom: 20,
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-										onPress={() => setModal(false)}>
-										<Xgray height={20} width={20} />
-									</TouchableOpacity> */}
                 <DatePicker
                   options={{}}
                   current={startDate ? startDate : getToday()}
@@ -897,13 +855,10 @@ export default function Trip(props) {
                 animationOut="slideOutDown"
                 isVisible={modalEnd}
                 style={{
-                  // backgroundColor: 'rgba(47, 47, 47, 0.75)',
                   justifyContent: "center",
                   alignItems: "center",
                   alignSelf: "center",
                   alignContent: "center",
-                  // width: Dimensions.get('screen').width,
-                  // height: Dimensions.get('screen').height,
                 }}
               >
                 <View
@@ -997,29 +952,6 @@ export default function Trip(props) {
                     </View>
                   </View>
                 </View>
-                {/* <TouchableOpacity
-										style={{
-											alignSelf: 'flex-end',
-											height: 30,
-											width: 30,
-											zIndex: 999,
-											marginBottom: 20,
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-										onPress={() => setModalEnd(false)}>
-										<Xgray height={20} width={20} />
-									</TouchableOpacity> */}
-                {/* <DatePicker
-                    options={{}}
-                    current={endDate ? endDate : minimum}
-                    selected={endDate ? endDate : minimum}
-                    minimumDate={minimum}
-                    onDateChange={(x) => setEnd(x)}
-                    mode="calendar"
-                    minuteInterval={30}
-                    style={{ borderRadius: 10 }}
-                  /> */}
               </Modal>
 
               <View
@@ -1118,45 +1050,6 @@ export default function Trip(props) {
                     </Text>
                   </TouchableOpacity>
                 </View>
-
-                {/* <View style={{ width: "40%" }}>
-                  <Item
-                    floatingLabel
-                    style={{
-                      marginVertical: 10,
-                    }}
-                  >
-                    <Label
-                      style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 14,
-                      }}
-                    >
-                      {t("EndDate")}
-                    </Label>
-                    <Input
-                      autoCorrect={false}
-                      editable={false}
-                      value={endDate ? dateFormats(endDate) : ""}
-                      style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 16,
-                      }}
-                      keyboardType="default"
-                    />
-                  </Item>
-
-                  <TouchableOpacity
-                    style={{
-                      top: 0,
-                      left: 0,
-                      position: "absolute",
-                      height: "100%",
-                      width: "100%",
-                    }}
-                    onPress={() => (startDate ? setModalEnd(true) : null)}
-                  ></TouchableOpacity>
-                </View> */}
               </View>
               <View
                 style={{
@@ -1180,31 +1073,9 @@ export default function Trip(props) {
                     height: 150,
                   }}
                   placeholder={t("selectCategory")}
-                  // multiple={true}
-                  // multipleText="%d items have been selected."
-                  // min={0}
-                  // max={2}
                   onChangeItem={(item) => setcategory_id(item.value)}
                 />
               </View>
-
-              {/*               
-              <View style={[styles.halfContainer, { marginVertical: 10 }]}>
-                <Button
-                  color={privateToggle ? "secondary" : "tertiary"}
-                  type={"circle"}
-                  onPress={() => togglePrivate()}
-                  text={t("private")}
-                  style={{ width: "49%" }}
-                />
-                <Button
-                  color={privateToggle ? "tertiary" : "secondary"}
-                  type={"circle"}
-                  onPress={() => togglePublic()}
-                  text="Public"
-                  style={{ width: "49%" }}
-                />
-              </View> */}
 
               <View
                 style={{
@@ -1317,8 +1188,6 @@ export default function Trip(props) {
                       // height: '100%',
                       height: Dimensions.get("screen").height,
                     }}
-                    // behavior={Platform.OS === 'ios' ? 'position' : null}
-                    // keyboardVerticalOffset={30}
                     enabled
                   >
                     <View
@@ -1340,13 +1209,24 @@ export default function Trip(props) {
                         style={{
                           height: 50,
                           justifyContent: "center",
+                          alignContent: "center",
+                          alignItems: "center",
+                          flexDirection: "row",
                         }}
                       >
+                        <TouchableOpacity
+                          onPress={() => {
+                            setModaltravel(false);
+                          }}
+                        >
+                          <Arrowbackwhite width={20} height={20} />
+                        </TouchableOpacity>
                         <Text
-                          type={"regular"}
-                          size={"description"}
+                          type={"bold"}
+                          size={"label"}
                           style={{
                             color: "white",
+                            marginLeft: 10,
                           }}
                         >
                           {t("Searchpeople")}
@@ -1451,7 +1331,9 @@ export default function Trip(props) {
                             })}
                           </View>
                         </View>
-                      ) : null}
+                      ) : (
+                        <View></View>
+                      )}
                       <View
                         style={{
                           backgroundColor: "white",
