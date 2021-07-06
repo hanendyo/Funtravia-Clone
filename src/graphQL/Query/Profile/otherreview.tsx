@@ -11,6 +11,7 @@ const review = gql`
       images {
         image
       }
+      id_item
     }
   }
 `;

@@ -15,11 +15,12 @@ import {
   Sharegreen,
   DestinationReview,
   AccomodationReview,
+  Select,
 } from "../../../assets/svg";
 import { Button, Text, FunImageBackground, FunImage } from "../../../component";
 import { useQuery } from "@apollo/client";
 
-export default function Review({ item, index }, onSelect) {
+export default function Review({ item, index }, onSelect, props, token) {
   return (
     <View
       style={{
@@ -27,7 +28,8 @@ export default function Review({ item, index }, onSelect) {
         paddingHorizontal: 20,
         width: Dimensions.get("screen").width,
         borderBottomWidth: 1,
-        borderBottomColor: "#d3d3d3",
+        borderBottomColor: "#f3f3f3",
+        backgroundColor: "#fff",
       }}
     >
       <View
@@ -43,6 +45,8 @@ export default function Review({ item, index }, onSelect) {
         <View
           style={{
             flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
           }}
         >
           {item.isfrom === "destination" ? (
@@ -50,7 +54,25 @@ export default function Review({ item, index }, onSelect) {
           ) : (
             <AccomodationReview height={30} width={30} />
           )}
-          <Text style={{ color: "#209FAE" }}></Text>
+          <TouchableOpacity
+            onPress={() => {
+              // console.log("masuk : ", item.id_item);
+              props.navigation.push("DestinationUnescoDetail", {
+                id: item.id_item,
+                name: item.name,
+                token: token,
+              });
+            }}
+          >
+            <Select
+              height={15}
+              width={15}
+              style={{
+                transform: [{ rotateZ: "-90deg" }],
+                marginLeft: 10,
+              }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <View

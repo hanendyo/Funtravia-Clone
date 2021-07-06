@@ -93,11 +93,11 @@ export default function TripPlaning(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
+    // const unsubscribe = props.navigation.addListener("focus", () => {
+    loadAsync();
+    // });
+    // return unsubscribe;
+  }, []);
 
   function MyTabBar({ state, descriptors, navigation, position, count }) {
     return (
@@ -191,94 +191,99 @@ export default function TripPlaning(props) {
     );
   }
 
-  if (token !== null && dataCount && dataCount.count_myitinerary) {
-    return (
-      <Tab.Navigator
-        backBehavior="none"
-        initialRouteName="Edit"
-        // tabBarOptions={{
-        //   activeTintColor: "#209fae",
-        //   labelStyle: {
-        //     fontFamily: "Lato-Bold",
-        //   },
-        //   style: {
-        //     backgroundColor: "#ffff",
-        //   },
-        // }}
-        tabBar={(props) => (
-          <MyTabBar {...props} count={dataCount.count_myitinerary} />
-        )}
-      >
-        <Tab.Screen
-          name="Edit"
-          component={() => <PlanList props={props} token={token} />}
-          options={{ tabBarLabel: t("planList") }}
+  // if (token !== null && dataCount && dataCount.count_myitinerary) {
+  return (
+    <Tab.Navigator
+      backBehavior="none"
+      initialRouteName="Edit"
+      // tabBarOptions={{
+      //   activeTintColor: "#209fae",
+      //   labelStyle: {
+      //     fontFamily: "Lato-Bold",
+      //   },
+      //   style: {
+      //     backgroundColor: "#ffff",
+      //   },
+      // }}
+      tabBar={(props) => (
+        <MyTabBar
+          {...props}
+          count={
+            dataCount?.count_myitinerary ? dataCount?.count_myitinerary : 0
+          }
         />
-        <Tab.Screen
-          name="Save"
-          component={() => <ActivePlan props={props} token={token} />}
-          options={{ tabBarLabel: t("activePlan") }}
-        />
-        <Tab.Screen
-          name="Finish"
-          component={() => <FinishTrip props={props} token={token} />}
-          options={{ tabBarLabel: t("finishTrip") }}
-        />
-      </Tab.Navigator>
-    );
-  } else {
-    return (
-      // <View
-      //   style={{
-      //     flex: 1,
-      //     alignItems: "center",
-      //     alignContent: "center",
-      //     justifyContent: "center",
-      //   }}
-      // >
-      //   {/* <ActivityIndicator animating={true} color="#209fae" size="large" /> */}
-      // </View>
+      )}
+    >
+      <Tab.Screen
+        name="Edit"
+        component={() => <PlanList props={props} token={token} />}
+        options={{ tabBarLabel: t("planList") }}
+      />
+      <Tab.Screen
+        name="Save"
+        component={() => <ActivePlan props={props} token={token} />}
+        options={{ tabBarLabel: t("activePlan") }}
+      />
+      <Tab.Screen
+        name="Finish"
+        component={() => <FinishTrip props={props} token={token} />}
+        options={{ tabBarLabel: t("finishTrip") }}
+      />
+    </Tab.Navigator>
+  );
+  // } else {
+  //   return (
+  //     // <View
+  //     //   style={{
+  //     //     flex: 1,
+  //     //     alignItems: "center",
+  //     //     alignContent: "center",
+  //     //     justifyContent: "center",
+  //     //   }}
+  //     // >
+  //     //   {/* <ActivityIndicator animating={true} color="#209fae" size="large" /> */}
+  //     // </View>
 
-      <Tab.Navigator
-        backBehavior="none"
-        initialRouteName="Edit"
-        // tabBarOptions={{
-        //   activeTintColor: "#209fae",
-        //   labelStyle: {
-        //     fontFamily: "Lato-Bold",
-        //   },
-        //   style: {
-        //     backgroundColor: "#ffff",
-        //   },
-        // }}
-        tabBar={(props) => (
-          <MyTabBar
-            {...props}
-            count={{ count_draf: 0, count_active: 0, count_finish: 0 }}
-          />
-        )}
-      >
-        <Tab.Screen
-          name="Edit"
-          component={() => <View></View>}
-          // options={{ tabBarLabel: "Plan" }}
-          options={{ tabBarLabel: t("planList") }}
-        />
-        <Tab.Screen
-          name="Save"
-          component={() => <View></View>}
-          // options={{ tabBarLabel: "Ongoing" }}
-          options={{ tabBarLabel: t("activePlan") }}
-        />
-        <Tab.Screen
-          name="Finish"
-          component={() => <View></View>}
-          // options={{ tabBarLabel: "Finish" }}
-          options={{ tabBarLabel: t("finishTrip") }}
-        />
-      </Tab.Navigator>
-    );
-  }
+  //     <Tab.Navigator
+  //       backBehavior="none"
+  //       initialRouteName="Edit"
+  //       // tabBarOptions={{
+  //       //   activeTintColor: "#209fae",
+  //       //   labelStyle: {
+  //       //     fontFamily: "Lato-Bold",
+  //       //   },
+  //       //   style: {
+  //       //     backgroundColor: "#ffff",
+  //       //   },
+  //       // }}
+  //       tabBar={(props) => (
+  //         <MyTabBar
+  //           {...props}
+  //           count={{ count_draf: 0, count_active: 0, count_finish: 0 }}
+  //         />
+  //       )}
+  //     >
+  //       <Tab.Screen
+  //         name="Edit"
+  //         component={() => <View></View>}
+  //         // options={{ tabBarLabel: "Plan" }}
+  //         options={{ tabBarLabel: t("planList") }}
+  //       />
+  //       <Tab.Screen
+  //         name="Save"
+  //         component={() => <View></View>}
+  //         // options={{ tabBarLabel: "Ongoing" }}
+  //         options={{ tabBarLabel: t("activePlan") }}
+  //       />
+  //       <Tab.Screen
+  //         name="Finish"
+  //         component={() => <View></View>}
+  //         // options={{ tabBarLabel: "Finish" }}
+  //         options={{ tabBarLabel: t("finishTrip") }}
+  //       />
+  //     </Tab.Navigator>
+  //   );
+  // }
 }
 
 const styles = StyleSheet.create({});
