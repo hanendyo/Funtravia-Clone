@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dimensions,
   View,
@@ -13,16 +13,14 @@ import {
   OnBoard_3,
   SlideSatu,
 } from "../../assets/png/index";
-import { Sampul, Xblue } from "../../assets/svg";
-import { Text, FunImage, Button } from "../../component/index";
+import { Text, Button } from "../../component/index";
 import { useTranslation } from "react-i18next";
-import { StackActions } from "@react-navigation/routers";
 import ImageSlider from "react-native-image-slider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function OnBoardScreen(props) {
   const { t, i18n } = useTranslation();
   let { height, width } = Dimensions.get("screen");
-  let [modalScreenOne, setModalScreenOne] = useState(false);
 
   let dataImage = [
     {
@@ -38,6 +36,10 @@ export default function OnBoardScreen(props) {
       description: null,
     },
   ];
+
+  const isFirst = () => {
+    AsyncStorage.setItem("isFirst", "false");
+  };
   return (
     <ImageSlider
       listkey={"imagesliderjournal"}
@@ -49,6 +51,7 @@ export default function OnBoardScreen(props) {
       }}
       customSlide={({ index, item, style, width, move, position }) => (
         <View
+          key={index}
           style={{
             backgroundColor: "#000",
           }}
@@ -85,11 +88,12 @@ export default function OnBoardScreen(props) {
                   opacity: 0.45,
                   borderRadius: 30,
                 }}
-                onPress={() =>
+                onPress={() => {
                   props.navigation.navigate("BottomStack", {
                     screen: "HomeScreen",
-                  })
-                }
+                  });
+                  isFirst();
+                }}
               >
                 <Text
                   size="description"
@@ -156,7 +160,9 @@ export default function OnBoardScreen(props) {
                 }}
                 size="medium"
                 color="secondary"
-                onPress={() => props.navigation.navigate("LoginScreen")}
+                onPress={() => {
+                  props.navigation.navigate("LoginScreen"), isFirst();
+                }}
                 // onPress={() =>
                 //   position === 2
                 //     ? props.navigation.navigate("AuthStack", {
@@ -176,7 +182,9 @@ export default function OnBoardScreen(props) {
                 }}
                 size="medium"
                 // color="secondary"
-                onPress={() => props.navigation.navigate("RegisterScreen")}
+                onPress={() => {
+                  props.navigation.navigate("RegisterScreen"), isFirst();
+                }}
                 text={t("createYourAccount")}
               />
             </View>
@@ -214,7 +222,7 @@ export default function OnBoardScreen(props) {
             {(dataImage ? dataImage : []).map((image, index) => {
               return (
                 <TouchableHighlight
-                  key={"keys" + index}
+                  key={index}
                   // underlayColor="#f7f7f700"
                 >
                   <View
