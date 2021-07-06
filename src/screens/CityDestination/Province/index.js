@@ -231,6 +231,9 @@ export default function CityDetail(props) {
     await getItineraryCity();
   };
 
+  let [lisProvince, setlisProvince] = useState([]);
+
+  // get detail province
   const [
     getPackageDetail,
     { loading: loadingProvince, data: dataProvince, error: errorProvince },
@@ -246,16 +249,17 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
+      setlisProvince(dataProvince.province_detail_v2);
       let tab = [{ key: "general", title: "General" }];
       console.log(dataProvince);
 
-      // dataProvince.province_detail_v2.article_header.map((item, index) => {
-      //     tab.push({
-      //         key: item.title,
-      //         title: item.title,
-      //         data: item.content,
-      //     });
-      // });
+      dataProvince.province_detail_v2.article_header.map((item, index) => {
+        tab.push({
+          key: item.title,
+          title: item.title,
+          data: item.content,
+        });
+      });
 
       setRoutes(tab);
 
@@ -278,14 +282,6 @@ export default function CityDetail(props) {
       setdataevent(eventavailable);
     },
   });
-
-  let listCity = [];
-  if (dataProvince && dataProvince.province_detail_v2) {
-    listCity =
-      dataProvince && dataProvince.province_detail_v2
-        ? dataProvince.province_detail_v2
-        : null;
-  }
 
   const Goto = (item) => {
     if (item.id) {
@@ -2229,19 +2225,19 @@ export default function CityDetail(props) {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 5,
+                              marginTop: 10,
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
                           />
                         </View>
                         <Text
-                          size="small"
-                          type="regular"
+                          size="description"
+                          type="light"
                           style={{
-                            textAlign: "justify",
+                            textAlign: "left",
                             marginTop: 5,
-                            color: "#464646",
+                            color: "#616161",
                           }}
                         >
                           {i.text ? i.text : ""}
@@ -2254,7 +2250,7 @@ export default function CityDetail(props) {
                             size="label"
                             type="bold"
                             style={{
-                              marginBottom: 5,
+                              // marginBottom: 5,
                               color: "#464646",
                             }}
                           >
@@ -2265,8 +2261,9 @@ export default function CityDetail(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            marginTop: 5,
-                            textAlign: "justify",
+                            // marginTop: 10,
+                            lineHeight: 20,
+                            textAlign: "left",
                             color: "#464646",
                           }}
                         >
@@ -2648,7 +2645,6 @@ export default function CityDetail(props) {
       />
     );
   };
-
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -2690,17 +2686,17 @@ export default function CityDetail(props) {
               <View
                 style={{
                   borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "white",
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
                   alignContent: "center",
                   paddingHorizontal: 15,
                   width:
                     props.navigationState.routes.length < 2
                       ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 3
-                      ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 4
-                      ? Dimensions.get("screen").width * 0.33
-                      : null,
+                      : // : props.navigationState.routes.length < 3
+                        // ? Dimensions.get("screen").width * 0.5
+                        // : props.navigationState.routes.length < 4
+                        // ? Dimensions.get("screen").width * 0.33
+                        null,
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "flex-end",
@@ -2716,7 +2712,7 @@ export default function CityDetail(props) {
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
-                          ? "#white"
+                          ? "#FFFFFF"
                           : "#209fae",
                       height: 38,
                       paddingTop: 2,
@@ -3109,7 +3105,7 @@ export default function CityDetail(props) {
             placeholderTextColor={"white"}
             underlineColorAndroid="transparent"
             onChangeText={(x) => setTextc(x)}
-            placeholder={"Search in " + listCity.name}
+            placeholder={"Search in " + lisProvince.name}
             returnKeyType="search"
             onSubmitEditing={(x) =>
               props.navigation.push("SearchPg", {

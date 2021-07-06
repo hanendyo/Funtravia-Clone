@@ -232,6 +232,8 @@ export default function CityDetail(props) {
     await getItineraryCity();
   };
 
+  let [listCity, setListCity] = useState([]);
+
   const [
     getPackageDetail,
     { loading: loadingCity, data: dataCity, error: errorCity },
@@ -247,6 +249,7 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
+      setListCity(dataCity.CitiesInformation);
       let tab = [{ key: "general", title: "General" }];
 
       dataCity.CitiesInformation.article_header.map((item, index) => {
@@ -278,14 +281,6 @@ export default function CityDetail(props) {
       getJournalCity();
     },
   });
-
-  let listCity = [];
-  if (dataCity && dataCity.CitiesInformation) {
-    listCity =
-      dataCity && dataCity.CitiesInformation
-        ? dataCity.CitiesInformation
-        : null;
-  }
 
   const Goto = (item) => {
     if (item?.id) {
