@@ -5,6 +5,7 @@ import NewGroup from "../../screens/Chat/Group/NewGroup";
 import CraeteGrup from "../../screens/Chat/Group/CreateGroup_next";
 import GroupDetail from "../../screens/Chat/Group/GroupDetail";
 import AddMember from "../../screens/Chat/Group/AddMember";
+import AddBuddy from "../../screens/Chat/Group/AddBuddy";
 import GroupChat from "../../screens/Chat/GroupRoom";
 import RoomChat from "../../screens/Chat/PersonalRoom";
 
@@ -70,6 +71,15 @@ export default function ChatStackNavigation() {
             <ChatStack.Screen
                 name="AddMember"
                 component={AddMember}
+                options={{
+                    headerShown: false,
+                    headerTintColor: "white",
+                    headerBackTitleVisible: false,
+                }}
+            />
+            <ChatStack.Screen
+                name="AddBuddy"
+                component={AddBuddy}
                 options={{
                     headerShown: false,
                     headerTintColor: "white",
