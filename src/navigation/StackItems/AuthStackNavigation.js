@@ -29,8 +29,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthNav = createStackNavigator();
 export default function AuthStackNavigation(props) {
-  console.log("props aut", props?.route?.params?.isFirst);
-
   return (
     <AuthNav.Navigator
       initialRouteName={
@@ -38,7 +36,6 @@ export default function AuthStackNavigation(props) {
           ? "SplashScreen"
           : "OnBoardScreen"
       }
-      // initialRouteName="SplashScreen"
       screenOptions={{
         gestureEnabled: true,
         gestureDirection: "horizontal",
@@ -66,6 +63,7 @@ export default function AuthStackNavigation(props) {
       />
       <AuthNav.Screen
         name="LoginScreen"
+        initialParams={null}
         options={{
           headerShown: false,
           headerTintColor: "black",

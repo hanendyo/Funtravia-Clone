@@ -26,18 +26,21 @@ import ListAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import { default_image } from "../../../assets/png";
 import LinearGradient from "react-native-linear-gradient";
 import { TabBar, TabView } from "react-native-tab-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CreateAlbum(props) {
-  console.log("creat album props", props);
   const { t } = useTranslation();
   const [newFeedAlbums, setNewFeedAlbums] = useState(false);
-  const [select, setSelect] = useState("Itinerary Album");
-  const [idItinerary, setIdItinerary] = useState("");
-  const [modalDay, setModalDay] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [newTextFeed, setNewTextFeed] = useState("");
-  let [loadings, setLoadings] = useState(false);
   const [index, setIndex] = React.useState(0);
+  const [token, setToken] = useState(props?.route?.params?.token);
+  let [loadings, setLoadings] = useState(false);
+
+  const loadAsync = async () => {
+    const tkn = await AsyncStorage.getItem("access_token");
+    setToken(tkn);
+  };
 
   const HeaderComponent = {
     headerShown: true,
@@ -84,6 +87,7 @@ export default function CreateAlbum(props) {
   };
 
   useEffect(() => {
+    loadAsync();
     props.navigation.setOptions(HeaderComponent);
   }, []);
 
@@ -130,7 +134,6 @@ export default function CreateAlbum(props) {
             file: props.route.params.file,
             type: props.route.params.type,
             location: props.route.params.location,
-            token: token,
             post_id: props.route.params.post_id,
             isAlbum: true,
           },
@@ -139,7 +142,6 @@ export default function CreateAlbum(props) {
           screen: "ChooseAlbumItinerary",
           params: {
             idItinerary: id,
-            token: token,
             file: props.route.params.file,
             type: props.route.params.type,
             location: props.route.params.location,
@@ -148,8 +150,8 @@ export default function CreateAlbum(props) {
             isAlbum: false,
           },
         });
-    setIdItinerary(id);
-    setModalDay(true);
+    // setIdItinerary(id);
+    // setModalDay(true);
   };
 
   const [

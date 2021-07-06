@@ -21,18 +21,13 @@ export default function RenderSinglePhoto({
   isComment,
 }) {
   let videoView = useRef(null);
-  const onBuffer = (isBuffer) => {
-    console.log("isBuffer", isBuffer);
-  };
-
+  const [heightScaled, setHeightScaled] = useState(width);
+  const [oriented, setOriented] = useState("");
   const [time, setTime] = useState(false);
 
   const durationTime = (data) => {
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
   };
-
-  const [heightScaled, setHeightScaled] = useState(width);
-  const [oriented, setOriented] = useState("");
 
   if (data?.assets[0]?.type === "video") {
     return (
@@ -57,11 +52,8 @@ export default function RenderSinglePhoto({
             innerRef={(ref) => {
               videoView = ref;
             }}
-            // onBuffer={videoView?.current?.onBuffer}
-            onBuffer={() => onBuffer()}
             onError={videoView?.current?.videoError}
             onLoad={(response) => {
-              console.log("resposne", response);
               // const { widths, heights } = response.naturalSize;
               const heightScaled =
                 response.naturalSize.height *
