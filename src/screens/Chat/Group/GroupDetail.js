@@ -42,6 +42,7 @@ import RenderMemberList from "./RenderMemberList";
 import { CHATSERVER, RESTFULL_API } from "../../../config";
 import { RNToasty } from "react-native-toasty";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
+import ImagePicker from "react-native-image-crop-picker";
 
 export default function GroupDetail(props) {
     let { width } = Dimensions.get("screen");
@@ -55,6 +56,7 @@ export default function GroupDetail(props) {
     const [modalmakeadmin, setModalmakeadmin] = useState(false);
     const [modalremoveadmin, setModalremoveadmin] = useState(false);
     const [modalrename, setModalrename] = useState(false);
+    const [modalCover, setmodalCover] = useState(false);
     const [selected, setSelected] = useState(false);
     const [indexActive, setIndexActive] = useState(null);
     const headerOptions = {
@@ -113,7 +115,12 @@ export default function GroupDetail(props) {
                             width: 200,
                         }}
                     >
-                        <MenuItem onPress={() => _menu.hide()}>
+                        <MenuItem
+                            onPress={() => {
+                                _menu.hide();
+                                setmodalCover(true);
+                            }}
+                        >
                             {t("changeCoverGroup")}
                         </MenuItem>
                         <MenuDivider />
@@ -203,6 +210,99 @@ export default function GroupDetail(props) {
                 datadayaktif: null,
             },
         });
+    };
+
+    const _changecoverCamera = async () => {
+        ImagePicker.openCamera({
+            width: 500,
+            height: 500,
+            cropping: true,
+            cropperCircleOverlay: true,
+            includeBase64: false,
+            compressImageMaxWidth: 500,
+            compressImageMaxHeight: 500,
+        })
+            .then(async (image) => {
+                setmodalCover(false);
+                _uploadCover(image);
+            })
+            .catch((e) => {
+                RNToasty.Normal({
+                    title: "Cancelled",
+                    position: "bottom",
+                });
+            });
+    };
+
+    const _changecoverGalery = async () => {
+        ImagePicker.openPicker({
+            width: 500,
+            height: 500,
+            cropping: true,
+            cropperCircleOverlay: true,
+            includeBase64: false,
+            compressImageMaxWidth: 500,
+            compressImageMaxHeight: 500,
+        })
+            .then((image) => {
+                setmodalCover(false);
+                _uploadCover(image);
+            })
+            .catch((e) => {
+                RNToasty.Normal({
+                    title: "Cancelled",
+                    position: "bottom",
+                });
+            });
+    };
+
+    const _uploadCover = async (image) => {
+        try {
+            var formData = new FormData();
+            formData.append("group_id", props.route.params.room_id);
+            formData.append("picture", {
+                name: "cover.jpg",
+                type: image.mime,
+                uri:
+                    Platform.OS === "android"
+                        ? image.path
+                        : photo.path.replace("file://", ""),
+            });
+            console.log(formData);
+            let response = await fetch(
+                `${RESTFULL_API}room/group/change_cover`,
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "multipart/form-data",
+                    },
+                    body: formData,
+                }
+            );
+            let responseJson = await response.json();
+            // console.log(responseJson);
+            if (responseJson.status == true) {
+                getUserAndToken();
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success change cover",
+                    position: "bottom",
+                });
+            } else {
+                //   setloading(false);
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            // setloading(false);
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            console.log(error);
+        }
     };
 
     const _kickMember = async (user_id) => {
@@ -416,7 +516,7 @@ export default function GroupDetail(props) {
                     }
                 }
             >
-                {dataDetail?.type === "itinerary" ? (
+                {/* {dataDetail?.type === "itinerary" ? (
                     <FunImageBackground
                         source={
                             dataDetail && dataDetail.cover
@@ -426,17 +526,17 @@ export default function GroupDetail(props) {
                         style={{ width: width, height: 200 }}
                         imageStyle={{ width: width, height: 200 }}
                     ></FunImageBackground>
-                ) : (
-                    <FunImageBackground
-                        source={
-                            dataDetail && dataDetail.link_picture
-                                ? { uri: dataDetail?.link_picture }
-                                : default_image
-                        }
-                        style={{ width: width, height: 200 }}
-                        imageStyle={{ width: width, height: 200 }}
-                    ></FunImageBackground>
-                )}
+                ) : ( */}
+                <FunImageBackground
+                    source={
+                        dataDetail && dataDetail.link_picture
+                            ? { uri: dataDetail?.link_picture }
+                            : default_image
+                    }
+                    style={{ width: width, height: 200 }}
+                    imageStyle={{ width: width, height: 200 }}
+                ></FunImageBackground>
+                {/* )} */}
                 <View
                     style={{
                         height: 40,
@@ -535,18 +635,37 @@ export default function GroupDetail(props) {
                             backgroundColor: "#FFFFFF",
                         }}
                         ListHeaderComponent={() =>
-                            dataDetail && dataDetail.type !== "itinerary" ? (
+                            mydata && mydata.isadmin == true ? (
                                 <Pressable
-                                    onPress={() =>
-                                        props.navigation.navigate("ChatStack", {
-                                            screen: "AddMember",
-                                            params: {
-                                                dataBuddy: dataDetail.buddy,
-                                                token: token,
-                                                id_group: dataDetail.id,
-                                            },
-                                        })
-                                    }
+                                    onPress={() => {
+                                        dataDetail &&
+                                        dataDetail.type !== "itinerary"
+                                            ? props.navigation.navigate(
+                                                  "ChatStack",
+                                                  {
+                                                      screen: "AddMember",
+                                                      params: {
+                                                          dataBuddy:
+                                                              dataDetail.buddy,
+                                                          token: token,
+                                                          id_group:
+                                                              dataDetail.id,
+                                                      },
+                                                  }
+                                              )
+                                            : props.navigation.navigate(
+                                                  "ChatStack",
+                                                  {
+                                                      screen: "AddBuddy",
+                                                      params: {
+                                                          dataBuddy:
+                                                              dataDetail.buddy,
+                                                          token: token,
+                                                          iditin: dataDetail.id,
+                                                      },
+                                                  }
+                                              );
+                                    }}
                                     style={{
                                         flexDirection: "row",
                                         paddingVertical: 10,
@@ -945,6 +1064,67 @@ export default function GroupDetail(props) {
                             ></Button>
                         </View>
                     </View>
+                </View>
+            </Modal>
+            {/* modal change cover */}
+            <Modal
+                onBackdropPress={() => {
+                    setmodalCover(false);
+                }}
+                animationType="fade"
+                onRequestClose={() => setmodalCover(false)}
+                onDismiss={() => setmodalCover(false)}
+                visible={modalCover}
+                transparent={true}
+                // style={{
+                //   justifyContent: "center",
+                //   alignItems: "center",
+                //   alignSelf: "center",
+                //   alignContent: "center",
+                //   backgroundColor: "#000",
+                // }}
+            >
+                <Pressable
+                    style={{
+                        width: Dimensions.get("screen").width,
+                        height: Dimensions.get("screen").height,
+                        alignSelf: "center",
+                        backgroundColor: "#000",
+                        opacity: 0.7,
+                    }}
+                    onPress={() => setmodalCover(false)}
+                />
+                <View
+                    style={{
+                        position: "absolute",
+                        backgroundColor: "white",
+                        width: Dimensions.get("screen").width - 60,
+                        alignSelf: "center",
+                        paddingHorizontal: 15,
+                        paddingVertical: 5,
+                        top: Dimensions.get("screen").height / 3,
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            paddingVertical: 10,
+                        }}
+                        onPress={() => _changecoverCamera()}
+                    >
+                        <Text size="description" type="regular" style={{}}>
+                            {t("OpenCamera")}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            paddingVertical: 10,
+                        }}
+                        onPress={() => _changecoverGalery()}
+                    >
+                        <Text size="description" type="regular" style={{}}>
+                            {t("OpenGallery")}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </Modal>
         </ScrollView>

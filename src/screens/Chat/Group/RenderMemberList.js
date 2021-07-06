@@ -165,15 +165,7 @@ export default function RenderMemberList({
     // console.log(mydata);
     if (dataDetail && dataDetail.type == "itinerary") {
         return (
-            <Pressable
-                onPress={() =>
-                    props.navigation.navigate("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                            idUser: item.user_id,
-                        },
-                    })
-                }
+            <View
                 style={{
                     flexDirection: "row",
                     paddingVertical: 10,
@@ -185,7 +177,15 @@ export default function RenderMemberList({
                     alignItems: "center",
                 }}
             >
-                <View
+                <Pressable
+                    onPress={() =>
+                        props.navigation.navigate("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                                idUser: item.user_id,
+                            },
+                        })
+                    }
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
@@ -206,7 +206,7 @@ export default function RenderMemberList({
                         </Text>
                         <Text>@{item.username}</Text>
                     </View>
-                </View>
+                </Pressable>
                 {item.isadmin == true ? (
                     <View style={{ marginRight: 5 }}>
                         <Text
@@ -222,7 +222,7 @@ export default function RenderMemberList({
                         </Text>
                     </View>
                 ) : null}
-            </Pressable>
+            </View>
         );
     }
 
@@ -240,15 +240,7 @@ export default function RenderMemberList({
                             : swipeoutBtn(item)
                     }
                 >
-                    <Pressable
-                        onPress={() =>
-                            props.navigation.navigate("ProfileStack", {
-                                screen: "otherprofile",
-                                params: {
-                                    idUser: item.user_id,
-                                },
-                            })
-                        }
+                    <View
                         style={{
                             flexDirection: "row",
                             paddingVertical: 10,
@@ -260,7 +252,15 @@ export default function RenderMemberList({
                             alignItems: "center",
                         }}
                     >
-                        <View
+                        <Pressable
+                            onPress={() =>
+                                props.navigation.navigate("ProfileStack", {
+                                    screen: "otherprofile",
+                                    params: {
+                                        idUser: item.user_id,
+                                    },
+                                })
+                            }
                             style={{
                                 flexDirection: "row",
                                 alignItems: "center",
@@ -281,7 +281,7 @@ export default function RenderMemberList({
                                 </Text>
                                 <Text>@{item.username}</Text>
                             </View>
-                        </View>
+                        </Pressable>
                         {item.isadmin == true ? (
                             <View style={{ marginRight: 5 }}>
                                 <Text
@@ -297,12 +297,12 @@ export default function RenderMemberList({
                                 </Text>
                             </View>
                         ) : null}
-                    </Pressable>
+                    </View>
                 </Swipeout>
             );
         } else {
             return (
-                <Pressable
+                <View
                     onPress={() =>
                         props.navigation.navigate("ProfileStack", {
                             screen: "otherprofile",
@@ -322,7 +322,15 @@ export default function RenderMemberList({
                         paddingHorizontal: 15,
                     }}
                 >
-                    <View
+                    <Pressable
+                        onPress={() =>
+                            props.navigation.navigate("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                    idUser: item.user_id,
+                                },
+                            })
+                        }
                         style={{
                             flexDirection: "row",
                             alignItems: "center",
@@ -343,7 +351,7 @@ export default function RenderMemberList({
                             </Text>
                             <Text>@{item.username}</Text>
                         </View>
-                    </View>
+                    </Pressable>
                     {item.isadmin == true ? (
                         <View style={{ marginRight: 5 }}>
                             <Text
@@ -359,20 +367,12 @@ export default function RenderMemberList({
                             </Text>
                         </View>
                     ) : null}
-                </Pressable>
+                </View>
             );
         }
     } else {
         return (
-            <Pressable
-                onPress={() =>
-                    props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                            idUser: item.id,
-                        },
-                    })
-                }
+            <View
                 style={{
                     flexDirection: "row",
                     paddingVertical: 10,
@@ -384,7 +384,15 @@ export default function RenderMemberList({
                     paddingHorizontal: 15,
                 }}
             >
-                <View
+                <Pressable
+                    onPress={() =>
+                        props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                                idUser: item.id,
+                            },
+                        })
+                    }
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
@@ -405,7 +413,7 @@ export default function RenderMemberList({
                         </Text>
                         <Text>@{item.username}</Text>
                     </View>
-                </View>
+                </Pressable>
                 {item.isadmin == true ? (
                     <View style={{ marginRight: 5 }}>
                         <Text
@@ -421,7 +429,7 @@ export default function RenderMemberList({
                         </Text>
                     </View>
                 ) : null}
-            </Pressable>
+            </View>
         );
     }
 }
