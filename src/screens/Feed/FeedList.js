@@ -331,7 +331,7 @@ export default function FeedList({ props, token }) {
     fetchMore,
     refetch,
     networkStatus,
-  } = useQuery(token ? FeedPageing : FeedPageingPopular, {
+  } = useQuery(FeedPageing, {
     variables: {
       limit: 3,
       offset: 0,
@@ -346,46 +346,10 @@ export default function FeedList({ props, token }) {
     notifyOnNetworkStatusChange: true,
   });
 
-  // const {
-  //   loading: loadingPostPopular,
-  //   data: dataPostPopular,
-  //   error: errorPostPopular,
-  //   refetch: refetchPostPopular,
-  //   fetchMore: fetchmorepopular,
-  //   networkStatus: networkStatusPopular,
-  // } = useQuery(FeedPageingPopular, {
-  //   variables: {
-  //     limit: 3,
-  //     offset: 0,
-  //   },
-  //   context: {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   },
-  //   // pollInterval: 5500,
-  //   notifyOnNetworkStatusChange: true,
-  // });
-
   let feed_post_pageing = [];
-  // if (token && token !== "" && token !== null) {
   if (dataPost && dataPost && dataPost?.feed_post_pageing) {
     feed_post_pageing = dataPost?.feed_post_pageing?.datas;
-  } else {
-    feed_post_pageing = dataPost?.feed_post_populer_paging?.datas;
   }
-  console.log(feed_post_pageing);
-  // } else {
-  //   if (
-  //     dataPostPopular &&
-  //     dataPostPopular &&
-  //     "datas" in dataPostPopular.feed_post_populer_paging
-  //   ) {
-  //     feed_post_pageing = dataPostPopular.feed_post_populer_paging.datas;
-  //   }
-  // }
-  // console.log("Popular", feed_post_pageing);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -402,7 +366,6 @@ export default function FeedList({ props, token }) {
     });
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
-    console.log("masuk");
     if (
       prev.feed_post_pageing.datas.length <
       fetchMoreResult.feed_post_pageing.page_info.offset
@@ -423,8 +386,6 @@ export default function FeedList({ props, token }) {
     }
   };
   const handleOnEndReached = () => {
-    // if (token && token !== "" && token !== null) {
-    console.log("masuk");
     if (dataPost?.feed_post_pageing?.page_info.hasNextPage) {
       if (fetchMore) {
         return fetchMore({
