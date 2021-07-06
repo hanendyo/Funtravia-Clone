@@ -9,11 +9,17 @@ import {
 } from "react-native";
 import { default_image } from "../../../assets/png";
 import User_Post from "../../../graphQL/Query/Profile/post";
-import { HotelIcon, Kosong, Sharegreen } from "../../../assets/svg";
-import { Button, Text, FunImageBackground } from "../../../component";
+import {
+  HotelIcon,
+  Kosong,
+  Sharegreen,
+  DestinationReview,
+  AccomodationReview,
+} from "../../../assets/svg";
+import { Button, Text, FunImageBackground, FunImage } from "../../../component";
 import { useQuery } from "@apollo/client";
 
-export default function Review({ item, index }) {
+export default function Review({ item, index }, onSelect) {
   return (
     <View
       style={{
@@ -39,7 +45,11 @@ export default function Review({ item, index }) {
             flexDirection: "row",
           }}
         >
-          <HotelIcon height={20} width={20} />
+          {item.isfrom === "destination" ? (
+            <DestinationReview height={30} width={30} />
+          ) : (
+            <AccomodationReview height={30} width={30} />
+          )}
           <Text style={{ color: "#209FAE" }}></Text>
         </View>
       </View>
@@ -62,36 +72,30 @@ export default function Review({ item, index }) {
             size={"description"}
             style={{ color: "#209fae" }}
           >{`${item.rating}`}</Text>
-          <Text type={"regular"} size={"description"}>{`/5`}</Text>
+          <Text type={"regular"} size={"description"}>{` / 5`}</Text>
         </View>
       </View>
-      <View style={{}}>
-        <Text type={"regular"} size={"small"} style={{ textAlign: "justify" }}>
+      <View style={{ marginBottom: 5 }}>
+        <Text
+          type={"regular"}
+          size={"readable"}
+          style={{ textAlign: "justify" }}
+        >
           {item.ulasan}
         </Text>
       </View>
-      <Button
-        size="medium"
-        type="icon"
-        variant="transparent"
-        style={{ width: "50%", marginLeft: -20 }}
-      >
-        <Sharegreen />
-        <Text style={{ marginLeft: 5 }} type={"regular"} size={"description"}>
-          Share this review
-        </Text>
-      </Button>
+
       {item.images && item.images.length > 0 ? (
         item.images.length > 1 ? (
           <View style={{ flexDirection: "row", width: "100%" }}>
             <TouchableOpacity
               style={{ width: "60%" }}
               onPress={() => {
-                onSelect(item.images);
+                onSelect(item.images, index);
               }}
             >
-              <FunImageBackground
-                source={{ uri: item.images[0] }}
+              <FunImage
+                source={{ uri: item.images[0].image }}
                 style={{
                   alignSelf: "center",
                   height: Dimensions.get("window").width / 3,
@@ -103,16 +107,16 @@ export default function Review({ item, index }) {
                   resizeMode: "cover",
                   borderRadius: 5,
                 }}
-              ></FunImageBackground>
+              ></FunImage>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ width: "40%" }}
               onPress={() => {
-                onSelect(item.images);
+                onSelect(item.images, index);
               }}
             >
               <FunImageBackground
-                source={{ uri: item.images[1] }}
+                source={{ uri: item.images[1].image }}
                 style={{
                   alignSelf: "center",
                   justifyContent: "center",
@@ -145,11 +149,11 @@ export default function Review({ item, index }) {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              onSelect(item.images);
+              onSelect(item.images, index);
             }}
           >
-            <FunImageBackground
-              source={{ uri: item.images[0] }}
+            <FunImage
+              source={{ uri: item.images[0].image }}
               style={{
                 alignSelf: "center",
                 height: Dimensions.get("window").width / 3,
@@ -160,10 +164,25 @@ export default function Review({ item, index }) {
                 resizeMode: "cover",
                 borderRadius: 5,
               }}
-            ></FunImageBackground>
+            ></FunImage>
           </TouchableOpacity>
         )
       ) : null}
+
+      <TouchableOpacity
+        style={{
+          paddingTop: 15,
+          paddingBottom: 10,
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Sharegreen />
+        <Text style={{ marginLeft: 5 }} type={"regular"} size={"description"}>
+          Share this review
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -53,7 +53,7 @@ import Albums from "./Posting/Album";
 import Tags from "./Posting/Tag";
 import Review from "./Review";
 import Trip from "./Trip";
-import ImageSlide from "../../../component/src/ImageSlide";
+import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import DeviceInfo from "react-native-device-info";
@@ -1217,7 +1217,7 @@ export default function OtherProfile(props) {
       case "tab2":
         numCols = 1;
         data = dataReview;
-        renderItem = (e) => Review(e);
+        renderItem = (e) => Review(e, onSelect);
         paddingHorizontal = 0;
         break;
       case "tab3":
@@ -1659,21 +1659,40 @@ export default function OtherProfile(props) {
   let [modal, setModal] = useState(false);
   let [dataImage, setDataImage] = useState();
 
-  const onSelect = async (data) => {
+  const onSelect = async (data, inde) => {
     var tempdatas = [];
     var x = 0;
     for (var i in data) {
-      tempdatas.push({
-        key: i,
-        selected: i === 0 ? true : false,
-        url: data[i] ? data[i] : "",
-        width: Dimensions.get("screen").width,
-        height: 300,
-        props: {
-          source: data[i] ? data[i] : "",
-        },
-      });
-      x++;
+      if (data[i].id !== "camera") {
+        let wid = 0;
+        let hig = 0;
+        if (data[i].type !== "video") {
+          Image.getSize(data[i].image, (width, height) => {
+            wid = width;
+            hig = height;
+          });
+        } else {
+          wid = 500;
+          hig = 500;
+        }
+
+        tempdatas.push({
+          key: i,
+          id: data[i].post_id,
+          selected: i === inde ? true : false,
+          url: data[i]?.image ? data[i]?.image : "",
+          width: wid,
+          height: hig,
+          props: {
+            source: data[i]?.image ? data[i]?.image : "",
+            type: data[i]?.type ? data[i]?.type : "image",
+          },
+          by: data[i]?.upload_by?.first_name
+            ? data[i]?.upload_by?.first_name
+            : "",
+        });
+        x++;
+      }
     }
 
     if (tempdatas.length > 0) {
@@ -1688,11 +1707,22 @@ export default function OtherProfile(props) {
       {renderTabView()}
       {renderHeader(dataUser)}
       {renderCustomRefresh()}
+      {/* <ImageSlide
+        show={modal}
+        dataImage={dataImage}
+        setClose={() => setModal(!modal)}
+      /> */}
+
       <ImageSlide
+        // index={indexs}
+        // name="Funtravia Images"
+        location={""}
+        // {...props}
         show={modal}
         dataImage={dataImage}
         setClose={() => setModal(!modal)}
       />
+
       <Sidebar
         props={props}
         show={showside}

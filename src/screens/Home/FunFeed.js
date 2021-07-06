@@ -41,8 +41,11 @@ export default function SearchFeed({ props }) {
     querySearchPost();
   };
   useEffect(() => {
-    loadAsync();
-  }, []);
+    const feedasync = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return feedasync;
+  }, [props.navigation]);
 
   const Ceklogin = (id) => {
     if (token && token !== null && token !== "") {

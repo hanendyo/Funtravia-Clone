@@ -1378,8 +1378,8 @@ export default function Comments(props) {
                   >
                     <ShareBlack height={17} width={17} />
                     {/* <Text size="small" style={{ marginLeft: 3 }}>
-                      {t("share")}
-                    </Text> */}
+                        {t("share")}
+                      </Text> */}
                   </Button>
                 </View>
                 <View

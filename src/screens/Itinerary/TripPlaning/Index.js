@@ -138,10 +138,10 @@ export default function TripPlaning(props) {
           };
           // modify inputRange for custom behavior
           const inputRange = state.routes.map((_, i) => i);
-          const opacity = Animated.interpolate(position, {
-            inputRange,
-            outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
-          });
+          // const opacity = Animated.interpolate(position, {
+          //   inputRange,
+          //   outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
+          // });
 
           return (
             <Ripple
