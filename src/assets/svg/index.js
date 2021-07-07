@@ -236,6 +236,7 @@ import AddParticipant from "./files/add_people.svg";
 import PlayVideo from "./files/play_video.svg";
 import DestinationReview from "./files/destinasiReview.svg";
 import AccomodationReview from "./files/hotelReview.svg";
+import Mapsborder from "./files/maps_border.svg";
 
 export {
   LikeWhite,
@@ -476,4 +477,5 @@ export {
   PlayVideo,
   DestinationReview,
   AccomodationReview,
+  Mapsborder,
 };

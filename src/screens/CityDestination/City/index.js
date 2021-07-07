@@ -1806,10 +1806,7 @@ export default function CityDetail(props) {
                     <View
                       style={{
                         borderRadius: 5,
-                        shadowOffset: {
-                          width: 0,
-                          height: 1,
-                        },
+
                         backgroundColor: "#FFF",
                         shadowColor: "#000",
                         shadowOffset: {
@@ -1822,7 +1819,7 @@ export default function CityDetail(props) {
                         width: "95%",
                         justifyContent: "space-between",
                         // backgroundColor: "#F7F7F7",
-                        overflow: "hidden",
+                        // overflow: "hidden",
                       }}
                     >
                       <Pressable
