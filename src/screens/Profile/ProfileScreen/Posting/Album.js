@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  FlatList,
-  Image,
-  ImageBackground,
-  Pressable,
-} from "react-native";
+import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
 import User_Post from "../../../../graphQL/Query/Profile/post";
 import { Kosong } from "../../../../assets/svg";
@@ -18,9 +9,10 @@ import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
 export default function Album({ item, index, props, token }) {
-  // console.log(item);
   return (
     <Pressable
+      key={index}
+      // onPress={() => console.log("press")}
       onPress={() => {
         props.navigation.push("albumdetail", {
           id: item.id,

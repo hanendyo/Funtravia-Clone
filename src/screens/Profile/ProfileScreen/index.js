@@ -80,7 +80,7 @@ export default function OtherProfile(props) {
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
   let [users, setuser] = useState(null);
-  let [id, seID] = useState(null);
+  let [id, seID] = useState(props.route.params.idUser);
   let [position, setposition] = useState(false);
 
   const loadAsync = async () => {
@@ -123,12 +123,7 @@ export default function OtherProfile(props) {
 
   const [
     Getdatapost,
-    {
-      data: dataposting,
-      loading: loadingpost,
-      error: errorpost,
-      refetch: refetchpost,
-    },
+    { data: dataposting, loading: loadingpost, error: errorpost },
   ] = useLazyQuery(User_Post, {
     fetchPolicy: "network-only",
     context: {
@@ -147,12 +142,7 @@ export default function OtherProfile(props) {
 
   const [
     Getdataalbum,
-    {
-      data: dataalbum,
-      loading: loadingalbum,
-      error: erroralbum,
-      refetch: refetchalbum,
-    },
+    { data: dataalbum, loading: loadingalbum, error: erroralbum },
   ] = useLazyQuery(album_post, {
     fetchPolicy: "network-only",
     context: {
@@ -162,12 +152,13 @@ export default function OtherProfile(props) {
       },
     },
     variables: {
-      limit: 5,
+      limit: 50,
       offset: 0,
       user_id: id,
+      // user_id: props.route.params,
     },
     onCompleted: () => {
-      setdataalbums(dataalbum.user_post_album.datas);
+      setdataalbums(dataalbum.user_post_album_v2?.datas);
     },
   });
 
