@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,8 @@ import {
   Alert,
   TouchableOpacity,
   Linking,
+  Pressable,
+  Animated,
   Platform,
 } from "react-native";
 
@@ -36,6 +38,7 @@ import {
   OptionsVertWhite,
   Sharegreen,
   Arrowbackwhite,
+  Mapsborder,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text, Button, shareAction, FunImageBackground } from "../../component";
@@ -46,6 +49,12 @@ import { RNToasty } from "react-native-toasty";
 
 export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
+  const yOffset = useRef(new Animated.Value(0)).current;
+  const headerOpacity = yOffset.interpolate({
+    inputRange: [0, 200],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
   const HeaderComponent = {
     headerShown: true,
     // title: "List Event",
@@ -607,6 +616,21 @@ export default function EventDetail(props) {
     "December",
   ];
 
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerBackground: () => (
+        <Animated.View
+          style={{
+            backgroundColor: "#209FAE",
+            ...StyleSheet.absoluteFillObject,
+            opacity: headerOpacity,
+          }}
+        />
+      ),
+      headerTransparent: true,
+    });
+  }, [headerOpacity, props.navigation]);
+
   const handlerepeat = (date) => {
     let dates = date.split("-");
     return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
@@ -624,6 +648,8 @@ export default function EventDetail(props) {
       </SkeletonPlaceholder>
     );
   }
+
+  console.log("data", dataevent);
   return (
     <View
       style={{
@@ -648,7 +674,7 @@ export default function EventDetail(props) {
           start={{ x: 1, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
-            height: 130,
+            height: 60,
             width: screenWidth,
           }}
         ></LinearGradient>
@@ -664,7 +690,20 @@ export default function EventDetail(props) {
           }}
         ></View>
       ) : null}
-      <ScrollView
+      <Animated.ScrollView
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: yOffset,
+                },
+              },
+            },
+          ],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
         style={styles.main}
@@ -682,398 +721,420 @@ export default function EventDetail(props) {
         />
         <View
           style={{
-            paddingTop: 15,
-            paddingHorizontal: 20,
-            paddingBottom: 10,
-            marginBottom: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
+            backgroundColor: "#FFF",
           }}
         >
           <View
             style={{
-              width: "78%",
-              flexDirection: "column",
-              paddingBottom: 15,
+              paddingTop: 15,
+              paddingHorizontal: 20,
+              paddingBottom: 10,
+              backgroundColor: "#FFF",
+              marginBottom: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <Text
-              size="title"
-              type="bold"
+            <View
               style={{
-                width: "95%",
-                marginBottom: 16,
+                width: "78%",
+                flexDirection: "column",
+                paddingBottom: 15,
               }}
             >
-              {dataevent?.name}
-            </Text>
-            <View style={[styles.eventtype]}>
               <Text
-                size="description"
+                size="title"
+                type="bold"
                 style={{
-                  textAlign: "center",
+                  width: "95%",
+                  marginBottom: 16,
                 }}
               >
-                {dataevent?.category?.name}
+                {dataevent?.name}
               </Text>
+              <View style={[styles.eventtype]}>
+                <Text
+                  size="description"
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {dataevent?.category?.name}
+                </Text>
+              </View>
             </View>
-          </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignContent: "flex-start",
-              width: "22%",
-            }}
-          >
             <View
               style={{
-                alignSelf: "flex-start",
+                flexDirection: "row",
+                alignContent: "flex-start",
+                width: "22%",
               }}
             >
-              {dataevent.liked === false ? (
-                <Button
-                  size="small"
-                  type="circle"
-                  color="tertiary"
-                  style={
-                    {
-                      // zIndex: 9999,
-                    }
-                  }
-                  onPress={() => _liked(dataevent.id)}
-                >
-                  <LikeEmpty height={18} width={18} />
-                </Button>
-              ) : (
-                <Button
-                  size="small"
-                  type="circle"
-                  color="tertiary"
-                  style={
-                    {
-                      // zIndex: 9999,
-                    }
-                  }
-                  onPress={() => _unliked(dataevent.id)}
-                >
-                  <LikeRed height={18} width={18} />
-                </Button>
-              )}
-              <View></View>
-            </View>
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <Button
-                onPress={() =>
-                  shareAction({
-                    from: "event",
-                    target: dataevent.id,
-                  })
-                }
-                type="circle"
-                size="small"
-                // color='tertiary'
-                variant="transparent"
-                style={{}}
+              <View
+                style={{
+                  alignSelf: "flex-start",
+                }}
               >
-                <Sharegreen height={20} width={20} />
-              </Button>
-              <Text size="small" style={{}}>
-                {t("share")}
-              </Text>
+                {dataevent.liked === false ? (
+                  <Button
+                    size="small"
+                    type="circle"
+                    color="tertiary"
+                    style={
+                      {
+                        // zIndex: 9999,
+                      }
+                    }
+                    onPress={() => _liked(dataevent.id)}
+                  >
+                    <LikeEmpty height={18} width={18} />
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    type="circle"
+                    color="tertiary"
+                    style={
+                      {
+                        // zIndex: 9999,
+                      }
+                    }
+                    onPress={() => _unliked(dataevent.id)}
+                  >
+                    <LikeRed height={18} width={18} />
+                  </Button>
+                )}
+                <View></View>
+              </View>
+              <View
+                style={{
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  onPress={() =>
+                    shareAction({
+                      from: "event",
+                      target: dataevent.id,
+                    })
+                  }
+                  type="circle"
+                  size="small"
+                  // color='tertiary'
+                  variant="transparent"
+                  style={{}}
+                >
+                  <Sharegreen height={20} width={20} />
+                </Button>
+                <Text size="small" style={{}}>
+                  {t("share")}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            paddingHorizontal: 20,
-            paddingBottom: 10,
-          }}
-        >
-          <Text
-            size="description"
-            style={{
-              textAlign: "justify",
-            }}
-          >
-            {dataevent?.description}
-          </Text>
-        </View>
-        <View
-          style={{
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        />
-        <View
-          style={{
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            flex: 1,
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
           <View
             style={{
-              flexDirection: "row",
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 20,
               paddingBottom: 10,
             }}
           >
-            <CustomImage
-              customStyle={{
-                width: 19,
-                height: 19,
-                marginTop: 2,
-                marginRight: 8,
-              }}
-              customImageStyle={{
-                width: 19,
-                height: 19,
-                resizeMode: "contain",
-              }}
-              source={calendar_blue}
-            />
             <Text
-              size="description"
-              type="bold"
+              size="readable"
               style={{
-                paddingRight: 5,
+                textAlign: "left",
+                lineHeight: 20,
               }}
             >
-              {t("eventDate")} :
-            </Text>
-
-            {dataevent?.is_repeat === true ? (
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  paddingRight: 10,
-                }}
-              >
-                {handlerepeat(dataevent?.start_date, dataevent?.end_date)}
-              </Text>
-            ) : (
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  paddingRight: 10,
-                }}
-              >
-                {dateFormatBetween(dataevent?.start_date, dataevent?.end_date)}
-              </Text>
-            )}
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <CustomImage
-              customStyle={{
-                width: 19,
-                height: 19,
-                marginTop: 2,
-                marginRight: 8,
-              }}
-              customImageStyle={{
-                width: 19,
-                height: 19,
-                resizeMode: "contain",
-              }}
-              source={schedule_blue}
-            />
-            <Text
-              size="description"
-              type="bold"
-              style={{
-                paddingRight: 5,
-              }}
-            >
-              {t("gatesOpen")} :
-            </Text>
-            <Text
-              size="description"
-              type="regular"
-              style={{
-                paddingRight: 10,
-              }}
-            >
-              {dataevent?.open}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        />
-        <View
-          style={{
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            flex: 1,
-            flexDirection: "column",
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              paddingBottom: 14,
-            }}
-          >
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                paddingRight: 5,
-              }}
-            >
-              {t("organizedBy")}
+              {dataevent?.description}
             </Text>
           </View>
           <View
             style={{
-              flexDirection: "row",
-              paddingBottom: 5,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "center",
             }}
           >
-            {dataevent && dataevent.vendor ? (
+            <View
+              style={{
+                flexDirection: "row",
+                paddingBottom: 10,
+              }}
+            >
               <CustomImage
                 customStyle={{
-                  height: 45,
-                  marginHorizontal: 3,
+                  width: 19,
+                  height: 19,
+                  marginTop: 2,
+                  marginRight: 8,
                 }}
-                customImageStyle={{ resizeMode: "contain" }}
-                source={
-                  dataevent.vendor.cover
-                    ? { uri: dataevent.vendor.cover }
-                    : default_image
-                }
+                customImageStyle={{
+                  width: 19,
+                  height: 19,
+                  resizeMode: "contain",
+                }}
+                source={calendar_blue}
               />
-            ) : (
               <Text
+                size="readable"
+                type="bold"
                 style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#6C6C6C",
-                  fontSize: 14,
-                  paddingRight: 10,
+                  paddingRight: 5,
+                  lineHeight: 20,
                 }}
               >
-                -
+                {t("eventDate")} :
               </Text>
-            )}
+
+              {dataevent?.is_repeat === true ? (
+                <Text
+                  size="readable"
+                  type="regular"
+                  style={{
+                    paddingRight: 10,
+                    lineHeight: 20,
+                  }}
+                >
+                  {handlerepeat(dataevent?.start_date, dataevent?.end_date)}
+                </Text>
+              ) : (
+                <Text
+                  size="readble"
+                  type="regular"
+                  style={{
+                    paddingRight: 10,
+                    lineHeight: 20,
+                  }}
+                >
+                  {dateFormatBetween(
+                    dataevent?.start_date,
+                    dataevent?.end_date
+                  )}
+                </Text>
+              )}
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <CustomImage
+                customStyle={{
+                  width: 19,
+                  height: 19,
+                  marginTop: 2,
+                  marginRight: 8,
+                }}
+                customImageStyle={{
+                  width: 19,
+                  height: 19,
+                  resizeMode: "contain",
+                }}
+                source={schedule_blue}
+              />
+              <Text
+                size="readable"
+                type="bold"
+                style={{
+                  paddingRight: 5,
+                  lineHeight: 20,
+                }}
+              >
+                {t("gatesOpen")} :
+              </Text>
+              <Text
+                size="readable"
+                type="regular"
+                style={{
+                  paddingRight: 10,
+                  lineHeight: 20,
+                }}
+              >
+                {dataevent?.open}
+              </Text>
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        />
-        <View
-          style={{
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 0.5,
-          }}
-        />
-        <View
-          style={{
-            paddingHorizontal: 20,
-            flex: 3,
-            flexDirection: "column",
-          }}
-        >
           <View
             style={{
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              paddingHorizontal: 20,
               paddingVertical: 20,
-              flexDirection: "row",
-              paddingBottom: 7,
+              flex: 1,
+              flexDirection: "column",
             }}
           >
-            <Text
-              size="label"
-              type="bold"
+            <View
               style={{
-                paddingRight: 5,
+                flexDirection: "row",
+                paddingBottom: 14,
               }}
             >
-              {t("address")}
-            </Text>
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  paddingRight: 5,
+                }}
+              >
+                {t("organizedBy")}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingBottom: 5,
+              }}
+            >
+              {dataevent && dataevent.vendor ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingBottom: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width * 0.7,
+                    }}
+                  >
+                    <Text
+                      size="readable"
+                      type="regular"
+                      style={{
+                        lineHeight: 20,
+                      }}
+                    >
+                      {dataevent.vendor.name}
+                    </Text>
+                  </View>
+                  <View>
+                    <CustomImage
+                      customStyle={{
+                        height: 45,
+                        marginHorizontal: 3,
+                      }}
+                      customImageStyle={{ resizeMode: "contain" }}
+                      source={
+                        dataevent.vendor.cover
+                          ? { uri: dataevent.vendor.cover }
+                          : default_image
+                      }
+                    />
+                  </View>
+                </View>
+              ) : (
+                <Text
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    color: "#6C6C6C",
+                    fontSize: 14,
+                    paddingRight: 10,
+                  }}
+                >
+                  -
+                </Text>
+              )}
+            </View>
           </View>
           <View
             style={{
-              flexDirection: "row",
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              paddingHorizontal: 20,
+              flex: 3,
+              flexDirection: "column",
             }}
           >
-            <Text
-              size="description"
+            <View
               style={{
-                paddingRight: 5,
+                paddingVertical: 20,
+                flexDirection: "row",
+                paddingBottom: 7,
               }}
             >
-              {dataevent?.address}
-            </Text>
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  paddingRight: 5,
+                  lineHeight: 20,
+                }}
+              >
+                {t("address")}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingBottom: 90,
+              }}
+            >
+              <View
+                style={{
+                  width: Dimensions.get("screen").width * 0.7,
+                }}
+              >
+                <Text
+                  size="description"
+                  style={{
+                    paddingRight: 5,
+                  }}
+                >
+                  {dataevent?.address}
+                </Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable
+                  onPress={() => {
+                    Linking.openURL(
+                      Platform.OS == "ios"
+                        ? "maps://app?daddr=" +
+                            dataevent?.latitude +
+                            "+" +
+                            dataevent?.longitude
+                        : "google.navigation:q=" +
+                            dataevent?.latitude +
+                            "+" +
+                            dataevent?.longitude
+                    );
+                  }}
+                >
+                  <Mapsborder height={80} width={80} />
+                </Pressable>
+              </View>
+            </View>
           </View>
         </View>
-        <View
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            paddingBottom: 90,
-            flex: 1,
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            onPress={() => {
-              Linking.openURL(
-                Platform.OS == "ios"
-                  ? "maps://app?daddr=" +
-                      dataevent?.latitude +
-                      "+" +
-                      dataevent?.longitude
-                  : "google.navigation:q=" +
-                      dataevent?.latitude +
-                      "+" +
-                      dataevent?.longitude
-              );
-            }}
-            variant="bordered"
-            type="icon"
-            position="left"
-            style={{
-              width: Dimensions.get("window").width - 40,
-            }}
-          >
-            <CustomImage
-              customStyle={{
-                width: 25,
-                paddingRight: 5,
-              }}
-              customImageStyle={{ resizeMode: "contain" }}
-              source={IconMaps}
-            />
-            <Text
-              size="description"
-              style={{
-                fontSize: 14,
-              }}
-            >
-              {t("viewMap")}
-            </Text>
-          </Button>
-        </View>
-      </ScrollView>
+      </Animated.ScrollView>
       <View
         style={{
           flex: 2,
