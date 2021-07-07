@@ -17,10 +17,16 @@ import {
   AccomodationReview,
   Select,
 } from "../../../assets/svg";
-import { Button, Text, FunImageBackground, FunImage } from "../../../component";
+import {
+  Button,
+  Text,
+  FunImageBackground,
+  FunImage,
+  shareAction,
+} from "../../../component";
 import { useQuery } from "@apollo/client";
 
-export default function Review({ item, index }, onSelect, props, token) {
+export default function Review({ item, index }, onSelect, props, token, t) {
   return (
     <View
       style={{
@@ -199,10 +205,16 @@ export default function Review({ item, index }, onSelect, props, token) {
           alignContent: "center",
           alignItems: "center",
         }}
+        onPress={() =>
+          shareAction({
+            from: "destination",
+            target: item.id_item,
+          })
+        }
       >
         <Sharegreen />
         <Text style={{ marginLeft: 5 }} type={"regular"} size={"description"}>
-          Share this review
+          {t("Sharethisreview")}
         </Text>
       </TouchableOpacity>
     </View>
