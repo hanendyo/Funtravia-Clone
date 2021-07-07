@@ -11,6 +11,7 @@ import {
   StatusBar,
   Image,
   Alert,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -33,7 +34,7 @@ import {
 } from "../../component";
 import { StackActions } from "@react-navigation/native";
 
-export default function Login({ navigation }) {
+export default function Login({ navigation, route }) {
   const { t } = useTranslation();
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let [email, setEmail] = useState("");
@@ -151,8 +152,18 @@ export default function Login({ navigation }) {
 
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
-    // navigation.setOptions(NavigationComponent);
     AsyncStorage.setItem("isFirst", "false");
+    const backAction = () => {
+      BackHandler.addEventListener(navigation.goBack());
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   return (

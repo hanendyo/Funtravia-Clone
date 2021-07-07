@@ -39,7 +39,6 @@ export default function MainStackNavigator({
   dNotify,
   isFirst,
 }) {
-  console.log("isFirst", isFirst);
   const config = {
     screens: {
       BottomStack: {

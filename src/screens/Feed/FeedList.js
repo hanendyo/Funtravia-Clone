@@ -9,11 +9,10 @@ import {
   RefreshControl,
   ActivityIndicator,
   Image as ImageRN,
-  ImageBackground,
   Pressable,
   SafeAreaView,
-  Clipboard,
   Modal,
+  ProgressBarAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import Modal from "react-native-modal";
@@ -242,13 +241,6 @@ export default function FeedList({ props, token }) {
             feed_post_pageing[index].response_count =
               feed_post_pageing[index].response_count - 1;
             setactivelike(true);
-            // Toast.show({
-            //   text: "Failed to like this post",
-            //   position: "bottom",
-            //   buttonText: "Ok",
-            //   duration: 3000,
-            // });
-            // Alert.alert("" + error);
           }
         } else {
           props.navigation.navigate("AuthStack", {
@@ -562,8 +554,6 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  const [selected, setSelected] = useState(new Map());
-
   const OptionOpen = (data, index, setting) => {
     const tempdata = { ...data };
     tempdata.index = index;
@@ -753,6 +743,8 @@ export default function FeedList({ props, token }) {
       });
     }
   };
+
+  console.log("loadingMutationPost", loadingMutationPost);
 
   return (
     <SafeAreaView>
@@ -1118,6 +1110,20 @@ export default function FeedList({ props, token }) {
           </View>
         </Modal>
       </View>
+
+      {loadingMutationPost ? (
+        <View
+          style={{
+            backgroundColor: "#fff",
+            width: Dimensions.get("screen").width - 20,
+            marginHorizontal: 10,
+            borderRadius: 5,
+            paddingHorizontal: 10,
+          }}
+        >
+          <ProgressBarAndroid styleAttr="Horizontal" color="#209fae" />
+        </View>
+      ) : null}
       <FlatList
         ref={ref}
         data={feed_post_pageing}

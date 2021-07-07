@@ -11,13 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "properties": [],
-<<<<<<< Updated upstream
-      "versionCode": 37,
-      "versionName": "1.0.25",
-=======
       "versionCode": 36,
       "versionName": "1.0.24",
->>>>>>> Stashed changes
       "enabled": true,
       "outputFile": "app-release.apk"
     }

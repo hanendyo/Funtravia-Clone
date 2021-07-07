@@ -8,6 +8,7 @@ import {
   More,
   LikeBlack,
   CommentBlack,
+  TravelAlbum,
 } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { useIsFocused } from "@react-navigation/native";
@@ -33,6 +34,7 @@ import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { RNToasty } from "react-native-toasty";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -83,7 +85,9 @@ export default function myfeed(props) {
   };
 
   const { t, i18n } = useTranslation();
-  let token = props.route.params.token;
+  const isFocused = useIsFocused();
+  const ref = React.useRef(null);
+  let [token, setToken] = useState(props?.route?.params?.token);
   let [datauser] = useState(props.route.params.datauser);
   let data = [];
   let index = props.route.params.index;
@@ -94,9 +98,8 @@ export default function myfeed(props) {
   let [selectedOption, SetOption] = useState({});
   let [play, setPlay] = useState(null);
   let [muted, setMuted] = useState(true);
-  const isFocused = useIsFocused();
-  const ref = React.useRef(null);
   let { width, height } = Dimensions.get("screen");
+  let [activelike, setactivelike] = useState(true);
 
   const {
     data: datapost,
@@ -143,6 +146,8 @@ export default function myfeed(props) {
   });
 
   const loadasync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    setToken(tkn);
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     await setuser(user.user);
@@ -222,97 +227,108 @@ export default function myfeed(props) {
       },
     },
   });
+  // console.log("data", data);
 
-  const _liked = async (id, index, item) => {
-    // let tempDatas = [...data];
-    let items = { ...item };
-    let indexs = data.findIndex((k) => k["id"] === id);
-    items.liked = true;
-    items.response_count = items.response_count + 1;
-    data.splice(indexs, 1, items);
+  const _liked = async (id, index) => {
+    index = data.findIndex((k) => k["id"] === id);
+    if (index !== -1) {
+      if (activelike) {
+        if (token !== "" && token !== null) {
+          setactivelike(false);
+          let tempData = { ...data[index] };
+          tempData.liked = true;
+          tempData.response_count = tempData.response_count + 1;
+          data.splice(index, 1, tempData);
+          try {
+            let response = await MutationLike({
+              variables: {
+                post_id: id,
+              },
+            });
+            console.log("repsomse like", response);
+            if (response.data) {
+              if (response.data.like_post.code === 200) {
+                // _Refresh();
+              } else {
+                throw new Error(response.data.like_post.message);
+              }
 
-    // console.log(id);
-    if (token || token !== "") {
-      try {
-        let response = await MutationLike({
-          variables: {
-            post_id: id,
-          },
-        });
-        // console.log(response);
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (
-            response.data.like_post.code === 200 ||
-            response.data.like_post.code === "200"
-          ) {
-            // _Refresh();
-          } else {
-            throw new Error(response.data.like_post.message);
+              // Alert.alert('Succes');
+            }
+          } catch (error) {
+            let tempData = { ...data[index] };
+            tempData.liked = false;
+            tempData.response_count = tempData.response_count + 1;
+            data.splice(index, 1, tempData);
+            // RNToasty.Show({
+            //   duration: 1,
+            //   title: "Somethig wrong",
+            //   position: "bottom",
+            // });
           }
-
-          // Alert.alert('Succes');
+        } else {
+          RNToasty.Show({
+            duration: 1,
+            title: "Please Login",
+            position: "bottom",
+          });
+          props.navigation.push("AuthStack", {
+            screen: "LoginScreen",
+          });
         }
-      } catch (error) {
-        items.liked = false;
-        items.response_count = items.response_count + 1;
-        data.splice(indexs, 1, items);
-        // console.log(error);
-        Alert.alert("" + error);
       }
-    } else {
-      Alert.alert("Please Login");
     }
   };
 
   const _unliked = async (id, index, item) => {
-    let items = { ...item };
-    let indexs = data.findIndex((k) => k["id"] === id);
-    items.liked = false;
-    items.response_count = items.response_count + 1;
-    data.splice(indexs, 1, items);
-    if (token || token !== "") {
-      try {
-        let response = await MutationunLike({
-          variables: {
-            post_id: id,
-          },
-        });
-        if (loadingunLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorunLike) {
-          throw new Error("Error Input");
-        }
+    index = data.findIndex((k) => k["id"] === id);
+    if (index !== -1) {
+      if (activelike) {
+        if (token !== "" && token !== null) {
+          setactivelike(false);
+          let tempData = { ...data[index] };
+          tempData.liked = false;
+          tempData.response_count = tempData.response_count - 1;
+          data.splice(index, 1, tempData);
+          try {
+            let response = await MutationunLike({
+              variables: {
+                post_id: id,
+              },
+            });
 
-        // console.log(response);
-        if (response.data) {
-          if (
-            response.data.unlike_post.code === 200 ||
-            response.data.unlike_post.code === "200"
-          ) {
-            // _Refresh();
-          } else {
-            throw new Error(response.data.unlike_post.message);
+            console.log("repsomse unlike", response);
+            if (response.data) {
+              if (response.data.unlike_post.code === 200) {
+                // _Refresh();
+              } else {
+                throw new Error(response.data.unlike_post.message);
+              }
+
+              // Alert.alert('Succes');
+            }
+          } catch (error) {
+            let tempData = { ...data[index] };
+            tempData.liked = true;
+            tempData.response_count = tempData.response_count + 1;
+            data.splice(index, 1, tempData);
+            // RNToasty.Show({
+            //   duration: 1,
+            //   title: "Somethig wrong",
+            //   position: "bottom",
+            // });
           }
-
-          // Alert.alert('Succes');
+        } else {
+          RNToasty.Show({
+            duration: 1,
+            title: "Please Login",
+            position: "bottom",
+          });
+          props.navigation.push("AuthStack", {
+            screen: "LoginScreen",
+          });
         }
-      } catch (error) {
-        Alert.alert("" + error);
       }
-    } else {
-      let items = { ...item };
-      let indexs = data.findIndex((k) => k["id"] === id);
-      items.liked = true;
-      items.response_count = items.response_count + 1;
-      data.splice(indexs, 1, items);
-      Alert.alert("Please Login");
     }
   };
 
@@ -344,12 +360,24 @@ export default function myfeed(props) {
     }
   };
 
-  const viewcomment = (data) => {
-    props.navigation.push("FeedStack", {
+  const countKoment = (id) => {
+    const tempd = [...data];
+    const index = tempd.findIndex((k) => k["id"] === id);
+    tempd[index].comment_count = tempd[index].comment_count + 1;
+  };
+
+  const viewcomment = (data, index, time) => {
+    props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
-        post_id: data.id,
-        //   comment_id: data.comment_feed.id,
+        data: data,
+        token: token,
+        ref: ref,
+        _liked: (e) => _liked(e),
+        _unliked: (e) => _unliked(e),
+        indeks: index,
+        countKoment: (e) => countKoment(e),
+        time: time,
       },
     });
   };
@@ -409,11 +437,6 @@ export default function myfeed(props) {
   };
 
   const onUpdate = (prev, { fetchMoreResult }) => {
-    // console.log(
-    //   "masuk",
-    //   prev.user_post_paging.datas.length,
-    //   fetchMoreResult.user_post_paging.page_info.offset
-    // );
     if (
       prev.user_post_paging.datas.length <
       fetchMoreResult.user_post_paging.page_info.offset
@@ -436,8 +459,6 @@ export default function myfeed(props) {
   };
 
   const handleOnEndReached = () => {
-    // console.log("test");
-    // console.log(datapost?.user_post_paging?.page_info?.hasNextPage);
     if (datapost?.user_post_paging?.page_info?.hasNextPage) {
       return fetchMore({
         variables: {
@@ -945,7 +966,7 @@ export default function myfeed(props) {
                     </Button>
                   ) : (
                     <Button
-                      onPress={() => _liked(item.id, index, item)}
+                      onPress={() => _liked(item.id, index, data)}
                       type="icon"
                       position="left"
                       size="small"
@@ -969,7 +990,9 @@ export default function myfeed(props) {
                   )}
 
                   <Button
-                    onPress={() => viewcomment(item)}
+                    onPress={() =>
+                      viewcomment(item, index, duration(item.created_at))
+                    }
                     type="icon"
                     variant="transparent"
                     position="left"
@@ -1296,7 +1319,7 @@ export default function myfeed(props) {
               onPress={() => _unfollow(selectedOption.user.id)}
             >
               <Text size="description" type="regular" style={{}}>
-                {t("unfollow")}
+                {t("stopFollow")}
               </Text>
             </TouchableOpacity>
           )}

@@ -596,6 +596,7 @@ export default function Comments(props) {
           if (errorcmnt) {
             throw new Error("Error Input");
           }
+          console.log("response", response);
           if (response.data) {
             if (response.data.comment_post.code === 200) {
               const tempData = [...dataComment];
