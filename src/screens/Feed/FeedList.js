@@ -106,6 +106,16 @@ export default function FeedList({ props, token }) {
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
   let [waktu, setWaktu] = useState("");
+  let [tkn, setTkn] = useState(null);
+
+  useEffect(() => {
+    setTkn(token);
+    setTimeout(() => {
+      Refresh();
+    }, 1000);
+  }, [token]);
+
+  const cektoken = async () => {};
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -315,7 +325,7 @@ export default function FeedList({ props, token }) {
       }
     }
   };
-
+  console.log("tokenssssss", tkn);
   const {
     loading: loadingPost,
     data: dataPost,
@@ -331,7 +341,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${tkn}`,
       },
     },
     // pollInterval: 5500,
@@ -339,7 +349,7 @@ export default function FeedList({ props, token }) {
   });
 
   let feed_post_pageing = [];
-  if (dataPost && dataPost && dataPost?.feed_post_pageing) {
+  if (dataPost && dataPost && "datas" in dataPost?.feed_post_pageing) {
     feed_post_pageing = dataPost?.feed_post_pageing?.datas;
   }
 
@@ -389,20 +399,6 @@ export default function FeedList({ props, token }) {
         });
       }
     }
-
-    // } else {
-    //   if (dataPostPopular.feed_post_populer_paging.page_info.hasNextPage) {
-    //     if (fetchmorepopular) {
-    //       return fetchmorepopular({
-    //         variables: {
-    //           limit: 3,
-    //           offset: dataPostPopular.feed_post_populer_paging.page_info.offset,
-    //         },
-    //         updateQuery: onUpdate,
-    //       });
-    //     }
-    //   }
-    // }
   };
 
   const _deletepost = async (data) => {
@@ -484,6 +480,7 @@ export default function FeedList({ props, token }) {
   };
 
   useEffect(() => {
+    refetch();
     loadAsync();
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
