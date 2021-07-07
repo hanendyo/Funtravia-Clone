@@ -9,11 +9,11 @@ import {
 } from "react-native";
 import { HotelIcon, Kosong, Sharegreen } from "../../../assets/svg";
 
-import { Button, Text } from "../../../component";
+import { Button, Text, shareAction } from "../../../component";
 import { useTranslation } from "react-i18next";
 import ImageSlide from "../../../component/src/ImageSlide/index";
 
-export default function Review({ props, token, data }) {
+export default function Reviews({ props, token, data }) {
   const { t, i18n } = useTranslation();
   let [modal, setModal] = useState(false);
   let [dataImage, setDataImage] = useState();
@@ -116,6 +116,12 @@ export default function Review({ props, token, data }) {
                 type="icon"
                 variant="transparent"
                 style={{ width: "50%", marginLeft: -20 }}
+                onPress={() =>
+                  shareAction({
+                    from: "destination",
+                    target: item.id_item,
+                  })
+                }
               >
                 <Sharegreen />
                 <Text
