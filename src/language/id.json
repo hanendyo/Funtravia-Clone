@@ -560,5 +560,10 @@
     "stopFollow": "Berhenti mengikuti",
     "seemyprofile": "Lihat akun saya",
     "changeCoverGroup": "Ganti Cover Photo",
-    "leftGroup": "Keluar Grup"
+    "leftGroup": "Keluar Grup",
+    "viewTrip": "Lihat Perjalanan",
+    "alertLeftGroup": "Apakah Anda yakin meninggalkan group ini?",
+    "alertLeftGroupItinerary": "Apakah Anda yakin meninggalkan group ini? Jika anda keluar maka dari Itinerary akan keluar juga!",
+    "exitGroup": "Keluar Grup",
+    "readAll": "Tandai semua sudah dibaca"
 }

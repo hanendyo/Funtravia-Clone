@@ -13,7 +13,7 @@ import {
     TextInput,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-
+import { ReactNativeFile } from "apollo-upload-client";
 import {
     Button,
     Text,
@@ -43,6 +43,12 @@ import { CHATSERVER, RESTFULL_API } from "../../../config";
 import { RNToasty } from "react-native-toasty";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 import ImagePicker from "react-native-image-crop-picker";
+import DeletedBuddy from "../../../graphQL/Mutation/Itinerary/Deletedbuddy";
+import MakeAdmin from "../../../graphQL/Mutation/Itinerary/MakeAdmin";
+import LeftItinerary from "../../../graphQL/Mutation/Itinerary/LeftItinerary";
+import RemovAdmin from "../../../graphQL/Mutation/Itinerary/RemoveAdmin";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import Updatecover from "../../../graphQL/Mutation/Itinerary/UpdatecoverV2";
 
 export default function GroupDetail(props) {
     let { width } = Dimensions.get("screen");
@@ -53,6 +59,7 @@ export default function GroupDetail(props) {
     const [textName, setTextName] = useState(null);
     const [loading, setLoading] = useState(true);
     const [modalkick, setModalkick] = useState(false);
+    const [modalleft, setModalleft] = useState(false);
     const [modalmakeadmin, setModalmakeadmin] = useState(false);
     const [modalremoveadmin, setModalremoveadmin] = useState(false);
     const [modalrename, setModalrename] = useState(false);
@@ -98,13 +105,20 @@ export default function GroupDetail(props) {
                         flex: 1,
                         alignItems: "center",
                         justifyContent: "center",
-                        paddingHorizontal: 10,
+                        // paddingHorizontal: 10,
+                        // borderWidth: 1,
                     }}
                 >
                     <Menu
                         ref={(ref) => (_menu = ref)}
                         button={
-                            <Pressable onPress={() => _menu.show()}>
+                            <Pressable
+                                style={{
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 10,
+                                }}
+                                onPress={() => _menu.show()}
+                            >
                                 <OptionsVertWhite
                                     height={20}
                                     width={20}
@@ -126,7 +140,7 @@ export default function GroupDetail(props) {
                         <MenuDivider />
                         <MenuItem
                             onPress={() => {
-                                _leftGroup(props.route.params.room_id);
+                                setModalleft(true);
                                 _menu.hide();
                             }}
                         >
@@ -162,7 +176,59 @@ export default function GroupDetail(props) {
             );
             // console.log(inde);
             await setMydata(dataResponse.grup.buddy[inde]);
-            // console.log(inde);
+            console.log(dataResponse.grup);
+            if (
+                dataResponse.grup.created_by == data_setting.user.id &&
+                from == "itinerary"
+            ) {
+                const leftheaderOptions = {
+                    headerRight: () => {
+                        let _menu = null;
+                        return (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    // paddingHorizontal: 10,
+                                    // borderWidth: 1,
+                                }}
+                            >
+                                <Menu
+                                    ref={(ref) => (_menu = ref)}
+                                    button={
+                                        <Pressable
+                                            style={{
+                                                paddingHorizontal: 20,
+                                                paddingVertical: 10,
+                                            }}
+                                            onPress={() => _menu.show()}
+                                        >
+                                            <OptionsVertWhite
+                                                height={20}
+                                                width={20}
+                                            ></OptionsVertWhite>
+                                        </Pressable>
+                                    }
+                                    style={{
+                                        width: 200,
+                                    }}
+                                >
+                                    <MenuItem
+                                        onPress={() => {
+                                            _menu.hide();
+                                            setmodalCover(true);
+                                        }}
+                                    >
+                                        {t("changeCoverGroup")}
+                                    </MenuItem>
+                                </Menu>
+                            </View>
+                        );
+                    },
+                };
+                props.navigation.setOptions(leftheaderOptions);
+            }
             await setLoading(false);
         } else {
             await setLoading(false);
@@ -224,7 +290,11 @@ export default function GroupDetail(props) {
         })
             .then(async (image) => {
                 setmodalCover(false);
-                _uploadCover(image);
+                if (from == "itinerary") {
+                    _uploadCoverItinerary(image);
+                } else {
+                    _uploadCover(image);
+                }
             })
             .catch((e) => {
                 RNToasty.Normal({
@@ -246,7 +316,11 @@ export default function GroupDetail(props) {
         })
             .then((image) => {
                 setmodalCover(false);
-                _uploadCover(image);
+                if (from == "itinerary") {
+                    _uploadCoverItinerary(image);
+                } else {
+                    _uploadCover(image);
+                }
             })
             .catch((e) => {
                 RNToasty.Normal({
@@ -329,7 +403,7 @@ export default function GroupDetail(props) {
                 getUserAndToken();
                 RNToasty.Show({
                     duration: 1,
-                    title: "Success Left Group",
+                    title: "Success Remove Admin",
                     position: "bottom",
                 });
             } else {
@@ -363,7 +437,7 @@ export default function GroupDetail(props) {
                 body: data_kirim,
             });
             let responseJson = await response.json();
-            console.log(responseJson);
+            // console.log(responseJson);
             if (responseJson.status == true) {
                 props.navigation.navigate("BottomStack", {
                     screen: "ChatBottomScreen",
@@ -407,6 +481,11 @@ export default function GroupDetail(props) {
             });
             let responseJson = await response.json();
             if (responseJson.status == true) {
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success Set admin",
+                    position: "bottom",
+                });
                 getUserAndToken();
             } else {
                 //   setloading(false);
@@ -481,6 +560,11 @@ export default function GroupDetail(props) {
             );
             let responseJson = await response.json();
             if (responseJson.status == true) {
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success rename group",
+                    position: "bottom",
+                });
                 getUserAndToken();
             } else {
                 //   setloading(false);
@@ -494,6 +578,260 @@ export default function GroupDetail(props) {
             });
             // setloading(false);
             console.log(error);
+        }
+    };
+
+    const [
+        mutationDeleteBuddy,
+        { loading: loadingDeleted, data: dataDeleted, error: errorDeleted },
+    ] = useMutation(DeletedBuddy, {
+        context: {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+    const DeleteBuddy = async (idbuddy, iditinerary) => {
+        setIndexActive(null);
+        try {
+            let response = await mutationDeleteBuddy({
+                variables: {
+                    itinerary_id: iditinerary,
+                    buddy_id: idbuddy,
+                },
+            });
+            // if (loadingDeleted) {
+            //     Alert.alert("Loading!!");
+            // }
+            if (errorDeleted) {
+                throw new Error("Error Deleted");
+            }
+            if (response.data) {
+                if (response.data.delete_buddy.code !== 200) {
+                    throw new Error(response.data.delete_buddy.message);
+                }
+                getUserAndToken();
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success remove member",
+                    position: "bottom",
+                });
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            console.log(error);
+        }
+    };
+
+    const [
+        mutationMakeAdmin,
+        { loading: loadingAdmin, data: dataAdmin, error: errorAdmin },
+    ] = useMutation(MakeAdmin, {
+        context: {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+
+    const SetAdminItinerary = async (idbuddy, iditinerary) => {
+        setIndexActive(null);
+        try {
+            let response = await mutationMakeAdmin({
+                variables: {
+                    itinerary_id: iditinerary,
+                    buddy_id: idbuddy,
+                },
+            });
+            // if (loadingAdmin) {
+            //     Alert.alert("Loading!!");
+            // }
+            if (errorAdmin) {
+                throw new Error("Error Deleted");
+            }
+            // console.log(response);
+            if (response.data) {
+                if (response.data.make_admin.code !== 200) {
+                    throw new Error(response.data.make_admin.message);
+                }
+                getUserAndToken();
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success Set Admin",
+                    position: "bottom",
+                });
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            console.log(error);
+        }
+    };
+
+    const [
+        mutationRemoveAdmin,
+        { loading: loadingRemove, data: dataRemove, error: errorRemove },
+    ] = useMutation(RemovAdmin, {
+        context: {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+
+    const RemoveAdminItinerary = async (idbuddy, iditinerary) => {
+        setIndexActive(null);
+        try {
+            let response = await mutationRemoveAdmin({
+                variables: {
+                    itinerary_id: iditinerary,
+                    buddy_id: idbuddy,
+                },
+            });
+            if (errorRemove) {
+                throw new Error("Error Deleted");
+            }
+            // console.log(response);
+            if (response.data) {
+                if (response.data.remove_admin.code !== 200) {
+                    throw new Error(response.data.remove_admin.message);
+                }
+                getUserAndToken();
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success remove admin",
+                    position: "bottom",
+                });
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            console.log(error);
+        }
+    };
+
+    const [
+        mutationLeftItinerary,
+        { loading: loadingLeft, data: dataLeft, error: errorLeft },
+    ] = useMutation(LeftItinerary, {
+        context: {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+
+    const _leftItinerary = async (iditinerary) => {
+        setIndexActive(null);
+        try {
+            let response = await mutationLeftItinerary({
+                variables: {
+                    itinerary_id: iditinerary,
+                },
+            });
+            if (errorLeft) {
+                throw new Error("Error Deleted");
+            }
+            console.log(response);
+            if (response.data) {
+                if (response.data.left_itinerary_buddy.code !== 200) {
+                    throw new Error(response.data.left_itinerary_buddy.message);
+                }
+                props.navigation.navigate("BottomStack", {
+                    screen: "ChatBottomScreen",
+                    params: {
+                        screen: "FeedScreen",
+                        params: {
+                            page: 1,
+                        },
+                    },
+                });
+                RNToasty.Show({
+                    duration: 1,
+                    title: "Success Left Group",
+                    position: "bottom",
+                });
+            }
+        } catch (error) {
+            RNToasty.Show({
+                duration: 1,
+                title: "error : someting wrong!",
+                position: "bottom",
+            });
+            console.log(error);
+        }
+    };
+
+    const [
+        mutationUploadCover,
+        { loading: loadingupload, data: dataupload, error: errorupload },
+    ] = useMutation(Updatecover, {
+        context: {
+            headers: {
+                // "Content-Type": "application/json",
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    });
+
+    const _uploadCoverItinerary = async (data) => {
+        // setloading(true);
+
+        if (data) {
+            let files = new ReactNativeFile({
+                uri: data.path,
+                type: data.mime,
+                name: "cover.jpeg",
+            });
+
+            try {
+                let response = await mutationUploadCover({
+                    variables: {
+                        itinerary_id: room,
+                        file: files,
+                    },
+                });
+                if (errorupload) {
+                    throw new Error("Error Input");
+                }
+                console.log(response);
+                if (response.data) {
+                    if (response.data.upload_cover_itinerary_v2.code !== 200) {
+                        throw new Error(
+                            response.data.upload_cover_itinerary_v2.message
+                        );
+                    }
+                    getUserAndToken();
+                    RNToasty.Show({
+                        duration: 1,
+                        title: "Success change cover",
+                        position: "bottom",
+                    });
+                }
+                // setloading(false);
+            } catch (error) {
+                RNToasty.Show({
+                    duration: 1,
+                    title: "error : someting wrong!",
+                    position: "bottom",
+                });
+                console.log(error);
+            }
         }
     };
 
@@ -554,7 +892,7 @@ export default function GroupDetail(props) {
                         numberOfLines={1}
                         style={{
                             color: "#FFFFFF",
-                            width: "90%",
+                            width: "70%",
                             paddingRight: 20,
                         }}
                     >
@@ -564,10 +902,22 @@ export default function GroupDetail(props) {
                         <Pressable
                             onPress={() => goToItinerary(dataDetail)}
                             style={{
-                                width: "10%",
+                                width: "30%",
+                                alignItems: "center",
+                                borderWidth: 1,
+                                borderColor: "white",
+                                padding: 5,
+                                paddingHorizontal: 10,
+                                borderRadius: 7,
                             }}
                         >
-                            <ArrowRightBlue width={30} height={30} />
+                            <Text
+                                style={{
+                                    color: "white",
+                                }}
+                            >
+                                {t("viewTrip")}
+                            </Text>
                         </Pressable>
                     ) : (
                         <Pressable
@@ -575,7 +925,7 @@ export default function GroupDetail(props) {
                                 setModalrename();
                             }}
                             style={{
-                                width: "10%",
+                                width: "25%",
                                 alignItems: "flex-end",
                             }}
                         >
@@ -785,7 +1135,11 @@ export default function GroupDetail(props) {
                         >
                             <Button
                                 onPress={() => {
-                                    _kickMember(selected.user_id);
+                                    if (from == "itinerary") {
+                                        DeleteBuddy(selected.id, room);
+                                    } else {
+                                        _kickMember(selected.user_id);
+                                    }
                                     setModalkick(false);
                                 }}
                                 color="primary"
@@ -858,7 +1212,11 @@ export default function GroupDetail(props) {
                         >
                             <Button
                                 onPress={() => {
-                                    _makeAdmin(selected.user_id);
+                                    if (from == "itinerary") {
+                                        SetAdminItinerary(selected.id, room);
+                                    } else {
+                                        _makeAdmin(selected.user_id);
+                                    }
                                     setModalmakeadmin(false);
                                 }}
                                 color="primary"
@@ -931,7 +1289,11 @@ export default function GroupDetail(props) {
                         >
                             <Button
                                 onPress={() => {
-                                    _removeAdmin(selected.user_id);
+                                    if (from == "itinerary") {
+                                        RemoveAdminItinerary(selected.id, room);
+                                    } else {
+                                        _removeAdmin(selected.user_id);
+                                    }
                                     setModalremoveadmin(false);
                                 }}
                                 color="primary"
@@ -1125,6 +1487,85 @@ export default function GroupDetail(props) {
                             {t("OpenGallery")}
                         </Text>
                     </TouchableOpacity>
+                </View>
+            </Modal>
+
+            {/* modal left */}
+            <Modal
+                useNativeDriver={true}
+                visible={modalleft}
+                onRequestClose={() => setModalleft(false)}
+                transparent={true}
+                animationType="fade"
+            >
+                <Pressable
+                    onPress={() => setModalleft(false)}
+                    style={{
+                        width: Dimensions.get("screen").width,
+                        height: Dimensions.get("screen").height,
+                        justifyContent: "center",
+                        opacity: 0.7,
+                        backgroundColor: "#000",
+                        position: "absolute",
+                    }}
+                />
+                <View
+                    style={{
+                        width: Dimensions.get("screen").width - 60,
+                        marginHorizontal: 30,
+                        backgroundColor: "#FFF",
+                        zIndex: 15,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        alignContent: "center",
+                        borderRadius: 3,
+                        marginTop: Dimensions.get("screen").height / 3,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "white",
+                            width: Dimensions.get("screen").width - 60,
+                            padding: 20,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{ alignSelf: "center" }}>
+                            {from == "itinerary"
+                                ? t("alertLeftGroupItinerary")
+                                : t("alertLeftGroup")}
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingVertical: 20,
+                                paddingHorizontal: 40,
+                            }}
+                        >
+                            <Button
+                                onPress={() => {
+                                    if (from == "itinerary") {
+                                        _leftItinerary(room);
+                                    } else {
+                                        _leftGroup(room);
+                                    }
+                                    setModalleft(false);
+                                }}
+                                color="primary"
+                                text={t("exitGroup")}
+                            ></Button>
+                            <Button
+                                onPress={() => {
+                                    setModalleft(false);
+                                }}
+                                color="secondary"
+                                variant="bordered"
+                                text={t("cancel")}
+                            ></Button>
+                        </View>
+                    </View>
                 </View>
             </Modal>
         </ScrollView>

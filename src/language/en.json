@@ -558,5 +558,10 @@
     "stopFollow": "Unfollow",
     "seemyprofile": "See my profile",
     "changeCoverGroup": "Change Cover Photo",
-    "leftGroup": "Left Group"
+    "leftGroup": "Left Group",
+    "viewTrip": "View Trip",
+    "alertLeftGroup": "Are you sure to leave this group?",
+    "alertLeftGroupItinerary": "Are you sure to leave this group? If you exit then the Itinerary will come out too!",
+    "exitGroup": "Exit Group",
+    "readAll": "Mark all as read"
 }
