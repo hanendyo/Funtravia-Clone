@@ -11,13 +11,12 @@ import {
 } from "react-native";
 import { Sharegreen, Arrowbackwhite } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Button, Text, Loading, shareAction } from "../../component";
+import { Button, Text, FunVideo } from "../../component";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../assets/png";
 import Modal from "react-native-modal";
 import album from "../../graphQL/Query/Profile/albumdetailpost";
 import ImageSlide from "../../component/src/ImageSlide/sliderPost";
-import ImagePicker from "react-native-image-crop-picker";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const { width, height } = Dimensions.get("screen");
 
@@ -105,10 +104,10 @@ export default function albumdetail(props) {
     },
     variables: {
       id: props?.route?.params?.id,
-      type: props?.route?.params?.type,
+      // type: props?.route?.params?.type,
     },
     onCompleted: () => {
-      setdata(dataalbum.all_albums_post);
+      setdata(dataalbum.all_albums_post_v2);
     },
   });
 
@@ -169,6 +168,174 @@ export default function albumdetail(props) {
     await setModalss(true);
   };
 
+  if (loadingalbum) {
+    <SkeletonPlaceholder>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          paddingHorizontal: 2.5,
+        }}
+      >
+        <View
+          style={{
+            width: ((width - 12) / 3) * 2,
+            height: ((width - 12) / 3) * 2,
+            margin: 2.5,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 5,
+            }}
+          />
+        </View>
+        <View>
+          <View
+            style={{
+              width: (width - 20) / 3,
+              height: (width - 20) / 3,
+              margin: 2.5,
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+          <View
+            onPress={() => setdataimage(dataalbums, item[2].id)}
+            style={{
+              width: (width - 20) / 3,
+              height: (width - 20) / 3,
+              margin: 2.5,
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+        </View>
+      </View>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          paddingHorizontal: 2.5,
+        }}
+      >
+        <View>
+          <View
+            style={{
+              width: (width - 20) / 3,
+              height: (width - 20) / 3,
+              margin: 2.5,
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+          <View
+            onPress={() => setdataimage(dataalbums, item[2].id)}
+            style={{
+              width: (width - 20) / 3,
+              height: (width - 20) / 3,
+              margin: 2.5,
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 5,
+              }}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            width: ((width - 12) / 3) * 2,
+            height: ((width - 12) / 3) * 2,
+            margin: 2.5,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 5,
+            }}
+          />
+        </View>
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            width: (width - 20) / 3,
+            height: (width - 20) / 3,
+            margin: 2.5,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 5,
+            }}
+          />
+        </View>
+        <View
+          onPress={() => setdataimage(dataalbums, item[2].id)}
+          style={{
+            width: (width - 20) / 3,
+            height: (width - 20) / 3,
+            margin: 2.5,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 5,
+            }}
+          />
+        </View>
+        <View
+          onPress={() => setdataimage(dataalbums, item[2].id)}
+          style={{
+            width: (width - 20) / 3,
+            height: (width - 20) / 3,
+            margin: 2.5,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 5,
+            }}
+          />
+        </View>
+      </View>
+    </SkeletonPlaceholder>;
+  }
+
   return (
     <View
       style={{
@@ -221,7 +388,7 @@ export default function albumdetail(props) {
           </TouchableOpacity>
         </View>
       </Modal>
-      {dataalbums ? (
+      {dataalbums && dataalbums.length > 0 ? (
         <FlatList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -243,6 +410,7 @@ export default function albumdetail(props) {
                       justifyContent: "flex-start",
                       paddingHorizontal: 2.5,
                     }}
+                    key={index + 1}
                   >
                     <Pressable
                       onPress={() => setdataimage(dataalbums, item[0].id)}
@@ -386,6 +554,7 @@ export default function albumdetail(props) {
                       justifyContent: "flex-start",
                       paddingHorizontal: 2.5,
                     }}
+                    key={index + 2}
                   >
                     <View>
                       <Pressable
@@ -528,6 +697,7 @@ export default function albumdetail(props) {
                       justifyContent: "flex-start",
                       paddingHorizontal: 2.5,
                     }}
+                    key={index + 3}
                   >
                     {item.map((data, index) => {
                       if (index < 3) {
@@ -601,6 +771,7 @@ export default function albumdetail(props) {
                           height: (width - 20) / 3,
                           margin: 2.5,
                         }}
+                        key={index}
                       >
                         {data.type === "video" ? (
                           <FunVideo
@@ -645,7 +816,7 @@ export default function albumdetail(props) {
           }}
           keyExtractor={(item) => item.id}
         />
-      ) : (
+      ) : loadingalbum ? (
         <SkeletonPlaceholder>
           <View
             style={{
@@ -811,6 +982,12 @@ export default function albumdetail(props) {
             </View>
           </View>
         </SkeletonPlaceholder>
+      ) : (
+        <View style={{ alignItems: "center", marginTop: 20 }}>
+          <Text size="title" type="bold">
+            Tidak ada data
+          </Text>
+        </View>
       )}
 
       <ImageSlide

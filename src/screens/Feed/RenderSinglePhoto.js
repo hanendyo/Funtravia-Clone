@@ -52,6 +52,7 @@ export default function RenderSinglePhoto({
             innerRef={(ref) => {
               videoView = ref;
             }}
+            // controls
             onError={videoView?.current?.videoError}
             onLoad={(response) => {
               // const { widths, heights } = response.naturalSize;

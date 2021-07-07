@@ -232,50 +232,43 @@ export default function myfeed(props) {
   const _liked = async (id, index) => {
     index = data.findIndex((k) => k["id"] === id);
     if (index !== -1) {
-      if (activelike) {
-        if (token !== "" && token !== null) {
-          setactivelike(false);
+      if (token !== "" && token !== null) {
+        let tempData = { ...data[index] };
+        tempData.liked = true;
+        tempData.response_count = tempData.response_count + 1;
+        data.splice(index, 1, tempData);
+        try {
+          let response = await MutationLike({
+            variables: {
+              post_id: id,
+            },
+          });
+          if (response.data) {
+            if (response.data.like_post.code === 200) {
+            } else {
+              throw new Error(response.data.like_post.message);
+            }
+          }
+        } catch (error) {
           let tempData = { ...data[index] };
-          tempData.liked = true;
+          tempData.liked = false;
           tempData.response_count = tempData.response_count + 1;
           data.splice(index, 1, tempData);
-          try {
-            let response = await MutationLike({
-              variables: {
-                post_id: id,
-              },
-            });
-            console.log("repsomse like", response);
-            if (response.data) {
-              if (response.data.like_post.code === 200) {
-                // _Refresh();
-              } else {
-                throw new Error(response.data.like_post.message);
-              }
-
-              // Alert.alert('Succes');
-            }
-          } catch (error) {
-            let tempData = { ...data[index] };
-            tempData.liked = false;
-            tempData.response_count = tempData.response_count + 1;
-            data.splice(index, 1, tempData);
-            // RNToasty.Show({
-            //   duration: 1,
-            //   title: "Somethig wrong",
-            //   position: "bottom",
-            // });
-          }
-        } else {
-          RNToasty.Show({
-            duration: 1,
-            title: "Please Login",
-            position: "bottom",
-          });
-          props.navigation.push("AuthStack", {
-            screen: "LoginScreen",
-          });
+          // RNToasty.Show({
+          //   duration: 1,
+          //   title: "Somethig wrong",
+          //   position: "bottom",
+          // });
         }
+      } else {
+        RNToasty.Show({
+          duration: 1,
+          title: "Please Login",
+          position: "bottom",
+        });
+        props.navigation.push("AuthStack", {
+          screen: "LoginScreen",
+        });
       }
     }
   };
@@ -283,51 +276,44 @@ export default function myfeed(props) {
   const _unliked = async (id, index, item) => {
     index = data.findIndex((k) => k["id"] === id);
     if (index !== -1) {
-      if (activelike) {
-        if (token !== "" && token !== null) {
-          setactivelike(false);
-          let tempData = { ...data[index] };
-          tempData.liked = false;
-          tempData.response_count = tempData.response_count - 1;
-          data.splice(index, 1, tempData);
-          try {
-            let response = await MutationunLike({
-              variables: {
-                post_id: id,
-              },
-            });
+      if (token !== "" && token !== null) {
+        let tempData = { ...data[index] };
+        tempData.liked = false;
+        tempData.response_count = tempData.response_count - 1;
+        data.splice(index, 1, tempData);
+        try {
+          let response = await MutationunLike({
+            variables: {
+              post_id: id,
+            },
+          });
 
-            console.log("repsomse unlike", response);
-            if (response.data) {
-              if (response.data.unlike_post.code === 200) {
-                // _Refresh();
-              } else {
-                throw new Error(response.data.unlike_post.message);
-              }
-
-              // Alert.alert('Succes');
+          if (response.data) {
+            if (response.data.unlike_post.code === 200) {
+            } else {
+              throw new Error(response.data.unlike_post.message);
             }
-          } catch (error) {
-            let tempData = { ...data[index] };
-            tempData.liked = true;
-            tempData.response_count = tempData.response_count + 1;
-            data.splice(index, 1, tempData);
-            // RNToasty.Show({
-            //   duration: 1,
-            //   title: "Somethig wrong",
-            //   position: "bottom",
-            // });
           }
-        } else {
-          RNToasty.Show({
-            duration: 1,
-            title: "Please Login",
-            position: "bottom",
-          });
-          props.navigation.push("AuthStack", {
-            screen: "LoginScreen",
-          });
+        } catch (error) {
+          let tempData = { ...data[index] };
+          tempData.liked = true;
+          tempData.response_count = tempData.response_count + 1;
+          data.splice(index, 1, tempData);
+          // RNToasty.Show({
+          //   duration: 1,
+          //   title: "Somethig wrong",
+          //   position: "bottom",
+          // });
         }
+      } else {
+        RNToasty.Show({
+          duration: 1,
+          title: "Please Login",
+          position: "bottom",
+        });
+        props.navigation.push("AuthStack", {
+          screen: "LoginScreen",
+        });
       }
     }
   };

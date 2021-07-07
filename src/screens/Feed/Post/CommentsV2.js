@@ -141,9 +141,11 @@ export default function Comments(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     if (props?.route?.params?.data) {
+      console.log("feed");
       setDataPost({ ...props?.route?.params?.data });
       setIdPost(props?.route?.params?.data?.id);
     } else {
+      console.log("notif");
       setIdComment(props?.route?.params?.comment_id);
       setIdPost(props?.route?.params?.post_id);
     }
@@ -582,21 +584,22 @@ export default function Comments(props) {
         Keyboard.dismiss();
         setStatusText("");
         try {
+          console.log("comment before");
+          console.log("posy_id", id);
+          console.log("text", text);
           let response = await MutationComment({
             variables: {
               post_id: id,
               text: text,
             },
           });
+          console.log("comment after");
 
-          if (loadingcmnt) {
-            // console.log("loading comment");
-          }
-
+          console.log("response", response);
           if (errorcmnt) {
+            console.log("error", errorcmnt);
             throw new Error("Error Input");
           }
-          console.log("response", response);
           if (response.data) {
             if (response.data.comment_post.code === 200) {
               const tempData = [...dataComment];
@@ -606,7 +609,10 @@ export default function Comments(props) {
               tempData[idx].is_send = true;
               setDataComment(tempData);
               scroll_to();
-              props?.route?.params?.countKoment(tempDataPost.id);
+              console.log("count", props?.route?.params?.countKoment);
+              if (props?.route?.params?.countKoment) {
+                props?.route?.params?.countKoment(tempDataPost.id);
+              }
             } else {
               throw new Error(response.data.comment_post.message);
             }
@@ -1517,7 +1523,12 @@ export default function Comments(props) {
               value={statusText}
             />
             <Pressable
-              onPress={() => comment(dataPost?.id, statusText)}
+              onPress={() =>
+                comment(
+                  props?.route?.params?.data ? dataPost?.id : idPost,
+                  statusText
+                )
+              }
               style={{
                 flex: 1,
                 height: 50,
