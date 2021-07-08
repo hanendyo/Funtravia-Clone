@@ -117,7 +117,7 @@ export default function OnBoardScreen(props) {
               position: "absolute",
               justifyContent: "flex-end",
               borderColor: "#000",
-              bottom: 250,
+              bottom: index === 3 ? 250 : 170,
             }}
           >
             <View style={{ paddingHorizontal: 14, width: width }}>

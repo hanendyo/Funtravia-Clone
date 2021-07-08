@@ -24,6 +24,8 @@ import {
   CommentBlack,
   ExitingAlbum,
   NewAlbum,
+  TravelAlbum,
+  TravelJournal,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -47,6 +49,7 @@ import { Toast, Root } from "native-base";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import { isPunctuatorToken } from "graphql/language/lexer";
+import { stubTrue } from "lodash";
 
 // import Clipboard from "@react-native-clipboard/clipboard";
 
@@ -741,10 +744,135 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  console.log("loadingMutationPost", loadingMutationPost);
+  console.log("feed_post_pageing.length", feed_post_pageing.length);
+
+  const [modalLogin, setModalLogin] = useState(true);
+
+  if (feed_post_pageing.length > 11) {
+    return (
+      <Modal
+        useNativeDriver={true}
+        visible={!token || token == undefined ? modalLogin : false}
+        onRequestClose={() => true}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 80,
+            marginHorizontal: 40,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 80,
+              padding: 20,
+              paddingHorizontal: 20,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                marginHorizontal: 5,
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ marginBottom: 5 }} size="label" type="bold">
+                Login untuk melanjutkan
+              </Text>
+              <Text
+                style={{ textAlign: "center", lineHeight: 18 }}
+                size="label"
+                type="regular"
+              >
+                Login untuk melihat foto dan upload foto liburanmu
+              </Text>
+            </View>
+            <Button
+              style={{ marginBottom: 5 }}
+              onPress={() => {
+                props.navigation.navigate("AuthStack", {
+                  screen: "LoginScreen",
+                });
+                setModalLogin(false);
+                feed_post_pageing.length = 0;
+              }}
+              type="icon"
+              text={"Login"}
+            ></Button>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                marginVertical: 5,
+              }}
+            >
+              <View
+                style={{
+                  width: 50,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  marginHorizontal: 10,
+                }}
+              ></View>
+              <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                {t("or")}
+              </Text>
+              <View
+                style={{
+                  width: 50,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  marginHorizontal: 10,
+                }}
+              ></View>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Text
+                size="label"
+                type="bold"
+                style={{ color: "#209FAE" }}
+                onPress={() => {
+                  props.navigation.navigate("AuthStack", {
+                    screen: "RegisterScreen",
+                  });
+                  setModalLogin(false);
+                  feed_post_pageing.length = 0;
+                }}
+              >
+                Buat Akun
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 
   return (
     <SafeAreaView>
+      {/* {test()} */}
       <View
       // style={{
       //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
@@ -756,6 +884,56 @@ export default function FeedList({ props, token }) {
       //     modalmenu || modalmenuother || modalhapus === true ? "#000" : null,
       // }}
       >
+        {/* <Modal
+          useNativeDriver={true}
+          visible={modalLogin}
+          // onRequestClose={() => setModalLogin(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            // onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 80,
+              marginHorizontal: 40,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 3,
+              marginTop: Dimensions.get("screen").height / 4,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 80,
+                padding: 20,
+              }}
+            >
+              <Button
+                onPress={() => {
+                  props.navigation.navigate("AuthStack", {
+                    screen: "LoginScreen",
+                  });
+                }}
+                type="icon"
+                text={"login"}
+              ></Button>
+            </View>
+          </View>
+        </Modal> */}
         {/* Modal Menu user */}
 
         <Modal

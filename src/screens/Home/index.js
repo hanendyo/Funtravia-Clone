@@ -12,6 +12,8 @@ import {
   StyleSheet,
   Modal,
   ActivityIndicator,
+  BackHandler,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -32,10 +34,12 @@ import FunFeed from "./FunFeed";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 import User_Post from "../../graphQL/Query/Profile/post";
 import { NotificationBlue } from "../../assets/svg";
+import { RNToasty } from "react-native-toasty";
 // import messaging from "@react-native-firebase/messaging";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+  console.log("props home", props);
   const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
@@ -118,6 +122,33 @@ export default function Home(props) {
       token: token,
     });
   };
+
+  // useEffect(() => {
+  //   if (props?.route?.params?.halaman) {
+  //     let currentCount = 0;
+  //     const backAction = () => {
+  //       if (currentCount < 1) {
+  //         currentCount += 1;
+  //         RNToasty.Show({
+  //           title: "Tekan sekali lagi untuk keluar",
+  //           position: "bottom",
+  //         });
+  //       } else {
+  //         BackHandler.exitApp();
+  //       }
+  //       setTimeout(() => {
+  //         currentCount = 0;
+  //       }, 2000);
+  //       return true;
+  //     };
+  //     const backHandler = BackHandler.addEventListener(
+  //       "hardwareBackPress",
+  //       backAction
+  //     );
+  //     return () =>
+  //       BackHandler.removeEventListener("hardwareBackPress", backHandler);
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (shareId && shareId !== "undefined") {

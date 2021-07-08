@@ -7,6 +7,7 @@ import {
   Text,
   Alert,
   Pressable,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CustomImage, shareAction } from "../../component";

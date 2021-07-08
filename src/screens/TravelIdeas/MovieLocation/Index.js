@@ -47,15 +47,25 @@ import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 import CountrySrc from "./CountrySrc";
 import CountryListSrcMovie from "../../../graphQL/Query/Countries/CountryListSrcMovie";
+import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
-const HeaderHeight = width - 100;
+// const HeaderHeight = width - 100;
+const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
-  ios: 44,
+  ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
+const HeaderHeight = Platform.select({
+  ios: Notch ? 335 - 48 : 335 - 20,
+  android: 305 - StatusBar.currentHeight,
+});
+// const SafeStatusBar = Platform.select({
+//   ios: 44,
+//   android: StatusBar.currentHeight,
+// });
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
