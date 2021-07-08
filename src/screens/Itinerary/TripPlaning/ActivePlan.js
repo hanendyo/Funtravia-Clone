@@ -35,21 +35,15 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function ActivePlan({ token, props }) {
+export default function ActivePlan({
+  token,
+  props,
+  rData,
+  GetDataActive,
+  loading,
+}) {
   const { height, width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
-  let datalistaktif = [];
-
-  const { data, loading, error, refetch } = useQuery(ListItinerary, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    // variables: { status: "A" },
-  });
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -61,18 +55,11 @@ export default function ActivePlan({ token, props }) {
 
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
-    refetch();
+    GetDataActive();
     wait(1000).then(() => {
       setRefreshing(false);
     });
   }, []);
-
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      refetch();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
 
   const getdate = (start, end) => {
     start = start.split(" ");
@@ -179,335 +166,7 @@ export default function ActivePlan({ token, props }) {
     );
   };
 
-  const RenderActive = ({ data }) => {
-    return (
-      <View
-        style={{
-          height: 150,
-          marginTop: 10,
-          borderRadius: 5,
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
-          justifyContent: "space-between",
-          backgroundColor: "#FFFFFF",
-          overflow: "hidden",
-        }}
-      >
-        <Ripple
-          onPress={() =>
-            props.navigation.push("ItineraryStack", {
-              screen: "itindetail",
-              params: {
-                itintitle: data.name,
-                country: data.id,
-                dateitin: getdate(data.start_date, data.end_date),
-                token: token,
-                status: "saved",
-              },
-            })
-          }
-          style={{
-            backgroundColor: "#FFFFFF",
-            height: "75%",
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
-            flexDirection: "row",
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
-          }}
-        >
-          <ImageBackground
-            source={data && data.cover ? { uri: data.cover } : default_image}
-            style={{
-              height: "100%",
-              width: "35%",
-              borderTopLeftRadius: 5,
-            }}
-            imageStyle={{
-              borderTopLeftRadius: 5,
-              borderWidth: 0.2,
-              borderColor: "#d3d3d3",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <Ripple
-              style={{
-                width: "100%",
-                height: "100%",
-                padding: 10,
-              }}
-              onPress={() =>
-                props.navigation.push("ItineraryStack", {
-                  screen: "itindetail",
-                  params: {
-                    itintitle: data.name,
-                    country: data.id,
-                    dateitin: getdate(data.start_date, data.end_date),
-                    token: token,
-                    status: "saved",
-                  },
-                })
-              }
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={
-                    data.user_created
-                      ? { uri: data.user_created.picture }
-                      : default_image
-                  }
-                  style={{
-                    zIndex: 2,
-                    backgroundColor: "#ffff",
-                    borderRadius: 15,
-                    width: 30,
-                    height: 30,
-                    borderWidth: 1,
-                    borderColor: "#ffff",
-                  }}
-                ></Image>
-                <View
-                  style={{
-                    position: "relative",
-                    marginLeft: -5,
-                    zIndex: 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    paddingVertical: 3,
-                    paddingHorizontal: 10,
-                    borderRadius: 3,
-                    overflow: "hidden",
-                  }}
-                >
-                  <Text
-                    size="small"
-                    type={"regular"}
-                    style={{
-                      color: "white",
-                    }}
-                  >
-                    {data.user_created
-                      ? data.user_created.first_name
-                      : "User_Funtravia"}
-                  </Text>
-                </View>
-              </View>
-            </Ripple>
-          </ImageBackground>
-
-          <View
-            style={{
-              width: "65%",
-              height: "100%",
-              paddingHorizontal: 10,
-              backgroundColor: "#FFFFFF",
-              paddingVertical: 10,
-              overflow: "hidden",
-              justifyContent: "space-between",
-            }}
-          >
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  aligndatas: "center",
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#DAF0F2",
-                    borderWidth: 1,
-                    borderRadius: 3,
-                    borderColor: "#209FAE",
-                    paddingHorizontal: 5,
-                  }}
-                >
-                  <Text
-                    type="bold"
-                    size="description"
-                    style={{ color: "#209FAE" }}
-                  >
-                    {data?.categori?.name
-                      ? data?.categori?.name
-                      : "No Category"}
-                  </Text>
-                </View>
-                <View>
-                  {data.isprivate == true ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        backgroundColor: "rgba(0, 0, 0, 0.7)",
-                        paddingVertical: 3,
-                        paddingHorizontal: 10,
-                        borderRadius: 3,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Image
-                        source={imgPrivate}
-                        style={{
-                          height: 10,
-                          width: 10,
-                          marginRight: 5,
-                        }}
-                      />
-                      <Text
-                        size="small"
-                        type={"regular"}
-                        style={{
-                          color: "white",
-                        }}
-                      >
-                        {t("private")}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              </View>
-              <Text size="label" type="black" style={{ marginTop: 5 }}>
-                <Truncate text={data.name} length={40} />
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 5,
-                }}
-              >
-                <PinHijau width={15} height={15} />
-                <Text style={{ marginLeft: 5 }} size="small" type="regular">
-                  {data?.country?.name}
-                </Text>
-                <Text>,</Text>
-                <Text size="small" type="regular" style={{ marginLeft: 3 }}>
-                  {data?.city?.name}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                // borderWidth: 1,
-                width: "100%",
-                flexDirection: "row",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 3,
-                }}
-              >
-                <Calendargrey
-                  width={10}
-                  height={10}
-                  style={{ marginRight: 5 }}
-                />
-                {data.start_date && data.end_date
-                  ? getDN(data.start_date, data.end_date)
-                  : null}
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 15,
-                }}
-              >
-                <User width={10} height={10} style={{ marginRight: 5 }} />
-                <Text size="small" type="regular">
-                  {(data && data.buddy.length ? data.buddy.length : null) + " "}
-                  {t("person")}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </Ripple>
-        <View
-          style={{
-            paddingVertical: 3,
-            height: "25%",
-            flexDirection: "row",
-            backgroundColor: "#FFFFFF",
-            borderBottomLeftRadius: 5,
-            borderBottomRightRadius: 5,
-            justifyContent: "space-between",
-          }}
-        >
-          <Ripple
-            onPress={() =>
-              props.navigation.push("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  itintitle: data.name,
-                  country: data.id,
-                  dateitin: getdate(data.start_date, data.end_date),
-                  token: token,
-                  status: "saved",
-                  index: 1,
-                },
-              })
-            }
-            style={{
-              width: "50%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRightWidth: 1,
-              borderColor: "#d3d3d3",
-              paddingVertical: 5,
-            }}
-          >
-            <TravelAlbum height={15} width={15} style={{ marginRight: 5 }} />
-            <Text size="small" type="bold" style={{ color: "#209fae" }}>
-              Travel Album
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() =>
-              props.navigation.push("ItineraryStack", {
-                screen: "itindetail",
-                params: {
-                  itintitle: data.name,
-                  country: data.id,
-                  dateitin: getdate(data.start_date, data.end_date),
-                  token: token,
-                  status: "saved",
-                  index: 2,
-                },
-              })
-            }
-            style={{
-              width: "50%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TravelStories height={15} width={15} style={{ marginRight: 5 }} />
-            <Text size="small" type="bold" style={{ color: "#209fae" }}>
-              Travel Stories
-            </Text>
-          </Ripple>
-        </View>
-      </View>
-    );
-  };
-  if (loading) {
+  if (loading && rData.length < 1) {
     return (
       <SkeletonPlaceholder>
         <View
@@ -713,31 +372,373 @@ export default function ActivePlan({ token, props }) {
     );
   }
 
-  if (data) {
-    let rData = data.itinerary_list_active;
-    if (rData.length) {
-      return (
-        <SafeAreaView style={{ flex: 1 }}>
-          <FlatList
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
-            }
-            contentContainerStyle={{
-              marginTop: 5,
-              justifyContent: "space-evenly",
-              paddingStart: 10,
-              paddingEnd: 10,
-              paddingBottom: 100,
-            }}
-            horizontal={false}
-            data={rData}
-            renderItem={({ item }) => <RenderActive data={item} />}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={false}
-          />
-        </SafeAreaView>
-      );
-    }
+  if (rData?.length > 0) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+          }
+          contentContainerStyle={{
+            marginTop: 5,
+            justifyContent: "space-evenly",
+            paddingStart: 10,
+            paddingEnd: 10,
+            paddingBottom: 100,
+          }}
+          horizontal={false}
+          data={rData}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                height: 150,
+                marginTop: 10,
+                borderRadius: 5,
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                justifyContent: "space-between",
+                backgroundColor: "#FFFFFF",
+                overflow: "hidden",
+              }}
+            >
+              <Ripple
+                onPress={() =>
+                  props.navigation.push("ItineraryStack", {
+                    screen: "itindetail",
+                    params: {
+                      itintitle: item.name,
+                      country: item.id,
+                      dateitin: getdate(item.start_date, item.end_date),
+                      token: token,
+                      status: "saved",
+                    },
+                  })
+                }
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  height: "75%",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  flexDirection: "row",
+                  shadowOpacity: arrayShadow.shadowOpacity,
+                  shadowRadius: arrayShadow.shadowRadius,
+                  elevation: arrayShadow.elevation,
+                }}
+              >
+                <ImageBackground
+                  source={
+                    item && item.cover ? { uri: item.cover } : default_image
+                  }
+                  style={{
+                    height: "100%",
+                    width: "35%",
+                    borderTopLeftRadius: 5,
+                  }}
+                  imageStyle={{
+                    borderTopLeftRadius: 5,
+                    borderWidth: 0.2,
+                    borderColor: "#d3d3d3",
+                    height: "100%",
+                    width: "100%",
+                  }}
+                >
+                  <Ripple
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      padding: 10,
+                    }}
+                    onPress={() =>
+                      props.navigation.push("ItineraryStack", {
+                        screen: "itindetail",
+                        params: {
+                          itintitle: item.name,
+                          country: item.id,
+                          dateitin: getdate(item.start_date, item.end_date),
+                          token: token,
+                          status: "saved",
+                        },
+                      })
+                    }
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        source={
+                          item.user_created
+                            ? { uri: item.user_created.picture }
+                            : default_image
+                        }
+                        style={{
+                          zIndex: 2,
+                          backgroundColor: "#ffff",
+                          borderRadius: 15,
+                          width: 30,
+                          height: 30,
+                          borderWidth: 1,
+                          borderColor: "#ffff",
+                        }}
+                      ></Image>
+                      <View
+                        style={{
+                          position: "relative",
+                          marginLeft: -5,
+                          zIndex: 1,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          backgroundColor: "rgba(0, 0, 0, 0.7)",
+                          paddingVertical: 3,
+                          paddingHorizontal: 10,
+                          borderRadius: 3,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <Text
+                          size="small"
+                          type={"regular"}
+                          style={{
+                            color: "white",
+                          }}
+                        >
+                          {item.user_created
+                            ? item.user_created.first_name
+                            : "User_Funtravia"}
+                        </Text>
+                      </View>
+                    </View>
+                  </Ripple>
+                </ImageBackground>
+
+                <View
+                  style={{
+                    width: "65%",
+                    height: "100%",
+                    paddingHorizontal: 10,
+                    backgroundColor: "#FFFFFF",
+                    paddingVertical: 10,
+                    overflow: "hidden",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        aligndatas: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#DAF0F2",
+                          borderWidth: 1,
+                          borderRadius: 3,
+                          borderColor: "#209FAE",
+                          paddingHorizontal: 5,
+                        }}
+                      >
+                        <Text
+                          type="bold"
+                          size="description"
+                          style={{ color: "#209FAE" }}
+                        >
+                          {item?.categori?.name
+                            ? item?.categori?.name
+                            : "No Category"}
+                        </Text>
+                      </View>
+                      <View>
+                        {item.isprivate == true ? (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              backgroundColor: "rgba(0, 0, 0, 0.7)",
+                              paddingVertical: 3,
+                              paddingHorizontal: 10,
+                              borderRadius: 3,
+                              overflow: "hidden",
+                            }}
+                          >
+                            <Image
+                              source={imgPrivate}
+                              style={{
+                                height: 10,
+                                width: 10,
+                                marginRight: 5,
+                              }}
+                            />
+                            <Text
+                              size="small"
+                              type={"regular"}
+                              style={{
+                                color: "white",
+                              }}
+                            >
+                              {t("private")}
+                            </Text>
+                          </View>
+                        ) : null}
+                      </View>
+                    </View>
+                    <Text size="label" type="black" style={{ marginTop: 5 }}>
+                      <Truncate text={item.name} length={40} />
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginTop: 5,
+                      }}
+                    >
+                      <PinHijau width={15} height={15} />
+                      <Text
+                        style={{ marginLeft: 5 }}
+                        size="small"
+                        type="regular"
+                      >
+                        {item?.country?.name}
+                      </Text>
+                      <Text>,</Text>
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{ marginLeft: 3 }}
+                      >
+                        {item?.city?.name}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      // borderWidth: 1,
+                      width: "100%",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginLeft: 3,
+                      }}
+                    >
+                      <Calendargrey
+                        width={10}
+                        height={10}
+                        style={{ marginRight: 5 }}
+                      />
+                      {item.start_date && item.end_date
+                        ? getDN(item.start_date, item.end_date)
+                        : null}
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginLeft: 15,
+                      }}
+                    >
+                      <User width={10} height={10} style={{ marginRight: 5 }} />
+                      <Text size="small" type="regular">
+                        {(item && item.buddy.length
+                          ? item.buddy.length
+                          : null) + " "}
+                        {t("person")}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </Ripple>
+              <View
+                style={{
+                  paddingVertical: 3,
+                  height: "25%",
+                  flexDirection: "row",
+                  backgroundColor: "#FFFFFF",
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  justifyContent: "space-between",
+                }}
+              >
+                <Ripple
+                  onPress={() =>
+                    props.navigation.push("ItineraryStack", {
+                      screen: "itindetail",
+                      params: {
+                        itintitle: item.name,
+                        country: item.id,
+                        dateitin: getdate(item.start_date, item.end_date),
+                        token: token,
+                        status: "saved",
+                        index: 1,
+                      },
+                    })
+                  }
+                  style={{
+                    width: "50%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRightWidth: 1,
+                    borderColor: "#d3d3d3",
+                    paddingVertical: 5,
+                  }}
+                >
+                  <TravelAlbum
+                    height={15}
+                    width={15}
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text size="small" type="bold" style={{ color: "#209fae" }}>
+                    Travel Album
+                  </Text>
+                </Ripple>
+                <Ripple
+                  onPress={() =>
+                    props.navigation.push("ItineraryStack", {
+                      screen: "itindetail",
+                      params: {
+                        itintitle: item.name,
+                        country: item.id,
+                        dateitin: getdate(item.start_date, item.end_date),
+                        token: token,
+                        status: "saved",
+                        index: 2,
+                      },
+                    })
+                  }
+                  style={{
+                    width: "50%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <TravelStories
+                    height={15}
+                    width={15}
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text size="small" type="bold" style={{ color: "#209fae" }}>
+                    Travel Stories
+                  </Text>
+                </Ripple>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+        />
+      </SafeAreaView>
+    );
   }
 
   return (

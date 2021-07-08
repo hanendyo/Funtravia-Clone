@@ -12,7 +12,6 @@ import FinishTrip from "./FinishTrip";
 import PlanList from "./PlanList";
 import { Arrowbackwhite } from "../../../assets/svg";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import listitinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import { useTranslation } from "react-i18next";
 import { Button, Loading, Text } from "../../../component";
 import Animated from "react-native-reanimated";
@@ -20,6 +19,9 @@ import Ripple from "react-native-material-ripple";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ItineraryCount from "../../../graphQL/Query/Itinerary/ItineraryCount";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
+import ListItineraryActive from "../../../graphQL/Query/Itinerary/listitineraryA";
+import ListItineraryFinish from "../../../graphQL/Query/Itinerary/listitineraryF";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -65,6 +67,10 @@ export default function TripPlaning(props) {
 
   let [token, setToken] = useState(null);
   let [loading, setloading] = useState(false);
+  let [rData, setData] = useState([]);
+  let [AData, setDataActive] = useState([]);
+  let [FData, setDataFinish] = useState([]);
+
   const loadAsync = async () => {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");
@@ -73,7 +79,10 @@ export default function TripPlaning(props) {
       Alert.alert("Silahkan Login terlebih dahulu");
       props.navigation.navigate("HomeScreen");
     } else {
-      GetCount();
+      await GetCount();
+      await GetData();
+      await GetDataActive();
+      await GetDataFinish();
     }
     await setloading(false);
   };
@@ -91,13 +100,65 @@ export default function TripPlaning(props) {
     },
   });
 
+  const [
+    GetData,
+    { data, loading: loadingdata, error: errordata },
+  ] = useLazyQuery(ListItinerary, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setData(data?.itinerary_list_draf);
+    },
+    // variables: { status: "D" },
+  });
+
+  const [
+    GetDataActive,
+    { data: dataActive, loading: loadingdataActive, error: errordataActive },
+  ] = useLazyQuery(ListItineraryActive, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setDataActive(dataActive.itinerary_list_active);
+    },
+    // variables: { status: "D" },
+  });
+
+  const [
+    GetDataFinish,
+    { data: dataFinish, loading: loadingdataFinish, error: errordataFinish },
+  ] = useLazyQuery(ListItineraryFinish, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setDataFinish(dataFinish.itinerary_list_finish);
+    },
+    // variables: { status: "D" },
+  });
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    // const unsubscribe = props.navigation.addListener("focus", () => {
-    loadAsync();
-    // });
-    // return unsubscribe;
-  }, []);
+
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   function MyTabBar({ state, descriptors, navigation, position, count }) {
     return (
@@ -216,17 +277,42 @@ export default function TripPlaning(props) {
     >
       <Tab.Screen
         name="Edit"
-        component={() => <PlanList props={props} token={token} />}
+        component={() => (
+          <PlanList
+            props={props}
+            token={token}
+            rData={rData}
+            GetData={(e) => GetData(e)}
+            loading={loadingdata}
+          />
+        )}
         options={{ tabBarLabel: t("planList") }}
       />
+
       <Tab.Screen
         name="Save"
-        component={() => <ActivePlan props={props} token={token} />}
+        component={() => (
+          <ActivePlan
+            props={props}
+            token={token}
+            rData={AData}
+            GetDataActive={(e) => GetDataActive(e)}
+            loading={loadingdataActive}
+          />
+        )}
         options={{ tabBarLabel: t("activePlan") }}
       />
+
       <Tab.Screen
         name="Finish"
-        component={() => <FinishTrip props={props} token={token} />}
+        component={() => (
+          <FinishTrip
+            props={props}
+            token={token}
+            rData={FData}
+            GetDataFinish={(e) => GetDataFinish(e)}
+          />
+        )}
         options={{ tabBarLabel: t("finishTrip") }}
       />
     </Tab.Navigator>
