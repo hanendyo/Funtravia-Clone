@@ -36,6 +36,7 @@
     "react": "16.13.1",
     "react-i18next": "^11.8.5",
     "react-native": "0.63.4",
+    "react-native-animated-webp": "^0.0.8",
     "react-native-auto-height-image": "^3.2.3",
     "react-native-auto-scale-image": "^1.0.1",
     "react-native-dashed-line": "^1.1.0",
