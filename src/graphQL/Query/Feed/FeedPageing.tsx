@@ -13,6 +13,7 @@ const FeedPageing = gql`
         latitude
         location_name
         liked
+        media_orientation
         comment_count
         response_count
         created_at

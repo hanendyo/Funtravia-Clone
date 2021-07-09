@@ -20,6 +20,7 @@ export default function RenderSinglePhoto({
   setMuted,
   isComment,
 }) {
+  // console.log("data single", data);
   let videoView = useRef(null);
   const [heightScaled, setHeightScaled] = useState(width);
   const [oriented, setOriented] = useState("");
@@ -28,6 +29,10 @@ export default function RenderSinglePhoto({
   const durationTime = (data) => {
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
   };
+
+  const L = (2 / 3) * Dimensions.get("screen").width - 40;
+  const P = (5 / 4) * Dimensions.get("screen").width - 40;
+  const S = Dimensions.get("screen").width - 40;
 
   if (data?.assets[0]?.type === "video") {
     return (
@@ -45,7 +50,7 @@ export default function RenderSinglePhoto({
               "output.m3u8",
               "thumbnail.png"
             )}
-            posterResizeMode={"contain"}
+            posterResizeMode={"cover"}
             source={{
               uri: data?.assets[0]?.filepath,
             }}
@@ -71,10 +76,17 @@ export default function RenderSinglePhoto({
             style={{
               width: width - 40,
               // height: width,
-              height: oriented === "portrait" ? width : heightScaled,
+              // height: oriented === "portrait" ? width : heightScaled,
+              height:
+                data.media_orientation == "L"
+                  ? L
+                  : data.media_orientation == "P"
+                  ? P
+                  : S,
               borderRadius: 15,
             }}
-            resizeMode={oriented === "portrait" ? "cover" : "contain"}
+            // resizeMode={oriented === "portrait" ? "cover" : "contain"}
+            resizeMode={"cover"}
             muted={muted}
             paused={
               isComment ? false : play === data.id && isFocused ? false : true
@@ -134,6 +146,12 @@ export default function RenderSinglePhoto({
         <FunImageAutoSize
           style={{
             width: Dimensions.get("screen").width - 40,
+            height:
+              data.media_orientation == "L"
+                ? L
+                : data.media_orientation == "P"
+                ? P
+                : S,
             borderRadius: 15,
             alignSelf: "center",
             marginHorizontal: 10,
@@ -177,6 +195,12 @@ export default function RenderSinglePhoto({
       <FunImageAutoSize
         style={{
           width: Dimensions.get("screen").width - 40,
+          height:
+            data.media_orientation == "L"
+              ? L
+              : data.media_orientation == "P"
+              ? P
+              : S,
           borderRadius: 15,
           alignSelf: "center",
           marginHorizontal: 10,
