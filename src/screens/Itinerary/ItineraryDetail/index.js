@@ -55,6 +55,8 @@ import {
   Chatnew,
   Play,
   PlayVideo,
+  LeaveTrips,
+  Help,
 } from "../../../assets/svg";
 import {
   Button,
@@ -95,6 +97,7 @@ import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
 import UploadfotoAlbum from "../../../graphQL/Mutation/Itinerary/Uploadalbum";
+import LeaveItinerary from "../../../graphQL/Mutation/Itinerary/LeaveItinerary";
 import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import ImageSliders from "../../../component/src/ImageSlide/sliderPost";
 import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
@@ -301,6 +304,55 @@ export default function ItineraryDetail(props) {
       if (response.data) {
         if (response.data.delete_itinerary.code !== 200) {
           throw new Error(response.data.delete_itinerary.message);
+        }
+
+        props.navigation.dispatch(
+          StackActions.replace("BottomStack", {
+            screen: "TripPlaning",
+            params: {
+              index: status === "saved" ? 1 : 0,
+            },
+          })
+        );
+
+        // props.navigation.push("TripPlaning", {
+        // 	index: status === "saved" ? 1 : 0,
+        // });
+      }
+
+      setloading(false);
+    } catch (error) {
+      setloading(false);
+      Alert.alert("" + error);
+    }
+  };
+
+  const [
+    mutationleaveitinerary,
+    { loading: loadingleave, data: dataleave, error: errorleave },
+  ] = useMutation(LeaveItinerary, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _handleLeave = async (id) => {
+    setloading(true);
+    try {
+      let response = await mutationleaveitinerary({
+        variables: {
+          itinerary_id: id,
+        },
+      });
+      if (errorleave) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.left_itinerary_buddy.code !== 200) {
+          throw new Error(response.data.left_itinerary_buddy.message);
         }
 
         props.navigation.dispatch(
@@ -5680,32 +5732,6 @@ export default function ItineraryDetail(props) {
                   justifyContent: "flex-start",
                 }}
               >
-                {Anggota === "true" && status !== "finish" ? (
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 2,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setmodalcover(true), setshowside(false);
-                    }}
-                  >
-                    <Create height={15} width={15} />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("EditCover")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
                 {Anggota === "true" ? (
                   <TouchableOpacity
                     style={{
@@ -5739,6 +5765,104 @@ export default function ItineraryDetail(props) {
                     </Text>
                   </TouchableOpacity>
                 ) : null}
+
+                {Anggota === "true" && status !== "finish" ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 2,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setmodalcover(true), setshowside(false);
+                    }}
+                  >
+                    <Create height={15} width={15} />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("EditCover")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 2,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    setshowside(false);
+                    props.navigation.navigate("detailItinerary", {
+                      data: datadetail,
+                    });
+                  }}
+                >
+                  <Help height={20} width={20} style={{ marginLeft: -5 }} />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 10,
+                    }}
+                  >
+                    {t("Tripdetail")}
+                  </Text>
+                </TouchableOpacity>
+
+                {Anggota === "true" ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 2,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      Alert.alert("", t("leave") + " " + t("trip") + "?", [
+                        {
+                          text: t("cancel"),
+                          onPress: () => {
+                            null;
+                          },
+                          style: "cancel",
+                        },
+                        {
+                          text: t("leave"),
+                          onPress: () => {
+                            _handleLeave(itineraryId), setshowside(false);
+                          },
+                        },
+                      ]);
+                      return true;
+                    }}
+                  >
+                    <LeaveTrips height={15} width={15} />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("leave")} {t("trip")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
                 {Anggota === "true" ? (
                   <TouchableOpacity
                     style={{
@@ -5776,7 +5900,7 @@ export default function ItineraryDetail(props) {
                         marginLeft: 10,
                       }}
                     >
-                      {t("delete")}
+                      {t("delete")} {t("trip")}
                     </Text>
                   </TouchableOpacity>
                 ) : null}

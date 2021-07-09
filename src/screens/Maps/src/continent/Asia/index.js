@@ -9,6 +9,7 @@ import {
   TextInput,
   BackHandler,
   ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import M035 from "./src/new/035";
@@ -29,8 +30,11 @@ import {
   Search,
   Xhitam,
 } from "../../../../../assets/svg";
+import DeviceInfo from "react-native-device-info";
+
 export default function Asia({ navigation }) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
 
   const [changeColor, setChangeColor] = useState("#209FAE");
   const [defaultColor, setDefaultColor] = useState("#DAF0F2");
@@ -247,8 +251,9 @@ export default function Asia({ navigation }) {
   let [countries, setCountries] = useState([]);
   let [text, setText] = useState("");
 
-  const handleSubmit = () => {
-    searchcountry(text);
+  const handleSubmit = (x) => {
+    setText(x);
+    searchcountry(x);
   };
 
   const searchcountry = async (e) => {
@@ -271,7 +276,13 @@ export default function Asia({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView>
+      <ScrollView
+        style={
+          {
+            // borderWidth: 1,
+          }
+        }
+      >
         {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
         {/* filter region */}
 
@@ -286,7 +297,8 @@ export default function Asia({ navigation }) {
               borderColor: "#D1D1D1",
               backgroundColor: "#FFF",
               borderRadius: 5,
-              margin: 10,
+              marginHorizontal: 10,
+              marginTop: 10,
               zIndex: 999999,
               // borderWidth: 3,
               elevation: 1,
@@ -363,20 +375,31 @@ export default function Asia({ navigation }) {
           </View>
         )}
         {/* akhir filter region */}
-        <View style={{ marginTop: BackUse.current.id === "142" ? -30 : 0 }}>
+        <View
+          style={
+            {
+              // borderWidth: 1,
+              // marginTop: BackUse.current.id === "142" ? -30 : 0
+            }
+          }
+        >
           {Components[`cm${subContinent.id}`]}
         </View>
         <View
+          // behavior={Platform.OS == "ios" ? "margin" : "height"}
+          // keyboardVerticalOffset={Notch ? 350 : 65}
           style={{
             backgroundColor: "#FFF",
             shadowColor: "#d3d3d3",
             shadowOffset: { width: 2, height: 2 },
             shadowOpacity: 1,
             shadowRadius: 2,
-            marginTop: BackUse.current.id === "142" ? -15 : 0,
+            // marginTop: BackUse.current.id === "142" ? -15 : 0,
+            marginTop: 0,
             margin: 15,
             borderRadius: 10,
             elevation: 1,
+            // marginBottom: 200,
           }}
         >
           <View
@@ -397,13 +420,14 @@ export default function Asia({ navigation }) {
               underlineColorAndroid="transparent"
               placeholder={t("search")}
               style={{
+                // borderWidth: 1,
                 width: "90%",
                 marginLeft: 5,
                 padding: 0,
               }}
               value={text}
               returnKeyType="search"
-              onChangeText={(x) => setText(x)}
+              onChangeText={(x) => handleSubmit(x)}
               onSubmitEditing={(x) => handleSubmit(x)}
             />
             {text ? (
@@ -437,7 +461,7 @@ export default function Asia({ navigation }) {
                   paddingVertical: 15,
                   paddingHorizontal: 15,
                   borderBottomColor: "#dedede",
-                  borderBottomWidth: 1,
+                  borderBottomWidth: index === countries.length - 1 ? 0 : 1,
                   marginVertical: 5,
                   flexDirection: "row",
                   alignItems: "center",
@@ -522,6 +546,15 @@ export default function Asia({ navigation }) {
             // contentContainerStyle={{ marginHorizontal: 15 }}
           />
         </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Notch ? 320 : 170}
+          style={
+            {
+              // backgroundColor: "red",
+            }
+          }
+        ></KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );
