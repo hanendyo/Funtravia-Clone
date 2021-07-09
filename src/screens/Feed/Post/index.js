@@ -21,9 +21,17 @@ import {
   SizeStrace,
   CameraBlue,
   Check,
+  Mute,
+  Unmute,
 } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
-import { Text, Button, StatusBar, FunImage } from "../../../component";
+import {
+  Text,
+  Button,
+  StatusBar,
+  FunImage,
+  FunVideo,
+} from "../../../component";
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
@@ -91,19 +99,23 @@ export default function Post(props) {
     });
   };
 
+  const [look, setLook] = useState(true);
+
   const selectImg = async (file) => {
     slider.current.scrollToOffset({ index: 0 });
     await setLoading(false);
-    setRatio({ width: 1, height: 1, index: 0, label: "S" });
+    // setRatio({ width: 1, height: 1, index: 0, label: "S" });
     if (file.node.image.width > file.node.image.height) {
       setRatioIndex([
         { width: 1, height: 1, index: 0, label: "S" },
         { width: 3, height: 2, index: 1, label: "L" },
+        // { width: 4, height: 5, index: 1, label: "P" },
       ]);
     } else {
       setRatioIndex([
         { width: 1, height: 1, index: 0, label: "S" },
         { width: 4, height: 5, index: 1, label: "P" },
+        // { width: 3, height: 2, index: 1, label: "L" },
       ]);
     }
     await setRecent(file);
@@ -138,19 +150,12 @@ export default function Post(props) {
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
-        // ImagePicker.openPicker({
-        //   mediaType: "video",
-        //   // uri: recent.node.image,
-        //   compressImageQuality: 0.6,
-        // }).then((video) => {
-        //   console.log("video", video);
-        // });
-
         props.navigation.navigate("CreatePostScreen", {
           location: recent.node.location,
           type: recent.node.type.substr(0, 5),
           file: recent.node.image,
           token: token,
+          ratio: ratio,
         });
       } else if (type.substr(0, 5) === "image") {
         try {
@@ -170,6 +175,7 @@ export default function Post(props) {
                 title_album: "",
                 album: "",
                 id_itin: "",
+                ratio: ratio,
               });
             })
             .catch((error) => console.log(error));
@@ -192,6 +198,8 @@ export default function Post(props) {
       });
     }
   };
+
+  // console.log("ratio", ratio);
 
   // const scroll_to = () => {
   //   setTimeout(() => {
@@ -452,30 +460,33 @@ export default function Post(props) {
   };
 
   // let dataSementara = [];
-  const selectMutiVideo = (item, index) => {
+  const selectMutiVideo = async (item, index) => {
     let tempsVideo = [...checklistVideo];
     tempsVideo.push(item);
     setChecklistVideo(tempsVideo);
     buka.current = !buka.current;
-    setRatio({ width: 1, height: 1, index: 0 });
+    // setRatio({ width: 1, height: 1, index: 0 });
+    setRatio({ ratio });
     if (buka.current === false) {
       setChecklistVideo([]);
     }
+    await setRecent(item);
   };
 
   const selectOneVideo = async (item, index) => {
-    if (item.node.image.width > item.node.image.height) {
-      setRatioIndex([
-        // { width: 1, height: 1, index: 0, label: "S" },
-        { width: 4, height: 5, index: 1, label: "P" },
-        { width: 3, height: 2, index: 1, label: "L" },
-      ]);
-    } else {
-      setRatioIndex([
-        { width: 1, height: 1, index: 0, label: "S" },
-        { width: 4, height: 5, index: 1, label: "P" },
-      ]);
-    }
+    // if (item.node.image.width > item.node.image.height) {
+    //   setRatioIndex([
+    //     // { width: 1, height: 1, index: 0, label: "S" },
+    //     { width: 4, height: 5, index: 1, label: "P" },
+    //     { width: 3, height: 2, index: 1, label: "L" },
+    //   ]);
+    // } else {
+    //   setRatioIndex([
+    //     // { width: 1, height: 1, index: 0, label: "S" },
+    //     { width: 1, height: 1, index: 0, label: "S" },
+    //     { width: 4, height: 5, index: 1, label: "P" },
+    //   ]);
+    // }
 
     await setRecent(item);
     let tempsVideo = [...checklistVideo];
@@ -501,6 +512,12 @@ export default function Post(props) {
 
   const durationTime = (data) => {
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
+  };
+
+  const [mute, setMute] = useState(false);
+
+  const sunyi = () => {
+    setMute(!mute);
   };
 
   return (
@@ -573,10 +590,11 @@ export default function Post(props) {
           <View
             style={{
               marginBottom: 5,
+              alignItems: "center",
             }}
           >
             {recent?.node?.type.substr(0, 5) === "video" ? (
-              <Video
+              <FunVideo
                 source={{
                   uri:
                     Platform.OS === "ios"
@@ -590,20 +608,26 @@ export default function Post(props) {
                         )}`
                       : recent.node?.image?.uri,
                 }}
-                ref={(ref) => {
-                  videoView = ref;
+                ref={(slider) => {
+                  videoView = slider;
                 }}
-                onProgress={durationTime}
-                paused={props.route.name == "Post" && isFocused ? false : true}
+                onProgress={(e) => durationTime(e)}
+                // paused={
+                //   props.route.name == "Post" && isFocused ? false : true
+                // }
+                // paused={mute ? true : false}
                 repeat={time ? true : false}
                 onBuffer={videoView?.current?.onBuffer}
                 onError={videoView?.current?.videoError}
                 style={{
-                  width: width,
-                  height: width,
+                  // width: width,
+                  // height: width,
+                  width: ratio.label == "P" ? width * (4 / 5) : width,
+                  height: ratio.label == "L" ? width * (2 / 3) : width,
                 }}
+                muted={mute ? true : false}
                 resizeMode="cover"
-              />
+              ></FunVideo>
             ) : (
               <View
                 style={{
@@ -639,30 +663,55 @@ export default function Post(props) {
                 /> */}
               </View>
             )}
-            {/* {buka.current === false ? ( */}
-            <TouchableOpacity
-              onPress={() =>
-                setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-              }
-              style={{
-                backgroundColor: "#B2B2B2",
-                position: "absolute",
-                bottom: 0,
-                borderRadius: 20,
-                margin: 15,
-                width: 40,
-                height: 40,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {ratio.index == 0 ? (
-                <SizeOri height={23} width={23} />
-              ) : (
-                <SizeStrace height={23} width={23} />
-              )}
-            </TouchableOpacity>
-            {/* ) : null} */}
+            {checklistVideo.length < 2 ? (
+              <Pressable
+                onPress={() =>
+                  setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+                }
+                style={{
+                  idth: width,
+                  // height: width,
+                  backgroundColor: "#B2B2B2",
+                  position: "absolute",
+                  bottom: 0,
+                  borderRadius: 20,
+                  margin: 15,
+                  width: 40,
+                  height: 40,
+                  left: 0,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {ratio.index == 0 ? (
+                  <SizeOri height={23} width={23} />
+                ) : (
+                  <SizeStrace height={23} width={23} />
+                )}
+              </Pressable>
+            ) : null}
+            {recent?.node?.type.substr(0, 5) === "video" ? (
+              <Pressable
+                onPress={() => setMute(!mute)}
+                style={{
+                  position: "absolute",
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  // backgroundColor: "#464646",
+                  bottom: 10,
+                  right: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {mute ? (
+                  <Mute width="15" height="15" />
+                ) : (
+                  <Unmute width="15" height="15" />
+                )}
+              </Pressable>
+            ) : null}
           </View>
         )}
         renderItem={({ item, index }) =>
@@ -680,6 +729,7 @@ export default function Post(props) {
               onPress={() => selectImg(item)}
               onLongPress={() => selectMutiVideo(item, index)}
               delayLongPress={800}
+
               // onPress={() => scroll_to()}
             >
               {item.node?.type.substr(0, 5) === "video" ? (
@@ -717,15 +767,17 @@ export default function Post(props) {
                       style={{
                         zIndex: 1,
                         // flex: 1,
-                        bottom: 5,
-                        right: 5,
-                        borderRadius: 15,
-                        position: "absolute",
-                        backgroundColor: "rgba(0,0,0,0.50)",
-                        borderWidth: 2,
-                        borderColor: "white",
-                        height: 30,
-                        width: 30,
+                        // bottom: 5,
+                        // right: 5,
+                        // borderRadius: 15,
+                        // position: "absolute",
+                        // backgroundColor: "rgba(0,0,0,0.50)",
+                        // borderWidth: 2,
+                        borderColor: "black",
+                        // height: 30,
+                        // width: 30,
+                        width: "100%",
+                        height: "100%",
                         justifyContent: "center",
                         alignItems: "center",
                       }}
@@ -736,10 +788,15 @@ export default function Post(props) {
                           <View
                             key={index}
                             style={{
+                              position: "absolute",
                               backgroundColor: "#209fae",
                               height: 26,
                               width: 26,
                               borderRadius: 13,
+                              borderWidth: 1,
+                              bottom: 5,
+                              right: 5,
+                              borderColor: "#FFF",
                               justifyContent: "center",
                               alignItems: "center",
                             }}
@@ -782,15 +839,17 @@ export default function Post(props) {
                       style={{
                         zIndex: 1,
                         // flex: 1,
-                        bottom: 5,
-                        right: 5,
-                        borderRadius: 15,
-                        position: "absolute",
-                        backgroundColor: "rgba(0,0,0,0.50)",
-                        borderWidth: 2,
-                        borderColor: "white",
-                        height: 30,
-                        width: 30,
+                        // bottom: 5,
+                        // right: 5,
+                        // borderRadius: 15,
+                        // position: "absolute",
+                        // backgroundColor: "rgba(0,0,0,0.50)",
+                        // borderWidth: 2,
+                        borderColor: "black",
+                        // height: 30,
+                        // width: 30,
+                        width: "100%",
+                        height: "100%",
                         justifyContent: "center",
                         alignItems: "center",
                       }}
@@ -801,10 +860,15 @@ export default function Post(props) {
                           <View
                             key={index}
                             style={{
+                              position: "absolute",
                               backgroundColor: "#209fae",
                               height: 26,
                               width: 26,
                               borderRadius: 13,
+                              borderWidth: 1,
+                              bottom: 5,
+                              right: 5,
+                              borderColor: "#FFF",
                               justifyContent: "center",
                               alignItems: "center",
                             }}

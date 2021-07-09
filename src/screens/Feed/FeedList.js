@@ -193,6 +193,8 @@ export default function FeedList({ props, token }) {
           assets: props?.route?.params?.assets,
         },
       });
+
+      console.log("response", response);
       if (loadingMutationPost) {
         console.log("loading", loadingMutationPost);
       }
@@ -328,7 +330,6 @@ export default function FeedList({ props, token }) {
       }
     }
   };
-  console.log("tokenssssss", tkn);
   const {
     loading: loadingPost,
     data: dataPost,
@@ -350,6 +351,8 @@ export default function FeedList({ props, token }) {
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
+
+  console.log("dataPost", dataPost);
 
   let feed_post_pageing = [];
   if (dataPost && dataPost && "datas" in dataPost?.feed_post_pageing) {
@@ -478,6 +481,7 @@ export default function FeedList({ props, token }) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
+    let tkn = await AsyncStorage.getItem("access_token");
     setSetting(JSON.parse(setsetting));
     await LoadFollowing();
   };
@@ -519,7 +523,7 @@ export default function FeedList({ props, token }) {
     }
     const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
-  }, [props.route.params]);
+  }, [props.route.params?.isPost]);
 
   const countKoment = (id) => {
     const tempd = [...feed_post_pageing];
@@ -652,7 +656,6 @@ export default function FeedList({ props, token }) {
 
   const _unfollow = async (id, status) => {
     setModalmenuother(false);
-    console.log("token feed unfoll", token);
 
     if (token) {
       try {
@@ -706,7 +709,6 @@ export default function FeedList({ props, token }) {
   });
 
   const _follow = async (id, status) => {
-    console.log("token feed follow", token);
     setModalmenuother(false);
     if (token) {
       try {
@@ -744,150 +746,17 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  console.log("feed_post_pageing.length", feed_post_pageing.length);
-
   const [modalLogin, setModalLogin] = useState(true);
 
-  if (feed_post_pageing.length > 11) {
-    return (
-      <Modal
-        useNativeDriver={true}
-        visible={!token || token == undefined ? modalLogin : false}
-        onRequestClose={() => true}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          // onPress={() => setModalLogin(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 80,
-            marginHorizontal: 40,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 3,
-            marginTop: Dimensions.get("screen").height / 4,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
-              paddingHorizontal: 20,
-            }}
-          >
-            <View
-              style={{
-                alignItems: "center",
-                marginHorizontal: 5,
-                marginBottom: 10,
-              }}
-            >
-              <Text style={{ marginBottom: 5 }} size="label" type="bold">
-                Login untuk melanjutkan
-              </Text>
-              <Text
-                style={{ textAlign: "center", lineHeight: 18 }}
-                size="label"
-                type="regular"
-              >
-                Login untuk melihat foto dan upload foto liburanmu
-              </Text>
-            </View>
-            <Button
-              style={{ marginBottom: 5 }}
-              onPress={() => {
-                props.navigation.navigate("AuthStack", {
-                  screen: "LoginScreen",
-                });
-                setModalLogin(false);
-                feed_post_pageing.length = 0;
-              }}
-              type="icon"
-              text={"Login"}
-            ></Button>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                marginVertical: 5,
-              }}
-            >
-              <View
-                style={{
-                  width: 50,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d1d1d1",
-                  marginHorizontal: 10,
-                }}
-              ></View>
-              <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
-                {t("or")}
-              </Text>
-              <View
-                style={{
-                  width: 50,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d1d1d1",
-                  marginHorizontal: 10,
-                }}
-              ></View>
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Text
-                size="label"
-                type="bold"
-                style={{ color: "#209FAE" }}
-                onPress={() => {
-                  props.navigation.navigate("AuthStack", {
-                    screen: "RegisterScreen",
-                  });
-                  setModalLogin(false);
-                  feed_post_pageing.length = 0;
-                }}
-              >
-                Buat Akun
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    );
-  }
+  console.log("props", props);
 
-  return (
-    <SafeAreaView>
-      {/* {test()} */}
-      <View
-      // style={{
-      //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
-      //   opacity: 0.6,
-      //   position: "absolute",
-      //   width: Dimensions.get("screen").width,
-      //   height: Dimensions.get("screen").height,
-      //   backgroundColor:
-      //     modalmenu || modalmenuother || modalhapus === true ? "#000" : null,
-      // }}
-      >
-        {/* <Modal
+  if (feed_post_pageing.length > 11) {
+    if (!token || token == undefined) {
+      return (
+        <Modal
           useNativeDriver={true}
-          visible={modalLogin}
-          // onRequestClose={() => setModalLogin(false)}
+          visible={!token || token == undefined ? modalLogin : false}
+          onRequestClose={() => true}
           transparent={true}
           animationType="fade"
         >
@@ -920,20 +789,107 @@ export default function FeedList({ props, token }) {
                 backgroundColor: "white",
                 width: Dimensions.get("screen").width - 80,
                 padding: 20,
+                paddingHorizontal: 20,
               }}
             >
+              <View
+                style={{
+                  alignItems: "center",
+                  marginHorizontal: 5,
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{ marginBottom: 5 }} size="label" type="bold">
+                  Login untuk melanjutkan
+                </Text>
+                <Text
+                  style={{ textAlign: "center", lineHeight: 18 }}
+                  size="label"
+                  type="regular"
+                >
+                  Login untuk melihat foto dan upload foto liburanmu
+                </Text>
+              </View>
               <Button
+                style={{ marginBottom: 5 }}
                 onPress={() => {
                   props.navigation.navigate("AuthStack", {
                     screen: "LoginScreen",
                   });
+                  // setModalLogin(false);
+                  feed_post_pageing.length = 0;
                 }}
                 type="icon"
-                text={"login"}
+                text={"Login"}
               ></Button>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginVertical: 5,
+                }}
+              >
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+                <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                  {t("or")}
+                </Text>
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ color: "#209FAE" }}
+                  onPress={() => {
+                    props.navigation.navigate("AuthStack", {
+                      screen: "RegisterScreen",
+                    });
+                    // setModalLogin(false);
+                    feed_post_pageing.length = 0;
+                  }}
+                >
+                  Buat Akun
+                </Text>
+              </View>
             </View>
           </View>
-        </Modal> */}
+        </Modal>
+      );
+    }
+  } else {
+    feed_post_pageing;
+  }
+
+  return (
+    <SafeAreaView>
+      {/* {test()} */}
+      <View
+      // style={{
+      //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
+      //   opacity: 0.6,
+      //   position: "absolute",
+      //   width: Dimensions.get("screen").width,
+      //   height: Dimensions.get("screen").height,
+      //   backgroundColor:
+      //     modalmenu || modalmenuother || modalhapus === true ? "#000" : null,
+      // }}
+      >
         {/* Modal Menu user */}
 
         <Modal
@@ -1445,8 +1401,8 @@ export default function FeedList({ props, token }) {
                 justifyContent: "center",
                 // alignItems: "center",
                 width: Dimensions.get("window").width - 40,
-                // height: Dimensions.get("window").width - 40,
-                minHeight: Dimensions.get("window").width - 155,
+                // height:  Dimensions.get("window").width - 40,
+                // minHeight: Dimensions.get("window").width - 155,
                 // borderWidth: 0.5,
                 borderColor: "#EEEEEE",
                 borderRadius: 15,
