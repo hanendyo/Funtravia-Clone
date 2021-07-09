@@ -176,59 +176,59 @@ export default function GroupDetail(props) {
             );
             // console.log(inde);
             await setMydata(dataResponse.grup.buddy[inde]);
-            console.log(dataResponse.grup);
-            if (
-                dataResponse.grup.created_by == data_setting.user.id &&
-                from == "itinerary"
-            ) {
-                const leftheaderOptions = {
-                    headerRight: () => {
-                        let _menu = null;
-                        return (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    // paddingHorizontal: 10,
-                                    // borderWidth: 1,
-                                }}
-                            >
-                                <Menu
-                                    ref={(ref) => (_menu = ref)}
-                                    button={
-                                        <Pressable
-                                            style={{
-                                                paddingHorizontal: 20,
-                                                paddingVertical: 10,
-                                            }}
-                                            onPress={() => _menu.show()}
-                                        >
-                                            <OptionsVertWhite
-                                                height={20}
-                                                width={20}
-                                            ></OptionsVertWhite>
-                                        </Pressable>
-                                    }
-                                    style={{
-                                        width: 200,
-                                    }}
-                                >
-                                    <MenuItem
-                                        onPress={() => {
-                                            _menu.hide();
-                                            setmodalCover(true);
-                                        }}
-                                    >
-                                        {t("changeCoverGroup")}
-                                    </MenuItem>
-                                </Menu>
-                            </View>
-                        );
-                    },
-                };
-                props.navigation.setOptions(leftheaderOptions);
-            }
+            // console.log(dataResponse.grup);
+            // if (
+            //     dataResponse.grup.created_by == data_setting.user.id &&
+            //     from == "itinerary"
+            // ) {
+            //     const leftheaderOptions = {
+            //         headerRight: () => {
+            //             let _menu = null;
+            //             return (
+            //                 <View
+            //                     style={{
+            //                         flex: 1,
+            //                         alignItems: "center",
+            //                         justifyContent: "center",
+            //                         // paddingHorizontal: 10,
+            //                         // borderWidth: 1,
+            //                     }}
+            //                 >
+            //                     <Menu
+            //                         ref={(ref) => (_menu = ref)}
+            //                         button={
+            //                             <Pressable
+            //                                 style={{
+            //                                     paddingHorizontal: 20,
+            //                                     paddingVertical: 10,
+            //                                 }}
+            //                                 onPress={() => _menu.show()}
+            //                             >
+            //                                 <OptionsVertWhite
+            //                                     height={20}
+            //                                     width={20}
+            //                                 ></OptionsVertWhite>
+            //                             </Pressable>
+            //                         }
+            //                         style={{
+            //                             width: 200,
+            //                         }}
+            //                     >
+            //                         <MenuItem
+            //                             onPress={() => {
+            //                                 _menu.hide();
+            //                                 setmodalCover(true);
+            //                             }}
+            //                         >
+            //                             {t("changeCoverGroup")}
+            //                         </MenuItem>
+            //                     </Menu>
+            //                 </View>
+            //             );
+            //         },
+            //     };
+            //     props.navigation.setOptions(leftheaderOptions);
+            // }
             await setLoading(false);
         } else {
             await setLoading(false);
