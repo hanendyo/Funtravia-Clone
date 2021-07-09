@@ -282,7 +282,8 @@ export default function Country(props) {
 
                 alignContent: "center",
                 alignItems: "center",
-                padding: 7,
+                paddingVertical: 7,
+                paddingHorizontal: 0,
                 borderRightWidth:
                   index !== 8 &&
                   index !== 5 &&
@@ -305,6 +306,7 @@ export default function Country(props) {
               <Text
                 size="description"
                 type="bold"
+                numberOfLines={1}
                 style={{
                   textAlign: "center",
                   marginTop: 3,
