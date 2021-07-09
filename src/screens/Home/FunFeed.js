@@ -17,7 +17,6 @@ export default function SearchFeed({ props }) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
 
-  console.log("token", token);
   let [users, setuser] = useState(null);
 
   const [
