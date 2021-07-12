@@ -738,7 +738,7 @@ export default function ItineraryDetail(props) {
     }
   };
 
-  const getcity = (data) => {
+  const getcity = (data, city) => {
     var namakota = "";
     var hasil = "";
     // for (var x of data) {
@@ -747,7 +747,7 @@ export default function ItineraryDetail(props) {
     //     hasil += Capital({ text: namakota }) + " - ";
     //   }
     // }
-    hasil += Capital({ text: data[0].city });
+    hasil += Capital({ text: data[0]?.city ? data[0]?.city : city });
     return hasil;
   };
 
@@ -3692,7 +3692,10 @@ export default function ItineraryDetail(props) {
                   <Text>
                     {dataList.length > 0 ? (
                       <Truncate
-                        text={getcity(dataList).toUpperCase()}
+                        text={getcity(
+                          dataList,
+                          datadetail.itinerary_detail.city.name
+                        ).toUpperCase()}
                         length={35}
                       />
                     ) : (
@@ -4376,7 +4379,10 @@ export default function ItineraryDetail(props) {
                             : null,
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
-                        idcity: datadetail.itinerary_detail.city.id,
+                        idcity:
+                          dataList?.length > 0
+                            ? dataList[dataList.length - 1].id_city
+                            : datadetail.itinerary_detail.city.id,
                         idcountries: datadetail.itinerary_detail.country.id,
                       });
                     } else if (jam === 23 && menit === 0) {
@@ -4390,7 +4396,10 @@ export default function ItineraryDetail(props) {
                             : null,
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
-                        idcity: datadetail.itinerary_detail.city.id,
+                        idcity:
+                          dataList?.length > 0
+                            ? dataList[dataList.length - 1].id_city
+                            : datadetail.itinerary_detail.city.id,
                         idcountries: datadetail.itinerary_detail.country.id,
                       });
                     } else {
@@ -5200,7 +5209,10 @@ export default function ItineraryDetail(props) {
                           : null,
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
-                      idcity: datadetail.itinerary_detail.city.id,
+                      idcity:
+                        dataList?.length > 0
+                          ? dataList[dataList.length - 1].id_city
+                          : datadetail.itinerary_detail.city.id,
                       idcountries: datadetail.itinerary_detail.country.id,
                     });
                   } else if (jam === 23 && menit === 0) {
@@ -5214,7 +5226,10 @@ export default function ItineraryDetail(props) {
                           : null,
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
-                      idcity: datadetail.itinerary_detail.city.id,
+                      idcity:
+                        dataList?.length > 0
+                          ? dataList[dataList.length - 1].id_city
+                          : datadetail.itinerary_detail.city.id,
                       idcountries: datadetail.itinerary_detail.country.id,
                     });
                   } else {
