@@ -952,29 +952,15 @@ export default function CityDetail(props) {
                   color: "#209FAE",
                 }}
               >
-                {loadings ? (
-                  <View
-                    style={{
-                      width: width - 70,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: 250,
-                      marginTop: 5,
-                    }}
-                  >
-                    <ActivityIndicator color="#209FAE" animating={true} />
-                  </View>
-                ) : (
-                  // <View></View>
-                  <RenderMaps
-                    icon={render && render.map ? render.map : "mk-belitung"}
-                    height={250}
-                    width={width - 70}
-                    style={{
-                      bottom: -3,
-                    }}
-                  />
-                )}
+                {/* // <View></View> */}
+                <RenderMaps
+                  icon={render?.map ? render.map : "mk-belitung"}
+                  height={250}
+                  width={width - 70}
+                  style={{
+                    bottom: -3,
+                  }}
+                />
               </Tab>
               <Tab
                 heading={t("climate")}
