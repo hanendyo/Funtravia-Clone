@@ -16,6 +16,7 @@ const Timeline = gql`
       longitude
       total_price
       city
+      id_city
       images
       status
       icon
