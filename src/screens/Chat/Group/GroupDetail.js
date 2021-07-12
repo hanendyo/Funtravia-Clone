@@ -538,9 +538,9 @@ export default function GroupDetail(props) {
         }
     };
 
-    const _renameGroup = async (text) => {
+    const _renameGroup = async (text, token) => {
         setIndexActive(null);
-        console.log(text);
+        // console.log(token);
         let data_kirim = JSON.stringify({
             group_id: dataDetail.id,
             title: text,
@@ -1415,7 +1415,7 @@ export default function GroupDetail(props) {
                             ></Button>
                             <Button
                                 onPress={() => {
-                                    _renameGroup(textName);
+                                    _renameGroup(textName, token);
                                     setModalrename(false);
                                 }}
                                 style={{
