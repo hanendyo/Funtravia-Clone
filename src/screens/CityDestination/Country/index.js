@@ -806,7 +806,8 @@ export default function Country(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 0.5,
+            borderBottomWidth: 0.8,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -1932,6 +1933,7 @@ export default function Country(props) {
                         <View
                           style={{
                             alignItems: "center",
+                            marginTop: i.title ? 20 : 0,
                           }}
                         >
                           <FunImage
@@ -1940,7 +1942,7 @@ export default function Country(props) {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 10,
+
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -1976,7 +1978,7 @@ export default function Country(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            // marginTop: 10,
+                            marginTop: i.title ? 20 : 0,
                             lineHeight: 20,
                             textAlign: "left",
                             color: "#464646",
