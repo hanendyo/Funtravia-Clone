@@ -164,23 +164,28 @@ export default function Settings(props) {
             >
               <Button
                 size="small"
-                color={language == "en" ? "primary" : "tertiary"}
-                variant={"normal"}
+                color={language == "en" ? "primary" : "green"}
+                variant="normal"
                 onPress={() => {
                   languageToggle("en"),
                     props.navigation.setOptions({
                       headerTitle: t("setting"),
                     });
                 }}
-                text="Inggris"
-                style={{
-                  width: 95,
-                  marginRight: 5,
-                }}
+                text={
+                  <Text
+                    size="readable"
+                    type="light"
+                    style={{ color: language == "en" ? "#FFF" : "#464646" }}
+                  >
+                    {t("English")}
+                  </Text>
+                }
               ></Button>
               <Button
+                // type="box"
                 size="small"
-                color={language == "id" ? "primary" : "tertiary"}
+                color={language == "id" ? "primary" : "green"}
                 variant="normal"
                 onPress={() => {
                   languageToggle("id"),
@@ -188,10 +193,17 @@ export default function Settings(props) {
                       headerTitle: t("setting"),
                     });
                 }}
-                text="Indonesia"
-                style={{
-                  width: 95,
-                }}
+                // text="Indonesia"
+                text={
+                  <Text
+                    size="readable"
+                    type="light"
+                    style={{ color: language == "id" ? "#FFF" : "#464646" }}
+                  >
+                    Indonesia
+                  </Text>
+                }
+                style={{ marginLeft: 5 }}
               ></Button>
             </View>
           </View>

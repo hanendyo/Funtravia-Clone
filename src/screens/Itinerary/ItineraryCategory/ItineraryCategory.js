@@ -1,4 +1,4 @@
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,15 +32,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
 import { Truncate, Loading } from "../../../component";
 import Ripple from "react-native-material-ripple";
-import {
-  renderers,
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  MenuProvider,
-} from "react-native-popup-menu";
+// import {
+//   renderers,
+//   Menu,
+//   MenuOptions,
+//   MenuOption,
+//   MenuTrigger,
+//   MenuProvider,
+// } from "react-native-popup-menu";
+import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 import { Thumbnail } from "native-base";
+import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
+import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import { RNToasty } from "react-native-toasty";
 
 export default function ItineraryCategory(props) {
   const { t } = useTranslation();
@@ -55,7 +59,6 @@ export default function ItineraryCategory(props) {
   if (props.route.params.idcity) {
     idcity = props.route.params.idcity;
   }
-  console.log("dataid", props.route.params.idcity);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -65,7 +68,7 @@ export default function ItineraryCategory(props) {
     rating: null,
   });
 
-  const { SlideInMenu } = renderers;
+  // const { SlideInMenu } = renderers;
   const unSelect = (id) => {
     setDataType("");
   };
@@ -244,6 +247,30 @@ export default function ItineraryCategory(props) {
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
 
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(ItineraryLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(ItineraryUnliked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
   const _liked = async (id, index) => {
     if (token || token !== "") {
       list_populer[index].liked = true;
@@ -256,30 +283,32 @@ export default function ItineraryCategory(props) {
             qty: 1,
           },
         });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
+
         if (errorLike) {
-          throw new Error("Error Input");
+          console.log(errorLike);
         }
         if (response.data) {
-          if (
-            response.data.setItineraryFavorit.code === 200 ||
-            response.data.setItineraryFavorit.code === "200"
-          ) {
+          if (response.data.setItineraryFavorit.code === 200) {
             list_populer[index].liked = true;
           } else {
-            throw new Error(response.data.setItineraryFavorit.message);
+            console.log(response.data.setItineraryFavorit.message);
+            // throw new Error(response.data.setItineraryFavorit.message);
           }
         }
       } catch (error) {
         list_populer[index].liked = false;
         list_populer[index].response_count =
           list_populer[index].response_count + 1;
-        Alert.alert("" + error);
+        RNToasty.Show({
+          title: "Something wrong",
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("Please Login");
+      RNToasty.Show({
+        title: "Please Login",
+        position: "bottom",
+      });
     }
   };
 
@@ -294,30 +323,34 @@ export default function ItineraryCategory(props) {
             id: id,
           },
         });
-        if (loadingUnLike) {
-          Alert.alert("Loading!!");
-        }
+
         if (errorUnLike) {
-          throw new Error("Error Input");
+          // throw new Error("Error Input");
+          console.log(errorUnLike);
         }
 
         if (response.data) {
-          if (
-            response.data.unsetItineraryFavorit.code === 200 ||
-            response.data.unsetItineraryFavorit.code === "200"
-          ) {
+          if (response.data.unsetItineraryFavorit.code === 200) {
             list_populer[index].liked = false;
           } else {
-            throw new Error(response.data.unsetItineraryFavorit.message);
+            console.log(response.data.unsetItineraryFavorit.message);
+            // throw new Error(response.data.unsetItineraryFavorit.message);
           }
         }
       } catch (error) {
         list_populer[index].liked = true;
         list_populer[index].response_count =
           list_populer[index].response_count - 1;
+        RNToasty.Show({
+          title: "Something wrong",
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("Please Login");
+      RNToasty.Show({
+        title: "Please Login",
+        position: "bottom",
+      });
     }
   };
 
@@ -651,6 +684,10 @@ export default function ItineraryCategory(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  let _menu = null;
+  console.log("_menu", _menu);
+  console.log("order", order);
+
   const RenderUtama = ({ aktif }) => {
     if (loadingPopuler) {
       <View style={{ flex: 1, backgroundColor: "#FFF" }}>
@@ -682,93 +719,146 @@ export default function ItineraryCategory(props) {
                 />
               }
               ListHeaderComponent={
-                <>
-                  <MenuProvider
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  <View style={{ flexDirection: "row" }}>
+                    <Text>Show Result : </Text>
+                    <Text size="description" type="bold">
+                      {list_populer?.length}
+                    </Text>
+                  </View>
+                  <Menu
+                    ref={(ref) => (_menu = ref)}
+                    button={
+                      <Pressable
+                        style={{
+                          paddingHorizontal: 20,
+                          paddingVertical: 10,
+                          backgroundColor: "#FFF",
+                        }}
+                        onPress={() => _menu.show()}
+                      >
+                        <Text height={20} width={20}>
+                          {order === "new" ? "New Post" : "Populer"}
+                        </Text>
+                      </Pressable>
+                    }
                     style={{
-                      // height: Dimensions.get("screen").height * 0.1,
-                      height: Dimensions.get("screen").height * 0.06,
-                      paddingHorizontal: 15,
-                      paddingVertical: 5,
-                      alignItems: "center",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      flexDirection: "row",
-                      zIndex: -1,
-                      marginBottom: 2,
+                      width: 200,
                     }}
                   >
-                    <View style={{ flexDirection: "row" }}>
-                      <Text
-                        size="description"
-                        type="bold"
-                        style={{ marginRight: 5 }}
-                      >
-                        Show Result
-                      </Text>
-                      <Text size="description" type="bold">
-                        {list_populer?.length}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        width: Dimensions.get("screen").width * 0.35,
-                        height: "100%",
-                        elevation: 10,
-                        justifyContent: "center",
-                        backgroundColor: "white",
-                        borderRadius: 3,
-                        // borderWidth: 1,
+                    <MenuItem
+                      onPress={() => {
+                        setOrder("new");
+                        _menu.hide();
                       }}
                     >
-                      <View
-                        style={{
-                          backgroundColor: "#fff",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          padding: 5,
-                          borderRadius: 2,
-                        }}
-                      >
-                        <Menu>
-                          <MenuTrigger>
-                            <Text size="description" type="bold">
-                              {order === "new" ? "New Post" : "Populer"}
-                            </Text>
-                          </MenuTrigger>
-                          <MenuOptions
-                            optionsContainerStyle={{
-                              // alignSelf: "flex-end",
-                              zIndex: 1,
-                              width: Dimensions.get("screen").width * 0.3,
-                              // alignItems: "flex-end",
-                              // alignContent: "flex-end",
-                            }}
-                          >
-                            <MenuOption
-                              // text="New Post"
-                              style={{ paddingBottom: 1 }}
-                              onSelect={() => setOrder("new")}
-                            >
-                              <Text size="description" type="bold">
-                                New Post
-                              </Text>
-                            </MenuOption>
-                            <MenuOption
-                              // text="Populer"
-                              style={{ paddingTop: 1 }}
-                              onSelect={() => setOrder("populer")}
-                            >
-                              <Text size="description" type="bold">
-                                Populer
-                              </Text>
-                            </MenuOption>
-                          </MenuOptions>
-                        </Menu>
-                      </View>
-                    </View>
-                  </MenuProvider>
-                </>
+                      New Post
+                    </MenuItem>
+                    <MenuDivider />
+                    <MenuItem
+                      onPress={() => {
+                        setOrder("populer");
+                        _menu.hide();
+                      }}
+                    >
+                      Populer
+                    </MenuItem>
+                  </Menu>
+                </View>
               }
+              // ListHeaderComponent={
+              //   <>
+              //     <MenuProvider
+              //       style={{
+              //         // height: Dimensions.get("screen").height * 0.1,
+              //         height: Dimensions.get("screen").height * 0.06,
+              //         paddingHorizontal: 15,
+              //         paddingVertical: 5,
+              //         alignItems: "center",
+              //         flexDirection: "row",
+              //         justifyContent: "space-between",
+              //         flexDirection: "row",
+              //         zIndex: -1,
+              //         marginBottom: 2,
+              //       }}
+              //     >
+              //       <View style={{ flexDirection: "row" }}>
+              //         <Text
+              //           size="description"
+              //           type="bold"
+              //           style={{ marginRight: 5 }}
+              //         >
+              //           Show Result
+              //         </Text>
+              //         <Text size="description" type="bold">
+              //           {list_populer?.length}
+              //         </Text>
+              //       </View>
+              //       <View
+              //         style={{
+              //           width: Dimensions.get("screen").width * 0.35,
+              //           height: "100%",
+              //           elevation: 10,
+              //           justifyContent: "center",
+              //           backgroundColor: "white",
+              //           borderRadius: 3,
+              //           // borderWidth: 1,
+              //         }}
+              //       >
+              //         <View
+              //           style={{
+              //             backgroundColor: "#fff",
+              //             justifyContent: "center",
+              //             alignItems: "center",
+              //             padding: 5,
+              //             borderRadius: 2,
+              //           }}
+              //         >
+              //           <Menu>
+              //             <MenuTrigger>
+              //               <Text size="description" type="bold">
+              //                 {order === "new" ? "New Post" : "Populer"}
+              //               </Text>
+              //             </MenuTrigger>
+              //             <MenuOptions
+              //               style={{
+              //                 zIndex: 1,
+              //                 width: Dimensions.get("screen").width * 0.3,
+              //                 // height: 500,
+              //               }}
+              //             >
+              //               <MenuOption
+              //                 // text="New Post"
+              //                 style={{ paddingBottom: 1 }}
+              //                 onSelect={() => setOrder("new")}
+              //               >
+              //                 <Text size="description" type="bold">
+              //                   New Post
+              //                 </Text>
+              //               </MenuOption>
+              //               <MenuOption
+              //                 // text="Populer"
+              //                 style={{ paddingTop: 1 }}
+              //                 onSelect={() => setOrder("populer")}
+              //               >
+              //                 <Text size="description" type="bold">
+              //                   Populer
+              //                 </Text>
+              //               </MenuOption>
+              //             </MenuOptions>
+              //           </Menu>
+              //         </View>
+              //       </View>
+              //     </MenuProvider>
+              //   </>
+              // }
               onEndReachedThreshold={1}
               onEndReached={handleOnEndReached}
             />
