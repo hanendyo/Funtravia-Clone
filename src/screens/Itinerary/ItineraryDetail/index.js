@@ -479,7 +479,18 @@ export default function ItineraryDetail(props) {
       unit: unit,
     });
     let hasil = jarak / kecepatan;
-    return hasil.toFixed(0) > 0 ? hasil.toFixed(0) : 1;
+    let hasils = hasil + "";
+
+    let bahan = hasils.split(".");
+
+    let jam = parseFloat(bahan[1]);
+
+    return (
+      (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
+      (jam > 0 && jam < 60
+        ? " " + jam + " " + t("min")
+        : " " + (jam - 60) + " " + t("min"))
+    );
   };
 
   const dateFormatr = (date) => {
@@ -2070,12 +2081,26 @@ export default function ItineraryDetail(props) {
                     }}
                   >
                     <Text size="small" type="bold" numberOfLines={1}>
+                      {Anggota === "true"
+                        ? "You + " +
+                          (parseFloat(
+                            datadetail.itinerary_detail.buddy.length
+                          ) -
+                            1)
+                        : datadetail?.itinerary_detail?.buddy[0]?.user
+                            ?.first_name +
+                          " + " +
+                          (parseFloat(
+                            datadetail.itinerary_detail.buddy.length
+                          ) -
+                            1)}{" "}
+                      {t("others")}
                       {/* <Truncate
                         text={
                           // " " +
                           // t("with") +
                           "   " + */}
-                      {(datadetail?.itinerary_detail?.buddy[1]?.user?.first_name
+                      {/* {(datadetail?.itinerary_detail?.buddy[1]?.user?.first_name
                         ? datadetail.itinerary_detail.buddy[1].user.first_name +
                           " "
                         : "User funtravia") +
@@ -2084,13 +2109,29 @@ export default function ItineraryDetail(props) {
                             (datadetail.itinerary_detail.buddy.length - 2) +
                             " " +
                             t("others")
-                          : " ")}
+                          : " ")} */}
                       {/* }
                         length={23}
                       /> */}
                     </Text>
                   </View>
-                ) : null}
+                ) : (
+                  <View
+                    style={{
+                      paddingLeft: 5,
+                      // alignItems: "center",
+                      justifyContent: "center",
+                      flex: 1,
+                    }}
+                  >
+                    <Text size="small" type="bold" numberOfLines={1}>
+                      {Anggota === "true"
+                        ? "You"
+                        : datadetail?.itinerary_detail?.buddy[0]?.user
+                            ?.first_name}
+                    </Text>
+                  </View>
+                )}
               </View>
             </TouchableOpacity>
           ) : null}
@@ -2618,7 +2659,7 @@ export default function ItineraryDetail(props) {
                       unit={"km"}
                     />
                   </Text>
-                  <Text>km </Text>
+                  <Text> km </Text>
                   <Text>- </Text>
                   <Text type="bold">
                     <HitungWaktu
@@ -2630,7 +2671,7 @@ export default function ItineraryDetail(props) {
                       kecepatan={50}
                     />
                   </Text>
-                  <Text>{t("hours")}</Text>
+                  {/* <Text>{t("hours")}</Text> */}
                   {/* <Text>{" in "}</Text>
 									<Text type="bold">{"50"}</Text>
 									<Text>{"km/h"}</Text> */}
@@ -4945,7 +4986,8 @@ export default function ItineraryDetail(props) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                Alert.alert(t("comingSoon"));
+                setModalcustom(false);
+                props.navigation.push("customFlight");
               }}
               style={{
                 marginVertical: 2.5,
@@ -4982,7 +5024,8 @@ export default function ItineraryDetail(props) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                Alert.alert(t("comingSoon"));
+                setModalcustom(false);
+                props.navigation.push("customStay");
               }}
               style={{
                 marginVertical: 2.5,
