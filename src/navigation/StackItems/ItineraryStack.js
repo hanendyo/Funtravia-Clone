@@ -21,6 +21,8 @@ import CraetePostAlbum from "../../screens/Itinerary/PostItineraryAlbum/CraetePo
 import detailCustomItinerary from "../../screens/Itinerary/CustomItinerary/detailcustom";
 import copyItinerary from "../../screens/Itinerary/CopyItinerary/Index";
 import detailItinerary from "../../screens/Itinerary/ItineraryDetail/detailItinerary";
+import customFlight from "../../screens/Itinerary/CustomItinerary/flight";
+import customStay from "../../screens/Itinerary/CustomItinerary/stay";
 
 const ItineraryStack = createStackNavigator();
 export default function ItineraryStackNavigation() {
@@ -117,7 +119,6 @@ export default function ItineraryStackNavigation() {
           headerBackTitleVisible: false,
         }}
       />
-
       <ItineraryStack.Screen
         name="ItineraryPopuler"
         component={ItineraryPopuler}
@@ -205,6 +206,24 @@ export default function ItineraryStackNavigation() {
       <ItineraryStack.Screen
         name="detailItinerary"
         component={detailItinerary}
+        options={{
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ItineraryStack.Screen
+        name="customFlight"
+        component={customFlight}
+        options={{
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ItineraryStack.Screen
+        name="customStay"
+        component={customStay}
         options={{
           headerTransparent: false,
           headerTintColor: "white",
