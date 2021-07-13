@@ -1567,14 +1567,14 @@ export default function CityDetail(props) {
                           padding: 25,
                         }}
                       >
-                        <Text
+                        {/* <Text
                           style={{
                             color: "white",
                             textAlign: "center",
                           }}
                         >
                           {item.name ? item.name : ""}
-                        </Text>
+                        </Text> */}
                       </LinearGradient>
                     </ImageBackground>
                   </Ripple>
@@ -2209,6 +2209,7 @@ export default function CityDetail(props) {
                         <View
                           style={{
                             alignItems: "center",
+                            marginTop: i.title ? 20 : 0,
                           }}
                         >
                           <FunImage
@@ -2217,7 +2218,7 @@ export default function CityDetail(props) {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 10,
+
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -2253,7 +2254,7 @@ export default function CityDetail(props) {
                           size="readable"
                           type="regular"
                           style={{
-                            // marginTop: 10,
+                            marginTop: i.title ? 20 : 0,
                             lineHeight: 20,
                             textAlign: "left",
                             color: "#464646",
@@ -2662,7 +2663,8 @@ export default function CityDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 0.5,
+            borderBottomWidth: 0.8,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
