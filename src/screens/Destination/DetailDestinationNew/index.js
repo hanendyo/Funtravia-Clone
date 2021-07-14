@@ -1296,29 +1296,32 @@ const Index = (props) => {
       });
     }
   };
+  let [indeks, setIndeks] = useState(0);
 
-  const ImagesSlider = async (data) => {
+  const ImagesSlider = async (index, data) => {
+    console.log(index, data);
+
     var tempdatas = [];
     var x = 0;
 
-    for (var i in data.images) {
+    for (var i in data) {
       let wid = 0;
       let hig = 0;
-      Image.getSize(data.images[i].image, (width, height) => {
+      Image.getSize(data[i].image, (width, height) => {
         wid = width;
         hig = height;
       });
       tempdatas.push({
         key: i,
-        url: data.images[i].image ? data.images[i].image : "",
+        url: data[i].image ? data[i].image : "",
         width: wid,
         height: hig,
-        props: {
-          source: data.images[i].image ? data.images[i].image : "",
-        },
+        props: { source: data[i].image ? data[i].image : "" },
       });
       x++;
     }
+
+    await setIndeks(index);
     await setGambar(tempdatas);
     await setModalss(true);
   };
@@ -1327,6 +1330,7 @@ const Index = (props) => {
     return (
       <View>
         <ImageSlide
+          index={indeks}
           show={modalss}
           dataImage={gambar}
           setClose={() => setModalss(false)}
@@ -1357,8 +1361,8 @@ const Index = (props) => {
                 size="readable"
                 type="regular"
                 onPress={() => {
-                  setLines(0);
                   setMore(false);
+                  setLines(0);
                 }}
                 style={{ color: "#209FAE" }}
               >
@@ -1370,6 +1374,7 @@ const Index = (props) => {
                 size="readable"
                 type="regular"
                 onPress={() => {
+                  setMore(true);
                   setLines(3);
                 }}
                 style={{ color: "#209FAE" }}
@@ -1652,30 +1657,43 @@ const Index = (props) => {
                 ? dataDestination.images.map((item, index) => {
                     if (index < 3) {
                       return (
-                        <FunImage
-                          key={index + "1"}
-                          source={{ uri: item.image }}
+                        <Pressable
+                          key={index + "2"}
                           style={{
-                            // // width: Dimensions.get("screen").width * 0.15,
-                            // width: Dimensions.get("screen").width * 0.22,
-                            width: (Dimensions.get("screen").width - 40) / 4,
-                            height: "100%",
-                            marginLeft: 2,
+                            justifyContent: "center",
+                            alignItems: "center",
                           }}
-                        />
+                          onPress={() =>
+                            ImagesSlider(index, dataDestination.images)
+                          }
+                        >
+                          <FunImage
+                            key={index + "1"}
+                            source={{ uri: item.image }}
+                            style={{
+                              // // width: Dimensions.get("screen").width * 0.15,
+                              // width: Dimensions.get("screen").width * 0.22,
+                              width: (Dimensions.get("screen").width - 40) / 4,
+                              height: "100%",
+                              marginLeft: 2,
+                            }}
+                          />
+                        </Pressable>
                       );
                     } else if (
                       index === 3 &&
                       dataDestination.images.length > 4
                     ) {
                       return (
-                        <Ripple
+                        <Pressable
                           key={index + "2"}
                           style={{
                             justifyContent: "center",
                             alignItems: "center",
                           }}
-                          onPress={() => ImagesSlider(data)}
+                          onPress={() =>
+                            ImagesSlider(index, dataDestination.images)
+                          }
                         >
                           <FunImage
                             key={index}
@@ -1703,7 +1721,7 @@ const Index = (props) => {
                           >
                             {"+" + (dataDestination.images.length - 4)}
                           </Text>
-                        </Ripple>
+                        </Pressable>
                       );
                     } else if (index === 3) {
                       return (

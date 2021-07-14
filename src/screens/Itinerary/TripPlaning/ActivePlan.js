@@ -546,7 +546,7 @@ export default function ActivePlan({
                       >
                         <Text
                           type="bold"
-                          size="description"
+                          size="small"
                           style={{ color: "#209FAE" }}
                         >
                           {item?.categori?.name

@@ -334,7 +334,7 @@ export default function DetailItinerary(props) {
                   >
                     {item?.user?.first_name
                       ? Capital({ text: item?.user?.first_name })
-                      : ""}
+                      : "User Funtravia"}
                   </Text>
                 </View>
               )}
