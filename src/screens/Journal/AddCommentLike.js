@@ -212,12 +212,13 @@ export default function AddCommentLike({
           backgroundColor: "#f6f6f6",
           borderRadius: 30,
           width: Dimensions.get("window").width * 0.6,
-          minHeight: Dimensions.get("window").width * 0.13,
-          maxHeight: Dimensions.get("window").width * 0.16,
+          // height: Dimensions.get("window").width * 0.13,
+          minHeight: Dimensions.get("window").width * 0.1,
+          maxHeight: Dimensions.get("window").width * 0.2,
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 10,
-          paddingVertical: 5,
+          // paddingVertical: 5,
         }}
       >
         <TextInput
@@ -248,7 +249,7 @@ export default function AddCommentLike({
           style={{
             alignItems: "center",
             justifyContent: "center",
-            height: "90%",
+            height: Dimensions.get("window").width * 0.1,
             borderRadius: 15,
             width: "20%",
           }}

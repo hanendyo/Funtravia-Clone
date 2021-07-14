@@ -9,10 +9,10 @@ import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
 export default function Album({ item, index, props, token }) {
+  // const { t } = useTranslation();
   return (
     <Pressable
       key={index}
-      // onPress={() => console.log("press")}
       onPress={() => {
         props.navigation.push("albumdetail", {
           id: item.id,
@@ -48,13 +48,17 @@ export default function Album({ item, index, props, token }) {
         <View
           style={{
             flex: 1,
-            alignContent: "center",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            paddingHorizontal: 15,
           }}
         >
           <Text size={"label"} type="bold">
             {item.title}
+          </Text>
+          <Text size={"label"} type="bold">
+            {item.count_foto + " Foto"}
           </Text>
         </View>
       </View>

@@ -1,15 +1,117 @@
 import React, { useRef, useState } from "react";
 import { Dimensions, Image, View, TouchableOpacity } from "react-native";
 import { Text, Button, Truncate, FunVideo } from "../../component";
-import { CommentWhite, LikeWhite, Play } from "../../assets/svg";
+import { CommentWhite, LikeRed, LikeWhite, Play } from "../../assets/svg";
 import LinearGradient from "react-native-linear-gradient";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
+import likepost from "../../graphQL/Mutation/Post/likepost";
+import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
+import { useMutation } from "@apollo/client";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderVideo({ data, user, navigation, token }) {
-  const { t, i18n } = useTranslation();
+  console.log("data", data);
+  const [
+    MutationLike,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(likepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
+  const [
+    MutationunLike,
+    { loading: loadingunLike, data: dataunLike, error: errorunLike },
+  ] = useMutation(unlikepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _like = async (id, index) => {
+    console.log("id", id);
+    console.log("token", token);
+    if (token) {
+      try {
+        data.liked = true;
+        data.response_count = data.response_count + 1;
+        let response = await MutationLike({
+          variables: {
+            post_id: id,
+          },
+        });
+
+        if (errorLike) {
+          console.log("errorlike", errorLike);
+        }
+
+        console.log("response like", response);
+
+        if (response?.data?.like_post?.code == 200) {
+          console.log("sukses like");
+          data.liked = true;
+          console.log(data);
+        } else {
+          console.log("gagal like");
+        }
+      } catch (e) {
+        data.liked = false;
+        data.response_count = data.response_count - 1;
+        console.log("e", e);
+      }
+    } else {
+      RNToasty.Show({
+        title: "Please Login",
+        position: "bottom",
+      });
+    }
+  };
+
+  const _unlike = async (id, index) => {
+    if (token) {
+      try {
+        data.liked = false;
+        data.response_count = data.response_count - 1;
+        let response = await MutationunLike({
+          variables: {
+            post_id: id,
+          },
+        });
+
+        if (errorunLike) {
+          console.log("errorlike", errorunLike);
+        }
+
+        console.log("response unlike", response);
+
+        if (response?.data?.like_post?.code == 200) {
+          console.log("sukses unlike");
+          data.liked = false;
+          console.log(data);
+        } else {
+          console.log("gagal unlike");
+        }
+      } catch (e) {
+        data.liked = true;
+        data.response_count = data.response_count + 1;
+        console.log("e", e);
+      }
+    } else {
+      RNToasty.Show({
+        title: "Please Login",
+        position: "bottom",
+      });
+    }
+  };
+  const { t, i18n } = useTranslation();
   let videoView = useRef(null);
   if (data.assets[0].type === "video") {
     return (
@@ -155,7 +257,9 @@ export default function RenderVideo({ data, user, navigation, token }) {
           }}
         >
           <Button
-            onPress={() => null}
+            // onPress={() => {
+            //   _like(data.id);
+            // }}
             type="icon"
             variant="transparent"
             position="left"
@@ -346,30 +450,61 @@ export default function RenderVideo({ data, user, navigation, token }) {
             marginLeft: 10,
           }}
         >
-          <Button
-            onPress={() => null}
-            type="icon"
-            variant="transparent"
-            position="left"
-            size="small"
-            style={{
-              paddingHorizontal: 2,
-              marginRight: 10,
-              color: "white",
-            }}
-          >
-            <LikeWhite height={17} width={18} />
-            <Text
-              size="description"
+          {data.liked ? (
+            <Button
+              onPress={() => {
+                _like(data.id);
+              }}
+              type="icon"
+              variant="transparent"
+              position="left"
+              size="small"
               style={{
-                textAlign: "center",
-                marginHorizontal: 3,
+                paddingHorizontal: 2,
+                marginRight: 10,
+                // color: "white",
+              }}
+            >
+              <LikeRed height={17} width={18} />
+              <Text
+                size="description"
+                style={{
+                  textAlign: "center",
+                  marginHorizontal: 3,
+                  color: "white",
+                }}
+              >
+                {data.response_count}
+              </Text>
+            </Button>
+          ) : (
+            <Button
+              onPress={() => {
+                _unlike(data.id);
+              }}
+              type="icon"
+              variant="transparent"
+              position="left"
+              size="small"
+              style={{
+                paddingHorizontal: 2,
+                marginRight: 10,
                 color: "white",
               }}
             >
-              {data.response_count}
-            </Text>
-          </Button>
+              <LikeWhite height={17} width={18} />
+              <Text
+                size="description"
+                style={{
+                  textAlign: "center",
+                  marginHorizontal: 3,
+                  color: "white",
+                }}
+              >
+                {data.response_count}
+              </Text>
+            </Button>
+          )}
           <Button
             onPress={() => null}
             type="icon"

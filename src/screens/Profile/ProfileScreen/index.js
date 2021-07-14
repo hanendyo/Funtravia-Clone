@@ -58,6 +58,7 @@ import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
+import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -140,10 +141,32 @@ export default function OtherProfile(props) {
     },
   });
 
+  // const [
+  //   Getdataalbum,
+  //   { data: dataalbum, loading: loadingalbum, error: erroralbum },
+  // ] = useLazyQuery(album_post, {
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  //   variables: {
+  //     limit: 50,
+  //     offset: 0,
+  //     user_id: id,
+  //     // user_id: props.route.params,
+  //   },
+  //   onCompleted: () => {
+  //     setdataalbums(dataalbum.user_post_album_v2?.datas);
+  //   },
+  // });
+
   const [
-    Getdataalbum,
-    { data: dataalbum, loading: loadingalbum, error: erroralbum },
-  ] = useLazyQuery(album_post, {
+    QueryFotoAlbum,
+    { data: dataFotoAlbum, loading: loadingFotoAlbum, error: errorFotoAlbum },
+  ] = useLazyQuery(ListFotoAlbum, {
     fetchPolicy: "network-only",
     context: {
       headers: {
@@ -151,14 +174,9 @@ export default function OtherProfile(props) {
         Authorization: `Bearer ${token}`,
       },
     },
-    variables: {
-      limit: 50,
-      offset: 0,
-      user_id: id,
-      // user_id: props.route.params,
-    },
+    variables: { user_id: props.route.params.idUser, keyword: "" },
     onCompleted: () => {
-      setdataalbums(dataalbum.user_post_album_v2?.datas);
+      setdataalbums(dataFotoAlbum?.list_albums);
     },
   });
 
@@ -618,6 +636,7 @@ export default function OtherProfile(props) {
   };
 
   useEffect(() => {
+    QueryFotoAlbum();
     const unsubscribe = props.navigation.addListener("focus", (data) => {
       loadAsync();
     });
@@ -836,9 +855,6 @@ export default function OtherProfile(props) {
         /> */}
         {/* <TouchableOpacity
           onPress={() => {
-            console.log("test", id);
-            console.log("test", token);
-            console.log("test");
             LoadTrip2();
           }}
         >
@@ -1557,7 +1573,8 @@ export default function OtherProfile(props) {
         setDataUser(data.user_profilebyid);
 
         Getdatapost();
-        Getdataalbum();
+        // Getdataalbum();
+        QueryFotoAlbum();
         LoadReview();
         if (position === "profile") {
           LoadTrip2();
