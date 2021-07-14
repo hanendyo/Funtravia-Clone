@@ -599,11 +599,12 @@ export default function ActivePlan({ props, token, rData, GetData, loading }) {
                         borderRadius: 3,
                         borderColor: "#209FAE",
                         paddingHorizontal: 5,
+                        justifyContent: "center",
                       }}
                     >
                       <Text
                         type="bold"
-                        size="description"
+                        size="small"
                         style={{ color: "#209FAE" }}
                       >
                         {item?.categori?.name

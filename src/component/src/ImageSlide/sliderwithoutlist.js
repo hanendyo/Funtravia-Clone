@@ -275,7 +275,7 @@ export default function ImageSlide({
                     <View
                       style={{
                         backgroundColor: "rgba(0, 0, 0, 0.50)",
-                        borderRadius: 15,
+                        // borderRadius: 15,
                         padding: 5,
                       }}
                     >
@@ -294,6 +294,8 @@ export default function ImageSlide({
                   style={{
                     width: data?.style?.width,
                     height: data?.style?.height,
+                    // borderWidth: 2,
+                    // borderColor: "red",
                   }}
                 />
               );

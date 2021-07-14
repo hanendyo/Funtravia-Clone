@@ -10,6 +10,7 @@ import {
   BackHandler,
   ScrollView,
   KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import M035 from "./src/new/035";
@@ -286,7 +287,13 @@ export default function Asia({ navigation }) {
         {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
         {/* filter region */}
 
-        {BackUse.current.id !== "142" ? null : (
+        {BackUse.current.id !== "142" ? (
+          <View
+            style={{
+              height: 95,
+            }}
+          ></View>
+        ) : (
           <View
             style={{
               // flexDirection: "row",
@@ -376,12 +383,11 @@ export default function Asia({ navigation }) {
         )}
         {/* akhir filter region */}
         <View
-          style={
-            {
-              // borderWidth: 1,
-              // marginTop: BackUse.current.id === "142" ? -30 : 0
-            }
-          }
+          style={{
+            // borderWidth: 1,
+            height: Dimensions.get("screen").height / 3,
+            // marginTop: BackUse.current.id === "142" ? -30 : 0
+          }}
         >
           {Components[`cm${subContinent.id}`]}
         </View>

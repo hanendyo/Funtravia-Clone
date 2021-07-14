@@ -399,6 +399,7 @@ export default function ItineraryBuddy(props) {
                 <View
                   style={{
                     flexDirection: "row",
+                    flex: 1,
                     // width: '100%',
                     // paddingHorizontal: 20,
                     // paddingVertical: 10,
@@ -424,7 +425,9 @@ export default function ItineraryBuddy(props) {
                     type="bold"
                     style={{
                       marginLeft: 20,
-                      width: "60%",
+                      // width: "60%",
+                      flex: 1,
+                      // borderWidth: 1,
                     }}
                     numberOfLines={1}
                   >
@@ -516,6 +519,7 @@ export default function ItineraryBuddy(props) {
                   <View
                     style={{
                       flexDirection: "row",
+                      // borderWidth: 1,
                       // width: '100%',
                       // paddingHorizontal: 20,
                       // paddingVertical: 10,
@@ -535,9 +539,15 @@ export default function ItineraryBuddy(props) {
                         opacity: value.isconfrim !== true ? 0.3 : 1,
                       }}
                     />
-                    <View>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "flex-start",
+                      }}
+                    >
                       <View
                         style={{
+                          // flex: 1,
                           flexDirection: "row",
                           justifyContent: "flex-start",
                         }}
@@ -550,7 +560,8 @@ export default function ItineraryBuddy(props) {
                             // fontFamily: "Lato-Bold",
                             marginLeft: 20,
                             opacity: value.isconfrim !== true ? 0.3 : 1,
-                            width: "60%",
+                            // width: "60%",
+                            flex: 1,
                           }}
                           numberOfLines={1}
                         >
@@ -626,6 +637,7 @@ export default function ItineraryBuddy(props) {
               >
                 <View
                   style={{
+                    flex: 1,
                     flexDirection: "row",
                     // width: '100%',
                     // paddingHorizontal: 20,
@@ -653,7 +665,8 @@ export default function ItineraryBuddy(props) {
                       // fontSize: 14,
                       // fontFamily: "Lato-Bold",
                       marginLeft: 20,
-                      width: "60%",
+                      // width: "60%",
+                      flex: 1,
                     }}
                     numberOfLines={1}
                   >
@@ -723,6 +736,7 @@ export default function ItineraryBuddy(props) {
                 >
                   <View
                     style={{
+                      flex: 1,
                       flexDirection: "row",
                       // width: '100%',
                       // paddingHorizontal: 20,
@@ -743,7 +757,7 @@ export default function ItineraryBuddy(props) {
                         opacity: value.isconfrim !== true ? 0.3 : 1,
                       }}
                     />
-                    <View>
+                    <View style={{ flex: 1 }}>
                       <View style={{ flexDirection: "row" }}>
                         <Text
                           size="label"
@@ -753,7 +767,8 @@ export default function ItineraryBuddy(props) {
                             // fontFamily: "Lato-Bold",
                             marginLeft: 20,
                             opacity: value.isconfrim !== true ? 0.3 : 1,
-                            width: "60%",
+                            // width: "60%",
+                            flex: 1,
                           }}
                           numberOfLines={1}
                         >
@@ -837,6 +852,7 @@ export default function ItineraryBuddy(props) {
               >
                 <View
                   style={{
+                    flex: 1,
                     flexDirection: "row",
                     // width: '100%',
                     // paddingHorizontal: 20,
@@ -864,7 +880,8 @@ export default function ItineraryBuddy(props) {
                       // fontSize: 14,
                       // fontFamily: "Lato-Bold",
                       marginLeft: 20,
-                      width: "60%",
+                      // width: "60%",
+                      flex: 1,
                     }}
                     numberOfLines={1}
                   >
