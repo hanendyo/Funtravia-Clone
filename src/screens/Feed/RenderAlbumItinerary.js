@@ -103,7 +103,8 @@ export default function RenderAlbum({
               }
             />
           </TouchableWithoutFeedback>
-          <View
+          <Pressable
+            onPress={() => setMuted(!muted)}
             style={{
               padding: 5,
               position: "absolute",
@@ -118,7 +119,7 @@ export default function RenderAlbum({
             ) : (
               <Unmute width="15" height="15" />
             )}
-          </View>
+          </Pressable>
           <View
             style={{
               position: "absolute",

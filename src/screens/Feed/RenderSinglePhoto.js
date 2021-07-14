@@ -93,7 +93,8 @@ export default function RenderSinglePhoto({
             }
           />
         </TouchableWithoutFeedback>
-        <View
+        <Pressable
+          onPress={() => setMuted(!muted)}
           style={{
             padding: 5,
             position: "absolute",
@@ -108,7 +109,7 @@ export default function RenderSinglePhoto({
           ) : (
             <Unmute width="15" height="15" />
           )}
-        </View>
+        </Pressable>
         {data && data?.album !== null ? (
           <>
             <Pressable
