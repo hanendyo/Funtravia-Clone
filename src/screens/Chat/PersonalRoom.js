@@ -14,9 +14,10 @@ import {
     Dimensions,
     ActivityIndicator,
     Pressable,
+    Switch,
 } from "react-native";
 import io from "socket.io-client";
-import { Arrowbackwhite, Send, Smile } from "../../assets/svg";
+import { Arrowbackwhite, Send, Smile, Chat } from "../../assets/svg";
 import { Button, Text, Errors, FunImage, StickerModal } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -26,11 +27,33 @@ import Toast from "react-native-fast-toast";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
+import { Keyboard } from "react-native-ui-lib";
+import AnimatedPlayer from "react-native-animated-webp";
+
+// import "./CustomKeyboard/demoKeyboards";
+const KeyboardAccessoryView = Keyboard.KeyboardAccessoryView;
+const KeyboardUtils = Keyboard.KeyboardUtils;
+const KeyboardRegistry = Keyboard.KeyboardRegistry;
+const TrackInteractive = true;
+
+const keyboards = [
+    {
+        id: "unicorn.ImagesKeyboard",
+        icon: Smile,
+    },
+    {
+        id: "unicorn.CustomKeyboard",
+        icon: Smile,
+    },
+];
 
 export default function Room({ navigation, route }) {
     const Notch = DeviceInfo.hasNotch();
     const { t } = useTranslation();
+    const playerRef = useRef(null);
+
     const toastRef = useRef();
+    const refInput = useRef();
     const { width, height } = Dimensions.get("screen");
     const [room, setRoom] = useState(route.params.room_id);
     const [receiver, setReceiver] = useState(route.params.receiver);
@@ -41,6 +64,138 @@ export default function Room({ navigation, route }) {
     const socket = io(CHATSERVER);
     const [chat, setChat] = useState(null);
     const [message, setMessage] = useState([]);
+    const [customKeyboard, SetcustomKeyboard] = useState({
+        component: undefined,
+        initialProps: undefined,
+    });
+
+    const [receivedKeyboardData, SetreceivedKeyboardData] = useState(undefined);
+    const [useSafeArea, SetuseSafeArea] = useState(true);
+    const [keyboardOpenState, SetkeyboardOpenState] = useState(false);
+
+    const onKeyboardItemSelected = (keyboardId, params) => {
+        console.log("utemselected");
+        const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(
+            params
+        )}`;
+        SetreceivedKeyboardData({ receivedKeyboardData });
+    };
+
+    const onKeyboardResigned = () => {
+        resetKeyboardView();
+    };
+
+    const isCustomKeyboardOpen = () => {
+        // const { keyboardOpenState, customKeyboard } = this.state;
+        let tempcustomKeyboard = { ...customKeyboard };
+        return keyboardOpenState && !_.isEmpty(tempcustomKeyboard);
+    };
+
+    const resetKeyboardView = () => {
+        SetkeyboardOpenState(false);
+        SetcustomKeyboard({});
+    };
+
+    const dismissKeyboard = () => {
+        KeyboardUtils.dismiss();
+    };
+
+    const toggleUseSafeArea = () => {
+        // const { useSafeArea } = this.state;
+        SetuseSafeArea(!useSafeArea);
+
+        if (isCustomKeyboardOpen()) {
+            dismissKeyboard();
+            showLastKeyboard();
+        }
+    };
+
+    const showLastKeyboard = () => {
+        SetcustomKeyboard({});
+        setTimeout(() => {
+            SetkeyboardOpenState(true);
+            SetcustomKeyboard({});
+        }, 500);
+    };
+
+    const showKeyboardView = (component, title) => {
+        SetkeyboardOpenState(true);
+        SetcustomKeyboard({
+            component,
+            initialProps: { title },
+        });
+    };
+
+    const onHeightChanged = (keyboardAccessoryViewHeight) => {
+        // console.log(keyboardAccessoryViewHeight);
+        if (Platform.OS == "ios") {
+            // this.setState({ keyboardAccessoryViewHeight });
+        }
+    };
+
+    const renderKeyboardAccessoryViewContent = () => {
+        return (
+            <View style={styles.keyboardContainer}>
+                <View>
+                    <TextInput
+                        value={chat}
+                        multiline
+                        placeholder="Type a message"
+                        onChangeText={(text) => setChat(text)}
+                        underlineColorAndroid="transparent"
+                        onFocus={() => resetKeyboardView()}
+                    />
+                    <Button onPress={KeyboardUtils.dismiss} />
+                </View>
+                <View>
+                    <View>
+                        {keyboards.map((keyboard) => (
+                            <Button
+                                key={keyboard.id}
+                                onPress={() =>
+                                    showKeyboardView(keyboard.id, "test")
+                                }
+                            />
+                        ))}
+                    </View>
+
+                    <Button onPress={() => resetKeyboardView()} />
+                </View>
+            </View>
+        );
+    };
+
+    const requestShowKeyboard = () => {
+        KeyboardRegistry.requestShowKeyboard("unicorn.ImagesKeyboard");
+    };
+
+    const onRequestShowKeyboard = (componentID) => {
+        SetcustomKeyboard({
+            component: componentID,
+            initialProps: { title: "Keyboard 1 opened by button" },
+        });
+    };
+
+    const safeAreaSwitchToggle = () => {
+        if (Platform.OS !== "ios") {
+            return;
+        }
+        const { useSafeArea } = this.state;
+        return (
+            <View>
+                <View style={styles.separatorLine} />
+                <View>
+                    <Text>Safe Area Enabled:</Text>
+                    <Switch
+                        value={useSafeArea}
+                        onValueChange={() => toggleUseSafeArea}
+                    />
+                </View>
+                <View style={styles.separatorLine} />
+            </View>
+        );
+    };
+
     let flatListRef = useRef();
 
     const navigationOptions = {
@@ -127,13 +282,19 @@ export default function Room({ navigation, route }) {
     };
 
     useEffect(() => {
+        console.log("b");
         socket.emit("join", room);
+        socket.on("connection", (socket) => {
+            console.log(socket);
+            console.log("socket");
+        });
         navigation.setOptions(navigationOptions);
         if (init) {
             getUserToken();
             // setConnection();
         }
-        socket.on("newMessage", (data) => {
+        socket.on("new_chat_personal", (data) => {
+            console.log("c");
             setChatHistory(data);
         });
         return () => socket.disconnect();
@@ -202,7 +363,9 @@ export default function Room({ navigation, route }) {
     };
 
     const submitChatMessage = async () => {
+        console.log(a);
         if (button) {
+            SetkeyboardOpenState(false);
             if (chat && chat.replace(/\s/g, "").length) {
                 await setButton(false);
                 let chatData = {
@@ -226,7 +389,7 @@ export default function Room({ navigation, route }) {
                     if (flatListRef) {
                         flatListRef.current.scrollToEnd({ animated: true });
                     }
-                }, 250);
+                }, 1000);
                 await setButton(true);
             } else {
                 // toastRef.current?.show(t("messagesEmpty"), {
@@ -239,6 +402,47 @@ export default function Room({ navigation, route }) {
                 });
             }
         }
+    };
+
+    const submitSticker = async (x) => {
+        // if (button) {
+        // console.log("ini X", x);
+        if (x && x.replace(/\s/g, "").length) {
+            await setButton(false);
+            let chatData = {
+                room: room,
+                chat: "personal",
+                type: "sticker",
+                text: x,
+                user_id: user.id,
+            };
+            await fetch(`${CHATSERVER}/api/personal/send`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `room=${room}&type=sticker&chat=personal&text=${x}&user_id=${user.id}`,
+            });
+            await socket.emit("message", chatData);
+            await setChat("");
+            await setTimeout(function() {
+                if (flatListRef) {
+                    flatListRef.current.scrollToEnd({ animated: true });
+                }
+            }, 250);
+            await setButton(true);
+        } else {
+            // toastRef.current?.show(t("messagesEmpty"), {
+            //     style: { backgroundColor: "#464646" },
+            //     textStyle: { fontSize: 14 },
+            // });
+            RNToasty.Show({
+                title: t("messagesEmpty"),
+                position: "bottom",
+            });
+        }
+        // }
     };
 
     let tmpRChat = null;
@@ -320,86 +524,111 @@ export default function Room({ navigation, route }) {
                                     : null}
                             </Text>
                         ) : null}
-                        <View
-                            style={[
-                                styles.balloon,
-                                user.id == item.user_id
-                                    ? {
-                                          backgroundColor: "#DAF0F2",
-                                          borderTopRightRadius: 0,
-                                      }
-                                    : {
-                                          backgroundColor: "#FFFFFF",
-                                          borderTopLeftRadius: 0,
-                                      },
-                            ]}
-                        >
-                            <Text
-                                size="description"
-                                style={{
-                                    color: "#464646",
-                                    lineHeight: 18,
+                        {item.type == "sticker" ? (
+                            <AnimatedPlayer
+                                ref={playerRef}
+                                // thumbnailSource={
+                                //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
+                                // }
+                                animatedSource={{
+                                    uri: item.text,
                                 }}
-                            >
-                                {item.text}
-                            </Text>
+                                autoplay={true}
+                                loop={true}
+                                style={{ width: 100, height: 100 }}
+                            />
+                        ) : (
                             <View
                                 style={[
-                                    styles.arrowContainer,
+                                    styles.balloon,
                                     user.id == item.user_id
-                                        ? styles.arrowRightContainer
-                                        : styles.arrowLeftContainer,
+                                        ? {
+                                              backgroundColor: "#DAF0F2",
+                                              borderTopRightRadius: 0,
+                                          }
+                                        : {
+                                              backgroundColor: "#FFFFFF",
+                                              borderTopLeftRadius: 0,
+                                          },
                                 ]}
                             >
-                                <Svg
-                                    style={
-                                        user.id == item.user_id
-                                            ? styles.arrowRight
-                                            : styles.arrowLeft
-                                    }
-                                    height="50"
-                                    width="50"
+                                <Text
+                                    size="description"
+                                    style={{
+                                        color: "#464646",
+                                        lineHeight: 18,
+                                    }}
                                 >
-                                    <Polygon
-                                        points={
-                                            user.id == item.user_id
-                                                ? "0,01 15,01 5,12"
-                                                : "20,01 0,01 12,12"
-                                        }
-                                        fill={
-                                            user.id == item.user_id
-                                                ? "#DAF0F2"
-                                                : "#FFFFFF"
-                                        }
-                                        stroke="#209FAE"
-                                        strokeWidth={0.7}
-                                    />
-                                </Svg>
-                                <Svg
+                                    {item.text}
+                                </Text>
+                                <View
                                     style={[
-                                        { position: "absolute" },
+                                        styles.arrowContainer,
                                         user.id == item.user_id
-                                            ? { right: moderateScale(-5, 0.5) }
-                                            : { left: moderateScale(-5, 0.5) },
+                                            ? styles.arrowRightContainer
+                                            : styles.arrowLeftContainer,
                                     ]}
-                                    height="50"
-                                    width="50"
                                 >
-                                    <Polygon
-                                        points={
+                                    <Svg
+                                        style={
                                             user.id == item.user_id
-                                                ? "0,1.3 15,1.1 5,12"
-                                                : "20,01 0,01 12,13"
+                                                ? styles.arrowRight
+                                                : styles.arrowLeft
                                         }
-                                        fill={
+                                        height="50"
+                                        width="50"
+                                    >
+                                        <Polygon
+                                            points={
+                                                user.id == item.user_id
+                                                    ? "0,01 15,01 5,12"
+                                                    : "20,01 0,01 12,12"
+                                            }
+                                            fill={
+                                                user.id == item.user_id
+                                                    ? "#DAF0F2"
+                                                    : "#FFFFFF"
+                                            }
+                                            stroke="#209FAE"
+                                            strokeWidth={0.7}
+                                        />
+                                    </Svg>
+                                    <Svg
+                                        style={[
+                                            { position: "absolute" },
                                             user.id == item.user_id
-                                                ? "#DAF0F2"
-                                                : "#FFFFFF"
-                                        }
-                                    />
-                                </Svg>
+                                                ? {
+                                                      right: moderateScale(
+                                                          -5,
+                                                          0.5
+                                                      ),
+                                                  }
+                                                : {
+                                                      left: moderateScale(
+                                                          -5,
+                                                          0.5
+                                                      ),
+                                                  },
+                                        ]}
+                                        height="50"
+                                        width="50"
+                                    >
+                                        <Polygon
+                                            points={
+                                                user.id == item.user_id
+                                                    ? "0,1.3 15,1.1 5,12"
+                                                    : "20,01 0,01 12,13"
+                                            }
+                                            fill={
+                                                user.id == item.user_id
+                                                    ? "#DAF0F2"
+                                                    : "#FFFFFF"
+                                            }
+                                        />
+                                    </Svg>
+                                </View>
                             </View>
-                        </View>
+                        )}
                         {user.id !== item.user_id ? (
                             <Text size="small" style={{ marginLeft: 5 }}>
                                 {timeChat
@@ -433,38 +662,53 @@ export default function Room({ navigation, route }) {
                                     : null}
                             </Text>
                         ) : null}
-                        <View
-                            style={[
-                                styles.balloon,
-                                user.id == item.user_id
-                                    ? {
-                                          backgroundColor: "#DAF0F2",
-                                          borderTopRightRadius: 0,
-                                      }
-                                    : {
-                                          backgroundColor: "#FFFFFF",
-                                          borderTopLeftRadius: 0,
-                                      },
-                            ]}
-                        >
-                            <Text
-                                size="description"
-                                style={{
-                                    color: "#464646",
-                                    lineHeight: 18,
+                        {item.type == "sticker" ? (
+                            <AnimatedPlayer
+                                ref={playerRef}
+                                // thumbnailSource={
+                                //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
+                                // }
+                                animatedSource={{
+                                    uri: item.text,
                                 }}
-                            >
-                                {item.text}
-                            </Text>
+                                autoplay={true}
+                                loop={true}
+                                style={{ width: 100, height: 100 }}
+                            />
+                        ) : (
                             <View
                                 style={[
-                                    styles.arrowContainer,
+                                    styles.balloon,
                                     user.id == item.user_id
-                                        ? styles.arrowRightContainer
-                                        : styles.arrowLeftContainer,
+                                        ? {
+                                              backgroundColor: "#DAF0F2",
+                                              borderTopRightRadius: 0,
+                                          }
+                                        : {
+                                              backgroundColor: "#FFFFFF",
+                                              borderTopLeftRadius: 0,
+                                          },
                                 ]}
-                            ></View>
-                        </View>
+                            >
+                                <Text
+                                    size="description"
+                                    style={{
+                                        color: "#464646",
+                                        lineHeight: 18,
+                                    }}
+                                >
+                                    {item.text}
+                                </Text>
+                                <View
+                                    style={[
+                                        styles.arrowContainer,
+                                        user.id == item.user_id
+                                            ? styles.arrowRightContainer
+                                            : styles.arrowLeftContainer,
+                                    ]}
+                                ></View>
+                            </View>
+                        )}
                         {user.id !== item.user_id ? (
                             <Text size="small" style={{ marginLeft: 5 }}>
                                 {timeChat
@@ -504,81 +748,246 @@ export default function Room({ navigation, route }) {
                 keyExtractor={(item, index) => `render_${index}`}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingTop: 5 }}
+                contentContainerStyle={{
+                    paddingTop: 5,
+                    // flex: 1,
+                }}
             />
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
                 keyboardVerticalOffset={Notch ? 90 : 65}
+                style={{
+                    borderWidth: 1,
+                }}
+            > */}
+            <View
+                style={{
+                    flexDirection: "row",
+                    paddingHorizontal: 10,
+                    alignContent: "center",
+                    alignItems: "center",
+                    paddingVertical: 2,
+                    backgroundColor: "#F6F6F6",
+                }}
             >
-                <View
-                    style={{
-                        flexDirection: "row",
-                        paddingHorizontal: 10,
-                        alignContent: "center",
-                        alignItems: "center",
-                        paddingVertical: 2,
-                        backgroundColor: "#F6F6F6",
-                    }}
-                >
+                {!keyboardOpenState ? (
                     <Button
                         text=""
                         type="circle"
                         size="medium"
-                        variant="transparent"
-                        style={{ width: 50, height: 50 }}
+                        variant="normal"
+                        style={{ width: 35, height: 35 }}
                         // onPress={() => Alert.alert("Sticker Cooming Soon")}
-                        onPress={() => modals()}
-                        onPress={() => setStickerModal(!_stickerModal)}
+                        // onPress={() => modals()}
+                        // onPress={() => {
+                        //     navigation.navigate("ChatStack", {
+                        //         screen: "KeyboardInput",
+                        //     });
+                        // }}
+                        onPress={() =>
+                            // showKeyboardView("unicorn.StikerKeyboard")
+                            {
+                                dismissKeyboard();
+                                SetkeyboardOpenState(true);
+                            }
+                        }
+                        style={{
+                            marginRight: 10,
+                        }}
                     >
                         <Smile height={35} width={35} />
                     </Button>
-                    <View
-                        style={{
-                            borderColor: "#D1D1D1",
-                            borderWidth: 1,
-                            width: width - 120,
-                            alignSelf: "center",
-                            backgroundColor: "#FFFFFF",
-                        }}
-                    >
-                        <TextInput
-                            value={chat}
-                            multiline
-                            placeholder="Type a message"
-                            onChangeText={(text) => setChat(text)}
-                            style={
-                                Platform.OS == "ios"
-                                    ? {
-                                          maxHeight: 100,
-                                          margin: 10,
-                                          fontFamily: "Lato-Regular",
-                                      }
-                                    : {
-                                          maxHeight: 100,
-                                          marginVertical: 5,
-                                          marginHorizontal: 10,
-                                          padding: 0,
-                                          fontFamily: "Lato-Regular",
-                                      }
-                            }
-                        />
-                    </View>
+                ) : (
                     <Button
                         text=""
                         type="circle"
                         size="medium"
-                        variant="transparent"
-                        onPress={() => submitChatMessage()}
-                        style={{ width: 50, height: 50 }}
+                        variant="normal"
+                        style={{ width: 35, height: 35 }}
+                        // onPress={() => Alert.alert("Sticker Cooming Soon")}
+                        // onPress={() => modals()}
+                        // onPress={() => setStickerModal(!_stickerModal)}
+                        onPress={() => {
+                            // resetKeyboardView();
+                            SetkeyboardOpenState(true);
+                            refInput.current.focus();
+                            // KeyboardUtils.onFocus();
+                        }}
+                        style={{
+                            marginRight: 10,
+                        }}
                     >
-                        <Send height={35} width={35} />
+                        <Chat height={13} width={13} />
                     </Button>
+                )}
+                <View
+                    style={{
+                        borderColor: "#D1D1D1",
+                        borderWidth: 1,
+                        width: width - 120,
+                        alignSelf: "center",
+                        backgroundColor: "#FFFFFF",
+                    }}
+                >
+                    <TextInput
+                        value={chat}
+                        multiline
+                        ref={refInput}
+                        placeholder="Type a message"
+                        onChangeText={(text) => setChat(text)}
+                        onFocus={() => resetKeyboardView()}
+                        style={
+                            Platform.OS == "ios"
+                                ? {
+                                      maxHeight: 100,
+                                      margin: 10,
+                                      fontFamily: "Lato-Regular",
+                                  }
+                                : {
+                                      maxHeight: 100,
+                                      marginVertical: 5,
+                                      marginHorizontal: 10,
+                                      padding: 0,
+                                      fontFamily: "Lato-Regular",
+                                  }
+                        }
+                    />
                 </View>
-            </KeyboardAvoidingView>
-            {/* <StickerModal
-                visible={_stickerModal}
-                setVisible={() => setStickerModal(false)}
-            /> */}
+                <Button
+                    text=""
+                    type="circle"
+                    size="medium"
+                    variant="transparent"
+                    onPress={() => submitChatMessage()}
+                    style={{ width: 50, height: 50 }}
+                >
+                    <Send height={35} width={35} />
+                </Button>
+            </View>
+
+            {/* <KeyboardAccessoryView
+                    renderContent={() => {
+                        return (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    paddingHorizontal: 10,
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    paddingVertical: 2,
+                                    backgroundColor: "#F6F6F6",
+                                }}
+                            >
+                                {!keyboardOpenState ? (
+                                    <Button
+                                        text=""
+                                        type="circle"
+                                        size="medium"
+                                        variant="normal"
+                                        style={{ width: 35, height: 35 }}
+                                        // onPress={() => Alert.alert("Sticker Cooming Soon")}
+                                        // onPress={() => modals()}
+                                        // onPress={() => {
+                                        //     navigation.navigate("ChatStack", {
+                                        //         screen: "KeyboardInput",
+                                        //     });
+                                        // }}
+                                        onPress={() =>
+                                            showKeyboardView(
+                                                "unicorn.StikerKeyboard"
+                                            )
+                                        }
+                                        style={{
+                                            marginRight: 10,
+                                        }}
+                                    >
+                                        <Smile height={35} width={35} />
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        text=""
+                                        type="circle"
+                                        size="medium"
+                                        variant="normal"
+                                        style={{ width: 35, height: 35 }}
+                                        // onPress={() => Alert.alert("Sticker Cooming Soon")}
+                                        // onPress={() => modals()}
+                                        // onPress={() => setStickerModal(!_stickerModal)}
+                                        onPress={() => {
+                                            resetKeyboardView();
+                                            refInput.current.focus();
+                                            // KeyboardUtils.onFocus();
+                                        }}
+                                        style={{
+                                            marginRight: 10,
+                                        }}
+                                    >
+                                        <Chat height={13} width={13} />
+                                    </Button>
+                                )}
+                                <View
+                                    style={{
+                                        borderColor: "#D1D1D1",
+                                        borderWidth: 1,
+                                        width: width - 120,
+                                        alignSelf: "center",
+                                        backgroundColor: "#FFFFFF",
+                                    }}
+                                >
+                                    <TextInput
+                                        value={chat}
+                                        multiline
+                                        ref={refInput}
+                                        placeholder="Type a message"
+                                        onChangeText={(text) => setChat(text)}
+                                        onFocus={() => resetKeyboardView()}
+                                        style={
+                                            Platform.OS == "ios"
+                                                ? {
+                                                      maxHeight: 100,
+                                                      margin: 10,
+                                                      fontFamily:
+                                                          "Lato-Regular",
+                                                  }
+                                                : {
+                                                      maxHeight: 100,
+                                                      marginVertical: 5,
+                                                      marginHorizontal: 10,
+                                                      padding: 0,
+                                                      fontFamily:
+                                                          "Lato-Regular",
+                                                  }
+                                        }
+                                    />
+                                </View>
+                                <Button
+                                    text=""
+                                    type="circle"
+                                    size="medium"
+                                    variant="transparent"
+                                    onPress={() => submitChatMessage()}
+                                    style={{ width: 50, height: 50 }}
+                                >
+                                    <Send height={35} width={35} />
+                                </Button>
+                            </View>
+                        );
+                    }}
+                    onHeightChanged={() => onHeightChanged()}
+                    trackInteractive={TrackInteractive}
+                    kbInputRef={chat}
+                    kbComponent={customKeyboard.component}
+                    kbInitialProps={customKeyboard.initialProps}
+                    onItemSelected={() => onKeyboardItemSelected}
+                    onKeyboardResigned={() => onKeyboardResigned}
+                    revealKeyboardInteractive
+                    onRequestShowKeyboard={() => onRequestShowKeyboard}
+                    useSafeArea={useSafeArea}
+                /> */}
+            {/* </KeyboardAvoidingView> */}
+            {keyboardOpenState ? (
+                <StickerModal submitSticker={(e) => submitSticker(e)} />
+            ) : null}
         </SafeAreaView>
     );
 }
@@ -586,8 +995,9 @@ export default function Room({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        // height: Dimensions.get("screen").height,
         backgroundColor: "#fff",
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
     },
     item: {
         marginVertical: moderateScale(1, 1),
