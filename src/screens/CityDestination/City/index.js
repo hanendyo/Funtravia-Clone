@@ -162,6 +162,7 @@ export default function CityDetail(props) {
     );
   };
 
+  // console.log(props.route.params.data.city_id);
   const bulan = [
     "Jan",
     "Feb",
@@ -281,6 +282,8 @@ export default function CityDetail(props) {
       getJournalCity();
     },
   });
+
+  console.log("list", listCity);
 
   const Goto = (item) => {
     if (item?.id) {
@@ -984,7 +987,11 @@ export default function CityDetail(props) {
                 }}
               >
                 <Image
-                  source={default_image}
+                  source={
+                    render?.countries?.climate
+                      ? { uri: render.countries.climate }
+                      : default_image
+                  }
                   style={{
                     width: "100%",
                     height: width * 0.7,
@@ -1012,7 +1019,11 @@ export default function CityDetail(props) {
                 }}
               >
                 <Image
-                  source={default_image}
+                  source={
+                    render?.countries?.religion
+                      ? { uri: render.countries.religion }
+                      : default_image
+                  }
                   style={{
                     width: "100%",
                     height: width * 0.7,
