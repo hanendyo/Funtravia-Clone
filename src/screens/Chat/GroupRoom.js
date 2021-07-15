@@ -42,7 +42,7 @@ export default function Room({ navigation, route }) {
     let [message, setMessage] = useState([]);
     let flatListRef = useRef();
     const [dataDetail, setDatadetail] = useState();
-    console.log(dataDetail);
+    // console.log(dataDetail);
     const { t } = useTranslation();
 
     const headerOptions = {
@@ -311,6 +311,7 @@ export default function Room({ navigation, route }) {
     }, [onBackPress]);
 
     useEffect(() => {
+        console.log("a");
         socket.emit("join", room);
         navigation.setOptions(headerOptions);
         if (init) {
@@ -319,6 +320,7 @@ export default function Room({ navigation, route }) {
         }
         socket.on("new_chat_group", (data) => {
             setChatHistory(data);
+            console.log("b");
         });
         socket.emit("join", room);
         return () => socket.disconnect();
