@@ -6,6 +6,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { default_image } from "../../assets/png";
 import { ASSETS_SERVER } from "../../config";
 import CACHE from "../cache.json";
+import FastImage from "react-native-fast-image";
 
 export default function Image({
   children,

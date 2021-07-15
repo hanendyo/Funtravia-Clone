@@ -158,12 +158,26 @@ export default function Post(props) {
           ratio: ratio,
         });
       } else if (type.substr(0, 5) === "image") {
+        console.log("ratio", ratio);
+        let height;
+        let width;
+        if (ratio.label == "L") {
+          width = 1080;
+          height = 566;
+        } else if (ratio.label == "P") {
+          width = 1080;
+          height = 1350;
+        } else {
+          width = 1080;
+          height = 1080;
+        }
+
         try {
           ImagePicker.openCropper({
             path: recent.node.image.uri,
-            width: ratio.width * 1000,
-            height: ratio.height * 1000,
-            compressImageQuality: 0.5,
+            width: width,
+            height: height,
+            // compressImageQuality: 0.2,
           })
             .then((image) => {
               props.navigation.navigate("CreatePostScreen", {
@@ -198,14 +212,6 @@ export default function Post(props) {
       });
     }
   };
-
-  // console.log("ratio", ratio);
-
-  // const scroll_to = () => {
-  //   setTimeout(() => {
-  //     slider.current.scrollToOffset({ animated: true, offset: 0 });
-  //   }, 3000);
-  // };
 
   useEffect(() => {
     (async () => {

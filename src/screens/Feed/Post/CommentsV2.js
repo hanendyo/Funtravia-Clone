@@ -14,6 +14,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   KeyboardAvoidingView,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -139,6 +140,20 @@ export default function Comments(props) {
   };
 
   useEffect(() => {
+    const backAction = () => {
+      BackHandler.addEventListener(props.navigation.goBack());
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  });
+
+  useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     if (props?.route?.params?.data) {
       console.log("feed");
@@ -149,6 +164,7 @@ export default function Comments(props) {
       setIdComment(props?.route?.params?.comment_id);
       setIdPost(props?.route?.params?.post_id);
     }
+
     const unsubscribe = props.navigation.addListener("focus", async () => {
       await GetPost();
       await GetCommentList();
