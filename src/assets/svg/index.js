@@ -238,6 +238,8 @@ import DestinationReview from "./files/destinasiReview.svg";
 import AccomodationReview from "./files/hotelReview.svg";
 import Mapsborder from "./files/maps_border.svg";
 import LeaveTrips from "./files/leaveTrip.svg";
+import Errors from "./files/errors.svg";
+import Errorr from "./files/errorr.svg";
 
 export {
   LikeWhite,
@@ -480,4 +482,6 @@ export {
   AccomodationReview,
   Mapsborder,
   LeaveTrips,
+  Errors,
+  Errorr,
 };

@@ -57,6 +57,8 @@ import {
   PlayVideo,
   LeaveTrips,
   Help,
+  Errors,
+  Errorr,
 } from "../../../assets/svg";
 import {
   Button,
@@ -1232,6 +1234,9 @@ export default function ItineraryDetail(props) {
     },
   });
 
+  let [errors, seterrors] = useState(false);
+  let [modalerrors, setmodalerrors] = useState(false);
+
   const completePlan = async () => {
     _Refresh();
     setloading(true);
@@ -1240,9 +1245,11 @@ export default function ItineraryDetail(props) {
       let y = parseFloat(x[0]);
       if (y < 1) {
         setloading(false);
-        Alert.alert(
-          "" + t("Activity") + " " + t("day") + " " + i.day + " " + t("emptys")
-        );
+        seterrors(true);
+        setmodalerrors(true);
+        // Alert.alert(
+        //   "" + t("Activity") + " " + t("day") + " " + i.day + " " + t("emptys")
+        // );
         return false;
       }
     }
@@ -1759,6 +1766,18 @@ export default function ItineraryDetail(props) {
     });
   };
 
+  const cekTanggal = (starts) => {
+    var date1 = new Date(),
+      start = starts.split(" ");
+    var date2 = new Date(start[0]);
+    // var date2 = new Date(end[0]);
+    var Difference_In_Time = date2.getTime() - date1.getTime();
+    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    // console.log(Difference_In_Time, "masuk time");
+    return Difference_In_Days;
+  };
+
   /**
    * render Helper
    */
@@ -1874,51 +1893,81 @@ export default function ItineraryDetail(props) {
               ? datadetail.itinerary_detail.name
               : null}
           </Animated.Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Animated.Text
-              size="small"
-              type="bold"
+          <View>
+            <Animated.View
               style={{
-                color: "#6c6c6c",
                 opacity: textOpacity,
-                fontFamily: "Lato-Bold",
-                fontSize: 12,
-                top: 5,
+                flexDirection: "row",
+                // position: "absolute",
+                top: 10,
               }}
             >
-              {/* {t("dates")} :{" "} */}
-              {datadetail && datadetail.itinerary_detail
-                ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                  "  -  " +
-                  dateFormatr(datadetail.itinerary_detail.end_date)
-                : null}
-            </Animated.Text>
-            <Animated.Text
-              size="small"
-              type="bold"
+              {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
+                <Errorr width={15} height={15} style={{ marginRight: 5 }} />
+              ) : null}
+              <Animated.Text
+                // onLayout={() => {
+                //   cekTanggal(datadetail?.itinerary_detail?.start_date);
+                // }}
+                size="small"
+                type="bold"
+                style={{
+                  color:
+                    cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180
+                      ? "#D75995"
+                      : "#6c6c6c",
+                  opacity: textOpacity,
+                  fontFamily: "Lato-Bold",
+                  fontSize: 12,
+                  // top: 5,
+                }}
+              >
+                {/* {t("dates")} :{" "} */}
+                {datadetail && datadetail.itinerary_detail
+                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                    "  -  " +
+                    dateFormatr(datadetail.itinerary_detail.end_date)
+                  : null}
+              </Animated.Text>
+            </Animated.View>
+
+            <Animated.View
               style={{
                 position: "absolute",
                 top: 10,
-
-                color: "#fff",
                 opacity: textOpacitys,
-                fontFamily: "Lato-Bold",
-                fontSize: 12,
-                marginTop: 0,
+                flexDirection: "row",
               }}
             >
-              {/* {t("dates")} :{" "} */}
-              {datadetail && datadetail.itinerary_detail
-                ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                  "  -  " +
-                  dateFormatr(datadetail.itinerary_detail.end_date)
-                : null}
-            </Animated.Text>
+              {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
+                <Errorr width={15} height={15} style={{ marginRight: 5 }} />
+              ) : null}
+
+              <Animated.Text
+                size="small"
+                type="bold"
+                style={{
+                  // position: "absolute",
+                  // top: 10,
+
+                  color:
+                    cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180
+                      ? "#D75995"
+                      : "#ffffff",
+                  opacity: textOpacitys,
+                  fontFamily: "Lato-Bold",
+                  fontSize: 12,
+                  // marginTop: 0,
+                }}
+              >
+                {/* {t("dates")} :{" "} */}
+                {datadetail && datadetail.itinerary_detail
+                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                    "  -  " +
+                    dateFormatr(datadetail.itinerary_detail.end_date)
+                  : null}
+              </Animated.Text>
+            </Animated.View>
           </View>
         </Animated.View>
         <Animated.View
@@ -4094,6 +4143,7 @@ export default function ItineraryDetail(props) {
               tabIndex={tabIndex}
               grid={grid}
               setgrid={(e) => setgrid(e)}
+              errors={errors}
             />
           )}
         </View>
@@ -5777,6 +5827,97 @@ export default function ItineraryDetail(props) {
             </TouchableOpacity>
           </View>
         </Modal>
+
+        <Modalss
+          onBackdropPress={() => {
+            setmodalerrors(false);
+          }}
+          onRequestClose={() => setmodalerrors(false)}
+          onDismiss={() => setmodalerrors(false)}
+          // animationIn="fadeIn"
+          // animationOut="fadeOut"
+          visible={modalerrors}
+          transparent={true}
+        >
+          <Pressable
+            onPress={() => {
+              setmodalerrors(false);
+            }}
+            style={{
+              height: Dimensions.get("screen").height,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+              // opacity: 0.7,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                alignContent: "center",
+                // height: 100,
+                width: Dimensions.get("screen").width - 100,
+                padding: 20,
+              }}
+            >
+              <Errors height={100} width={100} />
+              <Text
+                type="bold"
+                size="title"
+                style={{
+                  marginTop: 20,
+                }}
+              >
+                Trip kamu belum lengkap
+              </Text>
+              <Text
+                // textAlign={"center"}
+                size="label"
+                style={{
+                  textAlign: "center",
+                  width: "60%",
+                }}
+              >
+                Masih ada hari yang belum terisi aktivitas liburanmu.
+              </Text>
+              <View
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "#f3f3f3",
+                  padding: 20,
+                }}
+              >
+                <Text size="label">
+                  Untuk mengaktifkan trip ini kamu harus melengkapi aktivitas di
+                  hari yang masih kosong atau kamu bisa hapus hari yang kosong
+                  tersebut.
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setmodalerrors(false);
+                }}
+                style={{
+                  paddingTop: 20,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="label"
+                  style={{
+                    color: "#209fae",
+                  }}
+                >
+                  Ok, Saya Mengerti
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modalss>
 
         <Sidebar
           props={props}
