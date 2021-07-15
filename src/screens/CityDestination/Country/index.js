@@ -1101,7 +1101,7 @@ export default function Country(props) {
                 }}
               >
                 <RenderMaps
-                  icon={"mk-belitung"}
+                  icon={render?.map ? render.map : "mk-belitung"}
                   height={250}
                   width={width - 70}
                   style={{
@@ -1138,7 +1138,9 @@ export default function Country(props) {
                 }}
               >
                 <Image
-                  source={default_image}
+                  source={
+                    render?.climate ? { uri: render.climate } : default_image
+                  }
                   style={{
                     width: "100%",
                     height: width * 0.7,
@@ -1166,7 +1168,9 @@ export default function Country(props) {
                 }}
               >
                 <Image
-                  source={default_image}
+                  source={
+                    render?.religion ? { uri: render.religion } : default_image
+                  }
                   style={{
                     width: "100%",
                     height: width * 0.7,

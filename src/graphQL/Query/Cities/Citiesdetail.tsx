@@ -12,6 +12,8 @@ const CitiesInformation = gql`
         id
         name
         flag
+        climate
+        religion
       }
       map
       cover

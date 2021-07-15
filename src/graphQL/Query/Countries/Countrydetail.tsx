@@ -9,6 +9,8 @@ const country_detail = gql`
       cover_facts
       cover
       flag
+      climate
+      religion
       images {
         image
       }
