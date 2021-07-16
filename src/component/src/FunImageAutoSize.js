@@ -14,7 +14,7 @@ export default function FunImageAutoSize({
     uri,
     ...otherProps
 }) {
-    let url = uri + "?size=s";
+    let url = uri + "?size=f";
     let [loading, setLoading] = useState(false);
     let [temp, setTemp] = useState([]);
     let [progress, setProgress] = useState();

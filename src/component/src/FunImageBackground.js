@@ -21,7 +21,7 @@ export default function ImageBackground({
     let [loading, setLoading] = useState(false);
     // let [timeout, setTimeOut] = useState(false);
     let [progress, setProgress] = useState();
-    console.log(progress);
+    // console.log(progress);
     let [temp, setTemp] = useState([]);
     let isUri = source.uri ? true : false;
     let uri = source.uri + "?size=m";
@@ -41,25 +41,25 @@ export default function ImageBackground({
                     if (!exists && CACHE.indexOf(name) === -1) {
                         setLoading(true);
                         CACHE.push(name);
-                        console.log("CACHE FILE", name);
+                        // console.log("CACHE FILE", name);
                         RNFS.downloadFile({
                             fromUrl: uri,
                             toFile: path,
                             background: true,
                             begin: (res: DownloadBeginCallbackResult) => {
-                                console.log("Response begin ===\n\n");
-                                console.log(res);
+                                // console.log("Response begin ===\n\n");
+                                // console.log(res);
                             },
                             progress: (res: DownloadProgressCallbackResult) => {
                                 //here you can calculate your progress for file download
-                                console.log("Response written ===\n\n");
+                                // console.log("Response written ===\n\n");
                                 let progressPercent =
                                     (res.bytesWritten / res.contentLength) *
                                     100; // to calculate in percentage
-                                console.log("\n\nprogress===", progressPercent);
+                                // console.log("\n\nprogress===", progressPercent);
                                 setProgress(progressPercent.toString());
                                 // item.downloadProgress = progressPercent;
-                                console.log(res);
+                                // console.log(res);
                             },
                         }).promise.then((res) => {
                             console.log(res);
