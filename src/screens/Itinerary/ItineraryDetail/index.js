@@ -853,27 +853,24 @@ export default function ItineraryDetail(props) {
     setModal(true);
   };
 
-  const openModaldate = async (position, index, starts, durati) => {
-    if (position === "start") {
-      var starttime = starts.split(":");
-      setjamer(starttime[0]);
-      setmenor(starttime[1]);
-    } else {
-      var duration = durati.split(":");
-      var starttime = starts.split(":");
+  const openModaldate = async (index, starts, durati) => {
+    var duration = durati.split(":");
+    var starttime = starts.split(":");
 
-      var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
+    var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
 
-      var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
-      if (menit > 59) {
-        menit = menit - 60;
-      }
+    var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
 
-      setjamer(jam < 10 ? "0" + (jam < 0 ? 0 : jam) : "" + jam);
-      setmenor(menit < 10 ? "0" + menit : "" + menit);
+    if (menit > 59) {
+      menit = menit - 60;
     }
 
-    await setPositiondate(position);
+    await setjamstart(starttime[0]);
+    await setmenitstart(starttime[1]);
+
+    await setjamend(jam < 10 ? "0" + (jam < 0 ? 0 : jam) : "" + jam);
+    await setmenitend(menit < 10 ? "0" + menit : "" + menit);
+
     await setModaldate(true);
     await setIndexInput(index);
   };
@@ -897,97 +894,92 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const setTime = async (timeselected, nn) => {
-    let datas = [...nn];
-    let awal = datas[indexinput].duration;
+  const setTime = async (
+    jamstarts,
+    menitstarts,
+    jamends,
+    menitends,
+    dataLists
+  ) => {
+    await setModaldate(false);
 
-    if (positiondate == "start") {
-      datas[indexinput].time = timeselected;
+    let starttimes = jamstarts + ":" + menitstarts + ":00";
 
-      if (datas[parseFloat(indexinput) - 1]) {
-        let timesebelum = hitungDuration({
-          startt: datas[parseFloat(indexinput) - 1].time,
-          dur: datas[parseFloat(indexinput) - 1].duration,
+    let jams = parseFloat(jamends) - parseFloat(jamstarts);
+
+    let menits = parseFloat(menitends) + 60 - parseFloat(menitstarts);
+
+    if (menits > 59) {
+      menits = menits - 60;
+    }
+
+    let jamakhirs = jams < 10 ? "0" + (jams < 0 ? 0 : jams) : jams;
+    let menitakhirs = menits < 10 ? "0" + menits : menits;
+    let durations = jamakhirs + ":" + menitakhirs + ":00";
+
+    let datax = [...dataLists];
+    let dataganti = { ...datax[indexinput] };
+
+    dataganti.time = starttimes;
+    dataganti.duration = durations;
+
+    if (datax[parseFloat(indexinput) - 1]) {
+      let timesebelum = hitungDuration({
+        startt: datax[parseFloat(indexinput) - 1].time,
+        dur: datax[parseFloat(indexinput) - 1].duration,
+      });
+
+      let timestartsebelum = datax[parseFloat(indexinput) - 1].time.split(":");
+
+      timesebelum = timesebelum.split(":");
+      let bandingan = starttimes.split(":");
+
+      timestartsebelum = parseFloat(timestartsebelum[0]);
+      let jamsebelum = parseFloat(timesebelum[0]);
+      let jamsesesudah = parseFloat(bandingan[0]);
+
+      if (jamsesesudah > timestartsebelum) {
+        let a = caridurasi(datax[parseFloat(indexinput) - 1].time, starttimes);
+
+        let dataset = { ...datax[parseFloat(indexinput) - 1] };
+        dataset.duration = a;
+        datax.splice(parseFloat(indexinput) - 1, 1, dataset);
+      } else {
+        dataganti.time = hitungDuration({
+          startt: datax[parseFloat(indexinput) - 1].time,
+          dur: datax[parseFloat(indexinput) - 1].duration,
         });
-
-        let timestartsebelum = datas[parseFloat(indexinput) - 1].time.split(
-          ":"
-        );
-        timesebelum = timesebelum.split(":");
-        let bandingan = timeselected.split(":");
-
-        timestartsebelum = parseFloat(timestartsebelum[0]);
-        let jamsebelum = parseFloat(timesebelum[0]);
-        let jamsesesudah = parseFloat(bandingan[0]);
-
-        if (jamsesesudah > timestartsebelum) {
-          let a = caridurasi(
-            datas[parseFloat(indexinput) - 1].time,
-            timeselected
-          );
-          datas[parseFloat(indexinput) - 1].duration = a;
-        } else {
-          datas[indexinput].time = hitungDuration({
-            startt: datas[parseFloat(indexinput) - 1].time,
-            dur: datas[parseFloat(indexinput) - 1].duration,
-          });
-        }
-      }
-
-      var x = 0;
-      var order = 1;
-      for (var y in datas) {
-        datas[y].order = order;
-
-        if (datas[y - 1] && y > indexinput) {
-          datas[y].time = hitungDuration({
-            startt: datas[y - 1].time,
-            dur: datas[y - 1].duration,
-          });
-        }
-        x++;
-        order++;
-      }
-    } else {
-      var starttime = datas[indexinput].time
-        ? datas[indexinput].time.split(":")
-        : "00:00".split(":");
-      var endtime = timeselected.split(":");
-
-      var jam = parseFloat(endtime[0]) - parseFloat(starttime[0]);
-
-      var menit = parseFloat(endtime[1]) + 60 - parseFloat(starttime[1]);
-      if (menit > 59) {
-        menit = menit - 60;
-      }
-
-      var jamakhir = jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam;
-      var menitakhir = menit < 10 ? "0" + menit : menit;
-
-      datas[indexinput].duration = jamakhir + ":" + menitakhir + ":00";
-
-      var x = 0;
-      var order = 1;
-      for (var y in datas) {
-        if (datas[y - 1]) {
-          datas[y].order = order;
-
-          datas[y].time = hitungDuration({
-            startt: datas[y - 1].time,
-            dur: datas[y - 1].duration,
-          });
-        }
-        x++;
-        order++;
       }
     }
 
-    let sum = datas.reduce(
+    datax.splice(indexinput, 1, dataganti);
+
+    var x = 0;
+    var order = 1;
+
+    for (var y in datax) {
+      if (datax[y - 1]) {
+        let datareplace = { ...datax[y] };
+        // await console.log("awal", datax[y]);
+
+        datareplace.order = order;
+        datareplace.time = await hitungDuration({
+          startt: datax[y - 1].time,
+          dur: datax[y - 1].duration,
+        });
+        await datax.splice(y, 1, datareplace);
+        // await console.log("akhir", datax[y]);
+      }
+      x++;
+      order++;
+    }
+
+    let sum = datax.reduce(
       (itinerary, item) => itinerary.add(moment.duration(item.duration)),
       moment.duration()
     );
 
-    let jampert = datas[0].time.split(":");
+    let jampert = datax[0].time.split(":");
     let jampertama = parseFloat(jampert[0]);
     let menitpertama = parseFloat(jampert[1]);
     let durjam = Math.floor(sum.asHours());
@@ -999,65 +991,21 @@ export default function ItineraryDetail(props) {
       let dataday = { ...datadayaktif };
 
       if (hasiljam === 23 && hasilmenit <= 59) {
-        await setDataListItem(datas);
-        savetimeline(datas);
-        await setidDay(idDay);
-        await setPositiondate("");
-        await setModaldate(false);
+        savetimeline(datax);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else if (hasiljam < 23) {
-        await setDataListItem(datas);
-        savetimeline(datas);
-        await setidDay(idDay);
-        await setPositiondate("");
-        await setModaldate(false);
+        savetimeline(datax);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else {
-        datas[indexinput].duration = awal;
-
-        var x = 0;
-        var order = 1;
-        for (var y in datas) {
-          if (datas[y - 1]) {
-            datas[y].order = order;
-
-            datas[y].time = hitungDuration({
-              startt: datas[y - 1].time,
-              dur: datas[y - 1].duration,
-            });
-          }
-          x++;
-          order++;
-        }
-
-        await setidDay(idDay);
-
         Alert.alert("Waktu sudah melewati batas maksimal");
       }
     } else {
-      datas[indexinput].duration = awal;
-
-      var x = 0;
-      var order = 1;
-      for (var y in datas) {
-        if (datas[y - 1]) {
-          datas[y].order = order;
-
-          datas[y].time = hitungDuration({
-            startt: datas[y - 1].time,
-            dur: datas[y - 1].duration,
-          });
-        }
-        x++;
-        order++;
-      }
-
-      await setidDay(idDay);
-
       Alert.alert("Waktu sudah melewati batas maksimal");
     }
+
+    // await console.log("hasilnya", hasiljam, hasilmenit);
   };
 
   const hitungDuration = ({ startt, dur }) => {
@@ -1110,6 +1058,9 @@ export default function ItineraryDetail(props) {
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
         }
+
+        startRefreshAction();
+        GetTimelin();
       }
     } catch (error) {
       Alert.alert("" + error);
@@ -2261,10 +2212,9 @@ export default function ItineraryDetail(props) {
                   onPress={() =>
                     status !== "saved" && Anggota === "true"
                       ? openModaldate(
-                          "start",
                           index,
                           item.time ? item.time : "00:00:00",
-                          "00:00:00"
+                          item.duration ? item.duration : "00:00:00"
                         )
                       : null
                   }
@@ -2282,7 +2232,6 @@ export default function ItineraryDetail(props) {
                   onPress={() => {
                     status !== "saved" && Anggota === "true"
                       ? openModaldate(
-                          "end",
                           index,
                           item.time ? item.time : "00:00:00",
                           item.duration ? item.duration : "00:00:00"
@@ -4747,6 +4696,11 @@ export default function ItineraryDetail(props) {
   let [modalsss, setModalsss] = useState(false);
   let judul = "";
 
+  let [jamstart, setjamstart] = useState("00");
+  let [menitstart, setmenitstart] = useState("00");
+  let [jamend, setjamend] = useState("00");
+  let [menitend, setmenitend] = useState("00");
+
   const setdataimage = async (data, inde) => {
     setIndexs(inde);
     var tempdatas = [];
@@ -5472,6 +5426,7 @@ export default function ItineraryDetail(props) {
           </View>
         </Modal>
 
+        {/* modaldates */}
         <Modal
           onBackdropPress={() => {
             setModaldate(false);
@@ -5489,17 +5444,17 @@ export default function ItineraryDetail(props) {
         >
           <View
             style={{
-              width: Dimensions.get("screen").width - 20,
+              width: Dimensions.get("screen").width - 80,
               backgroundColor: "white",
               marginBottom: 70,
-              paddingTop: 60,
+              paddingVertical: 30,
               paddingHorizontal: 20,
-              paddingBottom: 30,
+              // paddingBottom: 30,
               alignContent: "center",
               alignItems: "center",
             }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 position: "absolute",
                 top: 20,
@@ -5508,105 +5463,239 @@ export default function ItineraryDetail(props) {
               onPress={() => setModaldate(false)}
             >
               <Xhitam width={15} height={15} />
-            </TouchableOpacity>
-            <Text size="description" type="bold" style={{}}>
-              {t("Selecttime")}
+            </TouchableOpacity> */}
+            <Text size="label">Atur waktu untuk aktivitas</Text>
+            <Text size="title" type="bold">
+              "{datadetail?.itinerary_detail?.name}"
             </Text>
+
             <View
               style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
+                marginTop: 20,
+                backgroundColor: "#f3f3f3",
+                padding: 15,
               }}
             >
-              <View style={{ width: "40%" }}>
-                <Picker
-                  iosIcon={
-                    <View>
-                      <Bottom />
-                    </View>
-                  }
-                  iosHeader="Select Hours"
-                  note
-                  mode="dropdown"
-                  selectedValue={jamer}
-                  textStyle={{ fontFamily: "Lato-Regular" }}
-                  itemTextStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
-                  itemStyle={{ fontFamily: "Lato-Regular" }}
-                  placeholderStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
-                  headerTitleStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
+              <Text
+                size="label"
+                // type="bold"
+                style={{ alignSelf: "center" }}
+              >
+                {t("Dari")}
+              </Text>
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ width: "40%" }}>
+                  <Picker
+                    iosIcon={
+                      <View>
+                        <Bottom />
+                      </View>
+                    }
+                    iosHeader="Select Hours"
+                    note
+                    mode="dropdown"
+                    selectedValue={jamstart}
+                    textStyle={{ fontFamily: "Lato-Regular" }}
+                    itemTextStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    itemStyle={{ fontFamily: "Lato-Regular" }}
+                    placeholderStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    headerTitleStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    style={{
+                      color: "#209fae",
+                      fontFamily: "Lato-Regular",
+                    }}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setjamstart(itemValue)
+                    }
+                  >
+                    {jams.map((item, index) => {
+                      return (
+                        <Picker.Item key={item} label={item} value={item} />
+                      );
+                    })}
+                  </Picker>
+                </View>
+
+                <View
                   style={{
-                    color: "#209fae",
-                    fontFamily: "Lato-Regular",
+                    width: "5%",
+                    alignItems: "center",
+                    // alignContent: "flex-end",
                   }}
-                  onValueChange={(itemValue, itemIndex) => setjamer(itemValue)}
                 >
-                  {jams.map((item, index) => {
-                    return <Picker.Item key={item} label={item} value={item} />;
-                  })}
-                </Picker>
+                  <Text size="description" type="bold" style={{}}>
+                    :
+                  </Text>
+                </View>
+                <View style={{ width: "40%" }}>
+                  <Picker
+                    iosHeader="Select Minutes"
+                    headerBackButtonTextStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    note
+                    mode="dropdown"
+                    selectedValue={menitstart}
+                    textStyle={{ fontFamily: "Lato-Regular" }}
+                    itemTextStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    itemStyle={{ fontFamily: "Lato-Regular" }}
+                    placeholderStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    iosIcon={
+                      <View>
+                        <Bottom />
+                      </View>
+                    }
+                    headerTitleStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    style={{
+                      color: "#209fae",
+                      fontFamily: "Lato-Regular",
+                    }}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setmenitstart(itemValue)
+                    }
+                  >
+                    {menits.map((item, index) => {
+                      return (
+                        <Picker.Item key={""} label={item + ""} value={item} />
+                      );
+                    })}
+                  </Picker>
+                </View>
               </View>
+
+              <Text
+                size="label"
+                // type="bold"
+                style={{ alignSelf: "center" }}
+              >
+                {t("Sampai")}
+              </Text>
 
               <View
                 style={{
-                  width: "5%",
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center",
                   alignItems: "center",
-                  // alignContent: "flex-end",
                 }}
               >
-                <Text size="description" type="bold" style={{}}>
-                  :
-                </Text>
-              </View>
-              <View style={{ width: "40%" }}>
-                <Picker
-                  iosHeader="Select Minutes"
-                  headerBackButtonTextStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
-                  note
-                  mode="dropdown"
-                  selectedValue={menor}
-                  textStyle={{ fontFamily: "Lato-Regular" }}
-                  itemTextStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
-                  itemStyle={{ fontFamily: "Lato-Regular" }}
-                  placeholderStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
-                  iosIcon={
-                    <View>
-                      <Bottom />
-                    </View>
-                  }
-                  headerTitleStyle={{
-                    fontFamily: "Lato-Regular",
-                  }}
+                <View style={{ width: "40%" }}>
+                  <Picker
+                    iosIcon={
+                      <View>
+                        <Bottom />
+                      </View>
+                    }
+                    iosHeader="Select Hours"
+                    note
+                    mode="dropdown"
+                    selectedValue={jamend}
+                    textStyle={{ fontFamily: "Lato-Regular" }}
+                    itemTextStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    itemStyle={{ fontFamily: "Lato-Regular" }}
+                    placeholderStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    headerTitleStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    style={{
+                      color: "#209fae",
+                      fontFamily: "Lato-Regular",
+                    }}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setjamend(itemValue)
+                    }
+                  >
+                    {jams.map((item, index) => {
+                      return (
+                        <Picker.Item key={item} label={item} value={item} />
+                      );
+                    })}
+                  </Picker>
+                </View>
+
+                <View
                   style={{
-                    color: "#209fae",
-                    fontFamily: "Lato-Regular",
+                    width: "5%",
+                    alignItems: "center",
+                    // alignContent: "flex-end",
                   }}
-                  onValueChange={(itemValue, itemIndex) => setmenor(itemValue)}
                 >
-                  {menits.map((item, index) => {
-                    return (
-                      <Picker.Item key={""} label={item + ""} value={item} />
-                    );
-                  })}
-                </Picker>
+                  <Text size="description" type="bold" style={{}}>
+                    :
+                  </Text>
+                </View>
+                <View style={{ width: "40%" }}>
+                  <Picker
+                    iosHeader="Select Minutes"
+                    headerBackButtonTextStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    note
+                    mode="dropdown"
+                    selectedValue={menitend}
+                    textStyle={{ fontFamily: "Lato-Regular" }}
+                    itemTextStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    itemStyle={{ fontFamily: "Lato-Regular" }}
+                    placeholderStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    iosIcon={
+                      <View>
+                        <Bottom />
+                      </View>
+                    }
+                    headerTitleStyle={{
+                      fontFamily: "Lato-Regular",
+                    }}
+                    style={{
+                      color: "#209fae",
+                      fontFamily: "Lato-Regular",
+                    }}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setmenitend(itemValue)
+                    }
+                  >
+                    {menits.map((item, index) => {
+                      return (
+                        <Picker.Item key={""} label={item + ""} value={item} />
+                      );
+                    })}
+                  </Picker>
+                </View>
               </View>
             </View>
+
             <TouchableOpacity
-              onPress={() => setTime(jamer + ":" + menor + ":00", dataList)}
+              onPress={() =>
+                setTime(jamstart, menitstart, jamend, menitend, dataList)
+              }
               style={{
                 marginTop: 20,
                 backgroundColor: "#209fae",
@@ -5622,7 +5711,7 @@ export default function ItineraryDetail(props) {
                   color: "white",
                 }}
               >
-                {t("Select")}
+                {t("save")}
               </Text>
             </TouchableOpacity>
           </View>
