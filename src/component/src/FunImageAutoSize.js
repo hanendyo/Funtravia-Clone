@@ -6,6 +6,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Image from "react-native-auto-scale-image";
 import { ASSETS_SERVER } from "../../config";
 import CACHE from "../cache.json";
+import FastImage from "react-native-fast-image";
 
 export default function FunImageAutoSize({
   children,
@@ -36,8 +37,9 @@ export default function FunImageAutoSize({
               fromUrl: url,
               toFile: path,
             }).promise.then((res) => {
+              console.log("Res", res);
               setTimeout(() => setLoading(false), 1000);
-              // console.log("CACHED ANIMATED IMAGE", url);
+              console.log("CACHED ANIMATED IMAGE", url);
             });
           }
         })
@@ -50,13 +52,13 @@ export default function FunImageAutoSize({
       path = uri;
     }
   }
-  if (loading) {
-    return (
-      <SkeletonPlaceholder speed={500}>
-        <SkeletonPlaceholder.Item {...style} height={style.width} />
-      </SkeletonPlaceholder>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SkeletonPlaceholder speed={500}>
+  //       <SkeletonPlaceholder.Item {...style} height={style.width} />
+  //     </SkeletonPlaceholder>
+  //   );
+  // }
 
   return <Image {...otherProps} style={style} uri={path} />;
 }

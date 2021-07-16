@@ -98,6 +98,7 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  console.log("props feed", props);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   useScrollToTop(ref);
@@ -117,8 +118,6 @@ export default function FeedList({ props, token }) {
       Refresh();
     }, 1000);
   }, [token]);
-
-  const cektoken = async () => {};
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -194,14 +193,23 @@ export default function FeedList({ props, token }) {
         },
       });
 
-      console.log("response", response);
       if (loadingMutationPost) {
         console.log("loading", loadingMutationPost);
       }
 
+      if (errorMutationPost) {
+        console.log(errorMutationPost);
+        RNToasty({
+          duration: 1,
+          title: t("failPost"),
+          position: "bottom",
+        });
+      }
+      console.log("response", response);
+
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          Refresh();
+          await Refresh();
           setTimeout(() => {
             if (ref) {
               ref.current.scrollToIndex({ animated: true, index: 0 });
@@ -352,8 +360,6 @@ export default function FeedList({ props, token }) {
     notifyOnNetworkStatusChange: true,
   });
 
-  console.log("dataPost", dataPost);
-
   let feed_post_pageing = [];
   if (dataPost && dataPost && "datas" in dataPost?.feed_post_pageing) {
     feed_post_pageing = dataPost?.feed_post_pageing?.datas;
@@ -487,6 +493,7 @@ export default function FeedList({ props, token }) {
   };
 
   useEffect(() => {
+    console.log("useeefffect");
     refetch();
     loadAsync();
     if (props.route.params) {
@@ -748,8 +755,6 @@ export default function FeedList({ props, token }) {
 
   const [modalLogin, setModalLogin] = useState(true);
 
-  console.log("props", props);
-
   if (feed_post_pageing.length > 11) {
     if (!token || token == undefined) {
       return (
@@ -813,11 +818,14 @@ export default function FeedList({ props, token }) {
               <Button
                 style={{ marginBottom: 5 }}
                 onPress={() => {
+                  setModalLogin(false);
                   props.navigation.navigate("AuthStack", {
                     screen: "LoginScreen",
                   });
-                  // setModalLogin(false);
                   feed_post_pageing.length = 0;
+                  setTimeout(() => {
+                    setModalLogin(true);
+                  }, 3000);
                 }}
                 type="icon"
                 text={"Login"}
@@ -857,11 +865,14 @@ export default function FeedList({ props, token }) {
                   type="bold"
                   style={{ color: "#209FAE" }}
                   onPress={() => {
+                    setModalLogin(false);
                     props.navigation.navigate("AuthStack", {
                       screen: "RegisterScreen",
                     });
-                    // setModalLogin(false);
                     feed_post_pageing.length = 0;
+                    setTimeout(() => {
+                      setModalLogin(true);
+                    }, 3000);
                   }}
                 >
                   Buat Akun
@@ -1273,6 +1284,7 @@ export default function FeedList({ props, token }) {
               borderBottomColor: "#EEEEEE",
               paddingBottom: 25,
             }}
+            key={index}
           >
             <View
               style={{

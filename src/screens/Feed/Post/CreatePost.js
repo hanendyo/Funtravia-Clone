@@ -79,7 +79,6 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  // console.log("props create post", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
@@ -150,6 +149,7 @@ export default function CreatePost(props) {
   };
 
   const SubmitData = async () => {
+    console.log("submit");
     let caption = statusText ? statusText : "-";
     let latitude = Location.latitude !== "" ? Location.latitude : "0";
     let longitude = Location.longitude !== "" ? Location.longitude : "0";

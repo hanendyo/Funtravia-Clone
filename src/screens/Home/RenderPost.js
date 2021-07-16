@@ -11,7 +11,6 @@ import { useMutation } from "@apollo/client";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderVideo({ data, user, navigation, token }) {
-  console.log("data", data);
   const [
     MutationLike,
     { loading: loadingLike, data: dataLike, error: errorLike },

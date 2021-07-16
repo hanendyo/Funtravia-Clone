@@ -235,6 +235,7 @@ export default function RenderAlbum({
         data={data.assets}
         renderItem={({ item, index }) => (
           <TouchableOpacity
+            // key={item.id}
             onPress={() => setIndexAktive(index)}
             style={{
               marginRight: data.assets.length == index + 1 ? 0 : 5,

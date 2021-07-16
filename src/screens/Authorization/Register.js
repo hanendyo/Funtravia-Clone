@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -173,6 +174,20 @@ export default function Register({ navigation }) {
     headerMode: "screen",
     headerTransparent: true,
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      BackHandler.addEventListener(navigation.goBack());
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  });
 
   useEffect(() => {
     navigation.setOptions(NavigationComponent);
