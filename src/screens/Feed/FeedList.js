@@ -113,10 +113,12 @@ export default function FeedList({ props, token }) {
   let [tkn, setTkn] = useState(null);
 
   useEffect(() => {
-    setTkn(token);
-    setTimeout(() => {
-      Refresh();
-    }, 1000);
+    if (loadingPost) {
+      setTkn(token);
+      setTimeout(() => {
+        Refresh();
+      }, 1000);
+    }
   }, [token]);
 
   let { width, height } = Dimensions.get("screen");
