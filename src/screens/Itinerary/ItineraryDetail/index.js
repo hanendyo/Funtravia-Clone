@@ -803,7 +803,7 @@ export default function ItineraryDetail(props) {
   });
 
   const _handledeleteDay = async (iditinerary, idDay) => {
-    if (datadetail.itinerary_detail.day.length > 1) {
+    if (datadetail?.itinerary_detail?.day?.length > 1) {
       try {
         let response = await mutationDeleteDay({
           variables: {
@@ -4858,11 +4858,49 @@ export default function ItineraryDetail(props) {
           >
             <TouchableOpacity
               onPress={() => {
-                _handledeleteDay(datadayaktif.itinerary_id, datadayaktif.id);
+                setModalmenuday(false);
+
+                Alert.alert(
+                  "",
+                  t("delete") +
+                    " " +
+                    t("day") +
+                    " " +
+                    datadayaktif?.day +
+                    " " +
+                    t("from") +
+                    " " +
+                    t("Itinerary") +
+                    "?",
+                  [
+                    {
+                      text: t("cancel"),
+                      onPress: () => {
+                        setModalmenuday(false);
+                      },
+                      style: "cancel",
+                    },
+                    {
+                      text: t("delete"),
+                      onPress: () => {
+                        _handledeleteDay(
+                          datadayaktif?.itinerary_id,
+                          datadayaktif?.id
+                        );
+                      },
+                    },
+                  ]
+                );
+                return true;
               }}
+
+              // onPress={() => {
+
+              //   _handledeleteDay(datadayaktif?.itinerary_id, datadayaktif?.id);
+              // }}
             >
               <Text style={{ color: "#d75995" }}>
-                {t("delete")} {t("day")} {datadayaktif.day} {t("from")}{" "}
+                {t("delete")} {t("day")} {datadayaktif?.day} {t("from")}{" "}
                 {t("Itinerary")}
               </Text>
             </TouchableOpacity>
@@ -5745,6 +5783,8 @@ export default function ItineraryDetail(props) {
                 paddingVertical: 10,
               }}
               onPress={() => {
+                setModalmenu(false);
+
                 Alert.alert("", t("DeleteActivityfromItinerary") + "?", [
                   {
                     text: t("cancel"),
