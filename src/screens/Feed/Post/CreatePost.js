@@ -79,6 +79,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
+  console.log("props", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
@@ -344,9 +345,6 @@ export default function CreatePost(props) {
   const L = (2 / 3) * Dimensions.get("screen").width;
   const P = (5 / 4) * Dimensions.get("screen").width;
   const S = Dimensions.get("screen").width;
-
-  // console.log("propss ", props.route.params);
-  // console.log("orinted ", oriented);
 
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {

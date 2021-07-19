@@ -43,6 +43,10 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImageCropper from "react-native-simple-image-cropper";
 import { useIsFocused } from "@react-navigation/native";
+import RNFetchBlob, {
+  ProcessingManager,
+  compress,
+} from "react-native-fetch-blob";
 
 const { width } = Dimensions.get("screen");
 export default function Post(props) {
@@ -147,18 +151,61 @@ export default function Post(props) {
       });
   };
 
+  const [size, setSize] = useState(null);
+
+  console.log("size", size);
+
+  console.log("slider", slider);
+
+  useEffect(() => {
+    let getVideoInfo = () => {
+      slider
+        .getVideoInfo()
+        .then((info) => console.log("info", info))
+        .catch(console.warn);
+    };
+  }, []);
+
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
+        RNFetchBlob.fs
+          .stat(recent.node.image.uri)
+          .then((stats) => {
+            setSize(stats.size);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        recent.node.image.fileSize = size;
+        let height;
+        let width;
+        if (ratio.label == "L") {
+          width = 1080;
+          height = 566;
+        } else if (ratio.label == "P") {
+          width = 1080;
+          height = 1350;
+        } else {
+          width = 1080;
+          height = 1080;
+        }
+
+        console.log(slider.current.getItem((data, index) => console.log(data)));
+        let tempData = { ...recent.node.image };
+        tempData.height = height;
+        tempData.width = width;
+        console.log("tempt", tempData);
+
         props.navigation.navigate("CreatePostScreen", {
           location: recent.node.location,
           type: recent.node.type.substr(0, 5),
-          file: recent.node.image,
+          // file: recent.node.image,
+          file: tempData,
           token: token,
           ratio: ratio,
         });
       } else if (type.substr(0, 5) === "image") {
-        console.log("ratio", ratio);
         let height;
         let width;
         if (ratio.label == "L") {
