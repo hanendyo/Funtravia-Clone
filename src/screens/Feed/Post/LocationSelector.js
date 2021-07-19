@@ -121,7 +121,7 @@ export default function LocationSelector({
             query={{
               key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
               language: "id", // language of the results
-              components: "country:id",
+              // components: "country:id",
             }}
             fetchDetails={true}
             // GooglePlacesDetailsQuery={{}}

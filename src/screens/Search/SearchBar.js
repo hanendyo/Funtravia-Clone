@@ -8,20 +8,20 @@ import {
   Alert,
   Image,
 } from "react-native";
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
 
 import { search_button } from "../../assets/png";
-import SearchTab from "./SearchTab";
+// import SearchTab from "./SearchTab";
 import { useLazyQuery } from "@apollo/react-hooks";
 import SearchDestinationQuery from "../../graphQL/Query/Search/SearchDestination";
-import SearchAccommodationQuery from "../../graphQL/Query/Search/SearchAccommodation";
+// import SearchAccommodationQuery from "../../graphQL/Query/Search/SearchAccommodation";
 import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
 import SearchPostQuery from "../../graphQL/Query/Search/SearchPost";
 import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchEventQuery from "../../graphQL/Query/Search/SearchEvent";
-import { useIsFocused } from "@react-navigation/native";
+// import { useIsFocused } from "@react-navigation/native";
 
 export default function SearchBar({
   props,
