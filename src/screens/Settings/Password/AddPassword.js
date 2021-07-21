@@ -164,6 +164,7 @@ export default function AddPassword(props) {
     <View
       style={{
         paddingHorizontal: 20,
+        paddingTop: 10,
         flex: 1,
       }}
     >
@@ -223,7 +224,7 @@ export default function AddPassword(props) {
       </View>
       {error["password1"] === true ? (
         <Label style={{ marginTop: 5 }}>
-          <Text type="light" size="small" style={{ color: "#209FAE" }}>
+          <Text type="light" size="small" style={{ color: "#D75995" }}>
             {t("inputWarningPassword")}
           </Text>
         </Label>
@@ -283,7 +284,7 @@ export default function AddPassword(props) {
       </View>
       {error["password2"] === true ? (
         <Label style={{ marginTop: 5 }}>
-          <Text type="light" size="small" style={{ color: "#209FAE" }}>
+          <Text type="light" size="small" style={{ color: "#D75995" }}>
             {t("inputWarningRepeatPassword")}
           </Text>
         </Label>
@@ -350,7 +351,10 @@ export default function AddPassword(props) {
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
                 {"Failed" +
                   " " +
-                  errors.toString().replace("Error", "").replace(":", "")}
+                  errors
+                    .toString()
+                    .replace("Error", "")
+                    .replace(":", "")}
               </Text>
             ) : (
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
