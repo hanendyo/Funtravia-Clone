@@ -982,7 +982,11 @@ export default function CityDetail(props) {
                 }}
               >
                 <Image
-                  source={default_image}
+                  source={
+                    render?.countries?.climate
+                      ? { uri: render.countries.climate }
+                      : default_image
+                  }
                   style={{
                     width: "100%",
                     height: width * 0.7,
@@ -1010,7 +1014,11 @@ export default function CityDetail(props) {
                 }}
               >
                 <Image
-                  source={default_image}
+                  source={
+                    render?.countries?.religion
+                      ? { uri: render.countries.religion }
+                      : default_image
+                  }
                   style={{
                     width: "100%",
                     height: width * 0.7,

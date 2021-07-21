@@ -48,7 +48,7 @@ export default function Posts({ item, index, navigation, user }) {
                     "output.m3u8",
                     "thumbnail.png"
                   )}
-                  posterResizeMode={"contain"}
+                  posterResizeMode={"cover"}
                   paused={true}
                   key={"posted" + item.id}
                   source={{
@@ -57,6 +57,7 @@ export default function Posts({ item, index, navigation, user }) {
                   muted={true}
                   // defaultSource={default_image}
                   style={{
+                    resizeMode: "cover",
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#fff",
@@ -69,7 +70,7 @@ export default function Posts({ item, index, navigation, user }) {
                     position: "absolute",
                     width: "100%",
                     height: "100%",
-                    backgroundColor: "rgba(0,0,0,0.6)",
+                    backgroundColor: "rgba(0,0,0,0.4)",
                     justifyContent: "flex-end",
                     borderRadius: 5,
                     // bottom: "35%",
@@ -145,7 +146,7 @@ export default function Posts({ item, index, navigation, user }) {
                       "output.m3u8",
                       "thumbnail.png"
                     )}
-                    posterResizeMode={"contain"}
+                    posterResizeMode={"cover"}
                     paused={true}
                     key={"posted" + item.id}
                     source={{
@@ -154,6 +155,7 @@ export default function Posts({ item, index, navigation, user }) {
                     muted={true}
                     // defaultSource={default_image}
                     style={{
+                      resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -166,7 +168,7 @@ export default function Posts({ item, index, navigation, user }) {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.6)",
+                      backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
                       borderRadius: 5,
 
@@ -244,7 +246,7 @@ export default function Posts({ item, index, navigation, user }) {
                       "output.m3u8",
                       "thumbnail.png"
                     )}
-                    posterResizeMode={"contain"}
+                    posterResizeMode={"cover"}
                     paused={true}
                     key={"posted" + item.id}
                     source={{
@@ -253,6 +255,7 @@ export default function Posts({ item, index, navigation, user }) {
                     muted={true}
                     // defaultSource={default_image}
                     style={{
+                      resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -265,7 +268,7 @@ export default function Posts({ item, index, navigation, user }) {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.6)",
+                      backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
                       borderRadius: 5,
 
@@ -357,7 +360,7 @@ export default function Posts({ item, index, navigation, user }) {
                       "output.m3u8",
                       "thumbnail.png"
                     )}
-                    posterResizeMode={"contain"}
+                    posterResizeMode={"cover"}
                     paused={true}
                     key={"posted" + item.id}
                     source={{
@@ -366,6 +369,7 @@ export default function Posts({ item, index, navigation, user }) {
                     muted={true}
                     // defaultSource={default_image}
                     style={{
+                      resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -378,7 +382,7 @@ export default function Posts({ item, index, navigation, user }) {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.6)",
+                      backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
                       borderRadius: 5,
 
@@ -456,7 +460,7 @@ export default function Posts({ item, index, navigation, user }) {
                       "output.m3u8",
                       "thumbnail.png"
                     )}
-                    posterResizeMode={"contain"}
+                    posterResizeMode={"cover"}
                     paused={true}
                     key={"posted" + item.id}
                     source={{
@@ -465,6 +469,7 @@ export default function Posts({ item, index, navigation, user }) {
                     muted={true}
                     // defaultSource={default_image}
                     style={{
+                      resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -477,7 +482,7 @@ export default function Posts({ item, index, navigation, user }) {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.6)",
+                      backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
                       borderRadius: 5,
 
@@ -556,7 +561,7 @@ export default function Posts({ item, index, navigation, user }) {
                     "output.m3u8",
                     "thumbnail.png"
                   )}
-                  posterResizeMode={"contain"}
+                  posterResizeMode={"cover"}
                   paused={true}
                   key={"posted" + item.id}
                   source={{
@@ -565,6 +570,7 @@ export default function Posts({ item, index, navigation, user }) {
                   muted={true}
                   // defaultSource={default_image}
                   style={{
+                    resizeMode: "cover",
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#fff",
@@ -577,7 +583,7 @@ export default function Posts({ item, index, navigation, user }) {
                     position: "absolute",
                     width: "100%",
                     height: "100%",
-                    backgroundColor: "rgba(0,0,0,0.6)",
+                    backgroundColor: "rgba(0,0,0,0.4)",
                     justifyContent: "flex-end",
                     borderRadius: 5,
 
@@ -669,7 +675,7 @@ export default function Posts({ item, index, navigation, user }) {
                           "output.m3u8",
                           "thumbnail.png"
                         )}
-                        posterResizeMode={"contain"}
+                        posterResizeMode={"cover"}
                         paused={true}
                         key={"posted" + data.id}
                         source={{
@@ -678,6 +684,7 @@ export default function Posts({ item, index, navigation, user }) {
                         muted={true}
                         // defaultSource={default_image}
                         style={{
+                          resizeMode: "cover",
                           width: "100%",
                           height: "100%",
                           backgroundColor: "#fff",
@@ -690,7 +697,7 @@ export default function Posts({ item, index, navigation, user }) {
                           position: "absolute",
                           width: "100%",
                           height: "100%",
-                          backgroundColor: "rgba(0,0,0,0.6)",
+                          backgroundColor: "rgba(0,0,0,0.4)",
                           justifyContent: "flex-end",
                           borderRadius: 5,
 
@@ -793,7 +800,7 @@ export default function Posts({ item, index, navigation, user }) {
                       "output.m3u8",
                       "thumbnail.png"
                     )}
-                    posterResizeMode={"contain"}
+                    posterResizeMode={"cover"}
                     paused={true}
                     key={"posted" + data.id}
                     source={{
@@ -802,6 +809,7 @@ export default function Posts({ item, index, navigation, user }) {
                     muted={true}
                     // defaultSource={default_image}
                     style={{
+                      resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -814,7 +822,7 @@ export default function Posts({ item, index, navigation, user }) {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.6)",
+                      backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
                       borderRadius: 5,
 

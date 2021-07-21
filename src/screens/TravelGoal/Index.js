@@ -391,7 +391,7 @@ export default function TravelGoal(props) {
               alignItems: "center",
               alignContent: "center",
               justifyContent: "space-between",
-              marginVertical: 10,
+              marginVertical: 0,
               marginTop: 20,
             }}
           >
@@ -429,7 +429,8 @@ export default function TravelGoal(props) {
         contentContainerStyle={{
           paddingStart: 20,
           paddingEnd: 10,
-          paddingBottom: 20,
+          paddingBottom: 15,
+          // borderWidth: 1,
         }}
         horizontal
         nestedScrollEnabled

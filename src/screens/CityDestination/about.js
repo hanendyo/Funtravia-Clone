@@ -456,12 +456,12 @@ export default function about(props) {
                   paddingHorizontal: 15,
                   width:
                     props.navigationState.routes.length < 2
-                      ? Dimensions.get("screen").width
-                      : props.navigationState.routes.length < 3
                       ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 4
-                      ? Dimensions.get("screen").width * 0.33
-                      : null,
+                      : // : props.navigationState.routes.length < 3
+                        // ? Dimensions.get("screen").width * 0.5
+                        // : props.navigationState.routes.length < 4
+                        // ? Dimensions.get("screen").width * 0.33
+                        null,
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "flex-end",

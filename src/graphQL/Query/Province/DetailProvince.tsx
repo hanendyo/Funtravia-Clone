@@ -12,6 +12,8 @@ const province_detail = gql`
         id
         name
         flag
+        climate
+        religion
       }
       cover
       destination_group {
