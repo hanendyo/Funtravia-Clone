@@ -287,106 +287,97 @@ export default function Asia({ navigation }) {
         {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
         {/* filter region */}
 
-        {BackUse.current.id !== "142" ? (
+        <View
+          style={{
+            // flexDirection: "row",
+            flexWrap: "wrap",
+            marginHorizontal: 15,
+            padding: 10,
+            alignItems: "center",
+            borderColor: "#D1D1D1",
+            backgroundColor: "#FFF",
+            borderRadius: 5,
+            marginHorizontal: 10,
+            marginTop: 10,
+            zIndex: 999999,
+            // borderWidth: 3,
+            elevation: 1,
+            shadowColor: "#d3d3d3",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          }}
+        >
           <View
             style={{
-              height: 95,
-            }}
-          ></View>
-        ) : (
-          <View
-            style={{
-              // flexDirection: "row",
-              flexWrap: "wrap",
-              marginHorizontal: 15,
-              padding: 10,
-              alignItems: "center",
-              borderColor: "#D1D1D1",
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginHorizontal: 10,
-              marginTop: 10,
-              zIndex: 999999,
-              // borderWidth: 3,
-              elevation: 1,
-              shadowColor: "#d3d3d3",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
+              alignSelf: "flex-start",
             }}
           >
-            <View
+            <Text
               style={{
-                alignSelf: "flex-start",
+                paddingLeft: 10,
               }}
+              size={"description"}
+              type={"regular"}
             >
-              <Text
-                style={{
-                  paddingLeft: 10,
-                }}
-                size={"description"}
-                type={"regular"}
-              >
-                Region :
-              </Text>
-            </View>
-            <FlatList
-              data={subContinentData}
-              contentContainerStyle={{
-                flexDirection: "row",
-                paddingHorizontal: 5,
-                marginTop: 5,
-              }}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item, index }) => (
-                // console.log("itemcontinent", item),
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    {
-                      setSubContinent(item);
-                      InitialCountry(item);
-                      setHeader(item.id);
-                      BackUse.current = item;
-                    }
-                  }}
-                  style={{
-                    backgroundColor:
-                      subContinent.id === item.id ? "#209FAE" : "#FFF",
-                    borderWidth: 0.5,
-                    borderColor:
-                      subContinent.id === item.id ? "#209FAE" : "#D1D1D1",
-                    paddingVertical: 8,
-                    paddingHorizontal: 15,
-                    borderRadius: 5,
-                    margin: 5,
-                    elevation: 1,
-                    shadowColor: "#d3d3d3",
-                    shadowOffset: { width: 2, height: 2 },
-                    shadowOpacity: 1,
-                    shadowRadius: 2,
-                  }}
-                >
-                  <Text
-                    type="bold"
-                    size="description"
-                    style={{
-                      color: subContinent.id === item.id ? "#FFF" : "#464646",
-                    }}
-                  >{`${item.label}`}</Text>
-                </TouchableOpacity>
-              )}
-            />
+              Region :
+            </Text>
           </View>
-        )}
+          <FlatList
+            data={subContinentData}
+            contentContainerStyle={{
+              flexDirection: "row",
+              paddingHorizontal: 5,
+              marginTop: 5,
+            }}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              // console.log("itemcontinent", item),
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  {
+                    setSubContinent(item);
+                    InitialCountry(item);
+                    setHeader(item.id);
+                    BackUse.current = item;
+                  }
+                }}
+                style={{
+                  backgroundColor:
+                    subContinent.id === item.id ? "#209FAE" : "#FFF",
+                  borderWidth: 0.5,
+                  borderColor:
+                    subContinent.id === item.id ? "#209FAE" : "#D1D1D1",
+                  paddingVertical: 8,
+                  paddingHorizontal: 15,
+                  borderRadius: 5,
+                  margin: 5,
+                  // elevation: 1,
+                  // shadowColor: "#d3d3d3",
+                  // shadowOffset: { width: 2, height: 2 },
+                  // shadowOpacity: 1,
+                  // shadowRadius: 2,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="description"
+                  style={{
+                    color: subContinent.id === item.id ? "#FFF" : "#464646",
+                  }}
+                >{`${item.label}`}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+
         {/* akhir filter region */}
         <View
           style={{
-            // borderWidth: 1,
-            height: Dimensions.get("screen").height / 3,
-            // marginTop: BackUse.current.id === "142" ? -30 : 0
+            height: Dimensions.get("screen").height / 2.8,
           }}
         >
           {Components[`cm${subContinent.id}`]}
