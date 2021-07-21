@@ -26,7 +26,6 @@ const { width, height } = Dimensions.get("screen");
 import { RNToasty } from "react-native-toasty";
 
 export default function ChooseAlbumItinerary(props) {
-  console.log("props chhos", props);
   const { t } = useTranslation();
   const [newItineraryAlbums, setNewItineraryAlbums] = useState(false);
   const [datas, setDatas] = useState();

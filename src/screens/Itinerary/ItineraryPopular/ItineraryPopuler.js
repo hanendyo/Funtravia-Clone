@@ -13,7 +13,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, FunIcon, Text } from "../../../component";
+import {
+  Button,
+  FunIcon,
+  FunImage,
+  FunImageBackground,
+  Text,
+} from "../../../component";
 import { default_image, itinerary_1, itinerary_2 } from "../../../assets/png";
 import {
   Arrowbackwhite,
@@ -25,6 +31,8 @@ import {
   SearchWhite,
   LikeRed,
   LikeEmpty,
+  Itinerary_1,
+  Itinerary_2,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -36,6 +44,12 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import Ripple from "react-native-material-ripple";
 import Skeletonindex from "./Skeletonindex";
 import { RNToasty } from "react-native-toasty";
+import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
+import JournalList from "../../../graphQL/Query/Journal/JournalList";
+import {
+  dateFormatMonthYears,
+  dateFormatShortMonth,
+} from "../../../component/src/dateformatter";
 
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
@@ -367,14 +381,103 @@ export default function ItineraryPopuler(props) {
     // await fetchDataListPopuler();
   };
 
+  let [dataAlbums, setDataAlbums] = useState(null);
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       refetch();
       loadAsync();
+      QueryFotoAlbum();
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const [
+    QueryFotoAlbum,
+    { data: dataFotoAlbum, loading: loadingFotoAlbum, error: errorFotoAlbum },
+  ] = useLazyQuery(ListFotoAlbum, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    variables: { user_id: setting?.user?.id, keyword: "" },
+    onCompleted: () => setDataAlbums(dataFotoAlbum?.list_albums),
+  });
+
+  const {
+    data: dataList,
+    loading: loadingList,
+    fetchMore: fetchMoreJournal,
+    refetch: refetchJournal,
+  } = useQuery(JournalList, {
+    variables: {
+      category_id: null,
+      order_by: null,
+      limit: 14,
+      offset: 0,
+      keyword: null,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  let journal_list = [];
+  if (dataList && "datas" in dataList.journal_list) {
+    journal_list = dataList.journal_list.datas;
+  }
+
+  const RefreshJournal = useCallback(() => {
+    setRefreshing(true);
+    refetchJournal();
+    wait(1000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+
+  const onUpdateJournal = (prev, { fetchMoreResult }) => {
+    if (
+      prev.journal_list.datas.length <
+      fetchMoreResult.journal_list.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult.journal_list;
+      const datas = [
+        ...prev.journal_list.datas,
+        ...fetchMoreResult.journal_list.datas,
+      ];
+
+      return Object.assign({}, prev, {
+        journal_list: {
+          __typename: prev.journal_list.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
+  };
+
+  const handleOnEndReachedJournal = () => {
+    if (dataList.journal_list.page_info.hasNextPage) {
+      return fetchMoreJournal({
+        variables: {
+          category_id: null,
+          keyword: search.keyword,
+          orderby: null,
+          limit: 14,
+          offset: dataList.journal_list.page_info.offset,
+        },
+        updateQuery: onUpdateJournal,
+      });
+    }
+  };
 
   const RenderUtama = ({ aktif }) => {
     if (aktif == "Itinerary") {
@@ -488,7 +591,7 @@ export default function ItineraryPopuler(props) {
                           style={{
                             zIndex: 0,
                             paddingLeft: 5,
-                            backgroundColor: "rgba(52, 52, 52, 0.8)",
+                            backgroundColor: "rgba(0, 0, 0, 0.6)",
                             borderRadius: 2,
                             color: "white",
                             marginLeft: -5,
@@ -776,14 +879,74 @@ export default function ItineraryPopuler(props) {
         </View>
       );
     } else if (aktif == "Album") {
-      return (
+      return dataAlbums && dataAlbums.length > 0 ? (
+        dataAlbums.map((item, index) => {
+          return (
+            <Pressable
+              key={index}
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "albumdetail",
+                  params: {
+                    id: item.id,
+                    type: item.type,
+                    token: token,
+                    judul: item.title,
+                  },
+                });
+              }}
+              style={{
+                width: "100%",
+                height: width * 0.55,
+                paddingHorizontal: 10,
+                marginVertical: 5,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: 10,
+                  flex: 1,
+                  elevation: 1,
+                  backgroundColor: "#fff",
+                }}
+              >
+                <Image
+                  style={{
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    width: "100%",
+                    height: "75%",
+                  }}
+                  source={item?.cover ? { uri: item?.cover } : default_image}
+                ></Image>
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  <Text size={"label"} type="bold">
+                    {item.title}
+                  </Text>
+                  <Text size={"label"} type="regular">
+                    {item.count_foto + " Foto"}
+                  </Text>
+                </View>
+              </View>
+            </Pressable>
+          );
+        })
+      ) : (
         <View
           style={{
             flex: 1,
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
             height: "100%",
-            paddingVertical: 20,
+            marginTop: 20,
           }}
         >
           <Text size="label" type="bold" style={{ textAlign: "center" }}>
@@ -792,7 +955,151 @@ export default function ItineraryPopuler(props) {
         </View>
       );
     } else if (aktif == "Stories") {
-      return (
+      return journal_list && journal_list.length > 0 ? (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("window").width,
+            paddingHorizontal: 15,
+            alignContent: "center",
+            marginTop: 10,
+          }}
+        >
+          <FlatList
+            data={journal_list}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <View>
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "#FFF",
+                    borderRadius: 5,
+                    padding: 10,
+                  }}
+                  onPress={() =>
+                    props.navigation.push("JournalStackNavigation", {
+                      screen: "DetailJournal",
+                      params: {
+                        dataPopuler: item,
+                      },
+                    })
+                  }
+                >
+                  <Image
+                    source={
+                      item.firstimg ? { uri: item.firstimg } : default_image
+                    }
+                    style={{
+                      width: "21%",
+                      height: 110,
+                      borderRadius: 10,
+                    }}
+                  />
+                  <View
+                    style={{
+                      width: "79%",
+                      marginVertical: 5,
+                      paddingLeft: 10,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{ color: "#209FAE" }}
+                        size={"small"}
+                        type={"bold"}
+                      >
+                        #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                      </Text>
+                      <Text
+                        size={"label"}
+                        type={"bold"}
+                        style={{
+                          color: "#3E3E3E",
+                          marginTop: 5,
+                        }}
+                        numberOfLines={1}
+                      >
+                        {item.title}
+                        {/* <Truncate
+                    text={item.title ? item.title : ""}
+                    length={35}
+                  /> */}
+                      </Text>
+                      <Text
+                        size={"description"}
+                        type={"regular"}
+                        style={{
+                          textAlign: "left",
+                          marginTop: 5,
+                          lineHeight: 18,
+                        }}
+                        numberOfLines={2}
+                      >
+                        {item.firsttxt}
+                        {/* <Truncate
+                    text={item.firsttxt ? item.firsttxt : ""}
+                    length={110}
+                  /> */}
+                      </Text>
+                    </View>
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text size={"small"} type={"regular"}>
+                          {dateFormatMonthYears(item.date)}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <LikeEmpty width={10} height={10} />
+                          <Text
+                            style={{ marginLeft: 5 }}
+                            size={"small"}
+                            type={"regular"}
+                          >
+                            {item.article_response_count > 0
+                              ? item.article_response_count +
+                                " " +
+                                t("likeMany")
+                              : item.article_response_count + " " + t("like")}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </Pressable>
+                <View
+                  style={{
+                    margin: 5,
+                    borderBottomColor: "#f6f6f6",
+                    borderBottomWidth: 0.9,
+                  }}
+                />
+              </View>
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => RefreshJournal()}
+              />
+            }
+            onEndReachedThreshold={1}
+            onEndReached={handleOnEndReachedJournal}
+          />
+        </View>
+      ) : (
         <View
           style={{
             flex: 1,
@@ -815,7 +1122,7 @@ export default function ItineraryPopuler(props) {
   useEffect(() => {
     setTimeout(() => {
       setLoadingsCategory(false);
-    }, 5000);
+    }, 3000);
   }),
     [];
   let [loadingsCategory, setLoadingsCategory] = useState(true);
@@ -859,12 +1166,12 @@ export default function ItineraryPopuler(props) {
                 height: "100%",
                 width: Dimensions.get("screen").width * 0.57,
                 marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                paddingVertical: 2,
+                // shadowColor: "gray",
+                // shadowOffset: { width: 0, height: 1 },
+                // shadowOpacity: arrayShadow.shadowOpacity,
+                // shadowRadius: arrayShadow.shadowRadius,
+                // elevation: arrayShadow.elevation,
+                // paddingVertical: 2,
               }}
               onPress={() =>
                 props.navigation.navigate("ItineraryCategory", {
@@ -874,31 +1181,35 @@ export default function ItineraryPopuler(props) {
                 })
               }
             >
-              <Image
-                source={itinerary_1}
+              <FunImageBackground
+                source={itinerary_1 ? itinerary_1 : default_image}
+                style={{ width: "100%", height: "100%" }}
+                imageStyle={{ borderRadius: 10 }}
+              ></FunImageBackground>
+              {/* <Itinerary_1 height={"100%"} width={"100%"} borderRadius={10} /> */}
+              <View
                 style={{
-                  height: "100%",
-                  width: "100%",
-                  borderRadius: 10,
-                }}
-              />
-              <Text
-                size="description"
-                type="bold"
-                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  // opacity: 0.6,
                   position: "absolute",
-                  paddingHorizontal: 5,
-                  marginHorizontal: 5,
-                  borderRadius: 3,
-                  marginTop: 15,
-                  backgroundColor: "#DAF0F2",
-                  color: "#209FAE",
-                  borderWidth: 1,
-                  borderColor: "#209FAE",
+                  left: 10,
+                  top: 10,
+                  borderRadius: 2,
                 }}
               >
-                New Itinerary
-              </Text>
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{
+                    // position: "absolute",
+                    color: "#FFF",
+                    marginHorizontal: 5,
+                    marginVertical: 3,
+                  }}
+                >
+                  New Itinerary
+                </Text>
+              </View>
             </Ripple>
             <Ripple
               style={{
@@ -907,12 +1218,12 @@ export default function ItineraryPopuler(props) {
                 height: "100%",
                 width: Dimensions.get("screen").width * 0.57,
                 marginRight: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: arrayShadow.shadowOpacity,
-                shadowRadius: arrayShadow.shadowRadius,
-                elevation: arrayShadow.elevation,
-                paddingVertical: 2,
+                // shadowColor: "gray",
+                // shadowOffset: { width: 0, height: 1 },
+                // shadowOpacity: arrayShadow.shadowOpacity,
+                // shadowRadius: arrayShadow.shadowRadius,
+                // elevation: arrayShadow.elevation,
+                // paddingVertical: 2,
               }}
               onPress={() =>
                 props.navigation.navigate("ItineraryCategory", {
@@ -922,31 +1233,43 @@ export default function ItineraryPopuler(props) {
                 })
               }
             >
-              <Image
-                source={itinerary_2}
+              <FunImageBackground
+                source={itinerary_2 ? itinerary_2 : default_image}
+                style={{ width: "100%", height: "100%" }}
+                imageStyle={{ borderRadius: 10 }}
+              ></FunImageBackground>
+              {/* <Itinerary_2 height={"100%"} width={"100%"} /> */}
+              {/* <Image
+                source={Itinerary_2}
                 style={{
                   height: "100%",
                   width: "100%",
                   borderRadius: 10,
                 }}
-              />
-              <Text
-                size="description"
-                type="bold"
+              /> */}
+              <View
                 style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  // opacity: 0.6,
                   position: "absolute",
-                  paddingHorizontal: 5,
-                  marginHorizontal: 5,
-                  borderRadius: 3,
-                  marginTop: 15,
-                  backgroundColor: "#DAF0F2",
-                  color: "#209FAE",
-                  borderWidth: 1,
-                  borderColor: "#209FAE",
+                  left: 10,
+                  top: 10,
+                  borderRadius: 2,
                 }}
               >
-                Populer Itinerary
-              </Text>
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{
+                    // position: "absolute",
+                    color: "#FFF",
+                    marginHorizontal: 5,
+                    marginVertical: 3,
+                  }}
+                >
+                  Populer Itinerary
+                </Text>
+              </View>
             </Ripple>
           </View>
         </ScrollView>
