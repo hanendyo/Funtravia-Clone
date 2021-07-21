@@ -153,19 +153,6 @@ export default function Post(props) {
 
   const [size, setSize] = useState(null);
 
-  console.log("size", size);
-
-  console.log("slider", slider);
-
-  useEffect(() => {
-    let getVideoInfo = () => {
-      slider
-        .getVideoInfo()
-        .then((info) => console.log("info", info))
-        .catch(console.warn);
-    };
-  }, []);
-
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
@@ -191,7 +178,6 @@ export default function Post(props) {
           height = 1080;
         }
 
-        console.log(slider.current.getItem((data, index) => console.log(data)));
         let tempData = { ...recent.node.image };
         tempData.height = height;
         tempData.width = width;
@@ -250,6 +236,39 @@ export default function Post(props) {
         return null;
       }
     } else {
+      let height;
+      let width;
+      if (ratio.label == "L") {
+        width = 1080;
+        height = 566;
+      } else if (ratio.label == "P") {
+        width = 1080;
+        height = 1350;
+      } else {
+        width = 1080;
+        height = 1080;
+      }
+      for (var i = 0; i < checklistVideo.length; i++) {
+        checklistVideo[i].node.image.height = height;
+      }
+      for (var i = 0; i < checklistVideo.length; i++) {
+        checklistVideo[i].node.image.width = width;
+      }
+
+      for (var i = 0; i < checklistVideo.length; i++) {
+        RNFetchBlob.fs
+          .stat(checklistVideo[i].node.image.uri)
+          .then((stats) => {
+            setSize(stats.size);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      for (var i = 0; i < checklistVideo.length; i++) {
+        checklistVideo[i].node.image.fileSize = size;
+      }
       props.navigation.navigate("CreatePostScreen", {
         location: recent.node.location,
         type: "multi",
