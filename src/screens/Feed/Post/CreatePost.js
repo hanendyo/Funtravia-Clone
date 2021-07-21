@@ -112,6 +112,29 @@ export default function CreatePost(props) {
     },
   });
 
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const onKeyboardShow = (event) =>
+    setKeyboardOffset(event.endCoordinates.height);
+  const onKeyboardHide = () => setKeyboardOffset(0);
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+
+  useEffect(() => {
+    keyboardDidShowListener.current = Keyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = Keyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
+
   const [refreshing, setRefreshing] = useState(false);
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
@@ -460,9 +483,11 @@ export default function CreatePost(props) {
 
   return (
     <KeyboardAvoidingView
-      // behavior={Platform.OS == "ios" ? null : null}
-      // keyboardVerticalOffset={100}
-      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+      style={{
+        flex: 1,
+      }}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      enabled
     >
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
       <View>
@@ -506,7 +531,18 @@ export default function CreatePost(props) {
         >
           <Loading show={loadingok} />
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View>
+            <View
+              style={{
+                bottom:
+                  Platform.OS === "ios" &&
+                  keyboardOffset < 300 &&
+                  keyboardOffset > 0
+                    ? 120
+                    : keyboardOffset > 300
+                    ? 50
+                    : 0,
+              }}
+            >
               {ReviewResult()}
               <KeyboardAvoidingView
                 style={{

@@ -360,9 +360,10 @@ export default function Wishlist(props) {
             }}
           >
             <Tabs
-              tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
+              tabBarUnderlineStyle={{ backgroundColor: "#209FAE", height: 1.8 }}
               tabContainerStyle={{ borderWidth: 0 }}
               locked={false}
+              style={{ borderColor: "#d1d1d1" }}
               renderTabBar={() => (
                 <ScrollableTab style={{ backgroundColor: "transparent" }} />
               )}

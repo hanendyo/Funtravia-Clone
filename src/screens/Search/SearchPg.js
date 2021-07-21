@@ -76,6 +76,9 @@ export default function SearchPg(props, { navigation, route }) {
   const [searchtext, SetSearchtext] = useState(
     props.route.params.searchInput ? props.route.params.searchInput : ""
   );
+  const [locationname, setLocationname] = useState(
+    props.route.params.locationname ? props.route.params.locationname : null
+  );
   const default_image =
     "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
   const myStateRef = React.useRef(aktifsearch);
@@ -95,7 +98,7 @@ export default function SearchPg(props, { navigation, route }) {
   let { width, height } = Dimensions.get("screen");
 
   const HeaderComponent = {
-    headerTitle: t("search"),
+    headerTitle: locationname ? t("searchin") + locationname : t("search"),
     headerTitleStyle: { color: "white" },
     headerStyle: {
       elevation: 0,

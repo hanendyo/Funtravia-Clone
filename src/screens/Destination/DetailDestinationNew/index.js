@@ -1996,6 +1996,7 @@ const Index = (props) => {
                         <View
                           style={{
                             alignItems: "center",
+                            marginTop: i.title ? 20 : 0,
                           }}
                         >
                           <FunImage
@@ -2004,7 +2005,7 @@ const Index = (props) => {
                             style={{
                               borderWidth: 0.4,
                               borderColor: "#d3d3d3",
-                              marginTop: 10,
+
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -2040,7 +2041,7 @@ const Index = (props) => {
                           size="readable"
                           type="regular"
                           style={{
-                            // marginTop: 10,
+                            marginTop: i.title ? 20 : 0,
                             lineHeight: 20,
                             textAlign: "left",
                             color: "#464646",
@@ -2182,6 +2183,7 @@ const Index = (props) => {
           style={{
             backgroundColor: "white",
             borderBottomWidth: 0.5,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
