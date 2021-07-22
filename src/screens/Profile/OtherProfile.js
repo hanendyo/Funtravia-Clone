@@ -202,10 +202,20 @@ export function MyProfile({ navigation, route }) {
         setToken(value);
       }
     });
+    const backAction = () => {
+      BackHandler.addEventListener(navigation.goBack());
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
 
     return () => {
       scrollY.removeAllListeners();
       headerScrollY.removeAllListeners();
+      backHandler.remove();
     };
   }, [routes, tabIndex]);
 

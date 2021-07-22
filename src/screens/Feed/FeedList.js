@@ -181,6 +181,7 @@ export default function FeedList({ props, token }) {
       }
     }, 1000);
     try {
+      console.log("try");
       let response = await MutationCreate({
         variables: {
           caption: props?.route?.params?.caption,
@@ -508,7 +509,7 @@ export default function FeedList({ props, token }) {
       if (props.route.params.isPost === true) {
         console.log("submit");
         SubmitData();
-        // refetch();
+        props.route.params.isPost = false;
       }
 
       if (props.route.params.isComment === true) {

@@ -44,8 +44,6 @@ export default function Home(props) {
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
   let [shareId, setShareId] = useState(props.route.params.shareid);
-  console.log("props", props);
-  console.log("shareId", shareId);
   let [loadingModal, setLoadingModal] = useState(false);
   const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
     Account,

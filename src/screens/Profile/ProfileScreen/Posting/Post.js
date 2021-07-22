@@ -56,8 +56,9 @@ export default function Posts({ item, index, navigation, user }) {
                   }}
                   muted={true}
                   // defaultSource={default_image}
+                  resizeMode="cover"
                   style={{
-                    resizeMode: "cover",
+                    // resizeMode: "cover",
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#fff",
@@ -154,8 +155,9 @@ export default function Posts({ item, index, navigation, user }) {
                     }}
                     muted={true}
                     // defaultSource={default_image}
+                    resizeMode="cover"
                     style={{
-                      resizeMode: "cover",
+                      // resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -254,8 +256,9 @@ export default function Posts({ item, index, navigation, user }) {
                     }}
                     muted={true}
                     // defaultSource={default_image}
+                    resizeMode="cover"
                     style={{
-                      resizeMode: "cover",
+                      // resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -368,8 +371,9 @@ export default function Posts({ item, index, navigation, user }) {
                     }}
                     muted={true}
                     // defaultSource={default_image}
+                    resizeMode="cover"
                     style={{
-                      resizeMode: "cover",
+                      // resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -468,8 +472,9 @@ export default function Posts({ item, index, navigation, user }) {
                     }}
                     muted={true}
                     // defaultSource={default_image}
+                    resizeMode="cover"
                     style={{
-                      resizeMode: "cover",
+                      // resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
@@ -569,8 +574,9 @@ export default function Posts({ item, index, navigation, user }) {
                   }}
                   muted={true}
                   // defaultSource={default_image}
+                  resizeMode="cover"
                   style={{
-                    resizeMode: "cover",
+                    // resizeMode: "cover",
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#fff",
@@ -683,8 +689,9 @@ export default function Posts({ item, index, navigation, user }) {
                         }}
                         muted={true}
                         // defaultSource={default_image}
+                        resizeMode="cover"
                         style={{
-                          resizeMode: "cover",
+                          // resizeMode: "cover",
                           width: "100%",
                           height: "100%",
                           backgroundColor: "#fff",
@@ -808,8 +815,9 @@ export default function Posts({ item, index, navigation, user }) {
                     }}
                     muted={true}
                     // defaultSource={default_image}
+                    resizeMode="cover"
                     style={{
-                      resizeMode: "cover",
+                      // resizeMode: "cover",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",

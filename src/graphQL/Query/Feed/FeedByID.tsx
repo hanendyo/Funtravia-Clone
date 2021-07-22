@@ -10,6 +10,7 @@ const FeedByID = gql`
       liked
       comment_count
       response_count
+      media_orientation
       created_at
       updated_at
       assets {
