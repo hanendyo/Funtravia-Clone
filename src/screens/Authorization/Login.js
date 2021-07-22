@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import {
   View,
@@ -32,6 +32,7 @@ import {
   CustomImage,
   Errors,
 } from "../../component";
+import { Keyboard, KeyboardEvent } from "react-native";
 import { StackActions } from "@react-navigation/native";
 
 export default function Login({ navigation, route }) {
@@ -95,6 +96,31 @@ export default function Login({ navigation, route }) {
       });
     }
   };
+
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const onKeyboardShow = (event) =>
+    setKeyboardOffset(event.endCoordinates.height);
+  const onKeyboardHide = () => setKeyboardOffset(0);
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+
+  useEffect(() => {
+    keyboardDidShowListener.current = Keyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = Keyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
+
+  console.log("keyboard", keyboardOffset);
 
   const signUp = () => {
     navigation.navigate("RegisterScreen");
@@ -189,6 +215,12 @@ export default function Login({ navigation, route }) {
         <View
           style={{
             alignItems: "center",
+            bottom:
+              Platform.OS === "ios" &&
+              keyboardOffset < 300 &&
+              keyboardOffset > 0
+                ? 150
+                : 0,
           }}
         >
           <View>

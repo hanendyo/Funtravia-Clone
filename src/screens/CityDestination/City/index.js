@@ -3079,7 +3079,15 @@ export default function CityDetail(props) {
         >
           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
         </Button>
-        <View
+        <TouchableOpacity
+          onPress={(x) =>
+            props.navigation.push("SearchPg", {
+              idcity: dataCity.CitiesInformation.id,
+              searchInput: "",
+              locationname: listCity.name,
+              aktifsearch: true,
+            })
+          }
           style={{
             width: Dimensions.get("screen").width - 90,
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -3098,7 +3106,7 @@ export default function CityDetail(props) {
               marginHorizontal: 10,
             }}
           ></Image>
-          <Input
+          {/* <Input
             value={search}
             style={{
               height: 20,
@@ -3120,8 +3128,19 @@ export default function CityDetail(props) {
                 aktifsearch: true,
               })
             }
-          />
-        </View>
+          /> */}
+          <View>
+            <Text
+              size="readable"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("searchin") + listCity.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
         <Button
           text={""}
           size="medium"

@@ -31,6 +31,7 @@ import {
   Search,
   Xhitam,
 } from "../../../../../assets/svg";
+import { Keyboard, KeyboardEvent } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
 export default function Asia({ navigation }) {
@@ -106,6 +107,32 @@ export default function Asia({ navigation }) {
       return null;
     },
   };
+
+  // awal keyboardheight
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const onKeyboardShow = (event) =>
+    setKeyboardOffset(event.endCoordinates.height);
+  const onKeyboardHide = () => setKeyboardOffset(0);
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+
+  useEffect(() => {
+    keyboardDidShowListener.current = Keyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = Keyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
+  // akhir keyboardheight
+
   const subContinentData = [
     // {
     //   id: "142",
@@ -377,7 +404,7 @@ export default function Asia({ navigation }) {
         {/* akhir filter region */}
         <View
           style={{
-            height: Dimensions.get("screen").height / 2.8,
+            height: Dimensions.get("screen").height / 2.5,
           }}
         >
           {Components[`cm${subContinent.id}`]}
@@ -396,6 +423,14 @@ export default function Asia({ navigation }) {
             margin: 15,
             borderRadius: 10,
             elevation: 1,
+            bottom:
+              Platform.OS === "ios" &&
+              keyboardOffset < 300 &&
+              keyboardOffset > 0
+                ? 80
+                : keyboardOffset > 300
+                ? 50
+                : 0,
             // marginBottom: 200,
           }}
         >
