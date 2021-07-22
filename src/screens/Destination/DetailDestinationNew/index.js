@@ -1443,17 +1443,17 @@ const Index = (props) => {
                             height: 60,
                             width: 60,
                             borderRadius: 30,
-                            backgroundColor: "#F6F6F6",
+                            // backgroundColor: "#F6F6F6",
                             justifyContent: "center",
                             alignItems: "center",
                           }}
                         >
-                          <FunIcon icon={item?.icon} height={40} width={40} />
+                          <FunIcon icon={item?.icon} height={50} width={50} />
                         </View>
                         <Text
-                          size="small"
+                          // size="small"
                           type="light"
-                          style={{ marginTop: 5 }}
+                          // style={{ marginTop: 5 }}
                         >
                           {item?.name}
                         </Text>
@@ -1521,14 +1521,18 @@ const Index = (props) => {
                           height: 60,
                           width: 60,
                           borderRadius: 30,
-                          backgroundColor: "#F6F6F6",
+                          // backgroundColor: "#F6F6F6",
                           justifyContent: "center",
                           alignItems: "center",
                         }}
                       >
-                        <FunIcon icon={item?.icon} height={40} width={40} />
+                        <FunIcon icon={item?.icon} height={50} width={50} />
                       </View>
-                      <Text size="small" type="light" style={{ marginTop: 5 }}>
+                      <Text
+                        // size="small"
+                        type="light"
+                        // style={{ marginTop: 5 }}
+                      >
                         {item?.name}
                       </Text>
                     </View>
@@ -1937,7 +1941,7 @@ const Index = (props) => {
                         </View>
                       </View>
                       <Button
-                        onPress={() => addTo(item)}
+                        onPress={() => addToPlan(item)}
                         size="small"
                         text={"Add"}
                         // style={{ marginTop: 15 }}
