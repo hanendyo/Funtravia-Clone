@@ -349,370 +349,7 @@ export default function detailCustomItinerary(props) {
           paddingVertical: 15,
           // minHeight: Dimensions.get("screen").height,
         }}
-        ListFooterComponent={() => (
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <View
-              style={{
-                flex: 1,
-                marginTop: 15,
-                marginLeft: 40,
-                borderRadius: 5,
-                backgroundColor: "#fff",
-                elevation: 3,
-                shadowColor: "#d3d3d3",
-                shadowOffset: { width: 2, height: 2 },
-                shadowOpacity: 1,
-                shadowRadius: 2,
-                padding: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text
-                style={{
-                  width: "50%",
-                }}
-              >
-                Add activity at this location
-              </Text>
-              <Button
-                text={"Add Activity"}
-                onPress={() => {
-                  props.navigation.push("CustomItinerary", {
-                    idItin: props.route.params.idItin,
-                    idDay: props.route.params.datadayaktif.id,
-                    itintitle: props.route.params.nameitin,
-                    // dateitin: props.route.params.dateitin,
-                    datadayaktif: props.route.params.datadayaktif,
-                    dataParent: dataParent,
-                  });
-                }}
-              ></Button>
-            </View>
-          </View>
-        )}
-        ListHeaderComponent={() => (
-          <View
-            style={{
-              borderRadius: 5,
-              backgroundColor: "#fff",
-              elevation: 3,
-              shadowColor: "#d3d3d3",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-                borderBottomColor: "#f1f1f1",
-                borderBottomWidth: 0.5,
-              }}
-            >
-              {dataParent.icon ? (
-                <FunIcon
-                  icon={dataParent.icon}
-                  height={30}
-                  width={30}
-                  style={{
-                    borderRadius: 15,
-                  }}
-                />
-              ) : (
-                <FunIcon
-                  icon={"i-tour"}
-                  height={30}
-                  width={30}
-                  style={{
-                    borderRadius: 15,
-                  }}
-                />
-              )}
-              <TouchableOpacity
-                style={{ flex: 1, paddingHorizontal: 10 }}
-                // onLongPress={status !== "saved" ? drag : null}
-              >
-                <Text size="label" type="bold" style={{}}>
-                  {dataParent.name}
-                </Text>
-                <Text>
-                  {Capital({
-                    text:
-                      dataParent.type !== "custom"
-                        ? dataParent.type !== "google"
-                          ? dataParent.type
-                          : "Destination from Google"
-                        : "Custom Activity",
-                  })}
-                </Text>
-              </TouchableOpacity>
-              <Button
-                size="small"
-                text=""
-                type="circle"
-                variant="transparent"
-                style={{}}
-                // onPress={() => {
-                //   bukamodalmenu(item.id, item.type);
-                // }}
-              >
-                <More width={15} height={15} />
-              </Button>
-            </View>
-            <View
-              style={{
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-
-                borderBottomColor: "#f1f1f1",
-                borderBottomWidth: 0.5,
-              }}
-            >
-              <Text>Location</Text>
-              <MapView
-                style={{
-                  // flex: 1,
-                  marginTop: 10,
-                  width: "100%",
-                  marginBottom: 10,
-                  height: 80,
-                  //   borderRadius: 10,
-                }} //window pake Dimensions
-                region={{
-                  latitude: parseFloat(dataParent.latitude),
-                  longitude: parseFloat(dataParent.longitude),
-                  latitudeDelta: 0.007,
-                  longitudeDelta: 0.007,
-                }}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: parseFloat(dataParent.latitude),
-                    longitude: parseFloat(dataParent.longitude),
-                  }}
-                  title={dataParent.name}
-                  description={dataParent.address}
-                  onPress={() => {
-                    Linking.openURL(
-                      Platform.OS == "ios"
-                        ? "maps://app?daddr=" +
-                            dataParent.latitude +
-                            "+" +
-                            dataParent.longitude
-                        : "google.navigation:q=" +
-                            dataParent.latitude +
-                            "+" +
-                            dataParent.longitude
-                    );
-                  }}
-                />
-              </MapView>
-              <Text>{dataParent.address}</Text>
-            </View>
-            <View
-              style={{
-                paddingVertical: 10,
-
-                paddingHorizontal: 15,
-                borderBottomColor: "#f1f1f1",
-                borderBottomWidth: 0.5,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <View
-                  style={{
-                    marginRight: 40,
-                  }}
-                >
-                  <Text>Duration :</Text>
-                  <View
-                    style={{
-                      marginTop: 10,
-                      //   width: "80%",
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      backgroundColor: "#daf0f2",
-                      borderRadius: 5,
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text type="bold">
-                      {Getdurasi(
-                        dataParent.duration ? dataParent.duration : "00:00:00"
-                      )}
-                    </Text>
-                  </View>
-                </View>
-                <View>
-                  <Text>Time :</Text>
-                  <View
-                    style={{
-                      marginTop: 10,
-                      //   width: "80%",
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      backgroundColor: "#daf0f2",
-                      borderRadius: 5,
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <TouchableOpacity>
-                      {dataParent.time ? (
-                        <GetStartTime startt={dataParent.time} />
-                      ) : (
-                        <Text size="description" type="bold">
-                          00:00
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-
-                    <TouchableOpacity>
-                      {dataParent.duration ? (
-                        <GetEndTime
-                          startt={dataParent.time ? dataParent.time : "00:00"}
-                          dur={
-                            dataParent.duration ? dataParent.duration : "00:00"
-                          }
-                        />
-                      ) : (
-                        <Text size="description" type="bold">
-                          00:00
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-            {dataParent.note ? (
-              <View
-                style={{
-                  paddingHorizontal: 15,
-                  paddingVertical: 10,
-
-                  borderBottomColor: "#f1f1f1",
-                  borderBottomWidth: 0.5,
-                }}
-              >
-                <Text>Notes</Text>
-                <Text style={{ marginTop: 10 }}>{dataParent.note}</Text>
-              </View>
-            ) : null}
-            <View
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 15,
-                // borderBottomColor: "#f1f1f1",
-                // borderBottomWidth: 0.5,
-              }}
-            >
-              <View style={{}}>
-                <Text
-                  size="label"
-                  type="bold"
-                  style={
-                    {
-                      // marginTop: 20,
-                    }
-                  }
-                >
-                  {t("Attachment")}
-                </Text>
-                <View
-                  style={{
-                    paddingTop: 5,
-                  }}
-                >
-                  {dataParent?.attachment?.length > 0
-                    ? dataParent.attachment.map((data, index) => {
-                        return (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignContent: "flex-start",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <Text style={{ width: 30 }}>{index + 1}. </Text>
-                            <Text style={{ flex: 1, paddingBottom: 5 }}>
-                              {data.file_name}
-                            </Text>
-                            <TouchableOpacity
-                              onPress={() => {
-                                _handle_hapusParent(data, index, dataParent);
-                              }}
-                              style={{
-                                flexDirection: "row",
-                                paddingRight: 10,
-                                paddingLeft: 25,
-                                height: "100%",
-                              }}
-                            >
-                              <Xhitam style={{}} width={10} height={10} />
-                            </TouchableOpacity>
-                          </View>
-                        );
-                      })
-                    : null}
-                </View>
-
-                <View style={{ flex: 1, marginVertical: 10 }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      pickFile(dataParent.id, "parent");
-                    }}
-                    style={{
-                      width: "100%",
-                      // borderColor: "black",
-                      borderWidth: 1,
-                      borderStyle: "dashed",
-                      borderRadius: 5,
-                      borderColor: "#d3d3d3",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      paddingVertical: 10,
-                      flexDirection: "row",
-                      marginBottom: 5,
-                    }}
-                  >
-                    <New height={15} width={15} />
-                    <Text
-                      style={{
-                        marginLeft: 5,
-                        color: "#d1d1d1",
-                      }}
-                    >
-                      Choose File
-                    </Text>
-                  </TouchableOpacity>
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{
-                      color: "#d1d1d1",
-                    }}
-                  >
-                    {t("Upload your flight ticket, hotel voucher, etc.")}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
           <View
             style={{
@@ -1033,7 +670,378 @@ export default function detailCustomItinerary(props) {
             </View>
           </View>
         )}
-        keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={() => (
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                marginTop: 15,
+                marginLeft: 40,
+                borderRadius: 5,
+                backgroundColor: "#fff",
+                elevation: 3,
+                shadowColor: "#d3d3d3",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 2,
+                padding: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{
+                  width: "50%",
+                }}
+              >
+                Add activity at this location
+              </Text>
+              <Button
+                text={"Add Activity"}
+                onPress={() => {
+                  props.navigation.push("CustomItinerary", {
+                    idItin: props.route.params.idItin,
+                    idDay: props.route.params.datadayaktif.id,
+                    itintitle: props.route.params.nameitin,
+                    // dateitin: props.route.params.dateitin,
+                    datadayaktif: props.route.params.datadayaktif,
+                    dataParent: dataParent,
+                  });
+                }}
+              ></Button>
+            </View>
+          </View>
+        )}
+        ListHeaderComponent={() => (
+          <View
+            style={{
+              borderRadius: 5,
+              backgroundColor: "#fff",
+              elevation: 3,
+              shadowColor: "#d3d3d3",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 2,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                borderBottomColor: "#f1f1f1",
+                borderBottomWidth: 0.5,
+              }}
+            >
+              {dataParent.icon ? (
+                <FunIcon
+                  icon={dataParent.icon}
+                  height={30}
+                  width={30}
+                  style={{
+                    borderRadius: 15,
+                  }}
+                />
+              ) : (
+                <FunIcon
+                  icon={"i-tour"}
+                  height={30}
+                  width={30}
+                  style={{
+                    borderRadius: 15,
+                  }}
+                />
+              )}
+              <TouchableOpacity
+                style={{ flex: 1, paddingHorizontal: 10 }}
+                // onLongPress={status !== "saved" ? drag : null}
+              >
+                <Text size="label" type="bold" style={{}}>
+                  {dataParent.name}
+                </Text>
+                <Text>
+                  {Capital({
+                    text:
+                      dataParent.type !== "custom"
+                        ? dataParent.type !== "google"
+                          ? dataParent.type
+                          : "Destination from Google"
+                        : "Custom Activity",
+                  })}
+                </Text>
+              </TouchableOpacity>
+              <Button
+                size="small"
+                text=""
+                type="circle"
+                variant="transparent"
+                style={{}}
+                // onPress={() => {
+                //   bukamodalmenu(item.id, item.type);
+                // }}
+              >
+                <More width={15} height={15} />
+              </Button>
+            </View>
+            <View
+              style={{
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+
+                borderBottomColor: "#f1f1f1",
+                borderBottomWidth: 0.5,
+              }}
+            >
+              <Text>Location</Text>
+              <MapView
+                style={{
+                  // flex: 1,
+                  marginTop: 10,
+                  width: "100%",
+                  marginBottom: 10,
+                  height: 80,
+                  //   borderRadius: 10,
+                }} //window pake Dimensions
+                region={{
+                  latitude: parseFloat(
+                    dataParent?.latitude ? dataParent?.latitude : 0
+                  ),
+                  longitude: parseFloat(
+                    dataParent?.longitude ? dataParent?.longitude : 0
+                  ),
+                  latitudeDelta: 0.007,
+                  longitudeDelta: 0.007,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: parseFloat(
+                      dataParent?.latitude ? dataParent?.latitude : 0
+                    ),
+                    longitude: parseFloat(
+                      dataParent?.longitude ? dataParent?.longitude : 0
+                    ),
+                  }}
+                  title={dataParent.name}
+                  description={dataParent.address}
+                  onPress={() => {
+                    Linking.openURL(
+                      Platform.OS == "ios"
+                        ? "maps://app?daddr=" +
+                            dataParent.latitude +
+                            "+" +
+                            dataParent.longitude
+                        : "google.navigation:q=" +
+                            dataParent.latitude +
+                            "+" +
+                            dataParent.longitude
+                    );
+                  }}
+                />
+              </MapView>
+              <Text>{dataParent.address}</Text>
+            </View>
+            <View
+              style={{
+                paddingVertical: 10,
+
+                paddingHorizontal: 15,
+                borderBottomColor: "#f1f1f1",
+                borderBottomWidth: 0.5,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                <View
+                  style={{
+                    marginRight: 40,
+                  }}
+                >
+                  <Text>Duration :</Text>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      //   width: "80%",
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                      backgroundColor: "#daf0f2",
+                      borderRadius: 5,
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text type="bold">
+                      {Getdurasi(
+                        dataParent.duration ? dataParent.duration : "00:00:00"
+                      )}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  <Text>Time :</Text>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      //   width: "80%",
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                      backgroundColor: "#daf0f2",
+                      borderRadius: 5,
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <TouchableOpacity>
+                      {dataParent.time ? (
+                        <GetStartTime startt={dataParent.time} />
+                      ) : (
+                        <Text size="description" type="bold">
+                          00:00
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+
+                    <TouchableOpacity>
+                      {dataParent.duration ? (
+                        <GetEndTime
+                          startt={dataParent.time ? dataParent.time : "00:00"}
+                          dur={
+                            dataParent.duration ? dataParent.duration : "00:00"
+                          }
+                        />
+                      ) : (
+                        <Text size="description" type="bold">
+                          00:00
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+            {dataParent.note ? (
+              <View
+                style={{
+                  paddingHorizontal: 15,
+                  paddingVertical: 10,
+
+                  borderBottomColor: "#f1f1f1",
+                  borderBottomWidth: 0.5,
+                }}
+              >
+                <Text>Notes</Text>
+                <Text style={{ marginTop: 10 }}>{dataParent.note}</Text>
+              </View>
+            ) : null}
+            <View
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 15,
+                // borderBottomColor: "#f1f1f1",
+                // borderBottomWidth: 0.5,
+              }}
+            >
+              <View style={{}}>
+                <Text
+                  size="label"
+                  type="bold"
+                  style={
+                    {
+                      // marginTop: 20,
+                    }
+                  }
+                >
+                  {t("Attachment")}
+                </Text>
+                <View
+                  style={{
+                    paddingTop: 5,
+                  }}
+                >
+                  {dataParent?.attachment?.length > 0
+                    ? dataParent.attachment.map((data, index) => {
+                        return (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignContent: "flex-start",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <Text style={{ width: 30 }}>{index + 1}. </Text>
+                            <Text style={{ flex: 1, paddingBottom: 5 }}>
+                              {data.file_name}
+                            </Text>
+                            <TouchableOpacity
+                              onPress={() => {
+                                _handle_hapusParent(data, index, dataParent);
+                              }}
+                              style={{
+                                flexDirection: "row",
+                                paddingRight: 10,
+                                paddingLeft: 25,
+                                height: "100%",
+                              }}
+                            >
+                              <Xhitam style={{}} width={10} height={10} />
+                            </TouchableOpacity>
+                          </View>
+                        );
+                      })
+                    : null}
+                </View>
+
+                <View style={{ flex: 1, marginVertical: 10 }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      pickFile(dataParent.id, "parent");
+                    }}
+                    style={{
+                      width: "100%",
+                      // borderColor: "black",
+                      borderWidth: 1,
+                      borderStyle: "dashed",
+                      borderRadius: 5,
+                      borderColor: "#d3d3d3",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                      paddingVertical: 10,
+                      flexDirection: "row",
+                      marginBottom: 5,
+                    }}
+                  >
+                    <New height={15} width={15} />
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        color: "#d1d1d1",
+                      }}
+                    >
+                      Choose File
+                    </Text>
+                  </TouchableOpacity>
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#d1d1d1",
+                    }}
+                  >
+                    {t("Upload your flight ticket, hotel voucher, etc.")}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
       />
     </View>
   );

@@ -6,8 +6,8 @@ import {
   Alert,
   TouchableOpacity,
   ScrollView,
-  Textarea,
 } from "react-native";
+import { Textarea } from "native-base";
 import { default_image } from "../../../assets/png";
 import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
@@ -91,7 +91,11 @@ export default function ChoosePosition(props) {
 
   const saveNotes = () => {
     var tempData = [...datatimeline];
-    tempData[indexinput].note = textinput;
+    let x = { ...tempData[indexinput] };
+    x.note = textinput;
+    tempData.splice(indexinput, 1, x);
+
+    // tempData[indexinput].note = textinput;
     setDatatimeline(tempData);
     setModal(false);
   };
@@ -109,6 +113,10 @@ export default function ChoosePosition(props) {
   // console.log(datatimeline);
 
   const bukaModal = (text = null, index) => {
+    // console.log(text);
+    // console.log(index);
+    // setModal(true);
+
     if (text) {
       setInput(text);
     } else {
@@ -796,6 +804,8 @@ export default function ChoosePosition(props) {
     }
   };
 
+  // console.log(datatimeline);
+
   return (
     <View
       style={{
@@ -1058,7 +1068,8 @@ export default function ChoosePosition(props) {
                       )
                     ) : null} */}
                     <RenderItinerary key={item.id} item={item} index={index} />
-                    {!item.stat || (item.stat && item.stat !== "new") ? (
+                    {(!item.stat && !datatimeline[index + 1]?.stat) ||
+                    (item.stat && item.stat !== "new") ? (
                       <View>
                         <TouchableOpacity
                           onPress={() => addHere(index + 1)}
