@@ -836,7 +836,11 @@ export default function ItineraryDetail(props) {
 
   const saveNotes = async () => {
     var tempData = [...dataList];
-    tempData[indexinput].note = textinput;
+    let x = { ...tempData[indexinput] };
+    x.note = textinput;
+    tempData.splice(indexinput, 1, x);
+
+    // console.log(tempData);
     await setDataListItem(tempData);
     await setModal(false);
     await setidDay(idDay);
@@ -2500,6 +2504,8 @@ export default function ItineraryDetail(props) {
                         nameitin: datadetail.itinerary_detail.name,
                         datadayaktif: datadayaktif,
                       });
+
+                      // console.log(dataSpreadtimeline, "masuk paji");
                     }}
                   >
                     <Next width={15} height={15} />
