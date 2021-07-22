@@ -305,12 +305,13 @@ export default function SearchPg(props, { navigation, route }) {
       loading: loadingDestination,
       error: errorDestination,
     },
-  ] = useLazyQuery(SearchDestinationQueryNew, {
+  ] = useLazyQuery(SearchDestinationQuery, {
     fetchPolicy: "network-only",
     variables: {
       keyword: searchtext,
       cities_id: cities_id,
       countries_id: countries_id,
+      province_id: province_id,
     },
     context: {
       headers: {
@@ -319,7 +320,7 @@ export default function SearchPg(props, { navigation, route }) {
       },
     },
     onCompleted: () => {
-      SetdestinationSearch(dataDestination.destinationSearchv2);
+      SetdestinationSearch(dataDestination.destinationSearch);
     },
   });
 
@@ -338,11 +339,12 @@ export default function SearchPg(props, { navigation, route }) {
     error: errorEvent,
     refetch: refetchSrcEvent,
     networkStatus: networkStatusSrcEvent,
-  } = useQuery(SearchEventQueryNew, {
+  } = useQuery(SearchEventQuery, {
     variables: {
       keyword: searchtext,
       cities_id: cities_id,
       countries_id: countries_id,
+      province_id: province_id,
     },
     fetchPolicy: "network-only",
     context: {
@@ -353,7 +355,7 @@ export default function SearchPg(props, { navigation, route }) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: (dataEvent) => {
-      SetEventSearch(dataEvent.event_searchv2);
+      SetEventSearch(dataEvent.event_search);
     },
   });
 

@@ -30,6 +30,7 @@ import {
   StatusBar as StaBar,
   RenderMaps,
   FunImage,
+  FunMaps,
 } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import { Text, Button } from "../../../component";
@@ -1100,7 +1101,7 @@ export default function Country(props) {
                   color: "#209FAE",
                 }}
               >
-                <RenderMaps
+                <FunMaps
                   icon={render?.map ? render.map : "mk-belitung"}
                   height={250}
                   width={width - 70}
