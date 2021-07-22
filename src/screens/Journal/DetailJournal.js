@@ -27,6 +27,7 @@ import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 export default function DetailJournal(props) {
+  console.log("props journal", props);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();

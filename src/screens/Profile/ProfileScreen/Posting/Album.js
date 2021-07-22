@@ -57,7 +57,7 @@ export default function Album({ item, index, props, token }) {
           <Text size={"label"} type="bold">
             {item.title}
           </Text>
-          <Text size={"label"} type="bold">
+          <Text size={"label"} type="regular">
             {item.count_foto + " Foto"}
           </Text>
         </View>
