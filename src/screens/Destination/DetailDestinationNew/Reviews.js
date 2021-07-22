@@ -172,15 +172,26 @@ export default function Reviews({ props, id }) {
                       ? item.image.map((items, indexs) => {
                           if (indexs < 1) {
                             return (
-                              <FunImage
-                                key={indexs + "1"}
-                                source={{ uri: items.image }}
+                              <Ripple
+                                key={index}
                                 style={{
+                                  justifyContent: "center",
+                                  alignItems: "center",
                                   width: "49%",
                                   height: "100%",
-                                  borderRadius: 3,
                                 }}
-                              />
+                                onPress={() => ImagesSlider(item)}
+                              >
+                                <FunImage
+                                  key={indexs + "1"}
+                                  source={{ uri: items.image }}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    borderRadius: 3,
+                                  }}
+                                />
+                              </Ripple>
                             );
                           } else if (item.image.length > 2 && indexs === 1) {
                             return (
@@ -222,15 +233,26 @@ export default function Reviews({ props, id }) {
                             );
                           } else if (indexs === 1) {
                             return (
-                              <FunImage
-                                key={index + "3"}
-                                source={{ uri: items.image }}
+                              <Ripple
+                                key={index}
                                 style={{
+                                  justifyContent: "center",
+                                  alignItems: "center",
                                   width: "49%",
                                   height: "100%",
-                                  borderRadius: 3,
                                 }}
-                              />
+                                onPress={() => ImagesSlider(item)}
+                              >
+                                <FunImage
+                                  key={index + "3"}
+                                  source={{ uri: items.image }}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    borderRadius: 3,
+                                  }}
+                                />
+                              </Ripple>
                             );
                           } else {
                             null;

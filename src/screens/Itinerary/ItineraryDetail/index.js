@@ -4426,7 +4426,8 @@ export default function ItineraryDetail(props) {
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
                         idcity:
-                          dataList?.length > 0
+                          dataList?.length > 0 &&
+                          dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
                             : datadetail.itinerary_detail.city.id,
                         idcountries: datadetail.itinerary_detail.country.id,
@@ -4443,7 +4444,8 @@ export default function ItineraryDetail(props) {
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
                         idcity:
-                          dataList?.length > 0
+                          dataList?.length > 0 &&
+                          dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
                             : datadetail.itinerary_detail.city.id,
                         idcountries: datadetail.itinerary_detail.country.id,
@@ -5301,7 +5303,8 @@ export default function ItineraryDetail(props) {
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
                       idcity:
-                        dataList?.length > 0
+                        dataList?.length > 0 &&
+                        dataList[dataList.length - 1].id_city
                           ? dataList[dataList.length - 1].id_city
                           : datadetail.itinerary_detail.city.id,
                       idcountries: datadetail.itinerary_detail.country.id,
@@ -5318,7 +5321,8 @@ export default function ItineraryDetail(props) {
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
                       idcity:
-                        dataList?.length > 0
+                        dataList?.length > 0 &&
+                        dataList[dataList.length - 1].id_city
                           ? dataList[dataList.length - 1].id_city
                           : datadetail.itinerary_detail.city.id,
                       idcountries: datadetail.itinerary_detail.country.id,

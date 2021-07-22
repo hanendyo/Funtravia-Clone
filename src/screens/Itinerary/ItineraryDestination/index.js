@@ -87,6 +87,8 @@ export default function ItineraryDestination(props) {
   };
   const { t, i18n } = useTranslation();
 
+  console.log(props.route.params.idcity);
+
   let [show, setshow] = useState(false);
   let [showCountry, setshowCountry] = useState(false);
   let [showCity, setshowCity] = useState(false);
@@ -1393,12 +1395,12 @@ export default function ItineraryDestination(props) {
           renderItem={({ item, index }) => (
             <Pressable
               onPress={() => {
-                props?.route?.params && props?.route?.params?.iditinerary
+                props?.route?.params && props?.route?.params?.IdItinerary
                   ? props.navigation.push("DestinationUnescoDetail", {
                       id: item.id,
                       name: item.name,
                       token: token,
-                      iditinerary: props.route.params.iditinerary,
+                      iditinerary: props.route.params.IdItinerary,
                       datadayaktif: props.route.params.datadayaktif,
                     })
                   : props.navigation.push("DestinationUnescoDetail", {
