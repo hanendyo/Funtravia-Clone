@@ -329,6 +329,8 @@ export default function Feed(props) {
               borderRadius: 3,
               alignContent: "center",
               alignItems: "center",
+              // borderWidth: 1,
+              width: Dimensions.get("screen").width - 75,
             }}
           >
             <Magnifying

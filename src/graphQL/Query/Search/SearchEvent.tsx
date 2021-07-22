@@ -1,24 +1,23 @@
 import { gql } from "apollo-boost";
 const SearchEventQuery = gql`
-  query($keyword: String) {
-    event_search(keyword: $keyword) {
+  query($keyword: String, $cities_id: ID, $countries_id: ID, $province_id: ID) {
+    event_search(
+      keyword: $keyword
+      cities_id: $cities_id
+      countries_id: $countries_id
+      province_id: $province_id
+    ) {
       id
       name
+      category {
+        id
+        name
+      }
+      is_repeat
       start_date
       end_date
       ticket_link
-      description
-      image
-      latitude
-      longitude
-      open
-      address
-      vendor {
-        id
-        name
-        cover
-      }
-      category {
+      city {
         id
         name
       }
@@ -26,18 +25,27 @@ const SearchEventQuery = gql`
         id
         name
       }
-      city {
+      description
+      price
+      image
+      cover
+      latitude
+      longitude
+      address
+      vendor {
         id
         name
+        cover
       }
-      images {
-        image
-      }
+      open
       ticket {
         id
         name
         price
         description
+      }
+      images {
+        image
       }
       liked
     }

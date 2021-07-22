@@ -48,6 +48,7 @@ import {
   FunImageBackground,
   FunAnimatedImage,
   RenderMaps,
+  FunMaps,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import JournalProvince from "../../../graphQL/Query/Province/JournalProvince";
@@ -251,7 +252,7 @@ export default function CityDetail(props) {
     onCompleted: () => {
       setlisProvince(dataProvince.province_detail_v2);
       let tab = [{ key: "general", title: "General" }];
-      console.log(dataProvince);
+      // console.log(dataProvince);
 
       dataProvince.province_detail_v2.article_header.map((item, index) => {
         tab.push({
@@ -771,14 +772,25 @@ export default function CityDetail(props) {
                                 marginTop: 5,
                               }}
                             >
-                              <FunIcon
-                                icon={item.icon ? item.icon : "w-fog"}
-                                height={50}
-                                width={50}
+                              <View
                                 style={{
-                                  bottom: -3,
+                                  height: 60,
+                                  width: 60,
+                                  borderRadius: 30,
+                                  backgroundColor: "#F6F6F6",
+                                  justifyContent: "center",
+                                  alignItems: "center",
                                 }}
-                              />
+                              >
+                                <FunIcon
+                                  icon={item.icon ? item.icon : "w-fog"}
+                                  height={40}
+                                  width={40}
+                                  style={{
+                                    bottom: -3,
+                                  }}
+                                />
+                              </View>
                               <Text
                                 size="small"
                                 style={{
@@ -953,8 +965,8 @@ export default function CityDetail(props) {
                 }}
               >
                 {/* // <View></View> */}
-                <RenderMaps
-                  icon={render?.map ? render.map : "mk-belitung"}
+                <FunMaps
+                  icon={render?.map ? render?.map : "mk-belitung"}
                   height={250}
                   width={width - 70}
                   style={{
@@ -2215,7 +2227,9 @@ export default function CityDetail(props) {
                           }}
                         >
                           <FunImage
-                            source={i.image ? { uri: i.image } : default_image}
+                            source={
+                              i?.image ? { uri: i?.image } : default_image
+                            }
                             resizeMode={"cover"}
                             style={{
                               borderWidth: 0.4,

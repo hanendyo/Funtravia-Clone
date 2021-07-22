@@ -48,6 +48,7 @@ import {
   FunImageBackground,
   FunAnimatedImage,
   RenderMaps,
+  FunMaps,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
@@ -283,7 +284,7 @@ export default function CityDetail(props) {
     },
   });
 
-  console.log("list", listCity);
+  // console.log("list", listCity);
 
   const Goto = (item) => {
     if (item?.id) {
@@ -777,14 +778,26 @@ export default function CityDetail(props) {
                                 marginTop: 5,
                               }}
                             >
-                              <FunIcon
-                                icon={item.icon ? item.icon : "w-fog"}
-                                height={50}
-                                width={50}
+                              <View
                                 style={{
-                                  bottom: -3,
+                                  height: 60,
+                                  width: 60,
+                                  borderRadius: 30,
+                                  backgroundColor: "#F6F6F6",
+                                  justifyContent: "center",
+                                  alignItems: "center",
                                 }}
-                              />
+                              >
+                                <FunIcon
+                                  icon={item.icon ? item.icon : "w-fog"}
+                                  height={40}
+                                  width={40}
+                                  style={{
+                                    bottom: -3,
+                                  }}
+                                />
+                              </View>
+
                               <Text
                                 size="small"
                                 style={{
@@ -958,8 +971,8 @@ export default function CityDetail(props) {
                 }}
               >
                 {/* // <View></View> */}
-                <RenderMaps
-                  icon={render?.map ? render.map : "mk-belitung"}
+                <FunMaps
+                  icon={render?.map ? render?.map : "mk-belitung"}
                   height={250}
                   width={width - 70}
                   style={{

@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { DrawerItemList } from "@react-navigation/drawer";
 
 export default function DetailJournal(props) {
   console.log("props journal", props);
@@ -525,7 +526,7 @@ export default function DetailJournal(props) {
                 {data.journal_byid ? data.journal_byid.title : "Title"}
               </Text>
             </View>
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 10, marginBottom: 7 }}>
               <View
                 style={{
                   justifyContent: "space-between",
@@ -566,7 +567,7 @@ export default function DetailJournal(props) {
                 if (item.type === "image") {
                   return (
                     <View key={index}>
-                      <View style={{ marginTop: 30 }}>
+                      <View style={{ marginVertical: 10 }}>
                         {item.title ? (
                           <View
                             style={{
@@ -591,6 +592,7 @@ export default function DetailJournal(props) {
                             style={{
                               width: Dimensions.get("window").width,
                               height: Dimensions.get("window").height * 0.3,
+                              marginTop: item.title ? 20 : 0,
                             }}
                           />
                         ) : null}
@@ -599,15 +601,19 @@ export default function DetailJournal(props) {
                       {item.text ? (
                         <View
                           style={{
-                            marginTop: 5,
+                            // marginTop: 5,
                             alignSelf: "center",
                             width: Dimensions.get("window").width * 0.9,
                           }}
                         >
                           <Text
-                            size="small"
-                            type="regular"
-                            style={{ textAlign: "left", lineHeight: 20 }}
+                            size="description"
+                            type="light"
+                            style={{
+                              textAlign: "left",
+                              // marginTop: 5,
+                              color: "#616161",
+                            }}
                           >
                             {item.text ? item.text : null}
                           </Text>
@@ -636,7 +642,12 @@ export default function DetailJournal(props) {
                             <Text
                               size="readable"
                               type="regular"
-                              style={{ textAlign: "left", lineHeight: 20 }}
+                              style={{
+                                marginTop: item.title ? 20 : 0,
+                                lineHeight: 20,
+                                textAlign: "left",
+                                color: "#464646",
+                              }}
                             >
                               {item.text ? item.text : null}
                             </Text>
