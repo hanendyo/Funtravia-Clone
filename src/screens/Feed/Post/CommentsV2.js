@@ -66,6 +66,7 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 
 export default function Comments(props) {
+  console.log("propscoment", props);
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState();

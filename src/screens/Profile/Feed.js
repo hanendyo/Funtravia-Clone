@@ -15,12 +15,17 @@ import { useIsFocused } from "@react-navigation/native";
 import { FlatList } from "react-native-gesture-handler";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
-import { Button, CopyLink, Text } from "../../component";
+import {
+  Button,
+  CopyLink,
+  Text,
+  CustomImage,
+  shareAction,
+} from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
-import { CustomImage, shareAction } from "../../component";
 import { gql } from "apollo-boost";
 import { TouchableOpacity } from "react-native";
 import RenderAlbum from "../Feed/RenderAlbumItinerary";
@@ -47,9 +52,10 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
+  console.log("props profil", props);
   const HeaderComponent = {
     headerTransparent: false,
-    title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
+    // title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
     headerTintColor: "white",
     headerTitle: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
     headerMode: "screen",
@@ -122,6 +128,8 @@ export default function myfeed(props) {
     },
   });
   let indeks = 0;
+
+  console.log("data", datapost);
 
   {
     datapost?.user_post_paging?.datas
