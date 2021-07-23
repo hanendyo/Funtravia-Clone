@@ -502,7 +502,6 @@ export default function FeedList({ props, token }) {
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
         console.log("itinerary");
-
         Refresh();
       }
 
