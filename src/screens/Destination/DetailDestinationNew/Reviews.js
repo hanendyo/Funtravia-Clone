@@ -39,7 +39,10 @@ export default function Reviews({ props, id }) {
     },
   });
 
-  const ImagesSlider = async (data) => {
+  let [indekknya, setIndek] = useState(0);
+
+  const ImagesSlider = async (data, indekss) => {
+    setIndek(indekss);
     var tempdatas = [];
     var x = 0;
 
@@ -70,6 +73,7 @@ export default function Reviews({ props, id }) {
       <ImageSlide
         show={modalss}
         dataImage={gambar}
+        index={indekknya}
         setClose={() => setModalss(false)}
       />
       {data?.destinationById?.review.length > 0 ? (
@@ -141,21 +145,23 @@ export default function Reviews({ props, id }) {
                     </Text>
                   </View>
                 </Pressable>
-                <View
-                  style={{
-                    marginTop: 10,
-                    marginLeft: 50,
-                  }}
-                >
-                  <Text
-                    ellipsizeMode="head"
-                    size="label"
-                    type="reguler"
-                    style={{ lineHeight: 20 }}
+                {item.ulasan ? (
+                  <View
+                    style={{
+                      marginTop: 10,
+                      marginLeft: 50,
+                    }}
                   >
-                    {item.ulasan}
-                  </Text>
-                </View>
+                    <Text
+                      ellipsizeMode="head"
+                      size="label"
+                      type="reguler"
+                      style={{ lineHeight: 20 }}
+                    >
+                      {item.ulasan}
+                    </Text>
+                  </View>
+                ) : null}
                 {item && item.image.length > 0 ? (
                   <View
                     style={{
@@ -180,7 +186,7 @@ export default function Reviews({ props, id }) {
                                   width: "49%",
                                   height: "100%",
                                 }}
-                                onPress={() => ImagesSlider(item)}
+                                onPress={() => ImagesSlider(item, indexs)}
                               >
                                 <FunImage
                                   key={indexs + "1"}
@@ -203,7 +209,7 @@ export default function Reviews({ props, id }) {
                                   width: "49%",
                                   height: "100%",
                                 }}
-                                onPress={() => ImagesSlider(item)}
+                                onPress={() => ImagesSlider(item, indexs)}
                               >
                                 <FunImage
                                   key={indexs + "2"}
@@ -241,7 +247,7 @@ export default function Reviews({ props, id }) {
                                   width: "49%",
                                   height: "100%",
                                 }}
-                                onPress={() => ImagesSlider(item)}
+                                onPress={() => ImagesSlider(item, indexs)}
                               >
                                 <FunImage
                                   key={index + "3"}

@@ -124,8 +124,10 @@ export default function ImageSlide({
       >
         <View
           style={{
-            height: 55,
+            height: 70,
             backgroundColor: "black",
+            justifyContent: "flex-end",
+
             marginTop: 10,
           }}
         >
@@ -312,7 +314,7 @@ export default function ImageSlide({
                         }
                   }
                 >
-                  <FunImage
+                  <Image
                     style={{
                       height: Dimensions.get("screen").width / 4,
                       width: Dimensions.get("screen").width / 4,

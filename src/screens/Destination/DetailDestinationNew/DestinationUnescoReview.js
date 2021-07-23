@@ -29,9 +29,10 @@ import { useTranslation } from "react-i18next";
 import ImagePicker from "react-native-image-crop-picker";
 import CheckBox from "@react-native-community/checkbox";
 import UploadReview from "../../../graphQL/Mutation/Destination/Review";
+import UploadReviewWithoutImgs from "../../../graphQL/Mutation/Destination/ReviewWithoutImg";
 import { ReactNativeFile } from "apollo-upload-client";
 import { useMutation } from "@apollo/client";
-import ImageSlide from "../../../component/src/ImageSlide";
+import ImageSlide from "../../../component/src/ImageSlide/index";
 
 export default function DestinationUnescoReview(props) {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export default function DestinationUnescoReview(props) {
   let [maxRating] = useState([1, 2, 3, 4, 5]);
   let [defaultRate, setDefaultRate] = useState(0);
   let [modals, setmodal] = useState(false);
-  let [text, setText] = useState("");
+  let [text, setText] = useState(" ");
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
 
@@ -86,7 +87,7 @@ export default function DestinationUnescoReview(props) {
   };
 
   const backAction = () => {
-    console.log("platform android", Platform.OS === "android");
+    // console.log("platform android", Platform.OS === "android");
     if (Platform.OS === "android") {
       ToastAndroid.show("Cancelled", ToastAndroid.LONG);
     }
@@ -155,6 +156,19 @@ export default function DestinationUnescoReview(props) {
     context: {
       headers: {
         "Content-Type": "multipart/form-data",
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  const [
+    mutationUpload,
+    { loading: loadingup, data: dataup, error: errorup },
+  ] = useMutation(UploadReviewWithoutImgs, {
+    context: {
+      headers: {
+        // "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
@@ -168,41 +182,62 @@ export default function DestinationUnescoReview(props) {
       return true;
     }
     if (dataImage.length == 0) {
-      if (Platform.OS === "android") {
-        ToastAndroid.show("gambar harus di isi", ToastAndroid.LONG);
-      }
-      return true;
-    }
-
-    try {
-      let response = await mutationUploadV2({
-        variables: {
-          foto: dataImage,
-          rating: defaultRate,
-          ulasan: text,
-          id: data.id,
-        },
-      });
-
-      if (response.data) {
-        if (response.data.create_review.code !== 200) {
-          throw new Error(response.data.create_review.message);
+      try {
+        let response = await mutationUpload({
+          variables: {
+            rating: defaultRate,
+            ulasan: text,
+            id: data.id,
+          },
+        });
+        if (response.data) {
+          if (response.data.create_review_without_img.code !== 200) {
+            throw new Error(response.data.create_review_without_img.message);
+          }
+          setTimeout(async () => {
+            await (
+              <View style={{ marginTop: 20 }}>
+                <ActivityIndicator />
+              </View>
+            );
+          }, 2000);
+          await props.navigation.navigate("DestinationUnescoDetail");
         }
-        setTimeout(async () => {
-          await (
-            <View style={{ marginTop: 20 }}>
-              <ActivityIndicator />
-            </View>
-          );
-        }, 2000);
-        await props.navigation.navigate("DestinationUnescoDetail");
+      } catch (err) {
+        Alert.alert("" + err);
       }
-    } catch (err) {
-      Alert.alert("" + err);
+    } else {
+      try {
+        let response = await mutationUploadV2({
+          variables: {
+            foto: dataImage,
+            rating: defaultRate,
+            ulasan: text,
+            id: data.id,
+          },
+        });
+        if (response.data) {
+          if (response.data.create_review.code !== 200) {
+            throw new Error(response.data.create_review.message);
+          }
+          setTimeout(async () => {
+            await (
+              <View style={{ marginTop: 20 }}>
+                <ActivityIndicator />
+              </View>
+            );
+          }, 2000);
+          await props.navigation.navigate("DestinationUnescoDetail");
+        }
+      } catch (err) {
+        Alert.alert("" + err);
+      }
     }
   };
+  let [indekk, setindekk] = useState(0);
 
-  const ImagesSlider = async (data) => {
+  const ImagesSlider = async (data, indeks) => {
+    setindekk(indeks);
     var tempdatas = [];
     var x = 0;
 
@@ -241,6 +276,7 @@ export default function DestinationUnescoReview(props) {
         show={modalss}
         dataImage={gambar}
         setClose={() => setModalss(false)}
+        index={indekk}
       />
       <View
         style={{
@@ -350,20 +386,8 @@ export default function DestinationUnescoReview(props) {
               }}
             >
               {dataImage.map((item, index) => {
+                console.log(item);
                 if (index < 3) {
-                  return (
-                    <FunImage
-                      key={index}
-                      source={{ uri: item.uri }}
-                      style={{
-                        // width: Dimensions.get("screen").width * 0.15,
-                        width: Dimensions.get("screen").width * 0.22,
-                        height: "100%",
-                        marginLeft: 2,
-                      }}
-                    />
-                  );
-                } else if (index === 3 && dataImage.length > 4) {
                   return (
                     <Ripple
                       key={index}
@@ -371,9 +395,31 @@ export default function DestinationUnescoReview(props) {
                         justifyContent: "center",
                         alignItems: "center",
                       }}
-                      onPress={() => ImagesSlider(dataImage)}
+                      onPress={() => ImagesSlider(dataImage, index)}
                     >
-                      <FunImage
+                      <Image
+                        key={index}
+                        source={{ uri: item.uri }}
+                        style={{
+                          // width: Dimensions.get("screen").width * 0.15,
+                          width: Dimensions.get("screen").width * 0.22,
+                          height: "100%",
+                          marginLeft: 2,
+                        }}
+                      />
+                    </Ripple>
+                  );
+                } else {
+                  return (
+                    <Ripple
+                      key={index}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      onPress={() => ImagesSlider(dataImage, index)}
+                    >
+                      <Image
                         key={index}
                         source={{ uri: item.uri }}
                         style={{
@@ -401,21 +447,6 @@ export default function DestinationUnescoReview(props) {
                       </Text>
                     </Ripple>
                   );
-                } else if (index === 3) {
-                  return (
-                    <FunImage
-                      key={index}
-                      source={{ uri: item.uri }}
-                      style={{
-                        // width: Dimensions.get("screen").width * 0.15,
-                        width: Dimensions.get("screen").width * 0.22,
-                        height: "100%",
-                        marginLeft: 2,
-                      }}
-                    />
-                  );
-                } else {
-                  null;
                 }
               })}
             </View>
@@ -497,6 +528,7 @@ export default function DestinationUnescoReview(props) {
           height: 40,
           paddingHorizontal: 15,
           marginBottom: 20,
+          // opacity: toggleCheckBox ? 1 : 0.5,
         }}
       >
         <Pressable
@@ -505,7 +537,7 @@ export default function DestinationUnescoReview(props) {
           style={{
             width: "100%",
             height: "100%",
-            backgroundColor: "#209FAE",
+            backgroundColor: toggleCheckBox ? "#209FAE" : "#f6f6f6",
             borderRadius: 5,
             flexDirection: "row",
             justifyContent: "center",
@@ -515,7 +547,10 @@ export default function DestinationUnescoReview(props) {
           <Text
             size="label"
             type="bold"
-            style={{ color: "#FFF", marginRight: 10 }}
+            style={{
+              color: toggleCheckBox ? "#FFF" : "#c7c7c7",
+              marginRight: 10,
+            }}
           >
             Send Review
           </Text>
