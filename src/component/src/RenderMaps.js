@@ -29,7 +29,7 @@ export default function RenderMaps({
   const extension = Platform.OS === "android" ? "file://" : "";
   const name = sh.unique(url);
   const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
-  // console.log(url);
+
   RNFS.exists(path)
     .then((exists) => {
       if (!exists) {
@@ -40,7 +40,6 @@ export default function RenderMaps({
         }).promise.then((res) => {
           if (res.statusCode === "200") {
             setTimeout(() => setLoading(false), 1000);
-            console.log("SUCCESS CACHE ICON", url);
           } else {
             setLoading(false);
             setError(true);
@@ -50,7 +49,6 @@ export default function RenderMaps({
     })
     .catch((error) => {
       setLoading(false);
-      console.log("ERROR CACHE", error);
     });
 
   if (loading) {

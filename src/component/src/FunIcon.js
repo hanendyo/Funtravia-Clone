@@ -51,20 +51,24 @@ export default function FunIcon({
   }
 
   if (error) {
-    <SvgCssUri
-      uri={"https://fa12.funtravia.com/icon/users.svg"}
-      width={width ? width : 50}
-      height={height ? height : 50}
-      fill={fill ? fill : "#464646"}
-    />;
+    console.log("masukerror");
+    return (
+      <SvgCssUri
+        uri={url}
+        width={width ? width : 50}
+        height={height ? height : 50}
+        fill={fill ? fill : "#464646"}
+      />
+    );
+  } else {
+    console.log("masukoke");
+    return (
+      <SvgCssUri
+        uri={error ? url : path}
+        width={width ? width : 50}
+        height={height ? height : 50}
+        fill={fill ? fill : "#464646"}
+      />
+    );
   }
-
-  return (
-    <SvgCssUri
-      uri={path}
-      width={width ? width : 50}
-      height={height ? height : 50}
-      fill={fill ? fill : "#464646"}
-    />
-  );
 }
