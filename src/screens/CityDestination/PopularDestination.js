@@ -21,6 +21,7 @@ import {
   Truncate,
   Capital,
   FunImageBackground,
+  FunImage,
 } from "../../component";
 export default function AllDestination(props) {
   const { t } = useTranslation();
@@ -75,7 +76,7 @@ export default function AllDestination(props) {
       type: search.tag ? search.tag : "",
     },
   });
-  console.log("data", data);
+
   const [
     GetContinent,
     { data: dataFillter, loading: loadingcat, error: errorcat },
@@ -97,7 +98,6 @@ export default function AllDestination(props) {
     return jumlah;
   };
 
-  // console.log(dataFillter);
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     GetRegionList();
@@ -183,7 +183,6 @@ export default function AllDestination(props) {
         >
           {item.city && item.city.length
             ? item.city.map((value, i) => {
-                console.log("value", value);
                 return (
                   <TouchableOpacity
                     onPress={() => {
@@ -226,7 +225,7 @@ export default function AllDestination(props) {
                         width: (Dimensions.get("window").width - 20) / 2,
                       }}
                     >
-                      <FunImageBackground
+                      <FunImage
                         key={value.id}
                         source={
                           value.cover ? { uri: value.cover } : default_image
@@ -242,7 +241,7 @@ export default function AllDestination(props) {
                             height: Dimensions.get("window").width * 0.24,
                           },
                         ]}
-                      ></FunImageBackground>
+                      ></FunImage>
                     </View>
                     <View
                       style={{

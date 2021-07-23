@@ -482,7 +482,6 @@ export default function Country(props) {
     syncScrollOffset();
 
     const offsetY = e.nativeEvent.contentOffset.y;
-    // console.log('onScrollEndDrag', offsetY);
     // iOS only
     if (Platform.OS === "ios") {
       if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
@@ -492,20 +491,6 @@ export default function Country(props) {
 
     // check pull to refresh
   };
-  // if (loading) {
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         alignItems: "center",
-  //         alignContent: "center",
-  //         justifyContent: "center",
-  //       }}
-  //     >
-  //       <ActivityIndicator animating={true} color="#209fae" size="large" />
-  //     </View>
-  //   );
-  // }
 
   // mutasi liked jurnal
   const [

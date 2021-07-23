@@ -252,7 +252,6 @@ export default function CityDetail(props) {
     onCompleted: () => {
       setlisProvince(dataProvince.province_detail_v2);
       let tab = [{ key: "general", title: "General" }];
-      // console.log(dataProvince);
 
       dataProvince.province_detail_v2.article_header.map((item, index) => {
         tab.push({
@@ -774,8 +773,8 @@ export default function CityDetail(props) {
                             >
                               <View
                                 style={{
-                                  height: 60,
-                                  width: 60,
+                                  height: 50,
+                                  width: 50,
                                   borderRadius: 30,
                                   backgroundColor: "#F6F6F6",
                                   justifyContent: "center",

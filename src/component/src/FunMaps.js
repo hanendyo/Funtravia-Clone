@@ -12,7 +12,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ICONSERVER } from "../../config";
 import { SvgCssUri } from "react-native-svg";
 
-export default function RenderMaps({
+export default function FunMaps({
   icon,
   style = null,
   width = null,
@@ -23,13 +23,13 @@ export default function RenderMaps({
   const url = `${ICONSERVER}${variant[icon.substring(0, 2)]}/${
     icon.split("-")[1]
   }.svg`;
-  console.log("url", url);
+
   let [loading, setLoading] = useState(false);
   let [error, setError] = useState(false);
   const extension = Platform.OS === "android" ? "file://" : "";
   const name = sh.unique(url);
   const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
-  // console.log(url);
+
   RNFS.exists(path)
     .then((exists) => {
       if (!exists) {
@@ -50,7 +50,6 @@ export default function RenderMaps({
     })
     .catch((error) => {
       setLoading(false);
-      console.log("ERROR CACHE", error);
     });
 
   if (loading) {
@@ -58,7 +57,6 @@ export default function RenderMaps({
   }
 
   if (error) {
-    console.log("masukerror");
     return (
       <SvgCssUri
         uri={url}
@@ -68,7 +66,6 @@ export default function RenderMaps({
       />
     );
   } else {
-    console.log("masuk");
     return (
       <SvgCssUri
         uri={error ? url : path}
