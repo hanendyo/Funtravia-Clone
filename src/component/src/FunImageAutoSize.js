@@ -12,9 +12,16 @@ export default function FunImageAutoSize({
     children,
     style,
     uri,
+    size,
     ...otherProps
 }) {
-    let url = uri + "?size=f";
+    let url;
+    if (size) {
+        url = uri + "?size=" + size;
+    } else {
+        url = uri;
+    }
+    console.log(url);
     let [loading, setLoading] = useState(false);
     let [temp, setTemp] = useState([]);
     let [progress, setProgress] = useState();
@@ -54,7 +61,7 @@ export default function FunImageAutoSize({
                             },
                         })
                             .promise.then((res) => {
-                                console.log("hasil", res);
+                                // console.log("hasil", res);
                                 setTimeout(() => setLoading(false), 1000);
                                 // console.log("CACHED ANIMATED IMAGE", url);
                             })
