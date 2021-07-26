@@ -21,8 +21,11 @@ import {
   SendReview,
   StartBuleIsi,
   PanahPutih,
+  Submit,
 } from "../../../assets/svg";
-import { Button, Text, FunImage } from "../../../component";
+import { RNToasty } from "react-native-toasty";
+import { Textarea } from "native-base";
+import { Button, Text, FunImage, Loading } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
@@ -42,9 +45,10 @@ export default function DestinationUnescoReview(props) {
   let [maxRating] = useState([1, 2, 3, 4, 5]);
   let [defaultRate, setDefaultRate] = useState(0);
   let [modals, setmodal] = useState(false);
-  let [text, setText] = useState(" ");
+  let [text, setText] = useState("");
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
+  let [loading, setloading] = useState(false);
 
   const HeaderComponent = {
     headerShown: true,
@@ -175,10 +179,16 @@ export default function DestinationUnescoReview(props) {
   });
 
   const upload = async () => {
+    setloading(true);
     if (defaultRate < 1) {
-      if (Platform.OS === "android") {
-        ToastAndroid.show("rating harus di isi", ToastAndroid.LONG);
-      }
+      // if (Platform.OS === "android") {
+      //   ToastAndroid.show("rating harus di isi", ToastAndroid.LONG);
+      // }
+
+      RNToasty.Show({
+        title: t("rattingnoempty"),
+        position: "bottom",
+      });
       return true;
     }
     if (dataImage.length == 0) {
@@ -186,7 +196,7 @@ export default function DestinationUnescoReview(props) {
         let response = await mutationUpload({
           variables: {
             rating: defaultRate,
-            ulasan: text,
+            ulasan: text !== "" ? text : "-",
             id: data.id,
           },
         });
@@ -194,13 +204,15 @@ export default function DestinationUnescoReview(props) {
           if (response.data.create_review_without_img.code !== 200) {
             throw new Error(response.data.create_review_without_img.message);
           }
-          setTimeout(async () => {
-            await (
-              <View style={{ marginTop: 20 }}>
-                <ActivityIndicator />
-              </View>
-            );
-          }, 2000);
+          // setTimeout(async () => {
+          //   await (
+          //     <View style={{ marginTop: 20 }}>
+          //       <ActivityIndicator />
+          //     </View>
+          //   );
+          // }, 2000);
+          setloading(false);
+
           await props.navigation.navigate("DestinationUnescoDetail");
         }
       } catch (err) {
@@ -212,7 +224,7 @@ export default function DestinationUnescoReview(props) {
           variables: {
             foto: dataImage,
             rating: defaultRate,
-            ulasan: text,
+            ulasan: text !== "" ? text : "-",
             id: data.id,
           },
         });
@@ -220,16 +232,20 @@ export default function DestinationUnescoReview(props) {
           if (response.data.create_review.code !== 200) {
             throw new Error(response.data.create_review.message);
           }
-          setTimeout(async () => {
-            await (
-              <View style={{ marginTop: 20 }}>
-                <ActivityIndicator />
-              </View>
-            );
-          }, 2000);
+          // setTimeout(async () => {
+          //   await (
+          //     <View style={{ marginTop: 20 }}>
+          //       <ActivityIndicator />
+          //     </View>
+          //   );
+          // }, 2000);
+          setloading(false);
+
           await props.navigation.navigate("DestinationUnescoDetail");
         }
       } catch (err) {
+        setloading(false);
+
         Alert.alert("" + err);
       }
     }
@@ -272,6 +288,7 @@ export default function DestinationUnescoReview(props) {
         backgroundColor: "#fff",
       }}
     >
+      <Loading show={loading} />
       <ImageSlide
         show={modalss}
         dataImage={gambar}
@@ -463,7 +480,7 @@ export default function DestinationUnescoReview(props) {
         <Text size="label" type="bold">
           {t("shareUs")}
         </Text>
-        <View
+        {/* <View
           style={{
             height: 150,
             width: "100%",
@@ -472,15 +489,30 @@ export default function DestinationUnescoReview(props) {
             backgroundColor: "#F6F6F6",
             marginTop: 10,
           }}
-        >
-          <TextInput
+        > */}
+        <Textarea
+          style={{
+            width: "100%",
+            marginTop: 10,
+
+            // borderRadius: 5,
+            fontFamily: "Lato-Regular",
+          }}
+          rowSpan={5}
+          placeholder={t("tellUs")}
+          value={text}
+          bordered
+          maxLength={160}
+          onChangeText={(text) => setText(text)}
+        />
+        {/* <TextInput
             placeholder={t("tellUs")}
             placeholderTextColor="#464646"
             style={{ color: "#464646", marginHorizontal: 5, fontSize: 12 }}
             multiline={true}
             onChangeText={(e) => setText(e)}
-          ></TextInput>
-        </View>
+          ></TextInput> */}
+        {/* </View> */}
       </View>
       <View
         style={{
@@ -554,7 +586,11 @@ export default function DestinationUnescoReview(props) {
           >
             Send Review
           </Text>
-          <PanahPutih height={20} width={20} />
+          {toggleCheckBox ? (
+            <PanahPutih height={20} width={20} />
+          ) : (
+            <Submit height={20} width={20} />
+          )}
         </Pressable>
         {/* <Button
 		  disable={tombol}

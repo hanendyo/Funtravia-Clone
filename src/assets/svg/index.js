@@ -243,6 +243,8 @@ import Errorr from "./files/errorr.svg";
 import Refresh from "./files/refresh.svg";
 import Itinerary_1 from "./files/itinerary_1.svg";
 import Itinerary_2 from "./files/itinerary_2.svg";
+import Submit from "./files/submit.svg";
+import Errorx from "./files/errorx.svg";
 
 export {
   LikeWhite,
@@ -490,4 +492,6 @@ export {
   Refresh,
   Itinerary_1,
   Itinerary_2,
+  Submit,
+  Errorx,
 };

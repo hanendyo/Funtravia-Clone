@@ -59,6 +59,7 @@ import {
   Help,
   Errors,
   Errorr,
+  Errorx,
 } from "../../../assets/svg";
 import {
   Button,
@@ -72,6 +73,7 @@ import {
   FunImage,
   FunVideo,
 } from "../../../component";
+import { rupiah } from "../../../component/src/Rupiah";
 import Sidebar from "../../../component/src/Sidebar";
 import {
   dateFormatHari,
@@ -1895,7 +1897,7 @@ export default function ItineraryDetail(props) {
               }}
             >
               {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
-                <Errorr width={15} height={15} style={{ marginRight: 5 }} />
+                <Errorx width={15} height={15} style={{ marginRight: 5 }} />
               ) : null}
 
               <Animated.Text
@@ -1905,10 +1907,7 @@ export default function ItineraryDetail(props) {
                   // position: "absolute",
                   // top: 10,
 
-                  color:
-                    cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180
-                      ? "#D75995"
-                      : "#ffffff",
+                  color: "#ffffff",
                   opacity: textOpacitys,
                   fontFamily: "Lato-Bold",
                   fontSize: 12,
@@ -2432,6 +2431,20 @@ export default function ItineraryDetail(props) {
                 <TouchableOpacity
                   style={{ flex: 1, paddingHorizontal: 10 }}
                   // onLongPress={status !== "saved" ? drag : null}
+                  onPress={() => {
+                    item.type === "custom"
+                      ? props.navigation.push("detailCustomItinerary", {
+                          data: dataSpreadtimeline,
+                          token: token,
+                          idItin: itineraryId,
+                          id: item.id,
+                          nameitin: datadetail.itinerary_detail.name,
+                          datadayaktif: datadayaktif,
+                        })
+                      : null;
+
+                    // console.log(dataSpreadtimeline, "masuk paji");
+                  }}
                 >
                   <Text size="label" type="bold" style={{}}>
                     {item.name}
@@ -2655,13 +2668,15 @@ export default function ItineraryDetail(props) {
                   <Mobil height={15} width={15} style={{ marginRight: 10 }} />
                   {/* <Text>{"60Km/h "}</Text> */}
                   <Text type="bold">
-                    <Distance
-                      lat1={dataList[index].latitude}
-                      lon1={dataList[index].longitude}
-                      lat2={dataList[index + 1].latitude}
-                      lon2={dataList[index + 1].longitude}
-                      unit={"km"}
-                    />
+                    {rupiah(
+                      Distance({
+                        lat1: dataList[index].latitude,
+                        lon1: dataList[index].longitude,
+                        lat2: dataList[index + 1].latitude,
+                        lon2: dataList[index + 1].longitude,
+                        unit: "km",
+                      })
+                    )}
                   </Text>
                   <Text> km </Text>
                   <Text>- </Text>
@@ -3233,7 +3248,7 @@ export default function ItineraryDetail(props) {
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <Ripple
+      <Pressable
         style={{
           alignContent: "center",
           alignItems: "center",
@@ -3248,13 +3263,13 @@ export default function ItineraryDetail(props) {
             color: focused
               ? "#209FAE"
               : status === "edit"
-              ? "#6c6c6c"
+              ? "#d3d3d3"
               : "#464646",
           }}
         >
           {route.title}
         </Text>
-      </Ripple>
+      </Pressable>
     );
   };
 
@@ -4021,6 +4036,7 @@ export default function ItineraryDetail(props) {
         <TabBar
           {...props}
           onTabPress={({ route, preventDefault }) => {
+            status === "edit" ? Alert.alert(t("Tripbelumaktif")) : null;
             if (isListGliding.current) {
               preventDefault();
             }

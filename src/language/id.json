@@ -573,5 +573,7 @@
   "hr": "jam",
   "min": "mnt",
   "photos": "Foto",
-  "searchin": "Cari di "
+  "searchin": "Cari di ",
+  "rattingnoempty": "Rating tidak boleh kosong",
+  "Tripbelumaktif": "Trip belum aktif"
 }
