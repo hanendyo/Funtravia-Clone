@@ -1,6 +1,6 @@
 import { gql } from "apollo-boost";
 const ReviewUpload = gql`
-  mutation($id: ID!, $rating: Int, $ulasan: String, $foto: [Upload]) {
+  mutation($id: ID!, $rating: Int!, $ulasan: String, $foto: [Upload]) {
     create_review(
       input: {
         destination_id: $id

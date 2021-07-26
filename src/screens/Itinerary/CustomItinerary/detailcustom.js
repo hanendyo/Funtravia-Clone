@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   Linking,
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -26,26 +27,14 @@ import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
+import ImageSlide from "../../../component/src/ImageSlide";
 
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: () => (
-      <View>
-        <Text type="bold" size="title" style={{ color: "#fff" }}>
-          Activity Details
-        </Text>
-        <Text
-          style={{
-            color: "#fff",
-          }}
-        >
-          {props.route.params.nameitin}
-        </Text>
-      </View>
-    ),
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -63,18 +52,43 @@ export default function detailCustomItinerary(props) {
       marginLeft: 10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
+      <View
         style={{
-          height: 55,
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+
+        <View
+          style={{
+            marginLeft: 10,
+          }}
+        >
+          <Text type="bold" size="title" style={{ color: "#fff" }}>
+            Activity Details
+          </Text>
+          <Text
+            style={{
+              color: "#fff",
+            }}
+          >
+            {props.route.params.nameitin}
+          </Text>
+        </View>
+      </View>
     ),
   };
 
@@ -332,6 +346,39 @@ export default function detailCustomItinerary(props) {
 
   const x = dataChild.length - 1;
 
+  let [indeks, setIndeks] = useState(0);
+  let [gambar, setGambar] = useState([]);
+  let [modalss, setModalss] = useState(false);
+
+  const ImagesSlider = async (index, data) => {
+    // console.log(index, data, "masuk paji masuk");
+    // return false;
+
+    var tempdatas = [];
+    var x = 0;
+
+    for (var i in data) {
+      let wid = 0;
+      let hig = 0;
+      Image.getSize(data[i].filepath, (width, height) => {
+        wid = width;
+        hig = height;
+      });
+      tempdatas.push({
+        key: i,
+        url: data[i].filepath ? data[i].filepath : "",
+        width: wid,
+        height: hig,
+        props: { source: data[i].filepath ? data[i].filepath : "" },
+      });
+      x++;
+    }
+
+    await setIndeks(index);
+    await setGambar(tempdatas);
+    await setModalss(true);
+  };
+
   return (
     <View
       style={{
@@ -340,6 +387,12 @@ export default function detailCustomItinerary(props) {
         // backgroundColor: "#fff",
       }}
     >
+      <ImageSlide
+        index={indeks}
+        show={modalss}
+        dataImage={gambar}
+        setClose={() => setModalss(false)}
+      />
       <FlatList
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -976,9 +1029,22 @@ export default function detailCustomItinerary(props) {
                             }}
                           >
                             <Text style={{ width: 30 }}>{index + 1}. </Text>
-                            <Text style={{ flex: 1, paddingBottom: 5 }}>
-                              {data.file_name}
-                            </Text>
+                            <TouchableOpacity
+                              style={{
+                                flex: 1,
+                              }}
+                              onPress={() => {
+                                data.extention === "JPG" ||
+                                data.extention === "JPEG" ||
+                                data.extention === "PNG"
+                                  ? ImagesSlider(index, dataParent.attachment)
+                                  : null;
+                              }}
+                            >
+                              <Text style={{ flex: 1, paddingBottom: 5 }}>
+                                {data.file_name}
+                              </Text>
+                            </TouchableOpacity>
                             <TouchableOpacity
                               onPress={() => {
                                 _handle_hapusParent(data, index, dataParent);

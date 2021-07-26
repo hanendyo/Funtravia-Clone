@@ -9,7 +9,7 @@ import PhoneCodeSelector from "./src/PhoneCodeSelector";
 import Truncate from "./src/Truncate";
 import Loading from "./src/Loading";
 import Sidebar from "./src/Sidebar";
-import rupiah from "./src/Rupiah";
+import Rupiah from "./src/Rupiah";
 import Capital from "./src/Capital";
 import FTabs from "./src/Tabs";
 import Distance from "./src/Distance";
@@ -41,7 +41,7 @@ export {
   Truncate,
   Loading,
   Sidebar,
-  rupiah,
+  Rupiah,
   Capital,
   FTabs,
   Distance,

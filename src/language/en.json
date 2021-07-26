@@ -571,5 +571,7 @@
   "hr": "hr",
   "min": "min",
   "photos": "Photos",
-  "searchin": "Search in "
+  "searchin": "Search in ",
+  "rattingnoempty": "rating can't be empty",
+  "Tripbelumaktif": "Trip is not active"
 }
