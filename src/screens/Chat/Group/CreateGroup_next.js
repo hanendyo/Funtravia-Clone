@@ -13,6 +13,7 @@ import {
   Pressable,
   Alert,
   Modal,
+  KeyboardAvoidingView,
 } from "react-native";
 import {
   Button,
@@ -41,8 +42,11 @@ import { CHATSERVER, RESTFULL_CHAT } from "../../../config";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { RNToasty } from "react-native-toasty";
+import DeviceInfo from "react-native-device-info";
 
 export default function NewGroup(props) {
+  const Notch = DeviceInfo.hasNotch();
+
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
   let [title, settitle] = useState("");
@@ -326,56 +330,6 @@ export default function NewGroup(props) {
         </View>
       </Modal>
 
-      {title != "" ? (
-        <View
-          style={{
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {!loading ? (
-            <Pressable
-              onPress={() => _createGrup()}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                borderWidth: 1.5,
-                borderColor: "#FFF",
-                backgroundColor: "#209FAE",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1,
-              }}
-            >
-              <CheckWhite width={20} height={20} />
-            </Pressable>
-          ) : (
-            <Pressable
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                borderWidth: 1.5,
-                borderColor: "#FFF",
-                backgroundColor: "#209FAE",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1,
-              }}
-            >
-              <ActivityIndicator
-                animating={true}
-                color="#FFFFFF"
-                size="large"
-              />
-            </Pressable>
-          )}
-        </View>
-      ) : null}
       <View
         style={{
           backgroundColor: "white",
@@ -462,7 +416,7 @@ export default function NewGroup(props) {
                 borderBottomWidth: 1,
                 borderBottomColor: "#D1D1D1",
               }}
-              value={title}
+              item={title}
               onChangeText={(text) => _settitle(text)}
             />
           </View>
@@ -477,17 +431,24 @@ export default function NewGroup(props) {
       >
         <Text>Participant : {userSelected.length}</Text>
       </View>
-      <View
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : null}
+        keyboardVerticalOffset={Notch ? 90 : 65}
         style={{
-          flexWrap: "wrap",
-          flexDirection: "row",
+          flex: 1,
+
+          // flexWrap: "wrap",
+          // flexDirection: "row",
           paddingHorizontal: 10,
+          // borderWidth: 1,
         }}
       >
-        {userSelected.map((value, i) => {
-          return (
+        <FlatList
+          numColumns={5}
+          data={userSelected}
+          renderItem={({ item, index }) => (
             <Pressable
-              key={i}
+              key={index}
               // onPress={() => selectUser(item)}
               style={{
                 alignItems: "center",
@@ -501,61 +462,76 @@ export default function NewGroup(props) {
                 Pressable={true}
                 // onPress={() => selectUser(item)}
                 source={
-                  value && value.picture
-                    ? { uri: value.picture }
-                    : default_image
-                }
-                style={{
-                  resizeMode: "cover",
-                  height: 55,
-                  width: 55,
-                  borderRadius: 30,
-                  marginVertical: 10,
-                  marginHorizontal: 8,
-                }}
-              />
-              <Text>{value.first_name}</Text>
-            </Pressable>
-          );
-        })}
-        {/* <FlatList
-          data={userSelected}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            marginVertical: 10,
-            paddingHorizontal: 20,
-          }}
-          renderItem={({ item, index }) => (
-            <Pressable
-              // onPress={() => selectUser(item)}
-              style={{
-                alignItems: "center",
-                alignContent: "center",
-                // justifyContent: "center",
-                // borderWidth: 1,
-              }}
-            >
-              <Image
-                Pressable={true}
-                // onPress={() => selectUser(item)}
-                source={
                   item && item.picture ? { uri: item.picture } : default_image
                 }
                 style={{
                   resizeMode: "cover",
-                  height: 55,
-                  width: 55,
-                  borderRadius: 30,
-                  marginHorizontal: 5,
+                  height: (Dimensions.get("screen").width - 20) / 5 - 20,
+                  width: (Dimensions.get("screen").width - 20) / 5 - 20,
+                  borderRadius: (Dimensions.get("screen").width - 20) / 5,
+                  marginVertical: 10,
+                  marginHorizontal: 10,
                 }}
               />
-              <Text>{item.first_name}</Text>
+              <Text>
+                <Truncate text={item.first_name} length={15} />
+                {/* {item.first_name} */}
+              </Text>
             </Pressable>
           )}
-        /> */}
-      </View>
+        />
+
+        {title != "" ? (
+          !loading ? (
+            <Pressable
+              onPress={() => _createGrup()}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                borderWidth: 1.5,
+                borderColor: "#FFF",
+                backgroundColor: "#209FAE",
+                position: "relative",
+                bottom: 90,
+                marginBottom: -60,
+                right: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "flex-end",
+                zIndex: 1,
+              }}
+            >
+              <CheckWhite width={20} height={20} />
+            </Pressable>
+          ) : (
+            <Pressable
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                borderWidth: 1.5,
+                borderColor: "#FFF",
+                backgroundColor: "#209FAE",
+                position: "relative",
+                bottom: 90,
+                marginBottom: -60,
+                right: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "flex-end",
+                zIndex: 1,
+              }}
+            >
+              <ActivityIndicator
+                animating={true}
+                color="#FFFFFF"
+                size="large"
+              />
+            </Pressable>
+          )
+        ) : null}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

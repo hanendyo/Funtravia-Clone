@@ -277,6 +277,8 @@ export default function ItineraryDetail(props) {
     variables: { itinerary_id: itineraryId },
   });
 
+  // console.log("album", dataAlbum);
+
   const GetTimeline = async (id) => {
     await setidDay(id ? id : idDay);
     await GetTimelin();
@@ -2143,7 +2145,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const rednerTab1Item = ({ item, index }) => {
+  const renderItinerary = ({ item, index }) => {
     const x = dataList.length - 1;
     return (
       <View
@@ -2459,6 +2461,17 @@ export default function ItineraryDetail(props) {
                           : "Custom Activity",
                     })}
                   </Text>
+                  {item?.type_custom ? (
+                    item?.type_custom === "flight_outside" ? (
+                      <Text>flight_outside</Text>
+                    ) : item?.type_custom === "flight_inside" ? (
+                      <Text>flight_inside</Text>
+                    ) : item?.type_custom === "accomodation_outside" ? (
+                      <Text>accomodation_outside</Text>
+                    ) : item?.type_custom === "accomodation_inside" ? (
+                      <Text>accomodation_inside</Text>
+                    ) : null
+                  ) : null}
                 </TouchableOpacity>
                 {status !== "saved" && Anggota === "true" ? (
                   <Button
@@ -2704,6 +2717,7 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
+    // console.log("item", itineraryId);
     return grid !== 1 ? (
       item.id === dataalbumaktif?.id ? (
         <View
@@ -2881,9 +2895,26 @@ export default function ItineraryDetail(props) {
                     return (
                       <TouchableOpacity
                         onPress={() => {
-                          // setidupload(item.id);
-                          setmodalAlbum(true);
-                          setdataalbumaktif({ id: item.id });
+                          // // setidupload(item.id);
+                          // setmodalAlbum(true);
+                          // setdataalbumaktif({ id: item.id });
+                          props.navigation.navigate("FeedStack", {
+                            screen: "Post",
+                            params: {
+                              id_album: item.id,
+                              id_itin: itineraryId,
+                              title_album: item.title,
+                              // token: token,
+                              // ratio: {
+                              //   width: 1,
+                              //   height: 1,
+                              //   index: 0,
+                              //   label: "S",
+                              // },
+                              // type: "image",
+                              album: "Itinerary",
+                            },
+                          });
                         }}
                         style={{
                           alignContent: "center",
@@ -3339,7 +3370,7 @@ export default function ItineraryDetail(props) {
       case "tab1":
         numCols = 1;
         data = dataList ? dataList : [1, 2, 3];
-        renderItem = rednerTab1Item;
+        renderItem = renderItinerary;
         break;
       case "tab2":
         numCols = 1;
@@ -4340,47 +4371,48 @@ export default function ItineraryDetail(props) {
                 </Button>
               </View>
             </View>
-          ) : tabIndex == 1 && grid != 1 ? (
-            // POSTALBUM
-            <View
-              style={{
-                zIndex: 999999,
-                position: "absolute",
-                left: 0,
-                bottom: 10,
-                width: Dimensions.get("window").width,
-                // backgroundColor: "white",
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  goToSelectPhoto(dataAlbum, dataalbumaktif, token);
-                }}
-                style={({ pressed }) => [
-                  {
-                    paddingHorizontal: 40,
-                    borderRadius: 30,
-                    height: 48,
-                    backgroundColor: pressed ? "#f6f6f6" : "#FFFFFF",
-                    shadowColor: "#F0F0F0",
-                    shadowOffset: { width: 2, height: 2 },
-                    shadowOpacity: 1,
-                    shadowRadius: 2,
-                    elevation: 3,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  },
-                ]}
-              >
-                <Text size="title" type="bold">
-                  {t("postToFeed")}
-                </Text>
-              </Pressable>
-            </View>
-          ) : null //tab bukan 0 status saved
-        ) : status == "edit" ? (
+          ) : null
+        ) : // tabIndex == 1 && grid != 1 ? (
+        //   // POSTALBUM
+        //   <View
+        //     style={{
+        //       zIndex: 999999,
+        //       position: "absolute",
+        //       left: 0,
+        //       bottom: 10,
+        //       width: Dimensions.get("window").width,
+        //       // backgroundColor: "white",
+        //       flexDirection: "row",
+        //       justifyContent: "center",
+        //     }}
+        //   >
+        //     <Pressable
+        //       onPress={() => {
+        //         goToSelectPhoto(dataAlbum, dataalbumaktif, token);
+        //       }}
+        //       style={({ pressed }) => [
+        //         {
+        //           paddingHorizontal: 40,
+        //           borderRadius: 30,
+        //           height: 48,
+        //           backgroundColor: pressed ? "#f6f6f6" : "#FFFFFF",
+        //           shadowColor: "#F0F0F0",
+        //           shadowOffset: { width: 2, height: 2 },
+        //           shadowOpacity: 1,
+        //           shadowRadius: 2,
+        //           elevation: 3,
+        //           alignItems: "center",
+        //           justifyContent: "center",
+        //         },
+        //       ]}
+        //     >
+        //       <Text size="title" type="bold">
+        //         {t("postToFeed")}
+        //       </Text>
+        //     </Pressable>
+        //   </View>
+        // ) : null //tab bukan 0 status saved
+        status == "edit" ? (
           tabIndex == 0 ? (
             <View
               style={{
