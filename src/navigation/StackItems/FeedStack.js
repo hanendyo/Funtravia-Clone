@@ -17,6 +17,7 @@ import SearchFeedByLocation from "../../screens/Feed/SearchFeedByLocation";
 import CreateListAlbum from "../../screens/Feed/Post/CreateAlbum";
 import ChooseAlbumItinerary from "../../screens/Feed/Post/ChooseAlbumItinerary";
 import ListFotoAlbums from "../../screens/Feed/ListFotoAlbums";
+import Crop from "../../screens/Feed/Post/Crop";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
@@ -144,6 +145,16 @@ export default function FeedStackNavigation() {
         options={{
           headerTitle: "",
           headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <FeedStack.Screen
+        name="Crop"
+        component={Crop}
+        options={{
+          headerTitle: "",
+          // headerTransparent: true,
           headerTintColor: "white",
           headerBackTitleVisible: false,
         }}

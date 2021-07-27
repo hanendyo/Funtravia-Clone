@@ -79,7 +79,6 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  console.log("props", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
@@ -173,7 +172,6 @@ export default function CreatePost(props) {
   };
 
   const SubmitData = async () => {
-    console.log("submit");
     let caption = statusText ? statusText : "-";
     let latitude = Location.latitude !== "" ? Location.latitude : "0";
     let longitude = Location.longitude !== "" ? Location.longitude : "0";
@@ -365,9 +363,10 @@ export default function CreatePost(props) {
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
   };
 
-  const L = (2 / 3) * Dimensions.get("screen").width;
+  const L = (2.2 / 3) * Dimensions.get("screen").width;
   const P = (5 / 4) * Dimensions.get("screen").width;
   const S = Dimensions.get("screen").width;
+  const [indexAktif, setIndexAktive] = useState(0);
 
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {
@@ -408,15 +407,17 @@ export default function CreatePost(props) {
       );
     } else if (props?.route.params.type === "image") {
       return (
-        <AutoHeightImage
-          width={Dimensions.get("screen").width}
-          height={
-            props?.route?.params?.ratio?.label == "L"
-              ? L
-              : props?.route?.params?.ratio?.label == "P"
-              ? P
-              : S
-          }
+        <Image
+          style={{
+            width: Dimensions.get("screen").width,
+            // height: 215,
+            height:
+              props.route.params.ratio.label == "L"
+                ? L
+                : props.route.params.ratio.label == "P"
+                ? P
+                : S,
+          }}
           source={
             chosenFile && chosenFile.path
               ? {
@@ -424,27 +425,67 @@ export default function CreatePost(props) {
                 }
               : default_image
           }
+          resizeMode="contain"
         />
       );
     } else {
       return (
         <>
-          <AutoHeightImage
-            resizeMode="cover"
-            style={{
-              marginVertical: 10,
-              borderRadius: 10,
-              marginHorizontal: 10,
-              width: Dimensions.get("screen").width - 20,
-              height:
-                props.route.params.ratio.label == "L"
-                  ? L
-                  : props.route.params.ratio.label == "P"
-                  ? P
-                  : S,
-            }}
-            source={Img ? { uri: Img } : default_image}
-          />
+          {chosenFile[indexAktif].node.type.substr(0, 5) === "video" ? (
+            <Video
+              source={{
+                uri:
+                  Platform.OS === "ios"
+                    ? `assets-library://asset/asset.${chosenFile.filename.substring(
+                        chosenFile.filename.length - 3
+                      )}?id=${chosenFile.uri.substring(
+                        5,
+                        41
+                      )}&ext=${chosenFile.filename.substring(
+                        chosenFile.filename.length - 3
+                      )}`
+                    : Img,
+              }}
+              ref={(ref) => {
+                videoView = ref;
+              }}
+              onProgress={durationTime}
+              paused={isFocused ? false : true}
+              repeat={time ? true : false}
+              onBuffer={videoView?.current?.onBuffer}
+              onError={videoView?.current?.videoError}
+              style={{
+                marginVertical: 10,
+                borderRadius: 10,
+                marginHorizontal: 10,
+                width: width - 20,
+                height:
+                  props?.route?.params?.ratio?.label == "L"
+                    ? L
+                    : props?.route?.params?.ratio?.label == "P"
+                    ? P
+                    : S,
+              }}
+              resizeMode="cover"
+            />
+          ) : (
+            <Image
+              resizeMode="cover"
+              style={{
+                marginVertical: 10,
+                borderRadius: 10,
+                marginHorizontal: 10,
+                width: Dimensions.get("screen").width - 20,
+                height:
+                  props.route.params.ratio.label == "L"
+                    ? L
+                    : props.route.params.ratio.label == "P"
+                    ? P
+                    : S,
+              }}
+              source={Img ? { uri: Img } : default_image}
+            />
+          )}
           <FlatList
             onLayout={() => setImg(chosenFile[0].node.image.uri)}
             data={chosenFile}
@@ -455,7 +496,10 @@ export default function CreatePost(props) {
             }}
             renderItem={(item, index) => (
               <TouchableOpacity
-                onPress={() => setImg(item.item.node.image.uri)}
+                onPress={() => {
+                  setImg(item.item.node.image.uri);
+                  setIndexAktive(item.index);
+                }}
               >
                 <AutoHeightImage
                   width={Dimensions.get("screen").width / 5}
@@ -603,7 +647,7 @@ export default function CreatePost(props) {
                   borderColor: "#D1D1D1",
                 }}
               >
-                <TouchableHighlight
+                <Ripple
                   activeOpacity={0.6}
                   underlayColor="#FFF"
                   onPress={() => {
@@ -647,7 +691,7 @@ export default function CreatePost(props) {
                       {t("addAlbum")}
                     </Text>
                   </View>
-                </TouchableHighlight>
+                </Ripple>
                 {album ? (
                   <View
                     style={{
