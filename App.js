@@ -191,6 +191,7 @@ function App() {
         authorizeStatus={authStat}
         dNotify={dataNotifikasi}
         isFirst={firstScreen}
+        token={appToken}
       />
     </ApolloProvider>
   );

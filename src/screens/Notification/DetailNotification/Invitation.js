@@ -369,7 +369,6 @@ export default function Invitation({ navigation, token }) {
         if (response.data.confrim_buddy.code !== 200) {
           throw new Error(response.data.confrim_buddy.message);
         }
-        // console.log(response.data.confrim_buddy.data_itin.start_date);
         // Alert.alert('Succes');
         await GetListInvitation();
         await setLoadings(false);
@@ -501,6 +500,17 @@ export default function Invitation({ navigation, token }) {
     },
     onCompleted: () => {
       SetDataNotif(datasnotif.list_notification);
+      let status = 0;
+      for (var x of datasnotif.list_notification) {
+        if (x.isread === false) {
+          status = 1;
+        }
+      }
+      if (status === 1) {
+        setreadall(true);
+      } else {
+        setreadall(false);
+      }
     },
   });
 
@@ -520,11 +530,12 @@ export default function Invitation({ navigation, token }) {
 
   useEffect(() => {
     GetListInvitation();
-    for (var i = 0; i <= datanotif.length; i++) {
-      datanotif[i]?.isread === true;
-      setreadall(false);
-    }
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      GetListInvitation();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const duration = (datetime) => {
     var date1 = new Date(datetime).getTime();
     var datenow = new Date();

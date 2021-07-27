@@ -112,15 +112,6 @@ export default function FeedList({ props, token }) {
   let [waktu, setWaktu] = useState("");
   let [tkn, setTkn] = useState(null);
 
-  useEffect(() => {
-    if (loadingPost) {
-      setTkn(token);
-      setTimeout(() => {
-        Refresh();
-      }, 1000);
-    }
-  }, [token]);
-
   let { width, height } = Dimensions.get("screen");
   const [
     MutationLike,
@@ -356,12 +347,15 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${tkn}`,
+        // Authorization: `Bearer ${tkn}`,
+        Authorization: `Bearer ${props.route.params.token}`,
       },
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
+
+  console.log("dataPost", dataPost);
 
   let feed_post_pageing = [];
   if (dataPost && dataPost && "datas" in dataPost?.feed_post_pageing) {
@@ -516,6 +510,7 @@ export default function FeedList({ props, token }) {
         console.log("comment");
         if (ref) {
           ref.current.scrollToIndex({ animated: true, index: 0 });
+          props.route.params.isComment = false;
         }
       }
       if (props.route.params.isTag === true) {

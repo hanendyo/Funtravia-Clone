@@ -31,6 +31,7 @@ import {
   StatusBar,
   FunImage,
   FunVideo,
+  FunImageBackground,
 } from "../../../component";
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
@@ -47,8 +48,9 @@ import RNFetchBlob, {
   ProcessingManager,
   compress,
 } from "react-native-fetch-blob";
-
+import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
+
 export default function Post(props) {
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
@@ -167,10 +169,10 @@ export default function Post(props) {
         let width;
         if (ratio.label == "L") {
           width = 1080;
-          height = 566;
+          height = (2.2 / 3) * 1080;
         } else if (ratio.label == "P") {
           width = 1080;
-          height = 1350;
+          height = (5 / 4) * 1080;
         } else {
           width = 1080;
           height = 1080;
@@ -179,7 +181,6 @@ export default function Post(props) {
         let tempData = { ...recent.node.image };
         tempData.height = height;
         tempData.width = width;
-        console.log("tempt", tempData);
 
         props.navigation.navigate("CreatePostScreen", {
           location: recent.node.location,
@@ -196,10 +197,10 @@ export default function Post(props) {
             let width;
             if (ratio.label == "L") {
               width = 1080;
-              height = 566;
+              height = (2.2 / 3) * 1080;
             } else if (ratio.label == "P") {
               width = 1080;
-              height = 1350;
+              height = (5 / 4) * 1080;
             } else {
               width = 1080;
               height = 1080;
@@ -241,10 +242,10 @@ export default function Post(props) {
       let width;
       if (ratio.label == "L") {
         width = 1080;
-        height = 566;
+        height = (2.2 / 3) * 1080;
       } else if (ratio.label == "P") {
         width = 1080;
-        height = 1350;
+        height = (5 / 4) * 1080;
       } else {
         width = 1080;
         height = 1080;
@@ -255,28 +256,50 @@ export default function Post(props) {
       for (var i = 0; i < checklistVideo.length; i++) {
         checklistVideo[i].node.image.width = width;
       }
+      // for (var i = 0; i < checklistVideo.length; i++) {
+      //   checklistVideo[i].node.image.path = checklistVideo[i].node.image.uri;
+      // }
 
-      for (var i = 0; i < checklistVideo.length; i++) {
-        RNFetchBlob.fs
-          .stat(checklistVideo[i].node.image.uri)
-          .then((stats) => {
-            setSize(stats.size);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-
-      for (var i = 0; i < checklistVideo.length; i++) {
-        checklistVideo[i].node.image.fileSize = size;
-      }
-      props.navigation.navigate("CreatePostScreen", {
-        location: recent.node.location,
-        type: "multi",
-        file: checklistVideo,
-        ratio: ratio,
-        token: token,
+      props.navigation.navigate("FeedStack", {
+        screen: "Crop",
+        params: {
+          data: checklistVideo,
+          ratio: ratio.label ? ratio.label : "S",
+          location: recent.node.location,
+          token: token,
+          location: recent.node.location,
+          id_album: props.route.params.id_album,
+          id_itin: props.route.params.id_itin,
+          title_album: props.route.params.title_album,
+          album: props.route.params.album,
+        },
       });
+
+      // for (var i = 0; i < checklistVideo.length; i++) {
+      //   RNFetchBlob.fs
+      //     .stat(checklistVideo[i].node.image.uri)
+      //     .then((stats) => {
+      //       for (var i = 0; i < checklistVideo.length; i++) {
+      //         checklistVideo[i].node.image.fileSize = stats.size;
+      //       }
+      //       // setSize(stats.size);
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //     });
+      // }
+
+      // props.navigation.navigate("CreatePostScreen", {
+      //   location: recent.node.location,
+      //   type: "multi",
+      //   file: checklistVideo,
+      //   ratio: ratio,
+      //   token: token,
+      //   id_album: props.route.params.id_album,
+      //   id_itin: props.route.params.id_itin,
+      //   title_album: props.route.params.title_album,
+      //   album: props.route.params.album,
+      // });
     }
   };
 
@@ -284,7 +307,6 @@ export default function Post(props) {
     (async () => {
       await getAlbumRoll();
       await requestCameraPermission();
-      // await scroll_to();
     })();
   }, [selectedAlbum, props.navigation]);
 
@@ -293,7 +315,6 @@ export default function Post(props) {
   const backAction = () => {
     if (buka.current === true) {
       buka.current = false;
-      // setOpenLongPress(false);
       setChecklistVideo([]);
 
       BackHandler.removeEventListener("hardwareBackPress", backAction);
@@ -532,13 +553,11 @@ export default function Post(props) {
     );
   };
 
-  // let dataSementara = [];
   const selectMutiVideo = async (item, index) => {
     let tempsVideo = [...checklistVideo];
     tempsVideo.push(item);
     setChecklistVideo(tempsVideo);
     buka.current = !buka.current;
-    // setRatio({ width: 1, height: 1, index: 0 });
     setRatio({ ratio });
     if (buka.current === false) {
       setChecklistVideo([]);
@@ -547,20 +566,6 @@ export default function Post(props) {
   };
 
   const selectOneVideo = async (item, index) => {
-    // if (item.node.image.width > item.node.image.height) {
-    //   setRatioIndex([
-    //     // { width: 1, height: 1, index: 0, label: "S" },
-    //     { width: 4, height: 5, index: 1, label: "P" },
-    //     { width: 3, height: 2, index: 1, label: "L" },
-    //   ]);
-    // } else {
-    //   setRatioIndex([
-    //     // { width: 1, height: 1, index: 0, label: "S" },
-    //     { width: 1, height: 1, index: 0, label: "S" },
-    //     { width: 4, height: 5, index: 1, label: "P" },
-    //   ]);
-    // }
-
     await setRecent(item);
     let tempsVideo = [...checklistVideo];
     const indeks = tempsVideo.findIndex(
@@ -598,6 +603,7 @@ export default function Post(props) {
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
       <Loading show={loading} />
       <_modalGalery />
+
       <View
         style={{
           backgroundColor: "#209FAE",
@@ -685,9 +691,7 @@ export default function Post(props) {
                   videoView = slider;
                 }}
                 onProgress={(e) => durationTime(e)}
-                // paused={
-                //   props.route.name == "Post" && isFocused ? false : true
-                // }
+                paused={props.route.name == "Post" && isFocused ? false : true}
                 // paused={mute ? true : false}
                 repeat={time ? true : false}
                 onBuffer={videoView?.current?.onBuffer}
