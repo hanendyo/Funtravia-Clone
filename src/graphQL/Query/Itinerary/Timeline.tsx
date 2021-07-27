@@ -27,6 +27,28 @@ const Timeline = gql`
         file_name
         tiny
       }
+      type_custom
+      detail_type_id
+      detail_flight {
+        id
+        title
+        departure
+        arrival
+        from
+        destination
+        guest_name
+        booking_ref
+        carrier
+      }
+      detail_accomodation {
+        id
+        hotel_name
+        address
+        checkin
+        checkout
+        guest_name
+        booking_ref
+      }
     }
   }
 `;
