@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 import { useLazyQuery } from "@apollo/client";
 import Getcity from "../../../graphQL/Query/Event/Getcityfilter";
+import { Filternewbiru, Search } from "../../../assets/svg";
 
 export default function Fillter({ type, country, sendBack, props }) {
   const { t, i18n } = useTranslation();
@@ -159,37 +160,77 @@ export default function Fillter({ type, country, sendBack, props }) {
           style={{
             alignContent: "center",
             alignItems: "center",
-            justifyContent: "center",
-            paddingVertical: 10,
+            justifyContent: "space-between",
+            paddingHorizontal: 15,
             height: 50,
             zIndex: 5,
+            flexDirection: "row",
+            width: Dimensions.get("screen").width,
           }}
         >
+          <Button
+            size="small"
+            type="icon"
+            variant="bordered"
+            color="primary"
+            onPress={() => {
+              modalTogle();
+            }}
+            style={{
+              marginRight: 5,
+              // width: "10%",
+              paddingHorizontal: 10,
+            }}
+          >
+            <Filternewbiru width={18} height={18} />
+            {/* <Text
+              style={{
+                fontFamily: "Lato-Regular",
+                color: "#0095A7",
+                fontSize: 13,
+                alignSelf: "center",
+                marginRight: 3,
+              }}
+            >
+              {t("filter")}
+            </Text> */}
+            {dataFillter.length && Filterlenght > 0 ? (
+              <View
+                style={{
+                  backgroundColor: "#209fae",
+                  marginLeft: 5,
+                  paddingHorizontal: 5,
+                  borderRadius: 2,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    color: "white",
+                    fontSize: 13,
+                    alignSelf: "center",
+                  }}
+                >
+                  {Filterlenght}
+                </Text>
+              </View>
+            ) : null}
+          </Button>
+
           <View
             style={{
               backgroundColor: "#F0F0F0",
               borderRadius: 5,
-              width: Dimensions.get("window").width - 20,
-              // height: 100,
               flex: 1,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
+              alignItems: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 2,
             }}
           >
-            <View>
-              <CustomImage
-                source={search_button}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
-                }}
-              />
-            </View>
+            <Search width={15} height={15} />
 
             <TextInput
               underlineColorAndroid="transparent"
@@ -197,6 +238,7 @@ export default function Fillter({ type, country, sendBack, props }) {
               style={{
                 width: "100%",
                 // borderWidth: 1,
+                marginLeft: 5,
                 padding: 0,
               }}
               returnKeyType="search"
@@ -286,10 +328,9 @@ export default function Fillter({ type, country, sendBack, props }) {
             showsHorizontalScrollIndicator={false}
             extraData={selected}
           ></FlatList>
-        </View>
-     */}
+       
+        </View> */}
       </View>
-
       <FillterModal
         props={props}
         show={modal}

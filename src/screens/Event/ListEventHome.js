@@ -1363,20 +1363,19 @@ export default function ListEventHome(props) {
         }}
       >
         <Button
-          size="medium"
+          size="small"
           type="icon"
           variant="bordered"
-          //   color="black"
+          color="primary"
           onPress={() => {
             setshow(true);
           }}
           style={{
             marginRight: 5,
             borderRadius: 3,
-            width: 60,
+            paddingHorizontal: 10,
             borderColor: "#209FAE",
-
-            // paddingHorizontal: 10,
+            paddingBottom: 1,
           }}
         >
           <Filternewbiru width={18} height={18} />
@@ -1384,7 +1383,7 @@ export default function ListEventHome(props) {
             <View
               style={{
                 backgroundColor: "#209fae",
-                marginLeft: 5,
+                marginLeft: 10,
                 width: 20,
                 paddingHorizontal: 5,
                 borderRadius: 2,
@@ -1395,7 +1394,6 @@ export default function ListEventHome(props) {
                   fontFamily: "Lato-Regular",
                   color: "#ffff",
                   fontSize: 15,
-                  // alignSelf: "center",
                 }}
               >
                 {cekData(dataFilterCategori)}
@@ -1413,7 +1411,6 @@ export default function ListEventHome(props) {
             alignContent: "center",
 
             paddingHorizontal: 10,
-            paddingVertical: 5,
           }}
         >
           <Search width={15} height={15} />
@@ -1433,6 +1430,7 @@ export default function ListEventHome(props) {
           />
         </View>
       </View>
+
       {renderHeader()}
       {renderCustomRefresh()}
       <Animated.View
