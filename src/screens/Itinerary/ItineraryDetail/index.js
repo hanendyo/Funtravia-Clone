@@ -60,6 +60,8 @@ import {
   Errors,
   Errorr,
   Errorx,
+  Calendargrey,
+  CalendarIcon,
 } from "../../../assets/svg";
 import {
   Button,
@@ -2145,8 +2147,20 @@ export default function ItineraryDetail(props) {
     );
   };
 
+  const Formattime = (berangkat, tiba) => {
+    let awal = berangkat.split(" ");
+    let akhir = tiba.split(" ");
+    console.log(awal[1].substring(0, 5));
+    console.log(akhir[1]);
+    return "" + awal[1].substring(0, 5) + " - " + akhir[1].substring(0, 5);
+  };
+
+  // console.log(itineraryId);
+
   const renderItinerary = ({ item, index }) => {
     const x = dataList.length - 1;
+    console.log(item?.detail_flight);
+    console.log(item?.detail_accomodation);
     return (
       <View
         style={{
@@ -2397,6 +2411,24 @@ export default function ItineraryDetail(props) {
                       borderRadius: 15,
                     }}
                   />
+                ) : item.detail_flight ? (
+                  <View
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                  >
+                    <Flights height={25} width={25} />
+                  </View>
+                ) : item.detail_accomodation ? (
+                  <View
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                  >
+                    <Stay height={25} width={25} />
+                  </View>
                 ) : item.icon ? (
                   <View
                     style={{
@@ -2430,49 +2462,106 @@ export default function ItineraryDetail(props) {
                     />
                   </View>
                 )}
-                <TouchableOpacity
-                  style={{ flex: 1, paddingHorizontal: 10 }}
-                  // onLongPress={status !== "saved" ? drag : null}
-                  onPress={() => {
-                    item.type === "custom"
-                      ? props.navigation.push("detailCustomItinerary", {
-                          data: dataSpreadtimeline,
-                          token: token,
-                          idItin: itineraryId,
-                          id: item.id,
-                          nameitin: datadetail.itinerary_detail.name,
-                          datadayaktif: datadayaktif,
-                        })
-                      : null;
-
-                    // console.log(dataSpreadtimeline, "masuk paji");
+                <View
+                  style={{
+                    flex: 1,
+                    // borderWidth: 1,
+                    // borderColor: "red",
                   }}
                 >
-                  <Text size="label" type="bold" style={{}}>
-                    {item.name}
-                  </Text>
-                  <Text>
-                    {Capital({
-                      text:
-                        item.type !== "custom"
-                          ? item.type !== "google"
-                            ? item.type
-                            : "Destination from Google"
-                          : "Custom Activity",
-                    })}
-                  </Text>
-                  {item?.type_custom ? (
-                    item?.type_custom === "flight_outside" ? (
-                      <Text>flight_outside</Text>
-                    ) : item?.type_custom === "flight_inside" ? (
-                      <Text>flight_inside</Text>
-                    ) : item?.type_custom === "accomodation_outside" ? (
-                      <Text>accomodation_outside</Text>
-                    ) : item?.type_custom === "accomodation_inside" ? (
-                      <Text>accomodation_inside</Text>
-                    ) : null
-                  ) : null}
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ flex: 1, paddingHorizontal: 10 }}
+                    // onLongPress={status !== "saved" ? drag : null}
+                    onPress={() => {
+                      item.type === "custom"
+                        ? props.navigation.push("detailCustomItinerary", {
+                            data: dataSpreadtimeline,
+                            token: token,
+                            idItin: itineraryId,
+                            id: item.id,
+                            nameitin: datadetail.itinerary_detail.name,
+                            datadayaktif: datadayaktif,
+                          })
+                        : null;
+
+                      // console.log(dataSpreadtimeline, "masuk paji");
+                    }}
+                  >
+                    <Text size="label" type="bold" style={{}}>
+                      {item.name}
+                    </Text>
+                    {!item?.type_custom ? (
+                      <Text>
+                        {Capital({
+                          text:
+                            item.type !== "custom"
+                              ? item.type !== "google"
+                                ? item.type
+                                : "Destination from Google"
+                              : "Custom Activity",
+                        })}
+                      </Text>
+                    ) : null}
+                    {item?.type_custom ? (
+                      item?.type_custom === "flight_outside" ? (
+                        <View>
+                          <Text>
+                            {item?.detail_flight?.from} -{" "}
+                            {item?.detail_flight?.destination}
+                          </Text>
+                          {item?.detail_flight?.departure &&
+                          item?.detail_flight?.arrival ? (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <CalendarIcon
+                                width={10}
+                                height={10}
+                                style={{ marginRight: 5 }}
+                              />
+                              <Text>
+                                {Formattime(
+                                  item?.detail_flight?.departure,
+                                  item?.detail_flight?.arrival
+                                )}
+                              </Text>
+                            </View>
+                          ) : null}
+                          {/* <Text>flight_outside</Text> */}
+                        </View>
+                      ) : item?.type_custom === "flight_inside" ? (
+                        <Text>flight_inside</Text>
+                      ) : item?.type_custom === "accomodation_outside" ? (
+                        <View>
+                          {item?.detail_accomodation?.checkin ? (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <CalendarIcon
+                                width={10}
+                                height={10}
+                                style={{ marginRight: 5 }}
+                              />
+                              <Text>
+                                {dateFormatMDY(
+                                  item?.detail_accomodation?.checkin
+                                )}
+                              </Text>
+                            </View>
+                          ) : null}
+                        </View>
+                      ) : item?.type_custom === "accomodation_inside" ? (
+                        <Text>accomodation_inside</Text>
+                      ) : null
+                    ) : null}
+                  </TouchableOpacity>
+                </View>
                 {status !== "saved" && Anggota === "true" ? (
                   <Button
                     size="small"
@@ -2488,28 +2577,95 @@ export default function ItineraryDetail(props) {
                   </Button>
                 ) : null}
               </View>
+
               <View
                 style={{
                   width: "100%",
                   flexDirection: "row",
+                  paddingLeft: 40,
                   paddingVertical: 5,
                   justifyContent: "space-between",
                   alignContent: "center",
                   alignItems: "center",
+                  // borderWidth: 1,
                 }}
               >
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
-                    paddingVertical: 5,
-                    paddingHorizontal: 15,
-                    borderRadius: 5,
+                    flex: 1,
                   }}
                 >
-                  <Text type="bold">
-                    {Getdurasi(item.duration ? item.duration : "00:00:00")}
-                  </Text>
+                  {item?.type_custom ? (
+                    item?.type_custom === "flight_outside" &&
+                    item?.detail_flight?.booking_ref ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Text style={{ marginBottom: 5 }}>Booking Ref : </Text>
+                        <Text type="bold">
+                          {item?.detail_flight?.booking_ref}
+                        </Text>
+                      </View>
+                    ) : null
+                  ) : null}
+
+                  {item?.type_custom ? (
+                    item?.type_custom === "accomodation_outside" &&
+                    item?.detail_accomodation?.guest_name ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Text style={{ marginBottom: 5 }}>Guest Name : </Text>
+                        <Text type="bold">
+                          {item?.detail_accomodation?.guest_name}
+                        </Text>
+                      </View>
+                    ) : null
+                  ) : null}
+                  {item?.type_custom ? (
+                    item?.type_custom === "accomodation_outside" &&
+                    item?.detail_accomodation?.booking_ref ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Text style={{ marginBottom: 5 }}>Booking Ref : </Text>
+                        <Text type="bold">
+                          {item?.detail_accomodation?.booking_ref}
+                        </Text>
+                      </View>
+                    ) : null
+                  ) : null}
+
+                  <View
+                    style={{
+                      width: 80,
+                      backgroundColor: "#daf0f2",
+                      paddingVertical: 5,
+                      paddingHorizontal: 15,
+                      borderRadius: 5,
+                      // borderWidth: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      style={
+                        {
+                          // borderWidth: 1,
+                        }
+                      }
+                    >
+                      {Getdurasi(item.duration ? item.duration : "00:00:00")}
+                    </Text>
+                  </View>
                 </View>
+
                 {item.type === "custom" ? (
                   // custom detail
                   <TouchableOpacity
@@ -2538,6 +2694,7 @@ export default function ItineraryDetail(props) {
                   </TouchableOpacity>
                 ) : null}
               </View>
+
               <View
                 style={{
                   borderTopWidth: 1,

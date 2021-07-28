@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, View, Image, Alert, Pressable } from "react-native";
 import { Text, FunImage } from "../../../component";
-import { dateFormats } from "../../../component/src/dateformatter";
+import {
+  dateFormatMDY,
+  dateFormats,
+} from "../../../component/src/dateformatter";
 import { Star } from "../../../assets/svg";
 import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
@@ -142,7 +145,7 @@ export default function Reviews({ props, id }) {
                       </Text>
                     </View>
                     <Text size="small" type="reguler">
-                      {dateFormats(item.updated_at)}
+                      {dateFormatMDY(item?.updated_at)}
                     </Text>
                   </View>
                 </Pressable>
