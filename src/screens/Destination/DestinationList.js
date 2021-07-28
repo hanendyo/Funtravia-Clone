@@ -21,6 +21,7 @@ import {
   Search,
   Google,
   Xhitam,
+  Filternewbiru,
 } from "../../assets/svg";
 import Listdestination from "../../graphQL/Query/Destination/ListDestinationV2";
 import filterDestination from "../../graphQL/Query/Destination/Destinasifilter";
@@ -63,6 +64,7 @@ export default function ItineraryDestination(props) {
     headerLeft: () => (
       <Button
         text={""}
+        Filter
         size="medium"
         type="circle"
         variant="transparent"
@@ -585,6 +587,18 @@ export default function ItineraryDestination(props) {
     }
   };
 
+  // Count data filter checked//
+  const cekData = (data) => {
+    let dat = dataFilterCategori.filter((k) => k.checked === true);
+    let datF = dataFilterFacility.filter((k) => k.checked === true);
+    let datL = dataFilterCity.filter((k) => k.checked === true);
+    let datC = dataFilterCountry.filter((k) => k.checked === true);
+
+    let countallFil = dat.length + datF.length + datL.length + datC.length;
+
+    return countallFil;
+  };
+
   const onSelectFilter = async (ceked, id, item) => {
     // let dat = filtershow.concat(filtershowcity);
     let showq = [...filtershow];
@@ -691,19 +705,117 @@ export default function ItineraryDestination(props) {
     >
       <View
         style={{
-          backgroundColor: "white",
-          paddingHorizontal: 10,
+          flexDirection: "row",
+          zIndex: 5,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          // paddingTop: 10,
+          // paddingBottom: 10,
+          backgroundColor: "#fff",
         }}
       >
+        <Button
+          size="small"
+          type="icon"
+          variant="bordered"
+          color="primary"
+          onPress={() => {
+            setshow(true);
+          }}
+          style={{
+            marginRight: 5,
+            borderRadius: 3,
+            paddingHorizontal: 10,
+            borderColor: "#209FAE",
+            paddingBottom: 1,
+          }}
+        >
+          <Filternewbiru width={18} height={18} />
+
+          {cekData() > 0 ? (
+            <View
+              style={{
+                backgroundColor: "#209fae",
+                marginLeft: 10,
+                width: 20,
+                paddingHorizontal: 5,
+                borderRadius: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Lato-Regular",
+                  color: "#ffff",
+                  fontSize: 15,
+                  // alignSelf: "center",
+                }}
+              >
+                {cekData(dataFilterCategori)}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* <Text
+            style={{
+              fontFamily: "Lato-Regular",
+              color: "#0095A7",
+              fontSize: 13,
+              alignSelf: "center",
+              marginLeft: 5,
+              // marginRight: 3,
+            }}
+          >
+            {t("filter")}
+          </Text> */}
+          {/* {Filterlenght > 0 ? (
+            <View
+              style={{
+                borderRadius: 3,
+                width: 14,
+                height: 14,
+                backgroundColor: "#0095A7",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Lato-Regular",
+                  color: "white",
+                  fontSize: 13,
+                  alignSelf: "center",
+                }}
+              >
+                {Filterlenght}
+              </Text>
+            </View>
+          ) : null} */}
+        </Button>
+
+        {/* <FlatList
+            contentContainerStyle={{
+              justifyContent: "space-evenly",
+              marginHorizontal: 3,
+            }}
+            horizontal={true}
+            data={filtershow.concat(filtershowcity)}
+            renderItem={_renderFilter}
+            showsHorizontalScrollIndicator={false}
+          ></FlatList> */}
+
         <View
           style={{
             backgroundColor: "#F0F0F0",
-            borderRadius: 5,
-            marginVertical: 10,
+            borderRadius: 3,
+            flex: 1,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
-            padding: 5,
+
+            paddingHorizontal: 10,
+            // paddingVertical: 5,
           }}
         >
           <Search width={15} height={15} />
@@ -721,79 +833,6 @@ export default function ItineraryDestination(props) {
             onChangeText={(x) => _setSearch(x)}
             onSubmitEditing={(x) => _setSearch(x)}
           />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            zIndex: 5,
-            marginBottom: 10,
-          }}
-        >
-          <Button
-            size="small"
-            type="icon"
-            variant="bordered"
-            color="primary"
-            onPress={() => {
-              setshow(true);
-            }}
-            style={{
-              marginRight: 5,
-              // paddingHorizontal: 10,
-            }}
-          >
-            <FilterIcon width={15} height={15} />
-
-            <Text
-              style={{
-                fontFamily: "Lato-Regular",
-                color: "#0095A7",
-                fontSize: 13,
-                alignSelf: "center",
-                marginLeft: 5,
-                // marginRight: 3,
-              }}
-            >
-              {t("filter")}
-            </Text>
-            {/* {dataFillter.length && Filterlenght > 0 ? (
-              <View
-                style={{
-                  borderRadius: 3,
-                  width: 14,
-                  height: 14,
-                  backgroundColor: "#0095A7",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Lato-Regular",
-                    color: "white",
-                    fontSize: 13,
-                    alignSelf: "center",
-                  }}
-                >
-                  {Filterlenght}
-                </Text>
-              </View>
-            ) : null} */}
-          </Button>
-
-          <FlatList
-            contentContainerStyle={{
-              justifyContent: "space-evenly",
-              marginHorizontal: 3,
-            }}
-            horizontal={true}
-            data={filtershow.concat(filtershowcity)}
-            renderItem={_renderFilter}
-            showsHorizontalScrollIndicator={false}
-          ></FlatList>
         </View>
       </View>
 

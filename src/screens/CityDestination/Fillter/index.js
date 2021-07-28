@@ -11,6 +11,7 @@ import { filter_blue2, search_button } from "../../../assets/png";
 import FillterModal from "./FillterModal";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
+import { Filternewbiru, Search } from "../../../assets/svg";
 
 export default function Fillter({ fillter, sendBack }) {
   const { t, i18n } = useTranslation();
@@ -44,6 +45,15 @@ export default function Fillter({ fillter, sendBack }) {
     tempDataPg[index]["show"] = true;
     sendBackData(tempDataPg);
     hitungfilter();
+  };
+
+  console.log("data", dataFillter);
+
+  //count data filter
+  const cekData = (data) => {
+    let dat = dataFillter.filter((k) => k.checked === true);
+
+    return dat.length;
   };
 
   const sendBackData = (data) => {
@@ -111,39 +121,99 @@ export default function Fillter({ fillter, sendBack }) {
       >
         <View
           style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingVertical: 10,
-            height: 50,
+            flexDirection: "row",
             zIndex: 5,
+            paddingHorizontal: 15,
+            paddingVertical: 10,
+            // paddingTop: 10,
+            // paddingBottom: 10,
+            backgroundColor: "#fff",
           }}
         >
+          {/* <View
+            style={{
+              flexDirection: "row",
+              zIndex: 5,
+              marginHorizontal: 10,
+              marginBottom: 10,
+            }} */}
+          {/* > */}
+          <Button
+            size="small"
+            type="icon"
+            variant="bordered"
+            color="primary"
+            onPress={() => {
+              modalTogle();
+            }}
+            style={{
+              marginRight: 5,
+              borderRadius: 3,
+              paddingHorizontal: 10,
+              borderColor: "#209FAE",
+              paddingBottom: 1,
+            }}
+          >
+            <Filternewbiru width={18} height={18} />
+            {/* <Text
+              style={{
+                fontFamily: "Lato-Regular",
+                color: "#0095A7",
+                fontSize: 13,
+                alignSelf: "center",
+                marginRight: 3,
+              }}
+            >
+              {t("filter")}
+            </Text> */}
+            {cekData() > 0 ? (
+              <View
+                style={{
+                  backgroundColor: "#209fae",
+                  marginLeft: 10,
+                  width: 20,
+                  paddingHorizontal: 5,
+                  borderRadius: 2,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    color: "#ffff",
+                    fontSize: 15,
+                    // alignSelf: "center",
+                  }}
+                >
+                  {cekData(dataFillter)}
+                </Text>
+              </View>
+            ) : null}
+          </Button>
+          {/* <FlatList
+              contentContainerStyle={{
+                justifyContent: "space-evenly",
+                marginHorizontal: 3,
+              }}
+              horizontal={true}
+              data={dataFillter.sort(compare)}
+              renderItem={_renderFilter}
+              showsHorizontalScrollIndicator={false}
+              extraData={selected}
+            ></FlatList> */}
+          {/* </View> */}
           <View
             style={{
               backgroundColor: "#F0F0F0",
-              borderRadius: 5,
-              width: Dimensions.get("window").width - 20,
-              // height: 100,
+              borderRadius: 3,
               flex: 1,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
+
+              paddingHorizontal: 15,
             }}
           >
-            <View>
-              <CustomImage
-                source={search_button}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
-                }}
-              />
-            </View>
+            <Search width={15} height={15} />
 
             <TextInput
               underlineColorAndroid="transparent"
@@ -151,6 +221,7 @@ export default function Fillter({ fillter, sendBack }) {
               style={{
                 width: "100%",
                 // borderWidth: 1,
+                marginLeft: 10,
                 padding: 0,
               }}
               returnKeyType="search"
@@ -160,7 +231,7 @@ export default function Fillter({ fillter, sendBack }) {
           </View>
         </View>
 
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             zIndex: 5,
@@ -241,6 +312,7 @@ export default function Fillter({ fillter, sendBack }) {
             extraData={selected}
           ></FlatList>
         </View>
+      */}
       </View>
       <FillterModal
         show={modal}

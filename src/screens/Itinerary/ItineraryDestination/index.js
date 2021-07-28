@@ -30,6 +30,7 @@ import {
   Google,
   Xhitam,
   Select,
+  Filternewbiru,
 } from "../../../assets/svg";
 // import FilterItin from "./FillterItin";
 import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
@@ -636,7 +637,7 @@ export default function ItineraryDestination(props) {
               paddingHorizontal: 10,
             }}
           >
-            <FilterIcon width={15} height={15} />
+            <Filternewbiru width={18} height={18} />
             {datafilterAll.length > 0 ? (
               <View
                 style={{
