@@ -184,6 +184,7 @@ export default function DestinationUnescoReview(props) {
       // if (Platform.OS === "android") {
       //   ToastAndroid.show("rating harus di isi", ToastAndroid.LONG);
       // }
+      setloading(false);
 
       RNToasty.Show({
         title: t("rattingnoempty"),

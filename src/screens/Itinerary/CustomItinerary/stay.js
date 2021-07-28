@@ -142,6 +142,28 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  let [dataState, setdataState] = useState({
+    day_id: null,
+    title: null,
+    icon: null,
+    qty: 1,
+    address: null,
+    latitude: 0,
+    longitude: 0,
+    note: null,
+    time: null,
+    duration: null,
+    status: false,
+    order: [],
+    total_price: 0,
+    hotel_name: null,
+    guest_name: null,
+    booking_ref: null,
+    checkin: null,
+    checkout: null,
+    file: null,
+  });
+
   return (
     <SafeAreaView
       style={{
@@ -194,6 +216,13 @@ export default function detailCustomItinerary(props) {
                 borderBottomColor: "#d3d3d3",
                 marginLeft: 10,
               }}
+              value={dataState.hotel_name}
+              // onChangeText={()=>{
+
+              // }}
+              // onSubmitEditing={()=>{
+
+              // }}
             />
           </View>
           <TextInput
