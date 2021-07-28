@@ -758,30 +758,30 @@ export default function ItineraryDestination(props) {
               {t("filter")}
             </Text>
             {/* {dataFillter.length && Filterlenght > 0 ? (
-                    <View
-                        style={{
-                            borderRadius: 3,
-                            width: 14,
-                            height: 14,
-                            backgroundColor: "#0095A7",
-                            alignContent: "center",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            alignSelf: "center",
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontFamily: "Lato-Regular",
-                                color: "white",
-                                fontSize: 13,
-                                alignSelf: "center",
-                            }}
-                        >
-                            {Filterlenght}
-                        </Text>
-                    </View>
-                ) : null} */}
+              <View
+                style={{
+                  borderRadius: 3,
+                  width: 14,
+                  height: 14,
+                  backgroundColor: "#0095A7",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    color: "white",
+                    fontSize: 13,
+                    alignSelf: "center",
+                  }}
+                >
+                  {Filterlenght}
+                </Text>
+              </View>
+            ) : null} */}
           </Button>
 
           <FlatList

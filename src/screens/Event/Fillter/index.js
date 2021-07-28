@@ -206,7 +206,7 @@ export default function Fillter({ type, country, sendBack, props }) {
           </View>
         </View>
 
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             zIndex: 5,
@@ -287,7 +287,9 @@ export default function Fillter({ type, country, sendBack, props }) {
             extraData={selected}
           ></FlatList>
         </View>
+     */}
       </View>
+
       <FillterModal
         props={props}
         show={modal}
