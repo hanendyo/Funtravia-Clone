@@ -43,9 +43,7 @@ import {
   Allpostgreen,
   Arrowbackwhite,
   Google,
-  Message,
   OptionsVertWhite,
-  SendMessage,
   Sharegreen,
   Tag,
   Taggreen,
@@ -61,7 +59,6 @@ import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
 import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
-import Ripple from "react-native-material-ripple";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -72,7 +69,7 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 
-const HeaderHeight = 310 - SafeStatusBar + 75;
+const HeaderHeight = 310 - SafeStatusBar;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
@@ -622,27 +619,21 @@ export default function OtherProfile(props) {
         </Button>
       </View>
     ),
-
-    headerRight: () =>
-      position && position === "other" ? (
-        <Ripple
-          onPress={() => _handlemessage(props.route.params.idUser, token)}
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          style={{
-            marginRight: 15,
-            zIndex: 99999999,
-          }}
-        >
-          <Message height={18} width={18}></Message>
-        </Ripple>
-      ) : null,
+    headerRight: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => setshowside(true)}
+        style={{
+          marginRight: 10,
+        }}
+      >
+        <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
+      </Button>
+    ),
   };
-
-  console.log("id", props.route.params.idUser);
-  console.log("token", token);
 
   useEffect(() => {
     QueryFotoAlbum();
@@ -825,7 +816,6 @@ export default function OtherProfile(props) {
 
   const renderHeader = (datas) => {
     let data = { ...datas };
-    // console.log("data", data);
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [0, -HeaderHeight + 55],
@@ -845,15 +835,36 @@ export default function OtherProfile(props) {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          // borderWidth: 1,
           position: "absolute",
           backgroundColor: "#209fae",
         }}
       >
+        {/* <Animated.Image
+          style={{
+            // position: "absolute",
+            // top: 0,
+            // left: 0,
+            // right: 0,
+            width: "100%",
+            height: "50%",
+            resizeMode: "cover",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
+          }}
+          source={Akunsaya}
+        /> */}
+        {/* <TouchableOpacity
+          onPress={() => {
+            LoadTrip2();
+          }}
+        >
+          <Text>tesssssssssssssssssssssssssssssssssssss</Text>
+        </TouchableOpacity> */}
+
         <Animated.View
           style={{
             width: "100%",
-            height: "87%",
+            height: "80%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
             // borderWidth: 1,
@@ -870,7 +881,7 @@ export default function OtherProfile(props) {
               width: "100%",
               alignItems: "center",
               alignContent: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
 
               // position: "absolute",
               // top: "32%",
@@ -886,9 +897,9 @@ export default function OtherProfile(props) {
                   data.picture ? { uri: data.picture } : DefaultProfileSquare
                 }
                 style={{
-                  alignSelf: "center",
-                  width: width / 3.8,
-                  height: width / 3.8,
+                  alignSelf: "flex-start",
+                  width: width / 4,
+                  height: width / 4,
                   borderRadius: width / 8,
                   borderWidth: 2,
                   borderColor: "#FFF",
@@ -917,123 +928,13 @@ export default function OtherProfile(props) {
                 }}
               ></View>
             )}
-          </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              width: Dimensions.get("screen").width,
-              paddingHorizontal: 20,
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "center",
-              alignSelf: "center",
-              marginTop: 10,
-              // paddingTop: 30,
-            }}
-          >
-            <Animated.View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                alignSelf: "center",
-                opacity: opacityfrom1,
-              }}
-            >
-              <Text type="bold" size="title" style={{ marginRight: 10 }}>
-                {`${data.first_name ? data.first_name : ""} ` +
-                  `${data.last_name ? data.last_name : ""}`}
-              </Text>
-              <Text type="regular" size="label">{`${
-                data.username ? "@" + data.username : ""
-              } `}</Text>
-            </Animated.View>
-          </View>
-
-          <View
-            style={{
-              width: "100%",
-              marginVertical: 15,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "baseline",
-              // width: Dimensions.get('window').width,
-            }}
-          >
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                marginRight: 20,
-              }}
-              onPress={() => {
-                if (position === "profile") {
-                  props.navigation.push("ProfileStack", {
-                    screen: "FollowerPage",
-                  });
-                } else {
-                  props.navigation.push("otherFollower", {
-                    idUser: props.route.params.idUser,
-                  });
-                }
-              }}
-            >
-              <Text type="black" size="label">
-                {`${data.count_follower ? data.count_follower : "0"} `}
-              </Text>
-              {/* {data.count_follower ? ( */}
-              <Text
-                type="regular"
-                size="description"
-                // style={{ color: '#B0B0B0' }}
-              >
-                {t("followers")}
-              </Text>
-              {/* ) : null} */}
-            </Pressable>
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-              }}
-              onPress={() => {
-                if (position === "profile") {
-                  props.navigation.push("ProfileStack", {
-                    screen: "FollowingPage",
-                  });
-                } else {
-                  props.navigation.push("otherFollowing", {
-                    idUser: props.route.params.idUser,
-                  });
-                }
-              }}
-            >
-              <Text type="black" size="label">
-                {`${data.count_following ? data.count_following : "0"} `}
-              </Text>
-              {/* {data.count_following ? ( */}
-              <Text
-                type="regular"
-                size="description"
-                // style={{ color: '#B0B0B0' }}
-              >
-                {t("following")}
-              </Text>
-              {/* ) : null} */}
-            </Pressable>
-          </View>
-          {/* button profil or follow */}
-          <View>
             {position && position === "profile" ? (
               <View
                 style={{
-                  width: width,
+                  width: width / 2,
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 <Button
@@ -1048,7 +949,7 @@ export default function OtherProfile(props) {
                   size="small"
                   color="black"
                   style={{
-                    width: "30%",
+                    width: width / 2,
                     borderColor: "#464646",
                     alignSelf: "flex-end",
                     // margin: 15,
@@ -1060,9 +961,9 @@ export default function OtherProfile(props) {
             {position && position === "other" ? (
               <View
                 style={{
-                  width: width,
+                  width: width / 2,
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 {!loadFollowMut && !loadUnfolMut ? (
@@ -1074,12 +975,12 @@ export default function OtherProfile(props) {
                         _unfollow(props.route.params.idUser);
                       }}
                       text={t("unfollow")}
-                      variant="normal"
+                      variant="bordered"
                       size="small"
-                      color="secondary"
+                      color="black"
                       style={{
-                        width: "30%",
-                        // borderColor: "#464646",
+                        width: "48%",
+                        borderColor: "#464646",
                         alignSelf: "flex-end",
                         // margin: 15,
                       }}
@@ -1093,11 +994,11 @@ export default function OtherProfile(props) {
                       }}
                       text={t("follow")}
                       size="small"
-                      color="primary"
+                      color={"secondary"}
                       variant={"normal"}
                       text={t("follow")}
                       style={{
-                        width: "30%",
+                        width: "48%",
                         alignSelf: "flex-end",
                         // margin: 15,
                       }}
@@ -1123,7 +1024,7 @@ export default function OtherProfile(props) {
                   </View>
                 )}
 
-                {/* <Button
+                <Button
                   onPress={() =>
                     _handlemessage(props.route.params.idUser, token)
                   }
@@ -1138,16 +1039,111 @@ export default function OtherProfile(props) {
                     alignSelf: "flex-end",
                     // margin: 15,
                   }}
-                /> */}
+                />
               </View>
             ) : null}
           </View>
-
           <View
             style={{
-              marginTop: 15,
+              flexDirection: "row",
+              width: Dimensions.get("screen").width,
+              justifyContent: "space-between",
+              paddingHorizontal: 20,
+              alignItems: "center",
+              alignContent: "center",
+              marginTop: 10,
+              // paddingTop: 30,
+            }}
+          >
+            <Animated.View style={{ width: "50%", opacity: opacityfrom1 }}>
+              <Text type="bold" size="label" style={{ marginRight: 10 }}>
+                {`${data.first_name ? data.first_name : ""} ` +
+                  `${data.last_name ? data.last_name : ""}`}
+              </Text>
+              <Text type="regular" size="description">{`${
+                data.username ? "@" + data.username : ""
+              } `}</Text>
+            </Animated.View>
+
+            <View
+              style={{
+                width: "50%",
+                // marginTop: 10,
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "baseline",
+                // width: Dimensions.get('window').width,
+              }}
+            >
+              <Pressable
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                  marginRight: 20,
+                }}
+                onPress={() => {
+                  if (position === "profile") {
+                    props.navigation.push("ProfileStack", {
+                      screen: "FollowerPage",
+                    });
+                  } else {
+                    props.navigation.push("otherFollower", {
+                      idUser: props.route.params.idUser,
+                    });
+                  }
+                }}
+              >
+                <Text type="black" size="label">
+                  {`${data.count_follower ? data.count_follower : "0"} `}
+                </Text>
+                {/* {data.count_follower ? ( */}
+                <Text
+                  type="regular"
+                  size="description"
+                  // style={{ color: '#B0B0B0' }}
+                >
+                  {t("followers")}
+                </Text>
+                {/* ) : null} */}
+              </Pressable>
+              <Pressable
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+                onPress={() => {
+                  if (position === "profile") {
+                    props.navigation.push("ProfileStack", {
+                      screen: "FollowingPage",
+                    });
+                  } else {
+                    props.navigation.push("otherFollowing", {
+                      idUser: props.route.params.idUser,
+                    });
+                  }
+                }}
+              >
+                <Text type="black" size="label">
+                  {`${data.count_following ? data.count_following : "0"} `}
+                </Text>
+                {/* {data.count_following ? ( */}
+                <Text
+                  type="regular"
+                  size="description"
+                  // style={{ color: '#B0B0B0' }}
+                >
+                  {t("following")}
+                </Text>
+                {/* ) : null} */}
+              </Pressable>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
+              // borderWidth: 1,
             }}
           >
             <Text
