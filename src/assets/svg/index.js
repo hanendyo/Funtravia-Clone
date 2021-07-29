@@ -246,6 +246,7 @@ import Itinerary_2 from "./files/itinerary_2.svg";
 import Submit from "./files/submit.svg";
 import Errorx from "./files/errorx.svg";
 import Filternewbiru from "./files/filternewbiru.svg";
+import Sticker from "./files/sticker.svg";
 
 export {
   LikeWhite,
@@ -496,4 +497,5 @@ export {
   Submit,
   Errorx,
   Filternewbiru,
+  Sticker,
 };

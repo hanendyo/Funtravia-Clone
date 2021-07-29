@@ -17,7 +17,7 @@ import {
   Switch,
 } from "react-native";
 import io from "socket.io-client";
-import { Arrowbackwhite, Send, Smile, Chat } from "../../assets/svg";
+import { Arrowbackwhite, Send, Smile, Chat, Sticker } from "../../assets/svg";
 import { Button, Text, Errors, FunImage, StickerModal } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -39,11 +39,11 @@ const TrackInteractive = true;
 const keyboards = [
   {
     id: "unicorn.ImagesKeyboard",
-    icon: Smile,
+    icon: Sticker,
   },
   {
     id: "unicorn.CustomKeyboard",
-    icon: Smile,
+    icon: Sticker,
   },
 ];
 
@@ -692,18 +692,33 @@ export default function Room({ navigation, route }) {
         setModals={(e) => setModalError(e)}
         message={messages}
       />
-      <FlatList
-        ref={flatListRef}
-        data={message}
-        renderItem={RenderChat}
-        keyExtractor={(item, index) => `render_${index}`}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: 5,
-          // flex: 1,
+      <View
+        style={{
+          flex: 1,
+          height: height - 100,
+          // borderWidth: 1,
+          backgroundColor: "#FFFFFF",
+          margin: 13,
+          borderRadius: 10,
+          padding: 5,
         }}
-      />
+      >
+        <FlatList
+          ref={flatListRef}
+          data={message}
+          renderItem={RenderChat}
+          keyExtractor={(item, index) => `render_${index}`}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingTop: 5,
+            // flex: 1,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 10,
+            // borderWidth: 1,
+          }}
+        />
+      </View>
 
       {/* <KeyboardAccessoryView
                     renderContent={() => {
@@ -864,7 +879,7 @@ export default function Room({ navigation, route }) {
                   marginRight: 10,
                 }}
               >
-                <Smile height={35} width={35} />
+                <Sticker height={35} width={35} />
               </Button>
             ) : (
               <Button
@@ -942,11 +957,14 @@ export default function Room({ navigation, route }) {
           keyboardVerticalOffset={Notch ? 90 : 65}
           style={{
             flexDirection: "row",
-            paddingHorizontal: 10,
+            paddingHorizontal: 5,
             alignContent: "center",
             alignItems: "center",
-            paddingVertical: 2,
-            backgroundColor: "#F6F6F6",
+            paddingVertical: 10,
+            marginHorizontal: 13,
+            marginBottom: 13,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 10,
           }}
         >
           {!keyboardOpenState ? (
@@ -954,7 +972,7 @@ export default function Room({ navigation, route }) {
               text=""
               type="circle"
               size="medium"
-              variant="normal"
+              variant="transparent"
               style={{ width: 35, height: 35 }}
               // onPress={() => Alert.alert("Sticker Cooming Soon")}
               // onPress={() => modals()}
@@ -971,10 +989,10 @@ export default function Room({ navigation, route }) {
                 }
               }
               style={{
-                marginRight: 10,
+                marginRight: 5,
               }}
             >
-              <Smile height={35} width={35} />
+              <Sticker height={35} width={35} />
             </Button>
           ) : (
             <Button
@@ -993,7 +1011,7 @@ export default function Room({ navigation, route }) {
                 // KeyboardUtils.onFocus();
               }}
               style={{
-                marginRight: 10,
+                marginRight: 5,
               }}
             >
               <Chat height={13} width={13} />
@@ -1003,9 +1021,9 @@ export default function Room({ navigation, route }) {
             style={{
               borderColor: "#D1D1D1",
               borderWidth: 1,
-              width: width - 120,
+              width: width - 130,
               alignSelf: "center",
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#f3f3f3",
             }}
           >
             <TextInput
@@ -1021,6 +1039,7 @@ export default function Room({ navigation, route }) {
                       maxHeight: 100,
                       margin: 10,
                       fontFamily: "Lato-Regular",
+                      backgroundColor: "#f3f3f3",
                     }
                   : {
                       maxHeight: 100,
@@ -1028,6 +1047,7 @@ export default function Room({ navigation, route }) {
                       marginHorizontal: 10,
                       padding: 0,
                       fontFamily: "Lato-Regular",
+                      backgroundColor: "#f3f3f3",
                     }
               }
             />
@@ -1040,7 +1060,7 @@ export default function Room({ navigation, route }) {
             onPress={() => submitChatMessage()}
             style={{ width: 50, height: 50 }}
           >
-            <Send height={35} width={35} />
+            <Send height={40} width={40} />
           </Button>
         </KeyboardAvoidingView>
       )}
@@ -1052,7 +1072,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // height: Dimensions.get("screen").height,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
+    backgroundColor: "#F3F3F3",
     justifyContent: "space-between",
   },
   item: {
