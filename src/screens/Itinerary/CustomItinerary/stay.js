@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TextInput,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -33,26 +34,16 @@ import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
+import { RNToasty } from "react-native-toasty";
+
+import DeviceInfo from "react-native-device-info";
 
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: () => (
-      <View>
-        <Text type="bold" size="title" style={{ color: "#fff" }}>
-          Stay
-        </Text>
-        <Text
-          style={{
-            color: "#fff",
-          }}
-        >
-          Custom Activity
-        </Text>
-      </View>
-    ),
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -70,20 +61,45 @@ export default function detailCustomItinerary(props) {
       marginLeft: 10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
+      <View
         style={{
-          height: 55,
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+        <View
+          style={{
+            marginLeft: 10,
+          }}
+        >
+          <Text type="bold" size="title" style={{ color: "#fff" }}>
+            Stay
+          </Text>
+          <Text
+            style={{
+              color: "#fff",
+            }}
+          >
+            Custom Activity
+          </Text>
+        </View>
+      </View>
     ),
   };
+
+  const Notch = DeviceInfo.hasNotch();
 
   const { t, i18n } = useTranslation();
   let [dataParent, setDataParent] = useState({});
@@ -164,6 +180,36 @@ export default function detailCustomItinerary(props) {
     file: null,
   });
 
+  const validation = (name, value) => {
+    if (!value || value === "") {
+      return false;
+    }
+  };
+
+  const simpanketimeline = (inputan) => {
+    if (!inputan.hotel_name || inputan.hotel_name === "") {
+      RNToasty.Show({
+        title: t("hotel_name can't be empty"),
+        position: "bottom",
+      });
+    } else if (!inputan.address || inputan.address === "") {
+      RNToasty.Show({
+        title: t("address can't be empty"),
+        position: "bottom",
+      });
+    } else if (!inputan.guest_name || inputan.guest_name === "") {
+      RNToasty.Show({
+        title: t("guest_name can't be empty"),
+        position: "bottom",
+      });
+    } else if (!inputan.booking_ref || inputan.booking_ref === "") {
+      RNToasty.Show({
+        title: t("booking_ref can't be empty"),
+        position: "bottom",
+      });
+    }
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -217,12 +263,12 @@ export default function detailCustomItinerary(props) {
                 marginLeft: 10,
               }}
               value={dataState.hotel_name}
-              // onChangeText={()=>{
-
-              // }}
-              // onSubmitEditing={()=>{
-
-              // }}
+              onChangeText={(e) => {
+                setdataState({ ...dataState, ["hotel_name"]: e });
+              }}
+              onSubmitEditing={(e) => {
+                setdataState({ ...dataState, ["hotel_name"]: e });
+              }}
             />
           </View>
           <TextInput
@@ -231,10 +277,16 @@ export default function detailCustomItinerary(props) {
               flex: 1,
               // padding: 0,
               fontFamily: "Lato-Regular",
-              paddingTop: 10,
-
+              paddingTop: 15,
               borderBottomWidth: 1,
               borderBottomColor: "#d3d3d3",
+            }}
+            value={dataState.address}
+            onChangeText={(e) => {
+              setdataState({ ...dataState, ["address"]: e });
+            }}
+            onSubmitEditing={(e) => {
+              setdataState({ ...dataState, ["address"]: e });
             }}
           />
           <TextInput
@@ -243,15 +295,21 @@ export default function detailCustomItinerary(props) {
               flex: 1,
               // padding: 0,
               fontFamily: "Lato-Regular",
-              paddingTop: 10,
-
+              paddingTop: 15,
               borderBottomWidth: 1,
               borderBottomColor: "#d3d3d3",
+            }}
+            value={dataState.guest_name}
+            onChangeText={(e) => {
+              setdataState({ ...dataState, ["guest_name"]: e });
+            }}
+            onSubmitEditing={(e) => {
+              setdataState({ ...dataState, ["guest_name"]: e });
             }}
           />
           <View
             style={{
-              paddingTop: 10,
+              paddingTop: 15,
               flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
@@ -265,25 +323,25 @@ export default function detailCustomItinerary(props) {
                 flex: 1,
                 // padding: 0,
                 fontFamily: "Lato-Regular",
-
                 borderBottomWidth: 1,
                 borderBottomColor: "#d3d3d3",
                 marginLeft: 10,
                 marginRight: 10,
               }}
+              value={dataState.checkin}
             />
             <CalendarIcon height={15} width={15} />
             <TextInput
-              placeholder={"Check in"}
+              placeholder={"Check out"}
               style={{
                 flex: 1,
                 // padding: 0,
                 fontFamily: "Lato-Regular",
-
                 borderBottomWidth: 1,
                 borderBottomColor: "#d3d3d3",
                 marginLeft: 10,
               }}
+              value={dataState.checkout}
             />
           </View>
 
@@ -293,10 +351,16 @@ export default function detailCustomItinerary(props) {
               flex: 1,
               // padding: 0,
               fontFamily: "Lato-Regular",
-              paddingTop: 10,
-
+              paddingTop: 15,
               borderBottomWidth: 1,
               borderBottomColor: "#d3d3d3",
+            }}
+            value={dataState.booking_ref}
+            onChangeText={(e) => {
+              setdataState({ ...dataState, ["booking_ref"]: e });
+            }}
+            onSubmitEditing={(e) => {
+              setdataState({ ...dataState, ["booking_ref"]: e });
             }}
           />
 
@@ -314,11 +378,18 @@ export default function detailCustomItinerary(props) {
             style={{
               // borderWidth: 1,
               fontFamily: "Lato-Regular",
-
+              paddingTop: 10,
               flex: 1,
               // padding: 0,
               borderBottomWidth: 1,
               borderBottomColor: "#d3d3d3",
+            }}
+            value={dataState.note}
+            onChangeText={(e) => {
+              setdataState({ ...dataState, ["note"]: e });
+            }}
+            onSubmitEditing={(e) => {
+              setdataState({ ...dataState, ["note"]: e });
             }}
           />
           <Text
@@ -364,19 +435,26 @@ export default function detailCustomItinerary(props) {
           </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          backgroundColor: "#fff",
-          padding: 15,
-        }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Notch ? 90 : 65}
       >
-        <Button
-          onPress={() => {
-            Alert.alert("comming soon");
+        <View
+          style={{
+            backgroundColor: "#fff",
+            padding: 15,
+            // paddingBottom: 40,
           }}
-          text={t("save")}
-        />
-      </View>
+        >
+          <Button
+            onPress={() => {
+              // Alert.alert("comming soon");
+              simpanketimeline(dataState);
+            }}
+            text={t("save")}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
