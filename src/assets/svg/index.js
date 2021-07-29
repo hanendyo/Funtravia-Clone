@@ -247,6 +247,7 @@ import Submit from "./files/submit.svg";
 import Errorx from "./files/errorx.svg";
 import Filternewbiru from "./files/filternewbiru.svg";
 import Sticker from "./files/sticker.svg";
+import Message from "./files/message.svg";
 
 export {
   LikeWhite,
@@ -498,4 +499,5 @@ export {
   Errorx,
   Filternewbiru,
   Sticker,
+  Message,
 };

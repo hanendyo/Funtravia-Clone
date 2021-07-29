@@ -1425,8 +1425,9 @@ export default function ItineraryPopuler(props) {
                 Travel Album
               </Text>
             </Ripple>
-            <View
-              onPress={() => setActives("Stories")}
+            <Ripple
+              // onPress={() => setActives("Stories")}
+              onPress={() => Alert.alert("Cooming Soon")}
               style={{
                 width: Dimensions.get("screen").width * 0.32,
                 alignItems: "center",
@@ -1449,7 +1450,7 @@ export default function ItineraryPopuler(props) {
               >
                 Travel Stories
               </Text>
-            </View>
+            </Ripple>
           </View>
         </View>
       </View>
