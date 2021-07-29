@@ -109,7 +109,6 @@ function MyAccountStackScreen() {
 
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
-  console.log("props export", props);
   return (
     <MainNavigator.Navigator
       initialRouteName="HomeBottomScreen"

@@ -9,11 +9,10 @@ import {
   RefreshControl,
   ActivityIndicator,
   Image as ImageRN,
-  ImageBackground,
   Pressable,
   SafeAreaView,
-  Clipboard,
   Modal,
+  ProgressBarAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import Modal from "react-native-modal";
@@ -25,6 +24,8 @@ import {
   CommentBlack,
   ExitingAlbum,
   NewAlbum,
+  TravelAlbum,
+  TravelJournal,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -34,6 +35,7 @@ import { Text, Button, shareAction, CopyLink, FunImage } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
+import FeedPageingPopular from "../../graphQL/Query/Feed/FeedPopularPaging";
 import ReadMore from "react-native-read-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
@@ -47,6 +49,8 @@ import { Toast, Root } from "native-base";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import { isPunctuatorToken } from "graphql/language/lexer";
+import { stubTrue } from "lodash";
+
 // import Clipboard from "@react-native-clipboard/clipboard";
 
 const deletepost = gql`
@@ -94,6 +98,7 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  console.log("props feed", props);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   useScrollToTop(ref);
@@ -105,6 +110,7 @@ export default function FeedList({ props, token }) {
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
   let [waktu, setWaktu] = useState("");
+  let [tkn, setTkn] = useState(null);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -166,6 +172,7 @@ export default function FeedList({ props, token }) {
       }
     }, 1000);
     try {
+      console.log("try");
       let response = await MutationCreate({
         variables: {
           caption: props?.route?.params?.caption,
@@ -179,13 +186,24 @@ export default function FeedList({ props, token }) {
           assets: props?.route?.params?.assets,
         },
       });
+
       if (loadingMutationPost) {
         console.log("loading", loadingMutationPost);
       }
 
+      if (errorMutationPost) {
+        console.log(errorMutationPost);
+        RNToasty({
+          duration: 1,
+          title: t("failPost"),
+          position: "bottom",
+        });
+      }
+      console.log("response", response);
+
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          Refresh();
+          await Refresh();
           setTimeout(() => {
             if (ref) {
               ref.current.scrollToIndex({ animated: true, index: 0 });
@@ -210,7 +228,7 @@ export default function FeedList({ props, token }) {
     index = feed_post_pageing.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token) {
+        if (token && token !== "" && token !== null) {
           setactivelike(false);
           feed_post_pageing[index].liked = true;
           feed_post_pageing[index].response_count =
@@ -240,21 +258,15 @@ export default function FeedList({ props, token }) {
             feed_post_pageing[index].response_count =
               feed_post_pageing[index].response_count - 1;
             setactivelike(true);
-            // Toast.show({
-            //   text: "Failed to like this post",
-            //   position: "bottom",
-            //   buttonText: "Ok",
-            //   duration: 3000,
-            // });
-            // Alert.alert("" + error);
           }
         } else {
-          // Toast.show({
-          //   text: "Please Login",
-          //   position: "bottom",
-          //   buttonText: "Ok",
-          //   duration: 3000,
-          // });
+          props.navigation.navigate("AuthStack", {
+            screen: "LoginScreen",
+          });
+          RNToasty.Show({
+            title: t("pleaselogin"),
+            position: "bottom",
+          });
         }
       }
     }
@@ -264,7 +276,7 @@ export default function FeedList({ props, token }) {
     index = feed_post_pageing.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token || token !== "") {
+        if (token && token !== "" && token !== null) {
           setactivelike(false);
           feed_post_pageing[index].liked = false;
           feed_post_pageing[index].response_count =
@@ -309,18 +321,17 @@ export default function FeedList({ props, token }) {
             // });
           }
         } else {
-          // Alert.alert("Please Login");
-          // Toast.show({
-          //   text: "Please Login",
-          //   position: "bottom",
-          //   buttonText: "Ok",
-          //   duration: 3000,
-          // });
+          props.navigation.navigate("AuthStack", {
+            screen: "LoginScreen",
+          });
+          RNToasty.Show({
+            title: t("pleaselogin"),
+            position: "bottom",
+          });
         }
       }
     }
   };
-
   const {
     loading: loadingPost,
     data: dataPost,
@@ -336,16 +347,19 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${tkn}`,
+        Authorization: `Bearer ${props.route.params.token}`,
       },
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
   });
 
+  console.log("dataPost", dataPost);
+
   let feed_post_pageing = [];
-  if (dataPost && dataPost && "datas" in dataPost.feed_post_pageing) {
-    feed_post_pageing = dataPost.feed_post_pageing.datas;
+  if (dataPost && dataPost && "datas" in dataPost?.feed_post_pageing) {
+    feed_post_pageing = dataPost?.feed_post_pageing?.datas;
   }
 
   const [refreshing, setRefreshing] = useState(false);
@@ -383,7 +397,7 @@ export default function FeedList({ props, token }) {
     }
   };
   const handleOnEndReached = () => {
-    if (dataPost.feed_post_pageing.page_info.hasNextPage) {
+    if (dataPost?.feed_post_pageing?.page_info.hasNextPage) {
       if (fetchMore) {
         return fetchMore({
           variables: {
@@ -400,7 +414,7 @@ export default function FeedList({ props, token }) {
     setModalhapus(false);
     setModalmenu(false);
 
-    if (token || token !== "") {
+    if (token && token !== "" && token !== null) {
       try {
         let response = await Mutationdeletepost({
           variables: {
@@ -435,11 +449,12 @@ export default function FeedList({ props, token }) {
         });
       }
     } else {
-      Toast.show({
-        text: "Please Login",
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
         position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
       });
     }
   };
@@ -469,23 +484,25 @@ export default function FeedList({ props, token }) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
+    let tkn = await AsyncStorage.getItem("access_token");
     setSetting(JSON.parse(setsetting));
     await LoadFollowing();
   };
 
   useEffect(() => {
+    console.log("useeefffect");
+    refetch();
     loadAsync();
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
         console.log("itinerary");
-
         Refresh();
       }
 
       if (props.route.params.isPost === true) {
         console.log("submit");
         SubmitData();
-        // refetch();
+        props.route.params.isPost = false;
       }
 
       if (props.route.params.isComment === true) {
@@ -493,6 +510,7 @@ export default function FeedList({ props, token }) {
         console.log("comment");
         if (ref) {
           ref.current.scrollToIndex({ animated: true, index: 0 });
+          props.route.params.isComment = false;
         }
       }
       if (props.route.params.isTag === true) {
@@ -509,7 +527,7 @@ export default function FeedList({ props, token }) {
     }
     const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
-  }, [props.route.params]);
+  }, [props.route.params?.isPost]);
 
   const countKoment = (id) => {
     const tempd = [...feed_post_pageing];
@@ -518,22 +536,31 @@ export default function FeedList({ props, token }) {
   };
 
   const viewcomment = (data, index, time) => {
-    props.navigation.navigate("FeedStack", {
-      screen: "CommentPost",
-      params: {
-        data: data,
-        token: token,
-        ref: ref,
-        _liked: (e) => _liked(e),
-        _unliked: (e) => _unliked(e),
-        indeks: index,
-        countKoment: (e) => countKoment(e),
-        time: time,
-      },
-    });
+    if (token) {
+      props.navigation.navigate("FeedStack", {
+        screen: "CommentPost",
+        params: {
+          data: data,
+          token: token,
+          ref: ref,
+          _liked: (e) => _liked(e),
+          _unliked: (e) => _unliked(e),
+          indeks: index,
+          countKoment: (e) => countKoment(e),
+          time: time,
+        },
+      });
+    } else {
+      RNToasty.Show({
+        duration: 1,
+        title: "Please Login",
+        position: "bottom",
+      });
+      props.navigation.push("AuthStack", {
+        screen: "LoginScreen",
+      });
+    }
   };
-
-  const [selected, setSelected] = useState(new Map());
 
   const OptionOpen = (data, index, setting) => {
     const tempdata = { ...data };
@@ -634,7 +661,7 @@ export default function FeedList({ props, token }) {
   const _unfollow = async (id, status) => {
     setModalmenuother(false);
 
-    if (token || token !== "") {
+    if (token) {
       try {
         let response = await UnfollowMutation({
           variables: {
@@ -662,12 +689,13 @@ export default function FeedList({ props, token }) {
         Alert.alert("" + error);
       }
     } else {
-      // Alert.alert("Please Login");
-      Toast.show({
-        text: "Please Login",
+      RNToasty.Show({
+        duration: 1,
+        title: "Please Login",
         position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
+      });
+      props.navigation.push("AuthStack", {
+        screen: "LoginScreen",
       });
     }
   };
@@ -686,13 +714,14 @@ export default function FeedList({ props, token }) {
 
   const _follow = async (id, status) => {
     setModalmenuother(false);
-    if (token || token !== "") {
+    if (token) {
       try {
         let response = await FollowMutation({
           variables: {
             id: id,
           },
         });
+
         if (loadFollowMut) {
           Alert.alert("Loading!!");
         }
@@ -713,18 +742,151 @@ export default function FeedList({ props, token }) {
         Alert.alert("" + error);
       }
     } else {
-      // Alert.alert("Please Login");
-      Toast.show({
-        text: "Please Login",
+      RNToasty.Show({
+        duration: 1,
+        title: "Please Login",
         position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
       });
     }
   };
 
+  const [modalLogin, setModalLogin] = useState(true);
+
+  if (feed_post_pageing.length > 11) {
+    if (!token || token == undefined) {
+      return (
+        <Modal
+          useNativeDriver={true}
+          visible={!token || token == undefined ? modalLogin : false}
+          onRequestClose={() => true}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            // onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 80,
+              marginHorizontal: 40,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 3,
+              marginTop: Dimensions.get("screen").height / 4,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 80,
+                padding: 20,
+                paddingHorizontal: 20,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  marginHorizontal: 5,
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{ marginBottom: 5 }} size="label" type="bold">
+                  Login untuk melanjutkan
+                </Text>
+                <Text
+                  style={{ textAlign: "center", lineHeight: 18 }}
+                  size="label"
+                  type="regular"
+                >
+                  Login untuk melihat foto dan upload foto liburanmu
+                </Text>
+              </View>
+              <Button
+                style={{ marginBottom: 5 }}
+                onPress={() => {
+                  setModalLogin(false);
+                  props.navigation.navigate("AuthStack", {
+                    screen: "LoginScreen",
+                  });
+                  feed_post_pageing.length = 0;
+                  setTimeout(() => {
+                    setModalLogin(true);
+                  }, 3000);
+                }}
+                type="icon"
+                text={"Login"}
+              ></Button>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginVertical: 5,
+                }}
+              >
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+                <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                  {t("or")}
+                </Text>
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ color: "#209FAE" }}
+                  onPress={() => {
+                    setModalLogin(false);
+                    props.navigation.navigate("AuthStack", {
+                      screen: "RegisterScreen",
+                    });
+                    feed_post_pageing.length = 0;
+                    setTimeout(() => {
+                      setModalLogin(true);
+                    }, 3000);
+                  }}
+                >
+                  Buat Akun
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      );
+    }
+  } else {
+    feed_post_pageing;
+  }
+
   return (
     <SafeAreaView>
+      {/* {test()} */}
       <View
       // style={{
       //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
@@ -1087,6 +1249,20 @@ export default function FeedList({ props, token }) {
           </View>
         </Modal>
       </View>
+
+      {loadingMutationPost ? (
+        <View
+          style={{
+            backgroundColor: "#fff",
+            width: Dimensions.get("screen").width - 20,
+            marginHorizontal: 10,
+            borderRadius: 5,
+            paddingHorizontal: 10,
+          }}
+        >
+          <ProgressBarAndroid styleAttr="Horizontal" color="#209fae" />
+        </View>
+      ) : null}
       <FlatList
         ref={ref}
         data={feed_post_pageing}
@@ -1105,6 +1281,7 @@ export default function FeedList({ props, token }) {
               borderBottomColor: "#EEEEEE",
               paddingBottom: 25,
             }}
+            key={index}
           >
             <View
               style={{
@@ -1233,8 +1410,8 @@ export default function FeedList({ props, token }) {
                 justifyContent: "center",
                 // alignItems: "center",
                 width: Dimensions.get("window").width - 40,
-                // height: Dimensions.get("window").width - 40,
-                minHeight: Dimensions.get("window").width - 155,
+                // height:  Dimensions.get("window").width - 40,
+                // minHeight: Dimensions.get("window").width - 155,
                 // borderWidth: 0.5,
                 borderColor: "#EEEEEE",
                 borderRadius: 15,

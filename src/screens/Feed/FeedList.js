@@ -49,7 +49,6 @@ import { Toast, Root } from "native-base";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import { isPunctuatorToken } from "graphql/language/lexer";
-import { stubTrue } from "lodash";
 
 // import Clipboard from "@react-native-clipboard/clipboard";
 
@@ -99,18 +98,18 @@ const PostMut = gql`
 
 export default function FeedList({ props, token }) {
   console.log("props feed", props);
+  useScrollToTop(ref);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
-  useScrollToTop(ref);
+  const [modalLogin, setModalLogin] = useState(true);
   const isFocused = useIsFocused();
+  const [dataFeed, setDataFeed] = useState([]);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
-  let [waktu, setWaktu] = useState("");
-  let [tkn, setTkn] = useState(null);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -168,11 +167,10 @@ export default function FeedList({ props, token }) {
   const SubmitData = async () => {
     setTimeout(() => {
       if (ref) {
-        ref.current.scrollToIndex({ animated: true, index: 0 });
+        ref?.current.scrollToIndex({ animated: true, index: 0 });
       }
     }, 1000);
     try {
-      console.log("try");
       let response = await MutationCreate({
         variables: {
           caption: props?.route?.params?.caption,
@@ -206,7 +204,7 @@ export default function FeedList({ props, token }) {
           await Refresh();
           setTimeout(() => {
             if (ref) {
-              ref.current.scrollToIndex({ animated: true, index: 0 });
+              ref?.current.scrollToIndex({ animated: true, index: 0 });
             }
           });
         } else {
@@ -224,15 +222,22 @@ export default function FeedList({ props, token }) {
     }
   };
 
+  console.log("active", activelike);
+
   const _liked = async (id, index) => {
-    index = feed_post_pageing.findIndex((k) => k["id"] === id);
+    console.log("liked");
+    let tempData = [...dataFeed];
+    index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
         if (token && token !== "" && token !== null) {
           setactivelike(false);
-          feed_post_pageing[index].liked = true;
-          feed_post_pageing[index].response_count =
-            feed_post_pageing[index].response_count + 1;
+          let tempData = [...dataFeed];
+          let tempDatas = { ...tempData[index] };
+          tempDatas.liked = true;
+          tempDatas.response_count = tempDatas.response_count + 1;
+          tempData.splice(index, 1, tempDatas);
+          setDataFeed(tempData);
           try {
             let response = await MutationLike({
               variables: {
@@ -243,21 +248,21 @@ export default function FeedList({ props, token }) {
               throw new Error("Error");
             }
             if (response.data) {
-              if (
-                response.data.like_post.code === 200 ||
-                response.data.like_post.code === "200"
-              ) {
-                feed_post_pageing[index].liked = true;
+              if (response.data.like_post.code == 200) {
+                console.log("Success like Post");
                 setactivelike(true);
               } else {
                 throw new Error(response.data.like_post.message);
               }
             }
           } catch (error) {
-            feed_post_pageing[index].liked = false;
-            feed_post_pageing[index].response_count =
-              feed_post_pageing[index].response_count - 1;
             setactivelike(true);
+            let tempData = [...dataFeed];
+            let tempDatas = { ...tempData[index] };
+            tempDatas.liked = false;
+            tempDatas.response_count = tempDatas.response_count - 1;
+            tempData.splice(index, 1, tempDatas);
+            setDataFeed(tempData);
           }
         } else {
           props.navigation.navigate("AuthStack", {
@@ -273,14 +278,20 @@ export default function FeedList({ props, token }) {
   };
 
   const _unliked = async (id, index) => {
-    index = feed_post_pageing.findIndex((k) => k["id"] === id);
+    console.log("unliked");
+    console.log("active", activelike);
+    let tempData = [...dataFeed];
+    index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
         if (token && token !== "" && token !== null) {
           setactivelike(false);
-          feed_post_pageing[index].liked = false;
-          feed_post_pageing[index].response_count =
-            feed_post_pageing[index].response_count - 1;
+          let tempData = [...dataFeed];
+          let tempDatas = { ...tempData[index] };
+          tempDatas.liked = false;
+          tempDatas.response_count = tempDatas.response_count - 1;
+          tempData.splice(index, 1, tempDatas);
+          setDataFeed(tempData);
           try {
             let response = await MutationunLike({
               variables: {
@@ -299,8 +310,7 @@ export default function FeedList({ props, token }) {
                 response.data.unlike_post.code === 200 ||
                 response.data.unlike_post.code === "200"
               ) {
-                // _Refresh();
-                feed_post_pageing[index].liked = false;
+                console.log("Success Unlike Post");
                 setactivelike(true);
               } else {
                 throw new Error(response.data.unlike_post.message);
@@ -310,15 +320,12 @@ export default function FeedList({ props, token }) {
             }
           } catch (error) {
             setactivelike(true);
-            feed_post_pageing[index].response_count =
-              feed_post_pageing[index].response_count + 1;
-            feed_post_pageing[index].liked = true;
-            // Toast.show({
-            //   text: "Failed to unlike this post",
-            //   position: "bottom",
-            //   buttonText: "Ok",
-            //   duration: 3000,
-            // });
+            let tempData = [...dataFeed];
+            let tempDatas = { ...tempData[index] };
+            tempDatas.liked = true;
+            tempDatas.response_count = tempDatas.response_count + 1;
+            tempData.splice(index, 1, tempDatas);
+            setDataFeed(tempData);
           }
         } else {
           props.navigation.navigate("AuthStack", {
@@ -332,6 +339,7 @@ export default function FeedList({ props, token }) {
       }
     }
   };
+
   const {
     loading: loadingPost,
     data: dataPost,
@@ -353,14 +361,17 @@ export default function FeedList({ props, token }) {
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
+    onCompleted: () => setDataFeed(dataPost.feed_post_pageing.datas),
   });
 
-  console.log("dataPost", dataPost);
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      refetch();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
-  let feed_post_pageing = [];
-  if (dataPost && dataPost && "datas" in dataPost?.feed_post_pageing) {
-    feed_post_pageing = dataPost?.feed_post_pageing?.datas;
-  }
+  console.log("dataFeed", dataFeed);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -397,7 +408,7 @@ export default function FeedList({ props, token }) {
     }
   };
   const handleOnEndReached = () => {
-    if (dataPost?.feed_post_pageing?.page_info.hasNextPage) {
+    if (dataPost.feed_post_pageing?.page_info.hasNextPage) {
       if (fetchMore) {
         return fetchMore({
           variables: {
@@ -422,30 +433,30 @@ export default function FeedList({ props, token }) {
           },
         });
 
+        console.log("rewsponse", response);
+
         if (response.data) {
-          if (
-            response.data.delete_post.code === 200 ||
-            response.data.delete_post.code === "200"
-          ) {
-            const tempdata = [...feed_post_pageing];
+          if (response.data.delete_post.code === 200) {
+            const tempdata = [...dataFeed];
+            console.log("sukses");
+            console.log("index", data.index);
             tempdata.splice(data.index, 1);
-            feed_post_pageing = tempdata;
-            await Refresh();
-            setTimeout(() => {
-              if (ref) {
-                ref.current.scrollToIndex({ animated: true, index: 0 });
-              }
-            }, 800);
+            console.log("tempdata delete", tempdata);
+            setDataFeed(tempdata);
+            // await Refresh();
+            // setTimeout(() => {
+            //   if (ref) {
+            //     ref.current.scrollToIndex({ animated: true, index: 0 });
+            //   }
+            // }, 800);
           } else {
             throw new Error(response.data.delete_post.message);
           }
         }
       } catch (error) {
-        Toast.show({
-          text: "Failed to delete this post",
+        RNToasty.Show({
+          title: "Failed to delete this post",
           position: "bottom",
-          buttonText: "Ok",
-          duration: 3000,
         });
       }
     } else {
@@ -509,7 +520,7 @@ export default function FeedList({ props, token }) {
         // Refresh();
         console.log("comment");
         if (ref) {
-          ref.current.scrollToIndex({ animated: true, index: 0 });
+          ref?.current.scrollToIndex({ animated: true, index: 0 });
           props.route.params.isComment = false;
         }
       }
@@ -519,7 +530,7 @@ export default function FeedList({ props, token }) {
         setTimeout(() => {
           refetch();
           if (ref) {
-            ref.current.scrollToIndex({ animated: true, index: 0 });
+            ref?.current.scrollToIndex({ animated: true, index: 0 });
           }
           setRefreshing(false);
         }, 800);
@@ -530,7 +541,7 @@ export default function FeedList({ props, token }) {
   }, [props.route.params?.isPost]);
 
   const countKoment = (id) => {
-    const tempd = [...feed_post_pageing];
+    const tempd = [...dataFeed];
     const index = tempd.findIndex((k) => k["id"] === id);
     tempd[index].comment_count = tempd[index].comment_count + 1;
   };
@@ -548,6 +559,7 @@ export default function FeedList({ props, token }) {
           indeks: index,
           countKoment: (e) => countKoment(e),
           time: time,
+          _deletepost: (e) => _deletepost(e),
         },
       });
     } else {
@@ -624,6 +636,7 @@ export default function FeedList({ props, token }) {
       setPlay(viewableItems[0]?.key);
     }
   });
+
   const viewConfigRef = React.useRef({
     viewAreaCoveragePercentThreshold: 50,
   });
@@ -750,9 +763,7 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  const [modalLogin, setModalLogin] = useState(true);
-
-  if (feed_post_pageing.length > 11) {
+  if (dataFeed?.length > 11) {
     if (!token || token == undefined) {
       return (
         <Modal
@@ -819,7 +830,7 @@ export default function FeedList({ props, token }) {
                   props.navigation.navigate("AuthStack", {
                     screen: "LoginScreen",
                   });
-                  feed_post_pageing.length = 0;
+                  dataFeed.length = 0;
                   setTimeout(() => {
                     setModalLogin(true);
                   }, 3000);
@@ -866,7 +877,7 @@ export default function FeedList({ props, token }) {
                     props.navigation.navigate("AuthStack", {
                       screen: "RegisterScreen",
                     });
-                    feed_post_pageing.length = 0;
+                    dataFeed.length = 0;
                     setTimeout(() => {
                       setModalLogin(true);
                     }, 3000);
@@ -881,7 +892,7 @@ export default function FeedList({ props, token }) {
       );
     }
   } else {
-    feed_post_pageing;
+    dataFeed;
   }
 
   return (
@@ -1265,9 +1276,9 @@ export default function FeedList({ props, token }) {
       ) : null}
       <FlatList
         ref={ref}
-        data={feed_post_pageing}
-        onViewableItemsChanged={onViewRef.current}
-        viewabilityConfig={viewConfigRef.current}
+        data={dataFeed}
+        onViewableItemsChanged={onViewRef?.current}
+        viewabilityConfig={viewConfigRef?.current}
         renderItem={({ item, index }) => (
           <View
             style={{
