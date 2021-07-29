@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TextInput,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -33,25 +34,16 @@ import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
 
+import { RNToasty } from "react-native-toasty";
+
+import DeviceInfo from "react-native-device-info";
+
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: () => (
-      <View>
-        <Text type="bold" size="title" style={{ color: "#fff" }}>
-          Add Flight Number
-        </Text>
-        <Text
-          style={{
-            color: "#fff",
-          }}
-        >
-          Custom Activity
-        </Text>
-      </View>
-    ),
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -69,20 +61,45 @@ export default function detailCustomItinerary(props) {
       marginLeft: 10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
+      <View
         style={{
-          height: 55,
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+        <View
+          style={{
+            marginLeft: 10,
+          }}
+        >
+          <Text type="bold" size="title" style={{ color: "#fff" }}>
+            Add Flight Number
+          </Text>
+          <Text
+            style={{
+              color: "#fff",
+            }}
+          >
+            Custom Activity
+          </Text>
+        </View>
+      </View>
     ),
   };
+
+  const Notch = DeviceInfo.hasNotch();
 
   const { t, i18n } = useTranslation();
   let [dataParent, setDataParent] = useState({});
@@ -356,19 +373,24 @@ export default function detailCustomItinerary(props) {
           </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          backgroundColor: "#fff",
-          padding: 15,
-        }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Notch ? 90 : 65}
       >
-        <Button
-          onPress={() => {
-            Alert.alert("comming soon");
+        <View
+          style={{
+            backgroundColor: "#fff",
+            padding: 15,
           }}
-          text={t("save")}
-        />
-      </View>
+        >
+          <Button
+            onPress={() => {
+              Alert.alert("comming soon");
+            }}
+            text={t("save")}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
