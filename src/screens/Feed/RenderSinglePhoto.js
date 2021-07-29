@@ -59,24 +59,13 @@ export default function RenderSinglePhoto({
             }}
             // controls
             onError={videoView?.current?.videoError}
-            onLoad={(response) => {
-              // const { widths, heights } = response.naturalSize;
-              const heightScaled =
-                response.naturalSize.height *
-                (Dimensions.get("screen").width / response.naturalSize.width);
-              response.naturalSize.orientation =
-                response.naturalSize.height > response.naturalSize.width
-                  ? "portrait"
-                  : "landscape";
-              setOriented(response.naturalSize.orientation);
-              setHeightScaled(heightScaled);
-            }}
+            onLoad={(response) => console.log("response", response)}
+            on
             onProgress={durationTime}
+            // onProgress={(event) => console.log("e", event)}
             repeat={true}
             style={{
               width: width - 40,
-              // height: width,
-              // height: oriented === "portrait" ? width : heightScaled,
               height:
                 data.media_orientation == "L"
                   ? L

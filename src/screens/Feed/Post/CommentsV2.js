@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
-  ScrollView,
   StyleSheet,
   View,
   FlatList,
@@ -24,12 +23,10 @@ import commentpost from "../../../graphQL/Mutation/Post/commentpost";
 import {
   Text,
   Button,
-  Loading,
   shareAction,
   FunImage,
   CopyLink,
 } from "../../../component";
-import { Toast, Root } from "native-base";
 import {
   LikeRed,
   ShareBlack,
@@ -38,8 +35,6 @@ import {
   CommentBlack,
   Arrowbackwhite,
 } from "../../../assets/svg";
-import likepost from "../../../graphQL/Mutation/Post/likepost";
-import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 import { gql } from "apollo-boost";
 import ReadMore from "react-native-read-more-text";
 import RenderAlbum from "../RenderAlbumItinerary";
@@ -150,8 +145,6 @@ export default function Comments(props) {
       "hardwareBackPress",
       backAction
     );
-
-    return () => backHandler.remove();
   });
 
   useEffect(() => {
@@ -362,6 +355,7 @@ export default function Comments(props) {
             }}
           >
             <FunImage
+              size="xs"
               isTouchable
               style={{
                 height: 35,
@@ -1218,6 +1212,7 @@ export default function Comments(props) {
                   }}
                 >
                   <FunImage
+                    size="xs"
                     isTouchable
                     style={{
                       height: 35,

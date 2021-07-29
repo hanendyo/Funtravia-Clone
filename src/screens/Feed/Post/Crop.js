@@ -88,8 +88,6 @@ export default function Crop(props) {
       "hardwareBackPress",
       backAction
     );
-
-    return () => backHandler.remove();
   });
 
   const L = (2.2 / 3) * Dimensions.get("screen").width - 30;
