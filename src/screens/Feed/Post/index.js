@@ -594,10 +594,6 @@ export default function Post(props) {
 
   const [mute, setMute] = useState(false);
 
-  const sunyi = () => {
-    setMute(!mute);
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -694,7 +690,7 @@ export default function Post(props) {
                 paused={props.route.name == "Post" && isFocused ? false : true}
                 // paused={mute ? true : false}
                 repeat={time ? true : false}
-                onBuffer={videoView?.current?.onBuffer}
+                // onBuffer={videoView?.current?.onBuffer}
                 onError={videoView?.current?.videoError}
                 style={{
                   // width: width,

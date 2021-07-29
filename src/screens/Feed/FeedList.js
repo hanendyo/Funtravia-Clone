@@ -15,17 +15,12 @@ import {
   ProgressBarAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import Modal from "react-native-modal";
 import {
   LikeRed,
   ShareBlack,
   More,
   LikeBlack,
   CommentBlack,
-  ExitingAlbum,
-  NewAlbum,
-  TravelAlbum,
-  TravelJournal,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -35,7 +30,6 @@ import { Text, Button, shareAction, CopyLink, FunImage } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
-import FeedPageingPopular from "../../graphQL/Query/Feed/FeedPopularPaging";
 import ReadMore from "react-native-read-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
@@ -45,12 +39,9 @@ import { useIsFocused } from "@react-navigation/native";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
-import { Toast, Root } from "native-base";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import { isPunctuatorToken } from "graphql/language/lexer";
-
-// import Clipboard from "@react-native-clipboard/clipboard";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -98,7 +89,7 @@ const PostMut = gql`
 
 export default function FeedList({ props, token }) {
   console.log("props feed", props);
-  useScrollToTop(ref);
+  // useScrollToTop(ref);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(true);
@@ -201,7 +192,8 @@ export default function FeedList({ props, token }) {
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          await Refresh();
+          console.log("refetch", refetch);
+          await refetch();
           setTimeout(() => {
             if (ref) {
               ref?.current.scrollToIndex({ animated: true, index: 0 });
@@ -222,10 +214,7 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  console.log("active", activelike);
-
   const _liked = async (id, index) => {
-    console.log("liked");
     let tempData = [...dataFeed];
     index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
@@ -249,7 +238,6 @@ export default function FeedList({ props, token }) {
             }
             if (response.data) {
               if (response.data.like_post.code == 200) {
-                console.log("Success like Post");
                 setactivelike(true);
               } else {
                 throw new Error(response.data.like_post.message);
@@ -278,8 +266,6 @@ export default function FeedList({ props, token }) {
   };
 
   const _unliked = async (id, index) => {
-    console.log("unliked");
-    console.log("active", activelike);
     let tempData = [...dataFeed];
     index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
@@ -306,11 +292,7 @@ export default function FeedList({ props, token }) {
             }
 
             if (response.data) {
-              if (
-                response.data.unlike_post.code === 200 ||
-                response.data.unlike_post.code === "200"
-              ) {
-                console.log("Success Unlike Post");
+              if (response.data.unlike_post.code == 200) {
                 setactivelike(true);
               } else {
                 throw new Error(response.data.unlike_post.message);
@@ -371,8 +353,6 @@ export default function FeedList({ props, token }) {
     return unsubscribe;
   }, [props.navigation]);
 
-  console.log("dataFeed", dataFeed);
-
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
   const Refresh = React.useCallback(() => {
@@ -409,15 +389,13 @@ export default function FeedList({ props, token }) {
   };
   const handleOnEndReached = () => {
     if (dataPost.feed_post_pageing?.page_info.hasNextPage) {
-      if (fetchMore) {
-        return fetchMore({
-          variables: {
-            limit: 3,
-            offset: dataPost.feed_post_pageing.page_info.offset,
-          },
-          updateQuery: onUpdate,
-        });
-      }
+      return fetchMore({
+        updateQuery: onUpdate,
+        variables: {
+          limit: 3,
+          offset: dataPost.feed_post_pageing.page_info.offset,
+        },
+      });
     }
   };
 
@@ -433,22 +411,11 @@ export default function FeedList({ props, token }) {
           },
         });
 
-        console.log("rewsponse", response);
-
         if (response.data) {
           if (response.data.delete_post.code === 200) {
             const tempdata = [...dataFeed];
-            console.log("sukses");
-            console.log("index", data.index);
             tempdata.splice(data.index, 1);
-            console.log("tempdata delete", tempdata);
             setDataFeed(tempdata);
-            // await Refresh();
-            // setTimeout(() => {
-            //   if (ref) {
-            //     ref.current.scrollToIndex({ animated: true, index: 0 });
-            //   }
-            // }, 800);
           } else {
             throw new Error(response.data.delete_post.message);
           }
@@ -499,6 +466,8 @@ export default function FeedList({ props, token }) {
     setSetting(JSON.parse(setsetting));
     await LoadFollowing();
   };
+
+  console.log("dataFeed", dataFeed);
 
   useEffect(() => {
     console.log("useeefffect");
@@ -1304,6 +1273,7 @@ export default function FeedList({ props, token }) {
               }}
             >
               <FunImage
+                size="xs"
                 isTouchable
                 style={{
                   height: 40,
@@ -1351,7 +1321,7 @@ export default function FeedList({ props, token }) {
                           },
                         });
                   }}
-                  size="description"
+                  size="title"
                   style={{
                     fontFamily: "Lato-Bold",
                     // marginTop: 7,
@@ -1716,12 +1686,11 @@ export default function FeedList({ props, token }) {
             </View>
           ) : null
         }
-        // initialNumToRender={1}
+        initialNumToRender={1}
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
         onEndThreshold={3000}
       />
-      <Root />
     </SafeAreaView>
   );
 }

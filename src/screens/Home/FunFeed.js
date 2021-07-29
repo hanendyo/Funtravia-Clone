@@ -4,6 +4,7 @@ import {
   Dimensions,
   TouchableOpacity,
   FlatList,
+  View,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -14,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { useMutation } from "@apollo/client";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const { width, height } = Dimensions.get("screen");
 export default function SearchFeed({ props }) {
@@ -46,10 +48,9 @@ export default function SearchFeed({ props }) {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     setuser(user.user);
-
-    querySearchPost();
   };
   useEffect(() => {
+    querySearchPost();
     const feedasync = props.navigation.addListener("focus", () => {
       loadAsync();
     });
@@ -169,8 +170,6 @@ export default function SearchFeed({ props }) {
           },
         });
 
-        console.log("repsonse unlike", response);
-
         if (response?.data?.like_post?.code == 200) {
           // let tempData = [...datas];
           // let index = tempData.findIndex((k) => k["id"] === id);
@@ -202,9 +201,45 @@ export default function SearchFeed({ props }) {
     }
   };
 
+  console.log("loading post", loadingPost);
+
   return (
     <>
-      {datas && datas.length > 0 ? (
+      {loadingPost ? (
+        <SkeletonPlaceholder>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              marginHorizontal: 20,
+              width: Dimensions.get("screen").width - 20,
+              marginVertical: 10,
+            }}
+          >
+            <View
+              style={{
+                height: Dimensions.get("screen").width / 2,
+                width: Dimensions.get("screen").width / 2.45,
+                marginRight: 5,
+              }}
+            />
+            <View
+              style={{
+                height: Dimensions.get("screen").width / 2,
+                width: Dimensions.get("screen").width / 2.45,
+                marginRight: 5,
+              }}
+            />
+            <View
+              style={{
+                height: Dimensions.get("screen").width / 2,
+                width: Dimensions.get("screen").width / 2.45,
+                marginRight: 5,
+              }}
+            />
+          </View>
+        </SkeletonPlaceholder>
+      ) : datas && datas.length > 0 ? (
         <FlatList
           contentContainerStyle={{
             marginTop: 10,
