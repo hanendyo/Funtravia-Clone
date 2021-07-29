@@ -41,7 +41,7 @@ export default function Album({ item, index, props, token }) {
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
             width: "100%",
-            height: "75%",
+            height: "80%",
           }}
           source={item?.cover ? { uri: item?.cover } : default_image}
         ></Image>

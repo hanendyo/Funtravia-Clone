@@ -915,7 +915,7 @@ export default function ItineraryPopuler(props) {
                     borderTopLeftRadius: 10,
                     borderTopRightRadius: 10,
                     width: "100%",
-                    height: "75%",
+                    height: "80%",
                   }}
                   source={item?.cover ? { uri: item?.cover } : default_image}
                 ></Image>
@@ -1282,7 +1282,7 @@ export default function ItineraryPopuler(props) {
           marginTop: 5,
         }}
       >
-        <Text size="label" type="bold">
+        <Text size="label" type="bold" style={{ marginTop: 5 }}>
           Category Itinerary
         </Text>
       </View>
@@ -1292,7 +1292,7 @@ export default function ItineraryPopuler(props) {
             backgroundColor: "#F6F6F6",
             flexDirection: "row",
             // borderWidth: 1,
-            height: 50,
+            height: 55,
           }}
         >
           <View
@@ -1309,6 +1309,7 @@ export default function ItineraryPopuler(props) {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
                 paddingHorizontal: 15,
+                marginBottom: 5,
               }}
               ItemSeparatorComponent={() => (
                 <View
@@ -1424,7 +1425,7 @@ export default function ItineraryPopuler(props) {
                 Travel Album
               </Text>
             </Ripple>
-            <Ripple
+            <View
               onPress={() => setActives("Stories")}
               style={{
                 width: Dimensions.get("screen").width * 0.32,
@@ -1437,14 +1438,18 @@ export default function ItineraryPopuler(props) {
             >
               <Text
                 size="description"
-                type={actives == "Stories" ? "bold" : "reguler"}
+                // type={actives == "Stories" ? "bold" : "reguler"}
+                // style={{
+                //   color: actives == "Stories" ? "#209FAE" : "#464646",
+                // }}
+                type={"bold"}
                 style={{
-                  color: actives == "Stories" ? "#209FAE" : "#464646",
+                  color: "#c7c7c7",
                 }}
               >
                 Travel Stories
               </Text>
-            </Ripple>
+            </View>
           </View>
         </View>
       </View>

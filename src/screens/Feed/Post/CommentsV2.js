@@ -285,7 +285,9 @@ export default function Comments(props) {
   };
 
   const OptionOpen = (data) => {
-    SetOption(data);
+    let tempData = { ...data };
+    tempData.index = props?.route?.params.indeks;
+    SetOption(tempData);
     if (dataPost?.user?.id == setting?.user?.id) {
       setModalMenu(true);
     } else {
@@ -447,11 +449,10 @@ export default function Comments(props) {
           },
         });
 
+        console.log("response delete di comment", response);
+
         if (response.data) {
-          if (
-            response.data.delete_post.code === 200 ||
-            response.data.delete_post.code === "200"
-          ) {
+          if (response.data.delete_post.code == 200) {
             // props.navigation.goBack();
             props.navigation.navigate("BottomStack", {
               screen: "FeedBottomScreen",
@@ -1120,7 +1121,28 @@ export default function Comments(props) {
             >
               <Button
                 onPress={() => {
-                  _deletepost(selectedOption);
+                  setModalHapus(false);
+                  setModalMenu(false);
+                  props.route.params._deletepost(selectedOption);
+                  props.navigation.goBack();
+                  // props.navigation.navigate("BottomStack", {
+                  //   screen: "FeedBottomScreen",
+                  //   params: {
+                  //     screen: "FeedScreen",
+                  //     params: {
+                  //       isItinerary: true,
+                  //       // caption: caption,
+                  //       // latitude: latitude,
+                  //       // longitude: longitude,
+                  //       // location_name: location_name,
+                  //       // albums_id: albums_id,
+                  //       // itinerary_id: itinerary_id,
+                  //       // day_id: day_id,
+                  //       // oriented: oriented,
+                  //       // assets: assets,
+                  //     },
+                  //   },
+                  // });
                 }}
                 color="primary"
                 text={t("delete")}

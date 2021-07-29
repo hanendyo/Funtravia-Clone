@@ -529,6 +529,7 @@ export default function CreatePost(props) {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        backgroundColor: "#FFF",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
       enabled
@@ -585,6 +586,8 @@ export default function CreatePost(props) {
                     : keyboardOffset > 300
                     ? 50
                     : 0,
+                backgroundColor: "#FFF",
+                paddingBottom: 20,
               }}
             >
               {ReviewResult()}
