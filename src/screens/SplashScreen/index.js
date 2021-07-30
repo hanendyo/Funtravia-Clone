@@ -28,17 +28,20 @@ export default function SplashScreen(props) {
     props.navigation.setOptions({
       headerShown: false,
     });
-    const backAction = () => {
-      BackHandler.exitApp();
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
   }, []);
+
+  const backAction = () => {
+    BackHandler.exitApp();
+  };
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", backAction);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    };
+  }, [backAction]);
 
   return (
     <View style={styles.main}>

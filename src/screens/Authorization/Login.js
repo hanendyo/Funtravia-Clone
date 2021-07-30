@@ -189,7 +189,7 @@ export default function Login({ navigation, route }) {
       backAction
     );
 
-    return () => backHandler.remove();
+    // return () => backHandler.remove();
   }, []);
 
   return (

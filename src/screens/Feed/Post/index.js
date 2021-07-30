@@ -337,7 +337,7 @@ export default function Post(props) {
       "hardwareBackPress",
       backAction
     );
-    return () => backHandler.remove();
+    // return () => backHandler.remove();
   }, []);
 
   const [selectedAlbum, setSelectedAlbum] = useState({

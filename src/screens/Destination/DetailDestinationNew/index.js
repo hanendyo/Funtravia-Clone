@@ -14,6 +14,8 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  Modal as ModalRN,
+  TextInput,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -60,6 +62,7 @@ import IndexSkeleton from "./IndexSkeleton";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import ImageSlide from "../../../component/src/ImageSlide";
+import { default_image, search_button } from "../../../assets/png";
 
 let PullToRefreshDist = 150;
 
@@ -647,6 +650,9 @@ const Index = (props) => {
     extrapolate: "clamp",
   });
 
+  const [sharemodal, SetShareModal] = useState(false);
+  const [shareuser, SetShareUser] = useState(false);
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -805,10 +811,11 @@ const Index = (props) => {
               )}
               <Pressable
                 onPress={() =>
-                  shareAction({
-                    from: "destination",
-                    target: dataDestination.id,
-                  })
+                  // shareAction({
+                  //   from: "destination",
+                  //   target: dataDestination.id,
+                  // })
+                  SetShareModal(true)
                 }
                 style={{
                   backgroundColor: "#F6F6F6",
@@ -2468,15 +2475,15 @@ const Index = (props) => {
             )}
           </View>
           {/* <View
-            style={{
-              marginTop: 20,
-              marginHorizontal: 15,
-            }}
-          >
-            <Text size="label" type="reguler">
-              Open 24 hours
-            </Text>
-          </View> */}
+						style={{
+							marginTop: 20,
+							marginHorizontal: 15,
+						}}
+					>
+						<Text size="label" type="reguler">
+							Open 24 hours
+						</Text>
+					</View> */}
         </View>
       </Modal>
 
@@ -2582,6 +2589,85 @@ const Index = (props) => {
           </View>
         </View>
       </Modal>
+
+      {/* modal share */}
+      <ModalRN
+        useNativeDriver={true}
+        visible={sharemodal}
+        onRequestClose={() => SetShareModal(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => SetShareModal(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.8,
+            borderWidth: 1,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 80,
+            marginHorizontal: 40,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 80,
+              padding: 20,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                SetShareModal(false);
+                props.navigation.navigate("SendDestination", {
+                  destination_id: dataDestination.id,
+                  destination_cover: dataDestination.cover,
+                  destination_name: dataDestination.name,
+                  destination_description: dataDestination.description,
+                });
+              }}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("shareTo")}...
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => {
+                shareAction({
+                  from: "destination",
+                  target: dataDestination.id,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("Sharekeluar")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ModalRN>
     </View>
   );
 };
