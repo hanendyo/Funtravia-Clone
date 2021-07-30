@@ -387,7 +387,10 @@ export default function AddPasswordEmail(props) {
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
                 {"Failed" +
                   " " +
-                  errors.toString().replace("Error", "").replace(":", "")}
+                  errors
+                    .toString()
+                    .replace("Error", "")
+                    .replace(":", "")}
               </Text>
             ) : (
               <Text size="description" type="regular" style={{ color: "#FFF" }}>

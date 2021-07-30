@@ -168,7 +168,7 @@ export default function AddPassword(props) {
         flex: 1,
       }}
     >
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingTop: 10 }}>
         <Item
           floatingLabel
           style={{

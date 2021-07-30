@@ -10,7 +10,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Arrowbackwhite, IdFlag, Check } from "../../assets/svg";
 import Modal from "react-native-modal";
-import { Text, Button } from "../../component";
+import { Text, Button, StatusBar as StaBar } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -19,7 +19,18 @@ import { FunIcon } from "../../component";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import { TextInput } from "react-native-gesture-handler";
 import City from "../../graphQL/Query/Itinerary/City";
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
 
+const SafeStatusBar = Platform.select({
+  ios: Notch ? -35 : -20,
+  android: -20,
+});
+
+const HeightBar = Platform.select({
+  ios: Notch ? 48 : 75,
+  android: 75,
+});
 export default function SettingCity({
   modals,
   setModalCity,
@@ -126,42 +137,51 @@ export default function SettingCity({
         alignContent: "center",
       }}
     >
+      <StaBar backgroundColor="#14646e" barStyle="light-content" />
       <View
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
           height: Dimensions.get("screen").height,
+          borderWidth: 1,
         }}
       >
         <View
           style={{
             flexDirection: "row",
             alignSelf: "flex-start",
-            alignItems: "center",
-            alignContent: "center",
+            alignItems: "flex-end",
+            alignContent: "flex-end",
             backgroundColor: "#209fae",
-            height: 55,
+            height: HeightBar,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 20 : -20,
+            marginTop: SafeStatusBar,
           }}
         >
-          <Button
-            type="circle"
-            color="tertiary"
-            size="large"
-            variant="transparent"
-            onPress={() => setModalCity(false)}
-          >
-            <Arrowbackwhite width={20} height={20} />
-          </Button>
-          <Text
-            size="label"
+          <View
             style={{
-              color: "white",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            {t("City")}
-          </Text>
+            <Button
+              type="circle"
+              color="tertiary"
+              size="large"
+              variant="transparent"
+              onPress={() => setModalCity(false)}
+            >
+              <Arrowbackwhite width={20} height={20} />
+            </Button>
+            <Text
+              size="label"
+              style={{
+                color: "white",
+              }}
+            >
+              {t("City")}
+            </Text>
+          </View>
         </View>
         <View
           style={{
