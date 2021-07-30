@@ -16,20 +16,22 @@ import {
   CustomImage,
   Loading,
   FunImage,
-} from "../../component";
-import { default_image, search_button } from "../../assets/png";
+} from "../../../component";
+import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Arrowbackwhite, SendMessage } from "../../assets/svg";
-import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
+import { Arrowbackwhite, SendMessage } from "../../../assets/svg";
+import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER } from "../../config";
+import { CHATSERVER } from "../../../config";
+import io from "socket.io-client";
 
-export default function NewChat({ navigation }) {
+export default function SendDestination({ navigation, route }) {
+  const socket = io(CHATSERVER);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
   let [search, setSearch] = useState("");
-  console.log(search);
+  // console.log(route.params);
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [
@@ -50,7 +52,7 @@ export default function NewChat({ navigation }) {
   console.log(DataBuddy);
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "New Message",
+    headerTitle: "Send Destination",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -129,10 +131,44 @@ export default function NewChat({ navigation }) {
 
       let responseJson = await response.json();
       if (responseJson) {
+        socket.emit("join", responseJson.id);
+        socket.on("connection", (socket) => {
+          console.log(socket);
+          console.log("socket");
+        });
+
+        let constain = {
+          id: route.params.destination_id,
+          cover: route.params.destination_cover,
+          name: route.params.destination_name,
+          description: route.params.destination_description,
+        };
+        let chatData = {
+          room: responseJson.id,
+          chat: "personal",
+          type: "tag_destination",
+          text: JSON.stringify(constain),
+          user_id: user.id,
+        };
+        await fetch(`${CHATSERVER}/api/personal/send`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `room=${
+            responseJson.id
+          }&type=tag_destination&chat=personal&text=${JSON.stringify(
+            constain
+          )}&user_id=${user.id}`,
+        });
+        await socket.emit("message", chatData);
+
         let change =
           responseJson.sender.id == user.id
             ? responseJson.receiver
             : responseJson.sender;
+        await socket.disconnect();
         navigation.push("ChatStack", {
           screen: "RoomChat",
           params: {

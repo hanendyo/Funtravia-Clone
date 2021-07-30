@@ -32,6 +32,7 @@ import DestinationMaps from "../screens/Maps";
 // import DestinationStackNavigation from "./StackItems/DestinationStackNavigation";
 import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew/index";
 import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
+import SendDestination from "../screens/Destination/DetailDestinationNew/SendDestination";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({
@@ -331,6 +332,11 @@ export default function MainStackNavigator({
           options={{
             headerShown: true,
             headerTitle: "Destination",
+            headerTitleStyle: {
+              fontFamily: "Lato-Bold",
+              fontSize: 18,
+              color: "white",
+            },
             headerBackTitleVisible: false,
             headerTintColor: "#FFF",
             headerStyle: { backgroundColor: "#209FAE" },
@@ -350,6 +356,16 @@ export default function MainStackNavigator({
           component={DestinationUnescoReview}
           options={{
             headerShown: false,
+            headerBackTitleVisible: false,
+            headerTintColor: "#FFF",
+          }}
+        />
+        <Tab.Screen
+          name="SendDestination"
+          component={SendDestination}
+          options={{
+            headerShown: true,
+            headerStyle: { backgroundColor: "#209FAE" },
             headerBackTitleVisible: false,
             headerTintColor: "#FFF",
           }}

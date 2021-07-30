@@ -15,9 +15,17 @@ import {
   ActivityIndicator,
   Pressable,
   Switch,
+  BackHandler,
 } from "react-native";
 import io from "socket.io-client";
-import { Arrowbackwhite, Send, Smile, Chat, Sticker } from "../../assets/svg";
+import {
+  Arrowbackwhite,
+  Send,
+  Smile,
+  Chat,
+  Sticker,
+  Emoticon,
+} from "../../assets/svg";
 import { Button, Text, Errors, FunImage, StickerModal } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -39,11 +47,11 @@ const TrackInteractive = true;
 const keyboards = [
   {
     id: "unicorn.ImagesKeyboard",
-    icon: Sticker,
+    icon: Emoticon,
   },
   {
     id: "unicorn.CustomKeyboard",
-    icon: Sticker,
+    icon: Emoticon,
   },
 ];
 
@@ -64,6 +72,7 @@ export default function Room({ navigation, route }) {
   const socket = io(CHATSERVER);
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
+  // console.log(message);
   const [customKeyboard, SetcustomKeyboard] = useState({
     component: undefined,
     initialProps: undefined,
@@ -125,6 +134,18 @@ export default function Room({ navigation, route }) {
       initialProps: { title },
     });
   };
+
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     BackHandler.addEventListener(navigation.goBack());
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+  // }, []);
 
   const onHeightChanged = (keyboardAccessoryViewHeight) => {
     // console.log(keyboardAccessoryViewHeight);
@@ -277,7 +298,7 @@ export default function Room({ navigation, route }) {
   };
 
   useEffect(() => {
-    console.log("b");
+    // console.log("b");
     socket.emit("join", room);
     socket.on("connection", (socket) => {
       console.log(socket);
@@ -289,7 +310,7 @@ export default function Room({ navigation, route }) {
       // setConnection();
     }
     socket.on("new_chat_personal", (data) => {
-      console.log("c");
+      // console.log("c");
       setChatHistory(data);
     });
     return () => socket.disconnect();
@@ -439,107 +460,110 @@ export default function Room({ navigation, route }) {
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
+    // console.log(tmpRChat);
     if (item.user_id !== tmpRChat) {
       tmpRChat = item.user_id;
-      return (
-        <View>
-          {user.id !== item.user_id ? (
+    }
+    return (
+      <View>
+        {/* {user.id !== item.user_id ? (
+          <Text
+            size="description"
+            type="bold"
+            style={{
+              paddingBottom: 5,
+              paddingLeft: 20,
+              color: "#464646",
+            }}
+          >
+            {item.name}
+          </Text>
+        ) : null} */}
+
+        {message[index - 1] &&
+        new Date(message[index - 1].time).toLocaleDateString() ===
+          timeStateChat ? null : timeStateChat === timeState ? (
+          <View style={{ alignItems: "center", marginVertical: 5 }}>
             <Text
               size="description"
-              type="bold"
+              type="regular"
               style={{
-                paddingBottom: 5,
-                paddingLeft: 20,
+                padding: 5,
+                borderRadius: 4,
+                backgroundColor: "#F3F3F3",
                 color: "#464646",
               }}
             >
-              {item.name}
+              Hari ini
+            </Text>
+          </View>
+        ) : (
+          <View style={{ alignItems: "center", marginVertical: 5 }}>
+            <Text
+              size="description"
+              type="regular"
+              style={{
+                padding: 5,
+                borderRadius: 4,
+                backgroundColor: "#F3F3F3",
+                color: "#464646",
+              }}
+            >
+              {timeStateChat}
+            </Text>
+          </View>
+        )}
+
+        <View
+          key={`chat_${index}`}
+          style={[
+            styles.item,
+            user.id == item.user_id ? styles.itemOut : styles.itemIn,
+          ]}
+        >
+          {user.id == item.user_id ? (
+            <Text size="small" style={{ marginRight: 5 }}>
+              {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
             </Text>
           ) : null}
-
-          {message[index - 1] &&
-          new Date(message[index - 1].time).toLocaleDateString() ===
-            timeStateChat ? null : timeStateChat === timeState ? (
-            <View style={{ alignItems: "center", marginVertical: 5 }}>
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  padding: 5,
-                  borderRadius: 4,
-                  backgroundColor: "#F3F3F3",
-                  color: "#464646",
-                }}
-              >
-                Hari ini
-              </Text>
-            </View>
+          {item.type == "sticker" ? (
+            <AnimatedPlayer
+              ref={playerRef}
+              // thumbnailSource={
+              //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
+              // }
+              animatedSource={{
+                uri: item.text,
+              }}
+              autoplay={true}
+              loop={true}
+              style={{ width: 100, height: 100 }}
+            />
           ) : (
-            <View style={{ alignItems: "center", marginVertical: 5 }}>
+            <View
+              style={[
+                styles.balloon,
+                user.id == item.user_id
+                  ? {
+                      backgroundColor: "#DAF0F2",
+                      borderTopRightRadius: 0,
+                    }
+                  : {
+                      backgroundColor: "#FFFFFF",
+                      borderTopLeftRadius: 0,
+                    },
+              ]}
+            >
               <Text
                 size="description"
-                type="regular"
                 style={{
-                  padding: 5,
-                  borderRadius: 4,
-                  backgroundColor: "#F3F3F3",
                   color: "#464646",
+                  lineHeight: 18,
                 }}
               >
-                {timeStateChat}
+                {item.text}
               </Text>
-            </View>
-          )}
-
-          <View
-            key={`chat_${index}`}
-            style={[
-              styles.item,
-              user.id == item.user_id ? styles.itemOut : styles.itemIn,
-            ]}
-          >
-            {user.id == item.user_id ? (
-              <Text size="small" style={{ marginRight: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-            {item.type == "sticker" ? (
-              <AnimatedPlayer
-                ref={playerRef}
-                // thumbnailSource={
-                //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
-                // }
-                animatedSource={{
-                  uri: item.text,
-                }}
-                autoplay={true}
-                loop={true}
-                style={{ width: 100, height: 100 }}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.balloon,
-                  user.id == item.user_id
-                    ? {
-                        backgroundColor: "#DAF0F2",
-                        borderTopRightRadius: 0,
-                      }
-                    : {
-                        backgroundColor: "#FFFFFF",
-                        borderTopLeftRadius: 0,
-                      },
-                ]}
-              >
-                <Text
-                  size="description"
-                  style={{
-                    color: "#464646",
-                    lineHeight: 18,
-                  }}
-                >
-                  {item.text}
-                </Text>
+              {item.user_id !== tmpRChat ? (
                 <View
                   style={[
                     styles.arrowContainer,
@@ -592,87 +616,89 @@ export default function Room({ navigation, route }) {
                     />
                   </Svg>
                 </View>
-              </View>
-            )}
-            {user.id !== item.user_id ? (
-              <Text size="small" style={{ marginLeft: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-          </View>
+              ) : null}
+            </View>
+          )}
+          {user.id !== item.user_id ? (
+            <Text size="small" style={{ marginLeft: 5 }}>
+              {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+            </Text>
+          ) : null}
         </View>
-      );
-    } else {
-      return (
-        <View>
-          <View
-            key={`chat_${index}`}
-            style={[
-              styles.item,
-              user.id == item.user_id ? styles.itemOut : styles.itemIn,
-            ]}
-          >
-            {user.id == item.user_id ? (
-              <Text size="small" style={{ marginRight: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-            {item.type == "sticker" ? (
-              <AnimatedPlayer
-                ref={playerRef}
-                // thumbnailSource={
-                //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
-                // }
-                animatedSource={{
-                  uri: item.text,
-                }}
-                autoplay={true}
-                loop={true}
-                style={{ width: 100, height: 100 }}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.balloon,
-                  user.id == item.user_id
-                    ? {
-                        backgroundColor: "#DAF0F2",
-                        borderTopRightRadius: 0,
-                      }
-                    : {
-                        backgroundColor: "#FFFFFF",
-                        borderTopLeftRadius: 0,
-                      },
-                ]}
-              >
-                <Text
-                  size="description"
-                  style={{
-                    color: "#464646",
-                    lineHeight: 18,
-                  }}
-                >
-                  {item.text}
-                </Text>
-                <View
-                  style={[
-                    styles.arrowContainer,
-                    user.id == item.user_id
-                      ? styles.arrowRightContainer
-                      : styles.arrowLeftContainer,
-                  ]}
-                ></View>
-              </View>
-            )}
-            {user.id !== item.user_id ? (
-              <Text size="small" style={{ marginLeft: 5 }}>
-                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-              </Text>
-            ) : null}
-          </View>
-        </View>
-      );
-    }
+      </View>
+    );
+    // } else {
+    //   // console.log("tmrchat");
+    //   return (
+    //     <View>
+    //       <View
+    //         key={`chat_${index}`}
+    //         style={[
+    //           styles.item,
+    //           user.id == item.user_id ? styles.itemOut : styles.itemIn,
+    //         ]}
+    //       >
+    //         {user.id == item.user_id ? (
+    //           <Text size="small" style={{ marginRight: 5 }}>
+    //             {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+    //           </Text>
+    //         ) : null}
+    //         {item.type == "sticker" ? (
+    //           <AnimatedPlayer
+    //             ref={playerRef}
+    //             // thumbnailSource={
+    //             //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
+    //             // }
+    //             animatedSource={{
+    //               uri: item.text,
+    //             }}
+    //             autoplay={true}
+    //             loop={true}
+    //             style={{ width: 100, height: 100 }}
+    //           />
+    //         ) : (
+    //           <View
+    //             style={[
+    //               styles.balloon,
+    //               user.id == item.user_id
+    //                 ? {
+    //                     backgroundColor: "#DAF0F2",
+    //                     borderTopRightRadius: 0,
+    //                   }
+    //                 : {
+    //                     backgroundColor: "#FFFFFF",
+    //                     borderTopLeftRadius: 0,
+    //                   },
+    //             ]}
+    //           >
+    //             <Text
+    //               size="description"
+    //               style={{
+    //                 color: "#464646",
+    //                 lineHeight: 18,
+    //               }}
+    //             >
+    //               {item.text}
+    //             </Text>
+    //             <View
+    //               style={[
+    //                 styles.arrowContainer,
+    //                 user.id == item.user_id
+    //                   ? styles.arrowRightContainer
+    //                   : styles.arrowLeftContainer,
+    //               ]}
+    //             ></View>
+    //           </View>
+    //         )}
+    //         {user.id !== item.user_id ? (
+    //           <Text size="small" style={{ marginLeft: 5 }}>
+    //             {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+    //           </Text>
+    //         ) : null}
+    //       </View>
+    //     </View>
+    //   );
+    // }
   };
 
   const [messages, setMessages] = useState("");
@@ -840,6 +866,7 @@ export default function Room({ navigation, route }) {
                     useSafeArea={useSafeArea}
                 /> */}
       {/* </KeyboardAvoidingView> */}
+
       {keyboardOpenState ? (
         <>
           <KeyboardAvoidingView
@@ -847,11 +874,14 @@ export default function Room({ navigation, route }) {
             keyboardVerticalOffset={Notch ? 90 : 65}
             style={{
               flexDirection: "row",
-              paddingHorizontal: 10,
+              paddingHorizontal: 5,
               alignContent: "center",
               alignItems: "center",
-              paddingVertical: 2,
-              backgroundColor: "#F6F6F6",
+              paddingVertical: 10,
+              marginHorizontal: 13,
+              marginBottom: 13,
+              backgroundColor: "#FFFFFF",
+              borderRadius: 10,
             }}
           >
             {!keyboardOpenState ? (
@@ -859,7 +889,7 @@ export default function Room({ navigation, route }) {
                 text=""
                 type="circle"
                 size="medium"
-                variant="normal"
+                variant="transparent"
                 style={{ width: 35, height: 35 }}
                 // onPress={() => Alert.alert("Sticker Cooming Soon")}
                 // onPress={() => modals()}
@@ -876,10 +906,10 @@ export default function Room({ navigation, route }) {
                   }
                 }
                 style={{
-                  marginRight: 10,
+                  marginRight: 5,
                 }}
               >
-                <Sticker height={35} width={35} />
+                <Emoticon height={35} width={35} />
               </Button>
             ) : (
               <Button
@@ -898,7 +928,7 @@ export default function Room({ navigation, route }) {
                   // KeyboardUtils.onFocus();
                 }}
                 style={{
-                  marginRight: 10,
+                  marginRight: 5,
                 }}
               >
                 <Chat height={13} width={13} />
@@ -908,9 +938,9 @@ export default function Room({ navigation, route }) {
               style={{
                 borderColor: "#D1D1D1",
                 borderWidth: 1,
-                width: width - 120,
+                width: width - 130,
                 alignSelf: "center",
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#f3f3f3",
               }}
             >
               <TextInput
@@ -926,6 +956,7 @@ export default function Room({ navigation, route }) {
                         maxHeight: 100,
                         margin: 10,
                         fontFamily: "Lato-Regular",
+                        backgroundColor: "#f3f3f3",
                       }
                     : {
                         maxHeight: 100,
@@ -933,6 +964,7 @@ export default function Room({ navigation, route }) {
                         marginHorizontal: 10,
                         padding: 0,
                         fontFamily: "Lato-Regular",
+                        backgroundColor: "#f3f3f3",
                       }
                 }
               />
@@ -945,7 +977,7 @@ export default function Room({ navigation, route }) {
               onPress={() => submitChatMessage()}
               style={{ width: 50, height: 50 }}
             >
-              <Send height={35} width={35} />
+              <Send height={40} width={40} />
             </Button>
           </KeyboardAvoidingView>
 
@@ -992,7 +1024,7 @@ export default function Room({ navigation, route }) {
                 marginRight: 5,
               }}
             >
-              <Sticker height={35} width={35} />
+              <Emoticon height={35} width={35} />
             </Button>
           ) : (
             <Button

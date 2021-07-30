@@ -248,7 +248,7 @@ import Errorx from "./files/errorx.svg";
 import Filternewbiru from "./files/filternewbiru.svg";
 import Sticker from "./files/sticker.svg";
 import Message from "./files/message.svg";
-
+import Emoticon from "./files/emot.svg";
 export {
   LikeWhite,
   CommentWhite,
@@ -500,4 +500,5 @@ export {
   Filternewbiru,
   Sticker,
   Message,
+  Emoticon,
 };

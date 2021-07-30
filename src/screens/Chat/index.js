@@ -10,6 +10,7 @@ import {
   Alert,
   StyleSheet,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
@@ -45,19 +46,19 @@ export default function Message({ navigation, route }) {
     tabBarBadge: null,
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      BackHandler.addEventListener(props.navigation.goBack());
-      return true;
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     BackHandler.addEventListener(navigation.goBack());
+  //     return true;
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
 
-    return () => backHandler.remove();
-  }, []);
+  //   return () => backHandler.remove();
+  // }, []);
 
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
