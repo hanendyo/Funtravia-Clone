@@ -464,6 +464,21 @@ export default function Room({ navigation, route }) {
     if (item.user_id !== tmpRChat) {
       tmpRChat = item.user_id;
     }
+
+    let date = null;
+    if (index == 0) {
+      date = timeStateChat;
+    }
+    if (
+      message[index - 1] &&
+      new Date(message[index - 1].time).toLocaleDateString() !== timeStateChat
+    ) {
+      if (timeStateChat === timeState) {
+        date = t("toDay");
+      } else {
+        date = timeStateChat;
+      }
+    }
     return (
       <View>
         {/* {user.id !== item.user_id ? (
@@ -480,7 +495,7 @@ export default function Room({ navigation, route }) {
           </Text>
         ) : null} */}
 
-        {message[index - 1] &&
+        {/* {message[index - 1] &&
         new Date(message[index - 1].time).toLocaleDateString() ===
           timeStateChat ? null : timeStateChat === timeState ? (
           <View style={{ alignItems: "center", marginVertical: 5 }}>
@@ -497,7 +512,8 @@ export default function Room({ navigation, route }) {
               Hari ini
             </Text>
           </View>
-        ) : (
+        ) : ( */}
+        {date ? (
           <View style={{ alignItems: "center", marginVertical: 5 }}>
             <Text
               size="description"
@@ -509,10 +525,11 @@ export default function Room({ navigation, route }) {
                 color: "#464646",
               }}
             >
-              {timeStateChat}
+              {date}
             </Text>
           </View>
-        )}
+        ) : null}
+        {/* )} */}
 
         <View
           key={`chat_${index}`}
