@@ -215,7 +215,6 @@ export function MyProfile({ navigation, route }) {
     return () => {
       scrollY.removeAllListeners();
       headerScrollY.removeAllListeners();
-      backHandler.remove();
     };
   }, [routes, tabIndex]);
 

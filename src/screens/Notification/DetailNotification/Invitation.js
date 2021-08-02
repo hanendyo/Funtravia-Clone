@@ -172,6 +172,8 @@ export default function Invitation({ navigation, token }) {
   let [loadings, setLoadings] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  console.log("datanotif", datanotif);
+
   const CarDetail = (data, dataIten) => {
     navigation.navigate("CarDetail", {
       datacar: data,
@@ -350,6 +352,7 @@ export default function Invitation({ navigation, token }) {
 
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
   };
+
   const accept = async (data) => {
     setLoadings(true);
 
@@ -556,18 +559,25 @@ export default function Invitation({ navigation, token }) {
         datetime.slice(0, 10),
         datenow.toISOString().slice(0, 10)
       );
-    }
-    if (days > 0) {
+    } else if (days >= 0) {
+      if (hrs >= 0) {
+        if (mins >= 0) {
+          if (mins < 0) {
+            return t("justNow");
+          }
+          return mins + " " + t("minutesAgo");
+        }
+        return hrs + " " + t("hoursAgo");
+      }
       return days + " " + t("daysAgo");
     }
-    if (hrs > 0) {
-      return hrs + " " + t("hoursAgo");
-    }
-    if (mins > 0) {
-      return mins + " " + t("minutesAgo");
-    } else {
-      return t("justNow");
-    }
+    //  else if (hrs > 0) {
+    //   return hrs + " " + t("hoursAgo");
+    // } else if (mins > 0) {
+    //   return mins + " " + t("minutesAgo");
+    // } else {
+    //   return t("justNow");
+    // }
   };
 
   if (loadingnotif && datanotif.length < 1) {

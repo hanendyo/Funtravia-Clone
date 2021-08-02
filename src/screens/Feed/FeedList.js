@@ -92,7 +92,7 @@ export default function FeedList({ props, token }) {
   // useScrollToTop(ref);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
-  const [modalLogin, setModalLogin] = useState(true);
+  const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
   const [dataFeed, setDataFeed] = useState([]);
   let [selectedOption, SetOption] = useState({});
@@ -388,14 +388,18 @@ export default function FeedList({ props, token }) {
     }
   };
   const handleOnEndReached = () => {
-    if (dataPost.feed_post_pageing?.page_info.hasNextPage) {
-      return fetchMore({
-        updateQuery: onUpdate,
-        variables: {
-          limit: 3,
-          offset: dataPost.feed_post_pageing.page_info.offset,
-        },
-      });
+    if (status == 0) {
+      if (dataPost.feed_post_pageing?.page_info.hasNextPage) {
+        return fetchMore({
+          updateQuery: onUpdate,
+          variables: {
+            limit: 3,
+            offset: dataPost.feed_post_pageing.page_info.offset,
+          },
+        });
+      }
+    } else {
+      setModalLogin(true);
     }
   };
 
@@ -732,18 +736,50 @@ export default function FeedList({ props, token }) {
     }
   };
 
+  let status = 0;
+
   if (dataFeed?.length > 11) {
     if (!token || token == undefined) {
-      return (
+      status = 1;
+    } else {
+      status = 0;
+    }
+  }
+
+  console.log("status", status);
+  console.log("modalLogin", status);
+
+  useEffect(() => {
+    if (status == 1) {
+      setModalLogin(true);
+    } else {
+      setModalLogin(false);
+    }
+  }, [status]);
+
+  return (
+    <SafeAreaView>
+      {/* {test()} */}
+      <View
+      // style={{
+      //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
+      //   opacity: 0.6,
+      //   position: "absolute",
+      //   width: Dimensions.get("screen").width,
+      //   height: Dimensions.get("screen").height,
+      //   backgroundColor:
+      //     modalmenu || modalmenuother || modalhapus === true ? "#000" : null,
+      // }}
+      >
         <Modal
           useNativeDriver={true}
-          visible={!token || token == undefined ? modalLogin : false}
+          visible={modalLogin}
           onRequestClose={() => true}
           transparent={true}
           animationType="fade"
         >
           <Pressable
-            // onPress={() => setModalLogin(false)}
+            onPress={() => setModalLogin(false)}
             style={{
               width: Dimensions.get("screen").width,
               height: Dimensions.get("screen").height,
@@ -858,26 +894,6 @@ export default function FeedList({ props, token }) {
             </View>
           </View>
         </Modal>
-      );
-    }
-  } else {
-    dataFeed;
-  }
-
-  return (
-    <SafeAreaView>
-      {/* {test()} */}
-      <View
-      // style={{
-      //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
-      //   opacity: 0.6,
-      //   position: "absolute",
-      //   width: Dimensions.get("screen").width,
-      //   height: Dimensions.get("screen").height,
-      //   backgroundColor:
-      //     modalmenu || modalmenuother || modalhapus === true ? "#000" : null,
-      // }}
-      >
         {/* Modal Menu user */}
 
         <Modal
