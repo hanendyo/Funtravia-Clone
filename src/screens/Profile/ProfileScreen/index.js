@@ -72,7 +72,7 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 
-const HeaderHeight = 310 - SafeStatusBar + 75;
+const HeaderHeight = 310 - SafeStatusBar + 55;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
@@ -858,10 +858,8 @@ export default function OtherProfile(props) {
             opacity: imageOpacity,
             // borderWidth: 1,
             justifyContent: "center",
-            // paddingBottom: 10,
-            // borderWidth: 2,
-            // transform: [{ translateY: imageTranslate }],
-            marginTop: 60,
+
+            marginTop: 62,
           }}
         >
           <View
@@ -893,7 +891,7 @@ export default function OtherProfile(props) {
                   borderWidth: 2,
                   borderColor: "#FFF",
                   // position: "absolute",
-                  // top: 70,
+                  top: data.bio == null ? 0 : 5,
                   zIndex: 1,
                   opacity: imageOpacitys,
                   transform: [
