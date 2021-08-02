@@ -37,6 +37,7 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { Keyboard } from "react-native-ui-lib";
 import AnimatedPlayer from "react-native-animated-webp";
+import ChatTypelayout from "./ChatTypelayout";
 
 // import "./CustomKeyboard/demoKeyboards";
 const KeyboardAccessoryView = Keyboard.KeyboardAccessoryView;
@@ -364,11 +365,6 @@ export default function Room({ navigation, route }) {
         JSON.stringify(responseJson.data)
       );
       await setMessage(responseJson.data);
-      await setTimeout(function() {
-        if (flatListRef) {
-          flatListRef.current.scrollToEnd({ animated: true });
-        }
-      }, 250);
     }
   };
 
@@ -396,7 +392,7 @@ export default function Room({ navigation, route }) {
         await socket.emit("message", chatData);
         await setChat("");
         await setTimeout(function() {
-          if (flatListRef) {
+          if (flatListRef !== null && flatListRef.current) {
             flatListRef.current.scrollToEnd({ animated: true });
           }
         }, 1000);
@@ -437,7 +433,7 @@ export default function Room({ navigation, route }) {
       await socket.emit("message", chatData);
       await setChat("");
       await setTimeout(function() {
-        if (flatListRef) {
+        if (flatListRef !== null && flatListRef.current) {
           flatListRef.current.scrollToEnd({ animated: true });
         }
       }, 250);
@@ -455,15 +451,12 @@ export default function Room({ navigation, route }) {
     // }
   };
 
-  let tmpRChat = null;
+  let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
     // console.log(tmpRChat);
-    if (item.user_id !== tmpRChat) {
-      tmpRChat = item.user_id;
-    }
 
     let date = null;
     if (index == 0) {
@@ -479,40 +472,18 @@ export default function Room({ navigation, route }) {
         date = timeStateChat;
       }
     }
+
+    if (message[index - 1] && message[index - 1].user_id == item.user_id) {
+      if (date) {
+        tmpRChat = true;
+      } else {
+        tmpRChat = false;
+      }
+    } else {
+      tmpRChat = true;
+    }
     return (
       <View>
-        {/* {user.id !== item.user_id ? (
-          <Text
-            size="description"
-            type="bold"
-            style={{
-              paddingBottom: 5,
-              paddingLeft: 20,
-              color: "#464646",
-            }}
-          >
-            {item.name}
-          </Text>
-        ) : null} */}
-
-        {/* {message[index - 1] &&
-        new Date(message[index - 1].time).toLocaleDateString() ===
-          timeStateChat ? null : timeStateChat === timeState ? (
-          <View style={{ alignItems: "center", marginVertical: 5 }}>
-            <Text
-              size="description"
-              type="regular"
-              style={{
-                padding: 5,
-                borderRadius: 4,
-                backgroundColor: "#F3F3F3",
-                color: "#464646",
-              }}
-            >
-              Hari ini
-            </Text>
-          </View>
-        ) : ( */}
         {date ? (
           <View style={{ alignItems: "center", marginVertical: 5 }}>
             <Text
@@ -529,7 +500,6 @@ export default function Room({ navigation, route }) {
             </Text>
           </View>
         ) : null}
-        {/* )} */}
 
         <View
           key={`chat_${index}`}
@@ -543,99 +513,12 @@ export default function Room({ navigation, route }) {
               {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
             </Text>
           ) : null}
-          {item.type == "sticker" ? (
-            <AnimatedPlayer
-              ref={playerRef}
-              // thumbnailSource={
-              //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
-              // }
-              animatedSource={{
-                uri: item.text,
-              }}
-              autoplay={true}
-              loop={true}
-              style={{ width: 100, height: 100 }}
-            />
-          ) : (
-            <View
-              style={[
-                styles.balloon,
-                user.id == item.user_id
-                  ? {
-                      backgroundColor: "#DAF0F2",
-                      borderTopRightRadius: 0,
-                    }
-                  : {
-                      backgroundColor: "#FFFFFF",
-                      borderTopLeftRadius: 0,
-                    },
-              ]}
-            >
-              <Text
-                size="description"
-                style={{
-                  color: "#464646",
-                  lineHeight: 18,
-                }}
-              >
-                {item.text}
-              </Text>
-              {item.user_id !== tmpRChat ? (
-                <View
-                  style={[
-                    styles.arrowContainer,
-                    user.id == item.user_id
-                      ? styles.arrowRightContainer
-                      : styles.arrowLeftContainer,
-                  ]}
-                >
-                  <Svg
-                    style={
-                      user.id == item.user_id
-                        ? styles.arrowRight
-                        : styles.arrowLeft
-                    }
-                    height="50"
-                    width="50"
-                  >
-                    <Polygon
-                      points={
-                        user.id == item.user_id
-                          ? "0,01 15,01 5,12"
-                          : "20,01 0,01 12,12"
-                      }
-                      fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-                      stroke="#209FAE"
-                      strokeWidth={0.7}
-                    />
-                  </Svg>
-                  <Svg
-                    style={[
-                      { position: "absolute" },
-                      user.id == item.user_id
-                        ? {
-                            right: moderateScale(-5, 0.5),
-                          }
-                        : {
-                            left: moderateScale(-5, 0.5),
-                          },
-                    ]}
-                    height="50"
-                    width="50"
-                  >
-                    <Polygon
-                      points={
-                        user.id == item.user_id
-                          ? "0,1.3 15,1.1 5,12"
-                          : "20,01 0,01 12,13"
-                      }
-                      fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-                    />
-                  </Svg>
-                </View>
-              ) : null}
-            </View>
-          )}
+          <ChatTypelayout
+            item={item}
+            user_id={user.id}
+            tmpRChat={tmpRChat}
+            navigation={navigation}
+          />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>
               {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
@@ -644,78 +527,6 @@ export default function Room({ navigation, route }) {
         </View>
       </View>
     );
-    // } else {
-    //   // console.log("tmrchat");
-    //   return (
-    //     <View>
-    //       <View
-    //         key={`chat_${index}`}
-    //         style={[
-    //           styles.item,
-    //           user.id == item.user_id ? styles.itemOut : styles.itemIn,
-    //         ]}
-    //       >
-    //         {user.id == item.user_id ? (
-    //           <Text size="small" style={{ marginRight: 5 }}>
-    //             {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-    //           </Text>
-    //         ) : null}
-    //         {item.type == "sticker" ? (
-    //           <AnimatedPlayer
-    //             ref={playerRef}
-    //             // thumbnailSource={
-    //             //     "https://e7.pngegg.com/pngimages/3/737/png-clipart-sticker-graphics-label-decal-sticker-label.png"
-    //             // }
-    //             animatedSource={{
-    //               uri: item.text,
-    //             }}
-    //             autoplay={true}
-    //             loop={true}
-    //             style={{ width: 100, height: 100 }}
-    //           />
-    //         ) : (
-    //           <View
-    //             style={[
-    //               styles.balloon,
-    //               user.id == item.user_id
-    //                 ? {
-    //                     backgroundColor: "#DAF0F2",
-    //                     borderTopRightRadius: 0,
-    //                   }
-    //                 : {
-    //                     backgroundColor: "#FFFFFF",
-    //                     borderTopLeftRadius: 0,
-    //                   },
-    //             ]}
-    //           >
-    //             <Text
-    //               size="description"
-    //               style={{
-    //                 color: "#464646",
-    //                 lineHeight: 18,
-    //               }}
-    //             >
-    //               {item.text}
-    //             </Text>
-    //             <View
-    //               style={[
-    //                 styles.arrowContainer,
-    //                 user.id == item.user_id
-    //                   ? styles.arrowRightContainer
-    //                   : styles.arrowLeftContainer,
-    //               ]}
-    //             ></View>
-    //           </View>
-    //         )}
-    //         {user.id !== item.user_id ? (
-    //           <Text size="small" style={{ marginLeft: 5 }}>
-    //             {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-    //           </Text>
-    //         ) : null}
-    //       </View>
-    //     </View>
-    //   );
-    // }
   };
 
   const [messages, setMessages] = useState("");
@@ -749,6 +560,12 @@ export default function Room({ navigation, route }) {
         <FlatList
           ref={flatListRef}
           data={message}
+          // inverted={true}
+          onContentSizeChange={() => {
+            if (flatListRef !== null && flatListRef.current) {
+              flatListRef.current.scrollToEnd({ animated: false });
+            }
+          }}
           renderItem={RenderChat}
           keyExtractor={(item, index) => `render_${index}`}
           showsVerticalScrollIndicator={false}

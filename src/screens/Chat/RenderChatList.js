@@ -21,6 +21,7 @@ import Ripple from "react-native-material-ripple";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
+  // console.log(dataRes);
   const change = (item) => {
     let change = item.sender_id === user.id ? item.receiver : item.sender;
     return change;
@@ -79,6 +80,40 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
     );
   }
 
+  const RecentView = ({ data }) => {
+    // console.log(data.data.text);
+    if (data.type == "sticker") {
+      return (
+        <Text size="small" type="regular">
+          Sticker
+        </Text>
+      );
+    }
+
+    if (data.type == "tag_destination") {
+      return (
+        <Text size="small" type="regular">
+          Destination
+        </Text>
+      );
+    }
+
+    if (data.type == "tag_post") {
+      return (
+        <Text size="small" type="regular">
+          Post
+        </Text>
+      );
+    }
+
+    return (
+      <Text size="small">
+        <Truncate text={data.text} length={80} />
+        {/* {data.text} */}
+      </Text>
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -120,6 +155,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                         ? item.sender?.picture
                         : item.receiver?.picture,
                   }}
+                  size="xs"
                   style={{
                     width: 50,
                     height: 50,
@@ -149,11 +185,8 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                           item.sender?.last_name ? item.sender?.last_name : ""
                         }`}
                   </Text>
-                  {item.recent ? (
-                    <Text size="small">
-                      <Truncate text={item.recent.text} length={80} />
-                    </Text>
-                  ) : null}
+
+                  {item.recent ? <RecentView data={item.recent} /> : null}
                 </View>
                 {item.recent ? (
                   <View
