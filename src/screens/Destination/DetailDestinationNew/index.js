@@ -32,6 +32,7 @@ import {
   Xhitam,
   TeleponHitam,
   InstagramHitam,
+  Xgray,
 } from "../../../assets/svg";
 import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
@@ -2612,8 +2613,8 @@ const Index = (props) => {
         ></Pressable>
         <View
           style={{
-            width: Dimensions.get("screen").width - 80,
-            marginHorizontal: 40,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
@@ -2627,13 +2628,61 @@ const Index = (props) => {
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
+              width: Dimensions.get("screen").width - 100,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
             }}
           >
-            <TouchableOpacity
+            <Pressable
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                height: 60,
+                width: 60,
+                // borderWidth: 1,
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <View
               style={{
                 paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderBottomWidth: 0.5,
+                borderBottomColor: "d1d1d1",
+                width: "100%",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                type="bold"
+                style={{
+                  marginBottom: 10,
+                }}
+              >
+                {t("share")}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={{
+                // paddingVertical: 10,
+                paddingHorizontal: 20,
+                // borderBottomWidth: 0.5,
+                borderBottomColor: "d1d1d1",
+                width: "100%",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
               }}
               onPress={() => {
                 SetShareModal(false);
@@ -2645,13 +2694,27 @@ const Index = (props) => {
                 });
               }}
             >
-              <Text size="description" type="regular" style={{}}>
-                {t("shareTo")}...
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  marginTop: 20,
+                  marginBottom: 10,
+                }}
+              >
+                {t("send_to")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                // paddingVertical: 10,
+                paddingHorizontal: 20,
+                // borderBottomWidth: 0.5,
+                borderBottomColor: "d1d1d1",
+                width: "100%",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
               }}
               onPress={() => {
                 shareAction({
@@ -2661,8 +2724,43 @@ const Index = (props) => {
                 SetShareModal(false);
               }}
             >
-              <Text size="description" type="regular" style={{}}>
-                {t("Sharekeluar")}
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  margin: 10,
+                }}
+              >
+                {t("shareTo")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingHorizontal: 20,
+                // borderBottomWidth: 0.5,
+                borderBottomColor: "d1d1d1",
+                width: "100%",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                shareAction({
+                  from: "destination",
+                  target: dataDestination.id,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  marginTop: 10,
+                  marginBottom: 20,
+                }}
+              >
+                {t("copyLink")}
               </Text>
             </TouchableOpacity>
           </View>
