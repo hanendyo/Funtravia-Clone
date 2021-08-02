@@ -32,7 +32,7 @@ export default function Settings(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 16,
+      fontSize: 18,
       color: "white",
     },
     headerLeft: () => (

@@ -77,7 +77,7 @@ export default function Asia({ navigation }) {
             style={{
               position: "absolute",
               left: 63,
-              top: -8,
+              top: -10,
               width: 120,
             }}
           >
@@ -85,7 +85,12 @@ export default function Asia({ navigation }) {
               size="label"
               type="regular"
               numberOfLines={1}
-              style={{ color: "#FFF", flex: 1 }}
+              style={{
+                color: "#FFF",
+                flex: 1,
+                fontFamily: "Lato-Bold",
+                fontSize: 16,
+              }}
             >
               Destination
             </Text>
@@ -93,6 +98,8 @@ export default function Asia({ navigation }) {
               <Text
                 style={{
                   color: "white",
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
                 }}
               >
                 {BackUse.current.label}
@@ -316,18 +323,20 @@ export default function Asia({ navigation }) {
 
         <View
           style={{
-            // flexDirection: "row",
             flexWrap: "wrap",
             marginHorizontal: 15,
-            padding: 10,
+            paddingLeft: 10,
+            paddingRight: 10,
+            paddingTop: 5,
+            paddingBottom: 5,
             alignItems: "center",
             borderColor: "#D1D1D1",
             backgroundColor: "#FFF",
             borderRadius: 5,
-            marginHorizontal: 10,
+            flexDirection: "row",
             marginTop: 10,
+            // borderWidth: 1,
             zIndex: 999999,
-            // borderWidth: 3,
             elevation: 1,
             shadowColor: "#d3d3d3",
             shadowOffset: { width: 2, height: 2 },
@@ -337,12 +346,13 @@ export default function Asia({ navigation }) {
         >
           <View
             style={{
-              alignSelf: "flex-start",
+              alignSelf: "center",
             }}
           >
             <Text
               style={{
-                paddingLeft: 10,
+                paddingLeft: 5,
+                paddingRight: 5,
               }}
               size={"description"}
               type={"regular"}
@@ -361,7 +371,6 @@ export default function Asia({ navigation }) {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              // console.log("itemcontinent", item),
               <TouchableOpacity
                 key={index}
                 onPress={() => {
@@ -379,14 +388,9 @@ export default function Asia({ navigation }) {
                   borderColor:
                     subContinent.id === item.id ? "#209FAE" : "#D1D1D1",
                   paddingVertical: 8,
-                  paddingHorizontal: 15,
+                  paddingHorizontal: 10,
                   borderRadius: 5,
                   margin: 5,
-                  // elevation: 1,
-                  // shadowColor: "#d3d3d3",
-                  // shadowOffset: { width: 2, height: 2 },
-                  // shadowOpacity: 1,
-                  // shadowRadius: 2,
                 }}
               >
                 <Text
@@ -404,14 +408,17 @@ export default function Asia({ navigation }) {
         {/* akhir filter region */}
         <View
           style={{
-            height: Dimensions.get("screen").height / 2.5,
+            height: Dimensions.get("screen").height / 3,
+
+            alignContent: "center",
+            alignSelf: "center",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           {Components[`cm${subContinent.id}`]}
         </View>
         <View
-          // behavior={Platform.OS == "ios" ? "margin" : "height"}
-          // keyboardVerticalOffset={Notch ? 350 : 65}
           style={{
             backgroundColor: "#FFF",
             shadowColor: "#d3d3d3",
@@ -436,7 +443,7 @@ export default function Asia({ navigation }) {
         >
           <View
             style={{
-              backgroundColor: "#daf0f2",
+              backgroundColor: "#f6f6f6",
               borderRadius: 5,
               margin: 15,
               flexDirection: "row",

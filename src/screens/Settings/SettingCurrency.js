@@ -170,6 +170,8 @@ export default function SettingCurrency({
               size="label"
               style={{
                 color: "white",
+                fontFamily: "Lato-Bold",
+                fontSize: 18,
               }}
             >
               {t("currency")}
