@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
   LikeRed,
-  ShareBlack,
+  Send_to,
   More,
   LikeBlack,
   CommentBlack,
@@ -1036,10 +1036,10 @@ export default function myfeed(props) {
                     paddingHorizontal: 2,
                   }}
                 >
-                  <ShareBlack height={17} width={17} />
-                  {/* <Text size="small" style={{ marginLeft: 3 }}>
-                                    {t("share")}
-                                </Text> */}
+                  <Send_to height={17} width={17} />
+                  <Text size="description" style={{ marginLeft: 3 }}>
+                    {t("send_to")}
+                  </Text>
                 </Button>
               </View>
               <View

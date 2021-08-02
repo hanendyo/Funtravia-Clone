@@ -249,6 +249,7 @@ import Filternewbiru from "./files/filternewbiru.svg";
 import Sticker from "./files/sticker.svg";
 import Message from "./files/message.svg";
 import Emoticon from "./files/emot.svg";
+import Send_to from "./files/send_to.svg";
 export {
   LikeWhite,
   CommentWhite,
@@ -501,4 +502,5 @@ export {
   Sticker,
   Message,
   Emoticon,
+  Send_to,
 };

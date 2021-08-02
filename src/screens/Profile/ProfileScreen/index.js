@@ -1072,11 +1072,12 @@ export default function OtherProfile(props) {
                         _unfollow(props.route.params.idUser);
                       }}
                       text={t("unfollow")}
-                      variant="normal"
+                      // variant="normal"
                       size="small"
+                      type="icon"
                       color="secondary"
                       style={{
-                        width: "30%",
+                        // width: "30%",
                         // borderColor: "#464646",
                         alignSelf: "flex-end",
                         // margin: 15,

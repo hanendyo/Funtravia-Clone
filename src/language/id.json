@@ -132,7 +132,7 @@
   "others": "Lainnya",
   "ticketAndAccommodation": "Tiket Pesawat dan Akomodasi",
   "people": "Orang",
-  "follow": "Mengikuti",
+  "follow": "Ikuti",
   "recent": "Baru-baru ini",
   "accommodation": "Akomodasi",
   "noDataRecent": "Oops.. Data Tidak Ditemukan",
@@ -400,7 +400,7 @@
   "Sharethisreview": "Bagikan review ini",
   "editprofile": "Sunting Profil",
   "Message": "Pesan",
-  "unfollow": "unfollow",
+  "unfollow": "Berhenti Mengikuti",
   "username": "Nama Pengguna",
   "Usernameisused": "nama pengguna sudah digunakan",
   "success": "Berhasil",
@@ -576,5 +576,7 @@
   "searchin": "Cari di ",
   "rattingnoempty": "Rating tidak boleh kosong",
   "Tripbelumaktif": "Trip belum aktif",
-  "toDay": "hari ini"
+  "toDay": "hari ini",
+  "send_to": "Kirim",
+  "delete_posting": "Hapus Postingan"
 }

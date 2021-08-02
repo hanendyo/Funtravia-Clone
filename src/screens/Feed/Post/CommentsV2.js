@@ -29,7 +29,7 @@ import {
 } from "../../../component";
 import {
   LikeRed,
-  ShareBlack,
+  Send_to,
   More,
   LikeBlack,
   CommentBlack,
@@ -109,6 +109,7 @@ export default function Comments(props) {
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
       color: "white",
+      fontSize: 18,
     },
     headerLeft: () => (
       <Button
@@ -1417,10 +1418,10 @@ export default function Comments(props) {
                     position="left"
                     size="small"
                   >
-                    <ShareBlack height={17} width={17} />
-                    {/* <Text size="small" style={{ marginLeft: 3 }}>
-                        {t("share")}
-                      </Text> */}
+                    <Send_to height={17} width={17} />
+                    <Text size="description" style={{ marginLeft: 3 }}>
+                      {t("send_to")}
+                    </Text>
                   </Button>
                 </View>
                 <View
