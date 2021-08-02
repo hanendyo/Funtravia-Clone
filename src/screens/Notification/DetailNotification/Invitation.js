@@ -24,6 +24,7 @@ import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import IsReadAll from "../../../graphQL/Mutation/Notification/IsReadAll";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const InvitationNotif = gql`
   query {
@@ -171,8 +172,7 @@ export default function Invitation({ navigation, token }) {
   let [dataTrans, setTrans] = useState(DataInformasi);
   let [loadings, setLoadings] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
-  console.log("datanotif", datanotif);
+  let [readall, setreadall] = useState(true);
 
   const CarDetail = (data, dataIten) => {
     navigation.navigate("CarDetail", {
@@ -192,8 +192,6 @@ export default function Invitation({ navigation, token }) {
       },
     },
   });
-
-  let [readall, setreadall] = useState(true);
 
   const _readAll = async () => {
     if (readall) {
@@ -450,7 +448,8 @@ export default function Invitation({ navigation, token }) {
 
   const handle_areaklik_like = (data) => {
     navigation.navigate("FeedStack", {
-      screen: "CommentsById",
+      // screen: "CommentsById",
+      screen: "CommentPost",
       params: {
         post_id: data.like_feed.post_id,
       },
@@ -471,6 +470,7 @@ export default function Invitation({ navigation, token }) {
       updateisread(data.ids);
     }
   };
+
   const handle_areaklik_buddy = (data) => {
     data.itinerary_buddy.isconfrim == true &&
     data.itinerary_buddy.accepted_at != null
@@ -531,8 +531,16 @@ export default function Invitation({ navigation, token }) {
     });
   }, []);
 
+  const [setting, setSetting] = useState(null);
+
+  const loadAsync = async () => {
+    let setsetting = await AsyncStorage.getItem("setting");
+    await setSetting(JSON.parse(setsetting));
+  };
+
   useEffect(() => {
     GetListInvitation();
+    loadAsync();
     const unsubscribe = navigation.addListener("focus", () => {
       GetListInvitation();
     });
@@ -825,15 +833,23 @@ export default function Invitation({ navigation, token }) {
               marginLeft: 10,
             }}
           >
-            <View
+            <Pressable
               style={{
                 width: "15%",
                 alignContent: "flex-start",
-                // borderWidth: 1,
+              }}
+              onPress={() => {
+                item?.itinerary_buddy?.userinvite?.id !== setting?.user?.id
+                  ? navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: item?.itinerary_buddy?.userinvite?.id,
+                      },
+                    })
+                  : null;
               }}
             >
               <FunImage
-                onPress={() => console.log("profil")}
                 style={{
                   height: 50,
                   width: 50,
@@ -852,7 +868,7 @@ export default function Invitation({ navigation, token }) {
                     : default_image
                 }
               />
-            </View>
+            </Pressable>
             <View
               style={{
                 flexDirection: "column",
@@ -1026,11 +1042,20 @@ export default function Invitation({ navigation, token }) {
               marginBottom: 10,
             }}
           >
-            <View
+            <Pressable
+              onPress={() => {
+                item.comment_feed.user.id !== setting?.user?.id
+                  ? navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: item.comment_feed.user.id,
+                      },
+                    })
+                  : null;
+              }}
               style={{
                 width: "15%",
                 alignContent: "flex-start",
-                // borderWidth: 1,
               }}
             >
               <FunImage
@@ -1051,7 +1076,7 @@ export default function Invitation({ navigation, token }) {
                     : default_image
                 }
               />
-            </View>
+            </Pressable>
             <View
               style={{
                 flexDirection: "column",
@@ -1274,12 +1299,21 @@ export default function Invitation({ navigation, token }) {
               // borderColor: /,
             }}
           >
-            <View
+            <Pressable
+              onPress={() => {
+                item?.like_feed?.user?.id !== setting?.user?.id
+                  ? navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: item?.like_feed?.user?.id,
+                      },
+                    })
+                  : null;
+              }}
               style={{
                 alignContent: "flex-start",
                 // marginRight: 10,
                 width: "15%",
-                // borderWidth: 1,
               }}
             >
               <FunImage
@@ -1298,7 +1332,7 @@ export default function Invitation({ navigation, token }) {
                     : default_image
                 }
               />
-            </View>
+            </Pressable>
             <View
               style={{
                 flexDirection: "column",

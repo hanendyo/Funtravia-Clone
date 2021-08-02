@@ -154,6 +154,7 @@ export default function Post(props) {
   const [size, setSize] = useState(null);
 
   const nextFunction = async (type, multi) => {
+    console.log("next", type.substr(0, 5));
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
         RNFetchBlob.fs
@@ -191,49 +192,37 @@ export default function Post(props) {
           ratio: ratio,
         });
       } else if (type.substr(0, 5) === "image") {
-        RNFetchBlob.fs.stat(recent.node.image.uri).then((stats) => {
-          try {
-            let height;
-            let width;
-            if (ratio.label == "L") {
-              width = 1080;
-              height = (2.2 / 3) * 1080;
-            } else if (ratio.label == "P") {
-              width = 1080;
-              height = (5 / 4) * 1080;
-            } else {
-              width = 1080;
-              height = 1080;
-            }
-            ImagePicker.openCropper({
-              path: recent.node.image.uri,
-              width: width,
-              height: height,
-            })
-              .then((image) => {
-                if (image.size > stats.size) {
-                  image.size = stats.size;
-                }
-                props.navigation.navigate("CreatePostScreen", {
-                  location: recent.node.location,
-                  type: recent.node.type.substr(0, 5),
-                  file: image,
-                  token: token,
-                  id_album: "",
-                  title_album: "",
-                  album: "",
-                  id_itin: "",
-                  ratio: ratio,
-                });
-              })
-              .catch((error) => console.log(error));
-          } catch (e) {
-            RNToasty.Show({
-              title: "Canceled",
-              position: "bottom",
+        let height;
+        let width;
+        if (ratio.label == "L") {
+          width = 1080;
+          height = (2.2 / 3) * 1080;
+        } else if (ratio.label == "P") {
+          width = 1080;
+          height = (5 / 4) * 1080;
+        } else {
+          width = 1080;
+          height = 1080;
+        }
+        ImagePicker.openCropper({
+          path: recent.node.image.uri,
+          width: width,
+          height: height,
+        })
+          .then((image) => {
+            props.navigation.navigate("CreatePostScreen", {
+              location: recent.node.location,
+              type: recent.node.type.substr(0, 5),
+              file: image,
+              token: token,
+              id_album: "",
+              title_album: "",
+              album: "",
+              id_itin: "",
+              ratio: ratio,
             });
-          }
-        });
+          })
+          .catch((error) => console.log(error));
       } else {
         return null;
       }

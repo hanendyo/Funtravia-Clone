@@ -79,6 +79,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
+  console.log("props", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
@@ -582,9 +583,13 @@ export default function CreatePost(props) {
                   Platform.OS === "ios" &&
                   keyboardOffset < 300 &&
                   keyboardOffset > 0
-                    ? 120
+                    ? props.route.params.type == "multi"
+                      ? 220
+                      : 120
                     : keyboardOffset > 300
-                    ? 50
+                    ? props.route.params.type == "multi"
+                      ? 140
+                      : 40
                     : 0,
                 backgroundColor: "#FFF",
                 paddingBottom: 20,

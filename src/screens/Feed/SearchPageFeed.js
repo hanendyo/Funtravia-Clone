@@ -27,8 +27,14 @@ import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
 import SearchUserQuery from "../../graphQL/Query/Search/SearchPeopleV2";
 import { API_KEY } from "../../config";
 import RenderGrid from "./RenderGrid";
+import DeviceInfo from "react-native-device-info";
 
 export default function Feed(props) {
+  const Notch = DeviceInfo.hasNotch();
+  const SafeStatusBar = Platform.select({
+    ios: Notch ? 100 : -20,
+    android: StatusBar.currentHeight,
+  });
   const [active, setActive] = useState("personal");
   const [active_src, setActiveSrc] = useState("account");
   const [searchtext, SetSearchtext] = useState("");
@@ -295,7 +301,7 @@ export default function Feed(props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <View style={{ backgroundColor: "#209FAE" }}>
         <View
@@ -330,7 +336,7 @@ export default function Feed(props) {
               alignContent: "center",
               alignItems: "center",
               // borderWidth: 1,
-              width: Dimensions.get("screen").width - 75,
+              width: Dimensions.get("screen").width - 55,
             }}
           >
             <Magnifying
@@ -348,7 +354,7 @@ export default function Feed(props) {
                 color: "#000",
                 height: 40,
                 // width: "70%",
-                width: "77%",
+                width: "90%",
               }}
             />
           </View>
@@ -719,6 +725,6 @@ export default function Feed(props) {
           />
         </>
       )}
-    </SafeAreaView>
+    </View>
   );
 }

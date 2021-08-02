@@ -17,10 +17,11 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   LikeRed,
-  ShareBlack,
+  Send_to,
   More,
   LikeBlack,
   CommentBlack,
+  Xgray,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -176,12 +177,7 @@ export default function FeedList({ props, token }) {
         },
       });
 
-      if (loadingMutationPost) {
-        console.log("loading", loadingMutationPost);
-      }
-
       if (errorMutationPost) {
-        console.log(errorMutationPost);
         RNToasty({
           duration: 1,
           title: t("failPost"),
@@ -192,7 +188,6 @@ export default function FeedList({ props, token }) {
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          console.log("refetch", refetch);
           await refetch();
           setTimeout(() => {
             if (ref) {
@@ -471,10 +466,7 @@ export default function FeedList({ props, token }) {
     await LoadFollowing();
   };
 
-  console.log("dataFeed", dataFeed);
-
   useEffect(() => {
-    console.log("useeefffect");
     refetch();
     loadAsync();
     if (props.route.params) {
@@ -746,9 +738,6 @@ export default function FeedList({ props, token }) {
     }
   }
 
-  console.log("status", status);
-  console.log("modalLogin", status);
-
   useEffect(() => {
     if (status == 1) {
       setModalLogin(true);
@@ -904,7 +893,7 @@ export default function FeedList({ props, token }) {
           animationType="fade"
         >
           <Pressable
-            onPress={() => setModalmenu(false)}
+            // onPress={() => setModalmenu(false)}
             style={{
               width: Dimensions.get("screen").width,
               height: Dimensions.get("screen").height,
@@ -916,8 +905,8 @@ export default function FeedList({ props, token }) {
           ></Pressable>
           <View
             style={{
-              width: Dimensions.get("screen").width - 80,
-              marginHorizontal: 40,
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
               backgroundColor: "#FFF",
               zIndex: 15,
               flexDirection: "row",
@@ -930,13 +919,36 @@ export default function FeedList({ props, token }) {
             <View
               style={{
                 backgroundColor: "white",
-                width: Dimensions.get("screen").width - 80,
-                padding: 20,
+                width: Dimensions.get("screen").width - 100,
+                paddingHorizontal: 20,
+                borderWidth: 1,
               }}
             >
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ marginVertical: 20 }}>{t("share")}</Text>
+              </View>
+              <Pressable
+                onPress={() => setModalmenu(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 55,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => {
                   setModalmenu(false);
@@ -946,13 +958,17 @@ export default function FeedList({ props, token }) {
                   });
                 }}
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginBottom: 10, marginTop: 20 }}
+                >
                   {t("shareTo")}...
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => {
                   setModalmenu(false);
@@ -962,13 +978,17 @@ export default function FeedList({ props, token }) {
                   });
                 }}
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10 }}
+                >
                   {t("copyLink")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => {
                   setModalmenu(false),
@@ -981,13 +1001,17 @@ export default function FeedList({ props, token }) {
                     });
                 }}
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10 }}
+                >
                   {t("edit")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => {
                   setModalmenu(false),
@@ -1005,13 +1029,17 @@ export default function FeedList({ props, token }) {
                     });
                 }}
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10 }}
+                >
                   {t("TagAlbum")}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => {
                   setModalhapus(true);
@@ -1021,7 +1049,11 @@ export default function FeedList({ props, token }) {
                 <Text
                   size="description"
                   type="regular"
-                  style={{ color: "#d75995" }}
+                  style={{
+                    color: "#d75995",
+                    marginVertical: 10,
+                    marginBottom: 20,
+                  }}
                 >
                   {t("delete")}
                 </Text>
@@ -1040,7 +1072,7 @@ export default function FeedList({ props, token }) {
           animationType="fade"
         >
           <Pressable
-            onPress={() => setModalmenuother(false)}
+            // onPress={() => setModalmenuother(false)}
             style={{
               width: Dimensions.get("screen").width,
               height: Dimensions.get("screen").height,
@@ -1052,8 +1084,8 @@ export default function FeedList({ props, token }) {
           ></Pressable>
           <View
             style={{
-              width: Dimensions.get("screen").width - 80,
-              marginHorizontal: 40,
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
               backgroundColor: "#FFF",
               zIndex: 15,
               flexDirection: "row",
@@ -1067,41 +1099,37 @@ export default function FeedList({ props, token }) {
             <View
               style={{
                 backgroundColor: "white",
-                width: Dimensions.get("screen").width - 80,
-                padding: 20,
+                width: Dimensions.get("screen").width - 100,
+                paddingHorizontal: 20,
               }}
             >
-              {/* <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-            }}
-          >
-            <Text
-              size="description"
-              type="regular"
-              style={{ color: "#d75995" }}
-            >
-              {t("reportThisPost")}
-            </Text>
-          </TouchableOpacity> */}
-              {/* <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("blockUser")}
-            </Text>
-          </TouchableOpacity> */}
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ marginVertical: 20 }} type="bold">
+                  {t("share")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setModalmenuother(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 55,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() =>
                   shareAction({
@@ -1110,13 +1138,17 @@ export default function FeedList({ props, token }) {
                   })
                 }
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10, marginTop: 20 }}
+                >
                   {t("shareTo")}...
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => {
                   setModalmenuother(false);
@@ -1126,7 +1158,11 @@ export default function FeedList({ props, token }) {
                   });
                 }}
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10 }}
+                >
                   {t("copyLink")}
                 </Text>
               </TouchableOpacity>
@@ -1138,38 +1174,34 @@ export default function FeedList({ props, token }) {
               ) == -1 ? (
                 <TouchableOpacity
                   style={{
-                    paddingVertical: 10,
+                    alignItems: "center",
                   }}
                   onPress={() => _follow(selectedOption.user.id)}
                 >
-                  <Text size="description" type="regular" style={{}}>
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{ marginVertical: 10, marginBottom: 20 }}
+                  >
                     {t("follow")}
                   </Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   style={{
-                    paddingVertical: 10,
+                    alignItems: "center",
                   }}
                   onPress={() => _unfollow(selectedOption.user.id)}
                 >
-                  <Text size="description" type="regular" style={{}}>
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{ marginVertical: 10, marginBottom: 20 }}
+                  >
                     {t("unfollow")}
                   </Text>
                 </TouchableOpacity>
               )}
-              {/* <TouchableOpacity
-                        style={{
-                            paddingVertical: 10,
-                        }}
-                        onPress={() => {
-                            setModalmenuother(false);
-                        }}
-                    >
-                        <Text size="description" type="regular" style={{}}>
-                            {t("hidePost")}
-                        </Text>
-                    </TouchableOpacity> */}
             </View>
           </View>
         </Modal>
@@ -1195,8 +1227,8 @@ export default function FeedList({ props, token }) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 60,
-              marginHorizontal: 30,
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
               backgroundColor: "#FFF",
               zIndex: 15,
               flexDirection: "row",
@@ -1210,25 +1242,32 @@ export default function FeedList({ props, token }) {
             <View
               style={{
                 backgroundColor: "white",
-                width: Dimensions.get("screen").width - 60,
-                padding: 20,
+                width: Dimensions.get("screen").width - 100,
+                paddingHorizontal: 30,
+                paddingVertical: 30,
                 justifyContent: "center",
               }}
             >
-              <Text style={{ alignSelf: "center" }}>{t("alertHapusPost")}</Text>
-              <View
+              <Text style={{ alignSelf: "center" }} size="title" type="bold">
+                {t("delete_posting")}
+              </Text>
+              <Text
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingVertical: 20,
-                  paddingHorizontal: 40,
+                  alignSelf: "center",
+                  textAlign: "center",
+                  marginTop: 10,
                 }}
+                size="label"
+                type="regular"
               >
+                {t("alertHapusPost")}
+              </Text>
+              <View style={{ marginTop: 20 }}>
                 <Button
                   onPress={() => {
                     _deletepost(selectedOption);
                   }}
-                  color="primary"
+                  color="secondary"
                   text={t("delete")}
                 ></Button>
                 <Button
@@ -1236,8 +1275,7 @@ export default function FeedList({ props, token }) {
                     setModalhapus(false);
                     setModalmenu(true);
                   }}
-                  color="secondary"
-                  variant="bordered"
+                  variant="transparent"
                   text={t("cancel")}
                 ></Button>
               </View>
@@ -1337,7 +1375,7 @@ export default function FeedList({ props, token }) {
                           },
                         });
                   }}
-                  size="title"
+                  size="label"
                   style={{
                     fontFamily: "Lato-Bold",
                     // marginTop: 7,
@@ -1552,10 +1590,10 @@ export default function FeedList({ props, token }) {
                     paddingHorizontal: 2,
                   }}
                 >
-                  <ShareBlack height={17} width={17} />
-                  {/* <Text size="small" style={{ marginLeft: 3 }}>
-										{t("share")}
-									</Text> */}
+                  <Send_to height={17} width={17} />
+                  <Text size="description" style={{ marginLeft: 3 }}>
+                    {t("send_to")}
+                  </Text>
                 </Button>
               </View>
               <View

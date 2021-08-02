@@ -574,5 +574,7 @@
   "searchin": "Search in ",
   "rattingnoempty": "rating can't be empty",
   "Tripbelumaktif": "Trip is not active",
-  "toDay": "Today"
+  "toDay": "Today",
+  "send_to": "Send to",
+  "delete_posting": "delete post"
 }
