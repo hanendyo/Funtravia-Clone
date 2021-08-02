@@ -121,8 +121,6 @@ export default function SearchFeed({ props }) {
           console.log("errorlike", errorLike);
         }
 
-        console.log("repsonse like", response);
-
         if (response?.data?.like_post?.code == 200) {
           // let tempData = [...datas];
           // let index = tempData.findIndex((k) => k["id"] === id);
@@ -132,7 +130,6 @@ export default function SearchFeed({ props }) {
           // tempData.splice(index, 1, tempDatas);
           // setDatas(tempData);
           querySearchPost();
-          console.log("sukses like");
         } else {
           console.log("gagal like");
         }
@@ -144,7 +141,6 @@ export default function SearchFeed({ props }) {
         tempDatas.response_count = tempDatas.response_count - 1;
         tempData.splice(index, 1, tempDatas);
         setDatas(tempData);
-        console.log("e", e);
       }
     } else {
       RNToasty.Show({
@@ -200,8 +196,6 @@ export default function SearchFeed({ props }) {
       });
     }
   };
-
-  console.log("loading post", loadingPost);
 
   return (
     <>

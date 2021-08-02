@@ -281,7 +281,8 @@ export default function RenderVideo({
     return (
       <View>
         <FunImageBackground
-          size="m"
+          // size="m"
+          size={"m" ? "m" : null}
           style={{
             width: (width - 70) / 2,
             height: (width + 70) / 2,

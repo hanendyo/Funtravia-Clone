@@ -46,8 +46,6 @@ export default function PopularDestination({ props }) {
     }
   };
 
-  console.log("loading populer", loading);
-
   return (
     <SafeAreaView>
       {loading ? (
@@ -124,7 +122,7 @@ export default function PopularDestination({ props }) {
                 }
               >
                 <FunImageBackground
-                  size="m"
+                  size={"m" ? "m" : null}
                   source={
                     data &&
                     data.beranda_popularV2[0] &&

@@ -160,7 +160,7 @@ export default function Notification(props) {
       backAction
     );
 
-    return () => backHandler.remove();
+    // return () => backHandler.remove();
   }, []);
   const [
     GetListNotif,
