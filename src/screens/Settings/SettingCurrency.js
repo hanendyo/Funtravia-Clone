@@ -129,31 +129,38 @@ export default function SettingCurrency({
           style={{
             flexDirection: "row",
             alignSelf: "flex-start",
-            alignItems: "center",
-            alignContent: "center",
+            alignItems: "flex-end",
+            alignContent: "flex-end",
             backgroundColor: "#209fae",
-            height: 55,
+            height: 75,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 20 : -20,
+            marginTop: Platform.OS === "ios" ? -20 : -20,
           }}
         >
-          <Button
-            type="circle"
-            color="tertiary"
-            size="large"
-            variant="transparent"
-            onPress={() => setModelSetCurrency(false)}
-          >
-            <Arrowbackwhite width={20} height={20} />
-          </Button>
-          <Text
-            size="label"
+          <View
             style={{
-              color: "white",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            {t("currency")}
-          </Text>
+            <Button
+              type="circle"
+              color="tertiary"
+              size="large"
+              variant="transparent"
+              onPress={() => setModelSetCurrency(false)}
+            >
+              <Arrowbackwhite width={20} height={20} />
+            </Button>
+            <Text
+              size="label"
+              style={{
+                color: "white",
+              }}
+            >
+              {t("currency")}
+            </Text>
+          </View>
         </View>
         <View
           style={{
