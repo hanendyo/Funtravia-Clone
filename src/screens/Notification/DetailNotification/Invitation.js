@@ -833,6 +833,7 @@ export default function Invitation({ navigation, token }) {
               }}
             >
               <FunImage
+                onPress={() => console.log("profil")}
                 style={{
                   height: 50,
                   width: 50,

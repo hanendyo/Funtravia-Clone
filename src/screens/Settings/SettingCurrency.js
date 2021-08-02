@@ -17,11 +17,24 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Arrowbackwhite, Check } from "../../assets/svg";
 import Modal from "react-native-modal";
-import { Text, Button } from "../../component";
+import { Text, Button, StatusBar as StaBar } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@apollo/react-hooks";
 import setCurrency from "../../graphQL/Mutation/Setting/setCurrency";
+
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
+
+const SafeStatusBar = Platform.select({
+  ios: Notch ? -50 : -20,
+  android: -55,
+});
+
+const HeightBar = Platform.select({
+  ios: Notch ? 95 : 70,
+  android: 60,
+});
 
 export default function SettingCurrency({
   modals,
@@ -125,6 +138,7 @@ export default function SettingCurrency({
           height: Dimensions.get("screen").height,
         }}
       >
+        <StaBar backgroundColor="#14646e" barStyle="light-content" />
         <View
           style={{
             flexDirection: "row",
@@ -132,9 +146,9 @@ export default function SettingCurrency({
             alignItems: "flex-end",
             alignContent: "flex-end",
             backgroundColor: "#209fae",
-            height: 75,
+            height: HeightBar,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? -20 : -20,
+            marginTop: SafeStatusBar,
           }}
         >
           <View

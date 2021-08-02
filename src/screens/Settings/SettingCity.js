@@ -23,13 +23,13 @@ import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
 
 const SafeStatusBar = Platform.select({
-  ios: Notch ? -35 : -20,
-  android: -20,
+  ios: Notch ? -50 : -20,
+  android: -55,
 });
 
 const HeightBar = Platform.select({
-  ios: Notch ? 48 : 75,
-  android: 75,
+  ios: Notch ? 95 : 70,
+  android: 60,
 });
 export default function SettingCity({
   modals,
