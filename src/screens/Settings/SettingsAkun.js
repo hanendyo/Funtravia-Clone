@@ -79,7 +79,7 @@ export default function SettingsAkun(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 16,
+      fontSize: 18,
       color: "white",
     },
     headerLeft: () => (
@@ -273,8 +273,6 @@ export default function SettingsAkun(props) {
     }
   };
 
-  console.log("setting :", setting);
-
   // Render all
 
   return (
@@ -418,13 +416,13 @@ export default function SettingsAkun(props) {
                   size="medium"
                   style={{ width: "48%" }}
                   color="tertiary"
-                  text="Cancel"
+                  text={t("cancel")}
                   onPress={() => setModalBirth(false)}
                 ></Button>
                 <Button
                   size="medium"
                   style={{ width: "48%" }}
-                  text="Save"
+                  text={t("save")}
                   onPress={() => hasilDate(date)}
                 ></Button>
               </View>
@@ -565,13 +563,13 @@ export default function SettingsAkun(props) {
                   size="medium"
                   style={{ width: "48%" }}
                   color="tertiary"
-                  text="Cancel"
+                  text={t("cancel")}
                   onPress={() => setModalGender(false)}
                 ></Button>
                 <Button
                   size="medium"
                   style={{ width: "48%" }}
-                  text="Save"
+                  text={t("save")}
                   onPress={() => hasilGender(genders)}
                 ></Button>
               </View>

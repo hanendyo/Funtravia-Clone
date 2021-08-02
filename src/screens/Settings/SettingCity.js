@@ -177,6 +177,8 @@ export default function SettingCity({
               size="label"
               style={{
                 color: "white",
+                fontFamily: "Lato-Bold",
+                fontSize: 18,
               }}
             >
               {t("City")}
