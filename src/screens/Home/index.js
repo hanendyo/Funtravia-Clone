@@ -548,7 +548,10 @@ export default function Home(props) {
                         <TouchableOpacity
                           style={styles.statView}
                           onPress={() =>
-                            props.navigation.navigate("TripPlaning")
+                            props.navigation.navigate("BottomStack", {
+                              screen: "TripBottomPlaning",
+                              params: { screen: "TripPlaning" },
+                            })
                           }
                         >
                           <Text
