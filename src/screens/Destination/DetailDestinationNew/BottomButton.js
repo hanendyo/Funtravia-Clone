@@ -7,7 +7,7 @@ import { RNToasty } from "react-native-toasty";
 
 export default function BottomButton({ routed, props, data, token, addTo }) {
   const { t, i18n } = useTranslation();
-  let lengthartikel = data.article_header.length + 1;
+  let lengthartikel = data?.article_header.length + 1;
   console.log("token", token);
 
   const Ceklogin = () => {

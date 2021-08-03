@@ -44,6 +44,7 @@ import {
   shareAction,
   FunImage,
   FunIcon,
+  CopyLink,
 } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import ListDesAnother from "../../../graphQL/Query/Destination/ListDesAnother";
@@ -128,6 +129,7 @@ const Index = (props) => {
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState(props.route.params.token);
   let [dataDestination, setDataDestination] = useState(data);
+  console.log(dataDestination);
   let [more, setMore] = useState(false);
   // const { t } = useTranslation();
   let [lines, setLines] = useState(3);
@@ -174,6 +176,8 @@ const Index = (props) => {
       </Button>
     ),
   };
+
+  console.log(props.route.params.id);
 
   const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
     variables: { id: props.route.params.id },
@@ -243,7 +247,7 @@ const Index = (props) => {
       setAnotherDes(dataDesAnother.destination_another_place);
     },
   });
-  console.log("data", anotherDes);
+  // console.log("data", anotherDes);
 
   const headerPanResponder = useRef(
     PanResponder.create({
@@ -504,9 +508,8 @@ const Index = (props) => {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
+    loadAsync();
+    const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
   }, [props.navigation]);
 
@@ -1307,7 +1310,7 @@ const Index = (props) => {
   let [indeks, setIndeks] = useState(0);
 
   const ImagesSlider = async (index, data) => {
-    console.log(index, data);
+    // console.log(index, data);
 
     var tempdatas = [];
     var x = 0;
@@ -1438,7 +1441,7 @@ const Index = (props) => {
                   dataDestination.greatfor.map((item, index) => {
                     return (
                       <View
-                        key={index}
+                        key={"desk" + index}
                         style={{
                           marginTop: 10,
                           width: (width - 50) / 4,
@@ -1516,7 +1519,7 @@ const Index = (props) => {
                 {dataDestination &&
                   dataDestination.core_facilities.map((item, index) => (
                     <View
-                      key={index}
+                      key={"fac" + index}
                       style={{
                         marginTop: 10,
                         width: (width - 50) / 4,
@@ -1587,7 +1590,7 @@ const Index = (props) => {
                         },
                       });
                     }}
-                    key={index}
+                    key={"mov" + index}
                     style={{
                       borderRadius: 10,
                       borderWidth: 1,
@@ -1781,7 +1784,7 @@ const Index = (props) => {
                       token: token,
                     })
                   }
-                  key={index}
+                  key={"nir" + index}
                   style={{
                     borderWidth: 1,
                     borderColor: "#F3F3F3",
@@ -1935,7 +1938,7 @@ const Index = (props) => {
                             item.greatfor.map((item, index) => {
                               return index < 3 ? (
                                 <FunIcon
-                                  key={index}
+                                  key={"grat" + index}
                                   icon={item.icon}
                                   fill="#464646"
                                   height={35}
@@ -1996,7 +1999,7 @@ const Index = (props) => {
                 </View>;
               } else {
                 return (
-                  <View key={index}>
+                  <View key={"artikel" + index}>
                     {i.type === "image" ? (
                       <View style={{ marginVertical: 10 }}>
                         {i.title ? (
@@ -2687,10 +2690,7 @@ const Index = (props) => {
               onPress={() => {
                 SetShareModal(false);
                 props.navigation.navigate("SendDestination", {
-                  destination_id: dataDestination.id,
-                  destination_cover: dataDestination.cover,
-                  destination_name: dataDestination.name,
-                  destination_description: dataDestination.description,
+                  destination: dataDestination,
                 });
               }}
             >
@@ -2745,7 +2745,7 @@ const Index = (props) => {
                 alignItems: "center",
               }}
               onPress={() => {
-                shareAction({
+                CopyLink({
                   from: "destination",
                   target: dataDestination.id,
                 });
