@@ -66,16 +66,27 @@ import Ripple from "react-native-material-ripple";
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
-const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
-});
+// const Notch = DeviceInfo.hasNotch();
+// const SafeStatusBar = Platform.select({
+//   ios: Notch ? 48 : 20,
+//   android: StatusBar.currentHeight,
+// });
 
-const HeaderHeight = 310 - SafeStatusBar + 55;
+// const HeaderHeight = 310 - SafeStatusBar + 100;
+// const HeaderHeight = 310 - SafeStatusBar + 55;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
+  let capHeight = useRef();
+  const [captionHeight, setCaptionHeight] = useState(0);
+  const Notch = DeviceInfo.hasNotch();
+  const SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: StatusBar.currentHeight,
+  });
+
+  const HeaderHeight = 310 - SafeStatusBar + 55 + captionHeight;
+
   const { t } = useTranslation();
   let [showside, setshowside] = useState(false);
   let [token, setToken] = useState(null);
@@ -632,17 +643,17 @@ export default function OtherProfile(props) {
           type="circle"
           variant="transparent"
           style={{
-            marginRight: 15,
             zIndex: 99999999,
+            height: 50,
+            width: 50,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Message height={18} width={18}></Message>
+          <Message height={20} width={20}></Message>
         </Ripple>
       ) : null,
   };
-
-  console.log("id", props.route.params.idUser);
-  console.log("token", token);
 
   useEffect(() => {
     QueryFotoAlbum();
@@ -825,7 +836,6 @@ export default function OtherProfile(props) {
 
   const renderHeader = (datas) => {
     let data = { ...datas };
-    // console.log("data", data);
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [0, -HeaderHeight + 55],
@@ -845,7 +855,7 @@ export default function OtherProfile(props) {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          // borderWidth: 1,
+          // borderWidth: 4,
           position: "absolute",
           backgroundColor: "#209fae",
         }}
@@ -1147,9 +1157,13 @@ export default function OtherProfile(props) {
               marginTop: 15,
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
+              // borderWidth: 1,
             }}
           >
             <Text
+              onLayout={(e) => {
+                setCaptionHeight(e.nativeEvent.layout.height);
+              }}
               type="regular"
               size="description"
               style={{ textAlign: "justify" }}
@@ -1781,14 +1795,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    height: HeaderHeight,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    backgroundColor: "#FFA088",
-  },
+  // header: {
+  //   height: HeaderHeight,
+  //   width: "100%",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   position: "absolute",
+  //   backgroundColor: "#FFA088",
+  // },
   label: { fontSize: 16, color: "#222" },
   tab: {
     elevation: 0,

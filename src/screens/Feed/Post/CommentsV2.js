@@ -34,6 +34,7 @@ import {
   LikeBlack,
   CommentBlack,
   Arrowbackwhite,
+  Xgray,
 } from "../../../assets/svg";
 import { gql } from "apollo-boost";
 import ReadMore from "react-native-read-more-text";
@@ -865,10 +866,11 @@ export default function Comments(props) {
         animationType="fade"
       >
         <Pressable
-          onPress={() => setModalMenu(false)}
+          // onPress={() => setModalMenu(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
+            justifyContent: "center",
             opacity: 0.7,
             backgroundColor: "#000",
             position: "absolute",
@@ -877,24 +879,49 @@ export default function Comments(props) {
         ></Pressable>
         <View
           style={{
-            backgroundColor: "#FFF",
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            // backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
-            borderRadius: 3,
+            alignSelf: "center",
+            marginTop: Dimensions.get("screen").height / 10,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
+              width: Dimensions.get("screen").width - 100,
+              paddingHorizontal: 20,
             }}
           >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ marginVertical: 20 }}>{t("share")}</Text>
+            </View>
+            <Pressable
+              onPress={() => setModalMenu(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
               }}
               onPress={() => {
                 setModalMenu(false);
@@ -904,13 +931,17 @@ export default function Comments(props) {
                 });
               }}
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginBottom: 10, marginTop: 20 }}
+              >
                 {t("shareTo")}...
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
               }}
               onPress={() => {
                 setModalMenu(false);
@@ -920,13 +951,17 @@ export default function Comments(props) {
                 });
               }}
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
                 {t("copyLink")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
               }}
               onPress={() => {
                 setModalMenu(false),
@@ -934,17 +969,50 @@ export default function Comments(props) {
                     screen: "EditPost",
                     params: {
                       datapost: selectedOption,
+                      time: duration(selectedOption?.created_at),
                     },
                   });
               }}
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
                 {t("edit")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalMenu(false),
+                  props.navigation.push("FeedStack", {
+                    screen: "CreateListAlbum",
+                    params: {
+                      user_id: setting?.user_id,
+                      token: token,
+                      file: "",
+                      type: "",
+                      location: "",
+                      isAlbum: true,
+                      post_id: selectedOption?.id,
+                    },
+                  });
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
+                {t("TagAlbum")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
               }}
               onPress={() => {
                 setModalHapus(true);
@@ -954,7 +1022,11 @@ export default function Comments(props) {
               <Text
                 size="description"
                 type="regular"
-                style={{ color: "#d75995" }}
+                style={{
+                  color: "#d75995",
+                  marginVertical: 10,
+                  marginBottom: 20,
+                }}
               >
                 {t("delete")}
               </Text>
@@ -962,6 +1034,7 @@ export default function Comments(props) {
           </View>
         </View>
       </Modal>
+
       <Modal
         useNativeDriver={true}
         visible={modalMenuOther}
@@ -970,40 +1043,66 @@ export default function Comments(props) {
         animationType="fade"
       >
         <Pressable
-          onPress={() => setModalMenuOther(false)}
+          // onPress={() => setModalMenuOther(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
-            alignSelf: "center",
+            justifyContent: "center",
             opacity: 0.7,
             backgroundColor: "#000",
             position: "absolute",
+            alignSelf: "center",
           }}
         ></Pressable>
         <View
           style={{
-            // width: Dimensions.get("screen").width - 80,
-            marginHorizontal: 40,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
             alignContent: "center",
+            alignSelf: "center",
             borderRadius: 3,
-            // marginTop: Dimensions.get("screen").height / 3,
+            marginTop: Dimensions.get("screen").height / 10,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
+              width: Dimensions.get("screen").width - 100,
+              paddingHorizontal: 20,
             }}
           >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ marginVertical: 20 }} type="bold">
+                {t("share")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalMenuOther(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
               }}
               onPress={() =>
                 shareAction({
@@ -1012,13 +1111,17 @@ export default function Comments(props) {
                 })
               }
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10, marginTop: 20 }}
+              >
                 {t("shareTo")}...
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
               }}
               onPress={() => {
                 setModalMenuOther(false);
@@ -1028,7 +1131,11 @@ export default function Comments(props) {
                 });
               }}
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
                 {t("copyLink")}
               </Text>
             </TouchableOpacity>
@@ -1039,33 +1146,39 @@ export default function Comments(props) {
               -1 ? (
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => _follow(selectedOption.user.id)}
               >
-                <Text size="description" type="regular" style={{}}>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10, marginBottom: 20 }}
+                >
                   {t("follow")}
                 </Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 style={{
-                  paddingVertical: 10,
+                  alignItems: "center",
                 }}
                 onPress={() => _unfollow(selectedOption.user.id)}
               >
                 <Text
                   size="description"
                   type="regular"
-                  style={{ color: "#d75995" }}
+                  style={{ marginVertical: 10, marginBottom: 20 }}
                 >
-                  {t("stopFollow")}
+                  {t("unfollow")}
                 </Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
       </Modal>
+
+      {/* Modal Hapus */}
       <Modal
         useNativeDriver={true}
         visible={modalHapus}
@@ -1078,68 +1191,57 @@ export default function Comments(props) {
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
-            alignSelf: "center",
+            justifyContent: "center",
             opacity: 0.7,
             backgroundColor: "#000",
+            alignSelf: "center",
             position: "absolute",
           }}
         />
         <View
           style={{
-            marginHorizontal: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
+            alignSelf: "center",
             alignContent: "center",
             borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 10,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              width: Dimensions.get("screen").width - 100,
+              paddingHorizontal: 30,
+              paddingVertical: 30,
               justifyContent: "center",
-              // alignItems: "center",
             }}
           >
-            <Text style={{ alignSelf: "center" }}>{t("alertHapusPost")}</Text>
-            <View
+            <Text style={{ alignSelf: "center" }} size="title" type="bold">
+              {t("delete_posting")}
+            </Text>
+            <Text
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 10,
               }}
+              size="label"
+              type="regular"
             >
+              {t("alertHapusPost")}
+            </Text>
+            <View style={{ marginTop: 20 }}>
               <Button
                 onPress={() => {
-                  setModalHapus(false);
-                  setModalMenu(false);
-                  props.route.params._deletepost(selectedOption);
-                  props.navigation.goBack();
-                  // props.navigation.navigate("BottomStack", {
-                  //   screen: "FeedBottomScreen",
-                  //   params: {
-                  //     screen: "FeedScreen",
-                  //     params: {
-                  //       isItinerary: true,
-                  //       // caption: caption,
-                  //       // latitude: latitude,
-                  //       // longitude: longitude,
-                  //       // location_name: location_name,
-                  //       // albums_id: albums_id,
-                  //       // itinerary_id: itinerary_id,
-                  //       // day_id: day_id,
-                  //       // oriented: oriented,
-                  //       // assets: assets,
-                  //     },
-                  //   },
-                  // });
+                  _deletepost(selectedOption);
                 }}
-                color="primary"
+                color="secondary"
                 text={t("delete")}
               ></Button>
               <Button
@@ -1147,8 +1249,7 @@ export default function Comments(props) {
                   setModalHapus(false);
                   setModalMenu(true);
                 }}
-                color="secondary"
-                variant="bordered"
+                variant="transparent"
                 text={t("cancel")}
               ></Button>
             </View>

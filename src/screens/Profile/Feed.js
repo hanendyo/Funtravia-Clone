@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Dimensions, Alert, Pressable } from "react-native";
+import { View, Dimensions, Alert, Pressable, Modal } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
@@ -9,8 +9,9 @@ import {
   LikeBlack,
   CommentBlack,
   TravelAlbum,
+  Xgray,
 } from "../../assets/svg";
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
 import { useIsFocused } from "@react-navigation/native";
 import { FlatList } from "react-native-gesture-handler";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
@@ -33,7 +34,6 @@ import RenderSinglePhoto from "../Feed/RenderSinglePhoto";
 import ReadMore from "react-native-read-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { RefreshControl } from "react-native";
-import { ActivityIndicator } from "react-native";
 import User_Post from "../../graphQL/Query/Profile/post";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
@@ -52,7 +52,6 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
-  console.log("props profil", props);
   const HeaderComponent = {
     headerTransparent: false,
     // title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
@@ -95,7 +94,6 @@ export default function myfeed(props) {
   const ref = React.useRef(null);
   let [token, setToken] = useState(props?.route?.params?.token);
   let [datauser] = useState(props.route.params.datauser);
-  let data = [];
   let index = props.route.params.index;
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
@@ -106,6 +104,12 @@ export default function myfeed(props) {
   let [muted, setMuted] = useState(true);
   let { width, height } = Dimensions.get("screen");
   let [activelike, setactivelike] = useState(true);
+  let [setting, setSetting] = useState();
+  let [datas, setDatas] = useState(null);
+
+  const loadAsync = async () => {
+    await LoadFollowing();
+  };
 
   const {
     data: datapost,
@@ -126,21 +130,9 @@ export default function myfeed(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => setDatas(datapost?.user_post_paging?.datas),
   });
   let indeks = 0;
-
-  console.log("data", datapost);
-
-  {
-    datapost?.user_post_paging?.datas
-      ? ((data = datapost?.user_post_paging?.datas),
-        props?.route?.params?.post_id
-          ? (indeks = datapost?.user_post_paging?.datas.findIndex(
-              (k) => k.id === props?.route?.params?.post_id
-            ))
-          : null)
-      : null;
-  }
 
   useScrollToTop(ref);
   const onViewRef = React.useRef(({ viewableItems, changed }) => {
@@ -154,6 +146,8 @@ export default function myfeed(props) {
   });
 
   const loadasync = async () => {
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
     let user = await AsyncStorage.getItem("setting");
@@ -161,6 +155,7 @@ export default function myfeed(props) {
     await setuser(user.user);
     await LoadFollowing();
   };
+
   const [
     Mutationdeletepost,
     { loading: loadingdelete, data: datadelete, error: errordelete },
@@ -173,7 +168,7 @@ export default function myfeed(props) {
     },
   });
 
-  const _deletepost = async (datas) => {
+  const _deletepost = async (data) => {
     setModalhapus(false);
     setModalmenu(false);
 
@@ -181,20 +176,17 @@ export default function myfeed(props) {
       try {
         let response = await Mutationdeletepost({
           variables: {
-            post_id: datas.id,
+            post_id: data.id,
           },
         });
 
         if (response.data) {
-          if (
-            response.data.delete_post.code === 200 ||
-            response.data.delete_post.code === "200"
-          ) {
-            var index = data.findIndex((k) => k["id"] === datas.id);
-            if (index > -1) {
-              data.splice(index, 1);
-            }
-            // setdata(tempData);
+          if (response.data.delete_post.code === 200) {
+            const tempdata = [...datas];
+            const index = tempdata.findIndex((k) => k["id"] === data.id);
+            const tempdatas = tempdata[index];
+            tempdata.splice(index, 1);
+            setDatas(tempdata);
           } else {
             throw new Error(response.data.delete_post.message);
           }
@@ -235,26 +227,32 @@ export default function myfeed(props) {
       },
     },
   });
-  // console.log("data", data);
 
   const _liked = async (id, index) => {
-    index = data.findIndex((k) => k["id"] === id);
+    let tempData = [...datas];
+    index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token !== "" && token !== null) {
+        if (token && token !== "" && token !== null) {
           setactivelike(false);
-          let tempData = { ...data[index] };
-          tempData.liked = true;
-          tempData.response_count = tempData.response_count + 1;
-          data.splice(index, 1, tempData);
+          let tempData = [...datas];
+          let tempDatas = { ...tempData[index] };
+          tempDatas.liked = true;
+          tempDatas.response_count = tempDatas.response_count + 1;
+          tempData.splice(index, 1, tempDatas);
+          setDatas(tempData);
           try {
             let response = await MutationLike({
               variables: {
                 post_id: id,
               },
             });
+
+            if (errorLike) {
+              throw new Error("Error");
+            }
             if (response.data) {
-              if (response.data.like_post.code === 200) {
+              if (response.data.like_post.code == 200) {
                 setactivelike(true);
               } else {
                 throw new Error(response.data.like_post.message);
@@ -262,41 +260,39 @@ export default function myfeed(props) {
             }
           } catch (error) {
             setactivelike(true);
-            let tempData = { ...data[index] };
-            tempData.liked = false;
-            tempData.response_count = tempData.response_count + 1;
-            data.splice(index, 1, tempData);
-            // RNToasty.Show({
-            //   duration: 1,
-            //   title: "Somethig wrong",
-            //   position: "bottom",
-            // });
+            let tempData = [...datas];
+            let tempDatas = { ...tempData[index] };
+            tempDatas.liked = false;
+            tempDatas.response_count = tempDatas.response_count - 1;
+            tempData.splice(index, 1, tempDatas);
+            setDatas(tempData);
           }
         } else {
-          setactivelike(true);
-          RNToasty.Show({
-            duration: 1,
-            title: "Please Login",
-            position: "bottom",
-          });
-          props.navigation.push("AuthStack", {
+          props.navigation.navigate("AuthStack", {
             screen: "LoginScreen",
+          });
+          RNToasty.Show({
+            title: t("pleaselogin"),
+            position: "bottom",
           });
         }
       }
     }
   };
 
-  const _unliked = async (id, index, item) => {
-    index = data.findIndex((k) => k["id"] === id);
+  const _unliked = async (id, index) => {
+    let tempData = [...datas];
+    index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        setactivelike(false);
-        if (token !== "" && token !== null) {
-          let tempData = { ...data[index] };
-          tempData.liked = false;
-          tempData.response_count = tempData.response_count - 1;
-          data.splice(index, 1, tempData);
+        if (token && token !== "" && token !== null) {
+          setactivelike(false);
+          let tempData = [...datas];
+          let tempDatas = { ...tempData[index] };
+          tempDatas.liked = false;
+          tempDatas.response_count = tempDatas.response_count - 1;
+          tempData.splice(index, 1, tempDatas);
+          setDatas(tempData);
           try {
             let response = await MutationunLike({
               variables: {
@@ -304,34 +300,35 @@ export default function myfeed(props) {
               },
             });
 
+            if (errorunLike) {
+              throw new Error("Error");
+            }
+
             if (response.data) {
-              if (response.data.unlike_post.code === 200) {
+              if (response.data.unlike_post.code == 200) {
                 setactivelike(true);
               } else {
                 throw new Error(response.data.unlike_post.message);
               }
+
+              // Alert.alert('Succes');
             }
           } catch (error) {
             setactivelike(true);
-            let tempData = { ...data[index] };
-            tempData.liked = true;
-            tempData.response_count = tempData.response_count + 1;
-            data.splice(index, 1, tempData);
-            // RNToasty.Show({
-            //   duration: 1,
-            //   title: "Somethig wrong",
-            //   position: "bottom",
-            // });
+            let tempData = [...datas];
+            let tempDatas = { ...tempData[index] };
+            tempDatas.liked = true;
+            tempDatas.response_count = tempDatas.response_count + 1;
+            tempData.splice(index, 1, tempDatas);
+            setDatas(tempData);
           }
         } else {
-          setactivelike(true);
-          RNToasty.Show({
-            duration: 1,
-            title: "Please Login",
-            position: "bottom",
-          });
-          props.navigation.push("AuthStack", {
+          props.navigation.navigate("AuthStack", {
             screen: "LoginScreen",
+          });
+          RNToasty.Show({
+            title: t("pleaselogin"),
+            position: "bottom",
           });
         }
       }
@@ -387,8 +384,6 @@ export default function myfeed(props) {
       },
     });
   };
-
-  const [selected, setSelected] = useState(new Map());
 
   const OptionOpen = (data) => {
     // data.user = { ...datauser };
@@ -597,6 +592,7 @@ export default function myfeed(props) {
       });
     }
   };
+
   if (loadingpost) {
     return (
       <SkeletonPlaceholder
@@ -717,7 +713,7 @@ export default function myfeed(props) {
     >
       <FlatList
         ref={ref}
-        data={data}
+        data={datas}
         onViewableItemsChanged={onViewRef.current}
         viewabilityConfig={viewConfigRef.current}
         style={
@@ -1129,268 +1125,396 @@ export default function myfeed(props) {
       />
 
       <Modal
-        onBackdropPress={() => {
-          setModalmenu(false);
-        }}
+        useNativeDriver={true}
+        visible={modalmenu}
         onRequestClose={() => setModalmenu(false)}
-        // onDismiss={() => setModalmenu(false)}
-        animationIn="fadeInDown"
-        animationOut="fadeInDown"
-        isVisible={modalmenu}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
+        transparent={true}
+        animationType="fade"
       >
+        <Pressable
+          // onPress={() => setModalmenu(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
         <View
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 80,
-            padding: 20,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 4,
           }}
         >
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenu(false);
-              shareAction({
-                from: "feed",
-                target: selectedOption.id,
-              });
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("shareTo")}...
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenu(false);
-              CopyLink({
-                from: "feed",
-                target: selectedOption.id,
-              });
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("copyLink")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenu(false),
-                props.navigation.push("FeedStack", {
-                  screen: "EditPost",
-                  params: {
-                    datapost: selectedOption,
-                  },
-                });
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("edit")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalhapus(true);
-            }}
-          >
-            <Text
-              size="description"
-              type="regular"
-              style={{ color: "#d75995" }}
-            >
-              {t("delete")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
-      <Modal
-        onBackdropPress={() => {
-          setModalmenuother(false);
-        }}
-        onRequestClose={() => setModalmenuother(false)}
-        onDismiss={() => setModalmenuother(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modalmenuother}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 80,
-            padding: 20,
-          }}
-        >
-          {/* <TouchableOpacity
-        style={{
-          paddingVertical: 10,
-        }}
-        onPress={() => {
-          setModalmenuother(false);
-        }}
-      >
-        <Text
-          size="description"
-          type="regular"
-          style={{ color: "#d75995" }}
-        >
-          {t("reportThisPost")}
-        </Text>
-      </TouchableOpacity> */}
-          {/* <TouchableOpacity
-        style={{
-          paddingVertical: 10,
-        }}
-        onPress={() => {
-          setModalmenuother(false);
-        }}
-      >
-        <Text size="description" type="regular" style={{}}>
-          {t("blockUser")}
-        </Text>
-      </TouchableOpacity> */}
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() =>
-              shareAction({
-                from: "feed",
-                target: selectedOption.id,
-              })
-            }
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("shareTo")}...
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-              CopyLink({
-                from: "feed",
-                target: selectedOption.id,
-              });
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("copyLink")}
-            </Text>
-          </TouchableOpacity>
-          {datasFollow &&
-          selectedOption &&
-          selectedOption.user &&
-          datasFollow.findIndex((k) => k["id"] == selectedOption?.user?.id) ==
-            -1 ? (
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => _follow(selectedOption.user.id)}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("follow")}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => _unfollow(selectedOption.user.id)}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("stopFollow")}
-              </Text>
-            </TouchableOpacity>
-          )}
-          {/* <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => {
-              setModalmenuother(false);
-            }}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("hidePost")}
-            </Text>
-          </TouchableOpacity> */}
-        </View>
-      </Modal>
-
-      <Modal
-        onBackdropPress={() => {
-          setModalhapus(false);
-        }}
-        onRequestClose={() => setModalhapus(false)}
-        onDismiss={() => setModalhapus(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modalhapus}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
-          }}
-        >
-          <Text>{t("alertHapusPost")}</Text>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingVertical: 20,
-              paddingHorizontal: 40,
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              paddingHorizontal: 20,
+              borderWidth: 1,
             }}
           >
-            <Button
-              onPress={() => {
-                _deletepost(selectedOption);
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
               }}
-              color="primary"
-              text={t("delete")}
-            ></Button>
-            <Button
-              onPress={() => {
-                setModalhapus(false);
+            >
+              <Text style={{ marginVertical: 20 }}>{t("share")}</Text>
+            </View>
+            <Pressable
+              onPress={() => setModalmenu(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
               }}
-              color="secondary"
-              variant="bordered"
-              text={t("cancel")}
-            ></Button>
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalmenu(false);
+                shareAction({
+                  from: "feed",
+                  target: selectedOption.id,
+                });
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginBottom: 10, marginTop: 20 }}
+              >
+                {t("shareTo")}...
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalmenu(false);
+                CopyLink({
+                  from: "feed",
+                  target: selectedOption.id,
+                });
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
+                {t("copyLink")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalmenu(false),
+                  props.navigation.push("FeedStack", {
+                    screen: "EditPost",
+                    params: {
+                      datapost: selectedOption,
+                      time: duration(selectedOption?.created_at),
+                    },
+                  });
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
+                {t("edit")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalmenu(false),
+                  props.navigation.push("FeedStack", {
+                    screen: "CreateListAlbum",
+                    params: {
+                      user_id: setting?.user_id,
+                      token: token,
+                      file: "",
+                      type: "",
+                      location: "",
+                      isAlbum: true,
+                      post_id: selectedOption?.id,
+                    },
+                  });
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
+                {t("TagAlbum")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalhapus(true);
+                setModalmenu(false);
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  color: "#d75995",
+                  marginVertical: 10,
+                  marginBottom: 20,
+                }}
+              >
+                {t("delete")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        useNativeDriver={true}
+        visible={modalmenuother}
+        onRequestClose={() => setModalmenuother(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalmenuother(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              paddingHorizontal: 20,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ marginVertical: 20 }} type="bold">
+                {t("share")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalmenuother(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() =>
+                shareAction({
+                  from: "feed",
+                  target: selectedOption.id,
+                })
+              }
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10, marginTop: 20 }}
+              >
+                {t("shareTo")}...
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalmenuother(false);
+                CopyLink({
+                  from: "feed",
+                  target: selectedOption.id,
+                });
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginVertical: 10 }}
+              >
+                {t("copyLink")}
+              </Text>
+            </TouchableOpacity>
+            {datasFollow &&
+            selectedOption &&
+            selectedOption.user &&
+            datasFollow.findIndex((k) => k["id"] == selectedOption?.user?.id) ==
+              -1 ? (
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                }}
+                onPress={() => _follow(selectedOption.user.id)}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10, marginBottom: 20 }}
+                >
+                  {t("follow")}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                }}
+                onPress={() => _unfollow(selectedOption.user.id)}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginVertical: 10, marginBottom: 20 }}
+                >
+                  {t("unfollow")}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Hapus */}
+      <Modal
+        useNativeDriver={true}
+        visible={modalhapus}
+        onRequestClose={() => setModalhapus(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalhapus(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              paddingHorizontal: 30,
+              paddingVertical: 30,
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ alignSelf: "center" }} size="title" type="bold">
+              {t("delete_posting")}
+            </Text>
+            <Text
+              style={{
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 10,
+              }}
+              size="label"
+              type="regular"
+            >
+              {t("alertHapusPost")}
+            </Text>
+            <View style={{ marginTop: 20 }}>
+              <Button
+                onPress={() => {
+                  _deletepost(selectedOption);
+                }}
+                color="secondary"
+                text={t("delete")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  setModalhapus(false);
+                  setModalmenu(true);
+                }}
+                variant="transparent"
+                text={t("cancel")}
+              ></Button>
+            </View>
           </View>
         </View>
       </Modal>
