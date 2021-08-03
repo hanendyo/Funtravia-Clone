@@ -80,6 +80,13 @@ const DestinationById = gql`
         suggestion
         icon
       }
+      destination_type {
+        id
+        name
+        slug
+        suggestion
+        icon
+      }
       core_facilities {
         id
         name

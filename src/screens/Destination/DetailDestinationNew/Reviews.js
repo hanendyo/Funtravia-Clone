@@ -133,7 +133,7 @@ export default function Reviews({ props, id }) {
                     <View style={{ flexDirection: "row" }}>
                       {set.map((value, index) =>
                         item.rating >= value ? (
-                          <Star height={15} width={15} key={index} />
+                          <Star height={15} width={15} key={"rat" + index} />
                         ) : null
                       )}
                       <Text
@@ -183,7 +183,7 @@ export default function Reviews({ props, id }) {
                           if (indexs < 1) {
                             return (
                               <Ripple
-                                key={index}
+                                key={"img_re" + index + indexs}
                                 style={{
                                   justifyContent: "center",
                                   alignItems: "center",
@@ -206,7 +206,7 @@ export default function Reviews({ props, id }) {
                           } else if (item.image.length > 2 && indexs === 1) {
                             return (
                               <Ripple
-                                key={index}
+                                key={"img_re" + index + indexs}
                                 style={{
                                   justifyContent: "center",
                                   alignItems: "center",
@@ -244,7 +244,7 @@ export default function Reviews({ props, id }) {
                           } else if (indexs === 1) {
                             return (
                               <Ripple
-                                key={index}
+                                key={"img_re" + index + indexs}
                                 style={{
                                   justifyContent: "center",
                                   alignItems: "center",
