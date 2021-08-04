@@ -2640,6 +2640,7 @@ const Index = (props) => {
             }}
           >
             <Pressable
+              onPress={() => SetShareModal(false)}
               style={{
                 position: "absolute",
                 right: 0,

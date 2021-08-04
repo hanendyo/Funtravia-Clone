@@ -1509,9 +1509,11 @@ export default function Comments(props) {
 
                   <Button
                     onPress={() =>
-                      shareAction({
-                        from: "feed",
-                        target: dataPost?.id,
+                      props.navigation.push("FeedStack", {
+                        screen: "SendPost",
+                        params: {
+                          post: dataPost,
+                        },
                       })
                     }
                     type="icon"

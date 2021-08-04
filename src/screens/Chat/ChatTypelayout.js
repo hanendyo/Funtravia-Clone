@@ -15,10 +15,21 @@ import {
   StatusBar,
   Errors,
   FunImage,
+  FunImageAutoSize,
 } from "../../component";
+import {
+  Arrowbackwhite,
+  Send,
+  Smile,
+  Chat,
+  Sticker,
+  Emoticon,
+  Star,
+} from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
+import { useTranslation } from "react-i18next";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -27,6 +38,7 @@ export default function ChatTypelayout({
   navigation,
   tmpRChat,
 }) {
+  const { t } = useTranslation();
   const playerRef = useRef(null);
 
   if (item.type == "sticker") {
@@ -55,101 +67,278 @@ export default function ChatTypelayout({
         }}
         style={{
           borderWidth: 1,
-          borderColor: "#F3F3F3",
+          borderColor: "#DAF0F2",
           borderRadius: 10,
-          height: 170,
+          minHeight: 330,
           // padding: 10,
-          marginTop: 10,
-          width: "80%",
-          flexDirection: "row",
-          backgroundColor: "#FFF",
-          shadowColor: "#FFF",
-          shadowOffset: {
-            width: 0,
-            height: 5,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 6.27,
+          marginVertical: 10,
+          width: 250,
+          // flexDirection: "row",
+          backgroundColor: "#F6F6F6",
+          // shadowColor: "#DAF0F2",
+          // shadowOffset: {
+          //   width: 0,
+          //   height: 5,
+          // },
+          // shadowOpacity: 0.1,
+          // shadowRadius: 6.27,
 
-          elevation: 6,
+          // elevation: 6,
         }}
       >
-        <View style={{ justifyContent: "center" }}>
-          {/* Image */}
-          <FunImage
-            source={{ uri: data.cover }}
+        <FunImage
+          source={{ uri: data.cover }}
+          style={{
+            width: 220,
+            height: 220,
+            alignSelf: "center",
+            margin: 15,
+            borderRadius: 10,
+          }}
+        />
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 15,
+            // width: "100%",
+            // alignSelf: "center",
+            // borderBottomWidth: 1,
+            // borderBottomColor: "d75995",
+          }}
+        >
+          {/* Title */}
+          <Text
+            size="small"
+            // type="black"
+            // numberOfLines={1}
+          >
+            {t("checkDestination")}
+          </Text>
+          <Text
+            size="title"
+            type="black"
+            style={{ marginTop: 2 }}
+            // numberOfLines={1}
+          >
+            {data.name}
+          </Text>
+          <View
             style={{
-              width: 150,
-              height: "100%",
-              borderBottomLeftRadius: 10,
-              borderTopLeftRadius: 10,
+              flexDirection: "row",
+              flexWrap: "wrap",
+              marginVertical: 12,
+            }}
+          >
+            {data.destination_type && data.destination_type.length > 0
+              ? data.destination_type.map((value, i) => {
+                  if (i < 3) {
+                    return (
+                      <View
+                        style={{
+                          backgroundColor: "#FFFFFF",
+                          borderRadius: 3,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingHorizontal: 5,
+                          marginRight: 5,
+                          marginBottom: 3,
+                        }}
+                      >
+                        <Text
+                          size="small"
+                          style={{
+                            margin: 5,
+                          }}
+                          type="bold"
+                        >
+                          {value.name}
+                        </Text>
+                      </View>
+                    );
+                  }
+                })
+              : null}
+            {data.rating ? (
+              <View
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 3,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingHorizontal: 5,
+                  marginRight: 5,
+                  marginBottom: 3,
+                }}
+              >
+                <Star width={15} height={15} />
+                <Text
+                  style={{
+                    margin: 5,
+                  }}
+                  size="small"
+                  type="bold"
+                >
+                  {data?.rating}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        </View>
+        <View
+          style={{
+            borderTopWidth: 0.5,
+            borderTopColor: "d1d1d1",
+          }}
+        >
+          <Pressable
+            style={{
+              alignContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              navigation.push("ItineraryStack", {
+                screen: "ItineraryPlaning",
+                params: {
+                  idkiriman: data.id,
+                  Position: "destination",
+                },
+              });
+            }}
+          >
+            <Text
+              type="bold"
+              // size="label"
+              style={{
+                color: "#209FAE",
+                margin: 10,
+              }}
+            >
+              {t("addToMy")}
+            </Text>
+          </Pressable>
+        </View>
+      </Pressable>
+    );
+  }
+  if (item.type == "tag_post") {
+    let data = JSON.parse(item.text);
+    if (data.id) {
+      console.log(data);
+      let scale;
+      switch (data.media_orientation) {
+        case "L":
+          scale = 2.2 / 3;
+          break;
+        case "P":
+          scale = 5 / 4;
+          break;
+        case "S":
+          scale = 1 / 1;
+          break;
+        default:
+          scale = 1 / 1;
+          break;
+      }
+      return (
+        <Pressable
+          onPress={() => {
+            navigation.push("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: data.id,
+                //   comment_id: data.comment_feed.id,
+              },
+            });
+          }}
+          style={{
+            borderWidth: 1,
+            borderColor: "#DAF0F2",
+            borderRadius: 10,
+            paddingVertical: 10,
+            // minHeight: 330,
+            // padding: 10,
+            marginVertical: 10,
+            width: 250,
+            // flexDirection: "row",
+            backgroundColor: "#F6F6F6",
+            // shadowColor: "#DAF0F2",
+            // shadowOffset: {
+            //   width: 0,
+            //   height: 5,
+            // },
+            // shadowOpacity: 0.1,
+            // shadowRadius: 6.27,
+
+            // elevation: 6,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: 10,
+              alignItems: "center",
+            }}
+          >
+            <FunImage
+              source={{ uri: data?.user.picture }}
+              style={{
+                width: 35,
+                height: 35,
+                borderRadius: 18,
+                marginRight: 10,
+              }}
+            />
+            <Text type="bold">
+              {data?.user.first_name} {data?.user.last_name}
+            </Text>
+          </View>
+          <FunImageAutoSize
+            source={{ uri: data?.assets[0].filepath }}
+            style={{
+              width: 250,
+              height: 250 * scale,
+              alignSelf: "center",
+              marginVertical: 10,
+              // borderRadius: 10,
             }}
           />
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              position: "absolute",
-              top: 10,
-              right: 10,
-              left: 10,
-              width: 130,
-              zIndex: 2,
-            }}
-          ></View>
-        </View>
-
-        {/* Keterangan */}
-        {/* rating */}
-        <View
-          style={{
-            flex: 1,
-            padding: 10,
-            height: 170,
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
-            {/* Title */}
-            <Text
-              size="label"
-              type="bold"
-              style={{ marginTop: 2 }}
-              numberOfLines={1}
-            >
-              {data.name}
-            </Text>
-          </View>
-          {/* Great for */}
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              height: 50,
-              marginTop: 10,
-              alignItems: "flex-end",
+              flex: 1,
+              marginHorizontal: 10,
+              // width: "100%",
+              // alignSelf: "center",
+              // borderBottomWidth: 1,
+              // borderBottomColor: "d75995",
             }}
           >
-            <Button
-              onPress={() => {
-                navigation.push("ItineraryStack", {
-                  screen: "ItineraryPlaning",
-                  params: {
-                    idkiriman: data.id,
-                    Position: "destination",
-                  },
-                });
-              }}
-              size="small"
-              text={"Add"}
-              // style={{ marginTop: 15 }}
-            />
+            {/* Caption */}
+            {data.caption ? (
+              <Text numberOfLines={2} style={{}}>
+                <Text
+                  // size="title"
+                  type="black"
+                  style={{}}
+                  // numberOfLines={1}
+                >
+                  {data.user.first_name} {data.user.last_name}{" "}
+                </Text>
+                <Text
+                  // size="title"
+                  // type="black"
+                  style={{}}
+                  // numberOfLines={1}
+                >
+                  {data.caption}
+                </Text>
+              </Text>
+            ) : null}
           </View>
-        </View>
-      </Pressable>
-    );
+        </Pressable>
+      );
+    } else {
+      return null;
+    }
   }
 
   return (

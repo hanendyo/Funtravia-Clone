@@ -176,7 +176,7 @@ export default function FeedList({ props, token }) {
           assets: props?.route?.params?.assets,
         },
       });
-
+      console.log("response", response);
       if (errorMutationPost) {
         RNToasty({
           duration: 1,
@@ -184,10 +184,10 @@ export default function FeedList({ props, token }) {
           position: "bottom",
         });
       }
-      console.log("response", response);
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
+          // console.log('masuk')
           await refetch();
           setTimeout(() => {
             if (ref) {
@@ -931,7 +931,7 @@ export default function FeedList({ props, token }) {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ marginVertical: 20 }}>{t("share")}</Text>
+                <Text style={{ marginVertical: 20 }}>{t("option")}</Text>
               </View>
               <Pressable
                 onPress={() => setModalmenu(false)}
@@ -1313,7 +1313,7 @@ export default function FeedList({ props, token }) {
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
-              paddingBottom: 25,
+              // paddingBottom: 5,
             }}
             key={index}
           >
@@ -1478,6 +1478,7 @@ export default function FeedList({ props, token }) {
                 width: "100%",
                 backgroundColor: "white",
                 marginTop: 17,
+                borderRadius: 20,
               }}
             >
               <View
@@ -1576,9 +1577,11 @@ export default function FeedList({ props, token }) {
 
                 <Button
                   onPress={() =>
-                    shareAction({
-                      from: "feed",
-                      target: item.id,
+                    props.navigation.push("FeedStack", {
+                      screen: "SendPost",
+                      params: {
+                        post: item,
+                      },
                     })
                   }
                   type="icon"
@@ -1676,32 +1679,39 @@ export default function FeedList({ props, token }) {
                     ) : null}
                   </View>
                 ) : item?.caption ? (
-                  <ReadMore
-                    numberOfLines={3}
-                    renderTruncatedFooter={ReadMorehendle}
-                    renderRevealedFooter={ReadLesshendle}
-                    // onReady={this._handleTextReady}
+                  <View
+                    style={{
+                      marginBottom: 8,
+                    }}
                   >
-                    <Text
-                      size="label"
-                      style={{
-                        textAlign: "left",
-                        lineHeight: 20,
-                      }}
+                    <ReadMore
+                      numberOfLines={3}
+                      renderTruncatedFooter={ReadMorehendle}
+                      renderRevealedFooter={ReadLesshendle}
+                      // onReady={this._handleTextReady}
                     >
                       <Text
-                        type="bold"
                         size="label"
                         style={{
-                          marginRight: 5,
+                          textAlign: "left",
+                          lineHeight: 20,
+                          marginBottom: 10,
                         }}
                       >
-                        {item.user.first_name}{" "}
-                        {item.user.first_name ? item.user.last_name : null}{" "}
+                        <Text
+                          type="bold"
+                          size="label"
+                          style={{
+                            marginRight: 5,
+                          }}
+                        >
+                          {item.user.first_name}{" "}
+                          {item.user.first_name ? item.user.last_name : null}{" "}
+                        </Text>
+                        {item?.caption}
                       </Text>
-                      {item?.caption}
-                    </Text>
-                  </ReadMore>
+                    </ReadMore>
+                  </View>
                 ) : null}
               </View>
             </View>

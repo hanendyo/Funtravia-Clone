@@ -364,7 +364,7 @@ export default function myfeed(props) {
   };
 
   const countKoment = (id) => {
-    const tempd = [...data];
+    const tempd = [...datas];
     const index = tempd.findIndex((k) => k["id"] === id);
     tempd[index].comment_count = tempd[index].comment_count + 1;
   };
@@ -940,7 +940,7 @@ export default function myfeed(props) {
                 >
                   {item.liked ? (
                     <Button
-                      onPress={() => _unliked(item.id, index, item)}
+                      onPress={() => _unliked(item.id, index)}
                       type="icon"
                       // variant="transparent"
                       position="left"
@@ -968,7 +968,7 @@ export default function myfeed(props) {
                     </Button>
                   ) : (
                     <Button
-                      onPress={() => _liked(item.id, index, data)}
+                      onPress={() => _liked(item.id, index)}
                       type="icon"
                       position="left"
                       size="small"
@@ -1018,9 +1018,11 @@ export default function myfeed(props) {
 
                 <Button
                   onPress={() =>
-                    shareAction({
-                      from: "feed",
-                      target: item.id,
+                    props.navigation.push("FeedStack", {
+                      screen: "SendPost",
+                      params: {
+                        post: item,
+                      },
                     })
                   }
                   type="icon"
@@ -1348,7 +1350,7 @@ export default function myfeed(props) {
               }}
             >
               <Text style={{ marginVertical: 20 }} type="bold">
-                {t("share")}
+                {t("option")}
               </Text>
             </View>
             <Pressable

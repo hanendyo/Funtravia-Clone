@@ -401,7 +401,7 @@
   "unfollow": "Unfollow",
   "username": "Username",
   "Usernameisused": "username isn’t available, please try another",
-  "success": "success",
+  "success": "Success",
   "justNow": "just now",
   "yearsAgo": "years ago",
   "daysAgo": "days ago",
@@ -577,5 +577,8 @@
   "toDay": "Today",
   "send_to": "Send to",
   "delete_posting": "delete post",
-  "continent": "Continent"
+  "continent": "Continent",
+  "checkDestination": "Check this cool destination!",
+  "successfullySent": "Successfully sent",
+  "failSomethingwrong": "Failed, something went wrong!"
 }
