@@ -9,6 +9,8 @@ import {
   ToastAndroid,
   Alert,
   Modal as ModalRN,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +19,7 @@ import {
   Arrowbackwhite,
   Nextpremier,
 } from "../../assets/svg";
-import { calendar_blue } from "../../assets/png";
+import { calendar_blue, Bg_soon } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button, CustomImage } from "../../component";
@@ -54,6 +56,7 @@ export default function SettingsAkun(props) {
   let [genders, setGender] = useState(props.route.params.setting?.user.gender);
   let [date, setDate] = useState(props.route.params.setting?.user?.birth_date);
   let [searchCity, setSearchCity] = useState("");
+  let [soon, setSoon] = useState(false);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -282,6 +285,74 @@ export default function SettingsAkun(props) {
           backgroundColor: "#F6F6F6",
         }}
       >
+        {/* Modal Comming Soon */}
+        <ModalRN
+          useNativeDriver={true}
+          visible={soon}
+          onRequestClose={() => setSoon(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            // onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 3,
+              marginTop: Dimensions.get("screen").height / 4,
+            }}
+          >
+            <View
+              style={{
+                // backgroundColor: "white",
+                // width: Dimensions.get("screen").width - 100,
+                padding: 20,
+                paddingHorizontal: 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                source={Bg_soon}
+                style={{
+                  height: Dimensions.get("screen").width - 180,
+                  width: Dimensions.get("screen").width - 110,
+                  position: "absolute",
+                }}
+              />
+              <Text type="bold" size="h5">
+                {t("comingSoon")}!
+              </Text>
+              <Text type="regular" size="label" style={{ marginTop: 5 }}>
+                {t("soonUpdate")}.
+              </Text>
+              <Button
+                text={"OK"}
+                style={{
+                  marginTop: 20,
+                  width: Dimensions.get("screen").width - 300,
+                }}
+                type="box"
+                onPress={() => setSoon(false)}
+              ></Button>
+            </View>
+          </View>
+        </ModalRN>
+
         {/*Modal Email */}
         <View style={styles.centeredView}>
           <Modal
@@ -954,7 +1025,7 @@ export default function SettingsAkun(props) {
             ) : (
               <Button
                 style={{
-                  width: Dimensions.get("screen").width * 0.9,
+                  width: Dimensions.get("screen").width - 30,
                   paddingHorizontal: 10,
                 }}
                 type="box"
@@ -962,29 +1033,17 @@ export default function SettingsAkun(props) {
                 color="tertiary"
                 text={t("addPhoneNumber")}
                 // onPress={() => props.navigation.navigate("SettingPhone")}
-                onPress={() => {
-                  RNToasty.Show({
-                    title: "Coming Soon",
-                    position: "bottom",
-                  });
-                }}
+                onPress={() => setSoon(true)}
               />
             )}
           </View>
           {setting && setting.user && setting.user.phone ? (
-            <View style={{ justifyContent: "center" }}>
-              <OptionsVertBlack
-                width={15}
-                height={15}
-                onPress={() => {
-                  // setModalEmail(true);
-                  RNToasty.Show({
-                    title: "Coming Soon",
-                    position: "bottom",
-                  });
-                }}
-              />
-            </View>
+            <Pressable
+              style={{ justifyContent: "center" }}
+              onPress={() => setSoon(true)}
+            >
+              <OptionsVertBlack width={15} height={15} />
+            </Pressable>
           ) : null}
         </View>
         <Pressable

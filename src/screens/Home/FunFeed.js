@@ -50,8 +50,8 @@ export default function SearchFeed({ props }) {
     setuser(user.user);
   };
   useEffect(() => {
-    querySearchPost();
     const feedasync = props.navigation.addListener("focus", () => {
+      querySearchPost();
       loadAsync();
     });
     return feedasync;
@@ -199,41 +199,7 @@ export default function SearchFeed({ props }) {
 
   return (
     <>
-      {loadingPost ? (
-        <SkeletonPlaceholder>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginHorizontal: 20,
-              width: Dimensions.get("screen").width - 20,
-              marginVertical: 10,
-            }}
-          >
-            <View
-              style={{
-                height: Dimensions.get("screen").width / 2,
-                width: Dimensions.get("screen").width / 2.45,
-                marginRight: 5,
-              }}
-            />
-            <View
-              style={{
-                height: Dimensions.get("screen").width / 2,
-                width: Dimensions.get("screen").width / 2.45,
-                marginRight: 5,
-              }}
-            />
-            <View
-              style={{
-                height: Dimensions.get("screen").width / 2,
-                width: Dimensions.get("screen").width / 2.45,
-                marginRight: 5,
-              }}
-            />
-          </View>
-        </SkeletonPlaceholder>
-      ) : datas && datas.length > 0 ? (
+      {datas && datas.length > 0 ? (
         <FlatList
           contentContainerStyle={{
             marginTop: 10,

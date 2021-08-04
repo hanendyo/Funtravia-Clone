@@ -580,5 +580,8 @@
   "continent": "Continent",
   "checkDestination": "Check this cool destination!",
   "successfullySent": "Successfully sent",
-  "failSomethingwrong": "Failed, something went wrong!"
+  "failSomethingwrong": "Failed, something went wrong!",
+  "soonUpdate": "Wait for the update soon",
+  "weeekago": "week ago",
+  "option": "Option"
 }
