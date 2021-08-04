@@ -105,3 +105,4 @@ export const Eventcover = require("./files/Eventcover.png");
 export const OnBoard_1 = require("./files/OnBoard-1.png");
 export const OnBoard_2 = require("./files/OnBoard-2.png");
 export const OnBoard_3 = require("./files/OnBoard-3.png");
+export const Bg_soon = require("./files/bg_soon.png");

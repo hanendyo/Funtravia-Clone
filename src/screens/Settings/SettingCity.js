@@ -6,9 +6,10 @@ import {
   Alert,
   Platform,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Arrowbackwhite, IdFlag, Check } from "../../assets/svg";
+import { Arrowbackwhite, IdFlag, Check, Search } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, StatusBar as StaBar } from "../../component";
 import Ripple from "react-native-material-ripple";
@@ -44,19 +45,22 @@ export default function SettingCity({
   let [datacity, setdataCity] = useState(data);
   let [city, setCity] = useState("");
   let slider = useRef();
-  const pushselected = () => {
-    if (selected?.cities !== null) {
-      var tempData = [...datacity];
-      for (var i of tempData) {
-        i.selected = false;
-      }
-      var index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
-      if (index >= 0) {
-        tempData[index].selected = true;
-      }
-      setdataCity(tempData);
-    }
-  };
+  let flatListRef = useRef();
+  let [indexCity, setIndexCity] = useState(0);
+  // const pushselected = () => {
+  //   if (selected?.cities !== null) {
+  //     var tempData = [...datacity];
+  //     for (var i of tempData) {
+  //       i.selected = false;
+  //     }
+  //     let index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
+  //     setIndexCity(index);
+  //     if (index >= 0) {
+  //       tempData[index].selected = true;
+  //     }
+  //     setdataCity(tempData);
+  //   }
+  // };
 
   const [
     querycity,
@@ -67,6 +71,7 @@ export default function SettingCity({
       keyword: city,
       countries_id: selected?.countries?.id,
     },
+    onCompleted: () => setdataCity(dataKota.cities_search),
   });
 
   const [
@@ -118,8 +123,15 @@ export default function SettingCity({
   };
 
   useEffect(() => {
-    pushselected();
+    // pushselected();
     querycity();
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("flatListRef", flatListRef);
+      // slider.current.scrollToIndex({ animate: true, index: 10 });
+    }, 800);
   }, []);
 
   return (
@@ -158,7 +170,8 @@ export default function SettingCity({
             marginTop: SafeStatusBar,
           }}
         >
-          <View
+          <Pressable
+            onPress={() => setModalCity(false)}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -183,7 +196,7 @@ export default function SettingCity({
             >
               {t("City")}
             </Text>
-          </View>
+          </Pressable>
         </View>
         <View
           style={{
@@ -193,23 +206,33 @@ export default function SettingCity({
             paddingBottom: 20,
           }}
         >
-          <View style={{ height: 50, width: "100%", elevation: 1 }}>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 40,
+              height: 35,
+              elevation: 1,
+              marginTop: 10,
+              flexDirection: "row",
+              marginHorizontal: 20,
+              backgroundColor: "#f1f1f1",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+            }}
+          >
+            <Search height={15} width={15} style={{ marginLeft: 10 }} />
             <TextInput
               id="search"
               style={{
-                backgroundColor: "#F1F1F1",
-                height: "70%",
-                width: Dimensions.get("screen").width * 0.9,
-                marginHorizontal: 15,
-                marginTop: 5,
-                borderRadius: 5,
-                paddingLeft: 20,
+                flex: 1,
+                paddingLeft: 10,
               }}
               onChangeText={(e) => setCity(e)}
+              onSubmitEditing={(e) => setCity(e)}
               placeholder={t("Search")}
             />
           </View>
-          <View
+          {/* <View
             style={{
               height: 40,
               width: "100%",
@@ -233,7 +256,7 @@ export default function SettingCity({
                 <Check width={20} height={15} />
               </>
             ) : null}
-          </View>
+          </View> */}
           {loadingKota ? (
             <View style={{ paddingVertical: 20 }}>
               <ActivityIndicator
@@ -244,7 +267,7 @@ export default function SettingCity({
             </View>
           ) : dataKota?.cities_search.length > 0 ? (
             <FlatList
-              ref={slider}
+              ref={flatListRef}
               data={dataKota?.cities_search}
               // stickyHeaderIndices={[0]}
               renderItem={({ item }) => (
@@ -254,7 +277,8 @@ export default function SettingCity({
                     paddingVertical: 15,
                     paddingHorizontal: 20,
                     borderBottomWidth: 0.5,
-                    borderBottomColor: "#D1D1D1",
+                    borderBottomColor:
+                      selected?.cities?.id == item.id ? "#209fae" : "#D1D1D1",
                     flexDirection: "row",
                     alignContent: "center",
                     alignItems: "center",
@@ -267,7 +291,14 @@ export default function SettingCity({
                       elevation: 1,
                     }}
                   >
-                    <Text size="description">
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{
+                        color:
+                          selected?.cities?.id == item.id ? "#209fae" : "#000",
+                      }}
+                    >
                       {item.name
                         .toString()
                         .toLowerCase()
@@ -277,7 +308,7 @@ export default function SettingCity({
                     </Text>
                   </View>
                   <View>
-                    {item.selected && item.selected == true ? (
+                    {selected?.cities?.id == item.id ? (
                       <Check width={20} height={15} />
                     ) : null}
                   </View>

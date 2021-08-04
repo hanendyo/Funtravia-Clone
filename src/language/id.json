@@ -582,5 +582,8 @@
   "continent": "Benua",
   "checkDestination": "Lihat destination keren ini!",
   "successfullySent": "Berhasil dikirim",
-  "failSomethingwrong": "Gagal, ada yang salah!"
+  "failSomethingwrong": "Gagal, ada yang salah!",
+  "soonUpdate": "Ditunggu updatenya segera",
+  "weeekago": "minggu yang lalu",
+  "option": "Opsi"
 }

@@ -51,11 +51,11 @@ const fontSize = StyleSheet.create({
   readable: { fontSize: 14 },
   label: { fontSize: 14 },
   title: { fontSize: 16 },
-  h5: { fontSize: 22 },
-  h4: { fontSize: 28 },
-  h3: { fontSize: 34 },
-  h2: { fontSize: 46 },
-  h1: { fontSize: 62 },
+  h5: { fontSize: 20 },
+  h4: { fontSize: 26 },
+  h3: { fontSize: 32 },
+  h2: { fontSize: 44 },
+  h1: { fontSize: 60 },
 });
 
 const fontType = StyleSheet.create({

@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   BackHandler,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -152,7 +153,6 @@ export default function Comments(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     if (props?.route?.params?.data) {
-      console.log("feed");
       setDataPost({ ...props?.route?.params?.data });
       setIdPost(props?.route?.params?.data?.id);
     } else {
@@ -445,8 +445,6 @@ export default function Comments(props) {
           },
         });
 
-        console.log("response delete di comment", response);
-
         if (response.data) {
           if (response.data.delete_post.code == 200) {
             // props.navigation.goBack();
@@ -598,20 +596,14 @@ export default function Comments(props) {
         Keyboard.dismiss();
         setStatusText("");
         try {
-          console.log("comment before");
-          console.log("posy_id", id);
-          console.log("text", text);
           let response = await MutationComment({
             variables: {
               post_id: id,
               text: text,
             },
           });
-          console.log("comment after");
 
-          console.log("response", response);
           if (errorcmnt) {
-            console.log("error", errorcmnt);
             throw new Error("Error Input");
           }
           if (response.data) {
@@ -623,9 +615,13 @@ export default function Comments(props) {
               tempData[idx].is_send = true;
               setDataComment(tempData);
               scroll_to();
-              console.log("count", props?.route?.params?.countKoment);
-              if (props?.route?.params?.countKoment) {
-                props?.route?.params?.countKoment(tempDataPost.id);
+              console.log("id", tempDataPost.id);
+              try {
+                if (props?.route?.params?.countKoment) {
+                  props?.route?.params?.countKoment(tempDataPost.id);
+                }
+              } catch (err) {
+                console.log("err", err);
               }
             } else {
               throw new Error(response.data.comment_post.message);
@@ -706,7 +702,6 @@ export default function Comments(props) {
           }
         }
       } catch (error) {
-        // console.log(error);
         RNToasty.Show({
           title: "Gagal unfollow",
           position: "bottom",
@@ -747,7 +742,6 @@ export default function Comments(props) {
           }
         }
       } catch (error) {
-        // console.log(error);
         RNToasty.Show({
           title: "Gagal follow",
           position: "bottom",
@@ -904,7 +898,7 @@ export default function Comments(props) {
                 alignItems: "center",
               }}
             >
-              <Text style={{ marginVertical: 20 }}>{t("share")}</Text>
+              <Text style={{ marginVertical: 20 }}>{t("option")}</Text>
             </View>
             <Pressable
               onPress={() => setModalMenu(false)}
@@ -1084,7 +1078,7 @@ export default function Comments(props) {
               }}
             >
               <Text style={{ marginVertical: 20 }} type="bold">
-                {t("share")}
+                {t("option")}
               </Text>
             </View>
             <Pressable
@@ -1653,11 +1647,15 @@ export default function Comments(props) {
               }
               maxLength={1000}
               style={{
-                width: Dimensions.get("screen").width - 130,
-                marginLeft: 20,
+                width: Dimensions.get("screen").width - 150,
+                // textAlignVertical: "top",
+                marginLeft: 40,
                 fontFamily: "Lato-Regular",
+                maxHeight: 100,
+                marginBottom: Platform.OS == "ios" ? 5 : 0,
               }}
               onChangeText={(text) => setStatusText(text)}
+              onSubmitEditing={(text) => setStatusText(text)}
               value={statusText}
             />
             <Pressable

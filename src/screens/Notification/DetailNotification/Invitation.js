@@ -181,6 +181,8 @@ export default function Invitation({ navigation, token }) {
     });
   };
 
+  console.log("datanotif", datanotif);
+
   const [
     mutationAllIsRead,
     { loading: loadingisallread, data: dataisallread, error: errorisallread },
@@ -548,44 +550,33 @@ export default function Invitation({ navigation, token }) {
   }, [navigation]);
 
   const duration = (datetime) => {
+    datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
-    var datenow = new Date();
-    var date2 = datenow.getTime();
+    var date2 = new Date().getTime();
     var msec = date2 - date1;
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);
     var days = Math.floor(hrs / 24);
-    // var weeks = Math.floor(hrs / 7);
+    var weeks = Math.floor(days / 7);
+    var month = Math.floor(days / 30);
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
     hrs = hrs % 24;
-    // if (yrs > 0) {
-    // 	return yrs + ' ' + t('yearsAgo');
-    // }
-    if (days > 1) {
-      return dateFormatForNotif(
-        datetime.slice(0, 10),
-        datenow.toISOString().slice(0, 10)
-      );
-    } else if (days >= 0) {
-      if (hrs >= 0) {
-        if (mins >= 0) {
-          if (mins < 0) {
-            return t("justNow");
-          }
-          return mins + " " + t("minutesAgo");
-        }
-        return hrs + " " + t("hoursAgo");
-      }
+    if (yrs > 0) {
+      return yrs + " " + t("yearsAgo");
+    } else if (month > 0) {
+      return month + " " + t("monthAgo");
+    } else if (weeks > 0) {
+      return weeks + " " + t("weeekago");
+    } else if (days > 0) {
       return days + " " + t("daysAgo");
+    } else if (hrs > 0) {
+      return hrs + " " + t("hoursAgo");
+    } else if (mins > 0) {
+      return mins + " " + t("minutesAgo");
+    } else {
+      return t("justNow");
     }
-    //  else if (hrs > 0) {
-    //   return hrs + " " + t("hoursAgo");
-    // } else if (mins > 0) {
-    //   return mins + " " + t("minutesAgo");
-    // } else {
-    //   return t("justNow");
-    // }
   };
 
   if (loadingnotif && datanotif.length < 1) {
