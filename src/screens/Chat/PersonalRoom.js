@@ -282,7 +282,7 @@ export default function Room({ navigation, route }) {
           <Text
             style={{
               fontFamily: "Lato-Bold",
-              fontSize: 14,
+              fontSize: 16,
               color: "white",
               alignSelf: "center",
               paddingHorizontal: 10,

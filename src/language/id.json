@@ -579,5 +579,8 @@
   "toDay": "hari ini",
   "send_to": "Kirim",
   "delete_posting": "Hapus Postingan",
-  "continent": "Benua"
+  "continent": "Benua",
+  "checkDestination": "Lihat destination keren ini!",
+  "successfullySent": "Berhasil dikirim",
+  "failSomethingwrong": "Gagal, ada yang salah!"
 }

@@ -31,7 +31,7 @@ import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
 
-export default function SendDestination({ navigation, route }) {
+export default function SendPost({ navigation, route }) {
   const socket = io(CHATSERVER);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
@@ -40,7 +40,6 @@ export default function SendDestination({ navigation, route }) {
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [data_buddy, SetDatBuddy] = useState([]);
-  console.log(data_buddy);
   const [
     querywith,
     { loading: loadingwith, data: DataBuddy, error: errorwith },
@@ -61,7 +60,7 @@ export default function SendDestination({ navigation, route }) {
   });
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "Send Destination",
+    headerTitle: "Send Post",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -128,7 +127,7 @@ export default function SendDestination({ navigation, route }) {
   const [dataGroup, setDataGroup] = useState([]);
   // console.log(dataGroupRes);
   const getRoomGroup = async () => {
-    console.log("EXEC");
+    // console.log("EXEC");
     setloading(true);
     let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
@@ -171,6 +170,7 @@ export default function SendDestination({ navigation, route }) {
   let [indexUser, setIndexUser] = useState();
   let [indexGroup, setIndexGroup] = useState();
 
+  console.log(route.params.post);
   const _sendMessage = async (id, index) => {
     setloadingsend(true);
     setIndexUser(index);
@@ -195,21 +195,18 @@ export default function SendDestination({ navigation, route }) {
           console.log(socket);
           console.log("socket");
         });
-        let dataDestination = route.params.destination;
+        let dataPost = route.params.post;
         let constain = {
-          id: dataDestination?.id,
-          cover: dataDestination?.cover,
-          name: dataDestination?.name,
-          description: dataDestination?.description,
-          rating: dataDestination?.rating,
-          destination_type: dataDestination?.destination_type,
-          cities: dataDestination?.cities,
-          images: dataDestination?.images,
+          id: dataPost?.id,
+          assets: dataPost?.assets,
+          caption: dataPost?.caption,
+          user: dataPost?.user,
+          media_orientation: dataPost?.media_orientation,
         };
         let chatData = {
           room: responseJson.id,
           chat: "personal",
-          type: "tag_destination",
+          type: "tag_post",
           text: JSON.stringify(constain),
           user_id: user.id,
         };
@@ -221,7 +218,7 @@ export default function SendDestination({ navigation, route }) {
           },
           body: `room=${
             responseJson.id
-          }&type=tag_destination&chat=personal&text=${JSON.stringify(
+          }&type=tag_post&chat=personal&text=${JSON.stringify(
             constain
           )}&user_id=${user.id}`,
         });
@@ -265,30 +262,26 @@ export default function SendDestination({ navigation, route }) {
   };
   const _sendMessageGroup = async (value, index) => {
     try {
-      console.log(index);
       setloadingsend(true);
       setIndexGroup(index);
       await socket.emit("join", value.group_id);
       await socket.on("connection", (socket) => {
-        console.log(socket);
-        console.log("socket");
+        // console.log(socket);
+        // console.log("socket");
       });
       let from = value.itinerary ? "itinerary" : "group";
-      let dataDestination = route.params.destination;
+      let dataPost = route.params.post;
       let constain = {
-        id: dataDestination?.id,
-        cover: dataDestination?.cover,
-        name: dataDestination?.name,
-        description: dataDestination?.description,
-        rating: dataDestination?.rating,
-        destination_type: dataDestination?.destination_type,
-        cities: dataDestination?.cities,
-        images: dataDestination?.images,
+        id: dataPost?.id,
+        assets: dataPost?.assets,
+        caption: dataPost?.caption,
+        user: dataPost?.user,
+        media_orientation: dataPost?.media_orientation,
       };
       let chatData = {
         room: value.group_id,
         chat: "group",
-        type: "tag_destination",
+        type: "tag_post",
         text: JSON.stringify(constain),
         user_id: user.id,
       };
@@ -298,14 +291,15 @@ export default function SendDestination({ navigation, route }) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: `user_id=${user.id}&type=tag_destination&chat=group&room=${
+        body: `user_id=${user.id}&type=tag_post&chat=group&room=${
           value.group_id
         }&from=${from}&text=${JSON.stringify(constain)}&name=${
           user.first_name
         } ${user.last_name}`,
       });
       await socket.emit("message", chatData);
-      console.log("kal", value);
+
+      await socket.disconnect();
       RNToasty.Show({
         duration: 1,
         title: t("successfullySent"),
@@ -322,15 +316,13 @@ export default function SendDestination({ navigation, route }) {
           },
         })
       );
-
-      setloadingsend(false);
     } catch (error) {
+      setloadingsend(false);
       RNToasty.Show({
         duration: 1,
         title: t("failSomethingwrong"),
         position: "bottom",
       });
-      setloadingsend(false);
       console.error(error);
     }
   };
@@ -525,6 +517,7 @@ export default function SendDestination({ navigation, route }) {
     return (
       <View style={{ borderBottomWidth: 0.5, borderBottomColor: "#D1D1D1" }}>
         <TouchableOpacity
+          onPress={() => _sendMessage(value.id)}
           style={{
             flexDirection: "row",
             width: Dimensions.get("screen").width - 30,
@@ -572,7 +565,6 @@ export default function SendDestination({ navigation, route }) {
               </Text>
             </View>
           </View>
-
           <Button
             onPress={() => {
               !loadingsend

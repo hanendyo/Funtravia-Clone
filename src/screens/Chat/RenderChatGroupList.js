@@ -59,6 +59,40 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
     );
   }
 
+  const RecentView = ({ data }) => {
+    // console.log(data.data.text);
+    if (data.type == "sticker") {
+      return (
+        <Text size="small" type="regular">
+          Sticker
+        </Text>
+      );
+    }
+
+    if (data.type == "tag_destination") {
+      return (
+        <Text size="small" type="regular">
+          Destination
+        </Text>
+      );
+    }
+
+    if (data.type == "tag_post") {
+      return (
+        <Text size="small" type="regular">
+          Post
+        </Text>
+      );
+    }
+
+    return (
+      <Text size="small">
+        <Truncate text={data.text} length={80} />
+        {/* {data.text} */}
+      </Text>
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -141,11 +175,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                 >
                   {item.title}
                 </Text>
-                {item.recent ? (
-                  <Text size="small">
-                    <Truncate text={item.recent.text} length={80} />
-                  </Text>
-                ) : null}
+                {item.recent ? <RecentView data={item.recent} /> : null}
               </View>
               {item.recent ? (
                 <View
