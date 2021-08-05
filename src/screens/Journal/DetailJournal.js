@@ -6,9 +6,10 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Button } from "../../component";
+import { Text, Button, StatusBar as StaBar } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Arrowbackwhite, LikeEmpty, PanahBulat } from "../../assets/svg";
@@ -25,7 +26,12 @@ import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { DrawerItemList } from "@react-navigation/drawer";
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
+const SafeStatusBar = Platform.select({
+  ios: Notch ? 48 : 20,
+  android: StatusBar.currentHeight,
+});
 
 export default function DetailJournal(props) {
   console.log("props journal", props);
@@ -33,6 +39,28 @@ export default function DetailJournal(props) {
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();
   let slider = useRef();
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const onKeyboardShow = (event) =>
+    setKeyboardOffset(event.endCoordinates.height);
+  const onKeyboardHide = () => setKeyboardOffset(0);
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+  useEffect(() => {
+    keyboardDidShowListener.current = Keyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = Keyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
+
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
   const { t } = useTranslation();
@@ -398,8 +426,21 @@ export default function DetailJournal(props) {
       </SkeletonPlaceholder>
     );
   }
+
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View
+      style={{
+        flex: 1,
+        // backgroundColor: "white",
+        marginBottom:
+          Platform.OS === "ios" && keyboardOffset < 300 && keyboardOffset > 0
+            ? 260
+            : keyboardOffset > 300
+            ? 340
+            : 0,
+      }}
+    >
+      <StaBar backgroundColor="#14646e" barStyle="light-content" />
       {data && data.journal_byid ? (
         <ScrollView ref={slider} showsVerticalScrollIndicator={false}>
           <View

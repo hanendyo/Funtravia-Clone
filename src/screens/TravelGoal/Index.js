@@ -164,6 +164,8 @@ export default function TravelGoal(props) {
     }
   };
 
+  console.log("image", dataTop?.travelgoal_first?.cover);
+
   return (
     <ScrollView
       contentContainerStyle={
@@ -193,9 +195,9 @@ export default function TravelGoal(props) {
                 : null
             }
             style={{
-              shadowOpacity: 0.5,
-              shadowColor: "#d3d3d3",
-              elevation: 3,
+              // shadowOpacity: 0.5,
+              // shadowColor: "#d3d3d3",
+              // elevation: 3,
               height: Dimensions.get("screen").width * 0.35,
               width: "100%",
               borderRadius: 5,

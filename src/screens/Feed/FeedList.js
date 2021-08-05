@@ -1111,7 +1111,7 @@ export default function FeedList({ props, token }) {
                 }}
               >
                 <Text style={{ marginVertical: 20 }} type="bold">
-                  {t("share")}
+                  {t("option")}
                 </Text>
               </View>
               <Pressable

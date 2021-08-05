@@ -11,10 +11,17 @@ import {
   StyleSheet,
   ActivityIndicator,
   BackHandler,
+  StatusBar,
 } from "react-native";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
-import { Text, Button, Truncate, StatusBar, Errors } from "../../component";
+import {
+  Text,
+  Button,
+  Truncate,
+  StatusBar as StaBar,
+  Errors,
+} from "../../component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
@@ -26,6 +33,12 @@ import ChatList from "./RenderChatList";
 //TRY SOCKET
 import io from "socket.io-client";
 //TRY SOCKET
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
+const SafeStatusBar = Platform.select({
+  ios: Notch ? 48 : 20,
+  android: StatusBar.currentHeight,
+});
 
 export default function Message({ navigation, route }) {
   const { width, height } = Dimensions.get("screen");
@@ -225,8 +238,8 @@ export default function Message({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle="dark-content" />
+    <View style={{ flex: 1 }}>
+      <StaBar backgroundColor="#14646e" barStyle="light-content" />
       <Errors
         modals={modalError}
         setModals={(e) => setModalError(e)}
@@ -280,7 +293,7 @@ export default function Message({ navigation, route }) {
           }}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

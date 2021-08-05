@@ -5,6 +5,7 @@ import {
   Dimensions,
   RefreshControl,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { dateFormatForNotif } from "../../component/src/dateformatter";
@@ -27,6 +28,28 @@ export default function JournalComment(props) {
   let slider = useRef();
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  console.log("keyboardOffset", keyboardOffset);
+  const onKeyboardShow = (event) =>
+    setKeyboardOffset(event.endCoordinates.height);
+  const onKeyboardHide = () => setKeyboardOffset(0);
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+  useEffect(() => {
+    keyboardDidShowListener.current = Keyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = Keyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
 
   const HeaderComponent = {
     headerShown: true,
@@ -202,7 +225,18 @@ export default function JournalComment(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        marginBottom:
+          Platform.OS === "ios" && keyboardOffset < 300 && keyboardOffset > 0
+            ? 260
+            : keyboardOffset > 300
+            ? 340
+            : 0,
+      }}
+    >
       <FlatList
         data={listComment}
         renderItem={({ item, index }) => (

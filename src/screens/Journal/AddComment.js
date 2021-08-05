@@ -139,12 +139,14 @@ export default function AddComment({
         <TextInput
           style={{
             flex: 1,
-            marginLeft: 5,
+            marginLeft: 15,
             width: "40%",
             flexWrap: "wrap",
             color: "#2c2c2c",
             fontSize: 12,
             lineHeight: 16,
+            marginVertical: 5,
+            marginTop: Platform.OS == "ios" ? 10 : 0,
           }}
           multiline={true}
           onChangeText={(text) => setText(text)}
@@ -158,8 +160,7 @@ export default function AddComment({
               setting?.user?.last_name,
             length: 35,
           })}
-          // returnKeyType="default"
-          // onSubmitEditing={() => comment(dataList.id, text)}
+          onChangeText={(text) => setText(text)}
         />
         <Ripple
           rippleCentered={true}

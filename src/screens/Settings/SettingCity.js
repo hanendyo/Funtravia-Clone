@@ -7,6 +7,7 @@ import {
   Platform,
   ActivityIndicator,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Arrowbackwhite, IdFlag, Check, Search } from "../../assets/svg";
@@ -45,22 +46,22 @@ export default function SettingCity({
   let [datacity, setdataCity] = useState(data);
   let [city, setCity] = useState("");
   let slider = useRef();
-  let flatListRef = useRef();
   let [indexCity, setIndexCity] = useState(0);
-  // const pushselected = () => {
-  //   if (selected?.cities !== null) {
-  //     var tempData = [...datacity];
-  //     for (var i of tempData) {
-  //       i.selected = false;
-  //     }
-  //     let index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
-  //     setIndexCity(index);
-  //     if (index >= 0) {
-  //       tempData[index].selected = true;
-  //     }
-  //     setdataCity(tempData);
-  //   }
-  // };
+  let [rippleHeight, setRippleHeight] = useState(0);
+  const pushselected = () => {
+    if (selected?.cities !== null) {
+      var tempData = [...datacity];
+      for (var i of tempData) {
+        ({ ...i, selected: false });
+      }
+      let index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
+      setIndexCity(index);
+      if (index >= 0) {
+        ({ ...tempData[index], selected: true });
+      }
+      setdataCity(tempData);
+    }
+  };
 
   const [
     querycity,
@@ -95,21 +96,22 @@ export default function SettingCity({
           },
         });
         if (response.data) {
-          if (
-            response.data.update_city_settings.code === 200 ||
-            response.data.update_city_settings.code === "200"
-          ) {
+          if (response.data.update_city_settings.code === 200) {
             selected.cities = detail;
             await AsyncStorage.setItem("setting", JSON.stringify(selected));
             var tempData = [...datacity];
-            for (var i in tempData) {
-              tempData[i].selected = false;
+            for (var i of tempData) {
+              ({ ...i, selected: false });
             }
             var index = tempData.findIndex((k) => k["id"] === detail.id);
-            tempData[index].selected = true;
+            setIndexCity(index);
+            if (index >= 0) {
+              ({ ...tempData[index], selected: true });
+            }
             setdataCity(tempData);
             masukan(selected);
             setCity(null);
+            setModalCity(false);
           } else {
             throw new Error(response.data.update_city_settings.message);
           }
@@ -123,15 +125,8 @@ export default function SettingCity({
   };
 
   useEffect(() => {
-    // pushselected();
+    pushselected();
     querycity();
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("flatListRef", flatListRef);
-      // slider.current.scrollToIndex({ animate: true, index: 10 });
-    }, 800);
   }, []);
 
   return (
@@ -149,15 +144,14 @@ export default function SettingCity({
         alignContent: "center",
       }}
     >
-      <StaBar backgroundColor="#14646e" barStyle="light-content" />
       <View
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
           height: Dimensions.get("screen").height,
-          borderWidth: 1,
         }}
       >
+        <StaBar backgroundColor="#14646e" barStyle="light-content" />
         <View
           style={{
             flexDirection: "row",
@@ -170,8 +164,7 @@ export default function SettingCity({
             marginTop: SafeStatusBar,
           }}
         >
-          <Pressable
-            onPress={() => setModalCity(false)}
+          <View
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -196,7 +189,7 @@ export default function SettingCity({
             >
               {t("City")}
             </Text>
-          </Pressable>
+          </View>
         </View>
         <View
           style={{
@@ -222,7 +215,7 @@ export default function SettingCity({
           >
             <Search height={15} width={15} style={{ marginLeft: 10 }} />
             <TextInput
-              id="search"
+              // id="search"
               style={{
                 flex: 1,
                 paddingLeft: 10,
@@ -267,11 +260,17 @@ export default function SettingCity({
             </View>
           ) : dataKota?.cities_search.length > 0 ? (
             <FlatList
-              ref={flatListRef}
+              ref={slider}
+              getItemLayout={(data, index) => ({
+                length: rippleHeight,
+                offset: rippleHeight * index,
+                index,
+              })}
               data={dataKota?.cities_search}
-              // stickyHeaderIndices={[0]}
+              initialScrollIndex={indexCity}
               renderItem={({ item }) => (
                 <Ripple
+                  onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
                   onPress={() => hasil(item, selected)}
                   style={{
                     paddingVertical: 15,
