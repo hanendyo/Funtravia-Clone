@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Keyboard,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button, StatusBar as StaBar } from "../../component";

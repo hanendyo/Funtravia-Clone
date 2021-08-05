@@ -47,7 +47,7 @@ export default function Journal(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -594,6 +594,7 @@ export default function Journal(props) {
       stickyHeaderIndices={[1]}
       showsVerticalScrollIndicator={false}
     >
+      {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
       {/* ============================== Populer Journal ====================================================*/}
 
       <View style={styles.container}>
