@@ -11,7 +11,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   BackHandler,
-  StatusBar,
 } from "react-native";
 import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
@@ -33,12 +32,12 @@ import ChatList from "./RenderChatList";
 //TRY SOCKET
 import io from "socket.io-client";
 //TRY SOCKET
-import DeviceInfo from "react-native-device-info";
-const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
-});
+// import DeviceInfo from "react-native-device-info";
+// const Notch = DeviceInfo.hasNotch();
+// const SafeStatusBar = Platform.select({
+//   ios: Notch ? 48 : 20,
+//   android: StatusBar.currentHeight,
+// });
 
 export default function Message({ navigation, route }) {
   const { width, height } = Dimensions.get("screen");

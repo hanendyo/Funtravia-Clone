@@ -14,7 +14,7 @@ import {
   FunImage,
   Text,
   Truncate,
-  StatusBar,
+  // StatusBar,
 } from "../../component";
 import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -171,7 +171,7 @@ export default function TravelGoalDetail(props) {
         // padding: 20,
       }}
     >
-      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+      {/* <StatusBar backgroundColor="#14646E" barStyle="light-content" /> */}
       <ImageBackground
         source={datadetail?.cover ? { uri: datadetail?.cover } : default_image}
         style={{
