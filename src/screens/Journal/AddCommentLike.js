@@ -1,6 +1,11 @@
-import { View } from "native-base";
-import { Dimensions, Alert, Keyboard } from "react-native";
-import React, { useState } from "react";
+import {
+  Dimensions,
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  View,
+} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
 import { LikeRed, LikeEmpty, Sharegreen } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Loading, Truncate, Text, shareAction } from "../../component";
@@ -21,6 +26,7 @@ export default function AddCommentLike({
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
+
   const [
     mutationliked,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -180,7 +186,7 @@ export default function AddCommentLike({
   };
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={{
         paddingTop: 10,
         paddingBottom: 10,
@@ -195,14 +201,6 @@ export default function AddCommentLike({
         shadowOpacity: arrayShadow.shadowOpacity,
         shadowRadius: arrayShadow.shadowRadius,
         elevation: arrayShadow.elevation,
-        // paddingTop: 10,
-        // paddingBottom: 10,
-        // paddingHorizontal: 20,
-        // width: Dimensions.get("window").width,
-        // justifyContent: "center",
-        // flexDirection: "row",
-        // backgroundColor: "white",
-        // borderWidth: 1,
       }}
     >
       {/* <Loading show={loadingLike} />
@@ -224,12 +222,14 @@ export default function AddCommentLike({
         <TextInput
           style={{
             flex: 1,
-            marginLeft: 5,
+            marginLeft: 15,
             width: "90%",
             flexWrap: "wrap",
             color: "#2c2c2c",
             fontSize: 12,
             lineHeight: 16,
+            marginVertical: 5,
+            marginBottom: Platform.OS == "ios" ? 10 : 0,
           }}
           multiline={true}
           onChangeText={(text) => setText(text)}
@@ -310,6 +310,6 @@ export default function AddCommentLike({
           </View>
         </TouchableOpacity>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }

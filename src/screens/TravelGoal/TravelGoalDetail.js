@@ -8,7 +8,14 @@ import {
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, CustomImage, FunImage, Text, Truncate } from "../../component";
+import {
+  Button,
+  CustomImage,
+  FunImage,
+  Text,
+  Truncate,
+  StatusBar,
+} from "../../component";
 import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { Loading } from "../../component";
@@ -38,7 +45,7 @@ export default function TravelGoalDetail(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -164,6 +171,7 @@ export default function TravelGoalDetail(props) {
         // padding: 20,
       }}
     >
+      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <ImageBackground
         source={datadetail?.cover ? { uri: datadetail?.cover } : default_image}
         style={{
@@ -323,7 +331,7 @@ export default function TravelGoalDetail(props) {
               <View style={{ marginVertical: 5 }}>
                 {item.title ? (
                   <Text
-                    size="label"
+                    size="title"
                     type="bold"
                     style={{
                       // marginBottom: 5,
