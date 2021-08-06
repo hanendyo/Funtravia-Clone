@@ -68,7 +68,7 @@ export default function Message({ navigation, route }) {
     tabBarBadge: null,
     tabBarLabel: "Message",
     // headerTintColor: "white",
-    headerTitle: "Message",
+    headerTitle: t("Message"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -88,7 +88,7 @@ export default function Message({ navigation, route }) {
         <TouchableOpacity
           style={{ marginRight: 20 }}
           onPress={
-            () => setSearchAktif(true)
+            () => _searchAktifFunction()
             // props.navigation.navigate("FeedStack", { screen: "SearchPageFeed" })
           }
         >
@@ -117,6 +117,9 @@ export default function Message({ navigation, route }) {
     navigation.addListener("focus", () => {
       getUserAndToken();
     });
+    navigation.addListener("blur", () => {
+      _searchNonaktifFunction();
+    });
     socket.on("new_chat_group", (data) => {
       getRoomGroup();
     });
@@ -125,6 +128,47 @@ export default function Message({ navigation, route }) {
     });
     return () => socket.disconnect();
   }, []);
+
+  const _searchAktifFunction = () => {
+    setSearchAktif(true);
+
+    navigation.setOptions({
+      headerTitle: t("search"),
+      headerRight: () => (
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={{ marginRight: 20 }}
+            onPress={
+              () => _searchNonaktifFunction()
+              // props.navigation.navigate("FeedStack", { screen: "SearchPageFeed" })
+            }
+          >
+            <SearchWhite height={20} width={20} />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+  };
+
+  const _searchNonaktifFunction = () => {
+    setSearchAktif(false);
+    navigation.setOptions({
+      headerTitle: t("Message"),
+      headerRight: () => (
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={{ marginRight: 20 }}
+            onPress={
+              () => _searchAktifFunction()
+              // props.navigation.navigate("FeedStack", { screen: "SearchPageFeed" })
+            }
+          >
+            <SearchWhite height={20} width={20} />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+  };
 
   const getRoom = async () => {
     let token = await AsyncStorage.getItem("access_token");
@@ -253,7 +297,7 @@ export default function Message({ navigation, route }) {
     route.params?.page ? route.params.page : 0
   );
   const [routes] = React.useState([
-    { key: "personal", title: "Personal" },
+    { key: "personal", title: "Chat" },
     { key: "group", title: "Group" },
   ]);
 

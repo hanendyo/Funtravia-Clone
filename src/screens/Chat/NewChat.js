@@ -176,6 +176,7 @@ export default function NewChat({ navigation }) {
                 }}
               >
                 <FunImage
+                  size="xs"
                   source={
                     value && value.picture
                       ? { uri: value.picture }

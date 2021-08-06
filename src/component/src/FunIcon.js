@@ -33,7 +33,6 @@ export default function FunIcon({
         }).promise.then((res) => {
           if (res.statusCode === "200") {
             setTimeout(() => setLoading(false), 1000);
-            // console.log("SUCCESS CACHE ICON", url);
           } else {
             setLoading(false);
             setError(true);
@@ -43,11 +42,11 @@ export default function FunIcon({
     })
     .catch((error) => {
       setLoading(false);
-      // console.log("ERROR CACHE", error);
+      console.log("ERROR CACHE", error);
     });
 
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator animating={true} size="small" color="#d1d1d1" />;
   }
 
   if (error) {

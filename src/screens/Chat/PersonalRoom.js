@@ -275,6 +275,7 @@ export default function Room({ navigation, route }) {
             }}
           >
             <FunImage
+              size="xs"
               source={{ uri: route.params.picture }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />

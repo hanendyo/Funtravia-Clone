@@ -84,6 +84,11 @@ function Chatstackscreen(props) {
         component={ChatScreen}
         options={{
           headerShown: true,
+          headerStyle: {
+            backgroundColor: "#209FAE",
+            elevation: 0,
+            borderBottomWidth: 0,
+          },
         }}
       />
     </Feedstack.Navigator>

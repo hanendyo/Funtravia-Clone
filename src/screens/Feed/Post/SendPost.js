@@ -450,6 +450,7 @@ export default function SendPost({ navigation, route }) {
             }}
           >
             <FunImage
+              size="xs"
               source={
                 value && value.picture ? { uri: value.picture } : default_image
               }
@@ -537,6 +538,7 @@ export default function SendPost({ navigation, route }) {
             }}
           >
             <FunImage
+              size="xs"
               source={
                 value && value.picture ? { uri: value.picture } : default_image
               }

@@ -91,6 +91,9 @@ export default function CreatePost(props) {
   let [modalCreate, setModalCreate] = useState(false);
   let [modalAlbum, setModalAlbum] = useState(false);
   let [idAlbums, setIdAlbums] = useState({});
+  let [idAlbumsKiriman, setIdAlbumsKiriman] = useState(
+    props.route.params.id_album
+  );
   let [idItin, setIdItin] = useState({});
   let [loadingok, setLoading] = useState(false);
   let [chosenFile] = useState(props?.route.params.file);
@@ -525,7 +528,7 @@ export default function CreatePost(props) {
       );
     }
   };
-
+  console.log(props.route.params.id_album, "id_album");
   return (
     <KeyboardAvoidingView
       style={{
@@ -728,17 +731,19 @@ export default function CreatePost(props) {
                           : null}
                       </Text>
                     </View>
-                    <Xgrey
-                      style={{
-                        marginRight: 5,
-                      }}
-                      height="20"
-                      width="20"
-                      onPress={() => {
-                        setAlbum("");
-                        setIdAlbums("");
-                      }}
-                    />
+                    {!idAlbumsKiriman ? (
+                      <Xgrey
+                        style={{
+                          marginRight: 5,
+                        }}
+                        height="20"
+                        width="20"
+                        onPress={() => {
+                          setAlbum("");
+                          setIdAlbums("");
+                        }}
+                      />
+                    ) : null}
                   </View>
                 ) : null}
               </View>
