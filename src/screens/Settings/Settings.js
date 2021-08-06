@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView } from "react-native-gesture-handler";
-import { View, Dimensions, StyleSheet, Platform, Image } from "react-native";
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  Platform,
+  Image,
+  ScrollView,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { inbox_setting, notif_bell } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";

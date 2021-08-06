@@ -35,9 +35,9 @@ export default function JournalStackNavigation() {
         component={JournalComment}
         options={{
           headerTitle: "",
-          headerTransparent: true,
+          headerTransparent: false,
           headerTintColor: "white",
-          headerBackTitleVisible: false,
+          headerBackTitleVisible: true,
         }}
       />
     </JournalStack.Navigator>

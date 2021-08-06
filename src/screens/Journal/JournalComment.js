@@ -6,14 +6,16 @@ import {
   RefreshControl,
   ActivityIndicator,
   Keyboard,
+  FlatList,
+  StatusBar,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { dateFormatForNotif } from "../../component/src/dateformatter";
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { FlatList } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Arrowbackwhite } from "../../assets/svg";
-import { Text, Button } from "../../component";
+import { Text, Button, StatusBar as StsBar } from "../../component";
 import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
 import AddComment from "./AddComment";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
@@ -56,15 +58,14 @@ export default function JournalComment(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: t("comments"),
-    headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: "#209fae",
       elevation: 0,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -224,6 +225,35 @@ export default function JournalComment(props) {
     }
   };
 
+  const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+  const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
+
+  const MyStatusBar = ({ backgroundColor, ...props }) => (
+    <View style={{ height: APPBAR_HEIGHT, backgroundColor }}>
+      <SafeAreaView>
+        <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+      </SafeAreaView>
+    </View>
+  );
+
+  const STATUS_BAR_HEIGHT =
+    Platform.OS === "ios" ? 48 : StatusBar.currentHeight;
+
+  const StatusBarPlaceHolder = () => {
+    return (
+      <View
+        style={{
+          width: "100%",
+          height: STATUS_BAR_HEIGHT,
+          backgroundColor: "#14646e",
+          position: "absolute",
+        }}
+      >
+        <StatusBar barStyle="light-content" />
+      </View>
+    );
+  };
+
   return (
     <View
       style={{
@@ -239,6 +269,7 @@ export default function JournalComment(props) {
     >
       <FlatList
         data={listComment}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <View
             style={{

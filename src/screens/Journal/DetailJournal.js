@@ -441,7 +441,6 @@ export default function DetailJournal(props) {
             : 0,
       }}
     >
-      <StaBar backgroundColor="#14646e" barStyle="light-content" />
       {data && data.journal_byid ? (
         <ScrollView ref={slider} showsVerticalScrollIndicator={false}>
           <View
