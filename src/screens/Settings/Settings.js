@@ -163,7 +163,7 @@ export default function Settings(props) {
               }}
             >
               <Button
-                size="small"
+                size="small_light"
                 color={language == "en" ? "primary" : "green"}
                 variant="normal"
                 onPress={() => {
@@ -175,7 +175,7 @@ export default function Settings(props) {
                 text={
                   <Text
                     size="readable"
-                    type={language == "en" ? "bold" : "light"}
+                    // type={language == "en" ? "bold" : "light"}
                     style={{
                       color: language == "en" ? "#FFF" : "#464646",
                       // fontWeight: language == "en" ? "900" : "100",
@@ -187,7 +187,7 @@ export default function Settings(props) {
               ></Button>
               <Button
                 // type="box"
-                size="small"
+                size="small_light"
                 color={language == "id" ? "primary" : "green"}
                 variant="normal"
                 onPress={() => {
@@ -200,7 +200,7 @@ export default function Settings(props) {
                 text={
                   <Text
                     size="readable"
-                    type={language == "id" ? "bold" : "light"}
+                    // type={language == "id" ? "bold" : "light"}
                     style={{
                       color: language == "id" ? "#FFF" : "#464646",
                       // fontWeight: language == "id" ? "900" : "100",
@@ -511,7 +511,7 @@ export default function Settings(props) {
               }}
             >
               <Text type="light" size="description" style={{}}>
-                1.0.28
+                1.0.29
               </Text>
             </View>
           </View>

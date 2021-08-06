@@ -150,6 +150,12 @@ const buttonSize = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
   },
+  small_light: {
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+  },
 });
 
 const buttonColor = StyleSheet.create({
@@ -225,4 +231,5 @@ const fontSize = StyleSheet.create({
   small: { fontSize: 10, fontFamily: "Lato-Bold" },
   medium: { fontSize: 12, fontFamily: "Lato-Bold" },
   large: { fontSize: 14, fontFamily: "Lato-Bold" },
+  small_light: { fontSize: 10, fontFamily: "Lato-Light" },
 });
