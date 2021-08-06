@@ -49,6 +49,7 @@ import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
 
 export default function Post(props) {
+  console.log(props.route.params);
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
@@ -214,10 +215,10 @@ export default function Post(props) {
               type: recent.node.type.substr(0, 5),
               file: image,
               token: token,
-              id_album: "",
-              title_album: "",
-              album: "",
-              id_itin: "",
+              id_album: props.route.params.id_album,
+              id_itin: props.route.params.id_itin,
+              title_album: props.route.params.title_album,
+              album: props.route.params.album,
               ratio: ratio,
             });
           })

@@ -60,11 +60,11 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
       <View style={{ flex: 1 }}>
         <Kosong width={width} height={width} />
         <Button
-          onPress={() =>
+          onPress={() => {
             navigation.navigate("ChatStack", {
               screen: "NewChat",
-            })
-          }
+            });
+          }}
           type="circle"
           size="medium"
           style={{
@@ -80,11 +80,11 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
     );
   }
 
-  const RecentView = ({ data }) => {
+  const RecentView = ({ data, style }) => {
     // console.log(data.data.text);
     if (data.type == "sticker") {
       return (
-        <Text size="small" type="regular">
+        <Text style={style} size="description" type="regular">
           Sticker
         </Text>
       );
@@ -92,7 +92,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
 
     if (data.type == "tag_destination") {
       return (
-        <Text size="small" type="regular">
+        <Text style={style} size="description" type="regular">
           Destination
         </Text>
       );
@@ -100,16 +100,15 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
 
     if (data.type == "tag_post") {
       return (
-        <Text size="small" type="regular">
+        <Text style={style} size="description" type="regular">
           Post
         </Text>
       );
     }
 
     return (
-      <Text size="small">
-        <Truncate text={data.text} length={80} />
-        {/* {data.text} */}
+      <Text style={style} size="description" numberOfLines={2}>
+        {data.text}
       </Text>
     );
   };
@@ -123,7 +122,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
             {item.recent ? (
               <TouchableOpacity
                 onLongPress={() => LongPressFunc(change(item), item.id)}
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate("ChatStack", {
                     screen: "RoomChat",
                     params: {
@@ -135,12 +134,11 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                         (change(item).last_name ? change(item).last_name : ""),
                       picture: change(item).picture,
                     },
-                  })
-                }
+                  });
+                }}
                 style={{
                   backgroundColor: "white",
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
+                  padding: 15,
                   flexDirection: "row",
                   borderBottomWidth: 1,
                   borderBottomColor: "#EEEEEE",
@@ -170,11 +168,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                     paddingHorizontal: 10,
                   }}
                 >
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ paddingVertical: 5 }}
-                  >
+                  <Text size="label" type="bold" style={{ paddingVertical: 5 }}>
                     {item.sender_id === user.id
                       ? `${item.receiver?.first_name} ${
                           item.receiver?.last_name
@@ -186,14 +180,21 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                         }`}
                   </Text>
 
-                  {item.recent ? <RecentView data={item.recent} /> : null}
+                  {item.recent ? (
+                    <RecentView
+                      style={{
+                        marginTop: -5,
+                      }}
+                      data={item.recent}
+                    />
+                  ) : null}
                 </View>
                 {item.recent ? (
                   <View
                     style={{
                       width: 100,
                       alignItems: "flex-end",
-                      paddingRight: 10,
+                      paddingRight: 20,
                     }}
                   >
                     <Text size="small">
@@ -212,11 +213,11 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
         keyExtractor={(item) => item.id}
       />
       <Button
-        onPress={() =>
+        onPress={() => {
           navigation.navigate("ChatStack", {
             screen: "NewChat",
-          })
-        }
+          });
+        }}
         type="circle"
         size="medium"
         style={{

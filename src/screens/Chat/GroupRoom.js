@@ -127,6 +127,7 @@ export default function Room({ navigation, route }) {
             }}
           >
             <FunImage
+              size="xs"
               source={{ uri: route.params.picture }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
@@ -836,6 +837,7 @@ export default function Room({ navigation, route }) {
                 width: width - 130,
                 alignSelf: "center",
                 backgroundColor: "#f3f3f3",
+                borderRadius: 50,
               }}
             >
               <TextInput
@@ -951,6 +953,7 @@ export default function Room({ navigation, route }) {
               width: width - 130,
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
+              borderRadius: 50,
             }}
           >
             <TextInput

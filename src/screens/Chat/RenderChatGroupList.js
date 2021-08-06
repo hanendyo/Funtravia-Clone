@@ -18,9 +18,11 @@ import {
 } from "../../component";
 import { NewGroup, Kosong } from "../../assets/svg";
 import { default_image } from "../../assets/png";
+import { useTranslation } from "react-i18next";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatGroupList({ dataGroupRes, navigation }) {
+  const { t } = useTranslation();
   const dateGroup = () => {
     let date = new Date().toLocaleDateString();
     return date;
@@ -39,11 +41,11 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
       <View style={{ flex: 1 }}>
         <Kosong width={width} height={width} />
         <Button
-          onPress={() =>
+          onPress={() => {
             navigation.navigate("ChatStack", {
               screen: "NewGroup",
-            })
-          }
+            });
+          }}
           type="circle"
           size="medium"
           style={{
@@ -59,11 +61,11 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
     );
   }
 
-  const RecentView = ({ data }) => {
+  const RecentView = ({ data, style }) => {
     // console.log(data.data.text);
     if (data.type == "sticker") {
       return (
-        <Text size="small" type="regular">
+        <Text style={style} size="description" type="regular">
           Sticker
         </Text>
       );
@@ -71,7 +73,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
 
     if (data.type == "tag_destination") {
       return (
-        <Text size="small" type="regular">
+        <Text style={style} size="description" type="regular">
           Destination
         </Text>
       );
@@ -79,28 +81,35 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
 
     if (data.type == "tag_post") {
       return (
-        <Text size="small" type="regular">
+        <Text style={style} size="description" type="regular">
           Post
         </Text>
       );
     }
 
     return (
-      <Text size="small">
-        <Truncate text={data.text} length={80} />
-        {/* {data.text} */}
+      <Text style={style} size="description" numberOfLines={2}>
+        {data.text}
       </Text>
     );
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{}}>
       <FlatList
         data={dataGroupRes}
         renderItem={({ item }) => (
-          <View key={`${item.id}_child`}>
+          <View
+            key={`${item.id}_child`}
+            style={{
+              // flex: 1,
+              // borderWidth: 1,
+              flexDirection: "row",
+              backgroundColor: "white",
+            }}
+          >
             <Pressable
-              onPress={() =>
+              onPress={() => {
                 navigation.navigate("ChatStack", {
                   screen: "GroupRoom",
                   params: {
@@ -109,80 +118,109 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                     picture: item.link_picture,
                     from: item.itinerary ? "itinerary" : "group",
                   },
-                })
-              }
+                });
+              }}
               style={{
                 backgroundColor: "white",
-                paddingVertical: 10,
-                paddingHorizontal: 10,
+                padding: 15,
+                flex: 1,
                 flexDirection: "row",
                 borderBottomWidth: 1,
+                justifyContent: "space-between",
                 borderBottomColor: "#EEEEEE",
-                alignContent: "center",
-                alignItems: "center",
+                // alignContent: "center",
+                // width: width,
+                // alignItems: "center",
               }}
             >
-              <FunImage
-                source={
-                  item.link_picture ? { uri: item.link_picture } : default_image
-                }
-                size="xs"
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  borderWidth: 1,
-                  borderColor: "#EEEEEE",
-                }}
-              />
               <View
                 style={{
-                  width: width - 160,
-                  paddingHorizontal: 10,
-                  alignContent: "flex-start",
-                  justifyContent: "flex-start",
-                  alignContent: "flex-start",
+                  flexDirection: "row",
+                  width: "85%",
+                  // borderWidth: 1,
                 }}
               >
-                {item.itinerary ? (
-                  <View
-                    style={{
-                      backgroundColor: "#F6F6F6",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      borderRadius: 15,
-                      width: 80,
-                      alignItems: "center",
-                    }}
-                  >
-                    {/* <View style={{}}> */}
-                    <Text
-                      size="small"
+                <FunImage
+                  source={
+                    item.link_picture
+                      ? { uri: item.link_picture }
+                      : default_image
+                  }
+                  size="xs"
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 25,
+                    borderWidth: 1,
+                    borderColor: "#EEEEEE",
+                  }}
+                />
+                <View
+                  style={{
+                    // width: width - 160,
+                    paddingHorizontal: 15,
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    width: "80%",
+                    // paddingLeft: 10,
+                  }}
+                >
+                  {item.itinerary ? (
+                    <View
                       style={{
-                        color: "#209FAE",
+                        backgroundColor: "#F6F6F6",
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        marginLeft: -3,
+                        borderRadius: 15,
+                        // maxWidth: 100,
+                        // alignItems: "center",
+                        // alignContent: "center",
+                        // justifyContent: "center",
                       }}
                     >
-                      Trip Group
-                    </Text>
-                    {/* </View> */}
-                  </View>
-                ) : null}
+                      {/* <View style={{}}> */}
+                      <Text
+                        size="small"
+                        style={{
+                          color: "#209FAE",
+                        }}
+                      >
+                        {t("tripGroup")}
+                        {/* Trip Group */}
+                      </Text>
+                      {/* </View> */}
+                    </View>
+                  ) : null}
 
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{ paddingVertical: 5 }}
-                >
-                  {item.title}
-                </Text>
-                {item.recent ? <RecentView data={item.recent} /> : null}
+                  <Text
+                    size="label"
+                    type="bold"
+                    numberOfLines={1}
+                    style={{ paddingVertical: 5 }}
+                  >
+                    {item.title}
+                  </Text>
+                  {item.recent ? (
+                    <RecentView
+                      style={{
+                        marginTop: -5,
+                      }}
+                      data={item.recent}
+                    />
+                  ) : null}
+                </View>
               </View>
               {item.recent ? (
                 <View
                   style={{
-                    width: 100,
+                    width: "15%",
                     alignItems: "flex-end",
-                    paddingRight: 10,
+                    // marginTop: 5,
+                    // paddingRight: 10,
+                    justifyContent: "center",
+                    marginBottom: 10,
+                    // borderWidth: 1,
                   }}
                 >
                   <Text size="small">
@@ -200,11 +238,11 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
         keyExtractor={(item) => item.id}
       />
       <Button
-        onPress={() =>
+        onPress={() => {
           navigation.navigate("ChatStack", {
             screen: "NewGroup",
-          })
-        }
+          });
+        }}
         type="circle"
         size="medium"
         style={{
