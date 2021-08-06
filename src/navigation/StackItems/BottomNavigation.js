@@ -83,7 +83,7 @@ function Chatstackscreen(props) {
         name="ChatScreen"
         component={ChatScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
         }}
       />
     </Feedstack.Navigator>

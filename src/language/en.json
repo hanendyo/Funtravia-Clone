@@ -332,7 +332,7 @@
   "addHere": "Add Here",
   "popularTimes": "Popular Times",
   "peopleAlsoSearch": "People Also Search",
-  "createAnAccount": "Create an Account",
+  "createAnAccount": "Create an Account and",
   "enjoyTheTrip": "Enjoy The Trip ",
   "accountInformation": "Account Information",
   "personalData": "Personal Data",
@@ -583,5 +583,10 @@
   "failSomethingwrong": "Failed, something went wrong!",
   "soonUpdate": "Wait for the update soon",
   "weeekago": "week ago",
-  "option": "Option"
+  "option": "Option",
+  "homesubtitleDesPopuler": "Destination Not To Be Missed",
+  "homesubtitleDiscover": "Discover Ideas For Your Trip",
+  "discover": "Discover Ideas",
+  "homesubtitleFunfeed": "Share Moments from Your Trip",
+  "planyyourTrip": "Cretae an Account and Plan Your Trip"
 }

@@ -12,7 +12,13 @@ import {
   ActivityIndicator,
   BackHandler,
 } from "react-native";
-import { NewGroup, Magnifying, NewChat, Kosong } from "../../assets/svg";
+import {
+  NewGroup,
+  Magnifying,
+  NewChat,
+  Kosong,
+  SearchWhite,
+} from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import {
   Text,
@@ -49,13 +55,47 @@ export default function Message({ navigation, route }) {
   const [dataGroup, setDataGroup] = useState([]);
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchAktif, setSearchAktif] = useState(false);
 
   //TRY SOCKET
   const socket = io(CHATSERVER);
   // TRY SOCKET
 
   const HeaderComponent = {
+    headerShown: true,
+    transparent: false,
+    tabBarVisble: false,
     tabBarBadge: null,
+    tabBarLabel: "Message",
+    // headerTintColor: "white",
+    headerTitle: "Message",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 18,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+    },
+    headerRight: () => (
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={{ marginRight: 20 }}
+          onPress={
+            () => setSearchAktif(true)
+            // props.navigation.navigate("FeedStack", { screen: "SearchPageFeed" })
+          }
+        >
+          <SearchWhite height={20} width={20} />
+        </TouchableOpacity>
+      </View>
+    ),
   };
 
   // useEffect(() => {
@@ -238,36 +278,42 @@ export default function Message({ navigation, route }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <StaBar backgroundColor="#14646e" barStyle="light-content" />
+      {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
       <Errors
         modals={modalError}
         setModals={(e) => setModalError(e)}
         message={messages}
       />
-      <View style={{ backgroundColor: "#209FAE" }}>
-        <View
-          style={{
-            margin: 15,
-            backgroundColor: "#FFFFFF",
-            flexDirection: "row",
-            borderRadius: 3,
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
-          <TextInput
-            onChangeText={(e) => _searchHandle(e)}
-            placeholder="Search"
+      {searchAktif ? (
+        <View style={{ backgroundColor: "#FFFFFF" }}>
+          <View
             style={{
-              color: "#464646",
-              fontFamily: "Lato-Regular",
-              height: 40,
-              width: "100%",
+              margin: 15,
+              backgroundColor: "#f6f6f6",
+              flexDirection: "row",
+              borderRadius: 3,
+              alignContent: "center",
+              alignItems: "center",
             }}
-          />
+          >
+            <Magnifying
+              width="20"
+              height="20"
+              style={{ marginHorizontal: 10 }}
+            />
+            <TextInput
+              onChangeText={(e) => _searchHandle(e)}
+              placeholder="Search"
+              style={{
+                color: "#464646",
+                fontFamily: "Lato-Regular",
+                height: 40,
+                width: "100%",
+              }}
+            />
+          </View>
         </View>
-      </View>
+      ) : null}
       {loading ? (
         <View style={{ height: 50, justifyContent: "center" }}>
           <ActivityIndicator size="small" color="#209fae" />

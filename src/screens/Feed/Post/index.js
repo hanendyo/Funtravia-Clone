@@ -23,6 +23,7 @@ import {
   Check,
   Mute,
   Unmute,
+  // Modal,
 } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import {
@@ -58,6 +59,7 @@ export default function Post(props) {
   const [imageRoll, setImageRoll] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [Preview, setPreview] = useState(true);
   const [ratio, setRatio] = useState({
     width: 1,
     height: 1,
@@ -108,7 +110,8 @@ export default function Post(props) {
   const [look, setLook] = useState(true);
 
   const selectImg = async (file) => {
-    slider.current.scrollToOffset({ index: 0 });
+    setPreview(true);
+    // slider.current.scrollToOffset({ index: 0 });
     await setLoading(false);
     // setRatio({ width: 1, height: 1, index: 0, label: "S" });
     if (file.node.image.width > file.node.image.height) {
@@ -295,6 +298,7 @@ export default function Post(props) {
   useEffect(() => {
     (async () => {
       await getAlbumRoll();
+      // await getAllImageFromRoll();
       await requestCameraPermission();
     })();
   }, [selectedAlbum, props.navigation]);
@@ -354,6 +358,19 @@ export default function Post(props) {
     }
   };
 
+  function compare(a, b) {
+    const bandA = a.title.toUpperCase();
+    const bandB = b.title.toUpperCase();
+
+    let comparison = 0;
+    if (bandA > bandB) {
+      comparison = 1;
+    } else if (bandA < bandB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
   const getAlbumRoll = async () => {
     try {
       let granted = false;
@@ -376,12 +393,30 @@ export default function Post(props) {
           assetType: "All",
           groupTypes: "all",
         })
-          .then((r) => {
+          .then(async (r) => {
+            let array_album = [
+              {
+                count: 0,
+                title: "Recent Photos",
+              },
+              {
+                count: 0,
+                title: "Recent Videos",
+              },
+            ];
+
             if (r.length) {
-              setAllalbum(r);
-              setSelectedAlbum(r[0]);
-              getImageFromRoll(r[0]);
-              selectAlbum(r[0]);
+              r.sort(compare);
+              let merge = array_album.concat(r);
+              await setAllalbum(merge);
+              await setSelectedAlbum(merge[0]);
+              await getImageFromRoll(merge[0]);
+              await selectAlbum(merge[0]);
+            } else {
+              await setAllalbum(array_album);
+              await setSelectedAlbum(array_album[0]);
+              await getImageFromRoll(array_album[0]);
+              await selectAlbum(array_album[0]);
             }
           })
           .catch((err) => {
@@ -397,13 +432,37 @@ export default function Post(props) {
   };
 
   const getImageFromRoll = async (dataalbum) => {
-    let dataCamera = await CameraRoll.getPhotos({
-      first: 43,
-      assetType: "All",
-      // groupTypes: "Album",
-      groupName: dataalbum.title,
-      include: ["location", "filename", "imageSize", "playableDuration"],
-    });
+    let dataCamera;
+    switch (dataalbum.title) {
+      case "Recent Photos":
+        dataCamera = await CameraRoll.getPhotos({
+          first: 43,
+          assetType: "Photos",
+          // groupTypes: "Album",
+          // groupName: "Recent Photos",
+          include: ["location", "filename", "imageSize", "playableDuration"],
+        });
+        break;
+      case "Recent Videos":
+        dataCamera = await CameraRoll.getPhotos({
+          first: 43,
+          assetType: "Videos",
+          // groupTypes: "Album",
+          // groupName: "Recent Photos",
+          include: ["location", "filename", "imageSize", "playableDuration"],
+        });
+        break;
+      default:
+        dataCamera = await CameraRoll.getPhotos({
+          first: 43,
+          assetType: "All",
+          // groupTypes: "Album",
+          groupName: dataalbum.title,
+          include: ["location", "filename", "imageSize", "playableDuration"],
+        });
+        break;
+    }
+
     let data_foto = dataCamera.edges;
     let camera = {
       id: "0",
@@ -418,14 +477,47 @@ export default function Post(props) {
   const getMoreImage = async () => {
     if (!loadimg && page_info.has_next_page) {
       setLoadimg(true);
-      let dataCamera = await CameraRoll.getPhotos({
-        after: page_info.end_cursor,
-        first: 40,
-        assetType: "All",
-        // groupTypes: "Album",
-        groupName: selectedAlbum.title,
-        include: ["location", "filename", "imageSize", "playableDuration"],
-      });
+      let dataCamera;
+      switch (selectedAlbum.title) {
+        case "Recent Photos":
+          dataCamera = await CameraRoll.getPhotos({
+            after: page_info.end_cursor,
+            first: 40,
+            assetType: "Photos",
+            // groupTypes: "Album",
+            // groupName: "Recent Photos",
+            include: ["location", "filename", "imageSize", "playableDuration"],
+          });
+          break;
+        case "Recent Videos":
+          dataCamera = await CameraRoll.getPhotos({
+            after: page_info.end_cursor,
+            first: 40,
+            assetType: "Videos",
+            // groupTypes: "Album",
+            // groupName: "Recent Photos",
+            include: ["location", "filename", "imageSize", "playableDuration"],
+          });
+          break;
+        default:
+          dataCamera = await CameraRoll.getPhotos({
+            after: page_info.end_cursor,
+            first: 40,
+            assetType: "All",
+            // groupTypes: "Album",
+            groupName: dataalbum.title,
+            include: ["location", "filename", "imageSize", "playableDuration"],
+          });
+          break;
+      }
+      // let dataCamera = await CameraRoll.getPhotos({
+      //   after: page_info.end_cursor,
+      //   first: 40,
+      //   assetType: "All",
+      //   // groupTypes: "Album",
+      //   groupName: selectedAlbum.title,
+      //   include: ["location", "filename", "imageSize", "playableDuration"],
+      // });
       let data_foto = dataCamera.edges;
       const datas = [...imageRoll, ...data_foto];
       setImageRoll(datas);
@@ -641,79 +733,73 @@ export default function Post(props) {
           onPress={() => nextFunction(recent?.node?.type, checklistVideo)}
         />
       </View>
-      <FlatList
-        keyExtractor={(item) => item?.node?.image?.uri}
+      {/* {Preview ? ( */}
+      <View
         style={{
-          paddingStart: 0,
-          alignContent: "center",
-          backgroundColor: "white",
+          marginBottom: 5,
+          alignItems: "center",
+          // position: "absolute",
+          // top: 0,
+          // flex: 1,
         }}
-        ref={slider}
-        data={imageRoll && imageRoll.length ? imageRoll : null}
-        ListHeaderComponent={() => (
+      >
+        {recent?.node?.type.substr(0, 5) === "video" ? (
+          <FunVideo
+            source={{
+              uri:
+                Platform.OS === "ios"
+                  ? `assets-library://asset/asset.${recent.node.image.filename.substring(
+                      recent.node.image.filename.length - 3
+                    )}?id=${recent.node.image.uri.substring(
+                      5,
+                      41
+                    )}&ext=${recent.node.image.filename.substring(
+                      recent.node.image.filename.length - 3
+                    )}`
+                  : recent.node?.image?.uri,
+            }}
+            ref={(slider) => {
+              videoView = slider;
+            }}
+            onProgress={(e) => durationTime(e)}
+            paused={props.route.name == "Post" && isFocused ? false : true}
+            // paused={mute ? true : false}
+            repeat={time ? true : false}
+            // onBuffer={videoView?.current?.onBuffer}
+            onError={videoView?.current?.videoError}
+            style={{
+              // width: width,
+              // height: width,
+              width: ratio.label == "P" ? width * (4 / 5) : width,
+              height: ratio.label == "L" ? width * (2 / 3) : width,
+            }}
+            muted={mute ? true : false}
+            resizeMode="cover"
+          ></FunVideo>
+        ) : (
           <View
             style={{
-              marginBottom: 5,
+              height: width,
+              width: width,
               alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {recent?.node?.type.substr(0, 5) === "video" ? (
-              <FunVideo
-                source={{
-                  uri:
-                    Platform.OS === "ios"
-                      ? `assets-library://asset/asset.${recent.node.image.filename.substring(
-                          recent.node.image.filename.length - 3
-                        )}?id=${recent.node.image.uri.substring(
-                          5,
-                          41
-                        )}&ext=${recent.node.image.filename.substring(
-                          recent.node.image.filename.length - 3
-                        )}`
-                      : recent.node?.image?.uri,
-                }}
-                ref={(slider) => {
-                  videoView = slider;
-                }}
-                onProgress={(e) => durationTime(e)}
-                paused={props.route.name == "Post" && isFocused ? false : true}
-                // paused={mute ? true : false}
-                repeat={time ? true : false}
-                // onBuffer={videoView?.current?.onBuffer}
-                onError={videoView?.current?.videoError}
-                style={{
-                  // width: width,
-                  // height: width,
-                  width: ratio.label == "P" ? width * (4 / 5) : width,
-                  height: ratio.label == "L" ? width * (2 / 3) : width,
-                }}
-                muted={mute ? true : false}
-                resizeMode="cover"
-              ></FunVideo>
-            ) : (
-              <View
-                style={{
-                  height: width,
-                  width: width,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                  // resizeMode="contain"
-                  source={{ uri: recent.node?.image?.uri }}
-                  style={{
-                    width: ratio.label == "P" ? width * (4 / 5) : width,
-                    height: ratio.label == "L" ? width * (2 / 3) : width,
-                    // width: ratio.label == "P" ? width * (4 / 5) : width,
-                    // height: ratio.label == "L" ? width * (2 / 3) : width,
-                    // width: width,
-                    // height: width,
-                    // resizeMode: ratio.width == 1 ? "cover" : "contain",
-                    // resizeMode: "contain",
-                  }}
-                />
-                {/* <ImageCropper
+            <Image
+              // resizeMode="contain"
+              source={{ uri: recent.node?.image?.uri }}
+              style={{
+                width: ratio.label == "P" ? width * (4 / 5) : width,
+                height: ratio.label == "L" ? width * (2 / 3) : width,
+                // width: ratio.label == "P" ? width * (4 / 5) : width,
+                // height: ratio.label == "L" ? width * (2 / 3) : width,
+                // width: width,
+                // height: width,
+                // resizeMode: ratio.width == 1 ? "cover" : "contain",
+                // resizeMode: "contain",
+              }}
+            />
+            {/* <ImageCropper
                   style={{
                     width: width,
                     height: width,
@@ -723,59 +809,201 @@ export default function Post(props) {
                   setCropperParams={() => setCropperParams}
                   resizeMode="contain"
                 /> */}
-              </View>
-            )}
-            {checklistVideo.length < 2 ? (
-              <Pressable
-                onPress={() =>
-                  setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-                }
-                style={{
-                  idth: width,
-                  // height: width,
-                  backgroundColor: "#B2B2B2",
-                  position: "absolute",
-                  bottom: 0,
-                  borderRadius: 20,
-                  margin: 15,
-                  width: 40,
-                  height: 40,
-                  left: 0,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {ratio.index == 0 ? (
-                  <SizeOri height={23} width={23} />
-                ) : (
-                  <SizeStrace height={23} width={23} />
-                )}
-              </Pressable>
-            ) : null}
-            {recent?.node?.type.substr(0, 5) === "video" ? (
-              <Pressable
-                onPress={() => setMute(!mute)}
-                style={{
-                  position: "absolute",
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  // backgroundColor: "#464646",
-                  bottom: 10,
-                  right: 10,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {mute ? (
-                  <Mute width="15" height="15" />
-                ) : (
-                  <Unmute width="15" height="15" />
-                )}
-              </Pressable>
-            ) : null}
           </View>
         )}
+        {checklistVideo.length < 2 ? (
+          <Pressable
+            onPress={() =>
+              setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+            }
+            style={{
+              idth: width,
+              // height: width,
+              backgroundColor: "#B2B2B2",
+              position: "absolute",
+              bottom: 0,
+              borderRadius: 20,
+              margin: 15,
+              width: 40,
+              height: 40,
+              left: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {ratio.index == 0 ? (
+              <SizeOri height={23} width={23} />
+            ) : (
+              <SizeStrace height={23} width={23} />
+            )}
+          </Pressable>
+        ) : null}
+        {recent?.node?.type.substr(0, 5) === "video" ? (
+          <Pressable
+            onPress={() => setMute(!mute)}
+            style={{
+              position: "absolute",
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              // backgroundColor: "#464646",
+              bottom: 10,
+              right: 10,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {mute ? (
+              <Mute width="15" height="15" />
+            ) : (
+              <Unmute width="15" height="15" />
+            )}
+          </Pressable>
+        ) : null}
+      </View>
+      {/* ) : null} */}
+
+      <FlatList
+        keyExtractor={(item) => item?.node?.image?.uri}
+        style={{
+          paddingStart: 0,
+          alignContent: "center",
+          backgroundColor: "white",
+        }}
+        ref={slider}
+        data={imageRoll && imageRoll.length ? imageRoll : null}
+        // ListHeaderComponent={() => {
+        //   return !Preview ? (
+        //     <View
+        //       style={{
+        //         marginBottom: 5,
+        //         alignItems: "center",
+        //       }}
+        //     >
+        //       {recent?.node?.type.substr(0, 5) === "video" ? (
+        //         <FunVideo
+        //           source={{
+        //             uri:
+        //               Platform.OS === "ios"
+        //                 ? `assets-library://asset/asset.${recent.node.image.filename.substring(
+        //                     recent.node.image.filename.length - 3
+        //                   )}?id=${recent.node.image.uri.substring(
+        //                     5,
+        //                     41
+        //                   )}&ext=${recent.node.image.filename.substring(
+        //                     recent.node.image.filename.length - 3
+        //                   )}`
+        //                 : recent.node?.image?.uri,
+        //           }}
+        //           ref={(slider) => {
+        //             videoView = slider;
+        //           }}
+        //           onProgress={(e) => durationTime(e)}
+        //           paused={
+        //             props.route.name == "Post" && isFocused ? false : true
+        //           }
+        //           // paused={mute ? true : false}
+        //           repeat={time ? true : false}
+        //           // onBuffer={videoView?.current?.onBuffer}
+        //           onError={videoView?.current?.videoError}
+        //           style={{
+        //             // width: width,
+        //             // height: width,
+        //             width: ratio.label == "P" ? width * (4 / 5) : width,
+        //             height: ratio.label == "L" ? width * (2 / 3) : width,
+        //           }}
+        //           muted={mute ? true : false}
+        //           resizeMode="cover"
+        //         ></FunVideo>
+        //       ) : (
+        //         <View
+        //           style={{
+        //             height: width,
+        //             width: width,
+        //             alignItems: "center",
+        //             justifyContent: "center",
+        //           }}
+        //         >
+        //           <Image
+        //             // resizeMode="contain"
+        //             source={{ uri: recent.node?.image?.uri }}
+        //             style={{
+        //               width: ratio.label == "P" ? width * (4 / 5) : width,
+        //               height: ratio.label == "L" ? width * (2 / 3) : width,
+        //               // width: ratio.label == "P" ? width * (4 / 5) : width,
+        //               // height: ratio.label == "L" ? width * (2 / 3) : width,
+        //               // width: width,
+        //               // height: width,
+        //               // resizeMode: ratio.width == 1 ? "cover" : "contain",
+        //               // resizeMode: "contain",
+        //             }}
+        //           />
+        //           {/* <ImageCropper
+        //             style={{
+        //               width: width,
+        //               height: width,
+        //               borderWidth: 5,
+        //             }}
+        //             imageUri={recent.node?.image?.uri}
+        //             setCropperParams={() => setCropperParams}
+        //             resizeMode="contain"
+        //           /> */}
+        //         </View>
+        //       )}
+        //       {checklistVideo.length < 2 ? (
+        //         <Pressable
+        //           onPress={() =>
+        //             setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+        //           }
+        //           style={{
+        //             idth: width,
+        //             // height: width,
+        //             backgroundColor: "#B2B2B2",
+        //             position: "absolute",
+        //             bottom: 0,
+        //             borderRadius: 20,
+        //             margin: 15,
+        //             width: 40,
+        //             height: 40,
+        //             left: 0,
+        //             alignItems: "center",
+        //             justifyContent: "center",
+        //           }}
+        //         >
+        //           {ratio.index == 0 ? (
+        //             <SizeOri height={23} width={23} />
+        //           ) : (
+        //             <SizeStrace height={23} width={23} />
+        //           )}
+        //         </Pressable>
+        //       ) : null}
+        //       {recent?.node?.type.substr(0, 5) === "video" ? (
+        //         <Pressable
+        //           onPress={() => setMute(!mute)}
+        //           style={{
+        //             position: "absolute",
+        //             width: 40,
+        //             height: 40,
+        //             borderRadius: 20,
+        //             // backgroundColor: "#464646",
+        //             bottom: 10,
+        //             right: 10,
+        //             alignItems: "center",
+        //             justifyContent: "center",
+        //           }}
+        //         >
+        //           {mute ? (
+        //             <Mute width="15" height="15" />
+        //           ) : (
+        //             <Unmute width="15" height="15" />
+        //           )}
+        //         </Pressable>
+        //       ) : null}
+        //     </View>
+        //   ) : (
+        //     <View />
+        //   );
+        // }}
         renderItem={({ item, index }) =>
           item.mediaType !== "camera" ? (
             <TouchableOpacity
@@ -996,6 +1224,7 @@ export default function Post(props) {
         onEndReachedThreshold={1}
         onEndReached={getMoreImage}
         onEndThreshold={3000}
+        onScroll={() => setPreview(false)}
       />
     </View>
   );

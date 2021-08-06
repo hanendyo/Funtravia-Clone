@@ -334,7 +334,7 @@
   "addHere": "Tambah Disini",
   "popularTimes": "Waktu Populer",
   "peopleAlsoSearch": "Orang Juga Mencari",
-  "createAnAccount": "Buat Akun Anda",
+  "createAnAccount": "Buat Akun dan",
   "enjoyTheTrip": "Nikmati Perjalanan Anda",
   "accountInformation": "Informasi Akun",
   "personalData": "Data Pribadi",
@@ -585,5 +585,10 @@
   "failSomethingwrong": "Gagal, ada yang salah!",
   "soonUpdate": "Ditunggu updatenya segera",
   "weeekago": "minggu yang lalu",
-  "option": "Opsi"
+  "option": "Opsi",
+  "homesubtitleDesPopuler": "Destination Yang Tidak Boleh Terlewat",
+  "homesubtitleDiscover": "Temukan Ide untuk Perjalanan mu",
+  "discover": "Temukan Ide Perjalanan",
+  "homesubtitleFunfeed": "Bagikan Momen dari Perjalanan mu",
+  "planyyourTrip": "Rencanakan Perjalanan Anda"
 }

@@ -297,26 +297,28 @@ export default function Home(props) {
             source={sampul2}
             style={{
               width: width,
-              height: width / 1.5,
+              height: ukuran + 50,
               alignSelf: "flex-start",
               justifyContent: "flex-end",
               alignContent: "center",
               alignItems: "center",
               marginBottom: 2,
+              // borderWidth: 1,
+              backgroundColor: "#daf0f2",
             }}
           >
             <View
               style={{
                 position: "absolute",
-                bottom: -15,
+                bottom: -10,
                 marginBottom: 7,
               }}
             >
               <View
                 style={{
                   width: Dimensions.get("window").width - 40,
-                  height: ukuran,
-                  borderRadius: 5,
+                  height: ukuran + 10,
+                  borderRadius: 10,
                   borderColor: "#209FAE",
                   borderWidth: 1.5,
                   backgroundColor: "#FFFFFF",
@@ -434,7 +436,7 @@ export default function Home(props) {
                         }}
                       >
                         <Text
-                          size="label"
+                          size="title"
                           type="black"
                           style={{ marginLeft: 10 }}
                         >
@@ -633,7 +635,7 @@ export default function Home(props) {
                         {t("createAnAccount")}
                       </Text>
                       <Text size="description" type="bold">
-                        {t("enjoyTheTrip")}
+                        {t("planyyourTrip")}
                       </Text>
                       <View
                         style={{
@@ -770,19 +772,19 @@ export default function Home(props) {
         <MenuNew props={props} />
         <HomeTitle
           title={t("popularCityDestination")}
-          label={"Good Place Good Trip"}
+          label={t("homesubtitleDesPopuler")}
           seeAll={true}
         />
         <PopularDestination props={props} />
         <HomeTitle
-          title={"Discover"}
-          label={"Start Your Journey Here"}
+          title={t("discover")}
+          label={t("homesubtitleDiscover")}
           seeAll={false}
         />
         <DiscoverCard props={props} token={token} />
         <HomeTitle
-          title={"Fun Feed"}
-          label={"Collect Moments from Your Trip"}
+          title={t("funFeed")}
+          label={t("homesubtitleFunfeed")}
           seeAll={false}
         />
         <FunFeed props={props} />
