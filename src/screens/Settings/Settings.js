@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  Platform,
-  Image,
-  ScrollView,
-} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { View, Dimensions, StyleSheet, Platform, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { inbox_setting, notif_bell } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
@@ -181,10 +175,13 @@ export default function Settings(props) {
                 text={
                   <Text
                     size="readable"
-                    type="light"
-                    style={{ color: language == "en" ? "#FFF" : "#464646" }}
+                    type={language == "en" ? "bold" : "light"}
+                    style={{
+                      color: language == "en" ? "#FFF" : "#464646",
+                      // fontWeight: language == "en" ? "900" : "100",
+                    }}
                   >
-                    {t("English")}
+                    English
                   </Text>
                 }
               ></Button>
@@ -203,8 +200,11 @@ export default function Settings(props) {
                 text={
                   <Text
                     size="readable"
-                    type="light"
-                    style={{ color: language == "id" ? "#FFF" : "#464646" }}
+                    type={language == "id" ? "bold" : "light"}
+                    style={{
+                      color: language == "id" ? "#FFF" : "#464646",
+                      // fontWeight: language == "id" ? "900" : "100",
+                    }}
                   >
                     Indonesia
                   </Text>

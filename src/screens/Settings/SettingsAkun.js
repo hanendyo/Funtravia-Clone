@@ -34,12 +34,13 @@ import {
 import City from "../../graphQL/Query/Itinerary/City";
 import { useMutation } from "@apollo/react-hooks";
 import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
-import Date from "../../graphQL/Mutation/Setting/dateSettingAkun";
+import DateSetting from "../../graphQL/Mutation/Setting/dateSettingAkun";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import HasPassword from "../../graphQL/Query/Settings/HasPassword";
 import CityInformation from "../../graphQL/Query/Cities/CitiesInformation";
 import { RNToasty } from "react-native-toasty";
 import SettingCity from "./SettingCity";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -53,7 +54,7 @@ export default function SettingsAkun(props) {
   let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(props.route.params.setting?.user.gender);
-  let [date, setDate] = useState(props.route.params.setting?.user?.birth_date);
+  let [dates, setDate] = useState(props.route.params.setting?.user?.birth_date);
   let [searchCity, setSearchCity] = useState("");
   let [soon, setSoon] = useState(false);
 
@@ -64,11 +65,6 @@ export default function SettingsAkun(props) {
   const closeBirth1 = () => {
     setModalBirth(true);
     setModalBirth1(false);
-  };
-
-  const closeModalBirth = () => {
-    setDate(null);
-    closeBirth1();
   };
 
   const HeaderComponent = {
@@ -156,7 +152,7 @@ export default function SettingsAkun(props) {
   const [
     mutationDate,
     { data: dataDate, loading: loadingDate, error: errorDate },
-  ] = useMutation(Date, {
+  ] = useMutation(DateSetting, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -273,6 +269,18 @@ export default function SettingsAkun(props) {
     } else {
       return await props.navigation.navigate("AddPasswordEmail");
     }
+  };
+
+  const dateTime = async (e) => {
+    await closeDatPicker();
+    await setDate(FormatYMD(e));
+  };
+
+  const closeDatPicker = async () => {
+    await setModalBirth1(false);
+    setTimeout(() => {
+      setModalBirth(true);
+    }, 400);
   };
 
   // Render all
@@ -433,7 +441,7 @@ export default function SettingsAkun(props) {
           transparent={true}
         >
           <Pressable
-            onPress={() => setModalBirth(false)}
+            // onPress={() => setModalBirth(false)}
             style={{
               backgroundColor: "rgba(0,0,0,0.7)",
               flex: 1,
@@ -468,7 +476,7 @@ export default function SettingsAkun(props) {
                 onPress={() => closeBirth()}
               >
                 <Text size="description" type="regular">
-                  {date ? dateFormatYMD(date) : "Birth of Date"}
+                  {dates ? dateFormatYMD(dates) : t("birthofdate")}
                 </Text>
                 <CustomImage
                   source={calendar_blue}
@@ -485,7 +493,7 @@ export default function SettingsAkun(props) {
                 <Button
                   size="medium"
                   style={{ width: "48%" }}
-                  color="tertiary"
+                  color="green"
                   text={t("cancel")}
                   onPress={() => setModalBirth(false)}
                 ></Button>
@@ -493,75 +501,21 @@ export default function SettingsAkun(props) {
                   size="medium"
                   style={{ width: "48%" }}
                   text={t("save")}
-                  onPress={() => hasilDate(date)}
+                  onPress={() => hasilDate(dates)}
                 ></Button>
               </View>
             </View>
           </Pressable>
         </ModalRN>
-        <ModalRN
-          onRequestClose={() => setModalBirth1(false)}
-          onBackdropPress={() => setModalBirth1(false)}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          visible={modalBirth1}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => setModalBirth1(false)}
-            style={{
-              backgroundColor: "rgba(0,0,0,0.7)",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#fff",
-                width: Dimensions.get("screen").width - 40,
-                paddingVertical: 20,
-                alignItems: "center",
-                borderRadius: 5,
-              }}
-            >
-              <DatePicker
-                options={{}}
-                // current={startDate ? startDate : getToday()}
-                // selected={date}
-                // maximumDate={toDay()}
-                onDateChange={(x) => setDate(x)}
-                mode="calendar"
-                style={{ borderRadius: 10 }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignSelf: "flex-end",
-                }}
-              >
-                <Button
-                  size="small"
-                  style={{ alignSelf: "flex-end" }}
-                  text="Cancel"
-                  variant="transparent"
-                  onPress={() => closeModalBirth()}
-                ></Button>
-                <Button
-                  size="small"
-                  style={{ alignSelf: "flex-end" }}
-                  text="Ok"
-                  variant="transparent"
-                  onPress={() => modalBirth1Close(date)}
-                ></Button>
-              </View>
-            </View>
-          </Pressable>
-        </ModalRN>
+
+        <DateTimePickerModal
+          isVisible={modalBirth1}
+          mode="date"
+          // value={tanggal}
+          date={new Date(dates)}
+          onConfirm={(e) => dateTime(e)}
+          onCancel={() => closeDatPicker()}
+        />
 
         {/* Modal Jenis Kelamin */}
 
@@ -782,7 +736,7 @@ export default function SettingsAkun(props) {
           </Ripple>
           <Ripple
             rippleCentered={true}
-            onPress={() => setModalBirth(true)}
+            onPress={(e) => setModalBirth(true)}
             style={{
               paddingHorizontal: 15,
               paddingVertical: 13,
@@ -937,7 +891,7 @@ export default function SettingsAkun(props) {
                 }}
                 type="box"
                 size="medium"
-                color="tertiary"
+                color="green"
                 text={t("AddEmail")}
                 onPress={() =>
                   props.navigation.navigate("SettingEmail", {
@@ -1029,7 +983,7 @@ export default function SettingsAkun(props) {
                 }}
                 type="box"
                 size="medium"
-                color="tertiary"
+                color="green"
                 text={t("addPhoneNumber")}
                 // onPress={() => props.navigation.navigate("SettingPhone")}
                 onPress={() => setSoon(true)}

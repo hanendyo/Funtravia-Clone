@@ -37,12 +37,14 @@ export default function SettingNegara({
     if (selected?.countries) {
       var tempData = [...datacountry];
       for (var i of tempData) {
-        i.selected = false;
+        ({ ...i, selected: false });
       }
       var index = tempData.findIndex(
         (k) => k["id"] === selected?.countries?.id
       );
-      tempData[index].selected = true;
+      if (index >= 0) {
+        ({ ...tempData[index], selected: true });
+      }
       setdataCountry(tempData);
     }
   };
@@ -83,10 +85,12 @@ export default function SettingNegara({
             await AsyncStorage.setItem("setting", JSON.stringify(tempSetting));
             var tempData = [...datacountry];
             for (var i in tempData) {
-              tempData[i].selected = false;
+              ({ ...i, selected: false });
             }
             var index = tempData.findIndex((k) => k["id"] === detail.id);
-            tempData[index].selected = true;
+            if (index >= 0) {
+              ({ ...tempData[index], selected: true });
+            }
             setdataCountry(tempData);
             masukan(selected);
           } else {
@@ -179,11 +183,13 @@ export default function SettingNegara({
             ref={slider}
             data={datacountry}
             renderItem={({ item }) => {
+              console.log("item", item.id);
+              console.log("selected", selected.countries.id);
               return (
                 <Ripple
                   onPress={() => hasil(item, selected)}
                   style={{
-                    paddingVertical: 15,
+                    // paddingVertical: 15,
                     paddingHorizontal: 20,
                     borderBottomWidth: 0.5,
                     borderBottomColor: "#D1D1D1",
@@ -196,6 +202,8 @@ export default function SettingNegara({
                   <View
                     style={{
                       flexDirection: "row",
+                      // borderWidth: 1,
+                      marginVertical: 10,
                     }}
                   >
                     <View
@@ -212,10 +220,16 @@ export default function SettingNegara({
                         variant="f"
                       />
                     </View>
-                    <Text size="description">{item.name}</Text>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ alignSelf: "center" }}
+                    >
+                      {item.name}
+                    </Text>
                   </View>
                   <View>
-                    {item.selected && item.selected == true ? (
+                    {selected?.countries?.id == item.id ? (
                       <Check width={20} height={15} />
                     ) : null}
                   </View>
