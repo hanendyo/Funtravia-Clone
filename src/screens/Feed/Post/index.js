@@ -302,32 +302,32 @@ export default function Post(props) {
 
   let buka = useRef(false);
 
-  const backAction = () => {
-    if (buka.current === true) {
-      buka.current = false;
-      setChecklistVideo([]);
+  // const backAction = () => {
+  //   if (buka.current === true) {
+  //     buka.current = false;
+  //     setChecklistVideo([]);
 
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-      BackHandler.addEventListener("hardwareBackPress", backDei);
-    } else {
-      props.navigation.goBack();
-    }
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  //     BackHandler.addEventListener("hardwareBackPress", backDei);
+  //   } else {
+  //     props.navigation.goBack();
+  //   }
 
-    return true;
-  };
+  //   return true;
+  // };
 
-  const backDei = () => {
-    props.navigation.goBack();
-    return true;
-  };
+  // const backDei = () => {
+  //   props.navigation.goBack();
+  //   return true;
+  // };
 
   useEffect(() => {
     loadAsync();
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-    // return () => backHandler.remove();
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   backAction
+    // );
+    // // return () => backHandler.remove();
   }, []);
 
   const [selectedAlbum, setSelectedAlbum] = useState({

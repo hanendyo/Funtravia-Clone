@@ -135,7 +135,7 @@ export default function OtherProfile(props) {
 
     await LoadUserProfile();
   };
-
+  console.log(token);
   const [
     Getdatapost,
     { data: dataposting, loading: loadingpost, error: errorpost },
