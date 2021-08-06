@@ -724,7 +724,7 @@ export default function Room({ navigation, route }) {
                 type="circle"
                 size="medium"
                 variant="transparent"
-                style={{ width: 35, height: 35 }}
+                style={{ width: 30, height: 30 }}
                 // onPress={() => Alert.alert("Sticker Cooming Soon")}
                 // onPress={() => modals()}
                 // onPress={() => {
@@ -743,7 +743,7 @@ export default function Room({ navigation, route }) {
                   marginRight: 5,
                 }}
               >
-                <Emoticon height={35} width={35} />
+                <Emoticon height={30} width={30} />
               </Button>
             ) : (
               <Button
@@ -751,7 +751,7 @@ export default function Room({ navigation, route }) {
                 type="circle"
                 size="medium"
                 variant="normal"
-                style={{ width: 35, height: 35 }}
+                style={{ width: 30, height: 30 }}
                 // onPress={() => Alert.alert("Sticker Cooming Soon")}
                 // onPress={() => modals()}
                 // onPress={() => setStickerModal(!_stickerModal)}
@@ -774,6 +774,8 @@ export default function Room({ navigation, route }) {
                 borderWidth: 1,
                 width: width - 130,
                 alignSelf: "center",
+                borderRadius: 50,
+
                 backgroundColor: "#f3f3f3",
               }}
             >
@@ -839,7 +841,7 @@ export default function Room({ navigation, route }) {
               type="circle"
               size="medium"
               variant="transparent"
-              style={{ width: 35, height: 35 }}
+              style={{ width: 30, height: 30 }}
               // onPress={() => Alert.alert("Sticker Cooming Soon")}
               // onPress={() => modals()}
               // onPress={() => {
@@ -858,7 +860,7 @@ export default function Room({ navigation, route }) {
                 marginRight: 5,
               }}
             >
-              <Emoticon height={35} width={35} />
+              <Emoticon height={30} width={30} />
             </Button>
           ) : (
             <Button
@@ -866,7 +868,7 @@ export default function Room({ navigation, route }) {
               type="circle"
               size="medium"
               variant="normal"
-              style={{ width: 35, height: 35 }}
+              style={{ width: 30, height: 30 }}
               // onPress={() => Alert.alert("Sticker Cooming Soon")}
               // onPress={() => modals()}
               // onPress={() => setStickerModal(!_stickerModal)}
@@ -890,6 +892,7 @@ export default function Room({ navigation, route }) {
               width: width - 130,
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
+              borderRadius: 50,
             }}
           >
             <TextInput

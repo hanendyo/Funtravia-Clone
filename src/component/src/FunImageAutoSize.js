@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Platform } from "react-native";
+import { Platform, View, ActivityIndicator } from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
@@ -78,11 +78,13 @@ export default function FunImageAutoSize({
       path = uri;
     }
   }
+  // console.log(style);
+
   if (loading) {
     return (
-      <SkeletonPlaceholder speed={500}>
-        <SkeletonPlaceholder.Item {...style} height={style.width} />
-      </SkeletonPlaceholder>
+      <View style={{ ...style, justifyContent: "center" }}>
+        <ActivityIndicator animating={true} size="large" color="#d1d1d1" />
+      </View>
     );
   }
 

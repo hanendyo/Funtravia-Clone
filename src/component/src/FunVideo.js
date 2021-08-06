@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Platform, Image as RNImage } from "react-native";
+import {
+  Platform,
+  Image as RNImage,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
@@ -36,9 +41,9 @@ export default function FunVideo({ style, poster, ...otherProps }) {
 
   if (loading) {
     return (
-      <SkeletonPlaceholder speed={500}>
-        <SkeletonPlaceholder.Item {...style} />
-      </SkeletonPlaceholder>
+      <View style={{ ...style, justifyContent: "center" }}>
+        <ActivityIndicator animating={true} size="large" color="#d1d1d1" />
+      </View>
     );
   }
 
