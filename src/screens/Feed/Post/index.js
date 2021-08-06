@@ -45,10 +45,6 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImageCropper from "react-native-simple-image-cropper";
 import { useIsFocused } from "@react-navigation/native";
-import RNFetchBlob, {
-  ProcessingManager,
-  compress,
-} from "react-native-fetch-blob";
 import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
 

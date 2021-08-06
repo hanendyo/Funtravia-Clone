@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ScrollView } from "react-native-gesture-handler";
 import {
   View,
   Dimensions,
@@ -9,8 +8,8 @@ import {
   ToastAndroid,
   Alert,
   Modal as ModalRN,
-  TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -776,7 +775,7 @@ export default function SettingsAkun(props) {
                     ? setting.user.gender === "M"
                       ? t("Male")
                       : t("Female")
-                    : "Not Set"}
+                    : t("notSet")}
                 </Text>
               </View>
             </View>
@@ -809,7 +808,7 @@ export default function SettingsAkun(props) {
                 <Text size="description" type="light" style={{}}>
                   {setting.user.birth_date
                     ? dateFormat(setting.user.birth_date)
-                    : "Not Set"}
+                    : t("notSet")}
                 </Text>
               </View>
             </View>
@@ -848,7 +847,7 @@ export default function SettingsAkun(props) {
                         .replace(/\b[a-z]/g, function(letter) {
                           return letter.toUpperCase();
                         })
-                    : "Not Set"}
+                    : t("notSet")}
                 </Text>
               </View>
             </View>
@@ -914,7 +913,7 @@ export default function SettingsAkun(props) {
                       >
                         {setting && setting.user && setting.user.email
                           ? setting.user.email
-                          : "Not Set"}
+                          : t("notSet")}
                       </Text>
                       <Text type="regular" size="small">
                         {t("emailUsed")}
