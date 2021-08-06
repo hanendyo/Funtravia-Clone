@@ -33,7 +33,6 @@ import {
   TravelStories,
   LikeRed,
   Logofuntravianew,
-  ShareBlack,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -104,7 +103,7 @@ export default function CityDetail(props) {
   let datenow = years + "-" + Bln1;
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(100).fill(0));
+  const [routes, setRoutes] = useState([1]);
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -284,8 +283,6 @@ export default function CityDetail(props) {
     },
   });
 
-  console.log("list", listCity);
-
   const Goto = (item) => {
     if (item?.id) {
       props.navigation.navigate("eventdetail", {
@@ -336,54 +333,6 @@ export default function CityDetail(props) {
       setList_populer(dataItinerary.itinerary_populer_by_city);
     },
   });
-
-  const headerPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        headerScrollY.stopAnimation();
-        // syncScrollOffset();
-        return false;
-      },
-
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        headerScrollY.stopAnimation();
-        return Math.abs(gestureState.dy) > 5;
-      },
-
-      onPanResponderRelease: (evt, gestureState) => {
-        // syncScrollOffset();
-        if (Math.abs(gestureState.vy) < 0.2) {
-          return;
-        }
-        headerScrollY.setValue(scrollY._value);
-        Animated.decay(headerScrollY, {
-          velocity: -gestureState.vy,
-          useNativeDriver: true,
-        }).start(() => {
-          // syncScrollOffset();
-        });
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        listRefArr.current.forEach((item) => {
-          if (item.key !== routes[_tabIndex.current].key) {
-            return;
-          }
-          if (item.value) {
-            item.value.scrollToOffset({
-              offset: -gestureState.dy + headerScrollStart.current,
-              animated: false,
-            });
-          }
-        });
-      },
-      onShouldBlockNativeResponder: () => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        headerScrollStart.current = scrollY._value;
-      },
-    })
-  ).current;
 
   const listPanResponder = useRef(
     PanResponder.create({
@@ -2503,7 +2452,6 @@ export default function CityDetail(props) {
     });
     return (
       <Animated.View
-        {...headerPanResponder.panHandlers}
         style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
@@ -2551,7 +2499,9 @@ export default function CityDetail(props) {
           style={{
             height: 55,
             width: Dimensions.get("screen").width,
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "#209fae",
+            paddingHorizontal: 20,
+            paddingVertical: 5,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
@@ -2560,101 +2510,45 @@ export default function CityDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              paddingHorizontal: 20,
-            }}
-          >
+          <View>
+            <Text size="title" type="black" style={{ color: "white" }}>
+              {dataCity && dataCity.CitiesInformation ? (
+                <Truncate
+                  text={Capital({
+                    text: dataCity.CitiesInformation.name,
+                  })}
+                  length={20}
+                ></Truncate>
+              ) : null}
+            </Text>
             <View
               style={{
-                flex: 1,
-                justifyContent: "center",
-                display: "flex",
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+                marginTop: 2,
               }}
             >
-              <Text size="title" type="bold">
-                {dataCity && dataCity.CitiesInformation ? (
-                  <Truncate
-                    text={Capital({
-                      text: dataCity.CitiesInformation.name,
-                    })}
-                    length={20}
-                  ></Truncate>
-                ) : null}
+              <PinWhite height={15} width={15} />
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginLeft: 5, color: "white" }}
+              >
+                {dataCity && dataCity.CitiesInformation
+                  ? dataCity.CitiesInformation.countries.name.toUpperCase()
+                  : "-"}
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                  marginTop: 2,
-                  marginBottom: 3,
-                }}
-              >
-                <PinHijau height={15} width={15} />
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ marginLeft: 5 }}
-                >
-                  {dataCity && dataCity.CitiesInformation
-                    ? dataCity.CitiesInformation.countries.name.toUpperCase()
-                    : "-"}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                justifyContent: "center",
-                display: "flex",
-              }}
-            >
-              <Pressable
-                // onPress={() =>
-                //   // shareAction({
-                //   //   from: "destination",
-                //   //   target: dataDestination.id,
-                //   // })
-                //   // SetShareModal(true)
-                // }
-                style={{
-                  backgroundColor: "#F6F6F6",
-                  marginRight: 2,
-                  height: 34,
-                  width: 34,
-                  borderRadius: 17,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ShareBlack height={20} width={20} />
-              </Pressable>
             </View>
           </View>
         </Animated.View>
-        <Animated.View
-          style={{
-            width: Dimensions.get("screen").width,
-            backgroundColor: "#ededeD",
-            paddingHorizontal: 20,
-            paddingVertical: 3,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            alignContent: "center",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
-          }}
-        />
 
-        {/* <Animated.View style={[styles.overlay]}>
+        <Animated.View style={[styles.overlay]}>
           <Animated.View
             style={{
               height: "100%",
-              width: Dimensions.get("screen").width,
+              width: "100%",
               position: "absolute",
-              borderWidth: 1,
               zIndex: 1,
               backgroundColor: "rgba(0, 0, 0, 0.38)",
               top: 0,
@@ -2662,7 +2556,7 @@ export default function CityDetail(props) {
               // opacity: imageOpacity,
             }}
           ></Animated.View>
-        </Animated.View> */}
+        </Animated.View>
       </Animated.View>
     );
   };

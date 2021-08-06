@@ -103,7 +103,7 @@ export default function CityDetail(props) {
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([1]);
+  const [routes, setRoutes] = useState(Array(100).fill(0));
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -333,6 +333,54 @@ export default function CityDetail(props) {
   if (dataItinerary && dataItinerary.itinerary_populer_by_province) {
     list_populer = dataItinerary.itinerary_populer_by_province;
   }
+
+  const headerPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        syncScrollOffset();
+        return false;
+      },
+
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        return Math.abs(gestureState.dy) > 5;
+      },
+
+      onPanResponderRelease: (evt, gestureState) => {
+        syncScrollOffset();
+        if (Math.abs(gestureState.vy) < 0.2) {
+          return;
+        }
+        headerScrollY.setValue(scrollY._value);
+        Animated.decay(headerScrollY, {
+          velocity: -gestureState.vy,
+          useNativeDriver: true,
+        }).start(() => {
+          syncScrollOffset();
+        });
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        listRefArr.current.forEach((item) => {
+          if (item.key !== routes[_tabIndex.current].key) {
+            return;
+          }
+          if (item.value) {
+            item.value.scrollToOffset({
+              offset: -gestureState.dy + headerScrollStart.current,
+              animated: false,
+            });
+          }
+        });
+      },
+      onShouldBlockNativeResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        headerScrollStart.current = scrollY._value;
+      },
+    })
+  ).current;
 
   const listPanResponder = useRef(
     PanResponder.create({
@@ -2446,8 +2494,8 @@ export default function CityDetail(props) {
     });
     return (
       <Animated.View
-        // {...headerPanResponder.panHandlers}
-        // style={[styles.header, { transform: [{ translateY: y }] }]}
+        {...headerPanResponder.panHandlers}
+        style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,

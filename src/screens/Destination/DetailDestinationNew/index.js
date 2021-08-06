@@ -75,10 +75,6 @@ const Index = (props) => {
    * stats
    */
 
-  let [unesco, setUnesco] = useState(0);
-  let [tambahan, setTambahan] = useState(0);
-  let [tambahan1, setTambahan1] = useState(0);
-  let [tambahan2, setTambahan2] = useState(0);
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
   let { width, height } = Dimensions.get("screen");
   let Notch = DeviceInfo.hasNotch();
@@ -86,6 +82,16 @@ const Index = (props) => {
     ios: Notch ? 55 : 55,
     android: 55,
   });
+  let [unesco, setUnesco] = useState(0);
+  let [tambahan, setTambahan] = useState(0);
+  let [tambahan1, setTambahan1] = useState(0);
+  let [tambahan2, setTambahan2] = useState(0);
+
+  const HeaderHeight = Platform.select({
+    ios: 457 + tambahan + tambahan1 + tambahan2 - unesco,
+    android: 440 + tambahan + tambahan1 + tambahan2 - unesco,
+  });
+
   // let TabBarHeight = 75;
 
   let SafeStatusBar = Platform.select({
@@ -95,10 +101,6 @@ const Index = (props) => {
 
   // let SafeStatusBar = 0;
 
-  let HeaderHeight = Platform.select({
-    ios: 457 + tambahan + tambahan1 + tambahan2 - unesco,
-    android: 440 + tambahan + tambahan1 + tambahan2 - unesco,
-  });
   let [newHeight, setNewHeight] = useState(0);
   let scrollRef = useRef();
 
@@ -108,7 +110,7 @@ const Index = (props) => {
   //     { key: "tab2", title: "Review" },
   //   ]);
 
-  const [routes, setRoutes] = useState([]);
+  const [routes, setRoutes] = useState(Array(100).fill(0));
   const [canScroll, setCanScroll] = useState(true);
   const [tab1Data] = useState(Array(40).fill(0));
   const [tab2Data] = useState(Array(30).fill(0));
@@ -129,7 +131,7 @@ const Index = (props) => {
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState(props.route.params.token);
   let [dataDestination, setDataDestination] = useState(data);
-  console.log(dataDestination);
+
   let [more, setMore] = useState(false);
   // const { t } = useTranslation();
   let [lines, setLines] = useState(3);
@@ -255,7 +257,7 @@ const Index = (props) => {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
       onStartShouldSetPanResponder: (evt, gestureState) => {
         headerScrollY.stopAnimation();
-        syncScrollOffset();
+        // syncScrollOffset();
         return false;
       },
 
@@ -263,36 +265,32 @@ const Index = (props) => {
         headerScrollY.stopAnimation();
         return Math.abs(gestureState.dy) > 5;
       },
-      onPanResponderEnd: (evt, gestureState) => {
-        handlePanReleaseOrEnd(evt, gestureState);
+
+      onPanResponderRelease: (evt, gestureState) => {
+        // syncScrollOffset();
+        if (Math.abs(gestureState.vy) < 0.2) {
+          return;
+        }
+        headerScrollY.setValue(scrollY._value);
+        Animated.decay(headerScrollY, {
+          velocity: -gestureState.vy,
+          useNativeDriver: true,
+        }).start(() => {
+          // syncScrollOffset();
+        });
       },
       onPanResponderMove: (evt, gestureState) => {
-        const curListRef = listRefArr?.current.find(
-          (ref) => ref.key === routes[_tabIndex.current]?.key
-        );
-
-        const headerScrollOffset = -gestureState.dy + headerScrollStart.current;
-        if (curListRef?.value) {
-          // scroll up
-          if (headerScrollOffset > 0) {
-            curListRef?.value.scrollToOffset({
-              offset: headerScrollOffset,
+        listRefArr.current.forEach((item) => {
+          if (item.key !== routes[_tabIndex.current].key) {
+            return;
+          }
+          if (item.value) {
+            item.value.scrollToOffset({
+              offset: -gestureState.dy + headerScrollStart.current,
               animated: false,
             });
-            // start pull down
-          } else {
-            if (Platform.OS === "ios") {
-              curListRef?.value.scrollToOffset({
-                offset: headerScrollOffset / 3,
-                animated: false,
-              });
-            } else if (Platform.OS === "android") {
-              if (!refreshStatusRef.current) {
-                headerMoveScrollY.setValue(headerScrollOffset / 1.5);
-              }
-            }
           }
-        }
+        });
       },
       onShouldBlockNativeResponder: () => true,
       onPanResponderGrant: (evt, gestureState) => {
@@ -319,14 +317,13 @@ const Index = (props) => {
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
-      const curRoute = routes[tabIndex]?.key;
+      const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
     });
 
     headerScrollY.addListener(({ value }) => {
       listRefArr.current.forEach((item) => {
-        // console.log("item", item);
-        if (item.key !== routes[_tabIndex]?.key) {
+        if (item.key !== routes[tabIndex].key) {
           return;
         }
         if (value > HeaderHeight || value < 0) {
@@ -351,7 +348,7 @@ const Index = (props) => {
    *  helper functions
    */
   const syncScrollOffset = () => {
-    const curRouteKey = routes[_tabIndex.current]?.key;
+    const curRouteKey = routes[_tabIndex.current].key;
 
     listRefArr.current.forEach((item) => {
       if (item.key !== curRouteKey) {
@@ -668,7 +665,7 @@ const Index = (props) => {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
@@ -2099,7 +2096,7 @@ const Index = (props) => {
   };
 
   const renderScene = ({ route }) => {
-    const focused = route.key === routes[tabIndex]?.key;
+    const focused = route.key === routes[tabIndex].key;
     let numCols;
     let data;
     let renderItem;
@@ -2775,6 +2772,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  // header: {
+  //   height: HeaderHeight,
+  //   width: "100%",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   position: "absolute",
+  //   backgroundColor: "#FFA088",
+  // },
   //   label: { fontSize: 14, color: "#222" },
   indicator: { backgroundColor: "#209FAE" },
   label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },

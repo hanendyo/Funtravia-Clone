@@ -11,8 +11,10 @@ import DestinationById from "../../../graphQL/Query/Destination/DestinationById"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
+import { useTranslation } from "react-i18next";
 
 export default function Reviews({ props, id }) {
+  const { t, i18n } = useTranslation();
   const [setting, setSetting] = useState("");
   const [token, setToken] = useState("");
   let [gambar, setGambar] = useState([]);
