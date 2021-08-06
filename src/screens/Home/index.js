@@ -302,7 +302,7 @@ export default function Home(props) {
               justifyContent: "flex-end",
               alignContent: "center",
               alignItems: "center",
-              marginBottom: 2,
+              // marginBottom: 2,
               // borderWidth: 1,
               backgroundColor: "#daf0f2",
             }}
@@ -311,7 +311,7 @@ export default function Home(props) {
               style={{
                 position: "absolute",
                 bottom: -10,
-                marginBottom: 7,
+                marginBottom: 5,
               }}
             >
               <View

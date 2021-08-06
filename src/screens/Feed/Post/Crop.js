@@ -79,15 +79,15 @@ export default function Crop(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    const backAction = () => {
-      BackHandler.addEventListener(props.navigation.goBack());
-      return true;
-    };
+    // const backAction = () => {
+    //   BackHandler.addEventListener(props.navigation.goBack());
+    //   return true;
+    // };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   backAction
+    // );
   });
 
   const L = (2.2 / 3) * Dimensions.get("screen").width - 30;

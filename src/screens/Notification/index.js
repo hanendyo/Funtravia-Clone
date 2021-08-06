@@ -155,10 +155,10 @@ export default function Notification(props) {
       return true;
     };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   backAction
+    // );
 
     // return () => backHandler.remove();
   }, []);
