@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Button, Loading, Text } from "../../../component";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Bottom, Xhitam } from "../../../assets/svg";
+import { Bottom, Xhitam, Xwhite } from "../../../assets/svg";
 import { Input, Item, Label } from "native-base";
 import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
@@ -106,9 +106,10 @@ export default function CopyItinerary(props) {
         onPress={() => props.navigation.goBack()}
         style={{
           height: 55,
+          marginRight: 10,
         }}
       >
-        <Xhitam height={15} width={15}></Xhitam>
+        <Xwhite height={13} width={13}></Xwhite>
       </Button>
     ),
     headerLeft: () => (
@@ -118,9 +119,10 @@ export default function CopyItinerary(props) {
           type={"bold"}
           style={{
             color: "#fff",
+            marginLeft: 10,
           }}
         >
-          Copy Itinerary
+          {t("copyItinerary")}
         </Text>
       </View>
     ),
@@ -227,17 +229,29 @@ export default function CopyItinerary(props) {
     <View
       style={{
         flex: 1,
-        padding: 15,
+        paddingHorizontal: 20,
+        paddingVertical: 20,
         backgroundColor: "#fff",
       }}
     >
-      <Text type="bold" size="label">
-        Hold up! Before you continue
-      </Text>
-      <Text size="label">Please set title and date of the trip</Text>
+      <View>
+        <Text type="bold" size="title">
+          {t("holdoncopyitinerary")}
+        </Text>
+      </View>
+      <View
+        style={{
+          paddingTop: 2,
+        }}
+      >
+        <Text size="label">{t("settitle&trip")}</Text>
+      </View>
+
       <View
         style={{
           alignContent: "center",
+          paddingVertical: 15,
+          // paddingHorizontal: 5,
           width: "100%",
         }}
       >
@@ -304,6 +318,7 @@ export default function CopyItinerary(props) {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            paddingVertical: 15,
             width: "100%",
           }}
         >

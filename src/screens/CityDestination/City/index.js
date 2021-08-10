@@ -34,6 +34,7 @@ import {
   LikeRed,
   Logofuntravianew,
   ShareBlack,
+  Labeltag,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -70,7 +71,7 @@ import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 50;
+const TabBarHeight = 45;
 const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
@@ -110,6 +111,7 @@ export default function CityDetail(props) {
   const [tab2Data] = useState(Array(1).fill(0));
 
   let scrollRef = useRef();
+
   let [full, setFull] = useState(false);
   /**
    * ref
@@ -129,6 +131,21 @@ export default function CityDetail(props) {
     outputRange: [0, -50],
     extrapolate: "clamp",
   });
+  let hides = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    })
+  );
+
+  let hide = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
 
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
@@ -668,8 +685,7 @@ export default function CityDetail(props) {
         {render && render.description ? (
           <View
             style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
+              paddingVertical: 15,
               flexDirection: "column",
             }}
           >
@@ -748,7 +764,7 @@ export default function CityDetail(props) {
           <View
             style={{
               paddingVertical: 10,
-              paddingHorizontal: 15,
+              // paddingHorizontal: 15,
               width: "100%",
             }}
           >
@@ -952,7 +968,7 @@ export default function CityDetail(props) {
         <View
           style={{
             paddingVertical: 10,
-            paddingHorizontal: 15,
+            // paddingHorizontal: 15,
             width: "100%",
           }}
         >
@@ -1101,7 +1117,7 @@ export default function CityDetail(props) {
           <View
             style={{
               paddingVertical: 10,
-              paddingHorizontal: 15,
+              // paddingHorizontal: 15,
               width: "100%",
             }}
           >
@@ -1302,7 +1318,7 @@ export default function CityDetail(props) {
           <View
             style={{
               paddingVertical: 10,
-              paddingHorizontal: 15,
+              // paddingHorizontal: 15,
               width: "100%",
             }}
           >
@@ -1505,7 +1521,7 @@ export default function CityDetail(props) {
         {/* Event */}
         <View
           style={{
-            paddingHorizontal: 15,
+            // paddingHorizontal: 15,
             paddingVertical: 10,
             flexDirection: "column",
           }}
@@ -1797,7 +1813,7 @@ export default function CityDetail(props) {
         {renderItinerary.length > 0 ? (
           <View
             style={{
-              paddingHorizontal: 15,
+              // paddingHorizontal: 15,
               paddingVertical: 5,
               flexDirection: "column",
             }}
@@ -2248,7 +2264,7 @@ export default function CityDetail(props) {
     return (
       <View
         style={{
-          paddingHorizontal: 15,
+          // paddingHorizontal: 15,
           paddingVertical: 5,
         }}
       >
@@ -2491,6 +2507,8 @@ export default function CityDetail(props) {
     });
   };
 
+  console.log("list", listCity);
+
   /**
    * render Helper
    */
@@ -2583,6 +2601,7 @@ export default function CityDetail(props) {
                   ></Truncate>
                 ) : null}
               </Text>
+
               <View
                 style={{
                   flexDirection: "row",
@@ -2592,16 +2611,58 @@ export default function CityDetail(props) {
                   marginBottom: 3,
                 }}
               >
-                <PinHijau height={15} width={15} />
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ marginLeft: 5 }}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  {dataCity && dataCity.CitiesInformation
-                    ? dataCity.CitiesInformation.countries.name.toUpperCase()
-                    : "-"}
-                </Text>
+                  <PinHijau height={12} width={12} />
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{ marginLeft: 5 }}
+                  >
+                    {dataCity && dataCity.CitiesInformation
+                      ? dataCity.CitiesInformation.countries.name
+                      : "-"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: 25,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Labeltag height={12} width={12} />
+                  {i18n.language === "id" ? (
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ marginLeft: 5 }}
+                    >
+                      {t("cityof")} {t("province")}{" "}
+                      {dataCity && dataCity.CitiesInformation
+                        ? dataCity.CitiesInformation.province.name
+                        : "-"}
+                    </Text>
+                  ) : (
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ marginLeft: 5 }}
+                    >
+                      {t("cityof")}{" "}
+                      {dataCity && dataCity.CitiesInformation
+                        ? dataCity.CitiesInformation.province.name
+                        : "-"}{" "}
+                      {t("province")}
+                    </Text>
+                  )}
+                </View>
               </View>
             </View>
             <View
@@ -2621,14 +2682,14 @@ export default function CityDetail(props) {
                 style={{
                   backgroundColor: "#F6F6F6",
                   marginRight: 2,
-                  height: 34,
-                  width: 34,
+                  height: 30,
+                  width: 30,
                   borderRadius: 17,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <ShareBlack height={20} width={20} />
+                <ShareBlack height={15} width={15} />
               </Pressable>
             </View>
           </View>
@@ -2647,50 +2708,7 @@ export default function CityDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
         />
-
-        {/* <Animated.View style={[styles.overlay]}>
-          <Animated.View
-            style={{
-              height: "100%",
-              width: Dimensions.get("screen").width,
-              position: "absolute",
-              borderWidth: 1,
-              zIndex: 1,
-              backgroundColor: "rgba(0, 0, 0, 0.38)",
-              top: 0,
-              left: 0,
-              // opacity: imageOpacity,
-            }}
-          ></Animated.View>
-        </Animated.View> */}
       </Animated.View>
-    );
-  };
-
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 2,
-          borderBottomColor: focused ? "#209fae" : "white",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Text
-          style={[
-            focused ? styles.labelActive : styles.label,
-            {
-              opacity: focused ? 1 : 0.7,
-              height: 38,
-              paddingTop: 2,
-            },
-          ]}
-        >
-          {route.title}
-        </Text>
-      </View>
     );
   };
 
@@ -2753,7 +2771,7 @@ export default function CityDetail(props) {
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
-          paddingHorizontal: 10,
+          paddingHorizontal: 20,
           minHeight: height - SafeStatusBar + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
@@ -2809,18 +2827,15 @@ export default function CityDetail(props) {
                   borderBottomWidth: 2,
                   borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
                   alignContent: "center",
-                  paddingHorizontal: 15,
+                  // paddingHorizontal: 15,
+                  marginLeft: index == 0 ? 20 : 20,
                   width:
                     props.navigationState.routes.length < 2
                       ? Dimensions.get("screen").width * 0.5
-                      : // : props.navigationState.routes.length < 3
-                        // ? Dimensions.get("screen").width * 0.5
-                        // : props.navigationState.routes.length < 4
-                        // ? Dimensions.get("screen").width * 0.33
-                        null,
+                      : null,
                   height: TabBarHeight,
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
                 }}
               >
                 <Text
@@ -2828,17 +2843,12 @@ export default function CityDetail(props) {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
-                      // borderWidth: 1,
                       borderBottomWidth: 0,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      height: 38,
-                      paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
                     },
                   ]}
@@ -3173,12 +3183,15 @@ export default function CityDetail(props) {
           position: "absolute",
           top: SafeStatusBar,
           zIndex: 9999,
+          opacity: hides.current,
           flexDirection: "row",
           justifyContent: "space-between",
+          // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
+          marginHorizontal: 20,
           height: 55,
-          width: Dimensions.get("screen").width,
+          width: Dimensions.get("screen").width - 40,
         }}
       >
         <Button
@@ -3189,10 +3202,22 @@ export default function CityDetail(props) {
           onPress={() => props.navigation.goBack()}
           style={{
             height: 50,
-            marginLeft: 8,
+            // marginLeft: 8,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.2)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Animated.View>
         </Button>
         <TouchableOpacity
           onPress={(x) =>
@@ -3204,7 +3229,123 @@ export default function CityDetail(props) {
             })
           }
           style={{
-            width: Dimensions.get("screen").width - 90,
+            width: Dimensions.get("screen").width - 130,
+            backgroundColor: "rgba(0,0,0,0.2)",
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Image
+            source={search_button}
+            style={{
+              height: 20,
+              width: 20,
+              resizeMode: "contain",
+              marginHorizontal: 10,
+            }}
+          ></Image>
+          {/* <Input
+            value={search}
+            style={{
+              height: 20,
+              padding: 0,
+              textAlign: "left",
+              fontFamily: "Lato-Regular",
+              fontSize: 14,
+              color: "white",
+            }}
+            placeholderTextColor={"white"}
+            underlineColorAndroid="transparent"
+            onChangeText={(x) => setTextc(x)}
+            placeholder={"Search in " + listCity.name}
+            returnKeyType="search"
+            onSubmitEditing={(x) =>
+              props.navigation.push("SearchPg", {
+                idcity: dataCity.CitiesInformation.id,
+                searchInput: search,
+                aktifsearch: true,
+              })
+            }
+          /> */}
+          <View>
+            <Text
+              size="readable"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("searchin") + listCity.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          // onPress={() => setshowside(true)}
+          style={{
+            height: 50,
+          }}
+        >
+          {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
+        </Button>
+      </Animated.View>
+
+      {/* jika scrollheader, animated show */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Animated.View>
+        </Button>
+        <TouchableOpacity
+          onPress={(x) =>
+            props.navigation.push("SearchPg", {
+              idcity: dataCity.CitiesInformation.id,
+              searchInput: "",
+              locationname: listCity.name,
+              aktifsearch: true,
+            })
+          }
+          style={{
+            width: Dimensions.get("screen").width - 130,
             backgroundColor: "rgba(0,0,0,0.2)",
             flexDirection: "row",
             alignContent: "center",

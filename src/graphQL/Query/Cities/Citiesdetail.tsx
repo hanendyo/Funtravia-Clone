@@ -23,6 +23,10 @@ const CitiesInformation = gql`
       images {
         image
       }
+      province {
+        id
+        name
+      }
       article_header {
         id
         title
