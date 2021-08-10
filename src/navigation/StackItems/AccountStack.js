@@ -16,6 +16,7 @@ import {
   AddPassword,
   HasPassword,
   AddPasswordEmail,
+  SettingCity,
 } from "../../screens/Settings";
 import Wishlist from "../../screens/Wishlist/Index";
 
@@ -178,6 +179,15 @@ export default function AccountStackNavigation() {
         component={HasPassword}
         options={{
           headerTitle: "",
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <AccountStack.Screen
+        name="SettingCity"
+        component={SettingCity}
+        options={{
           headerTransparent: false,
           headerTintColor: "white",
           headerBackTitleVisible: false,

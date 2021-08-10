@@ -49,14 +49,13 @@ export default function SettingsAkun(props) {
   let [modalBirth, setModalBirth] = useState(false);
   let [modalBirth1, setModalBirth1] = useState(false);
   let [modalGender, setModalGender] = useState(false);
-  let [modalCity, setModalCity] = useState(false);
   let [token, setToken] = useState("");
-  let [setLanguage] = useState(i18n.language);
   let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(props.route.params.setting?.user.gender);
   let [dates, setDate] = useState(props.route.params.setting?.user?.birth_date);
   let [searchCity, setSearchCity] = useState("");
   let [soon, setSoon] = useState(false);
+  let [index, setIndex] = useState(0);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -107,6 +106,11 @@ export default function SettingsAkun(props) {
     variables: {
       keyword: searchCity,
       countries_id: setting?.countries?.id,
+    },
+    onCompleted: () => {
+      const tempData = [...datacity.cities_search];
+      let index = tempData.findIndex((k) => k["id"] === setting.cities.id);
+      setIndex(index);
     },
   });
 
@@ -769,7 +773,18 @@ export default function SettingsAkun(props) {
           </Ripple>
           <Ripple
             rippleCentered={true}
-            onPress={() => setModalCity(true)}
+            onPress={() =>
+              props.navigation.navigate("AccountStack", {
+                screen: "SettingCity",
+                params: {
+                  props: props,
+                  setting: setting,
+                  token: token,
+                  setSetting: (e) => setSetting(e),
+                  index: index,
+                },
+              })
+            }
             style={{
               paddingHorizontal: 15,
               paddingVertical: 13,
@@ -1058,7 +1073,7 @@ export default function SettingsAkun(props) {
         </Text>
         <Nextpremier width={15} height={15} />
       </Ripple> */}
-        {datacity && datacity?.cities_search.length > 0 ? (
+        {/* {datacity && datacity?.cities_search.length > 0 ? (
           <SettingCity
             modals={modalCity}
             setModalCity={(e) => setModalCity(e)}
@@ -1068,8 +1083,11 @@ export default function SettingsAkun(props) {
             token={token}
             setSearchCity={(e) => resultSearch(e)}
             searchCity={searchCity}
+            indexCity={index}
+            setIndex={(e) => setIndex(e)}
+            props={props}
           />
-        ) : null}
+        ) : null} */}
       </ScrollView>
     </>
   );

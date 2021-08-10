@@ -10,7 +10,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Arrowbackwhite, IdFlag, Check, Search } from "../../assets/svg";
+import {
+  Arrowbackblack,
+  Arrowbackwhite,
+  Check,
+  Search,
+} from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, StatusBar as StaBar } from "../../component";
 import Ripple from "react-native-material-ripple";
@@ -21,45 +26,73 @@ import { FunIcon } from "../../component";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import { TextInput } from "react-native-gesture-handler";
 import City from "../../graphQL/Query/Itinerary/City";
-import DeviceInfo from "react-native-device-info";
-const Notch = DeviceInfo.hasNotch();
+import { RNToasty } from "react-native-toasty";
 
-const SafeStatusBar = Platform.select({
-  ios: Notch ? -50 : -20,
-  android: -55,
-});
+export default function SettingCity(props) {
+  const { t, i18n } = useTranslation();
+  const HeaderComponent = {
+    headerShown: true,
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: t("City"),
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 18,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
 
-const HeightBar = Platform.select({
-  ios: Notch ? 95 : 70,
-  android: 60,
-});
-export default function SettingCity({
-  modals,
-  setModalCity,
-  masukan,
-  data,
-  selected,
-  token,
-  setSearchCity,
-}) {
-  const { t } = useTranslation();
-  let [datacity, setdataCity] = useState(data);
+      marginLeft: 5,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+  };
+  let [data, setData] = useState([]);
   let [city, setCity] = useState("");
+  let [storage, setStorage] = useState(props.route.params.setting);
   let slider = useRef();
-  let [indexCity, setIndexCity] = useState(0);
   let [rippleHeight, setRippleHeight] = useState(0);
+  useEffect(() => {
+    setTimeout(() => {
+      if (slider.current) {
+        slider.current.scrollToIndex({
+          index: props.route.params.index,
+          animated: true,
+        });
+      }
+    }, 1000);
+  }, []);
+
   const pushselected = () => {
-    if (selected?.cities !== null) {
-      var tempData = [...datacity];
+    if (storage.cities !== null) {
+      var tempData = [...data];
       for (var i of tempData) {
         ({ ...i, selected: false });
       }
-      let index = tempData.findIndex((k) => k["id"] == selected?.cities?.id);
-      setIndexCity(index);
+      let index = tempData.findIndex((k) => k["id"] == storage?.cities.id);
       if (index >= 0) {
         ({ ...tempData[index], selected: true });
       }
-      setdataCity(tempData);
+      setData(tempData);
     }
   };
 
@@ -70,10 +103,16 @@ export default function SettingCity({
     fetchPolicy: "network-only",
     variables: {
       keyword: city,
-      countries_id: selected?.countries?.id,
+      countries_id: storage?.countries?.id,
     },
-    onCompleted: () => setdataCity(dataKota.cities_search),
+    onCompleted: () => setData(dataKota.cities_search),
   });
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    pushselected();
+    querycity();
+  }, []);
 
   const [
     mutationCity,
@@ -87,7 +126,7 @@ export default function SettingCity({
     },
   });
 
-  const hasil = async (detail, selected) => {
+  const hasil = async (detail) => {
     if (token || token !== "") {
       try {
         let response = await mutationCity({
@@ -95,235 +134,135 @@ export default function SettingCity({
             id: detail.id,
           },
         });
+
         if (response.data) {
           if (response.data.update_city_settings.code === 200) {
-            selected.cities = detail;
-            await AsyncStorage.setItem("setting", JSON.stringify(selected));
-            var tempData = [...datacity];
+            storage.cities = detail;
+            await props.route.params.setSetting(storage);
+            await AsyncStorage.setItem("setting", JSON.stringify(storage));
+            var tempData = [...data];
             for (var i of tempData) {
               ({ ...i, selected: false });
             }
             var index = tempData.findIndex((k) => k["id"] === detail.id);
-            setIndexCity(index);
             if (index >= 0) {
               ({ ...tempData[index], selected: true });
             }
-            setdataCity(tempData);
-            masukan(selected);
-            setCity(null);
-            setModalCity(false);
+            setData(tempData);
+            props.navigation.goBack();
+            // masukan(selected);
+            // setCity(null);
+            // setModalCity(false);
           } else {
             throw new Error(response.data.update_city_settings.message);
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        RNToasty.Show({
+          title: "Failed To Select City",
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("Please Login");
+      RNToasty.Show({
+        title: "Please Login",
+        position: "bottom",
+      });
     }
   };
 
-  useEffect(() => {
-    pushselected();
-    querycity();
-  }, []);
-
   return (
-    <Modal
-      onRequestClose={() => {
-        setModalCity(false);
-      }}
-      animationIn="slideInRight"
-      animationOut="slideOutRight"
-      isVisible={modals}
-      style={{
-        justifyContent: "flex-end",
-        alignItems: "center",
-        alignSelf: "center",
-        alignContent: "center",
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View
         style={{
-          flex: 1,
-          width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").height,
+          width: Dimensions.get("screen").width - 30,
+          height: 35,
+          marginVertical: 10,
+          marginHorizontal: 15,
+          borderRadius: 5,
+          backgroundColor: "#f1f1f1",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          alignItems: "center",
         }}
       >
-        <StaBar backgroundColor="#14646e" barStyle="light-content" />
-        <View
+        <Search height={15} width={15} style={{ marginLeft: 10 }} />
+        <TextInput
           style={{
-            flexDirection: "row",
-            alignSelf: "flex-start",
-            alignItems: "flex-end",
-            alignContent: "flex-end",
-            backgroundColor: "#209fae",
-            height: HeightBar,
-            width: Dimensions.get("screen").width,
-            marginTop: SafeStatusBar,
+            flex: 1,
+            paddingLeft: 10,
           }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              type="circle"
-              color="tertiary"
-              size="large"
-              variant="transparent"
-              onPress={() => setModalCity(false)}
-            >
-              <Arrowbackwhite width={20} height={20} />
-            </Button>
-            <Text
-              size="label"
-              style={{
-                color: "white",
-                fontFamily: "Lato-Bold",
-                fontSize: 18,
-              }}
-            >
-              {t("City")}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            backgroundColor: "white",
-            paddingBottom: 20,
-          }}
-        >
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 40,
-              height: 35,
-              elevation: 1,
-              marginTop: 10,
-              flexDirection: "row",
-              marginHorizontal: 20,
-              backgroundColor: "#f1f1f1",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 5,
-            }}
-          >
-            <Search height={15} width={15} style={{ marginLeft: 10 }} />
-            <TextInput
-              // id="search"
-              style={{
-                flex: 1,
-                paddingLeft: 10,
-              }}
-              onChangeText={(e) => setCity(e)}
-              onSubmitEditing={(e) => setCity(e)}
-              placeholder={t("Search")}
-            />
-          </View>
-          {/* <View
-            style={{
-              height: 40,
-              width: "100%",
-              backgroundColor: "white",
-              flexDirection: "row",
-              alignItems: "center",
-              elevation: 1,
-            }}
-          >
-            {selected?.cities?.name ? (
-              <>
-                <Text
-                  style={{
-                    color: "#209FAE",
-                    marginHorizontal: 15,
-                    width: Dimensions.get("screen").width * 0.7,
-                  }}
-                >
-                  {selected?.cities?.name}
-                </Text>
-                <Check width={20} height={15} />
-              </>
-            ) : null}
-          </View> */}
-          {loadingKota ? (
-            <View style={{ paddingVertical: 20 }}>
-              <ActivityIndicator
-                animating={true}
-                color="#209FAE"
-                size="large"
-              />
-            </View>
-          ) : dataKota?.cities_search.length > 0 ? (
-            <FlatList
-              ref={slider}
-              getItemLayout={(data, index) => ({
-                length: rippleHeight,
-                offset: rippleHeight * index,
-                index,
-              })}
-              data={dataKota?.cities_search}
-              initialScrollIndex={indexCity}
-              renderItem={({ item }) => (
-                <Ripple
-                  onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
-                  onPress={() => hasil(item, selected)}
-                  style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 20,
-                    borderBottomWidth: 0.5,
-                    borderBottomColor:
-                      selected?.cities?.id == item.id ? "#209fae" : "#D1D1D1",
-                    flexDirection: "row",
-                    alignContent: "center",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View
-                    style={{
-                      marginRight: 15,
-                      elevation: 1,
-                    }}
-                  >
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{
-                        color:
-                          selected?.cities?.id == item.id ? "#209fae" : "#000",
-                      }}
-                    >
-                      {item.name
-                        .toString()
-                        .toLowerCase()
-                        .replace(/\b[a-z]/g, function(letter) {
-                          return letter.toUpperCase();
-                        })}
-                    </Text>
-                  </View>
-                  <View>
-                    {selected?.cities?.id == item.id ? (
-                      <Check width={20} height={15} />
-                    ) : null}
-                  </View>
-                </Ripple>
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          ) : (
-            <View style={{ marginVertical: 20, alignItems: "center" }}>
-              <Text size="description" type="bold">
-                Tidak ada data
-              </Text>
-            </View>
-          )}
-        </View>
+          onChangeText={(e) => setCity(e)}
+          onSubmitEditing={(e) => setCity(e)}
+          placeholder={t("Search")}
+        />
       </View>
-    </Modal>
+      {loadingKota ? (
+        <View style={{ paddingVertical: 20 }}>
+          <ActivityIndicator animating={true} color="#209FAE" size="large" />
+        </View>
+      ) : data ? (
+        <FlatList
+          ref={slider}
+          getItemLayout={(data, index) => ({
+            length: Platform.OS == "ios" ? rippleHeight : 46,
+            offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
+            index,
+          })}
+          data={data}
+          renderItem={({ item, index }) => (
+            <Ripple
+              onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+              onPress={() => hasil(item)}
+              style={{
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                borderBottomWidth: 0.5,
+                borderBottomColor:
+                  storage.cities?.id == item.id ? "#209fae" : "#D1D1D1",
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  marginRight: 15,
+                  elevation: 1,
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{
+                    color: storage?.cities.id == item.id ? "#209fae" : "#000",
+                  }}
+                >
+                  {item.name
+                    .toString()
+                    .toLowerCase()
+                    .replace(/\b[a-z]/g, function(letter) {
+                      return letter.toUpperCase();
+                    })}
+                </Text>
+              </View>
+              <View>
+                {storage?.cities.id == item.id ? (
+                  <Check width={20} height={15} />
+                ) : null}
+              </View>
+            </Ripple>
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      ) : (
+        <View style={{ marginVertical: 20, alignItems: "center" }}>
+          <Text size="description" type="bold">
+            Tidak ada data
+          </Text>
+        </View>
+      )}
+    </View>
   );
 }
