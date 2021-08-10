@@ -166,7 +166,7 @@ export default function SearchFeed({ props }) {
           },
         });
 
-        if (response?.data?.like_post?.code == 200) {
+        if (response?.data?.unlike_post?.code == 200) {
           // let tempData = [...datas];
           // let index = tempData.findIndex((k) => k["id"] === id);
           // let tempDatas = { ...tempData[index] };
@@ -187,7 +187,6 @@ export default function SearchFeed({ props }) {
         tempDatas.response_count = tempDatas.response_count + 1;
         tempData.splice(index, 1, tempDatas);
         setDatas(tempData);
-        console.log("e", e);
       }
     } else {
       RNToasty.Show({

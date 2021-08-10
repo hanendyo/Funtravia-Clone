@@ -13,6 +13,7 @@ import SettingPhoneChange from "./ChangePhone/SettingPhoneChange";
 import AddPassword from "./Password/AddPassword";
 import AddPasswordEmail from "./Password/AddPasswordEmail";
 import HasPassword from "./Password/HasPassword";
+import SettingCity from "./SettingCity";
 
 export {
   NotificationSettings,
@@ -30,4 +31,5 @@ export {
   AddPassword,
   HasPassword,
   AddPasswordEmail,
+  SettingCity,
 };
