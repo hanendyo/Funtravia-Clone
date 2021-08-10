@@ -594,5 +594,8 @@
   "tripGroup": "Grup Perjalanan",
   "birthofdate": "Tanggal lahir",
   "travelAlbum": "Album Perjalanan",
-  "uploadPhotos": "Unggah Foto"
+  "uploadPhotos": "Unggah Foto",
+  "cityof": "Kota di",
+  "holdoncopyitinerary": "Sebentar! Sebelum melanjutkan",
+  "settitle&trip": "Silakan atur judul dan tanggal perjalanan"
 }

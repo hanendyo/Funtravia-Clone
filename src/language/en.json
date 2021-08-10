@@ -592,5 +592,8 @@
   "tripGroup": "Trip Group",
   "birthofdate": "Birth of date",
   "travelAlbum": "Travel Album",
-  "uploadPhotos": "Upload Photos"
+  "uploadPhotos": "Upload Photos",
+  "cityof": "City of",
+  "holdoncopyitinerary": "Hold on! Before you continue",
+  "settitle&trip": "Please set title and date of the trip"
 }

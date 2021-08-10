@@ -250,6 +250,8 @@ import Sticker from "./files/sticker.svg";
 import Message from "./files/message.svg";
 import Emoticon from "./files/emot.svg";
 import Send_to from "./files/send_to.svg";
+import Labeltag from "./files/labeltag.svg";
+import Xwhite from "./files/xwhite.svg";
 export {
   LikeWhite,
   CommentWhite,
@@ -503,4 +505,6 @@ export {
   Message,
   Emoticon,
   Send_to,
+  Labeltag,
+  Xwhite,
 };
