@@ -71,6 +71,10 @@ export default function Image({
     );
   }
 
+  if (!source.uri) {
+    return <RNImage {...otherProps} style={style} source={source} />;
+  }
+
   return (
     <RNImage
       {...otherProps}
