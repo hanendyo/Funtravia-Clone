@@ -121,12 +121,13 @@
   "inbox": "Pesan Masuk",
   "information": "Informasi",
   "notification": "Notifikasi",
-  "hiJoinTrip": " Hi, Ayo Bergabung Dalam Perjalanan Saya ",
-  "inviteToTrip": "Mengundang Anda Untuk Bergabung Dalam Perjalanan Nya",
+  "hi": "Hai",
+  "hiJoinTrip": "Ayo bergabung dalam perjalanan Saya ",
+  "inviteToTrip": "mengundang Anda untuk bergabung dalam perjalanannya",
   "reject": "Tolak",
   "accept": "Terima",
-  "youAccept": "Anda Menerima Undangan Ini",
-  "youReject": "Anda Telah Menolak Undangan Ini",
+  "youAccept": "Anda menerima undangan ini",
+  "youReject": "Anda telah menolak undangan ini",
   "search": "Pencarian",
   "searchColumn": "Cari Orang, Destinasi, Acara",
   "others": "Lainnya",
@@ -597,5 +598,6 @@
   "uploadPhotos": "Unggah Foto",
   "cityof": "Kota di",
   "holdoncopyitinerary": "Sebentar! Sebelum melanjutkan",
-  "settitle&trip": "Silakan atur judul dan tanggal perjalanan"
+  "settitle&trip": "Silakan atur judul dan tanggal perjalanan",
+  "followBack": "Ikuti Balik"
 }
