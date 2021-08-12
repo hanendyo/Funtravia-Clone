@@ -927,7 +927,7 @@ export default function SearchPg(props, { navigation, route }) {
               width: Dimensions.get("window").width * 0.9,
               paddingLeft: 5,
               textAlign: "left",
-              fontSize: 10,
+              fontSize: 15,
               fontFamily: "Lato-Regular",
             }}
             underlineColorAndroid="transparent"
@@ -969,7 +969,7 @@ export default function SearchPg(props, { navigation, route }) {
                 }}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type={active_src == "location" ? "bold" : "bold"}
                   style={{
                     color: active_src == "location" ? "#209FAE" : "#D1D1D1",
@@ -996,7 +996,7 @@ export default function SearchPg(props, { navigation, route }) {
                 }}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type={active_src == "destination" ? "bold" : "bold"}
                   style={{
                     color: active_src == "destination" ? "#209FAE" : "#D1D1D1",
@@ -1023,7 +1023,7 @@ export default function SearchPg(props, { navigation, route }) {
                 }}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type={active_src == "people" ? "bold" : "bold"}
                   style={{
                     color: active_src == "people" ? "#209FAE" : "#D1D1D1",
@@ -1050,7 +1050,7 @@ export default function SearchPg(props, { navigation, route }) {
                 }}
               >
                 <Text
-                  size="description"
+                  size="label"
                   // type={
                   //     active_src == "event" ? "bold" : "reg"
                   // }
@@ -1155,17 +1155,17 @@ export default function SearchPg(props, { navigation, route }) {
                           }}
                         >
                           {item.last_name !== null ? (
-                            <Text size="small" type="regular">
+                            <Text size="label" type="regular">
                               {item.first_name + "" + item.last_name}
                             </Text>
                           ) : (
-                            <Text size="small" type="regular">
+                            <Text size="label" type="regular">
                               {item.first_name}
                             </Text>
                           )}
                           <Text
                             style={{
-                              fontSize: 10,
+                              fontSize: 15,
                               fontFamily: "lato-light",
                             }}
                           >
@@ -1188,7 +1188,7 @@ export default function SearchPg(props, { navigation, route }) {
                       <View style={{}}>
                         {item.status_following === false ? (
                           <Button
-                            size="small"
+                            size="readable"
                             type="circle"
                             variant="bordered"
                             style={{ width: 100 }}
@@ -1199,7 +1199,7 @@ export default function SearchPg(props, { navigation, route }) {
                           ></Button>
                         ) : (
                           <Button
-                            size="small"
+                            size="readable"
                             type="circle"
                             style={{ width: 100 }}
                             onPress={() => {
@@ -1458,7 +1458,7 @@ export default function SearchPg(props, { navigation, route }) {
                           }}
                         >
                           <Star height={15} width={15} />
-                          <Text size="description" type="bold">
+                          <Text size="label" type="bold">
                             {item.rating.substr(0, 3)}
                           </Text>
                         </View>
@@ -1478,7 +1478,7 @@ export default function SearchPg(props, { navigation, route }) {
                       <View>
                         {/* Title */}
                         <Text
-                          size="label"
+                          size="title"
                           type="bold"
                           style={{ marginTop: 2 }}
                           numberOfLines={1}
@@ -1496,7 +1496,7 @@ export default function SearchPg(props, { navigation, route }) {
                         >
                           <PinHijau height={15} width={15} />
                           <Text
-                            size="description"
+                            size="label"
                             type="regular"
                             style={{
                               marginLeft: 5,
@@ -1519,7 +1519,7 @@ export default function SearchPg(props, { navigation, route }) {
                         }}
                       >
                         <View>
-                          <Text size="description" type="bold">
+                          <Text size="label" type="bold">
                             Great for :
                           </Text>
                           <View
@@ -1559,7 +1559,7 @@ export default function SearchPg(props, { navigation, route }) {
                               },
                             });
                           }}
-                          size="small"
+                          size="readable"
                           text={"Add"}
                           // style={{ marginTop: 15 }}
                         />
@@ -1663,7 +1663,7 @@ export default function SearchPg(props, { navigation, route }) {
                           }}
                         >
                           <Text
-                            size="small"
+                            size="readable"
                             style={{
                               textAlign: "center",
                             }}
@@ -1753,7 +1753,7 @@ export default function SearchPg(props, { navigation, route }) {
                       >
                         <Text
                           onPress={() => eventdetail(item)}
-                          size="label"
+                          size="title"
                           type="bold"
                           style={{}}
                         >
@@ -1777,7 +1777,7 @@ export default function SearchPg(props, { navigation, route }) {
                             <PinHijau width={15} height={15} />
 
                             <Text
-                              size="small"
+                              size="readable"
                               style={{
                                 width: "100%",
                                 marginLeft: 5,
@@ -1797,7 +1797,7 @@ export default function SearchPg(props, { navigation, route }) {
                             <Calendargrey width={15} height={15} />
 
                             <Text
-                              size="small"
+                              size="readable"
                               style={{
                                 paddingRight: 20,
                                 width: "100%",
@@ -1859,7 +1859,7 @@ export default function SearchPg(props, { navigation, route }) {
                   }}
                 >
                   <Text
-                    // size='description'
+                    size='label'
                     type="bold"
                     style={{
                       // fontFamily: "Lato-Regular",
@@ -1875,11 +1875,11 @@ export default function SearchPg(props, { navigation, route }) {
                   >
                     <Text
                       type="bold"
-                      size="small"
+                      size="readable"
                       style={{
                         // fontFamily: "Lato-Bold",
                         textAlign: "right",
-                        color: "#5092D0",
+                        color: "#209fae",
                       }}
                     >
                       {t("clearAll")}
@@ -1922,7 +1922,7 @@ export default function SearchPg(props, { navigation, route }) {
                           onPress={() => {
                             srcfromricent(value);
                           }}
-                          size="small"
+                          size="readable"
                           style={{
                             marginRight: 10,
                             paddingVertical: 5,
@@ -1979,7 +1979,7 @@ export default function SearchPg(props, { navigation, route }) {
               }}
             >
               <Text
-                // size='description'
+                size='label'
                 type="bold"
                 style={{
                   // fontFamily: "Lato-Regular",
@@ -2001,7 +2001,7 @@ export default function SearchPg(props, { navigation, route }) {
               >
                 <Text
                   type="bold"
-                  size="small"
+                  size="readable"
                   style={{
                     // fontFamily: "Lato-Bold",
                     textAlign: "right",
@@ -2050,7 +2050,7 @@ export default function SearchPg(props, { navigation, route }) {
                       margin: 3,
                     }}
                   >
-                    <Text size="small" key={value.id}>
+                    <Text size="readable" key={value.id}>
                       {value.name}
                     </Text>
                   </TouchableOpacity>
@@ -2083,7 +2083,7 @@ export default function SearchPg(props, { navigation, route }) {
                   paddingHorizontal: 15,
                 }}
               >
-                <Text type="bold" style={{ textAlign: "left" }}>
+                <Text size="label" type="bold" style={{ textAlign: "left" }}>
                   {t("people")}
                 </Text>
               </View>
@@ -2157,17 +2157,17 @@ export default function SearchPg(props, { navigation, route }) {
                           }}
                         >
                           {item.last_name !== null ? (
-                            <Text size="small" type="regular">
+                            <Text size="readable" type="regular">
                               {item.first_name + "" + item.last_name}
                             </Text>
                           ) : (
-                            <Text size="small" type="regular">
+                            <Text size="readable" type="regular">
                               {item.first_name}
                             </Text>
                           )}
                           <Text
                             style={{
-                              fontSize: 10,
+                              fontSize: 14,
                               fontFamily: "lato-light",
                             }}
                           >
