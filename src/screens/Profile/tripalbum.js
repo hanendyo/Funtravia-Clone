@@ -10,6 +10,7 @@ import {
   Alert,
   RefreshControl,
   FlatList,
+  TextInput,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Emptys } from "../../assets/png";
@@ -693,22 +694,40 @@ export default function tripalbum(props) {
           />
         </Pressable>
       </View>
-      {dataalbum &&
-      dataalbum.itinerary_album_list_v2 &&
-      dataalbum.itinerary_album_list_v2.album ? (
-        <FlatList
-          data={dataalbum.itinerary_album_list_v2.album}
-          renderItem={({ item, index }) => (
-            <RenderAlbum item={item} index={index} />
-          )}
-          contentContainerStyle={{
-            backgroundColor: "#fff",
-          }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
-      ) : null}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#fff",
+        }}
+      >
+        {dataalbum &&
+        dataalbum.itinerary_album_list_v2 &&
+        dataalbum.itinerary_album_list_v2.album.length > 0 ? (
+          <FlatList
+            data={dataalbum.itinerary_album_list_v2.album}
+            renderItem={({ item, index }) => (
+              <RenderAlbum item={item} index={index} />
+            )}
+            contentContainerStyle={{
+              backgroundColor: "#fff",
+              // flex: 1,
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+        ) : (
+          <Text
+            type="bold"
+            style={{
+              alignSelf: "center",
+              marginVertical: 20,
+            }}
+          >
+            {t("noData")}
+          </Text>
+        )}
+      </View>
 
       <Loading show={loading} />
       {/* <NavigationEvents onDidFocus={() => onRefresh()} /> */}

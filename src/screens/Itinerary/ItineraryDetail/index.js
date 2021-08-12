@@ -3200,8 +3200,25 @@ export default function ItineraryDetail(props) {
                   <TouchableOpacity
                     onPress={() => {
                       // setidupload(item.id);
-                      setmodalAlbum(true);
-                      setdataalbumaktif({ id: item.id });
+                      props.navigation.navigate("FeedStack", {
+                        screen: "Post",
+                        params: {
+                          id_album: item.id,
+                          id_itin: itineraryId,
+                          title_album: item.title,
+                          // token: token,
+                          // ratio: {
+                          //   width: 1,
+                          //   height: 1,
+                          //   index: 0,
+                          //   label: "S",
+                          // },
+                          // type: "image",
+                          album: "Itinerary",
+                        },
+                      });
+                      // setmodalAlbum(true);
+                      // setdataalbumaktif({ id: item.id });
                     }}
                     style={{
                       alignContent: "center",
@@ -3267,8 +3284,25 @@ export default function ItineraryDetail(props) {
                     <TouchableOpacity
                       onPress={() => {
                         // setidupload(item.id);
-                        setmodalAlbum(true);
-                        setdataalbumaktif({ id: item.id });
+                        // setmodalAlbum(true);
+                        // setdataalbumaktif({ id: item.id });
+                        props.navigation.navigate("FeedStack", {
+                          screen: "Post",
+                          params: {
+                            id_album: item.id,
+                            id_itin: itineraryId,
+                            title_album: item.title,
+                            // token: token,
+                            // ratio: {
+                            //   width: 1,
+                            //   height: 1,
+                            //   index: 0,
+                            //   label: "S",
+                            // },
+                            // type: "image",
+                            album: "Itinerary",
+                          },
+                        });
                       }}
                       style={{
                         alignContent: "center",
@@ -3393,8 +3427,25 @@ export default function ItineraryDetail(props) {
               <TouchableOpacity
                 onPress={() => {
                   // setidupload(item.id);
-                  setmodalAlbum(true);
-                  setdataalbumaktif({ id: item.id });
+                  // setmodalAlbum(true);
+                  // setdataalbumaktif({ id: item.id });
+                  props.navigation.navigate("FeedStack", {
+                    screen: "Post",
+                    params: {
+                      id_album: item.id,
+                      id_itin: itineraryId,
+                      title_album: item.title,
+                      // token: token,
+                      // ratio: {
+                      //   width: 1,
+                      //   height: 1,
+                      //   index: 0,
+                      //   label: "S",
+                      // },
+                      // type: "image",
+                      album: "Itinerary",
+                    },
+                  });
                 }}
                 style={{
                   alignContent: "center",

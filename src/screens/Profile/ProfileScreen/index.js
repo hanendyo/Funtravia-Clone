@@ -98,7 +98,7 @@ export default function OtherProfile(props) {
   let [users, setuser] = useState(null);
   let [id, seID] = useState(props.route.params.idUser);
   let [position, setposition] = useState(false);
-
+  // console.log(token);
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);

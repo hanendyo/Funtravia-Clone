@@ -34,7 +34,8 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function Trips({ item, index, props, token, position }) {
+export default function Trip({ item, props, token, position }) {
+  console.log("item", item);
   const getDN = (start, end) => {
     var x = start;
     var y = end,
