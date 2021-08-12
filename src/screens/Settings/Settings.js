@@ -21,6 +21,10 @@ export default function Settings(props) {
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
   let [setting, setSetting] = useState("");
+  let [country, setCountry] = useState();
+  let [index, setIndex] = useState(0);
+  
+
 
   const HeaderComponent = {
     headerTitle: t("setting"),
@@ -84,6 +88,12 @@ export default function Settings(props) {
         "Content-Type": "application/json",
       },
     },
+    onCompleted : () => {
+      const tempData = [...data.country_list];
+      let index = tempData.findIndex((k) => k["id"] === setting.countries.id);
+      setIndex(index);
+      setCountry(data.country_list)
+    }
   });
 
   const [
@@ -216,7 +226,20 @@ export default function Settings(props) {
         </View>
         <Ripple
           rippleCentered={true}
-          onPress={() => setModelSetNegara(true)}
+          // onPress={() => setModelSetNegara(true)}
+          onPress={() =>
+            props.navigation.navigate("AccountStack", {
+              screen: "SettingCountry",
+              params: {
+                props: props,
+                setting: setting,
+                token: token,
+                setSetting: (e) => setSetting(e),
+                index: index,
+                country:country
+              },
+            })
+          }
           style={{
             paddingHorizontal: 15,
             paddingVertical: 13,
@@ -641,7 +664,7 @@ export default function Settings(props) {
           </View>
         </Ripple>
       </View>
-      {data && data.country_list ? (
+      {/* {data && data.country_list ? (
         <SettingNegara
           modals={modsettingnegara}
           setModelSetNegara={(e) => setModelSetNegara(e)}
@@ -650,7 +673,7 @@ export default function Settings(props) {
           selected={setting}
           token={token}
         />
-      ) : null}
+      ) : null} */}
       {datacurrency && datacurrency.currency_list.length ? (
         <SettingCurrency
           modals={modsettingcurrency}

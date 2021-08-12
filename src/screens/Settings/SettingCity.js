@@ -71,6 +71,7 @@ export default function SettingCity(props) {
   let [storage, setStorage] = useState(props.route.params.setting);
   let slider = useRef();
   let [rippleHeight, setRippleHeight] = useState(0);
+
   useEffect(() => {
     setTimeout(() => {
       if (slider.current) {
@@ -79,7 +80,7 @@ export default function SettingCity(props) {
           animated: true,
         });
       }
-    }, 1000);
+    }, 2000);
   }, []);
 
   const pushselected = () => {
@@ -236,7 +237,7 @@ export default function SettingCity(props) {
                   size="description"
                   type="regular"
                   style={{
-                    color: storage?.cities.id == item.id ? "#209fae" : "#000",
+                    color: storage?.cities.id == item.id ? "#209fae" : "#000", 
                   }}
                 >
                   {item.name
