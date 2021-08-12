@@ -57,12 +57,22 @@ export default function SearchFeed({ props }) {
     return feedasync;
   }, [props.navigation]);
 
-  const Ceklogin = (id) => {
+  const Ceklogin = (id, item, index) => {
     if (token && token !== null && token !== "") {
       props.navigation.push("FeedStack", {
         screen: "CommentPost",
         params: {
           post_id: id,
+          data: item,
+          token: token,
+          // ref: ref,
+          _liked: (e) => _liked(e),
+          _unliked: (e) => _unliked(e),
+          indeks: index,
+          countKoment: (e) => countKoment(e),
+          // time: time,
+          _deletepost: (e) => _deletepost(e),
+
           //   comment_id: data.comment_feed.id,
         },
       });
@@ -101,6 +111,7 @@ export default function SearchFeed({ props }) {
   });
 
   const _like = async (id) => {
+    console.log("id", id);
     if (token) {
       try {
         let tempData = [...datas];
@@ -218,7 +229,7 @@ export default function SearchFeed({ props }) {
                 borderRadius: 5,
               }}
               onPress={
-                () => Ceklogin(item.id)
+                () => Ceklogin(item.id, item, index)
                 // props.navigation.navigate("FeedStack", {
                 //   screen: "CommentsById",
                 //   params: {

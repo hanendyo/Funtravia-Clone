@@ -8,7 +8,10 @@ import {
   StatusBar,
   Image,
   Alert,
+  Modal as ModalRN,
+  Pressable,
 } from "react-native";
+import { calendar_blue, Bg_soon } from "../../assets/png";
 import WorldMap from "./src/world/world.svg";
 import Europe from "./src/world/europe.svg";
 import Asia from "./src/world/asia.svg";
@@ -16,10 +19,13 @@ import Australia from "./src/world/australia.svg";
 import NortAmerica from "./src/world/north_america.svg";
 import SouthAmerica from "./src/world/south_america.svg";
 import Africa from "./src/world/africa.svg";
-import { Text } from "../../component";
+import { Text, Button } from "../../component";
 import { View } from "native-base";
 import { SvgCss } from "react-native-svg";
+import { useTranslation } from "react-i18next";
 export default function World({ navigation }) {
+  let { t, i18n } = useTranslation();
+  let [soon, setSoon] = useState(false);
   console.log("navigation", navigation);
   const { width, height } = Dimensions.get("screen");
   const HeaderHeight = (height * 34) / 100;
@@ -99,6 +105,74 @@ export default function World({ navigation }) {
           Choose your destination. Pick the best place for your holiday.
         </Text>
       </View>
+      {/* Modal Comming Soon */}
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </ModalRN>
+
       <FlatList
         key="world"
         data={data}
@@ -126,11 +200,7 @@ export default function World({ navigation }) {
         scrollEnabled={false}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() =>
-              item.available
-                ? navigation.navigate(item.screen)
-                : Alert.alert("Cooming Soon")
-            }
+            onPress={() => setSoon(true)}
             style={{
               borderRadius: 5,
               backgroundColor: "#FFF",

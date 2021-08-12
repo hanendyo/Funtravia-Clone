@@ -64,6 +64,7 @@ import DeviceInfo from "react-native-device-info";
 
 export default function Comments(props) {
   console.log("propscoment", props);
+
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState();
@@ -160,6 +161,8 @@ export default function Comments(props) {
       setIdComment(props?.route?.params?.comment_id);
       setIdPost(props?.route?.params?.post_id);
     }
+
+    console.log("datapost", dataPost);
 
     const unsubscribe = props.navigation.addListener("focus", async () => {
       await GetPost();
