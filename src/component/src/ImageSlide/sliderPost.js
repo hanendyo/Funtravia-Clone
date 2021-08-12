@@ -29,6 +29,7 @@ export default function ImageSlide({
   props,
   token,
 }) {
+  // console.log(dataImage);
   const { t, i18n } = useTranslation();
   let [slider, setSlider] = useState([]);
   let [inde, setIn] = useState(0);
@@ -203,6 +204,7 @@ export default function ImageSlide({
             onChange={(index) => handel_select(index)}
             index={inde}
             renderImage={(data) => {
+              // console.log("data", data);
               return data?.type === "video" ? (
                 <>
                   <FunVideo
