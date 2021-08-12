@@ -2005,7 +2005,7 @@ export default function SearchPg(props, { navigation, route }) {
                   style={{
                     // fontFamily: "Lato-Bold",
                     textAlign: "right",
-                    color: "#5092D0",
+                    color: "#209fae",
                   }}
                 >
                   {t("others")}
@@ -2182,7 +2182,7 @@ export default function SearchPg(props, { navigation, route }) {
                       <View style={{}}>
                         {item.status_following === false ? (
                           <Button
-                            size="small"
+                            size="medium"
                             type="circle"
                             variant="bordered"
                             style={{ width: 100 }}
@@ -2193,7 +2193,7 @@ export default function SearchPg(props, { navigation, route }) {
                           ></Button>
                         ) : (
                           <Button
-                            size="small"
+                            size="medium"
                             type="circle"
                             style={{ width: 100 }}
                             onPress={() => {
