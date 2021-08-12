@@ -25,6 +25,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import IsReadAll from "../../../graphQL/Mutation/Notification/IsReadAll";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Checkblok } from "../../../assets/svg";
 
 const InvitationNotif = gql`
   query {
@@ -562,6 +563,8 @@ export default function Invitation({ navigation, token }) {
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
     hrs = hrs % 24;
+
+    console.log(new Date());
     if (yrs > 0) {
       return yrs + " " + t("yearsAgo");
     } else if (month > 0) {
@@ -887,8 +890,8 @@ export default function Invitation({ navigation, token }) {
                     marginBottom: 5,
                   }}
                 >
-                  Hi {item.itinerary_buddy.myuser?.first_name}, let's join my
-                  trip
+                  {t("hi")} {item.itinerary_buddy.myuser?.first_name},{" "}
+                  {t("hiJoinTrip")}
                 </Text>
                 {/* <Text
 									size="small"
@@ -943,7 +946,7 @@ export default function Invitation({ navigation, token }) {
                     }}
                     color="primary"
                     // type="circle"
-                    text="Accept"
+                    text={t("accept")}
                   />
                   <Button
                     onPress={() => reject(item)}
@@ -954,21 +957,22 @@ export default function Invitation({ navigation, token }) {
                     size="small"
                     color="secondary"
                     variant="transparent"
-                    text="Ignore"
+                    text={t("reject")}
                   />
                 </View>
               ) : item.itinerary_buddy.isconfrim == true &&
                 item.itinerary_buddy.accepted_at != null &&
                 item.itinerary_buddy.rejected_at == null ? (
-                <View>
+                <View style={{ flexDirection: "row" }}>
+                  <Checkblok width="15" height="15" />
                   <Text
                     size="small"
                     style={{
-                      // fontSize: 15,
+                      marginLeft: 5,
                       color: "#209FAE",
                     }}
                   >
-                    You accepted this invitation
+                    {t("youAccept")}
                   </Text>
                 </View>
               ) : (
@@ -979,7 +983,7 @@ export default function Invitation({ navigation, token }) {
                       color: "#D75995",
                     }}
                   >
-                    You have rejected this invitation
+                    {t("youReject")}
                   </Text>
                 </View>
               )}
@@ -1539,7 +1543,7 @@ export default function Invitation({ navigation, token }) {
                         color: "#209fae",
                       }}
                     >
-                      Follow Back
+                      {t("followBack")}
                     </Text>
                   </Pressable>
                 ) : null}

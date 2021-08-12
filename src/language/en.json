@@ -117,12 +117,13 @@
   "inbox": "Inbox",
   "information": "Information",
   "notification": "Notification",
-  "hiJoinTrip": " Hi, let’s join my trip",
-  "inviteToTrip": " invites you to join her/his trip",
+  "hi": "Hi",
+  "hiJoinTrip": "let’s join my trip",
+  "inviteToTrip": "invites you to join her/his trip",
   "reject": "Reject",
   "accept": "Accept",
-  "youAccept": "You Accept This Invitation",
-  "youReject": "You Have Rejected This Invitation",
+  "youAccept": "You accepted this invitation",
+  "youReject": "You have rejected this invitation",
   "search": "Search",
   "searchColumn": "Search People, Destination, Event",
   "others": "Others",
@@ -595,5 +596,6 @@
   "uploadPhotos": "Upload Photos",
   "cityof": "City of",
   "holdoncopyitinerary": "Hold on! Before you continue",
-  "settitle&trip": "Please set title and date of the trip"
+  "settitle&trip": "Please set title and date of the trip",
+  "followBack": "Follow Back"
 }
