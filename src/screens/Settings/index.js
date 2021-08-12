@@ -14,6 +14,7 @@ import AddPassword from "./Password/AddPassword";
 import AddPasswordEmail from "./Password/AddPasswordEmail";
 import HasPassword from "./Password/HasPassword";
 import SettingCity from "./SettingCity";
+import SettingCountry from "./SettingNegara";
 
 export {
   NotificationSettings,
@@ -32,4 +33,5 @@ export {
   HasPassword,
   AddPasswordEmail,
   SettingCity,
+  SettingCountry,
 };
