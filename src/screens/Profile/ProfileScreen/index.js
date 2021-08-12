@@ -61,6 +61,7 @@ import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
 import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
+import ListFotoAlbumAll from "../../../graphQL/Query/Itinerary/ListAlbumAll";
 import Ripple from "react-native-material-ripple";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -135,7 +136,7 @@ export default function OtherProfile(props) {
 
     await LoadUserProfile();
   };
-  console.log(token);
+  // console.log(token);
   const [
     Getdatapost,
     { data: dataposting, loading: loadingpost, error: errorpost },
@@ -180,7 +181,7 @@ export default function OtherProfile(props) {
   const [
     QueryFotoAlbum,
     { data: dataFotoAlbum, loading: loadingFotoAlbum, error: errorFotoAlbum },
-  ] = useLazyQuery(ListFotoAlbum, {
+  ] = useLazyQuery(ListFotoAlbumAll, {
     fetchPolicy: "network-only",
     context: {
       headers: {
@@ -190,7 +191,7 @@ export default function OtherProfile(props) {
     },
     variables: { user_id: props.route.params.idUser, keyword: "" },
     onCompleted: () => {
-      setdataalbums(dataFotoAlbum?.list_albums);
+      setdataalbums(dataFotoAlbum?.list_all_albums);
     },
   });
 
@@ -1200,6 +1201,7 @@ export default function OtherProfile(props) {
   };
 
   const renderPost = (tabPost, e) => {
+    // console.log(e);
     if (tabPost === 0) {
       return (
         <Post
@@ -1210,7 +1212,7 @@ export default function OtherProfile(props) {
         />
       );
     } else if (tabPost === 1) {
-      return Albums(e);
+      return <Albums item={e.item} props={e.props} token={token} />; // return Albums(e);
     } else {
       return Tags(e);
     }

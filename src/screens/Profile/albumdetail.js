@@ -14,6 +14,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Text, FunVideo } from "../../component";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../assets/png";
+import { PlayVideo } from "../../assets/svg";
 import Modal from "react-native-modal";
 import album from "../../graphQL/Query/Profile/albumdetailpost";
 import ImageSlide from "../../component/src/ImageSlide/sliderPost";
@@ -145,10 +146,19 @@ export default function albumdetail(props) {
     for (var i in data) {
       let wid = 0;
       let hig = 0;
-      Image.getSize(data[i].filepath, (width, height) => {
-        wid = width;
-        hig = height;
-      });
+      if (data[i].type !== "video") {
+        Image.getSize(data[i].filepath, (width, height) => {
+          wid = width;
+          hig = height;
+        });
+      } else {
+        wid = 500;
+        hig = 500;
+      }
+      // Image.getSize(data[i].filepath, (width, height) => {
+      //   wid = width;
+      //   hig = height;
+      // });
       tempdatas.push({
         key: i,
         id: data[i].post_id,
@@ -421,25 +431,51 @@ export default function albumdetail(props) {
                       }}
                     >
                       {item[0].type === "video" ? (
-                        <FunVideo
-                          poster={item[0].filepath.replace(
-                            "output.m3u8",
-                            "thumbnail.png"
-                          )}
-                          posterResizeMode={"cover"}
-                          source={{
-                            uri: item[0].filepath,
-                          }}
-                          repeat={true}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                          }}
-                          resizeMode="cover"
-                          muted={true}
-                          paused={false}
-                        />
+                        <>
+                          <FunVideo
+                            poster={item[0].filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            paused={true}
+                            // key={"posted" + index + item.id}
+                            source={{
+                              uri: item[0].filepath,
+                            }}
+                            muted={true}
+                            // defaultSource={default_image}
+                            resizeMode="cover"
+                            style={{
+                              borderRadius: 5,
+
+                              // resizeMode: "cover",
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                          />
+                          <View
+                            style={{
+                              // flexDirection: "row",
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "rgba(0,0,0,0.4)",
+                              justifyContent: "flex-end",
+                              borderRadius: 5,
+
+                              // top: 5,
+                              // left: "35%",
+                            }}
+                          >
+                            <PlayVideo
+                              width={15}
+                              height={15}
+                              style={{ margin: 10 }}
+                            />
+                          </View>
+                        </>
                       ) : (
                         <Image
                           style={{
@@ -465,25 +501,51 @@ export default function albumdetail(props) {
                         }}
                       >
                         {item[1].type === "video" ? (
-                          <FunVideo
-                            poster={item[1].filepath.replace(
-                              "output.m3u8",
-                              "thumbnail.png"
-                            )}
-                            posterResizeMode={"cover"}
-                            source={{
-                              uri: item[1].filepath,
-                            }}
-                            repeat={true}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "#fff",
-                            }}
-                            resizeMode="cover"
-                            muted={true}
-                            paused={false}
-                          />
+                          <>
+                            <FunVideo
+                              poster={item[1].filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              posterResizeMode={"cover"}
+                              paused={true}
+                              // key={"posted" + index + item.id}
+                              source={{
+                                uri: item[1].filepath,
+                              }}
+                              muted={true}
+                              // defaultSource={default_image}
+                              resizeMode="cover"
+                              style={{
+                                borderRadius: 5,
+
+                                // resizeMode: "cover",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                              }}
+                            />
+                            <View
+                              style={{
+                                // flexDirection: "row",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0,0,0,0.4)",
+                                justifyContent: "flex-end",
+                                borderRadius: 5,
+
+                                // top: 5,
+                                // left: "35%",
+                              }}
+                            >
+                              <PlayVideo
+                                width={15}
+                                height={15}
+                                style={{ margin: 10 }}
+                              />
+                            </View>
+                          </>
                         ) : (
                           <Image
                             style={{
@@ -508,25 +570,51 @@ export default function albumdetail(props) {
                         }}
                       >
                         {item[2].type === "video" ? (
-                          <FunVideo
-                            poster={item[2].filepath.replace(
-                              "output.m3u8",
-                              "thumbnail.png"
-                            )}
-                            posterResizeMode={"cover"}
-                            source={{
-                              uri: item[2].filepath,
-                            }}
-                            repeat={true}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "#fff",
-                            }}
-                            resizeMode="cover"
-                            muted={true}
-                            paused={false}
-                          />
+                          <>
+                            <FunVideo
+                              poster={item[2].filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              posterResizeMode={"cover"}
+                              paused={true}
+                              // key={"posted" + index + item.id}
+                              source={{
+                                uri: item[2].filepath,
+                              }}
+                              muted={true}
+                              // defaultSource={default_image}
+                              resizeMode="cover"
+                              style={{
+                                borderRadius: 5,
+
+                                // resizeMode: "cover",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                              }}
+                            />
+                            <View
+                              style={{
+                                // flexDirection: "row",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0,0,0,0.4)",
+                                justifyContent: "flex-end",
+                                borderRadius: 5,
+
+                                // top: 5,
+                                // left: "35%",
+                              }}
+                            >
+                              <PlayVideo
+                                width={15}
+                                height={15}
+                                style={{ margin: 10 }}
+                              />
+                            </View>
+                          </>
                         ) : (
                           <Image
                             style={{
@@ -566,25 +654,51 @@ export default function albumdetail(props) {
                         }}
                       >
                         {item[0].type === "video" ? (
-                          <FunVideo
-                            poster={item[0].filepath.replace(
-                              "output.m3u8",
-                              "thumbnail.png"
-                            )}
-                            posterResizeMode={"cover"}
-                            source={{
-                              uri: item[0].filepath,
-                            }}
-                            repeat={true}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "#fff",
-                            }}
-                            resizeMode="cover"
-                            muted={true}
-                            paused={false}
-                          />
+                          <>
+                            <FunVideo
+                              poster={item[0].filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              posterResizeMode={"cover"}
+                              paused={true}
+                              // key={"posted" + index + item.id}
+                              source={{
+                                uri: item[0].filepath,
+                              }}
+                              muted={true}
+                              // defaultSource={default_image}
+                              resizeMode="cover"
+                              style={{
+                                borderRadius: 5,
+
+                                // resizeMode: "cover",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                              }}
+                            />
+                            <View
+                              style={{
+                                // flexDirection: "row",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0,0,0,0.4)",
+                                justifyContent: "flex-end",
+                                borderRadius: 5,
+
+                                // top: 5,
+                                // left: "35%",
+                              }}
+                            >
+                              <PlayVideo
+                                width={15}
+                                height={15}
+                                style={{ margin: 10 }}
+                              />
+                            </View>
+                          </>
                         ) : (
                           <Image
                             style={{
@@ -609,25 +723,51 @@ export default function albumdetail(props) {
                         }}
                       >
                         {item[1].type === "video" ? (
-                          <FunVideo
-                            poster={item[1].filepath.replace(
-                              "output.m3u8",
-                              "thumbnail.png"
-                            )}
-                            posterResizeMode={"cover"}
-                            source={{
-                              uri: item[1].filepath,
-                            }}
-                            repeat={true}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "#fff",
-                            }}
-                            resizeMode="cover"
-                            muted={true}
-                            paused={false}
-                          />
+                          <>
+                            <FunVideo
+                              poster={item[1].filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              posterResizeMode={"cover"}
+                              paused={true}
+                              // key={"posted" + index + item.id}
+                              source={{
+                                uri: item[1].filepath,
+                              }}
+                              muted={true}
+                              // defaultSource={default_image}
+                              resizeMode="cover"
+                              style={{
+                                borderRadius: 5,
+
+                                // resizeMode: "cover",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                              }}
+                            />
+                            <View
+                              style={{
+                                // flexDirection: "row",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0,0,0,0.4)",
+                                justifyContent: "flex-end",
+                                borderRadius: 5,
+
+                                // top: 5,
+                                // left: "35%",
+                              }}
+                            >
+                              <PlayVideo
+                                width={15}
+                                height={15}
+                                style={{ margin: 10 }}
+                              />
+                            </View>
+                          </>
                         ) : (
                           <Image
                             style={{
@@ -653,24 +793,51 @@ export default function albumdetail(props) {
                       }}
                     >
                       {item[2].type === "video" ? (
-                        <FunVideo
-                          poster={item[2].filepath.replace(
-                            "output.m3u8",
-                            "thumbnail.png"
-                          )}
-                          posterResizeMode={"cover"}
-                          source={{
-                            uri: item[2].filepath,
-                          }}
-                          repeat={true}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                          }}
-                          resizeMode="cover"
-                          muted={true}
-                          paused={false}
-                        />
+                        <>
+                          <FunVideo
+                            poster={item[2].filepath.replace(
+                              "output.m3u8",
+                              "thumbnail.png"
+                            )}
+                            posterResizeMode={"cover"}
+                            paused={true}
+                            // key={"posted" + index + item.id}
+                            source={{
+                              uri: item[2].filepath,
+                            }}
+                            muted={true}
+                            // defaultSource={default_image}
+                            resizeMode="cover"
+                            style={{
+                              borderRadius: 5,
+
+                              // resizeMode: "cover",
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "#fff",
+                            }}
+                          />
+                          <View
+                            style={{
+                              // flexDirection: "row",
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "rgba(0,0,0,0.4)",
+                              justifyContent: "flex-end",
+                              borderRadius: 5,
+
+                              // top: 5,
+                              // left: "35%",
+                            }}
+                          >
+                            <PlayVideo
+                              width={15}
+                              height={15}
+                              style={{ margin: 10 }}
+                            />
+                          </View>
+                        </>
                       ) : (
                         <Image
                           style={{
@@ -711,24 +878,51 @@ export default function albumdetail(props) {
                             }}
                           >
                             {data.type === "video" ? (
-                              <FunVideo
-                                poster={data.filepath.replace(
-                                  "output.m3u8",
-                                  "thumbnail.png"
-                                )}
-                                posterResizeMode={"cover"}
-                                source={{
-                                  uri: data.filepath,
-                                }}
-                                repeat={true}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                }}
-                                resizeMode="cover"
-                                muted={true}
-                                paused={false}
-                              />
+                              <>
+                                <FunVideo
+                                  poster={data.filepath.replace(
+                                    "output.m3u8",
+                                    "thumbnail.png"
+                                  )}
+                                  posterResizeMode={"cover"}
+                                  paused={true}
+                                  // key={"posted" + index + item.id}
+                                  source={{
+                                    uri: data.filepath,
+                                  }}
+                                  muted={true}
+                                  // defaultSource={default_image}
+                                  resizeMode="cover"
+                                  style={{
+                                    borderRadius: 5,
+
+                                    // resizeMode: "cover",
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "#fff",
+                                  }}
+                                />
+                                <View
+                                  style={{
+                                    // flexDirection: "row",
+                                    position: "absolute",
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: "rgba(0,0,0,0.4)",
+                                    justifyContent: "flex-end",
+                                    borderRadius: 5,
+
+                                    // top: 5,
+                                    // left: "35%",
+                                  }}
+                                >
+                                  <PlayVideo
+                                    width={15}
+                                    height={15}
+                                    style={{ margin: 10 }}
+                                  />
+                                </View>
+                              </>
                             ) : (
                               <Image
                                 style={{
@@ -774,25 +968,51 @@ export default function albumdetail(props) {
                         key={index}
                       >
                         {data.type === "video" ? (
-                          <FunVideo
-                            poster={data.filepath.replace(
-                              "output.m3u8",
-                              "thumbnail.png"
-                            )}
-                            posterResizeMode={"cover"}
-                            source={{
-                              uri: data.filepath,
-                            }}
-                            repeat={true}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "#fff",
-                            }}
-                            resizeMode="cover"
-                            muted={true}
-                            paused={false}
-                          />
+                          <>
+                            <FunVideo
+                              poster={data.filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              posterResizeMode={"cover"}
+                              paused={true}
+                              // key={"posted" + index + item.id}
+                              source={{
+                                uri: data.filepath,
+                              }}
+                              muted={true}
+                              // defaultSource={default_image}
+                              resizeMode="cover"
+                              style={{
+                                borderRadius: 5,
+
+                                // resizeMode: "cover",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                              }}
+                            />
+                            <View
+                              style={{
+                                // flexDirection: "row",
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backgroundColor: "rgba(0,0,0,0.4)",
+                                justifyContent: "flex-end",
+                                borderRadius: 5,
+
+                                // top: 5,
+                                // left: "35%",
+                              }}
+                            >
+                              <PlayVideo
+                                width={15}
+                                height={15}
+                                style={{ margin: 10 }}
+                              />
+                            </View>
+                          </>
                         ) : (
                           <Image
                             style={{

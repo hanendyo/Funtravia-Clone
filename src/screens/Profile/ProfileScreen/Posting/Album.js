@@ -2,17 +2,23 @@ import React, { useState, useEffect } from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
 import User_Post from "../../../../graphQL/Query/Profile/post";
-import { Kosong } from "../../../../assets/svg";
-import { Text } from "../../../../component";
+import { Kosong, PlayVideo } from "../../../../assets/svg";
+import {
+  Text,
+  FunImage,
+  FunImageBackground,
+  FunVideo,
+} from "../../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 
-export default function Album({ item, index, props, token }) {
+export default function Album({ item, props, token }) {
   // const { t } = useTranslation();
+  // console.log("firstimg", item.firstimg);
   return (
     <Pressable
-      key={index}
+      // key={index}
       onPress={() => {
         props.navigation.push("albumdetail", {
           id: item.id,
@@ -36,15 +42,78 @@ export default function Album({ item, index, props, token }) {
           backgroundColor: "#fff",
         }}
       >
-        <Image
-          style={{
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-            width: "100%",
-            height: "80%",
-          }}
-          source={item?.cover ? { uri: item?.cover } : default_image}
-        ></Image>
+        {item.firstimg !== null ? (
+          item.firstimg.type == "video" ? (
+            <>
+              <FunVideo
+                poster={item.firstimg.filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                paused={true}
+                // key={"posted" + index + item.id}
+                source={{
+                  uri: item.firstimg.filepath,
+                }}
+                muted={true}
+                // defaultSource={default_image}
+                resizeMode="cover"
+                style={{
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                  // resizeMode: "cover",
+                  width: "100%",
+                  height: "80%",
+                  backgroundColor: "#fff",
+                }}
+              />
+              <View
+                style={{
+                  // flexDirection: "row",
+                  position: "absolute",
+                  width: "100%",
+                  height: "80%",
+                  backgroundColor: "rgba(0,0,0,0.4)",
+                  justifyContent: "flex-end",
+                  borderRadius: 5,
+
+                  // top: 5,
+                  // left: "35%",
+                }}
+              >
+                <PlayVideo width={15} height={15} style={{ margin: 10 }} />
+              </View>
+            </>
+          ) : (
+            <FunImage
+              source={{ uri: item.firstimg.filepath }}
+              style={{
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                // resizeMode: "cover",
+                width: "100%",
+                height: "80%",
+                backgroundColor: "#fff",
+
+                // margin: 2,
+                // borderRadius: 5,
+                resizeMode: "cover",
+              }}
+            />
+          )
+        ) : (
+          <Image
+            source={default_image}
+            style={{
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              // resizeMode: "cover",
+              width: "100%",
+              height: "80%",
+            }}
+          />
+        )}
         <View
           style={{
             flex: 1,

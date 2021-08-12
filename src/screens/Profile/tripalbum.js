@@ -35,6 +35,7 @@ import Uploadfoto from "../../graphQL/Mutation/Profile/Uploadfotoalbum";
 import ImagePicker from "react-native-image-crop-picker";
 import { useTranslation } from "react-i18next";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { dateFormats } from "../../component/src/dateformatter";
 
 export default function tripalbum(props) {
   const { t, i18n } = useTranslation();
@@ -82,7 +83,7 @@ export default function tripalbum(props) {
   let [loading, setLoading] = useState(false);
   let [day_id, setday_id] = useState();
   let [modals, setmodal] = useState(false);
-  console.log(position);
+  //   console.log(token);
 
   const { width, height } = Dimensions.get("screen");
 
@@ -91,7 +92,6 @@ export default function tripalbum(props) {
     { data: dataalbum, loading: loadingalbum, error: erroralbum, refetch },
   ] = useLazyQuery(albumbyitinerary, {
     fetchPolicy: "network-only",
-
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export default function tripalbum(props) {
     },
   });
 
-  console.log(dataalbum);
+  //   console.log(dataalbum);
 
   const [
     mutationUpload,
@@ -189,10 +189,9 @@ export default function tripalbum(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      onRefresh();
-    });
-    return unsubscribe;
+    onRefresh();
+    // const unsubscribe = props.navigation.addListener("focus", () => {});
+    // return unsubscribe;
   }, [props.navigation]);
 
   const RenderAlbum = ({ item, index }) => {
@@ -218,13 +217,19 @@ export default function tripalbum(props) {
           {item.media && item.media.length > 0 ? (
             <Pressable
               onPress={() =>
-                props.navigation.push("tripalbumdetail", {
-                  data: item,
-                  iditinerary: iditinerary,
+                // props.navigation.push("tripalbumdetail", {
+                //   data: item,
+                //   iditinerary: iditinerary,
+                //   token: token,
+                //   day_id: item.id,
+                //   judul: dataalbum.itinerary_album_list_v2.name,
+                //   position: position,
+                // })
+                props.navigation.push("albumdetail", {
+                  id: item.id,
+                  type: item.type,
                   token: token,
-                  day_id: item.id,
-                  judul: dataalbum.itinerary_album_list_v2.name,
-                  position: position,
+                  judul: item.title,
                 })
               }
               style={{
@@ -566,9 +571,23 @@ export default function tripalbum(props) {
             >
               <Button
                 onPress={() => {
-                  setmodal(true);
-                  setday_id(item.id);
-                  // props.navigation.push('tripalbumdetail')
+                  props.navigation.navigate("FeedStack", {
+                    screen: "Post",
+                    params: {
+                      id_album: item.id,
+                      id_itin: dataalbum.itinerary_album_list_v2.id,
+                      title_album: item.title,
+                      // token: token,
+                      // ratio: {
+                      //   width: 1,
+                      //   height: 1,
+                      //   index: 0,
+                      //   label: "S",
+                      // },
+                      // type: "image",
+                      album: "Itinerary",
+                    },
+                  });
                 }}
                 type="circle"
                 style={{ borderRadius: 5, height: 60, width: 60 }}
@@ -594,6 +613,14 @@ export default function tripalbum(props) {
       </View>
     );
   };
+
+  const getdate = (start, end) => {
+    start = start.split(" ");
+    end = end.split(" ");
+
+    return dateFormats(start[0]) + " - " + dateFormats(end[0]);
+  };
+
   return (
     <View
       style={{
@@ -624,8 +651,22 @@ export default function tripalbum(props) {
           {/* <Text>Itinerary photo album</Text> */}
         </View>
         <Pressable
-          onPress={() =>
-            shareAction({ from: "itinerary", target: iditinerary })
+          onPress={
+            () =>
+              props.navigation.push("ItineraryStack", {
+                screen: "itindetail",
+                params: {
+                  itintitle: dataalbum?.itinerary_album_list_v2?.name,
+                  country: dataalbum?.itinerary_album_list_v2?.id,
+                  dateitin: getdate(
+                    dataalbum?.itinerary_album_list_v2?.start_date,
+                    dataalbum?.itinerary_album_list_v2?.end_date
+                  ),
+                  token: token,
+                  status: "favorite",
+                },
+              })
+            // shareAction({ from: "itinerary", target: iditinerary })
           }
           style={{
             flexDirection: "row",
@@ -663,6 +704,9 @@ export default function tripalbum(props) {
           contentContainerStyle={{
             backgroundColor: "#fff",
           }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       ) : null}
 
