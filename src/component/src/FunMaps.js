@@ -38,6 +38,7 @@ export default function FunMaps({
           fromUrl: url,
           toFile: path,
         }).promise.then((res) => {
+          console.log("res", res.statusCode);
           if (res.statusCode === "200") {
             setTimeout(() => setLoading(false), 1000);
             console.log("SUCCESS CACHE ICON", url);

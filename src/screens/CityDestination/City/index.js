@@ -301,8 +301,6 @@ export default function CityDetail(props) {
     },
   });
 
-  console.log("list", listCity);
-
   const Goto = (item) => {
     if (item?.id) {
       props.navigation.navigate("eventdetail", {
@@ -1145,7 +1143,7 @@ export default function CityDetail(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  listkey={"imagesliderjournal"}
+                  key={"imagesliderjournalsdsd"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -1157,6 +1155,7 @@ export default function CityDetail(props) {
                       {item.map((dataX, indeks) => {
                         return (
                           <Pressable
+                            key={"jrnla" + indeks}
                             onPress={() =>
                               props.navigation.push("JournalStackNavigation", {
                                 screen: "DetailJournal",
@@ -2507,8 +2506,6 @@ export default function CityDetail(props) {
     });
   };
 
-  console.log("list", listCity);
-
   /**
    * render Helper
    */
@@ -2812,11 +2809,10 @@ export default function CityDetail(props) {
           }}
           renderItem={({ item, index }) => (
             <Ripple
+              key={"tabx" + index}
               onPress={() => {
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
                   index: index,
                   animated: true,
                 });

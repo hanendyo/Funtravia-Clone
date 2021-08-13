@@ -152,6 +152,7 @@ export default function World({ navigation }) {
                 height: Dimensions.get("screen").width - 180,
                 width: Dimensions.get("screen").width - 110,
                 position: "absolute",
+                borderRadius: 10,
               }}
             />
             <Text type="bold" size="h5">
@@ -200,7 +201,9 @@ export default function World({ navigation }) {
         scrollEnabled={false}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => setSoon(true)}
+            onPress={() =>
+              item.available ? navigation.navigate(item.screen) : setSoon(true)
+            }
             style={{
               borderRadius: 5,
               backgroundColor: "#FFF",
