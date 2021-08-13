@@ -19,6 +19,7 @@ export default function RenderSinglePhoto({
   muted,
   setMuted,
   isComment,
+  token,
 }) {
   // console.log("data single", data);
   let videoView = useRef(null);

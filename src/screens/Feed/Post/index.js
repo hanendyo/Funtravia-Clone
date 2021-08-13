@@ -49,7 +49,6 @@ import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
 
 export default function Post(props) {
-  console.log(props.route.params);
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
@@ -78,9 +77,7 @@ export default function Post(props) {
   let slider = useRef(null);
   let videoView = useRef(null);
   const [ratioindex, setRatioIndex] = useState([
-    { width: 1, height: 1, index: 0, label: "S" },
-    { width: 4, height: 5, index: 1, label: "P" },
-    { width: 3, height: 3, index: 2, label: "L" },
+    { width: 1080, height: 1080, index: 0, label: "S" },
   ]);
 
   const [recent, setRecent] = useState({
@@ -104,8 +101,6 @@ export default function Post(props) {
     });
   };
 
-  const [look, setLook] = useState(true);
-
   const selectImg = async (file) => {
     setPreview(true);
     // slider.current.scrollToOffset({ index: 0 });
@@ -113,13 +108,13 @@ export default function Post(props) {
     // setRatio({ width: 1, height: 1, index: 0, label: "S" });
     if (file.node.image.width > file.node.image.height) {
       setRatioIndex([
-        { width: 1, height: 1, index: 0, label: "S" },
-        { width: 3, height: 2, index: 1, label: "L" },
+        { width: 1080, height: 1080, index: 0, label: "S" },
+        { width: 1080, height: (2.2 / 3) * 1080, index: 1, label: "L" },
       ]);
     } else {
       setRatioIndex([
-        { width: 1, height: 1, index: 0, label: "S" },
-        { width: 4, height: 5, index: 1, label: "P" },
+        { width: 1080, height: 1080, index: 0, label: "S" },
+        { width: 1080, height: (5 / 4) * 1080, index: 1, label: "P" },
       ]);
     }
     await setRecent(file);
@@ -154,7 +149,6 @@ export default function Post(props) {
   const [size, setSize] = useState(null);
 
   const nextFunction = async (type, multi) => {
-    console.log("next", type.substr(0, 5));
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
         RNFetchBlob.fs
@@ -768,7 +762,7 @@ export default function Post(props) {
               // width: width,
               // height: width,
               width: ratio.label == "P" ? width * (4 / 5) : width,
-              height: ratio.label == "L" ? width * (2 / 3) : width,
+              height: ratio.label == "L" ? width * (2.2 / 3) : width,
             }}
             muted={mute ? true : false}
             resizeMode="cover"
@@ -787,7 +781,7 @@ export default function Post(props) {
               source={{ uri: recent.node?.image?.uri }}
               style={{
                 width: ratio.label == "P" ? width * (4 / 5) : width,
-                height: ratio.label == "L" ? width * (2 / 3) : width,
+                height: ratio.label == "L" ? width * (2.2 / 3) : width,
                 // width: ratio.label == "P" ? width * (4 / 5) : width,
                 // height: ratio.label == "L" ? width * (2 / 3) : width,
                 // width: width,

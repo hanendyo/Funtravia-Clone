@@ -8,6 +8,7 @@ import {
   Image,
   Platform,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
@@ -26,6 +27,7 @@ export default function MyAccount(props) {
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
+  let [modalLogin, setModalLogin] = useState(false);
   let [token, setToken] = useState("");
   const HeaderComponent = {
     headerShown: true,
@@ -79,8 +81,7 @@ export default function MyAccount(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
     if (tkn === null) {
-      Alert.alert(t("pleaselogin"));
-      props.navigation.navigate("HomeScreen");
+      setModalLogin(true);
     } else {
       await LoadUserProfile();
     }
@@ -116,6 +117,121 @@ export default function MyAccount(props) {
 
   return (
     <View style={{ zIndex: -1 }}>
+      <Modal
+        useNativeDriver={true}
+        visible={modalLogin}
+        onRequestClose={() => true}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 80,
+            marginHorizontal: 40,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 80,
+              padding: 20,
+              paddingHorizontal: 20,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                marginHorizontal: 5,
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ marginBottom: 5 }} size="label" type="bold">
+                {t("nextLogin")}
+              </Text>
+              <Text
+                style={{ textAlign: "center", lineHeight: 18 }}
+                size="label"
+                type="regular"
+              >
+                {t("textLogin")}
+              </Text>
+            </View>
+            <Button
+              style={{ marginBottom: 5 }}
+              onPress={() => {
+                setModalLogin(false);
+                props.navigation.push("AuthStack", {
+                  screen: "LoginScreen",
+                });
+              }}
+              type="icon"
+              text={t("signin")}
+            ></Button>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                marginVertical: 5,
+              }}
+            >
+              <View
+                style={{
+                  width: 50,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  marginHorizontal: 10,
+                }}
+              ></View>
+              <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                {t("or")}
+              </Text>
+              <View
+                style={{
+                  width: 50,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  marginHorizontal: 10,
+                }}
+              ></View>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Text
+                size="label"
+                type="bold"
+                style={{ color: "#209FAE" }}
+                onPress={() => {
+                  setModalLogin(false);
+                  props.navigation.push("AuthStack", {
+                    screen: "RegisterScreen",
+                  });
+                }}
+              >
+                {t("createAkunLogin")}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{

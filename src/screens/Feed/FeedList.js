@@ -248,13 +248,7 @@ export default function FeedList({ props, token }) {
             setDataFeed(tempData);
           }
         } else {
-          props.navigation.navigate("AuthStack", {
-            screen: "LoginScreen",
-          });
-          RNToasty.Show({
-            title: t("pleaselogin"),
-            position: "bottom",
-          });
+          setModalLogin(true);
         }
       }
     }
@@ -305,13 +299,7 @@ export default function FeedList({ props, token }) {
             setDataFeed(tempData);
           }
         } else {
-          props.navigation.navigate("AuthStack", {
-            screen: "LoginScreen",
-          });
-          RNToasty.Show({
-            title: t("pleaselogin"),
-            position: "bottom",
-          });
+          setModalLogin(true);
         }
       }
     }
@@ -338,7 +326,10 @@ export default function FeedList({ props, token }) {
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
-    onCompleted: () => setDataFeed(dataPost.feed_post_pageing.datas),
+    onCompleted: () => {
+      setDataFeed(dataPost.feed_post_pageing.datas);
+      console.log("oncomplted");
+    },
   });
 
   useEffect(() => {
@@ -412,6 +403,7 @@ export default function FeedList({ props, token }) {
 
         if (response.data) {
           if (response.data.delete_post.code === 200) {
+            refetch();
             const tempdata = [...dataFeed];
             tempdata.splice(data.index, 1);
             setDataFeed(tempdata);
@@ -528,14 +520,7 @@ export default function FeedList({ props, token }) {
         },
       });
     } else {
-      RNToasty.Show({
-        duration: 1,
-        title: "Please Login",
-        position: "bottom",
-      });
-      props.navigation.push("AuthStack", {
-        screen: "LoginScreen",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -580,18 +565,20 @@ export default function FeedList({ props, token }) {
   };
 
   const goToItinerary = (data) => {
-    props.navigation.push("ItineraryStack", {
-      screen: "itindetail",
-      params: {
-        itintitle: data.itinerary.name,
-        country: data.itinerary.id,
-        dateitin: "",
-        token: token,
-        status: "",
-        index: 1,
-        datadayaktif: data.day,
-      },
-    });
+    token
+      ? props.navigation.push("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: data.itinerary.name,
+            country: data.itinerary.id,
+            dateitin: "",
+            token: token,
+            status: "",
+            index: 1,
+            datadayaktif: data.day,
+          },
+        })
+      : setModalLogin(true);
   };
 
   let [play, setPlay] = useState(null);
@@ -667,14 +654,7 @@ export default function FeedList({ props, token }) {
         Alert.alert("" + error);
       }
     } else {
-      RNToasty.Show({
-        duration: 1,
-        title: "Please Login",
-        position: "bottom",
-      });
-      props.navigation.push("AuthStack", {
-        screen: "LoginScreen",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -720,11 +700,7 @@ export default function FeedList({ props, token }) {
         Alert.alert("" + error);
       }
     } else {
-      RNToasty.Show({
-        duration: 1,
-        title: "Please Login",
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -821,7 +797,7 @@ export default function FeedList({ props, token }) {
                 style={{ marginBottom: 5 }}
                 onPress={() => {
                   setModalLogin(false);
-                  props.navigation.navigate("AuthStack", {
+                  props.navigation.push("AuthStack", {
                     screen: "LoginScreen",
                   });
                   dataFeed.length = 0;
@@ -868,7 +844,7 @@ export default function FeedList({ props, token }) {
                   style={{ color: "#209FAE" }}
                   onPress={() => {
                     setModalLogin(false);
-                    props.navigation.navigate("AuthStack", {
+                    props.navigation.push("AuthStack", {
                       screen: "RegisterScreen",
                     });
                     dataFeed.length = 0;
@@ -1015,18 +991,20 @@ export default function FeedList({ props, token }) {
                 }}
                 onPress={() => {
                   setModalmenu(false),
-                    props.navigation.push("FeedStack", {
-                      screen: "CreateListAlbum",
-                      params: {
-                        user_id: setting?.user_id,
-                        token: isPunctuatorToken,
-                        file: "",
-                        type: "",
-                        location: "",
-                        isAlbum: true,
-                        post_id: selectedOption?.id,
-                      },
-                    });
+                    token
+                      ? props.navigation.push("FeedStack", {
+                          screen: "CreateListAlbum",
+                          params: {
+                            user_id: setting?.user_id,
+                            token: isPunctuatorToken,
+                            file: "",
+                            type: "",
+                            location: "",
+                            isAlbum: true,
+                            post_id: selectedOption?.id,
+                          },
+                        })
+                      : setModalLogin(true);
                 }}
               >
                 <Text
@@ -1460,6 +1438,8 @@ export default function FeedList({ props, token }) {
                   muted={muted}
                   isFocused={isFocused}
                   setMuted={(e) => setMuted(e)}
+                  token={token}
+                  setModalLogin={(e) => setModalLogin(e)}
                 />
               ) : (
                 <RenderSinglePhoto
@@ -1469,6 +1449,7 @@ export default function FeedList({ props, token }) {
                   muted={muted}
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
+                  token={token}
                 />
               )}
             </View>

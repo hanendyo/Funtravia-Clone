@@ -20,23 +20,27 @@ export default function RenderAlbum({
   isFocused,
   setMuted,
   isComment,
+  token,
+  setModalLogin,
 }) {
   let videoView = useRef(null);
   const [indexAktif, setIndexAktive] = useState(0);
   const { t } = useTranslation();
   const goToItinerary = (data) => {
-    props.navigation.push("ItineraryStack", {
-      screen: "itindetail",
-      params: {
-        itintitle: data.itinerary.name,
-        country: data.itinerary.id,
-        dateitin: "",
-        token: token,
-        status: "",
-        index: 1,
-        datadayaktif: data.day,
-      },
-    });
+    token
+      ? props.navigation.push("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: data.itinerary.name,
+            country: data.itinerary.id,
+            dateitin: "",
+            token: token,
+            status: "",
+            index: 1,
+            datadayaktif: data.day,
+          },
+        })
+      : setModalLogin(true);
   };
 
   const onBuffer = (isBuffer) => {
