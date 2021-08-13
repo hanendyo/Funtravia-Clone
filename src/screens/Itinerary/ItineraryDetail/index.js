@@ -5293,7 +5293,10 @@ export default function ItineraryDetail(props) {
             <TouchableOpacity
               onPress={() => {
                 setModalcustom(false);
-                props.navigation.push("customFlight");
+                props.navigation.push("ItineraryStack", {
+                  screen: "customFlight",
+                  params: { itineraryId: itineraryId, dayId: idDay },
+                });
               }}
               style={{
                 marginVertical: 2.5,
@@ -5331,7 +5334,10 @@ export default function ItineraryDetail(props) {
             <TouchableOpacity
               onPress={() => {
                 setModalcustom(false);
-                props.navigation.push("customStay");
+                props.navigation.push("ItineraryStack", {
+                  screen: "customStay",
+                  params: { itineraryId: itineraryId, dayId: idDay },
+                });
               }}
               style={{
                 marginVertical: 2.5,
