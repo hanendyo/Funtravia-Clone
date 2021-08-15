@@ -107,9 +107,11 @@ export default function SettingsAkun(props) {
       keyword: searchCity,
       countries_id: setting?.countries?.id,
     },
-    onCompleted: () => {
-      const tempData = [...datacity.cities_search];
-      let index = tempData.findIndex((k) => k["id"] === setting.cities.id);
+    onCompleted: async () => {
+      const tempData = [...datacity?.cities_search];
+      let index = await tempData.findIndex(
+        (k) => k["id"] === setting?.cities?.id
+      );
       setIndex(index);
     },
   });

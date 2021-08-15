@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Picker,
   Image,
+  Pressable,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -986,7 +987,7 @@ export default function CreateCustom(props) {
             </View>
           </View>
 
-          <TouchableOpacity
+          <Pressable
             onPress={() => setcheck(!cheked)}
             style={{
               flexDirection: "row",
@@ -1015,7 +1016,7 @@ export default function CreateCustom(props) {
                 }),
               }}
               value={cheked}
-              onChange={() => setcheck(!cheked)}
+              onValueChange={(check) => setcheck(check)}
             />
             <Text
               size="small"
@@ -1027,7 +1028,7 @@ export default function CreateCustom(props) {
             >
               {t("saveActivity")}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </ScrollView>
       <View

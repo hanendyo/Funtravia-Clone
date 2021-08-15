@@ -511,7 +511,11 @@ export default function ProfileSettings(props) {
               </Label>
               <Input
                 maxLength={20}
-                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  paddingLeft: 0,
+                }}
                 value={data.current.first_name ? data.current.first_name : ""}
                 onChangeText={(text) => _handleOnChange(text, "first_name")}
                 keyboardType="default"
@@ -549,7 +553,11 @@ export default function ProfileSettings(props) {
               </Label>
               <Input
                 maxLength={20}
-                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  paddingLeft: 0,
+                }}
                 value={data.current.last_name ? data.current.last_name : ""}
                 onChangeText={(text) => _handleOnChange(text, "last_name")}
                 keyboardType="default"
@@ -598,7 +606,11 @@ export default function ProfileSettings(props) {
               </Label>
               <Input
                 maxLength={30}
-                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  paddingLeft: 0,
+                }}
                 value={data.current.username ? data.current.username : ""}
                 onChangeText={(text) => _handleOnChange(text, "username")}
                 autoCapitalize="none"
@@ -660,7 +672,11 @@ export default function ProfileSettings(props) {
               </Label>
               <Input
                 maxLength={160}
-                style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  paddingLeft: 0,
+                }}
                 value={data.current.bio ? data.current.bio : ""}
                 onChangeText={(text) => _handleOnChange(text, "bio")}
                 keyboardType="default"
