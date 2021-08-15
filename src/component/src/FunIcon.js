@@ -22,7 +22,6 @@ export default function FunIcon({
   const extension = Platform.OS === "android" ? "file://" : "";
   const name = sh.unique(url);
   const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
-  // console.log(url);
   RNFS.exists(path)
     .then((exists) => {
       if (!exists) {
@@ -32,7 +31,7 @@ export default function FunIcon({
           toFile: path,
         }).promise.then((res) => {
           if (res.statusCode === "200") {
-            setTimeout(() => setLoading(false), 1000);
+            setTimeout(() => setLoading(false), 3000);
           } else {
             setLoading(false);
             setError(true);
@@ -50,7 +49,7 @@ export default function FunIcon({
   }
 
   if (error) {
-    console.log("masukerror");
+    console.log("masukerror", error);
     return (
       <SvgCssUri
         uri={url}

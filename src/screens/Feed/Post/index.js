@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Pressable,
   BackHandler,
+  ScrollView,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -77,7 +78,7 @@ export default function Post(props) {
   let slider = useRef(null);
   let videoView = useRef(null);
   const [ratioindex, setRatioIndex] = useState([
-    { width: 1080, height: 1080, index: 0, label: "S" },
+    { width: 1, height: 1, index: 0, label: "S" },
   ]);
 
   const [recent, setRecent] = useState({
@@ -108,13 +109,13 @@ export default function Post(props) {
     // setRatio({ width: 1, height: 1, index: 0, label: "S" });
     if (file.node.image.width > file.node.image.height) {
       setRatioIndex([
-        { width: 1080, height: 1080, index: 0, label: "S" },
-        { width: 1080, height: (2.2 / 3) * 1080, index: 1, label: "L" },
+        { width: 1, height: 1, index: 0, label: "S" },
+        { width: 3, height: 2.2, index: 1, label: "L" },
       ]);
     } else {
       setRatioIndex([
-        { width: 1080, height: 1080, index: 0, label: "S" },
-        { width: 1080, height: (5 / 4) * 1080, index: 1, label: "P" },
+        { width: 1, height: 1, index: 0, label: "S" },
+        { width: 4, height: 5, index: 1, label: "P" },
       ]);
     }
     await setRecent(file);
@@ -151,15 +152,6 @@ export default function Post(props) {
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
-        RNFetchBlob.fs
-          .stat(recent.node.image.uri)
-          .then((stats) => {
-            setSize(stats.size);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        recent.node.image.fileSize = size;
         let height;
         let width;
         if (ratio.label == "L") {

@@ -89,7 +89,7 @@ export default function SettingCity(props) {
       for (var i of tempData) {
         ({ ...i, selected: false });
       }
-      let index = tempData.findIndex((k) => k["id"] == storage?.cities.id);
+      let index = tempData.findIndex((k) => k["id"] == storage?.cities?.id);
       if (index >= 0) {
         ({ ...tempData[index], selected: true });
       }
@@ -237,7 +237,7 @@ export default function SettingCity(props) {
                   size="description"
                   type="regular"
                   style={{
-                    color: storage?.cities.id == item.id ? "#209fae" : "#000", 
+                    color: storage?.cities?.id == item?.id ? "#209fae" : "#000",
                   }}
                 >
                   {item.name
@@ -249,13 +249,13 @@ export default function SettingCity(props) {
                 </Text>
               </View>
               <View>
-                {storage?.cities.id == item.id ? (
+                {storage?.cities?.id == item?.id ? (
                   <Check width={20} height={15} />
                 ) : null}
               </View>
             </Ripple>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item /*  */.id}
         />
       ) : (
         <View style={{ marginVertical: 20, alignItems: "center" }}>
