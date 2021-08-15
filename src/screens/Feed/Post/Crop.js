@@ -199,7 +199,7 @@ export default function Crop(props) {
           data={data}
           renderItem={({ item, index }) => (
             <Pressable
-              onPress={() => setIndexAktive(index)}
+              // onPress={() => setIndexAktive(index)}
               style={{
                 marginRight: data.length == index + 1 ? 0 : 5,
               }}
