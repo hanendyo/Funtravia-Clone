@@ -54,7 +54,7 @@ function App() {
   let [authStat, setAuthStat] = useState(null);
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
-  let [dataNotifikasi, setDataNotifikasi] = useState(null);
+  let [dataNotifikasi, setDataNotifikasi] = useState();
 
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
