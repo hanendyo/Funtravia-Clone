@@ -5,6 +5,7 @@ import {
   Alert,
   ActivityIndicator,
   Dimensions,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ActivePlan from "./ActivePlan";
@@ -87,6 +88,12 @@ export default function TripPlaning(props) {
     await setloading(false);
   };
 
+  const [planCount, setPlancount] = useState({
+    count_active: 0,
+    count_draf: 0,
+    count_finish: 0,
+  });
+
   const [
     GetCount,
     { data: dataCount, loading: loadingCount, error: errorCount },
@@ -98,8 +105,12 @@ export default function TripPlaning(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    onCompleted: () => {
+      setPlancount(dataCount.count_myitinerary);
+    },
   });
 
+  // console.log(planCount, "planC");
   const [
     GetData,
     { data, loading: loadingdata, error: errordata },
@@ -153,11 +164,11 @@ export default function TripPlaning(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    loadAsync();
 
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
-    return unsubscribe;
+    // const unsubscribe = props.navigation.addListener("focus", () => {
+    // });
+    // return unsubscribe;
   }, [props.navigation]);
 
   function MyTabBar({ state, descriptors, navigation, position, count }) {
@@ -205,7 +216,7 @@ export default function TripPlaning(props) {
           // });
 
           return (
-            <Ripple
+            <Pressable
               key={route.name}
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
@@ -245,7 +256,7 @@ export default function TripPlaning(props) {
               >
                 {label}
               </Text>
-            </Ripple>
+            </Pressable>
           );
         })}
       </View>
@@ -266,14 +277,7 @@ export default function TripPlaning(props) {
       //     backgroundColor: "#ffff",
       //   },
       // }}
-      tabBar={(props) => (
-        <MyTabBar
-          {...props}
-          count={
-            dataCount?.count_myitinerary ? dataCount?.count_myitinerary : 0
-          }
-        />
-      )}
+      tabBar={(props) => <MyTabBar {...props} count={planCount} />}
     >
       <Tab.Screen
         name="Edit"
@@ -282,8 +286,11 @@ export default function TripPlaning(props) {
             props={props}
             token={token}
             rData={rData}
+            GetCount={() => GetCount()}
             GetData={(e) => GetData(e)}
-            loading={loadingdata}
+            GetDataActive={(e) => GetDataActive(e)}
+            GetDataFinish={(e) => GetDataFinish(e)}
+            loadingdata={loadingdata}
           />
         )}
         options={{ tabBarLabel: t("planList") }}
@@ -291,13 +298,16 @@ export default function TripPlaning(props) {
 
       <Tab.Screen
         name="Save"
-        component={() => (
+        component={(e) => (
           <ActivePlan
             props={props}
             token={token}
-            rData={AData}
+            AData={AData}
+            GetCount={() => GetCount()}
+            GetData={(e) => GetData(e)}
             GetDataActive={(e) => GetDataActive(e)}
-            loading={loadingdataActive}
+            GetDataFinish={(e) => GetDataFinish(e)}
+            loadingdataActive={loadingdataActive}
           />
         )}
         options={{ tabBarLabel: t("activePlan") }}
@@ -305,14 +315,21 @@ export default function TripPlaning(props) {
 
       <Tab.Screen
         name="Finish"
-        component={() => (
-          <FinishTrip
-            props={props}
-            token={token}
-            rData={FData}
-            GetDataFinish={(e) => GetDataFinish(e)}
-          />
-        )}
+        component={
+          (e) => (
+            <FinishTrip
+              props={props}
+              token={token}
+              FData={FData}
+              GetCount={() => GetCount()}
+              GetData={(e) => GetData(e)}
+              GetDataActive={(e) => GetDataActive(e)}
+              GetDataFinish={(e) => GetDataFinish(e)}
+              loadingdataFinish={loadingdataFinish}
+            />
+          )
+          // FinishTrip(props, token, FData, GetDataFinish, loadingdataFinish)
+        }
         options={{ tabBarLabel: t("finishTrip") }}
       />
     </Tab.Navigator>

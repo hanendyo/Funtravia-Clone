@@ -38,9 +38,12 @@ const arrayShadow = {
 export default function ActivePlan({
   token,
   props,
-  rData,
+  AData,
+  GetCount,
+  GetData,
   GetDataActive,
-  loading,
+  GetDataFinish,
+  loadingdataActive,
 }) {
   const { height, width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
@@ -55,7 +58,10 @@ export default function ActivePlan({
 
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
+    GetCount();
+    GetData();
     GetDataActive();
+    GetDataFinish();
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -166,7 +172,7 @@ export default function ActivePlan({
     );
   };
 
-  if (loading && rData.length < 1) {
+  if (loadingdataActive && AData.length < 1) {
     return (
       <SkeletonPlaceholder>
         <View
@@ -372,7 +378,7 @@ export default function ActivePlan({
     );
   }
 
-  if (rData?.length > 0) {
+  if (AData?.length > 0) {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <FlatList
@@ -387,7 +393,7 @@ export default function ActivePlan({
             paddingBottom: 100,
           }}
           horizontal={false}
-          data={rData}
+          data={AData}
           renderItem={({ item }) => (
             <View
               style={{
