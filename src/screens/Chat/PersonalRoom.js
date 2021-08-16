@@ -776,7 +776,6 @@ export default function Room({ navigation, route }) {
                 width: width - 130,
                 alignSelf: "center",
                 borderRadius: 50,
-
                 backgroundColor: "#f3f3f3",
               }}
             >
@@ -791,7 +790,6 @@ export default function Room({ navigation, route }) {
                   Platform.OS == "ios"
                     ? {
                         maxHeight: 100,
-                        margin: 10,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
                       }
@@ -910,6 +908,9 @@ export default function Room({ navigation, route }) {
                       margin: 10,
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
+                      // borderWidth: 1,
+                      paddingBottom: 5,
+                      paddingLeft: 15,
                     }
                   : {
                       maxHeight: 100,
