@@ -16,7 +16,14 @@ import {
   Errors,
   FunImage,
 } from "../../component";
-import { NewGroup, Kosong } from "../../assets/svg";
+import {
+  NewGroup,
+  Kosong,
+  Tagdestination,
+  Tagdocument,
+  Tagimage,
+  Tagsticker,
+} from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
 
@@ -62,28 +69,53 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
   }
 
   const RecentView = ({ data, style }) => {
-    // console.log(data.data.text);
     if (data.type == "sticker") {
       return (
-        <Text style={style} size="description" type="regular">
-          Sticker
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+            // borderWidth: 1,
+          }}
+        >
+          <Tagsticker width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            Sticker
+          </Text>
+        </View>
       );
     }
 
     if (data.type == "tag_destination") {
+      let data_des = JSON.parse(data.text);
       return (
-        <Text style={style} size="description" type="regular">
-          Destination
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <Tagdestination width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            {data_des.name}
+          </Text>
+        </View>
       );
     }
 
     if (data.type == "tag_post") {
       return (
-        <Text style={style} size="description" type="regular">
-          Post
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+            // borderWidth: 1,
+          }}
+        >
+          <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            Post
+          </Text>
+        </View>
       );
     }
 

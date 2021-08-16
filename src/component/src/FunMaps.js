@@ -23,7 +23,7 @@ export default function FunMaps({
   const url = `${ICONSERVER}${variant[icon.substring(0, 2)]}/${
     icon.split("-")[1]
   }.svg`;
-
+  console.log("url-map", url);
   let [loading, setLoading] = useState(false);
   let [error, setError] = useState(false);
   const extension = Platform.OS === "android" ? "file://" : "";
