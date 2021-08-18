@@ -256,6 +256,7 @@ import Tagdestination from "./files/tagdestination.svg";
 import Tagdocument from "./files/tagdocument.svg";
 import Tagimage from "./files/tagimage.svg";
 import Tagsticker from "./files/tagsticker.svg";
+import Nextwhite from "./files/nextwhite.svg";
 
 export {
   LikeWhite,
@@ -516,4 +517,5 @@ export {
   Tagdocument,
   Tagimage,
   Tagsticker,
+  Nextwhite,
 };
