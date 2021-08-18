@@ -61,9 +61,10 @@ import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
-
+import likepost from "../../../graphQL/Mutation/Post/likepost";
+import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 export default function Comments(props) {
-  console.log("propscoment", props);
+  // console.log("propscoment", props);
 
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
@@ -134,7 +135,12 @@ export default function Comments(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
-
+    if (!props.route.params.data) {
+      await GetPost();
+    }
+    await GetCommentList();
+    await LoadFollowing();
+    await scroll_to_index();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -164,12 +170,7 @@ export default function Comments(props) {
 
     console.log("datapost", dataPost);
 
-    const unsubscribe = props.navigation.addListener("focus", async () => {
-      await GetPost();
-      await GetCommentList();
-      await LoadFollowing();
-      await scroll_to_index();
-    });
+    const unsubscribe = props.navigation.addListener("focus", async () => {});
     loadAsync();
     return unsubscribe;
   }, []);
@@ -488,32 +489,61 @@ export default function Comments(props) {
     }
   };
 
+  const [
+    MutationLike,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(likepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    MutationunLike,
+    { loading: loadingunLike, data: dataunLike, error: errorunLike },
+  ] = useMutation(unlikepost, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
   const _liked = async (id) => {
     let tmpData = { ...dataPost };
     tmpData.liked = true;
     tmpData.response_count = tmpData.response_count + 1;
     setDataPost(tmpData);
-    // try {
-    //   let response = await MutationLike({
-    //     variables: {
-    //       post_id: id,
-    //     },
-    //   });
+    if (!props.route.params._liked) {
+      try {
+        let response = await MutationLike({
+          variables: {
+            post_id: id,
+          },
+        });
+        if (response.data) {
+          if (
+            response.data.like_post.code === 200 ||
+            response.data.like_post.code === "200"
+          ) {
+          } else {
+            throw new Error(response.data.delete_post.message);
+          }
+        }
+      } catch (error) {
+        let tmpData = { ...dataPost };
 
-    //   if (response.data) {
-    //     if (
-    //       response.data.like_post.code === 200 ||
-    //       response.data.like_post.code === "200"
-    //     ) {
-    //     } else {
-    //       throw new Error(response.data.delete_post.message);
-    //     }
-    //   }
-    // } catch (error) {
-    //   tmpData.liked = false;
-    //   tmpData.response_count = tmpData.response_count - 1;
-    //   SetDataPost(tmpData);
-    // }
+        tmpData.liked = false;
+        tmpData.response_count = tmpData.response_count - 1;
+        setDataPost(tmpData);
+      }
+    } else {
+      props.route.params._liked(dataPost?.id, props.route.params.indeks);
+    }
   };
 
   const _unliked = async (id) => {
@@ -521,33 +551,37 @@ export default function Comments(props) {
     tmpData.liked = false;
     tmpData.response_count = tmpData.response_count - 1;
     setDataPost(tmpData);
-    // try {
-    //   let response = await MutationunLike({
-    //     variables: {
-    //       post_id: id,
-    //     },
-    //   });
+    if (!props.route.params._unliked) {
+      try {
+        let response = await MutationunLike({
+          variables: {
+            post_id: id,
+          },
+        });
 
-    //   if (response.data) {
-    //     if (
-    //       response.data.unlike_post.code === 200 ||
-    //       response.data.unlike_post.code === "200"
-    //     ) {
-    //     } else {
-    //       throw new Error(response.data.unlike_post.message);
-    //     }
-    //   }
-    // } catch (error) {
-    //   tmpData.liked = true;
-    //   tmpData.response_count = tmpData.response_count + 1;
-    //   SetDataPost(tmpData);
-    //   Toast.show({
-    //     text: "Failed to unlike this post",
-    //     position: "bottom",
-    //     buttonText: "Ok",
-    //     duration: 3000,
-    //   });
-    // }
+        if (response.data) {
+          if (
+            response.data.unlike_post.code === 200 ||
+            response.data.unlike_post.code === "200"
+          ) {
+          } else {
+            throw new Error(response.data.unlike_post.message);
+          }
+        }
+      } catch (error) {
+        tmpData.liked = true;
+        tmpData.response_count = tmpData.response_count + 1;
+        setDataPost(tmpData);
+        // Toast.show({
+        //   text: "Failed to unlike this post",
+        //   position: "bottom",
+        //   buttonText: "Ok",
+        //   duration: 3000,
+        // });
+      }
+    } else {
+      props.route.params._unliked(dataPost?.id, props.route.params.indeks);
+    }
   };
 
   const create_UUID = () => {
@@ -1419,12 +1453,8 @@ export default function Comments(props) {
                   >
                     {dataPost?.liked ? (
                       <Button
-                        onPress={async () => {
-                          await props.route.params._unliked(
-                            dataPost?.id,
-                            props.route.params.indeks
-                          );
-                          await _unliked(dataPost?.id);
+                        onPress={() => {
+                          _unliked(dataPost?.id);
                         }}
                         type="icon"
                         position="left"
@@ -1451,12 +1481,8 @@ export default function Comments(props) {
                     ) : (
                       <Button
                         // onPress={() => _liked(dataPost?.id)}
-                        onPress={async () => {
-                          await props.route.params._liked(
-                            dataPost?.id,
-                            props.route.params.indeks
-                          );
-                          await _liked(dataPost?.id);
+                        onPress={() => {
+                          _liked(dataPost?.id);
                         }}
                         type="icon"
                         position="left"

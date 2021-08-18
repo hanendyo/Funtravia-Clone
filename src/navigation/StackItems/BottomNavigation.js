@@ -28,11 +28,11 @@ import { Text } from "../../component";
 import { View } from "react-native";
 
 const Home = createStackNavigator();
-function HomeStack() {
+function HomeStack(props) {
   return (
     <Home.Navigator initialRouteName={"HomeScreen"}>
       <Home.Screen
-        initialParams={{ halaman: "home", shareid: null }}
+        initialParams={{ token: props.route.params.token, shareid: null }}
         name="HomeScreen"
         component={HomeScreen}
         options={{
@@ -134,6 +134,7 @@ export default function BottomNavigationItems(props) {
       <MainNavigator.Screen
         name="HomeBottomScreen"
         component={HomeStack}
+        initialParams={{ token: props.route.params.token }}
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ focused }) =>

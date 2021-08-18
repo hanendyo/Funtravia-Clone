@@ -24,7 +24,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const { width, height } = Dimensions.get("screen");
 export default function SearchFeed({ props }) {
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
   let [users, setuser] = useState(null);
   let [datas, setDatas] = useState(null);
   let [modalLogin, setModalLogin] = useState(false);
@@ -55,11 +55,13 @@ export default function SearchFeed({ props }) {
     setuser(user.user);
   };
   useEffect(() => {
-    const feedasync = props.navigation.addListener("focus", () => {
-      querySearchPost();
-      loadAsync();
-    });
-    return feedasync;
+    if (token) {
+      const feedasync = props.navigation.addListener("focus", () => {
+        querySearchPost();
+        loadAsync();
+      });
+      return feedasync;
+    }
   }, [props.navigation]);
 
   const Ceklogin = (id, item, index) => {
@@ -71,8 +73,8 @@ export default function SearchFeed({ props }) {
           data: item,
           token: token,
           // ref: ref,
-          _liked: (e) => _liked(e),
-          _unliked: (e) => _unliked(e),
+          _liked: (e) => _like(e),
+          _unliked: (e) => _unlike(e),
           indeks: index,
           countKoment: (e) => countKoment(e),
           // time: time,
@@ -110,7 +112,6 @@ export default function SearchFeed({ props }) {
   });
 
   const _like = async (id) => {
-    console.log("id", id);
     if (token) {
       try {
         let tempData = [...datas];
@@ -126,10 +127,6 @@ export default function SearchFeed({ props }) {
             post_id: id,
           },
         });
-
-        if (errorLike) {
-          console.log("errorlike", errorLike);
-        }
 
         if (response?.data?.like_post?.code == 200) {
           // let tempData = [...datas];

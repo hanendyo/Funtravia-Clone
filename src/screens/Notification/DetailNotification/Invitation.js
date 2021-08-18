@@ -182,8 +182,6 @@ export default function Invitation({ navigation, token }) {
     });
   };
 
-  console.log("datanotif", datanotif);
-
   const [
     mutationAllIsRead,
     { loading: loadingisallread, data: dataisallread, error: errorisallread },
@@ -564,7 +562,6 @@ export default function Invitation({ navigation, token }) {
     mins = mins % 60;
     hrs = hrs % 24;
 
-    console.log(new Date());
     if (yrs > 0) {
       return yrs + " " + t("yearsAgo");
     } else if (month > 0) {

@@ -128,7 +128,11 @@ export default function Room({ navigation, route }) {
           >
             <FunImage
               size="xs"
-              source={{ uri: route.params.picture }}
+              source={
+                route.params.picture
+                  ? { uri: route.params.picture }
+                  : default_image
+              }
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
           </TouchableOpacity>
@@ -247,10 +251,14 @@ export default function Room({ navigation, route }) {
                   });
                 }}
               >
-                <Image
-                  source={{
-                    uri: dataResponse.grup.link_picture,
-                  }}
+                <FunImage
+                  source={
+                    dataResponse.grup.link_picture
+                      ? {
+                          uri: dataResponse.grup.link_picture,
+                        }
+                      : default_image
+                  }
                   style={{
                     width: 40,
                     height: 40,
@@ -835,9 +843,11 @@ export default function Room({ navigation, route }) {
                 borderColor: "#D1D1D1",
                 borderWidth: 1,
                 width: width - 130,
+                maxHeight: 70,
                 alignSelf: "center",
                 backgroundColor: "#f3f3f3",
-                borderRadius: 50,
+                borderRadius: 20,
+                paddingHorizontal: 15,
               }}
             >
               <TextInput
@@ -850,13 +860,15 @@ export default function Room({ navigation, route }) {
                 style={
                   Platform.OS == "ios"
                     ? {
-                        maxHeight: 100,
+                        maxHeight: 70,
                         margin: 10,
+                        paddingBottom: 5,
+                        paddingLeft: 15,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
                       }
                     : {
-                        maxHeight: 100,
+                        maxHeight: 70,
                         marginVertical: 5,
                         marginHorizontal: 10,
                         padding: 0,
@@ -951,9 +963,11 @@ export default function Room({ navigation, route }) {
               borderColor: "#D1D1D1",
               borderWidth: 1,
               width: width - 130,
+              maxHeight: 70,
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
-              borderRadius: 50,
+              borderRadius: 20,
+              // paddingHorizontal: 15,
             }}
           >
             <TextInput
@@ -966,13 +980,15 @@ export default function Room({ navigation, route }) {
               style={
                 Platform.OS == "ios"
                   ? {
-                      maxHeight: 100,
+                      maxHeight: 70,
                       margin: 10,
+                      paddingBottom: 5,
+                      paddingLeft: 15,
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
                   : {
-                      maxHeight: 100,
+                      maxHeight: 70,
                       marginVertical: 5,
                       marginHorizontal: 10,
                       padding: 0,

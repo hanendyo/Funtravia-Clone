@@ -24,6 +24,7 @@ export default function Image({
   let [loading, setLoading] = useState(false);
   let [temp, setTemp] = useState([]);
   let isUri = source.uri ? true : false;
+  // console.log(isUri);
   let uri;
   if (size) {
     uri = source.uri + "?size=" + size;
