@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Pressable,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -174,7 +175,8 @@ export default function SettingCity(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View
+      <KeyboardAvoidingView
+        enabled
         style={{
           width: Dimensions.get("screen").width - 30,
           height: 35,
@@ -197,13 +199,14 @@ export default function SettingCity(props) {
           onSubmitEditing={(e) => setCity(e)}
           placeholder={t("Search")}
         />
-      </View>
+      </KeyboardAvoidingView>
       {loadingKota ? (
         <View style={{ paddingVertical: 20 }}>
           <ActivityIndicator animating={true} color="#209FAE" size="large" />
         </View>
       ) : data ? (
         <FlatList
+          focusable={true}
           ref={slider}
           getItemLayout={(data, index) => ({
             length: Platform.OS == "ios" ? rippleHeight : 46,
