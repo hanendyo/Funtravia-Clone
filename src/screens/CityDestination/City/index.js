@@ -3232,7 +3232,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.2)",
+              backgroundColor: "rgba(0,0,0,0.3)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3251,7 +3251,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.2)",
+            backgroundColor: "rgba(0,0,0,0.3)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3318,7 +3318,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.2)",
+              backgroundColor: "rgba(0,0,0,0.3)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3522,8 +3522,11 @@ export default function CityDetail(props) {
               }}
               onPress={() => {
                 SetShareModal(false);
-                props.navigation.navigate("SendDestination", {
-                  destination: dataDestination,
+                props.navigation.push("CountryStack", {
+                  screen: "SendCity",
+                  params: {
+                    city: dataCity.CitiesInformation,
+                  },
                 });
               }}
             >

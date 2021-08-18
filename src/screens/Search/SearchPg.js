@@ -1559,7 +1559,7 @@ export default function SearchPg(props, { navigation, route }) {
                               },
                             });
                           }}
-                          size="readable"
+                          size="small"
                           text={"Add"}
                           // style={{ marginTop: 15 }}
                         />
@@ -1859,7 +1859,7 @@ export default function SearchPg(props, { navigation, route }) {
                   }}
                 >
                   <Text
-                    size='label'
+                    size="label"
                     type="bold"
                     style={{
                       // fontFamily: "Lato-Regular",
@@ -1979,7 +1979,7 @@ export default function SearchPg(props, { navigation, route }) {
               }}
             >
               <Text
-                size='label'
+                size="label"
                 type="bold"
                 style={{
                   // fontFamily: "Lato-Regular",

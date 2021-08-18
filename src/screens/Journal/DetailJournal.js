@@ -621,7 +621,7 @@ export default function DetailJournal(props) {
                             <Text
                               size={"title"}
                               type={"bold"}
-                              style={{ textAlign: "justify", lineHeight: 20 }}
+                              style={{ textAlign: "left", lineHeight: 20 }}
                             >
                               {item.title ? item.title : null}
                             </Text>
