@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   balloon: {
-    maxWidth: moderateScale(250, 2),
+    maxWidth: moderateScale(230, 2),
     paddingHorizontal: moderateScale(10, 2),
     paddingTop: moderateScale(5, 2),
     paddingBottom: moderateScale(7, 2),
