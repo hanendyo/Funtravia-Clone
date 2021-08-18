@@ -11,6 +11,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   TouchableOpacity,
+  Modal as ModalRN,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -20,13 +21,19 @@ import {
   FunImageBackground,
   Text,
 } from "../../../component";
-import { default_image, itinerary_1, itinerary_2 } from "../../../assets/png";
+import {
+  default_image,
+  itinerary_1,
+  itinerary_2,
+  Bg_soon,
+} from "../../../assets/png";
 import {
   Arrowbackwhite,
   Calendargrey,
   PinHijau,
   User,
   TravelStories,
+  TravelStoriesdis,
   TravelAlbum,
   SearchWhite,
   LikeRed,
@@ -57,6 +64,8 @@ export default function ItineraryPopuler(props) {
   const { t } = useTranslation();
   let [token, setToken] = useState(props?.route?.params?.token);
   let [setting, setSetting] = useState();
+  let [soon, setSoon] = useState(false);
+
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -827,18 +836,19 @@ export default function ItineraryPopuler(props) {
                       </Text>
                     </Pressable>
                     <Pressable
-                      onPress={() =>
-                        props.navigation.navigate("ItineraryStack", {
-                          screen: "itindetail",
-                          params: {
-                            itintitle: item.name,
-                            country: item.id,
-                            token: token,
-                            status: "favorite",
-                            index: 2,
-                          },
-                        })
-                      }
+                      onPress={() => setSoon(true)}
+                      // onPress={() =>
+                      //   props.navigation.navigate("ItineraryStack", {
+                      //     screen: "itindetail",
+                      //     params: {
+                      //       itintitle: item.name,
+                      //       country: item.id,
+                      //       token: token,
+                      //       status: "favorite",
+                      //       index: 2,
+                      //     },
+                      //   })
+                      // }
                       style={{
                         width: "50%",
                         flexDirection: "row",
@@ -847,18 +857,36 @@ export default function ItineraryPopuler(props) {
                         marginBottom: 5,
                       }}
                     >
-                      <TravelStories
+                      <TravelStoriesdis
                         style={{ marginRight: 5 }}
                         height={10}
                         width={10}
                       />
                       <Text
                         size="small"
-                        type="bold"
-                        style={{ color: "#209FAE" }}
+                        type="regular"
+                        style={{
+                          color: "#c7c7c7",
+                        }}
+                        // style={{ color: "#209FAE" }}
                       >
                         Travel Stories
                       </Text>
+                      {/* <TravelStories
+                        style={{ marginRight: 5 }}
+                        height={10}
+                        width={10}
+                      />
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{
+                          color: "#c7c7c7",
+                        }}
+                        // style={{ color: "#209FAE" }}
+                      >
+                        Travel Stories
+                      </Text> */}
                     </Pressable>
                   </View>
                 </View>
@@ -1144,6 +1172,73 @@ export default function ItineraryPopuler(props) {
           backgroundColor: "#F0F0F0",
         }}
       > */}
+
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </ModalRN>
       <View
         style={{
           backgroundColor: "white",
@@ -1417,7 +1512,7 @@ export default function ItineraryPopuler(props) {
             >
               <Text
                 size="description"
-                type={actives == "Album" ? "bold" : "reguler"}
+                type={actives == "Album" ? "bold" : "regular"}
                 style={{
                   color: actives == "Album" ? "#209FAE" : "#464646",
                 }}
@@ -1426,8 +1521,7 @@ export default function ItineraryPopuler(props) {
               </Text>
             </Ripple>
             <Ripple
-              // onPress={() => setActives("Stories")}
-              onPress={() => Alert.alert("Cooming Soon")}
+              onPress={() => setSoon(true)}
               style={{
                 width: Dimensions.get("screen").width * 0.32,
                 alignItems: "center",
@@ -1443,7 +1537,7 @@ export default function ItineraryPopuler(props) {
                 // style={{
                 //   color: actives == "Stories" ? "#209FAE" : "#464646",
                 // }}
-                type={"bold"}
+                type={"regular"}
                 style={{
                   color: "#c7c7c7",
                 }}
