@@ -23,6 +23,7 @@ import {
   Tagdocument,
   Tagimage,
   Tagsticker,
+  PinAbu,
 } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
@@ -114,6 +115,22 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
           <Text style={style} size="description" type="regular">
             Post
+          </Text>
+        </View>
+      );
+    }
+
+    if (data.type == "tag_city") {
+      let data_city = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={(style, {})} size="description" type="regular">
+            {data_city.name}
           </Text>
         </View>
       );

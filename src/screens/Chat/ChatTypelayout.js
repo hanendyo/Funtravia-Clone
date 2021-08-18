@@ -55,6 +55,102 @@ export default function ChatTypelayout({
     );
   }
 
+  //  tag city
+  if (item.type == "tag_city") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate("CountryStack", {
+            screen: "CityDetail",
+            params: {
+              data: {
+                city_id: data.id,
+              },
+            },
+          });
+        }}
+        style={{
+          borderWidth: 1,
+          borderColor: "#DAF0F2",
+          borderRadius: 10,
+          minHeight: 330,
+          marginVertical: 10,
+          width: 250,
+          backgroundColor: "#F6F6F6",
+        }}
+      >
+        <FunImage
+          source={{ uri: data.cover }}
+          style={{
+            width: 220,
+            height: 220,
+            alignSelf: "center",
+            margin: 15,
+            borderRadius: 10,
+          }}
+        />
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 15,
+          }}
+        >
+          {/* Title */}
+          <Text
+            size="small"
+            // type="black"
+            // numberOfLines={1}
+          >
+            {t("checkCity")}
+          </Text>
+          <Text
+            size="title"
+            type="black"
+            style={{ marginTop: 2 }}
+            // numberOfLines={1}
+          >
+            {data.name}
+          </Text>
+        </View>
+        <View
+          style={{
+            borderTopWidth: 0.5,
+            borderTopColor: "d1d1d1",
+          }}
+        >
+          <Pressable
+            style={{
+              alignContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              navigation.navigate("CountryStack", {
+                screen: "CityDetail",
+                params: {
+                  data: {
+                    city_id: data.id,
+                  },
+                },
+              });
+            }}
+          >
+            <Text
+              type="bold"
+              // size="label"
+              style={{
+                color: "#209FAE",
+                margin: 10,
+              }}
+            >
+              {t("visitCity")}
+            </Text>
+          </Pressable>
+        </View>
+      </Pressable>
+    );
+  }
+
   if (item.type == "tag_destination") {
     let data = JSON.parse(item.text);
     return (

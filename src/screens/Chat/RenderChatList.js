@@ -24,6 +24,8 @@ import {
   Tagdocument,
   Tagimage,
   Tagsticker,
+  PinHitam,
+  PinAbu,
 } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
@@ -135,6 +137,22 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
           <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
           <Text style={style} size="description" type="regular">
             Post
+          </Text>
+        </View>
+      );
+    }
+
+    if (data.type == "tag_city") {
+      let data_city = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={(style, {})} size="description" type="regular">
+            {data_city.name}
           </Text>
         </View>
       );
