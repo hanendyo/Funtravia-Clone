@@ -57,6 +57,18 @@ export default async function NavigateAction(navigation, shareId) {
         },
       });
       break;
+    case "city":
+      navigation.navigate("CountryStack", {
+        screen: "CityDetail",
+        params: {
+          data: {
+            city_id: data.og_id,
+            token: token,
+          },
+          exParam: true,
+        },
+      });
+      break;
     default:
       break;
   }

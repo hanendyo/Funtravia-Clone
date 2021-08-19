@@ -602,5 +602,9 @@
   "followBack": "Ikuti Balik",
   "nextLogin": "Login untuk melanjutkan",
   "textLogin": "Login untuk melihat foto dan upload liburanmu",
-  "createAkunLogin": "Buat Akun"
+  "createAkunLogin": "Buat Akun",
+  "checkCity": "Lihat destination keren dikota ini!",
+  "visitCity": "Kunjungi kota ini",
+  "pageNoteFound": "Sepertinya halaman yang Anda kunjungi hilang atau dihapus oleh penggunanya",
+  "closeDouble": "Tekan sekali lagi untuk keluar!"
 }

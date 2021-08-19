@@ -31,6 +31,8 @@ import {
   PensilPutih,
   AddParticipant,
   OptionsVertWhite,
+  Nextpremier,
+  Nextwhite,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -886,25 +888,51 @@ export default function GroupDetail(props) {
             {dataDetail?.title}
           </Text>
           {dataDetail && dataDetail.type == "itinerary" ? (
+            // <Pressable
+            //   onPress={() => goToItinerary(dataDetail)}
+            //   style={{
+            //     width: "30%",
+            //     alignItems: "center",
+            //     borderWidth: 1,
+            //     borderColor: "white",
+            //     padding: 5,
+            //     paddingHorizontal: 10,
+            //     borderRadius: 7,
+            //   }}
+            // >
+            //   <Text
+            //     style={{
+            //       color: "white",
+            //     }}
+            //   >
+            //     {t("viewTrip")}
+            //   </Text>
+            // </Pressable>
             <Pressable
               onPress={() => goToItinerary(dataDetail)}
               style={{
-                width: "30%",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
                 alignItems: "center",
-                borderWidth: 1,
-                borderColor: "white",
-                padding: 5,
-                paddingHorizontal: 10,
-                borderRadius: 7,
               }}
             >
               <Text
+                type="bold"
                 style={{
-                  color: "white",
+                  color: "#FFFFFF",
+                  // marginVertical: 2,
                 }}
               >
                 {t("viewTrip")}
               </Text>
+              <Nextwhite
+                width={12}
+                height={12}
+                style={{
+                  marginTop: 3,
+                }}
+              />
             </Pressable>
           ) : (
             <Pressable

@@ -52,7 +52,7 @@ export default function SettingsAkun(props) {
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(props.route.params.setting?.user.gender);
-  let [dates, setDate] = useState(props.route.params.setting?.user?.birth_date);
+  let [dates, setDate] = useState();
   let [searchCity, setSearchCity] = useState("");
   let [soon, setSoon] = useState(false);
   let [index, setIndex] = useState(0);
@@ -168,6 +168,11 @@ export default function SettingsAkun(props) {
   });
 
   useEffect(() => {
+    if (!props.route.params.setting?.user?.birth_date) {
+      setDate("1972-01-01");
+    } else {
+      setDate(props.route.params.setting?.user?.birth_date);
+    }
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
@@ -180,11 +185,6 @@ export default function SettingsAkun(props) {
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
     elevation: Platform.OS == "ios" ? 3 : 1,
-  };
-
-  const modalBirth1Close = (x) => {
-    setDate(x);
-    closeBirth1();
   };
 
   const hasilGender = async (x) => {
@@ -592,7 +592,7 @@ export default function SettingsAkun(props) {
                 <Button
                   size="medium"
                   style={{ width: "48%" }}
-                  color="tertiary"
+                  color="green"
                   text={t("cancel")}
                   onPress={() => setModalGender(false)}
                 ></Button>

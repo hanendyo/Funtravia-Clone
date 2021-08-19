@@ -11,6 +11,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Dimensions,
+  Platform,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import M035 from "./src/new/035";
@@ -408,7 +409,12 @@ export default function Asia({ navigation }) {
         {/* akhir filter region */}
         <View
           style={{
-            height: Dimensions.get("screen").height / 3,
+            height: Platform.select({
+              ios: Notch
+                ? Dimensions.get("screen").height / 3
+                : Dimensions.get("screen").height / 2.5,
+              android: Dimensions.get("screen").height / 3,
+            }),
 
             alignContent: "center",
             alignSelf: "center",

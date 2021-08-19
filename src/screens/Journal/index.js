@@ -607,48 +607,28 @@ export default function Journal(props) {
             }
             style={styles.imageTop}
           />
-          <View style={{ marginHorizontal: 10 }}>
-            <View>
-              <Text style={styles.title} size={"title"} type={"bold"}>
-                {data?.journal_most_populer ? (
-                  <Truncate
-                    text={data?.journal_most_populer.title}
-                    length={80}
-                  />
-                ) : (
-                  "Title"
-                )}
-              </Text>
-            </View>
+          <View style={{ marginHorizontal: 15 }}>
+            <Text
+              style={styles.title}
+              size={"title"}
+              type={"bold"}
+              numberOfLines={2}
+            >
+              {data?.journal_most_populer?.title}
+            </Text>
             <View style={styles.editor}>
-              <Thumbnail
-                source={
-                  data &&
-                  data?.journal_most_populer &&
-                  data?.journal_most_populer.userby &&
-                  data?.journal_most_populer.userby.picture
-                    ? {
-                        uri: data?.journal_most_populer.userby.picture,
-                      }
-                    : logo_funtravia
-                }
-                style={{
-                  borderColor: "#ffffff",
-                  height: 35,
-                  width: 35,
-                }}
+              <Image
+                style={{ width: 40, height: 40, borderRadius: 20 }}
+                source={{ uri: data?.journal_most_populer.userby.picture }}
               />
+
               <View style={styles.dataEditor}>
-                <Text size={"label"} type={"bold"}>
+                <Text size={"title"} type={"bold"}>
                   {data?.journal_most_populer.userby.first_name
                     ? data?.journal_most_populer.userby.first_name
                     : "Funtravia"}
                 </Text>
-                <Text
-                  size={"description"}
-                  type={"regular"}
-                  style={{ marginTop: -2 }}
-                >
+                <Text size={"label"} type={"regular"} style={{ marginTop: 0 }}>
                   {data?.journal_most_populer.date
                     ? dateFormatShortMonth(data?.journal_most_populer.date)
                     : null}
@@ -661,7 +641,7 @@ export default function Journal(props) {
       <View
         style={{
           height: 50,
-          marginTop: 5,
+          marginVertical: 5,
           backgroundColor: "white",
         }}
       >
@@ -669,7 +649,7 @@ export default function Journal(props) {
           data={dataCategory?.category_journal}
           contentContainerStyle={{
             flexDirection: "row",
-            paddingHorizontal: 5,
+            paddingRight: 15,
             marginTop: 5,
           }}
           horizontal={true}
@@ -686,12 +666,13 @@ export default function Journal(props) {
             >
               <Text
                 style={{
-                  padding: 10,
+                  paddingVertical: 10,
+                  paddingHorizontal: 15,
                   backgroundColor: "#F6F6F6",
-                  marginLeft: 10,
+                  marginLeft: 15,
                   borderRadius: 5,
                 }}
-                size={"description"}
+                size={"label"}
                 type={"bold"}
               >
                 {item.name}
@@ -803,33 +784,35 @@ export default function Journal(props) {
                     item.firstimg ? { uri: item.firstimg } : default_image
                   }
                   style={{
-                    width: "21%",
+                    // width: 110,
+                    width: "25%",
                     height: 110,
                     borderRadius: 10,
                   }}
                 />
                 <View
                   style={{
-                    width: "79%",
-                    marginVertical: 5,
-                    paddingLeft: 10,
+                    paddingVertical: 5,
+                    width: "75%",
+                    paddingLeft: 15,
                     justifyContent: "space-between",
+                    felx: 1,
                   }}
                 >
                   <View>
                     <Text
                       style={{ color: "#209FAE" }}
-                      size={"small"}
+                      size={"description"}
                       type={"bold"}
                     >
                       #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
                     </Text>
                     <Text
-                      size={"label"}
+                      size={"title"}
                       type={"bold"}
                       style={{
                         color: "#3E3E3E",
-                        marginTop: 5,
+                        // marginTop: 5,
                       }}
                       numberOfLines={1}
                     >
@@ -840,7 +823,7 @@ export default function Journal(props) {
 											/> */}
                     </Text>
                     <Text
-                      size={"description"}
+                      size={"label"}
                       type={"regular"}
                       style={{
                         textAlign: "left",
@@ -861,9 +844,10 @@ export default function Journal(props) {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        marginTop: 5,
                       }}
                     >
-                      <Text size={"small"} type={"regular"}>
+                      <Text size={"description"} type={"regular"}>
                         {dateFormatMonthYears(item.date)}
                       </Text>
                       <View
@@ -872,10 +856,10 @@ export default function Journal(props) {
                           alignItems: "center",
                         }}
                       >
-                        <LikeEmpty width={10} height={10} />
+                        <LikeEmpty width={12} height={12} />
                         <Text
                           style={{ marginLeft: 5 }}
-                          size={"small"}
+                          size={"description"}
                           type={"regular"}
                         >
                           {item.article_response_count > 0
@@ -889,9 +873,9 @@ export default function Journal(props) {
               </Pressable>
               <View
                 style={{
-                  margin: 10,
+                  marginVertical: 15,
                   borderBottomColor: "#f6f6f6",
-                  borderBottomWidth: 0.9,
+                  borderBottomWidth: 1,
                 }}
               />
             </View>
@@ -922,11 +906,11 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderRadius: 10,
     backgroundColor: "#f6f6f6",
-    paddingBottom: 20,
+    paddingBottom: 15,
     marginHorizontal: 15,
   },
   imageTop: {
-    height: 150,
+    height: 180,
     borderRadius: 10,
   },
   title: {
@@ -938,7 +922,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
-  dataEditor: { marginHorizontal: 10 },
+  dataEditor: { marginHorizontal: 15 },
   topContributor: {
     marginHorizontal: 10,
   },

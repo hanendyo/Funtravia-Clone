@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   TextInput,
@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   BackHandler,
+  Keyboard,
 } from "react-native";
 import {
   NewGroup,
@@ -18,6 +19,7 @@ import {
   NewChat,
   Kosong,
   SearchWhite,
+  Arrowbackwhite,
 } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import {
@@ -56,7 +58,7 @@ export default function Message({ navigation, route }) {
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchAktif, setSearchAktif] = useState(false);
-
+  const [searchtext, SetSearchtext] = useState("");
   //TRY SOCKET
   const socket = io(CHATSERVER);
   // TRY SOCKET
@@ -83,6 +85,7 @@ export default function Message({ navigation, route }) {
     headerLeftContainerStyle: {
       background: "#FFF",
     },
+    headerLeft: "",
     headerRight: () => (
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
@@ -119,6 +122,7 @@ export default function Message({ navigation, route }) {
     });
     navigation.addListener("blur", () => {
       _searchNonaktifFunction();
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     });
     socket.on("new_chat_group", (data) => {
       getRoomGroup();
@@ -131,13 +135,24 @@ export default function Message({ navigation, route }) {
 
   const _searchAktifFunction = () => {
     setSearchAktif(true);
-
+    myStateRef.current = true;
     navigation.setOptions({
       headerTitle: t("search"),
+      headerLeftContainerStyle: {
+        // background: "#FFF",
+        paddingLeft: 20,
+      },
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => _searchNonaktifFunction()}>
+          <Arrowbackwhite height={20} width={20} />
+        </TouchableOpacity>
+      ),
       headerRight: () => (
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
-            style={{ marginRight: 20 }}
+            style={{
+              marginRight: 20,
+            }}
             onPress={
               () => _searchNonaktifFunction()
               // props.navigation.navigate("FeedStack", { screen: "SearchPageFeed" })
@@ -149,25 +164,37 @@ export default function Message({ navigation, route }) {
       ),
     });
   };
+  const myStateRef = React.useRef(searchAktif);
+  const onBackPress = useCallback(() => {
+    console.log(myStateRef);
+    if (myStateRef.current == true) {
+      _searchNonaktifFunction();
+      setSearchAktif(false);
+      myStateRef.current = false;
+      SetSearchtext("");
+      Keyboard.dismiss();
+    } else {
+      navigation.goBack();
+    }
+    return true;
+  }, []);
+
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    };
+  }, [onBackPress]);
 
   const _searchNonaktifFunction = () => {
     setSearchAktif(false);
-    navigation.setOptions({
-      headerTitle: t("Message"),
-      headerRight: () => (
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            style={{ marginRight: 20 }}
-            onPress={
-              () => _searchAktifFunction()
-              // props.navigation.navigate("FeedStack", { screen: "SearchPageFeed" })
-            }
-          >
-            <SearchWhite height={20} width={20} />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
+    let text = "";
+    _searchHandle(text);
+    myStateRef.current = false;
+    navigation.setOptions(HeaderComponent);
   };
 
   const getRoom = async () => {
@@ -263,18 +290,26 @@ export default function Message({ navigation, route }) {
 
   const _searchHandle = (text) => {
     // if (active == "personal") {
-    let newData = data.filter(function(str) {
-      let strData = str.sender.id === user.id ? str.receiver : str.sender;
-      return strData.first_name.toLowerCase().includes(text.toLowerCase());
-    });
-    setDataRes(newData);
-    // }
+    console.log(text);
+    SetSearchtext(text);
+    if (text !== "") {
+      let newData = data.filter(function(str) {
+        let strData = str.sender.id === user.id ? str.receiver : str.sender;
+        return strData.first_name.toLowerCase().includes(text.toLowerCase());
+      });
+      setDataRes(newData);
+      // }
 
-    // if (active == "group") {
-    let newDataGroup = dataGroup.filter(function(str) {
-      return str.title.toLowerCase().includes(text.toLowerCase());
-    });
-    setDataGroupRes(newDataGroup);
+      // if (active == "group") {
+      let newDataGroup = dataGroup.filter(function(str) {
+        return str.title.toLowerCase().includes(text.toLowerCase());
+      });
+      setDataGroupRes(newDataGroup);
+    } else {
+      // console.log("res");
+      setDataRes(data);
+      setDataGroupRes(dataGroup);
+    }
     // }
   };
 
@@ -347,7 +382,9 @@ export default function Message({ navigation, route }) {
             />
             <TextInput
               onChangeText={(e) => _searchHandle(e)}
+              value={searchtext}
               placeholder="Search"
+              placeholderTextColor="#464646"
               style={{
                 color: "#464646",
                 fontFamily: "Lato-Regular",

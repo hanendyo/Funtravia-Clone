@@ -252,6 +252,13 @@ import Emoticon from "./files/emot.svg";
 import Send_to from "./files/send_to.svg";
 import Labeltag from "./files/labeltag.svg";
 import Xwhite from "./files/xwhite.svg";
+import Tagdestination from "./files/tagdestination.svg";
+import Tagdocument from "./files/tagdocument.svg";
+import Tagimage from "./files/tagimage.svg";
+import Tagsticker from "./files/tagsticker.svg";
+import Nextwhite from "./files/nextwhite.svg";
+import Notfound404 from "./files/404notfound.svg";
+
 export {
   LikeWhite,
   CommentWhite,
@@ -507,4 +514,10 @@ export {
   Send_to,
   Labeltag,
   Xwhite,
+  Tagdestination,
+  Tagdocument,
+  Tagimage,
+  Tagsticker,
+  Nextwhite,
+  Notfound404,
 };

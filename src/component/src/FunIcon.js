@@ -5,6 +5,7 @@ import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ICONSERVER } from "../../config";
 import { SvgCssUri } from "react-native-svg";
+import CACHE from "../cache.json";
 
 export default function FunIcon({
   icon,
@@ -17,6 +18,7 @@ export default function FunIcon({
   const url = `${ICONSERVER}${variant[icon.charAt(0)]}/${
     icon.split("-")[1]
   }.svg`;
+  console.log("icon", url);
   let [loading, setLoading] = useState(false);
   let [error, setError] = useState(false);
   const extension = Platform.OS === "android" ? "file://" : "";
@@ -24,16 +26,20 @@ export default function FunIcon({
   const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
   RNFS.exists(path)
     .then((exists) => {
-      if (!exists) {
+      if (!exists && CACHE.indexOf(name) === -1) {
+        setLoading(true);
+        CACHE.push(name);
+        console.log(CACHE);
         setLoading(true);
         RNFS.downloadFile({
           fromUrl: url,
           toFile: path,
         }).promise.then((res) => {
+          console.log(res, url);
+          setLoading(false);
           if (res.statusCode === "200") {
             setTimeout(() => setLoading(false), 3000);
           } else {
-            setLoading(false);
             setError(true);
           }
         });

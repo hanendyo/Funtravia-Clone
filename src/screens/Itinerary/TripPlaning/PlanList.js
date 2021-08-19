@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
 import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
-import { loading_intertwine } from "../../../assets/gif";
+import { loadingdata_intertwine } from "../../../assets/gif";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -37,7 +37,16 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function ActivePlan({ props, token, rData, GetData, loading }) {
+export default function ActivePlan({
+  props,
+  token,
+  rData,
+  GetCount,
+  GetData,
+  GetDataActive,
+  GetDataFinish,
+  loadingdata,
+}) {
   const { t } = useTranslation();
   const { width, height } = Dimensions.get("screen");
 
@@ -51,7 +60,10 @@ export default function ActivePlan({ props, token, rData, GetData, loading }) {
 
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
+    GetCount();
     GetData();
+    GetDataActive();
+    GetDataFinish();
     wait(2000).then(() => {
       setRefreshing(false);
     });
@@ -162,7 +174,7 @@ export default function ActivePlan({ props, token, rData, GetData, loading }) {
     );
   };
 
-  if (loading && rData.length < 1) {
+  if (loadingdata && rData.length < 1) {
     return (
       <SkeletonPlaceholder>
         <View

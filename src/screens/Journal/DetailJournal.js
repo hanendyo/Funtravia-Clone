@@ -301,14 +301,7 @@ export default function DetailJournal(props) {
   //   );
   // }
 
-  let [loadings, setLoadings] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
-  }, []);
-  if (loadings) {
+  if (loading) {
     return (
       <SkeletonPlaceholder>
         <View
@@ -432,7 +425,7 @@ export default function DetailJournal(props) {
     <View
       style={{
         flex: 1,
-        // backgroundColor: "white",
+        backgroundColor: "#fff",
         marginBottom:
           Platform.OS === "ios" && keyboardOffset < 300 && keyboardOffset > 0
             ? 260
@@ -448,7 +441,7 @@ export default function DetailJournal(props) {
               flexDirection: "row",
               alignItems: "center",
               marginHorizontal: 20,
-              marginVertical: 10,
+              marginVertical: 20,
               width: Dimensions.get("window").width * 0.9,
               justifyContent: "space-between",
             }}
@@ -457,7 +450,6 @@ export default function DetailJournal(props) {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginVertical: 10,
               }}
             >
               <TouchableOpacity
@@ -476,10 +468,11 @@ export default function DetailJournal(props) {
                     : Alert.alert("Journal By Funtravia");
                 }}
               >
-                <Thumbnail
+                <Image
                   style={{
                     height: 40,
                     width: 40,
+                    borderRadius: 20,
                   }}
                   source={
                     data.journal_byid.userby
@@ -488,7 +481,7 @@ export default function DetailJournal(props) {
                   }
                 />
               </TouchableOpacity>
-              <View style={{ marginLeft: 10 }}>
+              <View style={{ marginLeft: 15 }}>
                 <Text
                   size={"label"}
                   type={"bold"}
@@ -507,21 +500,18 @@ export default function DetailJournal(props) {
                       : Alert.alert("Journal By Funtravia");
                   }}
                 >
-                  <Truncate
-                    text={
-                      data.journal_byid &&
-                      data.journal_byid.userby &&
-                      data.journal_byid.userby.first_name
-                        ? data.journal_byid.userby.first_name
-                        : "Funtravia"
-                    }
-                    length={20}
-                  />
+                  <Text size="title" type="bold">
+                    {data.journal_byid &&
+                    data.journal_byid.userby &&
+                    data.journal_byid.userby.first_name
+                      ? data.journal_byid.userby.first_name
+                      : "Funtravia"}
+                  </Text>
                 </Text>
                 <Text
-                  size={"small"}
+                  size={"description"}
                   type={"regular"}
-                  style={{ color: "#209FAE", marginTop: -2 }}
+                  style={{ color: "#209FAE", marginTop: 0 }}
                 >
                   #
                   {data &&
@@ -543,7 +533,7 @@ export default function DetailJournal(props) {
                   style={{
                     borderColor: "#209FAE",
                     borderWidth: 1,
-                    borderRadius: 14,
+                    borderRadius: 5,
                   }}
                 >
                   <Text
@@ -621,7 +611,7 @@ export default function DetailJournal(props) {
                             <Text
                               size={"title"}
                               type={"bold"}
-                              style={{ textAlign: "justify", lineHeight: 20 }}
+                              style={{ textAlign: "left", lineHeight: 20 }}
                             >
                               {item.title ? item.title : null}
                             </Text>
@@ -634,6 +624,7 @@ export default function DetailJournal(props) {
                               width: Dimensions.get("window").width,
                               height: Dimensions.get("window").height * 0.3,
                               marginTop: item.title ? 20 : 0,
+                              borderWidth: 1,
                             }}
                           />
                         ) : null}
@@ -642,7 +633,6 @@ export default function DetailJournal(props) {
                       {item.text ? (
                         <View
                           style={{
-                            // marginTop: 5,
                             alignSelf: "center",
                             width: Dimensions.get("window").width * 0.9,
                           }}
@@ -668,20 +658,20 @@ export default function DetailJournal(props) {
                       {item.text ? (
                         <View
                           style={{
-                            marginTop: 1,
                             alignSelf: "center",
                             width: Dimensions.get("window").width * 0.9,
                           }}
                         >
                           <View
                             style={{
-                              marginTop: 5,
+                              marginVertical: 25,
                               alignSelf: "center",
                               width: Dimensions.get("window").width * 0.9,
                             }}
                           >
                             <Text
-                              size="readable"
+                              // size="readable"
+                              size="title"
                               type="regular"
                               style={{
                                 marginTop: item.title ? 20 : 0,
@@ -708,18 +698,18 @@ export default function DetailJournal(props) {
 
           <View
             style={{
-              marginTop: 20,
+              // marginTop: 20,
               marginHorizontal: 20,
               alignSelf: "auto",
               width: Dimensions.get("window").width * 0.9,
             }}
           >
             <View style={{ flexDirection: "row" }}>
-              <Text size={"small"} type={"regular"}>
+              <Text size={"label"} type={"regular"}>
                 Created By
               </Text>
               <Text
-                size={"small"}
+                size={"label"}
                 type={"bold"}
                 style={{ marginLeft: 5 }}
                 onPress={() => {
@@ -755,17 +745,17 @@ export default function DetailJournal(props) {
           </View>
           <View
             style={{
-              marginTop: 10,
+              marginTop: 20,
               marginHorizontal: 20,
               borderBottomColor: "#f6f6f6",
-              borderBottomWidth: 0.9,
+              borderBottomWidth: 1,
             }}
           />
 
           {/* ==================================== List Comment ============================================== */}
 
           <View
-            style={{ marginHorizontal: 20, marginTop: 10 }}
+            style={{ marginHorizontal: 20, marginTop: 20 }}
             onLayout={(event) => {
               const layout = event.nativeEvent.layout;
               setY(layout.y);
@@ -786,16 +776,19 @@ export default function DetailJournal(props) {
                     flexDirection: "row",
                     alignItems: "center",
                     marginHorizontal: 20,
-                    marginVertical: 5,
+                    // marginTop: 20,
                     width: Dimensions.get("window").width * 0.9,
                     justifyContent: "space-between",
+                    borderBottomWidth: 1,
+                    borderColor: "#f1f1f1",
                   }}
                 >
                   <View
                     style={{
                       flexDirection: "row",
-                      marginVertical: 2,
+                      marginVertical: 10,
                       minHeight: Dimensions.get("window").width * 0.05,
+                      // borderWidth: 1,
                     }}
                   >
                     <TouchableOpacity
@@ -824,8 +817,8 @@ export default function DetailJournal(props) {
                             : default_image
                         }
                         style={{
-                          height: 35,
-                          width: 35,
+                          height: 40,
+                          width: 40,
                         }}
                       />
                     </TouchableOpacity>
@@ -837,7 +830,7 @@ export default function DetailJournal(props) {
                         }}
                       >
                         <Text
-                          size={"description"}
+                          size={"label"}
                           type={"bold"}
                           onPress={() => {
                             item && item.user && item.user.id !== null
@@ -860,7 +853,7 @@ export default function DetailJournal(props) {
                         </Text>
                         {item && item.created_at ? (
                           <Text
-                            size={"small"}
+                            size={"description"}
                             type={"light"}
                             style={{ marginLeft: 10 }}
                           >
@@ -876,7 +869,7 @@ export default function DetailJournal(props) {
                         }}
                       >
                         <Text
-                          size={"description"}
+                          size={"label"}
                           type={"regular"}
                           style={{ textAlign: "left" }}
                         >

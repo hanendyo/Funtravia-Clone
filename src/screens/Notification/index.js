@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView, BackHandler } from "react-native";
+import { StyleSheet, SafeAreaView, BackHandler, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { gql } from "apollo-boost";
@@ -200,7 +200,7 @@ export default function Notification(props) {
         <Invitation navigation={props.navigation} token={token} />
       ) : null;
     } else if (route.key == "group") {
-      return null;
+      return <View></View>;
       // return <Information navigation={props.navigation} />;
     }
   };
