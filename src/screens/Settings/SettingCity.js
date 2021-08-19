@@ -9,6 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -151,7 +152,8 @@ export default function SettingCity(props) {
               ({ ...tempData[index], selected: true });
             }
             setData(tempData);
-            props.navigation.goBack();
+            Keyboard.dismiss();
+            // props.navigation.goBack();
             // masukan(selected);
             // setCity(null);
             // setModalCity(false);
@@ -207,6 +209,7 @@ export default function SettingCity(props) {
       ) : data ? (
         <FlatList
           focusable={true}
+          keyboardShouldPersistTaps={"handled"}
           ref={slider}
           getItemLayout={(data, index) => ({
             length: Platform.OS == "ios" ? rippleHeight : 46,

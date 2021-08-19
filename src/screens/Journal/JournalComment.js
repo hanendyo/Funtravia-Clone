@@ -258,7 +258,7 @@ export default function JournalComment(props) {
     <View
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: "#fff",
         marginBottom:
           Platform.OS === "ios" && keyboardOffset < 300 && keyboardOffset > 0
             ? 260
@@ -276,16 +276,20 @@ export default function JournalComment(props) {
               flexDirection: "row",
               alignItems: "center",
               marginHorizontal: 20,
-              marginVertical: 5,
+              // marginVertical: 5,
               width: Dimensions.get("window").width * 0.9,
               justifyContent: "space-between",
+              borderBottomWidth: 1,
+              borderColor: "#f1f1f1",
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                marginVertical: 2,
+                marginVertical: 10,
+                // marginVertical: 2,
                 minHeight: Dimensions.get("window").width * 0.05,
+                // borderWidth: 1,
               }}
             >
               <TouchableOpacity
@@ -314,8 +318,8 @@ export default function JournalComment(props) {
                       : default_image
                   }
                   style={{
-                    height: 35,
-                    width: 35,
+                    height: 40,
+                    width: 40,
                   }}
                 />
               </TouchableOpacity>
@@ -327,7 +331,7 @@ export default function JournalComment(props) {
                   }}
                 >
                   <Text
-                    size={"description"}
+                    size={"label"}
                     type={"bold"}
                     onPress={() => {
                       item && item.user && item.user.id !== null
@@ -350,7 +354,7 @@ export default function JournalComment(props) {
                   </Text>
                   {item && item.created_at ? (
                     <Text
-                      size={"small"}
+                      size={"description"}
                       type={"light"}
                       style={{ marginLeft: 10 }}
                     >
@@ -360,13 +364,13 @@ export default function JournalComment(props) {
                 </View>
                 <View
                   style={{
-                    marginTop: 5,
+                    marginTop: 10,
                     alignSelf: "center",
                     width: Dimensions.get("window").width * 0.7,
                   }}
                 >
                   <Text
-                    size={"description"}
+                    size={"label"}
                     type={"regular"}
                     style={{ textAlign: "justify" }}
                   >

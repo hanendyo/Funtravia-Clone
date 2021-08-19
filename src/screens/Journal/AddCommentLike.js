@@ -185,8 +185,29 @@ export default function AddCommentLike({
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
 
+  const [y, setY] = useState(0);
+
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  console.log("keyboardStatus", keyboardStatus);
+
   return (
     <KeyboardAvoidingView
+      onLayout={(e) => console.log("event", e.nativeEvent.layout.y)}
       style={{
         paddingTop: 10,
         paddingBottom: 10,
@@ -201,6 +222,7 @@ export default function AddCommentLike({
         shadowOpacity: arrayShadow.shadowOpacity,
         shadowRadius: arrayShadow.shadowRadius,
         elevation: arrayShadow.elevation,
+        alignItems: "center",
       }}
     >
       {/* <Loading show={loadingLike} />
@@ -209,7 +231,10 @@ export default function AddCommentLike({
         style={{
           backgroundColor: "#f6f6f6",
           borderRadius: 30,
-          width: Dimensions.get("window").width * 0.6,
+          width:
+            keyboardStatus == false
+              ? Dimensions.get("window").width * 0.6
+              : Dimensions.get("window").width - 20,
           // height: Dimensions.get("window").width * 0.13,
           minHeight: Dimensions.get("window").width * 0.1,
           maxHeight: Dimensions.get("window").width * 0.2,
@@ -226,7 +251,7 @@ export default function AddCommentLike({
             width: "90%",
             flexWrap: "wrap",
             color: "#2c2c2c",
-            fontSize: 12,
+            fontSize: 16,
             lineHeight: 16,
             marginVertical: 5,
             marginBottom: Platform.OS == "ios" ? 10 : 0,
@@ -260,28 +285,13 @@ export default function AddCommentLike({
           </Text>
         </Ripple>
       </View>
-      <TouchableOpacity
-        onPress={() => shareAction({ from: "journal", target: dataList.id })}
-      >
-        <View
-          style={{
-            marginLeft: 10,
-            borderRadius: 30,
-            backgroundColor: "#f6f6f6",
-            width: Dimensions.get("window").width * 0.13,
-            height: Dimensions.get("window").width * 0.13,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+      {keyboardStatus == false ? (
+        <TouchableOpacity
+          onPress={() => shareAction({ from: "journal", target: dataList.id })}
         >
-          <Sharegreen width={20} height={20} />
-        </View>
-      </TouchableOpacity>
-      {dataList?.liked === false ? (
-        <TouchableOpacity onPress={() => _liked(dataList.id)}>
           <View
             style={{
-              marginLeft: 5,
+              marginLeft: 10,
               borderRadius: 30,
               backgroundColor: "#f6f6f6",
               width: Dimensions.get("window").width * 0.13,
@@ -290,26 +300,45 @@ export default function AddCommentLike({
               justifyContent: "center",
             }}
           >
-            <LikeEmpty width={20} height={20} />
+            <Sharegreen width={20} height={20} />
           </View>
         </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={() => _unliked(dataList.id)}>
-          <View
-            style={{
-              marginLeft: 5,
-              borderRadius: 30,
-              backgroundColor: "#f6f6f6",
-              width: Dimensions.get("window").width * 0.13,
-              height: Dimensions.get("window").width * 0.13,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <LikeRed width={20} height={20} />
-          </View>
-        </TouchableOpacity>
-      )}
+      ) : null}
+      {keyboardStatus == false ? (
+        dataList?.liked === false ? (
+          <TouchableOpacity onPress={() => _liked(dataList.id)}>
+            <View
+              style={{
+                marginLeft: 5,
+                borderRadius: 30,
+                backgroundColor: "#f6f6f6",
+                width: Dimensions.get("window").width * 0.13,
+                height: Dimensions.get("window").width * 0.13,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <LikeEmpty width={20} height={20} />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => _unliked(dataList.id)}>
+            <View
+              style={{
+                marginLeft: 5,
+                borderRadius: 30,
+                backgroundColor: "#f6f6f6",
+                width: Dimensions.get("window").width * 0.13,
+                height: Dimensions.get("window").width * 0.13,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <LikeRed width={20} height={20} />
+            </View>
+          </TouchableOpacity>
+        )
+      ) : null}
     </KeyboardAvoidingView>
   );
 }
