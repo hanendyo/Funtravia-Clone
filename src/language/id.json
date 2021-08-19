@@ -603,8 +603,27 @@
   "nextLogin": "Login untuk melanjutkan",
   "textLogin": "Login untuk melihat foto dan upload liburanmu",
   "createAkunLogin": "Buat Akun",
+<<<<<<< Updated upstream
   "checkCity": "Lihat destination keren dikota ini!",
   "visitCity": "Kunjungi kota ini",
   "pageNoteFound": "Sepertinya halaman yang Anda kunjungi hilang atau dihapus oleh penggunanya",
   "closeDouble": "Tekan sekali lagi untuk keluar!"
+=======
+  "CustomActivity": "Aktivitas Buatan",
+  "AddFlightNumber": "Tambah Nomor Penerbangan",
+  "inputAlertFlight": "Masukkan nomor penerbangan anda",
+  "inputAlertDateTime": "Masukkan tanggal dan waktu",
+  "inputAlertLocation": "Masukkan lokasi",
+  "FlightNo": "No. Penerbangan",
+  "Departure": "Keberangkatan",
+  "Arrival": "Kedatangan",
+  "From": "Dari",
+  "To": "Ke",
+  "Guest Name": "Nama Tamu",
+  "BookingRef": "Referensi Pemesanan",
+  "Carrier": "Pembawa",
+  "Notes": "Catatan",
+  "Attachment": "Sisipan",
+  "ChooseFile": "Pilih Dokumen"
+>>>>>>> Stashed changes
 }

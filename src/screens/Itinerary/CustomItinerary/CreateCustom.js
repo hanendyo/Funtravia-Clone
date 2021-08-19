@@ -205,7 +205,9 @@ export default function CreateCustom(props) {
       });
 
       let tempe = [...file];
+
       tempe.push(files);
+      console.log(tempe);
       await setfile(tempe);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {

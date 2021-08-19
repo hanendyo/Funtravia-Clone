@@ -11,7 +11,7 @@ const AddFlight = gql`
     $note: String
     $time: String
     $duration: String
-    $status: String!
+    $status: Boolean!
     $order: [String]!
     $total_price: String
     $departure: String

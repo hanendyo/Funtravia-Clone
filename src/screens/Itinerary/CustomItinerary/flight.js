@@ -11,6 +11,9 @@ import {
   TextInput,
   Image,
   KeyboardAvoidingView,
+  Pressable,
+  Platform,
+  StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -41,6 +44,8 @@ import Modal from "react-native-modal";
 import AddFlight from "../../../graphQL/Mutation/Itinerary/AddCustomFlight";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { dateFormat, dateFormats } from "../../../component/src/dateformatter";
+import { isNonNullType } from "graphql";
 
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
@@ -89,127 +94,233 @@ export default function detailCustomItinerary(props) {
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>
-            Add Flight Number
+            {t("AddFlightNumber")}
           </Text>
           <Text
             style={{
               color: "#fff",
             }}
           >
-            Custom Activity
+            {t("CustomActivity")}
           </Text>
         </View>
       </View>
     ),
   };
+  const [loadingApp, setLoadingApp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
-  let [dataParent, setDataParent] = useState({});
-  let [dataChild, setDataChild] = useState([]);
 
   //params data
-  const dayId = props.route.params.dayId;
-  const itineraryId = props.route.params.itineraryID;
+  const dayId = [props.route.params.dayId];
+  const itineraryId = props.route.params.itineraryId;
 
   //modal
-  const [modals, setModal] = useState(false);
-  const [dateTimeModal, setDateTimeModal] = useState(false);
+  const [modalFrom, setModalFrom] = useState(false);
+  const [modalTo, setModalTo] = useState(false);
+  const [dateTimeModalDeparture, setDateTimeModalDeparture] = useState(false);
+  const [dateTimeModalArrival, setDateTimeModalArrival] = useState(false);
 
   //input data
   const [flightNumber, setFlightNumber] = useState("");
-  const [timeDeparture, setTimeDeparture] = useState("");
-  const [timeArrival, setTimeArrival] = useState("");
-  const [bookingRef, setBookingRef] = useState(null);
+  const [timeDeparture, setTimeDeparture] = useState(null);
+  const [timeArrival, setTimeArrival] = useState(null);
+  const [bookingRef, setBookingRef] = useState("");
   const [guestName, setGuestName] = useState("");
   const [carrier, setCarrier] = useState(null);
-  const [note, setNote] = useState(null);
+  const [note, setNote] = useState("");
   const [attachment, setAttachment] = useState([]);
 
   //constant data
   const order = ["0"];
   const duration = "01:00:00";
   const status = false;
-  const qty = 1;
-  const icon = "";
+  const qty = "1";
+  const icon = "gb-tour";
   const totalPrice = "";
   const title = "Flight";
   const time = "00:00:00";
 
   //-- Google API data
   const [from, setFrom] = useState("");
-  const [address, setAddress] = useState(
-    props.route.params?.dataParent?.address
-  );
-  const [destination, setDestination] = useState("");
-  const [lat, setLat] = useState(props.route.params?.dataParent?.latitude);
-  const [long, setLong] = useState(props.route.params?.dataParent?.longitude);
+  const [to, setTo] = useState("");
+  const [address, setAddress] = useState("");
+  const [lat, setLat] = useState("");
+  const [long, setLong] = useState("");
 
   const inputFromGoogle = (input) => {
-    setDestination(input.name);
     setAddress(input.formatted_address);
     setLat(input.geometry.location.lat);
-    setLong(input.geometry.location.long);
-    console.log(destination);
-    console.log(address);
-    console.log(lat);
-    console.log(long);
+    setLong(input.geometry.location.lng);
   };
   //-- End of Google API
 
-  const [mutation, { loading, data, error }] = useMutation(AddFlight, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  const [timeDepCheck, setTimeDepCheck] = useState("");
+  const [timeArrCheck, setTimeArrCheck] = useState("");
+
+  const timeConverter = (date) => {
+    const checkTime = (time) => {
+      if (time < 10) {
+        time = "0" + time;
+      }
+      return time;
+    };
+    let year = date.getFullYear();
+    let months = checkTime(date.getMonth() + 1);
+    let day = checkTime(date.getDate());
+    let h = checkTime(date.getHours());
+    let m = checkTime(date.getMinutes());
+    let s = checkTime(date.getSeconds());
+    let formattedDate = `${year}-${months}-${day}T${h}:${m}:${s}`;
+    let formatForScreen = `${year}-${months}-${day} ${h}:${m}:${s}`;
+
+    console.log(formattedDate);
+    if (dateTimeModalDeparture) {
+      setTimeDeparture(formattedDate);
+      setTimeDepCheck(formatForScreen);
+    }
+
+    if (dateTimeModalArrival) {
+      setTimeArrival(formattedDate);
+      setTimeArrCheck(formatForScreen);
+    }
+  };
+
+  const [mutation, { loading, data, error: errorSaved }] = useMutation(
+    AddFlight,
+    {
+      context: {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
+    }
+  );
+  const [itemValid, setItemValid] = useState({
+    flightNumber: true,
+    timeArrCheck: true,
+    timeDepCheck: true,
+    from: true,
+    to: true,
   });
 
-  // const pecahData = async (data, id) => {
-  //   let dataX = [];
-  //   let parent = null;
-  //   let dataparents = {};
-  //   let index = await data.findIndex((key) => key.id === id);
-  //   if (data[index].parent === true) {
-  //     parent = data[index].id;
-  //   } else {
-  //     parent = data[index].parent_id;
-  //   }
-  //   for (var i of data) {
-  //     if (i.id === parent) {
-  //       //   dataX.push(i);
-  //       dataparents = { ...i };
-  //     } else if (i.parent_id === parent) {
-  //       dataX.push(i);
-  //     }
-  //   }
-
-  //   await setDataParent(dataparents);
-  //   await setDataChild(dataX);
-  // };
+  const validate = (name) => {
+    if (name === "flightNumber" && flightNumber.length === 0) {
+      return false;
+    }
+    if (
+      (name === "timeArrCheck" && timeArrCheck.length === 0) ||
+      (name === "timeDepCheck" && timeDepCheck.length === 0)
+    ) {
+      return false;
+    }
+    if (
+      (name === "timeArrCheck" || name === "timeDepCheck") &&
+      (timeArrCheck === timeDepCheck || timeDepCheck < timeArrCheck)
+    ) {
+      return false;
+    }
+    if (
+      (name === "from" || name === "to") &&
+      (from.length === 0 || to.length === 0)
+    ) {
+      return false;
+    }
+    if ((name === "from" || name === "to") && from === to) {
+      return false;
+    }
+  };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {});
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      getToken();
+    });
     return unsubscribe;
   }, [props.navigation]);
 
+  const mutationInput = async () => {
+    try {
+      let response = await mutation({
+        variables: {
+          day_id: dayId,
+          title: flightNumber,
+          icon: icon,
+          qty: qty,
+          address: address,
+          latitude: lat,
+          longitude: long,
+          note: note,
+          time: time,
+          duration: duration,
+          status: status,
+          order: order,
+          total_price: totalPrice,
+          departure: timeDeparture,
+          arrival: timeArrival,
+          from: from,
+          destination: to,
+          guest_name: guestName,
+          booking_ref: bookingRef,
+          carrier: carrier,
+          file: attachment,
+        },
+      });
+      console.log(response);
+      if (loading) {
+        setLoadingApp(true);
+      }
+
+      if (errorSaved) {
+        console.log(errorSaved);
+        throw new Error("Error Input");
+      }
+
+      if (response.data) {
+        console.log("respond: ", response.data);
+        if (response.data.add_custom_flight.code !== 200) {
+          throw new Error(response.data.add_custom_flight.message);
+        } else {
+          props.navigation.goBack();
+        }
+      }
+      setLoadingApp(false);
+    } catch (error) {
+      Alert.alert("" + error);
+      console.log("error catch :", error);
+      setLoadingApp(false);
+    }
+  };
+
+  const getToken = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    if (tkn !== null) {
+      setToken(tkn);
+    } else {
+      setToken("");
+    }
+  };
+
   //-- Attachment
-  const pickFile = async (id, sumber) => {
+
+  const pickFile = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
+
       let files = new ReactNativeFile({
         uri: res.uri,
         type: res.type,
         name: res.name,
       });
 
-      // let tempe = [...dataUpload];
-      // tempe.push(files);
-      // await setdataUpload(tempe);
-      // await handleUpload(tempe, id, sumber, res);
+      console.log("files : ", files);
+
+      let tempData = [...attachment];
+      tempData.push(files);
+      await setAttachment(tempData);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -233,447 +344,193 @@ export default function detailCustomItinerary(props) {
           padding: 15,
         }}
       >
-        <View
-          style={{
-            backgroundColor: "#fff",
-            // height: 100,
-            borderRadius: 5,
-            padding: 15,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Plane width={50} height={50} />
-            <TextInput
-              placeholder={"Flight No"}
-              value={flightNumber}
-              onChangeText={setFlightNumber}
-              style={{
-                flex: 1,
-                // padding: 0,
-                fontFamily: "Lato-Regular",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                marginLeft: 10,
-              }}
-            />
-          </View>
-          <View
-            style={{
-              paddingTop: 10,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <CalendarIcon height={15} width={15} />
-            <View style={{ backgroundColor: "red" }}>
+        <View style={styles.ViewContainer}>
+          <View style={styles.ViewFlight}>
+            <Plane width={45} height={45} />
+            <View style={{ flex: 1 }}>
               <TextInput
-                placeholder={"Departure"}
-                autoCorrect={false}
-                // editable={false}
-                value={timeDeparture}
-                onChangeText={(e) => setTimeDeparture(e)}
-                style={{
-                  flex: 1,
-                  // padding: 0,
-                  fontFamily: "Lato-Regular",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d3d3d3",
-                  marginLeft: 10,
-                  marginRight: 10,
-                  width: 150,
-                }}
+                placeholder={t("FlightNo")}
+                value={flightNumber}
+                onChangeText={setFlightNumber}
+                style={styles.TextFlightInput}
               />
-              <TouchableOpacity
-                onPress={() => setDateTimeModal(true)}
-                style={{
-                  background: "red",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  align: "center",
-                  width: "100%",
-                  height: "100%",
+              {itemValid.flightNumber === false ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={styles.textAlertFlight}
+                >
+                  {t("inputAlertFlight")}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+          <View style={styles.ViewDate}>
+            <View style={styles.ViewDateAndInput}>
+              <CalendarIcon height={15} width={15} />
+              <TextInput
+                placeholder={t("Departure")}
+                autoCorrect={false}
+                editable={false}
+                value={timeDepCheck}
+                onChangeText={(e) => {
+                  setTimeDeparture(e);
+                  setTimeDepCheck(e);
                 }}
+                style={styles.TextDateInput}
+              />
+              {itemValid.timeDepCheck === false ? (
+                <Text type="regular" size="small" style={styles.textAlert}>
+                  {t("inputAlertDateTime")}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                onPress={() => setDateTimeModalDeparture(true)}
+                style={styles.TouchOpacityDate}
               />
             </View>
 
             <DateTimePickerModal
-              isVisible={dateTimeModal}
+              isVisible={dateTimeModalDeparture}
               mode="datetime"
+              display="inline"
+              locale="en_id"
               onConfirm={(date) => {
-                setTimeDeparture(date);
-                console.log(date);
-                console.log(timeDeparture);
+                timeConverter(date);
+                setDateTimeModalDeparture(false);
               }}
-              onCancel={() => setDateTimeModal(false)}
+              onCancel={() => setDateTimeModalDeparture(false)}
             />
-            <CalendarIcon height={15} width={15} />
-            <TextInput
-              placeholder={"Arrival"}
-              style={{
-                flex: 1,
-                // padding: 0,
-                fontFamily: "Lato-Regular",
-
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                marginLeft: 10,
-              }}
-            />
-          </View>
-          <View
-            style={{
-              paddingTop: 10,
-
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {/* <TextInput
-              placeholder={"From"}
-              style={{
-                flex: 1,
-                // padding: 0,
-                fontFamily: "Lato-Regular",
-
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                // marginLeft: 10,
-                // marginRight: 10,
-              }}
-            /> */}
-
-            <TouchableOpacity
-              style={{
-                width: "50%",
-              }}
-              onPress={() => setModal(true)}
-            >
+            <View style={styles.ViewDateAndInputRight}>
+              <CalendarIcon height={15} width={15} />
               <TextInput
-                placeholder={"From"}
+                placeholder={t("Arrival")}
                 autoCorrect={false}
                 editable={false}
-                value={destination}
-                onChangeText={setDestination}
-                keyboardType="default"
-                style={{
-                  flex: 1,
-                  // padding: 0,
-                  fontFamily: "Lato-Regular",
-
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d3d3d3",
+                value={timeArrCheck}
+                onChangeText={(e) => {
+                  setTimeArrival(e);
+                  setTimeArrCheck(e);
                 }}
+                style={styles.TextDateInput}
               />
-            </TouchableOpacity>
+              {itemValid.timeArrCheck === false ? (
+                <Text type="regular" size="small" style={styles.textAlert}>
+                  {t("inputAlertDateTime")}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                onPress={() => setDateTimeModalArrival(true)}
+                style={styles.TouchOpacityDate}
+              />
+            </View>
 
-            <TextInput
-              placeholder={"To"}
-              style={{
-                flex: 1,
-                // padding: 0,
-                fontFamily: "Lato-Regular",
-
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                marginLeft: 10,
+            <DateTimePickerModal
+              isVisible={dateTimeModalArrival}
+              mode="datetime"
+              display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setDateTimeModalArrival(false);
               }}
+              onCancel={() => setDateTimeModalArrival(false)}
             />
           </View>
+          <View style={styles.ViewDate}>
+            <View style={{ flex: 1 }}>
+              <TextInput
+                placeholder={t("From")}
+                autoCorrect={false}
+                editable={false}
+                value={from}
+                onChangeText={(e) => setFrom(e)}
+                style={styles.TextInputFrom}
+              />
+              {itemValid.from === false ? (
+                <Text type="regular" size="small" style={styles.textAlert}>
+                  {t("inputAlertLocation")}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                onPress={() => setModalFrom(true)}
+                style={styles.TouchOpacityDate}
+              />
+            </View>
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 15,
+              }}
+            >
+              <TextInput
+                placeholder={t("To")}
+                autoCorrect={false}
+                value={to}
+                onChangeText={(e) => setTo(e)}
+                style={styles.TextInputTo}
+              />
+              {itemValid.to === false ? (
+                <Text type="regular" size="small" style={styles.textAlert}>
+                  {t("inputAlertLocation")}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                onPress={() => setModalTo(true)}
+                style={styles.TouchOpacityDate}
+              />
+            </View>
+          </View>
+
           <TextInput
-            placeholder={"Guest Name"}
+            placeholder={t("Guest Name")}
             values={guestName}
             onChangeText={setGuestName}
-            style={{
-              flex: 1,
-              // padding: 0,
-              fontFamily: "Lato-Regular",
-              paddingTop: 10,
-
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-            }}
+            style={styles.textInputOneLine}
           />
           <TextInput
-            placeholder={"Booking Reference"}
+            placeholder={t("BookingRef")}
             values={bookingRef}
             onChangeText={setBookingRef}
-            style={{
-              flex: 1,
-              // padding: 0,
-              fontFamily: "Lato-Regular",
-              paddingTop: 10,
-
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-            }}
+            style={styles.textInputOneLine}
           />
           <TextInput
-            placeholder={"Carrier"}
+            placeholder={t("Carrier")}
             values={carrier}
             onChangeText={setCarrier}
-            style={{
-              flex: 1,
-              // padding: 0,
-              fontFamily: "Lato-Regular",
-              paddingTop: 10,
-
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-            }}
+            style={styles.textInputOneLine}
           />
           <Text
             type={"bold"}
             size="label"
             style={{
-              paddingTop: 10,
+              paddingTop: 30,
             }}
           >
-            Notes
+            {t("Notes")}
           </Text>
           <TextInput
-            placeholder={"Notes"}
+            placeholder={t("Notes")}
             values={note}
             onChangeText={setNote}
-            style={{
-              // borderWidth: 1,
-              fontFamily: "Lato-Regular",
-
-              flex: 1,
-              // padding: 0,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-            }}
+            style={styles.textInputOneLine}
           />
           <Text
             size="label"
             type="bold"
             style={{
-              paddingTop: 10,
+              paddingTop: 30,
             }}
           >
             {t("Attachment")}
           </Text>
-
-          <Modal
-            onRequestClose={() => setModal(false)}
-            animationIn="slideInRight"
-            animationOut="slideOutRight"
-            isVisible={modals}
-            style={{
-              backgroundColor: "#209fae",
-
-              // backgroundColor: 'rgba(0, 0, 0, 0.25)',
-              justifyContent: "flex-end",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-            }}
-          >
-            <KeyboardAvoidingView
-              style={{
-                flex: 1,
-                backgroundColor: "#209fae",
-
-                width: Dimensions.get("screen").width,
-                // height: '100%',
-                height: Dimensions.get("screen").height,
-              }}
-              // behavior={Platform.OS === 'ios' ? 'position' : null}
-              // keyboardVerticalOffset={30}
-              enabled
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignSelf: "flex-start",
-                  alignItems: "center",
-                  alignContent: "center",
-                  backgroundColor: "#209fae",
-                  height: 50,
-                  width: Dimensions.get("screen").width,
-                  // marginBottom: 20,
-                  marginTop: Platform.OS === "ios" ? 20 : -20,
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    // borderWidth: 1,
-                    height: 50,
-                    width: 50,
-                    position: "absolute",
-                    alignItems: "center",
-                    alignContent: "center",
-                    paddingTop: 15,
-                    // top: 20,
-                    // left: 20,
-                  }}
-                  onPress={() => setModal(false)}
-                >
-                  <Arrowbackwhite width={20} height={20} />
-                </TouchableOpacity>
-                <Text
-                  style={{
-                    top: 13,
-                    left: 55,
-                    fontFamily: "Lato-Regular",
-                    fontSize: 14,
-                    color: "white",
-                    height: 50,
-                    position: "absolute",
-                    alignItems: "center",
-                    alignContent: "center",
-                  }}
-                >
-                  From
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: Dimensions.get("screen").width,
-                  height: Dimensions.get("screen").height,
-                  backgroundColor: "white",
-                  paddingTop: 20,
-                  paddingHorizontal: 20,
-                  paddingBottom: 20,
-                }}
-              >
-                <GooglePlacesAutocomplete
-                  style={{}}
-                  query={{
-                    key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
-                    language: "id", // language of the results
-                  }}
-                  fetchDetails={true}
-                  onPress={(details = null) => {
-                    setModal(false);
-                    inputFromGoogle(details);
-                  }}
-                  autoFocus={true}
-                  listViewDisplayed="auto"
-                  onFail={(error) => console.log(error)}
-                  currentLocation={true}
-                  placeholder={"Search for location"}
-                  currentLocationLabel="Nearby location"
-                  renderLeftButton={() => {
-                    return (
-                      <View style={{ justifyContent: "center" }}>
-                        <Pointmapgray />
-                      </View>
-                    );
-                  }}
-                  GooglePlacesSearchQuery={{ rankby: "distance" }}
-                  enablePoweredByContainer={false}
-                  renderRow={(data) => {
-                    if (data.description) {
-                      var x = data.description.split(",");
-                    }
-                    return (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignContent: "flex-start",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <View
-                          style={{
-                            width: 20,
-                            paddingTop: 3,
-                          }}
-                        >
-                          <Pointmapgray />
-                        </View>
-                        <View
-                          style={{ width: Dimensions.get("screen").width - 60 }}
-                        >
-                          <Text
-                            style={{ fontFamily: "Lato-Bold", fontSize: 12 }}
-                          >
-                            {/* {x[0]} */}
-                            {x ? x[0] : data.name}
-                          </Text>
-                          <Text
-                            style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
-                          >
-                            <Truncate
-                              text={
-                                data.description
-                                  ? data.description
-                                  : data.vicinity
-                              }
-                              length={65}
-                            />
-                          </Text>
-                        </View>
-                      </View>
-                    );
-                  }}
-                  styles={{
-                    textInputContainer: {
-                      height: 40,
-                      backgroundColor: "#f4f4f4",
-                      borderWidth: 0.5,
-                      borderColor: "#6c6c6c",
-                      borderRadius: 5,
-                      margin: 0,
-                      paddingHorizontal: 10,
-                    },
-                    textInput: {
-                      marginLeft: 0,
-                      marginRight: 0,
-                      padding: 0,
-                      height: 38,
-                      color: "#5d5d5d",
-                      fontSize: 14,
-                      fontFamily: "Lato-Regular",
-                      // borderWidth: 1,
-                      backgroundColor: "#f4f4f4",
-                      borderColor: "#eaeaea",
-                    },
-                    predefinedPlacesDescription: {
-                      color: "#646464",
-                    },
-                    listView: {},
-                    row: {
-                      height: 48,
-                    },
-                  }}
-                />
-              </View>
-            </KeyboardAvoidingView>
-          </Modal>
 
           <View style={{ flex: 1, marginVertical: 10 }}>
             <TouchableOpacity
               onPress={() => {
                 pickFile();
               }}
-              style={{
-                width: "100%",
-                // borderColor: "black",
-                borderWidth: 1,
-                borderStyle: "dashed",
-                borderRadius: 5,
-                borderColor: "#d3d3d3",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                paddingVertical: 10,
-                flexDirection: "row",
-                marginBottom: 5,
-              }}
+              style={styles.uploadFile}
             >
               <New height={15} width={15} />
               <Text
@@ -682,12 +539,228 @@ export default function detailCustomItinerary(props) {
                   color: "#d1d1d1",
                 }}
               >
-                Choose File
+                {t("ChooseFile")}
               </Text>
             </TouchableOpacity>
           </View>
+          {attachment.map((data, index) => {
+            return (
+              <View style={styles.attachment}>
+                <Text style={{ width: 30 }}>{index + 1}. </Text>
+                <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    let tempes = [...file];
+                    tempes.splice(index, 1);
+                    setfile(tempes);
+                  }}
+                  style={styles.attachmentTimes}
+                >
+                  <Xhitam width={10} height={10} />
+                </TouchableOpacity>
+              </View>
+            );
+          })}
         </View>
       </ScrollView>
+
+      <Modal
+        onRequestClose={() => {
+          setModalFrom(false), setModalTo(false);
+        }}
+        animationIn="slideInRight"
+        animationOut="slideOutRight"
+        isVisible={modalFrom || modalTo}
+        style={{
+          backgroundColor: "#209fae",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <KeyboardAvoidingView
+          style={{
+            flex: 1,
+            backgroundColor: "#209fae",
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+          enabled
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-start",
+              alignItems: "center",
+              alignContent: "center",
+              backgroundColor: "#209fae",
+              height: 50,
+              width: Dimensions.get("screen").width,
+              marginTop: Platform.OS === "ios" ? 20 : -20,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                height: 50,
+                width: 50,
+                position: "absolute",
+                alignItems: "center",
+                alignContent: "center",
+                paddingTop: 15,
+              }}
+              onPress={() => {
+                setModalFrom(false), setModalTo(false);
+              }}
+            >
+              <Arrowbackwhite width={20} height={20} />
+            </TouchableOpacity>
+            <Text
+              style={{
+                top: 13,
+                left: 55,
+                fontFamily: "Lato-Regular",
+                fontSize: 14,
+                color: "white",
+                height: 50,
+                position: "absolute",
+                alignItems: "center",
+                alignContent: "center",
+              }}
+            >
+              {modalFrom ? "Dari" : "Ke"}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              backgroundColor: "white",
+              paddingTop: 20,
+              paddingHorizontal: 20,
+              paddingBottom: 20,
+            }}
+          >
+            <GooglePlacesAutocomplete
+              query={{
+                key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+                language: "id", // language of the results
+              }}
+              fetchDetails={true}
+              onPress={(data, details = null, search = null) => {
+                let arrLength = data.structured_formatting.secondary_text.split(
+                  ","
+                ).length;
+                if (modalFrom) {
+                  setFrom(
+                    data.structured_formatting.secondary_text.split(",")[
+                      arrLength - 3
+                    ]
+                  );
+                  setModalFrom(false);
+                }
+
+                if (modalTo) {
+                  setTo(
+                    data.structured_formatting.secondary_text.split(",")[
+                      arrLength - 3
+                    ]
+                  );
+                  inputFromGoogle(details);
+                  setModalTo(false);
+                }
+              }}
+              autoFocus={true}
+              listViewDisplayed="auto"
+              onFail={(error) => console.log(error)}
+              currentLocation={true}
+              placeholder={"Search for location"}
+              currentLocationLabel="Nearby location"
+              renderLeftButton={() => {
+                return (
+                  <View style={{ justifyContent: "center" }}>
+                    <Pointmapgray />
+                  </View>
+                );
+              }}
+              GooglePlacesSearchQuery={{ rankby: "distance" }}
+              enablePoweredByContainer={false}
+              renderRow={(data) => {
+                if (data.description) {
+                  var x = data.description.split(",");
+                }
+                return (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "flex-start",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 20,
+                        paddingTop: 3,
+                      }}
+                    >
+                      <Pointmapgray />
+                    </View>
+                    <View
+                      style={{ width: Dimensions.get("screen").width - 60 }}
+                    >
+                      <Text style={{ fontFamily: "Lato-Bold", fontSize: 12 }}>
+                        {/* {x[0]} */}
+                        {x ? x[0] : data.name}
+                      </Text>
+                      <Text
+                        style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
+                      >
+                        <Truncate
+                          text={
+                            data.description ? data.description : data.vicinity
+                          }
+                          length={65}
+                        />
+                      </Text>
+                    </View>
+                  </View>
+                );
+              }}
+              styles={{
+                textInputContainer: {
+                  height: 40,
+                  backgroundColor: "#f4f4f4",
+                  borderWidth: 0.5,
+                  borderColor: "#6c6c6c",
+                  borderRadius: 5,
+                  margin: 0,
+                  paddingHorizontal: 10,
+                },
+                textInput: {
+                  marginLeft: 0,
+                  marginRight: 0,
+                  padding: 0,
+                  height: 38,
+                  color: "#5d5d5d",
+                  fontSize: 14,
+                  fontFamily: "Lato-Regular",
+                  // borderWidth: 1,
+                  backgroundColor: "#f4f4f4",
+                  borderColor: "#eaeaea",
+                },
+                predefinedPlacesDescription: {
+                  color: "#646464",
+                },
+                listView: {},
+                row: {
+                  height: 48,
+                },
+              }}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Notch ? 90 : 65}
@@ -700,7 +773,22 @@ export default function detailCustomItinerary(props) {
         >
           <Button
             onPress={() => {
-              Alert.alert("comming soon");
+              setItemValid({
+                flightNumber: validate("flightNumber"),
+                timeArrCheck: validate("timeArrCheck"),
+                timeDepCheck: validate("timeDepCheck"),
+                from: validate("from"),
+                to: validate("to"),
+              });
+              if (
+                itemValid.flightNumber &&
+                itemValid.timeArrCheck &&
+                timeDepCheck &&
+                from &&
+                to
+              ) {
+                mutationInput();
+              }
             }}
             text={t("save")}
           />
@@ -709,3 +797,123 @@ export default function detailCustomItinerary(props) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  ViewContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    padding: 15,
+  },
+  ViewFlight: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  TextFlightInput: {
+    flex: 1,
+    fontFamily: "Lato-Regular",
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+    marginLeft: 10,
+  },
+  ViewDate: {
+    paddingTop: 15,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+  },
+  ViewDateAndInput: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+    borderBottomEndRadius: 10,
+  },
+  TextDateInput: {
+    flex: 1,
+    paddingVertical: 12,
+    fontFamily: "Lato-Regular",
+    marginLeft: 10,
+    marginRight: 10,
+    width: 150,
+  },
+  TouchOpacityDate: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+  ViewDateAndInputRight: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+    marginLeft: 15,
+  },
+  TextInputFrom: {
+    flex: 1,
+    fontFamily: "Lato-Regular",
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+    borderBottomEndRadius: 8,
+    marginRight: 10,
+  },
+  TextInputTo: {
+    flex: 1,
+    fontFamily: "Lato-Regular",
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+  },
+  textAlert: {
+    color: "#D75995",
+    position: "absolute",
+    bottom: -15,
+  },
+  textAlertFlight: {
+    color: "#D75995",
+    position: "absolute",
+    bottom: -15,
+    marginLeft: 10,
+  },
+  textInputOneLine: {
+    flex: 1,
+    fontFamily: "Lato-Regular",
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+  },
+  uploadFile: {
+    width: "100%",
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderRadius: 5,
+    borderColor: "#d3d3d3",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
+    flexDirection: "row",
+    marginBottom: 5,
+  },
+  attachment: {
+    flexDirection: "row",
+    alignContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  attachmentTimes: {
+    flexDirection: "row",
+    paddingRight: 10,
+    paddingLeft: 25,
+    height: "100%",
+  },
+});
