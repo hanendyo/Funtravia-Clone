@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AuthStack from "./StackItems/AuthStackNavigation";
 import BottomStack from "./StackItems/BottomNavigation";
+import HomeScreen from "../screens/Home";
 import ItineraryStack from "./StackItems/ItineraryStack";
 import ProfileStack from "./StackItems/ProfileStack";
 import CountryStack from "./StackItems/CountryStack";
