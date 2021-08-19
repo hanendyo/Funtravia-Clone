@@ -257,6 +257,7 @@ import Tagdocument from "./files/tagdocument.svg";
 import Tagimage from "./files/tagimage.svg";
 import Tagsticker from "./files/tagsticker.svg";
 import Nextwhite from "./files/nextwhite.svg";
+import Notfound404 from "./files/404notfound.svg";
 
 export {
   LikeWhite,
@@ -518,4 +519,5 @@ export {
   Tagimage,
   Tagsticker,
   Nextwhite,
+  Notfound404,
 };

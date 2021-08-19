@@ -27,6 +27,7 @@ import {
   shareAction,
   FunImage,
   CopyLink,
+  PagenotFound,
 } from "../../../component";
 import {
   LikeRed,
@@ -54,7 +55,6 @@ const deletepost = gql`
 import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../../graphQL/Query/Profile/Following";
 import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
-let { width, height } = Dimensions.get("screen");
 import { useIsFocused } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import FeedByID from "../../../graphQL/Query/Feed/FeedByID";
@@ -63,7 +63,9 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
+
 export default function Comments(props) {
+  let { width, height } = Dimensions.get("screen");
   // console.log("propscoment", props);
 
   const Notch = DeviceInfo.hasNotch();
@@ -881,6 +883,10 @@ export default function Comments(props) {
     );
   }
 
+  if (queryErrorPost) {
+    return <PagenotFound props={props} />;
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -1668,7 +1674,8 @@ export default function Comments(props) {
               allowFontScaling={false}
               multiline
               placeholder={
-                "Comment as " +
+                t("commentAs") +
+                " " +
                 setting?.user?.first_name +
                 " " +
                 setting?.user?.last_name +

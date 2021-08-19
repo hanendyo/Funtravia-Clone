@@ -240,7 +240,9 @@ export default function Register({ navigation }) {
         >
           <View style={{ flex: 1 }}>
             <FloatingInput
-              customTextStyle={{}}
+              customTextStyle={{
+                color: itemvalid.first_name === false ? "#464646" : "#D75995",
+              }}
               value={state.first_name}
               onChangeText={onChange("first_name")}
               label={t("firstName")}
@@ -274,6 +276,9 @@ export default function Register({ navigation }) {
             keyboardType="email-address"
             onChangeText={onChange("email")}
             label="Email"
+            // customTextStyle={{
+            //   color: itemvalid.first_name === false ? "#464646" : "#D75995",
+            // }}
           />
           {itemvalid.email === false ? (
             <Text

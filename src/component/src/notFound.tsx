@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { Text } from "../../component";
+import { Text } from "..";
 import { useTranslation } from "react-i18next";
 import { Kosong } from "../../assets/svg";
 

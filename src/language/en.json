@@ -599,5 +599,7 @@
   "settitle&trip": "Please set title and date of the trip",
   "followBack": "Follow Back",
   "checkCity": "Check out the cool destinations in this city !",
-  "visitCity": "Visit this city"
+  "visitCity": "Visit this city",
+  "pageNoteFound": "Looks like the page you visit is missing or deleted by its user",
+  "closeDouble": "Press again to close!"
 }

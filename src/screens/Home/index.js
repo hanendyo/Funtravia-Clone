@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Dimensions,
@@ -144,34 +144,37 @@ export default function Home(props) {
     }
   }, [props.route.params?.shareid]);
 
-  // useEffect(() => {
-  //   if (props?.route?.params?.halaman) {
-  //     let currentCount = 0;
-  //     const backAction = () => {
-  //       if (currentCount < 1) {
-  //         currentCount += 1;
-  //         RNToasty.Show({
-  //           title: "Tekan sekali lagi untuk keluar",
-  //           position: "bottom",
-  //         });
-  //       } else {
-  //         BackHandler.exitApp();
-  //       }
-  //       setTimeout(() => {
-  //         currentCount = 0;
-  //       }, 2000);
-  //       return true;
-  //     };
-  //     const backHandler = BackHandler.addEventListener(
-  //       "hardwareBackPress",
-  //       backAction
-  //     );
-  //     return () =>
-  //       BackHandler.removeEventListener("hardwareBackPress", backHandler);
-  //   } else {
-  //     props.navigation.goBack();
-  //   }
-  // }, [props?.route?.params?.halaman]);
+  let currentCount = 0;
+  const backAction = useCallback(() => {
+    if (currentCount < 1) {
+      currentCount += 1;
+      RNToasty.Show({
+        title: t("closeDouble"),
+        position: "bottom",
+      });
+    } else {
+      BackHandler.exitApp();
+    }
+    setTimeout(() => {
+      currentCount = 0;
+    }, 1000);
+    return true;
+  }, []);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, []);
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", backAction);
+    });
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    };
+  }, [backAction]);
 
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));

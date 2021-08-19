@@ -191,7 +191,8 @@ export default function Message({ navigation, route }) {
 
   const _searchNonaktifFunction = () => {
     setSearchAktif(false);
-    _searchHandle("");
+    let text = "";
+    _searchHandle(text);
     myStateRef.current = false;
     navigation.setOptions(HeaderComponent);
   };
@@ -289,19 +290,26 @@ export default function Message({ navigation, route }) {
 
   const _searchHandle = (text) => {
     // if (active == "personal") {
+    console.log(text);
     SetSearchtext(text);
-    let newData = data.filter(function(str) {
-      let strData = str.sender.id === user.id ? str.receiver : str.sender;
-      return strData.first_name.toLowerCase().includes(text.toLowerCase());
-    });
-    setDataRes(newData);
-    // }
+    if (text !== "") {
+      let newData = data.filter(function(str) {
+        let strData = str.sender.id === user.id ? str.receiver : str.sender;
+        return strData.first_name.toLowerCase().includes(text.toLowerCase());
+      });
+      setDataRes(newData);
+      // }
 
-    // if (active == "group") {
-    let newDataGroup = dataGroup.filter(function(str) {
-      return str.title.toLowerCase().includes(text.toLowerCase());
-    });
-    setDataGroupRes(newDataGroup);
+      // if (active == "group") {
+      let newDataGroup = dataGroup.filter(function(str) {
+        return str.title.toLowerCase().includes(text.toLowerCase());
+      });
+      setDataGroupRes(newDataGroup);
+    } else {
+      // console.log("res");
+      setDataRes(data);
+      setDataGroupRes(dataGroup);
+    }
     // }
   };
 

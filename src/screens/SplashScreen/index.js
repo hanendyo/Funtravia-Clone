@@ -82,7 +82,16 @@ export default function SplashScreen(props) {
               borderRadius: 30,
             }}
             onPress={() =>
-              props.navigation.navigate("BottomStack", { screen: "HomeScreen" })
+              // props.navigation.navigate("BottomStack", { screen: "HomeScreen" })
+              props.navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: "BottomStack",
+                    routes: [{ name: "HomeScreen" }],
+                  },
+                ],
+              })
             }
           >
             <Text

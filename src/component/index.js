@@ -28,6 +28,7 @@ import CopyLink from "./src/CopyLink";
 import FunVideo from "./src/FunVideo";
 import StickerModal from "./src/Sticker/StickerModal";
 import FunMaps from "./src/FunMaps";
+import PagenotFound from "./src/PagenotFound";
 
 export {
   Text,
@@ -60,4 +61,5 @@ export {
   FunVideo,
   StickerModal,
   FunMaps,
+  PagenotFound,
 };
