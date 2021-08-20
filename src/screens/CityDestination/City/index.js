@@ -37,6 +37,8 @@ import {
   ShareBlack,
   Labeltag,
   Xgray,
+  Nextabu,
+  Prevabu,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -72,6 +74,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
+import { isNonEmptyArray } from "@apollo/client/utilities";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -709,7 +712,7 @@ export default function CityDetail(props) {
                   size="readable"
                   type="regular"
                   style={{
-                    textAlign: "justify",
+                    textAlign: "left",
                     lineHeight: 20,
                   }}
                 >
@@ -723,7 +726,7 @@ export default function CityDetail(props) {
                   size="readable"
                   type="regular"
                   style={{
-                    textAlign: "justify",
+                    textAlign: "left",
                     lineHeight: 20,
                   }}
                 >
@@ -781,10 +784,10 @@ export default function CityDetail(props) {
                 paddingHorizontal: 5,
               }}
             >
-              <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("activities&Experience")}
               </Text>
-              <Text size="description">{t("exprole&inspiredtrip")}</Text>
+              <Text size="label">{t("exprole&inspiredtrip")}</Text>
             </View>
 
             <View
@@ -864,8 +867,8 @@ export default function CityDetail(props) {
                               >
                                 <FunIcon
                                   icon={item.icon ? item.icon : "w-fog"}
-                                  height={50}
-                                  width={50}
+                                  height={45}
+                                  width={45}
                                   style={{
                                     bottom: -3,
                                   }}
@@ -910,8 +913,8 @@ export default function CityDetail(props) {
                           >
                             <FunIcon
                               icon={item.icon ? item.icon : "w-fog"}
-                              height={50}
-                              width={50}
+                              height={45}
+                              width={45}
                               style={{
                                 bottom: -3,
                               }}
@@ -987,27 +990,27 @@ export default function CityDetail(props) {
             }}
           >
             {i18n.language === "id" ? (
-              <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("atGlance")}
 
                 <Capital text={render ? render.name : ""} />
               </Text>
             ) : (
-              <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 <Capital text={render ? render.name : ""} />
 
                 {t("atGlance")}
               </Text>
             )}
-            <Text size="description">{t("geography&religion")}</Text>
+            <Text size="label">{t("geography&religion")}</Text>
           </View>
           <View
             style={{
               marginTop: 10,
               borderRadius: 10,
+              paddingBottom: 10,
               minHeight: 50,
               justifyContent: "center",
-              padding: 10,
               backgroundColor: "#FFF",
               shadowColor: "#000",
               shadowOffset: {
@@ -1027,9 +1030,10 @@ export default function CityDetail(props) {
               tabContainerStyle={{
                 backgroundColor: "white",
                 elevation: 0,
+                height: 45,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
               }}
-              style={{}}
-              // locked={false}
             >
               <Tab
                 heading={t("Map")}
@@ -1037,12 +1041,14 @@ export default function CityDetail(props) {
                   backgroundColor: "white",
                   elevation: 0,
                   borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                  borderTopLeftRadius: 10,
                 }}
                 activeTabStyle={{
                   backgroundColor: "white",
                   borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                  borderTopLeftRadius: 10,
                 }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
@@ -1055,14 +1061,20 @@ export default function CityDetail(props) {
                   color: "#209FAE",
                 }}
               >
-                <FunMaps
-                  icon={render?.map ? render?.map : "mk-belitung"}
-                  height={260}
-                  width={width - 40}
+                <View
                   style={{
-                    bottom: -3,
+                    marginHorizontal: 10,
                   }}
-                />
+                >
+                  <FunMaps
+                    icon={render?.map ? render?.map : "mk-belitung"}
+                    height={260}
+                    width={width - 40}
+                    style={{
+                      bottom: -3,
+                    }}
+                  />
+                </View>
               </Tab>
 
               <Tab
@@ -1070,12 +1082,12 @@ export default function CityDetail(props) {
                 tabStyle={{
                   backgroundColor: "white",
                   borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
                 activeTabStyle={{
                   backgroundColor: "white",
                   borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
@@ -1088,30 +1100,38 @@ export default function CityDetail(props) {
                   color: "#209FAE",
                 }}
               >
-                <Image
-                  source={
-                    render?.countries?.climate
-                      ? { uri: render.countries.climate }
-                      : default_image
-                  }
+                <View
                   style={{
-                    width: "100%",
-                    height: width * 0.7,
-                    resizeMode: "center",
+                    marginHorizontal: 10,
                   }}
-                ></Image>
+                >
+                  <Image
+                    source={
+                      render?.countries?.climate
+                        ? { uri: render.countries.climate }
+                        : default_image
+                    }
+                    style={{
+                      width: "100%",
+                      height: width * 0.7,
+                      resizeMode: "center",
+                    }}
+                  ></Image>
+                </View>
               </Tab>
               <Tab
                 heading={t("religion")}
                 tabStyle={{
                   backgroundColor: "white",
                   borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+                  borderTopRightRadius: 10,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
                 activeTabStyle={{
                   backgroundColor: "white",
                   borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+                  borderTopRightRadius: 10,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
@@ -1124,18 +1144,24 @@ export default function CityDetail(props) {
                   color: "#209FAE",
                 }}
               >
-                <Image
-                  source={
-                    render?.countries?.religion
-                      ? { uri: render.countries.religion }
-                      : default_image
-                  }
+                <View
                   style={{
-                    width: "100%",
-                    height: width * 0.7,
-                    resizeMode: "center",
+                    marginHorizontal: 10,
                   }}
-                ></Image>
+                >
+                  <Image
+                    source={
+                      render?.countries?.religion
+                        ? { uri: render.countries.religion }
+                        : default_image
+                    }
+                    style={{
+                      width: "100%",
+                      height: width * 0.7,
+                      resizeMode: "center",
+                    }}
+                  ></Image>
+                </View>
               </Tab>
             </Tabs>
           </View>
@@ -1154,10 +1180,10 @@ export default function CityDetail(props) {
                 paddingHorizontal: 5,
               }}
             >
-              <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("traveljournal")}
               </Text>
-              <Text size="description">{t("traveldiscovery")}</Text>
+              <Text size="label">{t("traveldiscovery")}</Text>
             </View>
 
             <View
@@ -1367,19 +1393,19 @@ export default function CityDetail(props) {
                 paddingHorizontal: 5,
               }}
             >
-              <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("essentials")}
               </Text>
-              <Text size="description">{t("gooddestinationtrip")}</Text>
+              <Text size="label">{t("gooddestinationtrip")}</Text>
             </View>
 
             <View
               style={{
                 marginTop: 10,
                 borderRadius: 10,
+                paddingBottom: 10,
                 minHeight: 50,
                 justifyContent: "center",
-                padding: 10,
                 backgroundColor: "#FFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -1399,6 +1425,8 @@ export default function CityDetail(props) {
                 tabContainerStyle={{
                   backgroundColor: "white",
                   elevation: 0,
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
                 }}
                 style={{}}
                 // locked={false}
@@ -1409,12 +1437,14 @@ export default function CityDetail(props) {
                     backgroundColor: "white",
                     elevation: 0,
                     borderBottomColor: "#d1d1d1",
-                    borderBottomWidth: 1,
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopLeftRadius: 10,
                   }}
                   activeTabStyle={{
                     backgroundColor: "white",
                     borderBottomColor: "#d1d1d1",
-                    borderBottomWidth: 1,
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopLeftRadius: 10,
                   }}
                   textStyle={{
                     fontFamily: "Lato-Regular",
@@ -1432,6 +1462,7 @@ export default function CityDetail(props) {
                       width: "100%",
                       paddingVertical: 10,
                       flexWrap: "wrap",
+                      paddingHorizontal: 10,
                       flexDirection: "row",
                     }}
                   >
@@ -1460,15 +1491,15 @@ export default function CityDetail(props) {
                             >
                               <FunIcon
                                 icon={item.icon ? item.icon : "w-fog"}
-                                height={40}
-                                width={40}
+                                height={45}
+                                width={45}
                                 style={{
                                   bottom: -3,
                                 }}
                               />
                             </View>
                             <Text
-                              size="small"
+                              size="description"
                               style={{
                                 textAlign: "center",
                                 marginTop: 5,
@@ -1487,12 +1518,14 @@ export default function CityDetail(props) {
                   tabStyle={{
                     backgroundColor: "white",
                     borderBottomColor: "#d1d1d1",
-                    borderBottomWidth: 1,
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopRightRadius: 10,
                   }}
                   activeTabStyle={{
                     backgroundColor: "white",
                     borderBottomColor: "#d1d1d1",
-                    borderBottomWidth: 1,
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopRightRadius: 10,
                   }}
                   textStyle={{
                     fontFamily: "Lato-Regular",
@@ -1508,7 +1541,7 @@ export default function CityDetail(props) {
                   <View
                     style={{
                       width: "100%",
-                      paddingVertical: 20,
+                      paddingVertical: 10,
                       flexWrap: "wrap",
                       flexDirection: "row",
                     }}
@@ -1541,15 +1574,15 @@ export default function CityDetail(props) {
                             >
                               <FunIcon
                                 icon={item.icon ? item.icon : "w-fog"}
-                                height={40}
-                                width={40}
+                                height={45}
+                                width={45}
                                 style={{
                                   bottom: -3,
                                 }}
                               />
                             </View>
                             <Text
-                              size="small"
+                              size="description"
                               style={{
                                 textAlign: "center",
                                 marginTop: 5,
@@ -1581,7 +1614,7 @@ export default function CityDetail(props) {
                 paddingHorizontal: 5,
               }}
             >
-              <Text type="bold" size="title" style={{ marginBottom: 5 }}>
+              <Text type="bold" size="title" style={{ marginBottom: 3 }}>
                 {t("festival&event")}
               </Text>
               <Ripple
@@ -1602,17 +1635,25 @@ export default function CityDetail(props) {
                 justifyContent: "space-between",
               }}
             >
-              <Text
-                size="description"
+              <View
                 style={{
-                  textAlign: "justify",
+                  width: "75%",
                 }}
               >
-                {t("exprolefestival&eventcity")}
-              </Text>
+                <Text
+                  size="label"
+                  style={{
+                    textAlign: "justify",
+                    // marginBottom: 5,
+                  }}
+                >
+                  {t("exprolefestival&eventcity")}
+                </Text>
+              </View>
+
               <Text
                 type="bold"
-                size="description"
+                size="label"
                 style={{
                   color: "#209fae",
                 }}
@@ -1626,6 +1667,7 @@ export default function CityDetail(props) {
                 backgroundColor: "white",
                 width: "100%",
                 shadowColor: "#000",
+                borderRadius: 10,
                 shadowOffset: {
                   width: 0,
                   height: 5,
@@ -1648,8 +1690,8 @@ export default function CityDetail(props) {
                       ]
                 }
                 style={{
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
                   // width: Dimensions.get('screen').width - 40,
                 }}
                 customSlide={({ index, item, style, width }) => (
@@ -1672,102 +1714,152 @@ export default function CityDetail(props) {
                           : default_image
                       }
                       style={{
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
                         height: Dimensions.get("screen").width * 0.4,
-                        width: Dimensions.get("screen").width - 40,
+                        width: Dimensions.get("screen").width - 30,
                         alignContent: "center",
                         alignItems: "center",
                         justifyContent: "flex-end",
                       }}
                       imageStyle={{
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
                         height: Dimensions.get("screen").width * 0.4,
-                        width: Dimensions.get("screen").width - 40,
-                        resizeMode: "cover",
+                        width: Dimensions.get("screen").width - 30,
+                        // resizeMode: "cover",
                       }}
-                    >
-                      <LinearGradient
-                        colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
-                        start={{ x: 0, y: 1 }}
-                        end={{ x: 0, y: 0 }}
-                        style={{
-                          height: "30%",
-                          width: "100%",
-                          alignContent: "center",
-                          alignItems: "center",
-                          justifyContent: "flex-end",
-                          padding: 25,
-                        }}
-                      >
-                        {/* <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                          }}
-                        >
-                          {item.name ? item.name : ""}
-                        </Text> */}
-                      </LinearGradient>
-                    </ImageBackground>
+                    ></ImageBackground>
                   </Ripple>
                 )}
                 customButtons={(position, move) => (
-                  <View
-                    style={{
-                      width: width - 40,
-                      position: "absolute",
-                      bottom: 10,
-                      left: 0,
-                      alignContent: "center",
-                      alignItems: "center",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }} // onPress={() => {
-                    //   props.navigation.navigate("Abouts");
-                    // }}
-                  >
+                  <View>
+                    {/* hide custom bottom */}
+                    <View
+                      style={{
+                        width: width - 40,
+                        position: "absolute",
+                        bottom: 10,
+                        borderWidth: 1,
+                        display: "none",
+                        left: 0,
+                        alignContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {(dataevent?.event?.length > 0
+                        ? dataevent?.event
+                        : [default_image]
+                      ).map((item, index) => {
+                        return (
+                          <TouchableHighlight
+                            key={"keyevent" + index}
+                            underlayColor="#f7f7f700"
+                            onPress={() => move(index)}
+                          >
+                            <View
+                              style={{
+                                height: position === index ? 7 : 5,
+                                width: position === index ? 7 : 5,
+                                borderRadius: position === index ? 7 : 3,
+                                backgroundColor:
+                                  position === index ? "#209fae" : "white",
+                                marginHorizontal: 2,
+                              }}
+                            ></View>
+                          </TouchableHighlight>
+                        );
+                      })}
+                      {/* show title event and move position */}
+                    </View>
                     {(dataevent?.event?.length > 0
                       ? dataevent?.event
                       : [default_image]
-                    ).map((image, index) => {
-                      return (
-                        <TouchableHighlight
-                          key={"keyevent" + index}
-                          underlayColor="#f7f7f700"
-                          onPress={() => move(index)}
-                        >
+                    ).map((item, index) => (
+                      <View>
+                        {position == index ? (
                           <View
                             style={{
-                              height: position === index ? 7 : 5,
-                              width: position === index ? 7 : 5,
-                              borderRadius: position === index ? 7 : 3,
-                              backgroundColor:
-                                position === index ? "#209fae" : "white",
-                              marginHorizontal: 2,
+                              width: "100%",
+                              alignContent: "center",
+                              alignItems: "center",
+
+                              flexDirection: "row",
+                              height: 40,
+                              backgroundColor: "#FFFFFF",
                             }}
-                          ></View>
-                        </TouchableHighlight>
-                      );
-                    })}
+                          >
+                            <View
+                              style={{
+                                width: "100%",
+                                paddingHorizontal: 25,
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  flexDirection: "row",
+                                  width: 15,
+                                }}
+                              >
+                                {dataevent?.event?.length > 0 && index !== 0 ? (
+                                  <Ripple onPress={() => move(position - 1)}>
+                                    <Prevabu height={15} width={15} />
+                                  </Ripple>
+                                ) : null}
+                              </View>
+
+                              <View style={{}}>
+                                {dataevent?.event?.length > 0 ? (
+                                  <Text
+                                    size="title"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {item.name}
+                                  </Text>
+                                ) : (
+                                  <Text
+                                    size="title"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {"Tidak ada event bulan ini"}
+                                  </Text>
+                                )}
+                              </View>
+                              <View
+                                style={{
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  flexDirection: "row",
+                                }}
+                              >
+                                {dataevent?.event?.length > 0 &&
+                                index !== dataevent?.event?.length - 1 ? (
+                                  <Ripple onPress={() => move(position + 1)}>
+                                    <Nextabu height={15} width={15} />
+                                  </Ripple>
+                                ) : null}
+                              </View>
+                            </View>
+                          </View>
+                        ) : null}
+                      </View>
+                    ))}
                   </View>
                 )}
               />
-              <View
-                style={{
-                  width: "100%",
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: 40,
-                  backgroundColor: "#209fae",
-                }}
-              >
-                <Text size="label" type="bold" style={{ color: "white" }}>
-                  <Gettahun />
-                </Text>
-              </View>
+
               <View
                 style={{
                   width: "100%",
@@ -1788,10 +1880,17 @@ export default function CityDetail(props) {
                               dataevent.month === item.month ? "#DAF0F2" : null,
                             // borderWidth: 1,
                             width: "33.3%",
+                            height: 38,
                             // justifyContent: '',
                             alignContent: "center",
                             alignItems: "center",
                             padding: 7,
+                            borderBottomWidth:
+                              dataevent.month === item.month ? 2 : 0,
+                            borderBottomColor:
+                              dataevent.month === item.month
+                                ? "#209fae"
+                                : "#646464",
                             borderTopWidth: 0.5,
                             borderLeftWidth:
                               index !== 0 &&
@@ -1801,7 +1900,7 @@ export default function CityDetail(props) {
                                 ? 0.5
                                 : 0,
                             // borderRightWidth: 0.5,
-                            borderColor: "#209fae",
+                            borderColor: "#d1d1d1",
                           }}
                         >
                           <Text
@@ -1867,6 +1966,7 @@ export default function CityDetail(props) {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
+
                 paddingHorizontal: 5,
               }}
             >
@@ -1916,15 +2016,16 @@ export default function CityDetail(props) {
                     style={{
                       height: 145,
                       // borderWidth: 1,
+
+                      borderColor: "#F6F6F6",
                       marginTop: 0,
-                      width: Dimensions.get("screen").width - 40,
+                      width: Dimensions.get("screen").width - 35,
                       marginRight: 5,
                     }}
                   >
                     <View
                       style={{
-                        borderRadius: 5,
-
+                        borderRadius: 10,
                         backgroundColor: "#FFF",
                         shadowColor: "#000",
                         shadowOffset: {
@@ -1934,10 +2035,9 @@ export default function CityDetail(props) {
                         shadowOpacity: 0.1,
                         shadowRadius: 6.27,
                         elevation: 6,
+
                         width: "100%",
                         justifyContent: "space-between",
-                        // backgroundColor: "#F7F7F7",
-                        // overflow: "hidden",
                       }}
                     >
                       <Pressable
@@ -1955,18 +2055,19 @@ export default function CityDetail(props) {
                         }
                         style={{
                           backgroundColor: "#FFFFFF",
-                          height: "77%",
-                          borderTopLeftRadius: 5,
-                          borderTopRightRadius: 5,
+                          height: "80%",
                           flexDirection: "row",
                           zIndex: -1,
-                          // borderWidth: 1,
-                          // widht: Dimensions.get("screen").width * 0.33,
+                          borderWidth: 1,
+                          borderTopLeftRadius: 10,
+                          borderTopRightRadius: 10,
+                          borderColor: "#d1d1d1",
                         }}
                       >
                         <View
                           style={{
-                            width: "35%",
+                            width: "40%",
+                            // borderWidth: 1,
                           }}
                         >
                           <Image
@@ -1980,7 +2081,7 @@ export default function CityDetail(props) {
                             style={{
                               height: "100%",
                               width: "100%",
-                              borderTopLeftRadius: 5,
+                              borderTopLeftRadius: 10,
                             }}
                           />
                           <View
@@ -1988,6 +2089,7 @@ export default function CityDetail(props) {
                               position: "absolute",
                               height: 30,
                               marginTop: 10,
+                              // borderWidth: 1,
                               margin: 5,
                               flexDirection: "row",
                               alignItems: "center",
@@ -1995,8 +2097,8 @@ export default function CityDetail(props) {
                           >
                             <Image
                               style={{
-                                height: 32,
-                                width: 32,
+                                height: 30,
+                                width: 30,
                                 borderRadius: 16,
                                 borderColor: "rgba(52, 52, 52, 0.75)",
                                 zIndex: 1,
@@ -2012,13 +2114,14 @@ export default function CityDetail(props) {
                               }
                             />
                             <Text
-                              size="small"
+                              size="description"
                               type="bold"
                               style={{
                                 zIndex: 0,
-                                paddingLeft: 5,
+                                paddingLeft: 10,
+                                paddingRight: 8,
                                 backgroundColor: "rgba(52, 52, 52, 0.8)",
-                                borderRadius: 2,
+                                borderRadius: 5,
                                 color: "white",
                                 marginLeft: -5,
                                 padding: 2,
@@ -2028,7 +2131,7 @@ export default function CityDetail(props) {
                                 text: item?.user_created?.first_name
                                   ? item?.user_created?.first_name
                                   : "user_deleted",
-                                length: 13,
+                                length: 17,
                               })}
                             </Text>
                           </View>
@@ -2036,16 +2139,19 @@ export default function CityDetail(props) {
 
                         <View
                           style={{
-                            width: "65%",
-                            paddingHorizontal: 10,
+                            width: "60%",
                             backgroundColor: "#FFFFFF",
-                            // borderWidth: 1,
-                            marginVertical: 2,
-                            // borderWidth: 1,
+                            borderTopRightRadius: 10,
+                            paddingVertical: 10,
                             overflow: "hidden",
                           }}
                         >
-                          <View>
+                          <View
+                            style={{
+                              paddingHorizontal: 10,
+                              height: "100%",
+                            }}
+                          >
                             <View
                               style={{
                                 flexDirection: "row",
@@ -2094,107 +2200,117 @@ export default function CityDetail(props) {
                                 )}
                               </View>
                             </View>
-                            <Text
-                              size="label"
-                              type="black"
-                              style={{
-                                marginTop: 5,
-                              }}
-                            >
-                              <Truncate text={item.name} length={40} />
-                            </Text>
-                            <View></View>
                             <View
                               style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginTop: 5,
-                              }}
-                            >
-                              <PinHijau width={15} height={15} />
-                              <Text
-                                style={{
-                                  marginLeft: 5,
-                                }}
-                                size="small"
-                                type="regular"
-                              >
-                                {item?.country?.name}
-                              </Text>
-                              <Text>,</Text>
-                              <Text
-                                size="small"
-                                type="regular"
-                                style={{
-                                  marginLeft: 3,
-                                }}
-                              >
-                                {item?.city?.name}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                marginTop: 20,
+                                justifyContent: "space-between",
+
+                                height: "90%",
                               }}
                             >
                               <View
                                 style={{
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  marginLeft: 3,
+                                  justifyContent: "space-between",
                                 }}
                               >
-                                <Calendargrey
-                                  width={10}
-                                  height={10}
-                                  style={{
-                                    marginRight: 5,
-                                  }}
-                                />
                                 <Text
+                                  size="label"
+                                  type="black"
                                   style={{
-                                    marginLeft: 3,
+                                    marginTop: 5,
                                   }}
-                                  size="small"
-                                  type="regular"
                                 >
-                                  {item.start_date && item.end_date
-                                    ? getDN(item.start_date, item.end_date)
-                                    : null}
+                                  <Truncate text={item.name} length={40} />
                                 </Text>
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginTop: 5,
+                                  }}
+                                >
+                                  <PinHijau width={15} height={15} />
+                                  <Text
+                                    style={{
+                                      marginLeft: 5,
+                                    }}
+                                    size="small"
+                                    type="regular"
+                                  >
+                                    {item?.country?.name}
+                                  </Text>
+                                  <Text>,</Text>
+                                  <Text
+                                    size="small"
+                                    type="regular"
+                                    style={{
+                                      marginLeft: 3,
+                                    }}
+                                  >
+                                    {item?.city?.name}
+                                  </Text>
+                                </View>
                               </View>
                               <View
                                 style={{
                                   flexDirection: "row",
-                                  alignItems: "center",
-                                  marginLeft: 15,
+                                  marginTop: 20,
                                 }}
                               >
-                                <User
-                                  width={10}
-                                  height={10}
+                                <View
                                   style={{
-                                    marginRight: 5,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+
+                                    marginLeft: 5,
                                   }}
-                                />
-                                {item.buddy_count > 1 ? (
+                                >
+                                  <Calendargrey
+                                    width={10}
+                                    height={10}
+                                    style={{
+                                      marginRight: 5,
+                                    }}
+                                  />
+
                                   <Text size="small" type="regular">
-                                    {(item && item.buddy_count
-                                      ? item.buddy_count
-                                      : null) +
-                                      " " +
-                                      t("persons")}
+                                    {item.start_date && item.end_date
+                                      ? getDN(item.start_date, item.end_date)
+                                      : null}
                                   </Text>
-                                ) : (
-                                  <Text size="small" type="regular">
-                                    {(item && item.buddy_count
-                                      ? item.buddy_count
-                                      : null) +
-                                      " " +
-                                      t("person")}
-                                  </Text>
-                                )}
+                                </View>
+
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginLeft: 15,
+                                  }}
+                                >
+                                  <User
+                                    width={10}
+                                    height={10}
+                                    style={{
+                                      marginRight: 5,
+                                    }}
+                                  />
+                                  {item.buddy_count > 1 ? (
+                                    <Text size="small" type="regular">
+                                      {(item && item.buddy_count
+                                        ? item.buddy_count
+                                        : null) +
+                                        " " +
+                                        t("persons")}
+                                    </Text>
+                                  ) : (
+                                    <Text size="small" type="regular">
+                                      {(item && item.buddy_count
+                                        ? item.buddy_count
+                                        : null) +
+                                        " " +
+                                        t("person")}
+                                    </Text>
+                                  )}
+                                </View>
                               </View>
                             </View>
                           </View>
@@ -2650,7 +2766,7 @@ export default function CityDetail(props) {
                   flexDirection: "row",
                   alignContent: "center",
                   alignItems: "center",
-                  marginTop: 2,
+                  marginTop: 5,
                   marginBottom: 3,
                 }}
               >
