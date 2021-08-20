@@ -37,6 +37,7 @@
 		85A5FF11A3AF48CC917493DE /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EAA57F376F6B4732A0246737 /* Ionicons.ttf */; };
 		89198386C37C4F05BBDA4624 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF9911D4D45447248C3827E6 /* FontAwesome5_Brands.ttf */; };
 		9344091261A34FC799110437 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66C82D675D6E44919C017EE2 /* Lato-Medium.ttf */; };
+		9EB58AB926C9F40800FE8A7D /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB58AB826C9F40800FE8A7D /* File.swift */; };
 		B27D5A77D6350D18DC4A9E3A /* libPods-funtravia-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55333658247134958CBA612D /* libPods-funtravia-tvOS.a */; };
 		BA6508ED1A6048C78B370009 /* Lato-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4A34B66105C4592A806D8FD /* Lato-Semibold.ttf */; };
 		BC0CDA62A5CF4AB8ACC096DA /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 572621F01E0E42ED895A5D90 /* Lato-Bold.ttf */; };
@@ -117,6 +118,8 @@
 		91E93E53D94349FCAAD6D120 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/native-base/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		977BF97C2DFCED03650ABA1F /* Pods-funtravia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia.release.xcconfig"; path = "Target Support Files/Pods-funtravia/Pods-funtravia.release.xcconfig"; sourceTree = "<group>"; };
 		9B28C5DF77DE59F053E718E8 /* Pods-funtravia-funtraviaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia-funtraviaTests.release.xcconfig"; path = "Target Support Files/Pods-funtravia-funtraviaTests/Pods-funtravia-funtraviaTests.release.xcconfig"; sourceTree = "<group>"; };
+		9EB58AB726C9F40800FE8A7D /* funtravia-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "funtravia-Bridging-Header.h"; sourceTree = "<group>"; };
+		9EB58AB826C9F40800FE8A7D /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		A23EFCA81E6547B2B0BB3F72 /* Lato-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Light.ttf"; path = "../src/assets/fonts/Lato/Lato-Light.ttf"; sourceTree = "<group>"; };
 		A51676C2DD1FF3A76F2F1F47 /* Pods-funtravia-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-funtravia-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-funtravia-tvOSTests/Pods-funtravia-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		A63FE5C7021540D9B3E33B75 /* Roboto_medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto_medium.ttf; path = "../node_modules/native-base/Fonts/Roboto_medium.ttf"; sourceTree = "<group>"; };
@@ -254,6 +257,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9EB58AB826C9F40800FE8A7D /* File.swift */,
 				13B07FAE1A68108700A75B9A /* funtravia */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* funtraviaTests */,
@@ -261,6 +265,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				0E729414B5F1970103BD0AAF /* Pods */,
 				EB8D91B652F248B889DA5001 /* Resources */,
+				9EB58AB726C9F40800FE8A7D /* funtravia-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -408,7 +413,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = X88279Q7H6;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1250;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -735,6 +740,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				9EB58AB926C9F40800FE8A7D /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -775,6 +781,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5C26B442CD8FD89156B70783 /* Pods-funtravia-funtraviaTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -798,6 +805,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9B28C5DF77DE59F053E718E8 /* Pods-funtravia-funtraviaTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = funtraviaTests/Info.plist;
@@ -824,6 +832,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X88279Q7H6;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -924,6 +933,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.funtravia.apps;
 				PRODUCT_NAME = funtravia;
+				SWIFT_OBJC_BRIDGING_HEADER = "funtravia-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -939,6 +949,7 @@
 				CODE_SIGN_ENTITLEMENTS = funtravia/funtraviaRelease.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X88279Q7H6;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1039,6 +1050,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.funtravia.apps;
 				PRODUCT_NAME = funtravia;
+				SWIFT_OBJC_BRIDGING_HEADER = "funtravia-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
