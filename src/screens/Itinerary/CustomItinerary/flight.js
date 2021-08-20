@@ -29,11 +29,6 @@ import {
   Pointmapgray,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
-import { Input } from "native-base";
-import { default_image } from "../../../assets/png";
-import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
-import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
-import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -44,8 +39,11 @@ import Modal from "react-native-modal";
 import AddFlight from "../../../graphQL/Mutation/Itinerary/AddCustomFlight";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { dateFormat, dateFormats } from "../../../component/src/dateformatter";
-import { isNonNullType } from "graphql";
+// import { Input } from "native-base";
+// import { default_image } from "../../../assets/png";
+// import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
+// import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
+// import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
   const HeaderComponent = {
@@ -61,7 +59,7 @@ export default function detailCustomItinerary(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -99,6 +97,7 @@ export default function detailCustomItinerary(props) {
           <Text
             style={{
               color: "#fff",
+              fontSize: 14,
             }}
           >
             {t("CustomActivity")}
@@ -174,7 +173,6 @@ export default function detailCustomItinerary(props) {
     let formattedDate = `${year}-${months}-${day}T${h}:${m}:${s}`;
     let formatForScreen = `${year}-${months}-${day} ${h}:${m}:${s}`;
 
-    console.log(formattedDate);
     if (dateTimeModalDeparture) {
       setTimeDeparture(formattedDate);
       setTimeDepCheck(formatForScreen);
@@ -191,7 +189,9 @@ export default function detailCustomItinerary(props) {
     {
       context: {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": (file = []
+            ? `application/json`
+            : `multipart/form-data`),
           Authorization: `Bearer ${token}`,
         },
       },
@@ -208,27 +208,20 @@ export default function detailCustomItinerary(props) {
   const validate = (name) => {
     if (name === "flightNumber" && flightNumber.length === 0) {
       return false;
-    }
-    if (
+    } else if (
       (name === "timeArrCheck" && timeArrCheck.length === 0) ||
       (name === "timeDepCheck" && timeDepCheck.length === 0)
     ) {
       return false;
-    }
-    if (
-      (name === "timeArrCheck" || name === "timeDepCheck") &&
-      (timeArrCheck === timeDepCheck || timeDepCheck < timeArrCheck)
-    ) {
-      return false;
-    }
-    if (
+    } else if (
       (name === "from" || name === "to") &&
       (from.length === 0 || to.length === 0)
     ) {
       return false;
-    }
-    if ((name === "from" || name === "to") && from === to) {
+    } else if ((name === "from" || name === "to") && from === to) {
       return false;
+    } else {
+      return true;
     }
   };
 
@@ -239,6 +232,30 @@ export default function detailCustomItinerary(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const tesdata = {
+    day_id: dayId,
+    title: flightNumber,
+    icon: icon,
+    qty: qty,
+    address: address,
+    latitude: lat,
+    longitude: long,
+    note: note,
+    time: time,
+    duration: duration,
+    status: status,
+    order: order,
+    total_price: totalPrice,
+    departure: timeDeparture,
+    arrival: timeArrival,
+    from: from,
+    destination: to,
+    guest_name: guestName,
+    booking_ref: bookingRef,
+    carrier: carrier,
+    file: attachment,
+  };
 
   const mutationInput = async () => {
     try {
@@ -267,7 +284,7 @@ export default function detailCustomItinerary(props) {
           file: attachment,
         },
       });
-      console.log(response);
+
       if (loading) {
         setLoadingApp(true);
       }
@@ -278,7 +295,6 @@ export default function detailCustomItinerary(props) {
       }
 
       if (response.data) {
-        console.log("respond: ", response.data);
         if (response.data.add_custom_flight.code !== 200) {
           throw new Error(response.data.add_custom_flight.message);
         } else {
@@ -303,6 +319,24 @@ export default function detailCustomItinerary(props) {
   };
 
   //-- Attachment
+  const mutationValid = () => {
+    setItemValid({
+      flightNumber: validate("flightNumber"),
+      timeArrCheck: validate("timeArrCheck"),
+      timeDepCheck: validate("timeDepCheck"),
+      from: validate("from"),
+      to: validate("to"),
+    });
+    if (
+      itemValid.flightNumber &&
+      itemValid.timeArrCheck &&
+      timeDepCheck &&
+      from &&
+      to
+    ) {
+      mutationInput();
+    }
+  };
 
   const pickFile = async () => {
     try {
@@ -315,8 +349,6 @@ export default function detailCustomItinerary(props) {
         type: res.type,
         name: res.name,
       });
-
-      console.log("files : ", files);
 
       let tempData = [...attachment];
       tempData.push(files);
@@ -466,6 +498,7 @@ export default function detailCustomItinerary(props) {
               <TextInput
                 placeholder={t("To")}
                 autoCorrect={false}
+                editable={false}
                 value={to}
                 onChangeText={(e) => setTo(e)}
                 style={styles.TextInputTo}
@@ -550,9 +583,9 @@ export default function detailCustomItinerary(props) {
                 <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    let tempes = [...file];
-                    tempes.splice(index, 1);
-                    setfile(tempes);
+                    let temp = [...attachment];
+                    temp.splice(index, 1);
+                    setAttachment(temp);
                   }}
                   style={styles.attachmentTimes}
                 >
@@ -648,24 +681,13 @@ export default function detailCustomItinerary(props) {
               }}
               fetchDetails={true}
               onPress={(data, details = null, search = null) => {
-                let arrLength = data.structured_formatting.secondary_text.split(
-                  ","
-                ).length;
                 if (modalFrom) {
-                  setFrom(
-                    data.structured_formatting.secondary_text.split(",")[
-                      arrLength - 3
-                    ]
-                  );
+                  setFrom(data.description);
                   setModalFrom(false);
                 }
 
                 if (modalTo) {
-                  setTo(
-                    data.structured_formatting.secondary_text.split(",")[
-                      arrLength - 3
-                    ]
-                  );
+                  setTo(data.description);
                   inputFromGoogle(details);
                   setModalTo(false);
                 }
@@ -673,7 +695,6 @@ export default function detailCustomItinerary(props) {
               autoFocus={true}
               listViewDisplayed="auto"
               onFail={(error) => console.log(error)}
-              currentLocation={true}
               placeholder={"Search for location"}
               currentLocationLabel="Nearby location"
               renderLeftButton={() => {
@@ -773,22 +794,7 @@ export default function detailCustomItinerary(props) {
         >
           <Button
             onPress={() => {
-              setItemValid({
-                flightNumber: validate("flightNumber"),
-                timeArrCheck: validate("timeArrCheck"),
-                timeDepCheck: validate("timeDepCheck"),
-                from: validate("from"),
-                to: validate("to"),
-              });
-              if (
-                itemValid.flightNumber &&
-                itemValid.timeArrCheck &&
-                timeDepCheck &&
-                from &&
-                to
-              ) {
-                mutationInput();
-              }
+              mutationValid();
             }}
             text={t("save")}
           />

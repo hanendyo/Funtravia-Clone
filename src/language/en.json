@@ -598,12 +598,10 @@
   "holdoncopyitinerary": "Hold on! Before you continue",
   "settitle&trip": "Please set title and date of the trip",
   "followBack": "Follow Back",
-<<<<<<< Updated upstream
   "checkCity": "Check out the cool destinations in this city !",
   "visitCity": "Visit this city",
   "pageNoteFound": "Looks like the page you visit is missing or deleted by its user",
-  "closeDouble": "Press again to close!"
-=======
+  "closeDouble": "Press again to close!",
   "CustomActivity": "Custom Activity",
   "AddFlightNumber": "Add Flight Number",
   "inputAlertFlight": "Input your flight number",
@@ -620,5 +618,4 @@
   "Notes": "Notes",
   "Attachment": "Attachment",
   "ChooseFile": "Choose File"
->>>>>>> Stashed changes
 }
