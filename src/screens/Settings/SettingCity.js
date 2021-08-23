@@ -212,14 +212,16 @@ export default function SettingCity(props) {
           keyboardShouldPersistTaps={"handled"}
           ref={slider}
           getItemLayout={(data, index) => ({
-            length: Platform.OS == "ios" ? rippleHeight : 46,
-            offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
+            length: 46,
+            offset: 46 * index,
+            // length: Platform.OS == "ios" ? rippleHeight : 46,
+            // offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
             index,
           })}
           data={data}
           renderItem={({ item, index }) => (
             <Ripple
-              onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+              // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
               onPress={() => hasil(item)}
               style={{
                 paddingVertical: 15,
