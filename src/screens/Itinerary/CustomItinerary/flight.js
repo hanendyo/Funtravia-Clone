@@ -384,7 +384,7 @@ export default function detailCustomItinerary(props) {
               <CalendarIcon
                 height={15}
                 width={15}
-                style={{ marginBottom: -10 }}
+                // style={{ marginBottom: -10 }}
               />
               <TextInput
                 customTextStyle={{
@@ -432,7 +432,7 @@ export default function detailCustomItinerary(props) {
               <CalendarIcon
                 height={15}
                 width={15}
-                style={{ marginBottom: -10 }}
+                // style={{ marginBottom: -10 }}
               />
               <TextInput
                 customTextStyle={{
@@ -859,8 +859,8 @@ const styles = StyleSheet.create({
     width: 150,
     fontSize: 12,
     color: "black",
-    paddingBottom: -5,
-    paddingTop: 10,
+    // paddingBottom: -5,
+    // paddingTop: 10,
   },
   TouchOpacityDate: {
     position: "absolute",
@@ -914,7 +914,7 @@ const styles = StyleSheet.create({
     color: "#404040",
     fontSize: 12,
     paddingBottom: -5,
-    paddingTop: 15,
+    paddingTop: 25,
   },
   uploadFile: {
     width: "100%",
