@@ -39,6 +39,9 @@ import {
   Xgray,
   Nextabu,
   Prevabu,
+  Globe,
+  Newglobe,
+  Padlock,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -177,8 +180,13 @@ export default function CityDetail(props) {
     var Difference_In_Time = date2.getTime() - date1.getTime();
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
     return (
-      <View style={{ flexDirection: "row" }}>
-        <Text size="small">
+      <View
+        style={{
+          flexDirection: "row",
+          paddingTop: Platform.OS == "ios" ? 4 : null,
+        }}
+      >
+        <Text size="description">
           {Difference_In_Days + 1 > 1
             ? Difference_In_Days + 1 + " " + t("days")
             : Difference_In_Days + 1 + " " + t("day")}{" "}
@@ -787,13 +795,12 @@ export default function CityDetail(props) {
               <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("activities&Experience")}
               </Text>
-              <Text size="label">{t("exprole&inspiredtrip")}</Text>
+              <Text size="description">{t("exprole&inspiredtrip")}</Text>
             </View>
 
             <View
               style={{
                 marginTop: 10,
-                width: "100%",
                 borderRadius: 10,
                 paddingBottom: 5,
                 backgroundColor: "#FFF",
@@ -810,7 +817,9 @@ export default function CityDetail(props) {
               <View
                 style={{
                   width: "100%",
+                  paddingVertical: 10,
                   flexWrap: "wrap",
+                  paddingHorizontal: 10,
                   flexDirection: "row",
                 }}
               >
@@ -852,23 +861,24 @@ export default function CityDetail(props) {
                             <View
                               style={{
                                 height: 60,
-                                marginTop: 5,
+                                marginVertical: 10,
                               }}
                             >
                               <View
                                 style={{
-                                  height: 50,
-                                  width: 50,
-                                  borderRadius: 30,
+                                  height: 60,
+                                  width: 60,
+                                  borderRadius: 40,
                                   backgroundColor: "#F6F6F6",
                                   justifyContent: "center",
                                   alignItems: "center",
+                                  alignSelf: "center",
                                 }}
                               >
                                 <FunIcon
                                   icon={item.icon ? item.icon : "w-fog"}
-                                  height={45}
-                                  width={45}
+                                  height={50}
+                                  width={50}
                                   style={{
                                     bottom: -3,
                                   }}
@@ -876,7 +886,7 @@ export default function CityDetail(props) {
                               </View>
 
                               <Text
-                                size="small"
+                                size="description"
                                 style={{
                                   textAlign: "center",
                                   marginTop: 3,
@@ -913,14 +923,14 @@ export default function CityDetail(props) {
                           >
                             <FunIcon
                               icon={item.icon ? item.icon : "w-fog"}
-                              height={45}
-                              width={45}
+                              height={50}
+                              width={50}
                               style={{
                                 bottom: -3,
                               }}
                             />
                             <Text
-                              size="small"
+                              size="description"
                               style={{
                                 textAlign: "center",
                                 marginTop: 3,
@@ -1002,7 +1012,7 @@ export default function CityDetail(props) {
                 {t("atGlance")}
               </Text>
             )}
-            <Text size="label">{t("geography&religion")}</Text>
+            <Text size="description">{t("geography&religion")}</Text>
           </View>
           <View
             style={{
@@ -1183,7 +1193,7 @@ export default function CityDetail(props) {
               <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("traveljournal")}
               </Text>
-              <Text size="label">{t("traveldiscovery")}</Text>
+              <Text size="description">{t("traveldiscovery")}</Text>
             </View>
 
             <View
@@ -1396,7 +1406,7 @@ export default function CityDetail(props) {
               <Text size="title" type="bold" style={{ marginBottom: 3 }}>
                 {t("essentials")}
               </Text>
-              <Text size="label">{t("gooddestinationtrip")}</Text>
+              <Text size="description">{t("gooddestinationtrip")}</Text>
             </View>
 
             <View
@@ -1491,8 +1501,8 @@ export default function CityDetail(props) {
                             >
                               <FunIcon
                                 icon={item.icon ? item.icon : "w-fog"}
-                                height={45}
-                                width={45}
+                                height={50}
+                                width={50}
                                 style={{
                                   bottom: -3,
                                 }}
@@ -1641,7 +1651,7 @@ export default function CityDetail(props) {
                 }}
               >
                 <Text
-                  size="label"
+                  size="description"
                   style={{
                     textAlign: "justify",
                     // marginBottom: 5,
@@ -1653,7 +1663,7 @@ export default function CityDetail(props) {
 
               <Text
                 type="bold"
-                size="label"
+                size="description"
                 style={{
                   color: "#209fae",
                 }}
@@ -1823,7 +1833,7 @@ export default function CityDetail(props) {
                                       textAlign: "center",
                                     }}
                                   >
-                                    {item.name}
+                                    <Truncate text={item.name} length={35} />
                                   </Text>
                                 ) : (
                                   <Text
@@ -1904,8 +1914,12 @@ export default function CityDetail(props) {
                           }}
                         >
                           <Text
-                            size="description"
-                            type="bold"
+                            size="title"
+                            type={
+                              dataevent.month === item.month
+                                ? "bold"
+                                : "regular"
+                            }
                             style={{
                               color:
                                 dataevent.month === item.month
@@ -2015,9 +2029,7 @@ export default function CityDetail(props) {
                   <View
                     style={{
                       height: 145,
-                      // borderWidth: 1,
 
-                      borderColor: "#F6F6F6",
                       marginTop: 0,
                       width: Dimensions.get("screen").width - 35,
                       marginRight: 5,
@@ -2035,7 +2047,6 @@ export default function CityDetail(props) {
                         shadowOpacity: 0.1,
                         shadowRadius: 6.27,
                         elevation: 6,
-
                         width: "100%",
                         justifyContent: "space-between",
                       }}
@@ -2067,7 +2078,6 @@ export default function CityDetail(props) {
                         <View
                           style={{
                             width: "40%",
-                            // borderWidth: 1,
                           }}
                         >
                           <Image
@@ -2156,30 +2166,60 @@ export default function CityDetail(props) {
                               style={{
                                 flexDirection: "row",
                                 justifyContent: "space-between",
+
                                 alignItems: "center",
                               }}
                             >
                               <View
                                 style={{
-                                  backgroundColor: "#DAF0F2",
-                                  borderWidth: 1,
-                                  borderRadius: 3,
-                                  borderColor: "#209FAE",
-                                  paddingHorizontal: 5,
+                                  flexDirection: "row",
                                 }}
                               >
-                                <Text
-                                  type="bold"
-                                  size="description"
+                                <View
                                   style={{
-                                    color: "#209FAE",
+                                    backgroundColor: "#DAF0F2",
+                                    borderWidth: 0.5,
+                                    borderRadius: 3,
+                                    borderColor: "#209FAE",
+                                    paddingHorizontal: 5,
+                                    paddingVertical: 2,
                                   }}
                                 >
-                                  {item?.categori?.name
-                                    ? item?.categori?.name
-                                    : "No Category"}
-                                </Text>
+                                  <Text
+                                    type="regular"
+                                    size="description"
+                                    style={{
+                                      color: "#209FAE",
+                                    }}
+                                  >
+                                    {item?.categori?.name
+                                      ? item?.categori?.name
+                                      : "No Category"}
+                                  </Text>
+                                </View>
+                                <View
+                                  style={{
+                                    height: 5,
+                                    width: 5,
+                                    borderRadius: 5,
+                                    backgroundColor: "#000000",
+                                    marginHorizontal: 10,
+                                    alignSelf: "center",
+                                  }}
+                                />
+                                <View
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {item.isprivate == false ? (
+                                    <Newglobe width={20} height={20} />
+                                  ) : (
+                                    <Padlock width={20} height={20} />
+                                  )}
+                                </View>
                               </View>
+
                               <View>
                                 {item.liked === false ? (
                                   <Ripple
@@ -2187,7 +2227,7 @@ export default function CityDetail(props) {
                                       _likeditinerary(item.id, index)
                                     }
                                   >
-                                    <LikeEmpty height={15} width={15} />
+                                    <LikeEmpty height={12} width={12} />
                                   </Ripple>
                                 ) : (
                                   <Ripple
@@ -2195,7 +2235,7 @@ export default function CityDetail(props) {
                                       _unlikeditinerary(item.id, index)
                                     }
                                   >
-                                    <LikeRed height={15} width={15} />
+                                    <LikeRed height={12} width={12} />
                                   </Ripple>
                                 )}
                               </View>
@@ -2213,7 +2253,7 @@ export default function CityDetail(props) {
                                 }}
                               >
                                 <Text
-                                  size="label"
+                                  size="readable"
                                   type="black"
                                   style={{
                                     marginTop: 5,
@@ -2233,14 +2273,14 @@ export default function CityDetail(props) {
                                     style={{
                                       marginLeft: 5,
                                     }}
-                                    size="small"
+                                    size="description"
                                     type="regular"
                                   >
                                     {item?.country?.name}
                                   </Text>
                                   <Text>,</Text>
                                   <Text
-                                    size="small"
+                                    size="description"
                                     type="regular"
                                     style={{
                                       marginLeft: 3,
@@ -2254,6 +2294,7 @@ export default function CityDetail(props) {
                                 style={{
                                   flexDirection: "row",
                                   marginTop: 20,
+                                  marginBottom: Platform.OS == "ios" ? 5 : 10,
                                 }}
                               >
                                 <View
@@ -2272,7 +2313,7 @@ export default function CityDetail(props) {
                                     }}
                                   />
 
-                                  <Text size="small" type="regular">
+                                  <Text size="description" type="regular">
                                     {item.start_date && item.end_date
                                       ? getDN(item.start_date, item.end_date)
                                       : null}
@@ -2294,7 +2335,7 @@ export default function CityDetail(props) {
                                     }}
                                   />
                                   {item.buddy_count > 1 ? (
-                                    <Text size="small" type="regular">
+                                    <Text size="description" type="regular">
                                       {(item && item.buddy_count
                                         ? item.buddy_count
                                         : null) +
@@ -2302,7 +2343,7 @@ export default function CityDetail(props) {
                                         t("persons")}
                                     </Text>
                                   ) : (
-                                    <Text size="small" type="regular">
+                                    <Text size="description" type="regular">
                                       {(item && item.buddy_count
                                         ? item.buddy_count
                                         : null) +
@@ -2346,20 +2387,24 @@ export default function CityDetail(props) {
                             flexDirection: "row",
                             alignItems: "center",
                             justifyContent: "center",
-                            borderRightWidth: 1,
+                            borderLeftWidth: 1,
+                            borderBottomWidth: 1,
+                            borderColor: "#d1d1d1",
+                            borderBottomLeftRadius: 10,
+                            // borderRightWidth: 1,
                             borderColor: "#D1D1D1",
-                            marginBottom: 5,
+                            // marginBottom: 5,
                           }}
                         >
                           <TravelAlbum
                             style={{
                               marginRight: 5,
                             }}
-                            height={10}
-                            width={10}
+                            height={12}
+                            width={12}
                           />
                           <Text
-                            size="small"
+                            size="description"
                             type="bold"
                             style={{
                               color: "#209FAE",
@@ -2368,6 +2413,23 @@ export default function CityDetail(props) {
                             Travel Album
                           </Text>
                         </Pressable>
+                        <View
+                          style={{
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <View
+                            style={{
+                              height: "100%",
+                              width: 1,
+                              backgroundColor: "#d1d1d1",
+                              borderBottomWidth: 1,
+                              borderBottomColor: "#D1D1D1",
+                            }}
+                          />
+                        </View>
                         <Pressable
                           onPress={() =>
                             props.navigation.navigate("ItineraryStack", {
@@ -2382,22 +2444,26 @@ export default function CityDetail(props) {
                             })
                           }
                           style={{
-                            width: "50%",
+                            width: "49%",
                             flexDirection: "row",
                             alignItems: "center",
+                            borderRightWidth: 1,
+                            borderBottomWidth: 1,
+                            borderColor: "#d1d1d1",
+                            borderBottomRightRadius: 10,
                             justifyContent: "center",
-                            marginBottom: 5,
+                            // marginBottom: 5,
                           }}
                         >
                           <TravelStories
                             style={{
                               marginRight: 5,
                             }}
-                            height={10}
-                            width={10}
+                            height={12}
+                            width={12}
                           />
                           <Text
-                            size="small"
+                            size="description"
                             type="bold"
                             style={{
                               color: "#209FAE",
@@ -2424,7 +2490,6 @@ export default function CityDetail(props) {
     return (
       <View
         style={{
-          // paddingHorizontal: 15,
           paddingVertical: 5,
         }}
       >
@@ -2447,9 +2512,16 @@ export default function CityDetail(props) {
                 return (
                   <View key={index}>
                     {i.type === "image" ? (
-                      <View style={{ marginVertical: 10 }}>
+                      <View>
                         {i.title ? (
-                          <Text size="label" type="bold">
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+                            }}
+                          >
                             {i.title}
                           </Text>
                         ) : null}
@@ -2457,7 +2529,6 @@ export default function CityDetail(props) {
                         <View
                           style={{
                             alignItems: "center",
-                            marginTop: i.title ? 20 : 0,
                           }}
                         >
                           <FunImage
@@ -2465,8 +2536,8 @@ export default function CityDetail(props) {
                             resizeMode={"cover"}
                             style={{
                               borderWidth: 0.4,
+                              marginTop: i.title ? 5 : 0,
                               borderColor: "#d3d3d3",
-
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -2478,20 +2549,24 @@ export default function CityDetail(props) {
                           style={{
                             textAlign: "left",
                             marginTop: 5,
+                            marginBottom: 15,
                             color: "#616161",
+                            paddingHorizontal: 5,
                           }}
                         >
                           {i.text ? i.text : ""}
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View>
                         {i.title ? (
                           <Text
-                            size="label"
+                            size="title"
                             type="bold"
                             style={{
-                              // marginBottom: 5,
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+
                               color: "#464646",
                             }}
                           >
@@ -2499,13 +2574,15 @@ export default function CityDetail(props) {
                           </Text>
                         ) : null}
                         <Text
-                          size="readable"
+                          size="title"
                           type="regular"
                           style={{
-                            marginTop: i.title ? 20 : 0,
-                            lineHeight: 20,
+                            lineHeight: 22,
                             textAlign: "left",
                             color: "#464646",
+                            marginBottom: 15,
+
+                            paddingHorizontal: 5,
                           }}
                         >
                           {i.text ? i.text : ""}
@@ -2959,12 +3036,10 @@ export default function CityDetail(props) {
               <View
                 style={{
                   borderBottomWidth: 2,
-
                   borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
                   alignContent: "center",
-
                   width:
-                    props.navigationState.routes.length < 2
+                    props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
                       : props.navigationState.routes.length > 2
                       ? Dimensions.get("screen").width * 0.333
@@ -2990,7 +3065,7 @@ export default function CityDetail(props) {
                     },
                   ]}
                 >
-                  {item.key}
+                  <Truncate text={item.key} length={15} />
                 </Text>
               </View>
             </Ripple>
@@ -3556,6 +3631,136 @@ export default function CityDetail(props) {
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
             justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                // height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => SetShareModal(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                SetShareModal(false);
+                props.navigation.push("CountryStack", {
+                  screen: "SendCity",
+                  params: {
+                    city: dataCity.CitiesInformation,
+                  },
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("send_to")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                shareAction({
+                  from: "city",
+                  target: dataCity.CitiesInformation.id,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("share")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                CopyLink({
+                  from: "city",
+                  target: dataCity.CitiesInformation.id,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("copyLink")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ModalRN>
+
+      {/* <ModalRN
+        useNativeDriver={true}
+        visible={sharemodal}
+        onRequestClose={() => SetShareModal(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => SetShareModal(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
             opacity: 0.8,
             borderWidth: 1,
             backgroundColor: "#000",
@@ -3718,6 +3923,7 @@ export default function CityDetail(props) {
           </View>
         </View>
       </ModalRN>
+     */}
     </View>
   );
 }
