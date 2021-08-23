@@ -28,7 +28,7 @@ import {
   Xhitam,
   Pointmapgray,
 } from "../../../assets/svg";
-import { Truncate } from "../../../component";
+import { FloatingInput, Truncate } from "../../../component";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -126,7 +126,7 @@ export default function detailCustomItinerary(props) {
   const [timeArrival, setTimeArrival] = useState(null);
   const [bookingRef, setBookingRef] = useState("");
   const [guestName, setGuestName] = useState("");
-  const [carrier, setCarrier] = useState(null);
+  const [carrier, setCarrier] = useState("");
   const [note, setNote] = useState("");
   const [attachment, setAttachment] = useState([]);
 
@@ -233,30 +233,6 @@ export default function detailCustomItinerary(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const tesdata = {
-    day_id: dayId,
-    title: flightNumber,
-    icon: icon,
-    qty: qty,
-    address: address,
-    latitude: lat,
-    longitude: long,
-    note: note,
-    time: time,
-    duration: duration,
-    status: status,
-    order: order,
-    total_price: totalPrice,
-    departure: timeDeparture,
-    arrival: timeArrival,
-    from: from,
-    destination: to,
-    guest_name: guestName,
-    booking_ref: bookingRef,
-    carrier: carrier,
-    file: attachment,
-  };
-
   const mutationInput = async () => {
     try {
       let response = await mutation({
@@ -303,7 +279,7 @@ export default function detailCustomItinerary(props) {
       }
       setLoadingApp(false);
     } catch (error) {
-      Alert.alert("" + error);
+      // Alert.alert("" + error);
       console.log("error catch :", error);
       setLoadingApp(false);
     }
@@ -330,9 +306,9 @@ export default function detailCustomItinerary(props) {
     if (
       itemValid.flightNumber &&
       itemValid.timeArrCheck &&
-      timeDepCheck &&
-      from &&
-      to
+      itemValid.timeDepCheck &&
+      itemValid.from &&
+      itemValid.to
     ) {
       mutationInput();
     }
@@ -378,13 +354,16 @@ export default function detailCustomItinerary(props) {
       >
         <View style={styles.ViewContainer}>
           <View style={styles.ViewFlight}>
-            <Plane width={45} height={45} />
-            <View style={{ flex: 1 }}>
-              <TextInput
-                placeholder={t("FlightNo")}
+            <Plane width={50} height={50} style={{ marginTop: 15 }} />
+            <View style={styles.ViewInputFlight}>
+              <FloatingInput
+                customTextStyle={{
+                  color:
+                    itemValid.flightNumber === false ? "#464646" : "D75995",
+                }}
+                label={t("FlightNo")}
                 value={flightNumber}
                 onChangeText={setFlightNumber}
-                style={styles.TextFlightInput}
               />
               {itemValid.flightNumber === false ? (
                 <Text
@@ -399,12 +378,24 @@ export default function detailCustomItinerary(props) {
           </View>
           <View style={styles.ViewDate}>
             <View style={styles.ViewDateAndInput}>
-              <CalendarIcon height={15} width={15} />
+              {timeDepCheck !== "" ? (
+                <Text style={styles.floatPlaceholder}>{t("Departure")}</Text>
+              ) : null}
+              <CalendarIcon
+                height={15}
+                width={15}
+                style={{ marginBottom: -10 }}
+              />
               <TextInput
+                customTextStyle={{
+                  color:
+                    itemValid.timeDepCheck === false ? "#464646" : "D75995",
+                }}
                 placeholder={t("Departure")}
                 autoCorrect={false}
                 editable={false}
                 value={timeDepCheck}
+                placeholderTextColor="#a9a9a9"
                 onChangeText={(e) => {
                   setTimeDeparture(e);
                   setTimeDepCheck(e);
@@ -425,7 +416,8 @@ export default function detailCustomItinerary(props) {
             <DateTimePickerModal
               isVisible={dateTimeModalDeparture}
               mode="datetime"
-              display="inline"
+              // display="inline"
+              date={new Date()}
               locale="en_id"
               onConfirm={(date) => {
                 timeConverter(date);
@@ -434,12 +426,24 @@ export default function detailCustomItinerary(props) {
               onCancel={() => setDateTimeModalDeparture(false)}
             />
             <View style={styles.ViewDateAndInputRight}>
-              <CalendarIcon height={15} width={15} />
+              {timeArrCheck !== "" ? (
+                <Text style={styles.floatPlaceholder}>{t("Arrival")}</Text>
+              ) : null}
+              <CalendarIcon
+                height={15}
+                width={15}
+                style={{ marginBottom: -10 }}
+              />
               <TextInput
+                customTextStyle={{
+                  color:
+                    itemValid.timeArrCheck === false ? "#464646" : "D75995",
+                }}
                 placeholder={t("Arrival")}
                 autoCorrect={false}
                 editable={false}
                 value={timeArrCheck}
+                placeholderTextColor="#a9a9a9"
                 onChangeText={(e) => {
                   setTimeArrival(e);
                   setTimeArrCheck(e);
@@ -460,7 +464,8 @@ export default function detailCustomItinerary(props) {
             <DateTimePickerModal
               isVisible={dateTimeModalArrival}
               mode="datetime"
-              display="inline"
+              // display="inline"
+              date={new Date()}
               locale="en_id"
               onConfirm={(date) => {
                 timeConverter(date);
@@ -471,13 +476,12 @@ export default function detailCustomItinerary(props) {
           </View>
           <View style={styles.ViewDate}>
             <View style={{ flex: 1 }}>
-              <TextInput
-                placeholder={t("From")}
-                autoCorrect={false}
+              <FloatingInput
+                label={t("From")}
                 editable={false}
                 value={from}
                 onChangeText={(e) => setFrom(e)}
-                style={styles.TextInputFrom}
+                style={styles.textInputOneLine}
               />
               {itemValid.from === false ? (
                 <Text type="regular" size="small" style={styles.textAlert}>
@@ -495,13 +499,13 @@ export default function detailCustomItinerary(props) {
                 marginLeft: 15,
               }}
             >
-              <TextInput
-                placeholder={t("To")}
+              <FloatingInput
+                label={t("To")}
                 autoCorrect={false}
                 editable={false}
                 value={to}
                 onChangeText={(e) => setTo(e)}
-                style={styles.TextInputTo}
+                style={styles.textInputOneLine}
               />
               {itemValid.to === false ? (
                 <Text type="regular" size="small" style={styles.textAlert}>
@@ -514,24 +518,24 @@ export default function detailCustomItinerary(props) {
               />
             </View>
           </View>
-
-          <TextInput
-            placeholder={t("Guest Name")}
-            values={guestName}
+          <FloatingInput
+            label={t("Guest Name")}
+            value={guestName}
             onChangeText={setGuestName}
-            style={styles.textInputOneLine}
+            // style={styles.textInputOneLine}
           />
-          <TextInput
-            placeholder={t("BookingRef")}
-            values={bookingRef}
+
+          <FloatingInput
+            label={t("BookingRef")}
+            value={bookingRef}
             onChangeText={setBookingRef}
-            style={styles.textInputOneLine}
+            // style={styles.textInputOneLine}
           />
-          <TextInput
-            placeholder={t("Carrier")}
-            values={carrier}
+          <FloatingInput
+            label={t("Carrier")}
+            value={carrier}
             onChangeText={setCarrier}
-            style={styles.textInputOneLine}
+            // style={styles.textInputOneLine}
           />
           <Text
             type={"bold"}
@@ -542,11 +546,11 @@ export default function detailCustomItinerary(props) {
           >
             {t("Notes")}
           </Text>
-          <TextInput
-            placeholder={t("Notes")}
-            values={note}
+          <FloatingInput
+            label={t("Notes")}
+            value={note}
             onChangeText={setNote}
-            style={styles.textInputOneLine}
+            // style={styles.textInputOneLine}
           />
           <Text
             size="label"
@@ -682,12 +686,12 @@ export default function detailCustomItinerary(props) {
               fetchDetails={true}
               onPress={(data, details = null, search = null) => {
                 if (modalFrom) {
-                  setFrom(data.description);
+                  setFrom(data.structured_formatting.secondary_text);
                   setModalFrom(false);
                 }
 
                 if (modalTo) {
-                  setTo(data.description);
+                  setTo(data.structured_formatting.secondary_text);
                   inputFromGoogle(details);
                   setModalTo(false);
                 }
@@ -729,12 +733,22 @@ export default function detailCustomItinerary(props) {
                     <View
                       style={{ width: Dimensions.get("screen").width - 60 }}
                     >
-                      <Text style={{ fontFamily: "Lato-Bold", fontSize: 12 }}>
+                      <Text
+                        style={{
+                          fontFamily: "Lato-Bold",
+                          fontSize: 12,
+                          color: "black",
+                        }}
+                      >
                         {/* {x[0]} */}
                         {x ? x[0] : data.name}
                       </Text>
                       <Text
-                        style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 12,
+                          color: "black",
+                        }}
                       >
                         <Truncate
                           text={
@@ -815,18 +829,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     alignItems: "center",
-    marginTop: 5,
     marginBottom: 10,
   },
-  TextFlightInput: {
-    flex: 1,
-    fontFamily: "Lato-Regular",
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
-    marginLeft: 10,
+  ViewInputFlight: { flex: 1, marginLeft: 10, marginBottom: 10 },
+  flightLogo: {
+    marginRight: 10,
   },
   ViewDate: {
-    paddingTop: 15,
+    paddingTop: 5,
     flexDirection: "row",
     justifyContent: "center",
     alignContent: "center",
@@ -836,8 +846,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
+    // borderBottomColor: "#d3d3d3",
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomEndRadius: 10,
   },
   TextDateInput: {
@@ -847,6 +857,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     width: 150,
+    fontSize: 12,
+    color: "black",
+    paddingBottom: -5,
+    paddingTop: 10,
   },
   TouchOpacityDate: {
     position: "absolute",
@@ -860,8 +874,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
+    // borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     marginLeft: 15,
   },
   TextInputFrom: {
@@ -872,6 +886,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#d3d3d3",
     borderBottomEndRadius: 8,
     marginRight: 10,
+    marginTop: 15,
   },
   TextInputTo: {
     flex: 1,
@@ -889,14 +904,17 @@ const styles = StyleSheet.create({
     color: "#D75995",
     position: "absolute",
     bottom: -15,
-    marginLeft: 10,
+    // marginLeft: 10,
   },
   textInputOneLine: {
     flex: 1,
     fontFamily: "Lato-Regular",
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "black",
+    color: "#404040",
+    fontSize: 12,
+    paddingBottom: -5,
+    paddingTop: 15,
   },
   uploadFile: {
     width: "100%",
@@ -921,5 +939,12 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 25,
     height: "100%",
+  },
+  floatPlaceholder: {
+    position: "absolute",
+    top: -5,
+    left: 30,
+    fontFamily: "Lato-Regular",
+    color: "#A0A0A0",
   },
 });
