@@ -1080,6 +1080,7 @@ export default function CreateCustom(props) {
         onRequestClose={() => setModal(false)}
         animationIn="slideInRight"
         animationOut="slideOutRight"
+        hasBackdrop={false}
         isVisible={modals}
         style={{
           backgroundColor: "#209fae",
