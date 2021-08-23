@@ -1134,7 +1134,7 @@ export default function myfeed(props) {
         animationType="fade"
       >
         <Pressable
-          // onPress={() => setModalmenu(false)}
+          onPress={() => setModalmenu(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
@@ -1153,7 +1153,7 @@ export default function myfeed(props) {
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 4,
           }}
         >
@@ -1161,8 +1161,8 @@ export default function myfeed(props) {
             style={{
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              paddingHorizontal: 20,
-              borderWidth: 1,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
             }}
           >
             <View
@@ -1170,9 +1170,16 @@ export default function myfeed(props) {
                 borderBottomWidth: 1,
                 borderColor: "#d1d1d1",
                 alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                height: 50,
+                justifyContent: "center",
               }}
             >
-              <Text style={{ marginVertical: 20 }}>{t("share")}</Text>
+              <Text size="title" type="bold">
+                {t("option")}
+              </Text>
             </View>
             <Pressable
               onPress={() => setModalmenu(false)}
@@ -1182,7 +1189,7 @@ export default function myfeed(props) {
                 width: 55,
                 justifyContent: "center",
                 alignItems: "center",
-                height: 55,
+                height: 60,
               }}
             >
               <Xgray width={15} height={15} />
@@ -1190,6 +1197,9 @@ export default function myfeed(props) {
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalmenu(false);
@@ -1199,17 +1209,16 @@ export default function myfeed(props) {
                 });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginBottom: 10, marginTop: 20 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("shareTo")}...
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalmenu(false);
@@ -1219,17 +1228,15 @@ export default function myfeed(props) {
                 });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("copyLink")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalmenu(false),
@@ -1242,39 +1249,35 @@ export default function myfeed(props) {
                   });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("edit")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalmenu(false),
-                  props.navigation.push("FeedStack", {
-                    screen: "CreateListAlbum",
-                    params: {
-                      user_id: setting?.user_id,
-                      token: token,
-                      file: "",
-                      type: "",
-                      location: "",
-                      isAlbum: true,
-                      post_id: selectedOption?.id,
-                    },
-                  });
+                  token
+                    ? props.navigation.push("FeedStack", {
+                        screen: "CreateListAlbum",
+                        params: {
+                          user_id: setting?.user_id,
+                          token: isPunctuatorToken,
+                          file: "",
+                          type: "",
+                          location: "",
+                          isAlbum: true,
+                          post_id: selectedOption?.id,
+                        },
+                      })
+                    : setModalLogin(true);
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("TagAlbum")}
               </Text>
             </TouchableOpacity>
@@ -1288,12 +1291,12 @@ export default function myfeed(props) {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="regular"
                 style={{
                   color: "#d75995",
-                  marginVertical: 10,
-                  marginBottom: 20,
+                  marginTop: 15,
+                  marginBottom: 18,
                 }}
               >
                 {t("delete")}
@@ -1311,7 +1314,7 @@ export default function myfeed(props) {
         animationType="fade"
       >
         <Pressable
-          // onPress={() => setModalmenuother(false)}
+          onPress={() => setModalmenuother(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
@@ -1331,25 +1334,29 @@ export default function myfeed(props) {
             justifyContent: "space-around",
             alignItems: "center",
             alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
-              backgroundColor: "white",
+              backgroundColor: "#fff",
               width: Dimensions.get("screen").width - 100,
-              paddingHorizontal: 20,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
                 borderBottomWidth: 1,
                 borderColor: "#d1d1d1",
+                backgroundColor: "#f6f6f6",
                 alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
               }}
             >
-              <Text style={{ marginVertical: 20 }} type="bold">
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
                 {t("option")}
               </Text>
             </View>
@@ -1369,6 +1376,8 @@ export default function myfeed(props) {
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
               }}
               onPress={() =>
                 shareAction({
@@ -1377,17 +1386,15 @@ export default function myfeed(props) {
                 })
               }
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10, marginTop: 20 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("shareTo")}...
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
               }}
               onPress={() => {
                 setModalmenuother(false);
@@ -1397,11 +1404,7 @@ export default function myfeed(props) {
                 });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("copyLink")}
               </Text>
             </TouchableOpacity>
@@ -1413,13 +1416,15 @@ export default function myfeed(props) {
               <TouchableOpacity
                 style={{
                   alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
                 }}
                 onPress={() => _follow(selectedOption.user.id)}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
-                  style={{ marginVertical: 10, marginBottom: 20 }}
+                  style={{ marginTop: 15, marginBottom: 20 }}
                 >
                   {t("follow")}
                 </Text>
@@ -1428,13 +1433,15 @@ export default function myfeed(props) {
               <TouchableOpacity
                 style={{
                   alignItems: "center",
+                  borderBottomRightRadius: 5,
+                  borderBottomLeftRadius: 5,
                 }}
                 onPress={() => _unfollow(selectedOption.user.id)}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
-                  style={{ marginVertical: 10, marginBottom: 20 }}
+                  style={{ marginTop: 15, marginBottom: 18 }}
                 >
                   {t("unfollow")}
                 </Text>
@@ -1465,42 +1472,53 @@ export default function myfeed(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
+            width: Dimensions.get("screen").width - 140,
+            marginHorizontal: 70,
             backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
             alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 100,
-              paddingHorizontal: 30,
-              paddingVertical: 30,
+              width: Dimensions.get("screen").width - 140,
               justifyContent: "center",
+              borderRadius: 5,
             }}
           >
-            <Text style={{ alignSelf: "center" }} size="title" type="bold">
-              {t("delete_posting")}
-            </Text>
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {t("delete_posting")}
+              </Text>
+            </View>
             <Text
               style={{
                 alignSelf: "center",
                 textAlign: "center",
-                marginTop: 10,
+                marginTop: 20,
+                marginHorizontal: 10,
               }}
               size="label"
               type="regular"
             >
               {t("alertHapusPost")}
             </Text>
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
               <Button
                 onPress={() => {
                   _deletepost(selectedOption);
@@ -1513,6 +1531,7 @@ export default function myfeed(props) {
                   setModalhapus(false);
                   setModalmenu(true);
                 }}
+                style={{ marginTop: 5, marginBottom: 8 }}
                 variant="transparent"
                 text={t("cancel")}
               ></Button>

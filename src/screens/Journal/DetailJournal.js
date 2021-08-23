@@ -35,7 +35,6 @@ const SafeStatusBar = Platform.select({
 });
 
 export default function DetailJournal(props) {
-  console.log("props journal", props);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();
@@ -260,22 +259,23 @@ export default function DetailJournal(props) {
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);
     var days = Math.floor(hrs / 24);
+    var weeks = Math.floor(days / 7);
+    var month = Math.floor(days / 30);
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
     hrs = hrs % 24;
-    if (days > 1) {
-      return dateFormatForNotif(
-        datetime.slice(0, 10),
-        datenow.toISOString().slice(0, 10)
-      );
-    }
-    if (days > 0) {
+
+    if (yrs > 0) {
+      return yrs + " " + t("yearsAgo");
+    } else if (month > 0) {
+      return month + " " + t("monthAgo");
+    } else if (weeks > 0) {
+      return weeks + " " + t("weeekago");
+    } else if (days > 0) {
       return days + " " + t("daysAgo");
-    }
-    if (hrs > 0) {
+    } else if (hrs > 0) {
       return hrs + " " + t("hoursAgo");
-    }
-    if (mins > 0) {
+    } else if (mins > 0) {
       return mins + " " + t("minutesAgo");
     } else {
       return t("justNow");
