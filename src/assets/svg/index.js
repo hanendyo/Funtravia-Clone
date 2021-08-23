@@ -258,6 +258,8 @@ import Tagimage from "./files/tagimage.svg";
 import Tagsticker from "./files/tagsticker.svg";
 import Nextwhite from "./files/nextwhite.svg";
 import Notfound404 from "./files/404notfound.svg";
+import Nextabu from "./files/nextabu.svg";
+import Prevabu from "./files/prevabu.svg";
 
 export {
   LikeWhite,
@@ -520,4 +522,6 @@ export {
   Tagsticker,
   Nextwhite,
   Notfound404,
+  Nextabu,
+  Prevabu,
 };
