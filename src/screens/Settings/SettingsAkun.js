@@ -56,6 +56,7 @@ export default function SettingsAkun(props) {
   let [searchCity, setSearchCity] = useState("");
   let [soon, setSoon] = useState(false);
   let [index, setIndex] = useState(0);
+  let [dataCitySetting, setDataCitySetting] = useState();
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -108,11 +109,14 @@ export default function SettingsAkun(props) {
       countries_id: setting?.countries?.id,
     },
     onCompleted: async () => {
+      setDataCitySetting(datacity?.cities_search);
       const tempData = [...datacity?.cities_search];
       let index = await tempData.findIndex(
         (k) => k["id"] === setting?.cities?.id
       );
-      setIndex(index);
+      if (index > -1) {
+        setIndex(index);
+      }
     },
   });
 
@@ -517,7 +521,6 @@ export default function SettingsAkun(props) {
         <DateTimePickerModal
           isVisible={modalBirth1}
           mode="date"
-          // value={tanggal}
           date={new Date(dates)}
           onConfirm={(e) => dateTime(e)}
           onCancel={() => closeDatPicker()}
@@ -784,6 +787,7 @@ export default function SettingsAkun(props) {
                   token: token,
                   setSetting: (e) => setSetting(e),
                   index: index,
+                  setIndex: (e) => setIndex(e),
                 },
               })
             }

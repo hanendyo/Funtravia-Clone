@@ -16,6 +16,7 @@ import {
   ScrollView,
   Modal as ModalRN,
   TextInput,
+  ViewBase,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -33,6 +34,7 @@ import {
   TeleponHitam,
   InstagramHitam,
   Xgray,
+  Mapsborder,
 } from "../../../assets/svg";
 import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
@@ -79,8 +81,8 @@ const Index = (props) => {
   let { width, height } = Dimensions.get("screen");
   let Notch = DeviceInfo.hasNotch();
   let TabBarHeight = Platform.select({
-    ios: Notch ? 55 : 55,
-    android: 55,
+    ios: Notch ? 50 : 50,
+    android: 50,
   });
   let [unesco, setUnesco] = useState(0);
   let [tambahan, setTambahan] = useState(0);
@@ -155,7 +157,7 @@ const Index = (props) => {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -699,13 +701,12 @@ const Index = (props) => {
           <View
             style={{
               paddingTop: 10,
-              paddingHorizontal: 15,
+              paddingHorizontal: 18,
               width: Dimensions.get("screen").width,
               // height: 70,
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#FFF",
-              bottom: 0,
             }}
           >
             <View
@@ -714,19 +715,19 @@ const Index = (props) => {
                 justifyContent: "space-around",
               }}
             >
-              <Text size="title" type="black" numberOfLines={1}>
+              <Text size="h5" type="black" numberOfLines={1}>
                 {data?.destinationById?.name}
               </Text>
-              <View style={{ flexDirection: "row", marginTop: 2 }}>
+              <View style={{ flexDirection: "row", marginTop: 5 }}>
                 <View
                   style={{
                     borderRadius: 3,
                     backgroundColor: "#F4F4F4",
                     padding: 3,
-                    marginRight: 5,
+                    marginRight: 10,
                   }}
                 >
-                  <Text size="description" type="bold">
+                  <Text size="label" type="bold">
                     {data?.destinationById?.type?.name}
                   </Text>
                 </View>
@@ -736,16 +737,12 @@ const Index = (props) => {
                     backgroundColor: "#F4F4F4",
                     padding: 3,
                     flexDirection: "row",
-                    marginRight: 5,
+                    marginRight: 10,
                     alignItems: "center",
                   }}
                 >
-                  <Star height={13} width={13} />
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginLeft: 3 }}
-                  >
+                  <Star height={15} width={15} />
+                  <Text size="label" type="bold" style={{ marginLeft: 5 }}>
                     {data?.destinationById?.rating.substr(0, 3)}
                   </Text>
                 </View>
@@ -756,7 +753,7 @@ const Index = (props) => {
                   }}
                 >
                   <Text
-                    size="description"
+                    size="label"
                     type="regular"
                     style={{ color: "#209FAE" }}
                   >
@@ -785,7 +782,7 @@ const Index = (props) => {
                   }}
                   onPress={() => _unliked(dataDestination.id)}
                 >
-                  <Love height={18} width={18} />
+                  <Love height={20} width={20} />
                 </Pressable>
               ) : (
                 <Pressable
@@ -807,7 +804,7 @@ const Index = (props) => {
                   }}
                   onPress={() => _liked(dataDestination.id)}
                 >
-                  <LikeEmpty height={18} width={18} />
+                  <LikeEmpty height={20} width={20} />
                 </Pressable>
               )}
               <Pressable
@@ -840,12 +837,11 @@ const Index = (props) => {
             <View
               style={{
                 width: Dimensions.get("screen").width,
-                paddingHorizontal: 15,
-                // height: 40,
-                padding: 5,
+                paddingHorizontal: 18,
+                height: 40,
+                paddingVertical: 7,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
-                bottom: 0,
               }}
             >
               <View
@@ -905,204 +901,226 @@ const Index = (props) => {
 
           <View
             style={{
-              borderTopWidth: 1,
-              borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
-              // minHeight: 40,
-              paddingHorizontal: 15,
+              paddingHorizontal: 18,
               backgroundColor: "#FFF",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              bottom: 0,
-              paddingVertical: 10,
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                width: Dimensions.get("screen").width * 0.75,
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderTopWidth: 1,
+                borderTopColor: "#f6f6f6",
               }}
             >
-              <PinHijau
-                height={18}
-                width={18}
-                style={{ marginRight: 10, alignSelf: "center" }}
-              />
-              <Text
-                onTextLayout={(x) => {
-                  let line = x.nativeEvent.lines.length;
-                  let lines = line - 1;
-                  setTambahan(lines * 20);
-                }}
-                size="description"
-                type="regular"
-                style={{ lineHeight: 18 }}
-                numberOfLines={2}
-              >
-                {data?.destinationById?.address
-                  ? data?.destinationById?.address
-                  : "-"}
-              </Text>
-            </View>
-            {data?.destinationById?.address ? (
-              <Ripple
+              <View
                 style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  Linking.openURL(
-                    Platform.OS == "ios"
-                      ? "maps://app?daddr=" +
-                          data?.destinationById?.latitude +
-                          "+" +
-                          data?.destinationById?.longitude
-                      : "google.navigation:q=" +
-                          data?.destinationById?.latitude +
-                          "+" +
-                          data?.destinationById?.longitude
-                  );
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width * 0.75,
+                  marginVertical: 15,
                 }}
               >
+                <PinHijau
+                  height={20}
+                  width={20}
+                  style={{ marginRight: 10, alignSelf: "center" }}
+                />
                 <Text
-                  size="description"
+                  onTextLayout={(x) => {
+                    let line = x.nativeEvent.lines.length;
+                    let lines = line - 1;
+                    setTambahan(lines * 20);
+                  }}
+                  size="label"
                   type="regular"
-                  style={{ color: "#209FAE" }}
+                  style={{ lineHeight: 18 }}
+                  numberOfLines={2}
                 >
-                  maps
+                  {data?.destinationById?.address
+                    ? data?.destinationById?.address
+                    : "-"}
                 </Text>
-              </Ripple>
-            ) : null}
+              </View>
+              {data?.destinationById?.address ? (
+                <Ripple
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    Linking.openURL(
+                      Platform.OS == "ios"
+                        ? "maps://app?daddr=" +
+                            data?.destinationById?.latitude +
+                            "+" +
+                            data?.destinationById?.longitude
+                        : "google.navigation:q=" +
+                            data?.destinationById?.latitude +
+                            "+" +
+                            data?.destinationById?.longitude
+                    );
+                  }}
+                >
+                  <Mapsborder height="25" width="25" />
+                  {/* <Text
+                    size="description"
+                    type="regular"
+                    style={{ color: "#209FAE" }}
+                  >
+                    maps
+                  </Text> */}
+                </Ripple>
+              ) : null}
+            </View>
           </View>
 
           {/* View Time */}
 
           <View
             style={{
-              borderTopWidth: 1,
-              borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
               // minHeight: 40,
-              paddingHorizontal: 15,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              paddingHorizontal: 18,
               backgroundColor: "#FFF",
               bottom: 0,
-              paddingVertical: 10,
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                width: Dimensions.get("screen").width * 0.75,
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderTopWidth: 1,
+                borderTopColor: "#f6f6f6",
               }}
             >
-              <Clock
-                height={18}
-                width={18}
-                style={{ marginRight: 10, aligmSelf: "center" }}
-              />
-              <Text
-                size="description"
-                type="regular"
-                style={{ lineHeight: 18 }}
-                numberOfLines={2}
-                onTextLayout={(x) => {
-                  let line = x.nativeEvent.lines.length;
-                  let lines = line - 1;
-                  setTambahan1(lines * 20);
-                }}
-              >
-                {data?.destinationById?.openat
-                  ? data?.destinationById?.openat
-                  : "-"}
-              </Text>
-            </View>
-            {data?.destinationById?.openat ? (
-              <Ripple
-                onPress={() => setModalTime(true)}
+              <View
                 style={{
-                  justifyContent: "center",
-                  alignItems: "center",
+                  flexDirection: "row",
+                  marginVertical: 15,
+                  width: Dimensions.get("screen").width * 0.75,
                 }}
               >
+                <Clock
+                  height={20}
+                  width={20}
+                  style={{ marginRight: 10, aligmSelf: "center" }}
+                />
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
-                  style={{ color: "#209FAE" }}
+                  style={{ lineHeight: 18 }}
+                  numberOfLines={2}
+                  onTextLayout={(x) => {
+                    let line = x.nativeEvent.lines.length;
+                    let lines = line - 1;
+                    setTambahan1(lines * 20);
+                  }}
                 >
-                  more
+                  {data?.destinationById?.openat
+                    ? data?.destinationById?.openat
+                    : "-"}
                 </Text>
-              </Ripple>
-            ) : null}
+              </View>
+              {data?.destinationById?.openat ? (
+                <Pressable
+                  onPress={() => setModalTime(true)}
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#209FAE",
+                      marginVertical: 15,
+                      marginLeft: 10,
+                    }}
+                  >
+                    more
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
           </View>
 
           {/* View Website */}
 
           <View
             style={{
-              borderTopWidth: 1,
-              borderTopColor: "#F6F6F6",
               width: Dimensions.get("screen").width,
-              // minHeight: 40,
-              paddingHorizontal: 15,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              paddingHorizontal: 18,
               backgroundColor: "#FFF",
-              bottom: 0,
-              paddingVertical: 10,
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                width: Dimensions.get("screen").width * 0.75,
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderTopColor: "#f6f6f6",
+                borderBottomColor: "#f6f6f6",
               }}
             >
-              <Globe
-                height={18}
-                width={18}
-                style={{ marginRight: 10, alignSelf: "center" }}
-              />
-              <Text
-                size="description"
-                type="regular"
-                numberOfLines={2}
-                style={{ lineHeight: 18 }}
-                onTextLayout={(x) => {
-                  let line = x.nativeEvent.lines.length;
-                  let lines = line - 1;
-                  setTambahan2(lines * 20);
-                }}
-              >
-                {data?.destinationById?.website
-                  ? data?.destinationById?.website
-                  : "-"}
-              </Text>
-            </View>
-            {data?.destinationById?.website ? (
-              <Ripple
-                onPress={() => setModalSosial(true)}
+              <View
                 style={{
-                  // minHeight: 40,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width * 0.75,
+                  marginVertical: 15,
                 }}
               >
+                <Globe
+                  height={20}
+                  width={20}
+                  style={{ marginRight: 10, alignSelf: "center" }}
+                />
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
-                  style={{ color: "#209FAE" }}
+                  numberOfLines={2}
+                  style={{ lineHeight: 18 }}
+                  onTextLayout={(x) => {
+                    let line = x.nativeEvent.lines.length;
+                    let lines = line - 1;
+                    setTambahan2(lines * 20);
+                  }}
                 >
-                  more
+                  {data?.destinationById?.website
+                    ? data?.destinationById?.website
+                    : "-"}
                 </Text>
-              </Ripple>
-            ) : null}
+              </View>
+              {data?.destinationById?.website ? (
+                <Ripple
+                  onPress={() => setModalSosial(true)}
+                  style={{
+                    // minHeight: 40,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#209FAE",
+                      marginVertical: 15,
+                      marginLeft: 10,
+                    }}
+                  >
+                    more
+                  </Text>
+                </Ripple>
+              ) : null}
+            </View>
           </View>
-          <View style={{ height: 5, backgroundColor: "#F1F1F1" }}></View>
+          {/* <View style={{ height: 5, backgroundColor: "#F1F1F1" }}></View> */}
         </Animated.View>
       </Animated.View>
     );
@@ -1347,7 +1365,7 @@ const Index = (props) => {
           <View
             style={{
               minHeight: 30,
-              marginTop: 10,
+              marginTop: 20,
               width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
             }}
@@ -2224,7 +2242,7 @@ const Index = (props) => {
                       : null,
                   height: TabBarHeight,
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
                 }}
               >
                 <Text
@@ -2232,22 +2250,25 @@ const Index = (props) => {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
-                      // borderWidth: 1,
+                      // height: "100%",
                       borderBottomWidth: 0,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      height: 38,
-                      paddingTop: 2,
+                      // height: 35,
+                      // paddingTop: 2,
                       // paddingLeft:
                       //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
                     },
                   ]}
+                  size="h3"
+                  type={index == tabIndex ? "bold" : "regular"}
                 >
                   {item.key}
+                  {console.log("item", item)}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -2421,176 +2442,296 @@ const Index = (props) => {
       />
 
       {/* Modal Time */}
-      <Modal
-        isVisible={modalTime}
+      <ModalRN
+        useNativeDriver={true}
+        visible={modalTime}
+        onRequestClose={() => setModalTime(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalTime(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 120,
+            marginHorizontal: 60,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              borderRadius: 5,
+              width: Dimensions.get("screen").width - 120,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#f6f6f6",
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 12, marginBottom: 15 }}
+              >
+                Operation Time
+              </Text>
+            </View>
+            <View style={{ marginHorizontal: 20 }}>
+              {data && data.destinationById && data.destinationById.openat ? (
+                <Text
+                  size="label"
+                  type="reguler"
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                >
+                  {data.destinationById.openat}
+                </Text>
+              ) : (
+                <Text>-</Text>
+              )}
+            </View>
+          </View>
+        </View>
+      </ModalRN>
+
+      <ModalRN
+        useNativeDriver={true}
+        visible={modalSosial}
+        onRequestClose={() => setModalSosial(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalSosial(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 120,
+            marginHorizontal: 60,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              borderRadius: 5,
+              width: Dimensions.get("screen").width - 120,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#f6f6f6",
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 12, marginBottom: 15 }}
+              >
+                Information
+              </Text>
+            </View>
+            <View
+              style={{
+                marginHorizontal: 20,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {data && data.destinationById && data.destinationById.phone1 ? (
+                <Text
+                  size="label"
+                  type="reguler"
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                >
+                  {data.destinationById.phone1}
+                </Text>
+              ) : (
+                <Text>-</Text>
+              )}
+            </View>
+          </View>
+        </View>
+      </ModalRN>
+
+      {/* Modal Sosial */}
+      <ModalRN
+        visible={modalTime}
         onRequestClose={() => {
           setModalTime(false);
         }}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
       >
+        <Pressable
+          onPress={() => setModalTime(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        />
         <View
           style={{
-            backgroundColor: "#fff",
-            minHeight: 150,
-            // borderRadius: 5,
+            width: Dimensions.get("screen").width - 120,
+            marginHorizontal: 60,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
           }}
         >
-          {/* Information */}
           <View
             style={{
-              flexDirection: "row",
-              marginHorizontal: 15,
-              marginVertical: 20,
-              justifyContent: "space-between",
-              alignItems: "center",
+              backgroundColor: "white",
+              borderRadius: 5,
+              width: Dimensions.get("screen").width - 120,
             }}
           >
-            <Text size="title" type="bold">
-              Operational (Local Time)
-            </Text>
-            <Ripple
-              onPress={() => setModalTime(false)}
+            <View
               style={{
-                paddingVertical: 10,
-                width: 30,
-                justifyContent: "center",
+                backgroundColor: "#f6f6f6",
                 alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
               }}
             >
-              <Xhitam height={15} width={15} />
-            </Ripple>
-          </View>
-
-          {/* Detail Information */}
-          <View
-            style={{
-              marginHorizontal: 15,
-            }}
-          >
-            {data && data.destinationById && data.destinationById.openat ? (
-              <Text size="label" type="reguler">
-                {data.destinationById.openat}
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 12, marginBottom: 15 }}
+              >
+                Information
               </Text>
-            ) : (
-              <Text>-</Text>
-            )}
-          </View>
-          {/* <View
-						style={{
-							marginTop: 20,
-							marginHorizontal: 15,
-						}}
-					>
-						<Text size="label" type="reguler">
-							Open 24 hours
-						</Text>
-					</View> */}
-        </View>
-      </Modal>
-
-      {/* Modal Sosial */}
-      <Modal
-        isVisible={modalSosial}
-        onRequestClose={() => {
-          setModalSosial(false);
-        }}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-      >
-        <View
-          style={{
-            backgroundColor: "#fff",
-            minHeight: 200,
-            // borderRadius: 5,
-          }}
-        >
-          {/* Information */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginHorizontal: 15,
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingVertical: 10,
-            }}
-          >
-            <Text size="title" type="bold">
-              Information
-            </Text>
-            <Ripple
-              onPress={() => setModalSosial(false)}
+            </View>
+            <View
               style={{
-                paddingVertical: 10,
-                width: 30,
-                justifyContent: "center",
+                marginHorizontal: 15,
+                flexDirection: "row",
                 alignItems: "center",
+                // width: Dimensions.get("screen").width * 0.7,
               }}
             >
-              <Xhitam height={15} width={15} />
-            </Ripple>
-          </View>
-
-          {/* Detail Information */}
-          <View
-            style={{
-              marginHorizontal: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              width: Dimensions.get("screen").width * 0.7,
-            }}
-          >
-            <TeleponHitam height={15} width={15} style={{ marginRight: 10 }} />
-            {data && data.destinationById && data.destinationById.phone1 ? (
-              <Text size="label" type="reguler">
-                {data.destinationById.phone1}
-              </Text>
-            ) : (
-              <Text>-</Text>
-            )}
-          </View>
-          <View
-            style={{
-              marginTop: 20,
-              marginHorizontal: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              width: Dimensions.get("screen").width * 0.7,
-            }}
-          >
-            <WebsiteHitam height={15} width={15} style={{ marginRight: 10 }} />
-            {data && data.destinationById && data.destinationById.website ? (
-              <Text size="label" type="reguler">
-                {data.destinationById.website}
-              </Text>
-            ) : (
-              <Text>-</Text>
-            )}
-          </View>
-          <View
-            style={{
-              marginTop: 20,
-              marginHorizontal: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              width: Dimensions.get("screen").width * 0.7,
-            }}
-          >
-            <InstagramHitam
-              height={15}
-              width={15}
-              style={{ marginRight: 10 }}
-            />
-            {data && data.destinationById && data.destinationById.instagram ? (
-              <Text size="label" type="reguler">
-                {data.destinationById.instagram}
-              </Text>
-            ) : (
-              <Text>-</Text>
-            )}
+              <TeleponHitam
+                height={15}
+                width={15}
+                style={{ marginRight: 10 }}
+              />
+              {data && data.destinationById && data.destinationById.phone1 ? (
+                <Text
+                  size="label"
+                  type="reguler"
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                >
+                  {data.destinationById.phone1}
+                </Text>
+              ) : (
+                <Text>-</Text>
+              )}
+            </View>
+            <View
+              style={{
+                marginTop: 20,
+                marginHorizontal: 15,
+                flexDirection: "row",
+                alignItems: "center",
+                // width: Dimensions.get("screen").width * 0.7,
+              }}
+            >
+              <WebsiteHitam
+                height={15}
+                width={15}
+                style={{ marginRight: 10 }}
+              />
+              {data && data.destinationById && data.destinationById.website ? (
+                <Text
+                  size="label"
+                  type="reguler"
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                >
+                  {data.destinationById.website}
+                </Text>
+              ) : (
+                <Text>-</Text>
+              )}
+            </View>
+            <View
+              style={{
+                // marginTop: 20,
+                marginHorizontal: 15,
+                flexDirection: "row",
+                alignItems: "center",
+                // width: Dimensions.get("screen").width * 0.7,
+              }}
+            >
+              <InstagramHitam
+                height={15}
+                width={15}
+                style={{ marginRight: 10 }}
+              />
+              {data &&
+              data.destinationById &&
+              data.destinationById.instagram ? (
+                <Text
+                  size="label"
+                  type="reguler"
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                >
+                  {data.destinationById.instagram}
+                </Text>
+              ) : (
+                <Text>-</Text>
+              )}
+            </View>
           </View>
         </View>
-      </Modal>
+      </ModalRN>
 
       {/* modal share */}
       <ModalRN
@@ -2783,8 +2924,8 @@ const styles = StyleSheet.create({
   // },
   //   label: { fontSize: 14, color: "#222" },
   indicator: { backgroundColor: "#209FAE" },
-  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },
-  labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
+  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
 });
 
 export default Index;

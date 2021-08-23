@@ -903,7 +903,7 @@ export default function Comments(props) {
         animationType="fade"
       >
         <Pressable
-          // onPress={() => setModalMenu(false)}
+          onPress={() => setModalMenu(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
@@ -925,23 +925,30 @@ export default function Comments(props) {
             alignItems: "center",
             alignSelf: "center",
             marginTop: Dimensions.get("screen").height / 10,
+            borderRadius: 5,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              paddingHorizontal: 20,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
                 borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
+                borderBottomColor: "#d1d1d1",
                 alignItems: "center",
+                backgroundColor: "#f6f6f6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
               }}
             >
-              <Text style={{ marginVertical: 20 }}>{t("option")}</Text>
+              <Text style={{ marginVertical: 15 }} type="bold" size="title">
+                {t("option")}
+              </Text>
             </View>
             <Pressable
               onPress={() => setModalMenu(false)}
@@ -959,6 +966,8 @@ export default function Comments(props) {
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalMenu(false);
@@ -968,17 +977,15 @@ export default function Comments(props) {
                 });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginBottom: 10, marginTop: 20 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("shareTo")}...
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalMenu(false);
@@ -988,17 +995,15 @@ export default function Comments(props) {
                 });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("copyLink")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalMenu(false),
@@ -1011,17 +1016,15 @@ export default function Comments(props) {
                   });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("edit")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalMenu(false),
@@ -1039,11 +1042,7 @@ export default function Comments(props) {
                   });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("TagAlbum")}
               </Text>
             </TouchableOpacity>
@@ -1057,12 +1056,12 @@ export default function Comments(props) {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="regular"
                 style={{
                   color: "#d75995",
-                  marginVertical: 10,
-                  marginBottom: 20,
+                  marginTop: 15,
+                  marginBottom: 18,
                 }}
               >
                 {t("delete")}
@@ -1080,7 +1079,7 @@ export default function Comments(props) {
         animationType="fade"
       >
         <Pressable
-          // onPress={() => setModalMenuOther(false)}
+          onPress={() => setModalMenuOther(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
@@ -1102,7 +1101,7 @@ export default function Comments(props) {
             alignItems: "center",
             alignContent: "center",
             alignSelf: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 10,
           }}
         >
@@ -1110,17 +1109,21 @@ export default function Comments(props) {
             style={{
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              paddingHorizontal: 20,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
                 borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
+                borderBottomColor: "#d1d1d1",
                 alignItems: "center",
+                backgroundColor: "#f6f6f6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
               }}
             >
-              <Text style={{ marginVertical: 20 }} type="bold">
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
                 {t("option")}
               </Text>
             </View>
@@ -1140,6 +1143,8 @@ export default function Comments(props) {
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() =>
                 shareAction({
@@ -1148,17 +1153,15 @@ export default function Comments(props) {
                 })
               }
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10, marginTop: 20 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("shareTo")}...
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() => {
                 setModalMenuOther(false);
@@ -1168,11 +1171,7 @@ export default function Comments(props) {
                 });
               }}
             >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginVertical: 10 }}
-              >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("copyLink")}
               </Text>
             </TouchableOpacity>
@@ -1188,9 +1187,9 @@ export default function Comments(props) {
                 onPress={() => _follow(selectedOption.user.id)}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
-                  style={{ marginVertical: 10, marginBottom: 20 }}
+                  style={{ marginTop: 15, marginBottom: 18 }}
                 >
                   {t("follow")}
                 </Text>
@@ -1203,9 +1202,9 @@ export default function Comments(props) {
                 onPress={() => _unfollow(selectedOption.user.id)}
               >
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
-                  style={{ marginVertical: 10, marginBottom: 20 }}
+                  style={{ marginTop: 15, marginBottom: 18 }}
                 >
                   {t("unfollow")}
                 </Text>
@@ -1215,7 +1214,6 @@ export default function Comments(props) {
         </View>
       </Modal>
 
-      {/* Modal Hapus */}
       <Modal
         useNativeDriver={true}
         visible={modalHapus}
@@ -1231,49 +1229,59 @@ export default function Comments(props) {
             justifyContent: "center",
             opacity: 0.7,
             backgroundColor: "#000",
-            alignSelf: "center",
             position: "absolute",
+            alignSelf: "center",
           }}
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 100,
+            width: Dimensions.get("screen").width - 140,
             marginHorizontal: 50,
             backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
-            alignSelf: "center",
             alignContent: "center",
-            borderRadius: 3,
-            marginTop: Dimensions.get("screen").height / 10,
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 20,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 100,
-              paddingHorizontal: 30,
-              paddingVertical: 30,
+              width: Dimensions.get("screen").width - 140,
               justifyContent: "center",
+              borderRadius: 5,
             }}
           >
-            <Text style={{ alignSelf: "center" }} size="title" type="bold">
-              {t("delete_posting")}
-            </Text>
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {t("delete_posting")}
+              </Text>
+            </View>
             <Text
               style={{
                 alignSelf: "center",
                 textAlign: "center",
-                marginTop: 10,
+                marginTop: 20,
+                marginHorizontal: 10,
               }}
               size="label"
               type="regular"
             >
               {t("alertHapusPost")}
             </Text>
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
               <Button
                 onPress={() => {
                   _deletepost(selectedOption);
@@ -1286,6 +1294,7 @@ export default function Comments(props) {
                   setModalHapus(false);
                   setModalMenu(true);
                 }}
+                style={{ marginVertical: 5 }}
                 variant="transparent"
                 text={t("cancel")}
               ></Button>
