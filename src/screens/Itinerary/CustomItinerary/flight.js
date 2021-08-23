@@ -505,7 +505,7 @@ export default function detailCustomItinerary(props) {
                 editable={false}
                 value={to}
                 onChangeText={(e) => setTo(e)}
-                style={styles.textInputOneLine}
+                style={styles.textInputOneLineTo}
               />
               {itemValid.to === false ? (
                 <Text type="regular" size="small" style={styles.textAlert}>
@@ -907,6 +907,17 @@ const styles = StyleSheet.create({
     // marginLeft: 10,
   },
   textInputOneLine: {
+    flex: 1,
+    fontFamily: "Lato-Regular",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "black",
+    color: "#404040",
+    fontSize: 12,
+    paddingBottom: -5,
+    paddingTop: 25,
+    borderBottomRightRadius: 10,
+  },
+  textInputOneLineTo: {
     flex: 1,
     fontFamily: "Lato-Regular",
     borderBottomWidth: StyleSheet.hairlineWidth,
