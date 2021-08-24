@@ -647,7 +647,7 @@ export default function detailCustomItinerary(props) {
                     fontSize: 14
                   }}
                 >
-                  {t("GuestName")}
+                  {t("Guest Name")}
                 </Text>
               )}
             <TextInput
