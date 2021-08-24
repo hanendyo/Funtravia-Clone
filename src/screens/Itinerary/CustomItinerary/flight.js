@@ -522,27 +522,24 @@ export default function detailCustomItinerary(props) {
             label={t("Guest Name")}
             value={guestName}
             onChangeText={setGuestName}
-            // style={styles.textInputOneLine}
           />
 
           <FloatingInput
             label={t("BookingRef")}
             value={bookingRef}
             onChangeText={setBookingRef}
-            // style={styles.textInputOneLine}
           />
           <FloatingInput
             label={t("Carrier")}
             value={carrier}
             onChangeText={setCarrier}
-            // style={styles.textInputOneLine}
           />
+        </View>
+        <View style={styles.ViewContainerNotes}>
           <Text
             type={"bold"}
             size="label"
-            style={{
-              paddingTop: 30,
-            }}
+            style={{ position: "relative", top: 5 }}
           >
             {t("Notes")}
           </Text>
@@ -550,15 +547,10 @@ export default function detailCustomItinerary(props) {
             label={t("Notes")}
             value={note}
             onChangeText={setNote}
-            // style={styles.textInputOneLine}
           />
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              paddingTop: 30,
-            }}
-          >
+        </View>
+        <View style={styles.ViewContainerFile}>
+          <Text size="label" type="bold">
             {t("Attachment")}
           </Text>
 
@@ -655,10 +647,11 @@ export default function detailCustomItinerary(props) {
             </TouchableOpacity>
             <Text
               style={{
-                top: 13,
+                top: 15,
                 left: 55,
                 fontFamily: "Lato-Regular",
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: "bold",
                 color: "white",
                 height: 50,
                 position: "absolute",
@@ -771,6 +764,7 @@ export default function detailCustomItinerary(props) {
                   borderRadius: 5,
                   margin: 0,
                   paddingHorizontal: 10,
+                  // border,
                 },
                 textInput: {
                   marginLeft: 0,
@@ -822,8 +816,24 @@ export default function detailCustomItinerary(props) {
 const styles = StyleSheet.create({
   ViewContainer: {
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
     padding: 15,
+  },
+  ViewContainerNotes: {
+    backgroundColor: "#fff",
+    padding: 10,
+    paddingBottom: 15,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: "#d1d1d1",
+  },
+  ViewContainerFile: {
+    backgroundColor: "#fff",
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    padding: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: "#d1d1d1",
   },
   ViewFlight: {
     flexDirection: "row",
@@ -832,12 +842,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  ViewInputFlight: { flex: 1, marginLeft: 10, marginBottom: 10 },
+  ViewInputFlight: { flex: 1, marginLeft: 10, marginBottom: 5 },
   flightLogo: {
     marginRight: 10,
   },
   ViewDate: {
-    paddingTop: 5,
     flexDirection: "row",
     justifyContent: "center",
     alignContent: "center",
@@ -847,21 +856,19 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    // borderBottomColor: "#d3d3d3",
     borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "black",
     borderBottomEndRadius: 10,
   },
   TextDateInput: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: Platform.OS === "ios" ? 12 : 5,
     fontFamily: "Lato-Regular",
     marginLeft: 10,
     marginRight: 10,
     width: 150,
-    fontSize: 12,
+    fontSize: 14,
     color: "black",
-    // paddingBottom: -5,
-    // paddingTop: 10,
   },
   TouchOpacityDate: {
     position: "absolute",
@@ -875,26 +882,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    // borderBottomWidth: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginLeft: 15,
-  },
-  TextInputFrom: {
-    flex: 1,
-    fontFamily: "Lato-Regular",
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
-    borderBottomEndRadius: 8,
-    marginRight: 10,
-    marginTop: 15,
   },
   TextInputTo: {
     flex: 1,
     fontFamily: "Lato-Regular",
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    color: "black",
   },
   textAlert: {
     color: "#D75995",
@@ -905,17 +900,16 @@ const styles = StyleSheet.create({
     color: "#D75995",
     position: "absolute",
     bottom: -15,
-    // marginLeft: 10,
   },
   textInputOneLine: {
     flex: 1,
     fontFamily: "Lato-Regular",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "black",
-    color: "#404040",
-    fontSize: 12,
-    paddingBottom: -5,
-    paddingTop: 25,
+    color: "black",
+    fontSize: 14,
+    paddingBottom: Platform.OS === "ios" ? 5 : 0,
+    paddingTop: Platform.OS === "ios" ? 25 : 15,
     borderBottomRightRadius: 10,
   },
   textInputOneLineTo: {
@@ -923,10 +917,10 @@ const styles = StyleSheet.create({
     fontFamily: "Lato-Regular",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "black",
-    color: "#404040",
-    fontSize: 12,
-    paddingBottom: -5,
-    paddingTop: 25,
+    color: "black",
+    fontSize: 14,
+    paddingBottom: Platform.OS === "ios" ? 5 : 0,
+    paddingTop: Platform.OS === "ios" ? 25 : 15,
   },
   uploadFile: {
     width: "100%",
@@ -954,9 +948,10 @@ const styles = StyleSheet.create({
   },
   floatPlaceholder: {
     position: "absolute",
-    top: -5,
-    left: 30,
+    top: Platform.OS === "ios" ? -5 : -10,
+    left: Platform.OS === "ios" ? 25 : 30,
     fontFamily: "Lato-Regular",
     color: "#A0A0A0",
+    fontSize: 14,
   },
 });

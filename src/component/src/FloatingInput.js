@@ -22,7 +22,7 @@ export default function FloatingInput({
     }),
     fontSize: animatedFocus.interpolate({
       inputRange: [0, 0],
-      outputRange: [12, 12],
+      outputRange: [14, 14],
     }),
     color: animatedFocus.interpolate({
       inputRange: [0, 1],
