@@ -35,6 +35,7 @@ import {
   InstagramHitam,
   Xgray,
   Mapsborder,
+  BlockDestination,
 } from "../../../assets/svg";
 import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
@@ -47,6 +48,7 @@ import {
   FunImage,
   FunIcon,
   CopyLink,
+  Truncate,
 } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import ListDesAnother from "../../../graphQL/Query/Destination/ListDesAnother";
@@ -181,8 +183,6 @@ const Index = (props) => {
     ),
   };
 
-  console.log(props.route.params.id);
-
   const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
     variables: { id: props.route.params.id },
     fetchPolicy: "network-only",
@@ -251,7 +251,6 @@ const Index = (props) => {
       setAnotherDes(dataDesAnother.destination_another_place);
     },
   });
-  // console.log("data", anotherDes);
 
   const headerPanResponder = useRef(
     PanResponder.create({
@@ -503,8 +502,6 @@ const Index = (props) => {
     await setSetting(JSON.parse(setsetting));
   };
 
-  //   console.log("des", dataDestination);
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
@@ -723,11 +720,17 @@ const Index = (props) => {
                   style={{
                     borderRadius: 3,
                     backgroundColor: "#F4F4F4",
-                    padding: 3,
+                    // padding: 3,
                     marginRight: 10,
+                    height: 30,
+                    justifyContent: "center",
                   }}
                 >
-                  <Text size="label" type="bold">
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ marginHorizontal: 10 }}
+                  >
                     {data?.destinationById?.type?.name}
                   </Text>
                 </View>
@@ -735,21 +738,27 @@ const Index = (props) => {
                   style={{
                     borderRadius: 3,
                     backgroundColor: "#F4F4F4",
-                    padding: 3,
+                    // padding: 3,
                     flexDirection: "row",
                     marginRight: 10,
                     alignItems: "center",
+                    height: 30,
                   }}
                 >
-                  <Star height={15} width={15} />
-                  <Text size="label" type="bold" style={{ marginLeft: 5 }}>
+                  <Star height={15} width={15} style={{ marginLeft: 10 }} />
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ marginLeft: 5, marginRight: 10 }}
+                  >
                     {data?.destinationById?.rating.substr(0, 3)}
                   </Text>
                 </View>
                 <View
                   style={{
                     borderRadius: 2,
-                    padding: 3,
+                    height: 30,
+                    justifyContent: "center",
                   }}
                 >
                   <Text
@@ -757,7 +766,7 @@ const Index = (props) => {
                     type="regular"
                     style={{ color: "#209FAE" }}
                   >
-                    {data?.destinationById?.count_review} Reviews
+                    {data?.destinationById?.count_review} {t("reviews")}
                   </Text>
                 </View>
               </View>
@@ -838,7 +847,7 @@ const Index = (props) => {
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 18,
-                height: 40,
+                height: 50,
                 paddingVertical: 7,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
@@ -852,10 +861,11 @@ const Index = (props) => {
                   borderRadius: 5,
                   marginRight: 5,
                   backgroundColor: "#DAF0F2",
-                  padding: 5,
+                  paddingVertical: 10,
+                  paddingHorizontal: 15,
                 }}
               >
-                <UnescoIcon height={20} width={20} style={{ marginRight: 5 }} />
+                <UnescoIcon height={30} width={30} style={{ marginRight: 5 }} />
                 <Text size="description" type="regular">
                   UNESCO
                 </Text>
@@ -866,14 +876,15 @@ const Index = (props) => {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: 5,
                     borderRadius: 5,
                     backgroundColor: "#DAF0F2",
+                    paddingVertical: 10,
+                    paddingHorizontal: 15,
                   }}
                 >
                   <MovieIcon
-                    height={20}
-                    width={20}
+                    height={30}
+                    width={30}
                     style={{ marginRight: 5 }}
                   />
                   <Text size="description" type="regular">
@@ -1041,7 +1052,7 @@ const Index = (props) => {
                       marginLeft: 10,
                     }}
                   >
-                    more
+                    {t("more")}
                   </Text>
                 </Pressable>
               ) : null}
@@ -1097,7 +1108,7 @@ const Index = (props) => {
                 </Text>
               </View>
               {data?.destinationById?.website ? (
-                <Ripple
+                <Pressable
                   onPress={() => setModalSosial(true)}
                   style={{
                     // minHeight: 40,
@@ -1114,9 +1125,9 @@ const Index = (props) => {
                       marginLeft: 10,
                     }}
                   >
-                    more
+                    {t("more")}
                   </Text>
-                </Ripple>
+                </Pressable>
               ) : null}
             </View>
           </View>
@@ -1325,8 +1336,6 @@ const Index = (props) => {
   let [indeks, setIndeks] = useState(0);
 
   const ImagesSlider = async (index, data) => {
-    // console.log(index, data);
-
     var tempdatas = [];
     var x = 0;
 
@@ -1364,10 +1373,10 @@ const Index = (props) => {
         {dataDestination?.description ? (
           <View
             style={{
-              minHeight: 30,
-              marginTop: 20,
+              // minHeight: 30,
+              marginTop: 15,
               width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
+              paddingHorizontal: 20,
             }}
           >
             <Text
@@ -1417,7 +1426,7 @@ const Index = (props) => {
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
-              // paddingVertical: 10,
+              marginTop: 15,
             }}
           >
             <View
@@ -1439,12 +1448,8 @@ const Index = (props) => {
                 elevation: 6,
               }}
             >
-              <Text
-                size="description"
-                type="bold"
-                style={{ textAlign: "center" }}
-              >
-                Great For
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                {t("GreatFor")}
               </Text>
               <View
                 style={{
@@ -1477,8 +1482,8 @@ const Index = (props) => {
                           <FunIcon icon={item?.icon} height={50} width={50} />
                         </View>
                         <Text
-                          // size="small"
-                          type="light"
+                          size="description"
+                          type="regular"
                           // style={{ marginTop: 5 }}
                         >
                           {item?.name}
@@ -1491,12 +1496,15 @@ const Index = (props) => {
           </View>
         ) : null}
 
+        {/* View Facilites */}
+
         {dataDestination && dataDestination.core_facilities.length > 0 ? (
           <View
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
-              // paddingTop: 10,
+              marginTop:
+                dataDestination && dataDestination.greatfor.length > 0 ? 0 : 15,
             }}
           >
             <View
@@ -1518,12 +1526,8 @@ const Index = (props) => {
                 elevation: 6,
               }}
             >
-              <Text
-                size="description"
-                type="bold"
-                style={{ textAlign: "center" }}
-              >
-                Public Facility
+              <Text size="label" type="bold" style={{ textAlign: "center" }}>
+                {t("PublicFacility")}
               </Text>
               <View
                 style={{
@@ -1574,12 +1578,20 @@ const Index = (props) => {
             <View
               style={{
                 width: Dimensions.get("screen").width,
-                paddingHorizontal: 15,
+                paddingHorizontal: 20,
                 marginTop: 20,
+                // borderWidth: 1,
               }}
             >
-              <Text size="label" type="bold">
-                Movie Location
+              <Text size="title" type="bold">
+                {t("MovieLocation")}
+              </Text>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginBottom: 3 }}
+              >
+                {t("WhereSubDestination")}
               </Text>
             </View>
             <ScrollView
@@ -1587,11 +1599,11 @@ const Index = (props) => {
                 // width: Dimensions.get("screen").width,
                 paddingLeft: 15,
                 paddingRight: 10,
-                paddingBottom: 20,
+                // paddingBottom: 20,
+                marginTop: 5,
               }}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              spara
             >
               {dataDestination &&
                 dataDestination.movie_location.map((item, index) => (
@@ -1611,12 +1623,11 @@ const Index = (props) => {
                       borderWidth: 1,
                       borderColor: "#F3F3F3",
                       // height: 150,
-                      marginTop: 10,
                       marginBottom: 10,
                       flexDirection: "row",
                       // width: Dimensions.get("screen").width * 0.9,
                       width: Dimensions.get("screen").width * 0.9,
-                      padding: 10,
+                      // padding: 10,
                       backgroundColor: "#FFF",
                       shadowColor: "#000",
                       shadowOffset: {
@@ -1625,24 +1636,28 @@ const Index = (props) => {
                       },
                       shadowOpacity: 0.1,
                       shadowRadius: 6.27,
-
                       elevation: 6,
                       marginRight: 5,
                     }}
                   >
                     <FunImage
                       source={{ uri: item?.cover }}
-                      style={{ height: 150, width: 100 }}
+                      style={{
+                        height: 150,
+                        width: 150,
+                        borderTopLeftRadius: 10,
+                        borderBottomLeftRadius: 10,
+                      }}
                     />
                     <View
                       style={{
                         flex: 1,
                         height: "100%",
-                        marginLeft: 10,
+                        marginHorizontal: 10,
                         paddingVertical: 5,
                       }}
                     >
-                      <Text size="title" type="bold">
+                      <Text size="label" type="bold">
                         {item?.title}
                       </Text>
                       <Text
@@ -1650,8 +1665,8 @@ const Index = (props) => {
                         type="regular"
                         style={{
                           lineHeight: 18,
-                          textAlign: "justify",
-                          marginTop: 8,
+                          textAlign: "left",
+                          marginTop: 5,
                         }}
                         numberOfLines={6}
                       >
@@ -1670,15 +1685,25 @@ const Index = (props) => {
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
+              marginTop: 5,
             }}
           >
-            <Text size="label" type="bold">
-              Photos
-            </Text>
+            <View style={{ marginHorizontal: 5 }}>
+              <Text size="title" type="bold">
+                {t("photo")}
+              </Text>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginBottom: 3 }}
+              >
+                {t("SubDestinationPhoto")}
+              </Text>
+            </View>
             <View
               style={{
                 flexDirection: "row",
-                marginTop: 10,
+                marginTop: 5,
                 width: "100%",
                 height: 80,
               }}
@@ -1779,15 +1804,26 @@ const Index = (props) => {
           style={{
             width: Dimensions.get("screen").width,
             paddingHorizontal: 15,
-            marginTop: 20,
+            marginTop: 15,
             marginBottom: 50,
           }}
         >
-          {anotherDes?.length > 0 ? (
-            <Text size="label" type="bold">
-              Nearby Places
-            </Text>
-          ) : null}
+          <View style={{ marginHorizontal: 5 }}>
+            {anotherDes?.length > 0 ? (
+              <>
+                <Text size="title" type="bold">
+                  {t("NearbyPlace")}
+                </Text>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginBottom: 3 }}
+                >
+                  {t("gooddestinationtrip")}
+                </Text>
+              </>
+            ) : null}
+          </View>
           {anotherDes &&
             anotherDes?.map((item, index) =>
               dataDestination.id !== item.id ? (
@@ -1806,7 +1842,7 @@ const Index = (props) => {
                     borderRadius: 10,
                     height: 170,
                     // padding: 10,
-                    marginTop: 10,
+                    marginTop: 5,
                     width: "100%",
                     flexDirection: "row",
                     backgroundColor: "#FFF",
@@ -1817,7 +1853,6 @@ const Index = (props) => {
                     },
                     shadowOpacity: 0.1,
                     shadowRadius: 6.27,
-
                     elevation: 6,
                   }}
                 >
@@ -1826,7 +1861,7 @@ const Index = (props) => {
                     <FunImage
                       source={{ uri: item.images.image }}
                       style={{
-                        width: 150,
+                        width: 130,
                         height: "100%",
                         borderBottomLeftRadius: 10,
                         borderTopLeftRadius: 10,
@@ -1841,7 +1876,7 @@ const Index = (props) => {
                         top: 10,
                         right: 10,
                         left: 10,
-                        width: 130,
+                        width: 110,
                         zIndex: 2,
                       }}
                     >
@@ -1874,22 +1909,24 @@ const Index = (props) => {
                           <LikeEmpty height={15} width={15} />
                         </Pressable>
                       )}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          backgroundColor: "#F3F3F3",
-                          borderRadius: 3,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          paddingHorizontal: 5,
-                          height: 25,
-                        }}
-                      >
-                        <Star height={15} width={15} />
-                        <Text size="description" type="bold">
-                          {item.rating.substr(0, 3)}
-                        </Text>
-                      </View>
+                      {item?.rating != 0 ? (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            backgroundColor: "#F3F3F3",
+                            borderRadius: 3,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 5,
+                            height: 25,
+                          }}
+                        >
+                          <Star height={15} width={15} />
+                          <Text size="description" type="bold">
+                            {item.rating.substr(0, 3)}
+                          </Text>
+                        </View>
+                      ) : null}
                     </View>
                   </View>
 
@@ -1898,28 +1935,47 @@ const Index = (props) => {
                   <View
                     style={{
                       flex: 1,
-                      padding: 10,
-                      height: 170,
+                      paddingHorizontal: 8,
+                      paddingVertical: 7,
+                      // height: 170,
                       justifyContent: "space-between",
                     }}
                   >
-                    <View>
+                    <View style={{ borderWidth: 0 }}>
                       {/* Title */}
-                      <Text
-                        size="label"
-                        type="bold"
-                        style={{ marginTop: 2 }}
-                        numberOfLines={1}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          paddingHorizontal: 3,
+                          // alignItems: "center",
+                        }}
                       >
-                        {item.name}
-                      </Text>
+                        <BlockDestination
+                          height={16}
+                          width={16}
+                          style={{ marginTop: 5 }}
+                        />
+                        <Text
+                          size="title"
+                          type="bold"
+                          numberOfLines={2}
+                          style={{
+                            marginLeft: 5,
+                            marginBottom: 2,
+                            flexWrap: "wrap",
+                            width: "90%",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                      </View>
 
                       {/* Maps */}
                       <View
                         style={{
                           flexDirection: "row",
-                          marginTop: 5,
                           alignItems: "center",
+                          marginLeft: 5,
                         }}
                       >
                         <PinHijau height={15} width={15} />
@@ -1934,17 +1990,111 @@ const Index = (props) => {
                       </View>
                     </View>
                     {/* Great for */}
-
                     <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        marginTop: 5,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "flex-end",
+                          // borderWidth: 1,
+                          paddingHorizontal: 7,
+                        }}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                          }}
+                        >
+                          {data?.destinationById?.movie_location?.length > 0 ? (
+                            <UnescoIcon
+                              height={33}
+                              width={33}
+                              style={{ marginRight: 5 }}
+                            />
+                          ) : null}
+                          {data?.destinationById?.type?.name
+                            .toLowerCase()
+                            .substr(0, 6) == "unesco" ? (
+                            <MovieIcon height={33} width={33} />
+                          ) : null}
+                        </View>
+                        <View
+                          style={{
+                            marginBottom: item.greatfor.length > 0 ? 0 : 7,
+                          }}
+                        >
+                          {item.greatfor.length > 0 ? (
+                            <Text
+                              size="label"
+                              type="bold"
+                              // style={{ marginLeft: 5 }}
+                            >
+                              {t("GreatFor") + " :"}
+                            </Text>
+                          ) : null}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              marginLeft: -5,
+                            }}
+                          >
+                            {item.greatfor.length > 0
+                              ? item.greatfor.map((item, index) => {
+                                  return index < 3 ? (
+                                    <FunIcon
+                                      key={"grat" + index}
+                                      icon={item.icon}
+                                      fill="#464646"
+                                      height={45}
+                                      width={45}
+                                    />
+                                  ) : null;
+                                })
+                              : null}
+                          </View>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          justifyContent: "flex-end",
+                          width: 80,
+                          paddingBottom: 5,
+                          paddingRight: 5,
+                        }}
+                      >
+                        <Button
+                          onPress={() => addToPlan(item)}
+                          size="small"
+                          text={"Add"}
+                          // style={{ marginTop: 15 }}
+                        />
+                      </View>
+                    </View>
+
+                    {/* <View
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
                         height: 50,
                         marginTop: 10,
                         alignItems: "flex-end",
+                        borderWidth: 1,
                       }}
                     >
-                      <View>
+                      {data?.destinationById?.movie_location?.length > 0 ||
+                      data?.destinationById?.type?.name
+                        .toLowerCase()
+                        .substr(0, 6) == "unesco" ? (
+                        <View>
+                          <Text>test</Text>
+                        </View>
+                      ) : null}
+                      <View style={{ borderWidth: 1 }}>
                         <Text size="description" type="bold">
                           Great for :
                         </Text>
@@ -1972,7 +2122,7 @@ const Index = (props) => {
                         text={"Add"}
                         // style={{ marginTop: 15 }}
                       />
-                    </View>
+                    </View> */}
                   </View>
                 </Pressable>
               ) : null
@@ -1994,7 +2144,7 @@ const Index = (props) => {
       <View
         style={{
           paddingHorizontal: 15,
-          paddingVertical: 5,
+          paddingVertical: 10,
         }}
       >
         {render && render.length
@@ -2016,17 +2166,22 @@ const Index = (props) => {
                 return (
                   <View key={"artikel" + index}>
                     {i.type === "image" ? (
-                      <View style={{ marginVertical: 10 }}>
-                        {i.title ? (
-                          <Text size="label" type="bold">
-                            {i.title}
-                          </Text>
-                        ) : null}
-
+                      <View>
+                        <View style={{ marginHorizontal: 5, marginBottom: 5 }}>
+                          {i.title ? (
+                            <Text
+                              size="title"
+                              type="bold"
+                              style={{ textAlign: "left" }}
+                            >
+                              {i.title}
+                            </Text>
+                          ) : null}
+                        </View>
                         <View
                           style={{
                             alignItems: "center",
-                            marginTop: i.title ? 20 : 0,
+                            marginBottom: 5,
                           }}
                         >
                           <FunImage
@@ -2041,26 +2196,27 @@ const Index = (props) => {
                             }}
                           />
                         </View>
-                        <Text
-                          size="description"
-                          type="light"
-                          style={{
-                            textAlign: "left",
-                            marginTop: 5,
-                            color: "#616161",
-                          }}
-                        >
-                          {i.text ? i.text : ""}
-                        </Text>
+                        <View style={{ marginHorizontal: 5, marginBottom: 15 }}>
+                          <Text
+                            size="description"
+                            type="light"
+                            style={{
+                              textAlign: "left",
+                              color: "#616161",
+                            }}
+                          >
+                            {i.text ? i.text : ""}
+                          </Text>
+                        </View>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View style={{ marginHorizontal: 5 }}>
                         {i.title ? (
                           <Text
-                            size="label"
+                            size="title"
                             type="bold"
                             style={{
-                              // marginBottom: 5,
+                              marginBottom: 5,
                               color: "#464646",
                             }}
                           >
@@ -2068,11 +2224,11 @@ const Index = (props) => {
                           </Text>
                         ) : null}
                         <Text
-                          size="readable"
+                          size="title"
                           type="regular"
                           style={{
-                            marginTop: i.title ? 20 : 0,
-                            lineHeight: 20,
+                            marginBottom: 15,
+                            lineHeight: 22,
                             textAlign: "left",
                             color: "#464646",
                           }}
@@ -2119,7 +2275,6 @@ const Index = (props) => {
     let data;
     let renderItem;
     let tempdataa = [];
-    // console.log(route.data);
     tempdataa.push(dataDestination);
     switch (route.key) {
       case "general":
@@ -2212,8 +2367,8 @@ const Index = (props) => {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 0.5,
-            borderColor: "#d1d1d1",
+            // borderBottomWidth: 1,
+            // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
@@ -2230,15 +2385,17 @@ const Index = (props) => {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  // borderWidth: 1,
+                  borderBottomWidth: index == tabIndex ? 3 : 2,
+                  // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
                   paddingHorizontal: 15,
                   width:
-                    props.navigationState.routes.length < 2
+                    props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length < 3
-                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
                       : null,
                   height: TabBarHeight,
                   alignItems: "center",
@@ -2262,13 +2419,16 @@ const Index = (props) => {
                       // paddingLeft:
                       //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
+                      marginBottom: index == tabIndex ? 5 : 0,
                     },
                   ]}
                   size="h3"
                   type={index == tabIndex ? "bold" : "regular"}
                 >
-                  {item.key}
-                  {console.log("item", item)}
+                  <Truncate
+                    length="15"
+                    text={item && item.key ? item.key : "-"}
+                  />
                 </Text>
               </View>
             </TouchableOpacity>
@@ -2306,8 +2466,6 @@ const Index = (props) => {
       //   </Animated.View>
     );
   };
-
-  //   console.log("on", _tabIndex.current);
 
   const renderTabView = () => {
     return (
@@ -2495,9 +2653,22 @@ const Index = (props) => {
                 type="bold"
                 style={{ marginTop: 12, marginBottom: 15 }}
               >
-                Operation Time
+                {t("OperationTime")}
               </Text>
             </View>
+            <Pressable
+              onPress={() => setModalTime(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 50,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
             <View style={{ marginHorizontal: 20 }}>
               {data && data.destinationById && data.destinationById.openat ? (
                 <Text
@@ -2568,152 +2739,85 @@ const Index = (props) => {
                 type="bold"
                 style={{ marginTop: 12, marginBottom: 15 }}
               >
-                Information
+                {t("information")}
               </Text>
             </View>
-            <View
+            <Pressable
+              onPress={() => setModalSosial(false)}
               style={{
-                marginHorizontal: 20,
-                flexDirection: "row",
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
                 alignItems: "center",
+                height: 50,
               }}
             >
-              {data && data.destinationById && data.destinationById.phone1 ? (
-                <Text
-                  size="label"
-                  type="reguler"
-                  style={{ marginBottom: 18, marginTop: 15 }}
-                >
-                  {data.destinationById.phone1}
-                </Text>
-              ) : (
-                <Text>-</Text>
-              )}
-            </View>
-          </View>
-        </View>
-      </ModalRN>
-
-      {/* Modal Sosial */}
-      <ModalRN
-        visible={modalTime}
-        onRequestClose={() => {
-          setModalTime(false);
-        }}
-      >
-        <Pressable
-          onPress={() => setModalTime(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        />
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 120,
-            marginHorizontal: 60,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 4,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 5,
-              width: Dimensions.get("screen").width - 120,
-            }}
-          >
+              <Xgray width={15} height={15} />
+            </Pressable>
             <View
               style={{
-                backgroundColor: "#f6f6f6",
+                flexDirection: "row",
                 alignItems: "center",
                 borderBottomColor: "#d1d1d1",
                 borderBottomWidth: 1,
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 12, marginBottom: 15 }}
-              >
-                Information
-              </Text>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 15,
-                flexDirection: "row",
-                alignItems: "center",
-                // width: Dimensions.get("screen").width * 0.7,
+                paddingHorizontal: 20,
               }}
             >
               <TeleponHitam
                 height={15}
                 width={15}
-                style={{ marginRight: 10 }}
+                style={{ marginBottom: 18, marginTop: 15 }}
               />
               {data && data.destinationById && data.destinationById.phone1 ? (
                 <Text
                   size="label"
                   type="reguler"
-                  style={{ marginBottom: 18, marginTop: 15 }}
+                  style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
                 >
                   {data.destinationById.phone1}
                 </Text>
               ) : (
-                <Text>-</Text>
+                <Text style={{ marginLeft: 10 }}>-</Text>
               )}
             </View>
             <View
               style={{
-                marginTop: 20,
-                marginHorizontal: 15,
                 flexDirection: "row",
                 alignItems: "center",
-                // width: Dimensions.get("screen").width * 0.7,
+                borderBottomColor: "#d1d1d1",
+                paddingHorizontal: 20,
+                borderBottomWidth: 1,
               }}
             >
               <WebsiteHitam
                 height={15}
                 width={15}
-                style={{ marginRight: 10 }}
+                style={{ marginBottom: 18, marginTop: 15 }}
               />
               {data && data.destinationById && data.destinationById.website ? (
                 <Text
                   size="label"
                   type="reguler"
-                  style={{ marginBottom: 18, marginTop: 15 }}
+                  style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
                 >
                   {data.destinationById.website}
                 </Text>
               ) : (
-                <Text>-</Text>
+                <Text style={{ marginLeft: 10 }}>-</Text>
               )}
             </View>
             <View
               style={{
-                // marginTop: 20,
-                marginHorizontal: 15,
                 flexDirection: "row",
+                paddingHorizontal: 20,
                 alignItems: "center",
-                // width: Dimensions.get("screen").width * 0.7,
               }}
             >
               <InstagramHitam
                 height={15}
                 width={15}
-                style={{ marginRight: 10 }}
+                style={{ marginBottom: 18, marginTop: 15 }}
               />
               {data &&
               data.destinationById &&
@@ -2721,12 +2825,12 @@ const Index = (props) => {
                 <Text
                   size="label"
                   type="reguler"
-                  style={{ marginBottom: 18, marginTop: 15 }}
+                  style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
                 >
                   {data.destinationById.instagram}
                 </Text>
               ) : (
-                <Text>-</Text>
+                <Text style={{ marginLeft: 10 }}>-</Text>
               )}
             </View>
           </View>
@@ -2763,7 +2867,7 @@ const Index = (props) => {
             justifyContent: "space-around",
             alignItems: "center",
             alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
@@ -2771,11 +2875,12 @@ const Index = (props) => {
             style={{
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
+              // paddingVertical: 10,
+              // paddingHorizontal: 20,
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
+              borderRadius: 5,
             }}
           >
             <Pressable
@@ -2786,7 +2891,6 @@ const Index = (props) => {
                 top: 0,
                 height: 60,
                 width: 60,
-                // borderWidth: 1,
                 alignContent: "center",
                 justifyContent: "center",
                 alignItems: "center",
@@ -2796,32 +2900,48 @@ const Index = (props) => {
             </Pressable>
             <View
               style={{
-                paddingVertical: 10,
                 paddingHorizontal: 20,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
                 width: "100%",
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
+                backgroundColor: "#f6f6f6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
               }}
             >
               <Text
                 type="bold"
+                size="title"
                 style={{
-                  marginBottom: 10,
+                  marginBottom: 15,
+                  marginTop: 12,
                 }}
               >
                 {t("share")}
               </Text>
+              <Pressable
+                onPress={() => SetShareModal(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 50,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
             </View>
-
             <TouchableOpacity
               style={{
                 // paddingVertical: 10,
                 paddingHorizontal: 20,
-                // borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
                 width: "100%",
                 justifyContent: "center",
                 alignContent: "center",
@@ -2835,11 +2955,11 @@ const Index = (props) => {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="regular"
                 style={{
-                  marginTop: 20,
-                  marginBottom: 10,
+                  marginTop: 15,
+                  marginBottom: 18,
                 }}
               >
                 {t("send_to")}
@@ -2849,8 +2969,8 @@ const Index = (props) => {
               style={{
                 // paddingVertical: 10,
                 paddingHorizontal: 20,
-                // borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
                 width: "100%",
                 justifyContent: "center",
                 alignContent: "center",
@@ -2865,10 +2985,11 @@ const Index = (props) => {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="regular"
                 style={{
-                  margin: 10,
+                  marginTop: 12,
+                  marginBottom: 15,
                 }}
               >
                 {t("shareTo")}
@@ -2877,8 +2998,6 @@ const Index = (props) => {
             <TouchableOpacity
               style={{
                 paddingHorizontal: 20,
-                // borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
                 width: "100%",
                 justifyContent: "center",
                 alignContent: "center",
@@ -2893,11 +3012,11 @@ const Index = (props) => {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="regular"
                 style={{
-                  marginTop: 10,
-                  marginBottom: 20,
+                  marginTop: 15,
+                  marginBottom: 18,
                 }}
               >
                 {t("copyLink")}

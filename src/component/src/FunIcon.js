@@ -18,7 +18,6 @@ export default function FunIcon({
   const url = `${ICONSERVER}${variant[icon.charAt(0)]}/${
     icon.split("-")[1]
   }.svg`;
-  console.log("icon", url);
   let [loading, setLoading] = useState(false);
   let [error, setError] = useState(false);
   const extension = Platform.OS === "android" ? "file://" : "";
@@ -29,13 +28,11 @@ export default function FunIcon({
       if (!exists && CACHE.indexOf(name) === -1) {
         setLoading(true);
         CACHE.push(name);
-        console.log(CACHE);
         setLoading(true);
         RNFS.downloadFile({
           fromUrl: url,
           toFile: path,
         }).promise.then((res) => {
-          console.log(res, url);
           setLoading(false);
           if (res.statusCode === "200") {
             setTimeout(() => setLoading(false), 3000);
@@ -47,7 +44,6 @@ export default function FunIcon({
     })
     .catch((error) => {
       setLoading(false);
-      console.log("ERROR CACHE", error);
     });
 
   if (loading) {
@@ -55,7 +51,6 @@ export default function FunIcon({
   }
 
   if (error) {
-    console.log("masukerror", error);
     return (
       <SvgCssUri
         uri={url}
@@ -65,7 +60,6 @@ export default function FunIcon({
       />
     );
   } else {
-    console.log("masukoke");
     return (
       <SvgCssUri
         uri={error ? url : path}
