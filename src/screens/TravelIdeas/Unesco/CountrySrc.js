@@ -123,8 +123,6 @@ export default function CountrySrc({
     // await setdataFilterCategoris(tempe);
   };
 
-  console.log("continent", continent_listfilter);
-
   // update filter handle
   const UpdateFilter = async () => {
     let idselected = [];
