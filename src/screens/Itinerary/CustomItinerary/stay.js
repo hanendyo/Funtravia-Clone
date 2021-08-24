@@ -191,17 +191,17 @@ export default function detailCustomItinerary(props) {
     address: "", //wajib
     latitude: 0, //wajib
     longitude: 0, //wajib
-    note: '', //ga wajib
-    time: '', //hardcode
-    duration: '', //hardcode
+    note: "", //ga wajib
+    time: "", //hardcode
+    duration: "", //hardcode
     status: false, //
     order: [], //0
     total_price: 0,
-    hotel_name: '', //wajib
-    guest_name: '', //wajib
-    booking_ref: '', //wajib
-    checkin: '', //wajib
-    checkout: '', //wajib
+    hotel_name: "", //wajib
+    guest_name: "", //wajib
+    booking_ref: "", //wajib
+    checkin: "", //wajib
+    checkout: "", //wajib
     file: [], //wajib
   });
 
@@ -215,7 +215,6 @@ export default function detailCustomItinerary(props) {
     checkoutValid: true, //wajib,
     fileValid: true, //wajib
   });
-
 
   // const validation = (name, value) => {
   //   if (!value || value === "" || value == null) {
@@ -363,9 +362,9 @@ export default function detailCustomItinerary(props) {
   };
 
   let [renderDate, setRenderDate] = useState({
-    renderCheckIn: '', 
-    renderCheckOut: '', 
-  })
+    renderCheckIn: "",
+    renderCheckOut: "",
+  });
 
   const timeConverter = (date) => {
     //! Hanendyo's work'
@@ -391,9 +390,11 @@ export default function detailCustomItinerary(props) {
           ["checkin"]: formattedDate,
         };
       });
-     
+
       // setCheckInCheck(formatForScreen);
-      setRenderDate((prev)=> {return{ ...prev, ['renderCheckIn']: formatForScreen}})
+      setRenderDate((prev) => {
+        return { ...prev, ["renderCheckIn"]: formatForScreen };
+      });
     }
 
     if (timeModalCheckOut) {
@@ -405,7 +406,9 @@ export default function detailCustomItinerary(props) {
       });
 
       // setCheckoutCheck(formatForScreen);
-      setRenderDate((prev)=> {return{ ...prev, ['renderCheckOut']: formatForScreen}})
+      setRenderDate((prev) => {
+        return { ...prev, ["renderCheckOut"]: formatForScreen };
+      });
     }
   };
 
@@ -530,7 +533,7 @@ export default function detailCustomItinerary(props) {
                 marginBottom: 10,
               }}
             >
-              {dataState.hotel_name == '' ? null : (
+              {dataState.hotel_name == "" ? null : (
                 <Text
                   style={{
                     position: "absolute",
@@ -554,7 +557,7 @@ export default function detailCustomItinerary(props) {
                   borderBottomWidth: 1,
                   borderBottomColor: "#d3d3d3",
                   borderBottomEndRadius: 8,
-                  fontSize: 14
+                  fontSize: 14,
                 }}
                 // customTextStyle={{
                 //   color: itemValid.hotelNameValid === false ? "#464646" : "#D75995",
@@ -589,21 +592,21 @@ export default function detailCustomItinerary(props) {
               }}
             />
           </View>
-          <View style={{marginBottom: 20}}>
-          {dataState.address == '' ? null : (
-                <Text
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    fontFamily: "Lato-Regular",
-                    color: "#A0A0A0",
-                    fontSize: 14
-                  }}
-                >
-                  {t("address")}
-                </Text>
-              )}
+          <View style={{ marginBottom: 20 }}>
+            {dataState.address == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("address")}
+              </Text>
+            )}
             <TextInput
               placeholder={t("address")}
               autoCorrect={false}
@@ -635,21 +638,21 @@ export default function detailCustomItinerary(props) {
             ) : null}
           </View>
 
-          <View style={{marginBottom: 10}}>
-          {dataState.guest_name == '' ? null : (
-                <Text
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    fontFamily: "Lato-Regular",
-                    color: "#A0A0A0",
-                    fontSize: 14
-                  }}
-                >
-                  {t("Guest Name")}
-                </Text>
-              )}
+          <View style={{ marginBottom: 10 }}>
+            {dataState.guest_name == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("Guest Name")}
+              </Text>
+            )}
             <TextInput
               placeholder={t("Guest Name")}
               autoCorrect={false}
@@ -693,7 +696,7 @@ export default function detailCustomItinerary(props) {
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
-              marginBottom: 20
+              marginBottom: 20,
             }}
           >
             <View
@@ -709,7 +712,7 @@ export default function detailCustomItinerary(props) {
                 borderBottomEndRadius: 10,
               }}
             >
-              {dataState.checkin == '' ? null : (
+              {dataState.checkin == "" ? null : (
                 <Text
                   style={{
                     position: "absolute",
@@ -717,7 +720,7 @@ export default function detailCustomItinerary(props) {
                     left: 25,
                     fontFamily: "Lato-Regular",
                     color: "#A0A0A0",
-                    fontSize: 14
+                    fontSize: 14,
                   }}
                 >
                   {t("checkIn")}
@@ -790,7 +793,7 @@ export default function detailCustomItinerary(props) {
                 marginLeft: 10,
               }}
             >
-              {dataState.checkout == '' ? null : (
+              {dataState.checkout == "" ? null : (
                 <Text
                   style={{
                     position: "absolute",
@@ -798,7 +801,7 @@ export default function detailCustomItinerary(props) {
                     left: 25,
                     fontFamily: "Lato-Regular",
                     color: "#A0A0A0",
-                    fontSize: 14
+                    fontSize: 14,
                   }}
                 >
                   {t("checkOut")}
@@ -858,21 +861,21 @@ export default function detailCustomItinerary(props) {
             </View>
           </View>
 
-          <View style={{marginBottom: 20}}>
-          {dataState.booking_ref == '' ? null : (
-                <Text
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    fontFamily: "Lato-Regular",
-                    color: "#A0A0A0",
-                    fontSize: 14
-                  }}
-                >
-                  {t("BookingRef")}
-                </Text>
-              )}
+          <View style={{ marginBottom: 20 }}>
+            {dataState.booking_ref == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("BookingRef")}
+              </Text>
+            )}
             <TextInput
               placeholder={t("BookingRef")}
               autoCorrect={false}
@@ -925,59 +928,58 @@ export default function detailCustomItinerary(props) {
             type={"bold"}
             size="label"
             style={{
-              paddingTop: 10,
+              paddingTop: 20,
             }}
           >
             {t("Notes")}
           </Text>
-          <View style={{marginBottom: 10}}>
-          {dataState.note == '' ? null : (
-                <Text
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    fontFamily: "Lato-Regular",
-                    color: "#A0A0A0",
-                    fontSize: 14
-                  }}
-                >
-                  {t("Notes")}
-                </Text>
-              )}
-          <TextInput
-            placeholder={t("Notes")}
-            autoCorrect={false}
-            style={{
-              // borderWidth: 1,
-              fontFamily: "Lato-Regular",
-              paddingTop: 20,
-              paddingBottom: 10,
-              flex: 1,
-              // padding: 0,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-            }}
-            value={dataState.note}
-            onChangeText={(e) => {
-              setdataState({ ...dataState, ["note"]: e });
-            }}
-            onSubmitEditing={(e) => {
-              setdataState({ ...dataState, ["note"]: e });
-            }}
-          />
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              paddingTop: 20,
-              marginBottom: -10,
-            }}
-          >
-            {t("Attachment")}
-          </Text>
-          </View>      
-          
+          <View style={{ marginBottom: 10 }}>
+            {dataState.note == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("Notes")}
+              </Text>
+            )}
+            <TextInput
+              placeholder={t("Notes")}
+              autoCorrect={false}
+              style={{
+                // borderWidth: 1,
+                fontFamily: "Lato-Regular",
+                paddingTop: 20,
+                paddingBottom: 10,
+                flex: 1,
+                // padding: 0,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d3d3d3",
+              }}
+              value={dataState.note}
+              onChangeText={(e) => {
+                setdataState({ ...dataState, ["note"]: e });
+              }}
+              onSubmitEditing={(e) => {
+                setdataState({ ...dataState, ["note"]: e });
+              }}
+            />
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                paddingTop: 20,
+                marginBottom: -10,
+              }}
+            >
+              {t("Attachment")}
+            </Text>
+          </View>
 
           <View style={{ flex: 1, marginVertical: 10 }}>
             <TouchableOpacity
