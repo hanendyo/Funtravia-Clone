@@ -700,7 +700,6 @@ export default function CityDetail(props) {
       // Deskripsi
       <View
         style={{
-          // padding render auto 10
           marginTop: 5,
         }}
       >
@@ -1630,8 +1629,11 @@ export default function CityDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("listevent", {
-                    idcity: render.id,
-                    // idcountries:
+                    params: {
+                      idcity: render.id,
+                      idcountries: "",
+                      // idcountries:
+                    },
                   });
                 }}
               ></Ripple>
@@ -1661,15 +1663,23 @@ export default function CityDetail(props) {
                 </Text>
               </View>
 
-              <Text
-                type="bold"
-                size="description"
-                style={{
-                  color: "#209fae",
+              <Ripple
+                onPress={() => {
+                  props.navigation.navigate("listevent", {
+                    idcity: render.id,
+                  });
                 }}
               >
-                {t("viewAll")}
-              </Text>
+                <Text
+                  type="bold"
+                  size="description"
+                  style={{
+                    color: "#209fae",
+                  }}
+                >
+                  {t("viewAll")}
+                </Text>
+              </Ripple>
             </View>
             <View
               style={{
@@ -1968,6 +1978,7 @@ export default function CityDetail(props) {
             </View>
           </View>
         </View>
+
         {/* Itinerary Terbaru */}
         {renderItinerary.length > 0 ? (
           <View
@@ -3019,7 +3030,7 @@ export default function CityDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 1,
+            // borderBottomWidth: 1,
             borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
@@ -3035,8 +3046,8 @@ export default function CityDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
                   width:
                     props.navigationState.routes.length <= 2
@@ -3056,6 +3067,7 @@ export default function CityDetail(props) {
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
                       borderBottomWidth: 0,
+
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
@@ -3747,183 +3759,6 @@ export default function CityDetail(props) {
           </View>
         </View>
       </ModalRN>
-
-      {/* <ModalRN
-        useNativeDriver={true}
-        visible={sharemodal}
-        onRequestClose={() => SetShareModal(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => SetShareModal(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.8,
-            borderWidth: 1,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 3,
-            marginTop: Dimensions.get("screen").height / 3,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 100,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Pressable
-              onPress={() => SetShareModal(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                height: 60,
-                width: 60,
-                // borderWidth: 1,
-                alignContent: "center",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Xgray width={15} height={15} />
-            </Pressable>
-            <View
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 20,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                type="bold"
-                style={{
-                  marginBottom: 10,
-                }}
-              >
-                {t("share")}
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              style={{
-                // paddingVertical: 10,
-                paddingHorizontal: 20,
-                // borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                SetShareModal(false);
-                props.navigation.push("CountryStack", {
-                  screen: "SendCity",
-                  params: {
-                    city: dataCity.CitiesInformation,
-                  },
-                });
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  marginTop: 20,
-                  marginBottom: 10,
-                }}
-              >
-                {t("send_to")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                // paddingVertical: 10,
-                paddingHorizontal: 20,
-                // borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                shareAction({
-                  from: "city",
-                  target: dataCity.CitiesInformation.id,
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  margin: 10,
-                }}
-              >
-                {t("shareTo")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 20,
-                // borderBottomWidth: 0.5,
-                borderBottomColor: "d1d1d1",
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                CopyLink({
-                  from: "city",
-                  target: dataCity.CitiesInformation.id,
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  marginTop: 10,
-                  marginBottom: 20,
-                }}
-              >
-                {t("copyLink")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ModalRN>
-     */}
     </View>
   );
 }

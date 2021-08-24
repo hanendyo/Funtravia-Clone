@@ -178,20 +178,11 @@ export default function ChatTypelayout({
           borderColor: "#DAF0F2",
           borderRadius: 10,
           minHeight: 330,
-          // padding: 10,
+
           marginVertical: 10,
           width: 250,
-          // flexDirection: "row",
-          backgroundColor: "#F6F6F6",
-          // shadowColor: "#DAF0F2",
-          // shadowOffset: {
-          //   width: 0,
-          //   height: 5,
-          // },
-          // shadowOpacity: 0.1,
-          // shadowRadius: 6.27,
 
-          // elevation: 6,
+          backgroundColor: "#F6F6F6",
         }}
       >
         <FunImage
