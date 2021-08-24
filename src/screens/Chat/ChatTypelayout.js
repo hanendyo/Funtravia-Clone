@@ -37,9 +37,21 @@ export default function ChatTypelayout({
   user_id,
   navigation,
   tmpRChat,
+  socket,
 }) {
   const { t } = useTranslation();
   const playerRef = useRef(null);
+
+  // useEffect(() => {
+  if (item.is_send == false) {
+    if (socket.connected) {
+      console.log("aa");
+      let dateTime = new Date();
+      item = Object.assign(item, { is_send: true, time: dateTime });
+      socket.emit("message", item);
+    }
+  }
+  // }, []);
 
   if (item.type == "sticker") {
     return (
@@ -319,7 +331,7 @@ export default function ChatTypelayout({
   if (item.type == "tag_post") {
     let data = JSON.parse(item.text);
     if (data.id) {
-      console.log(data);
+      // console.log(data);
       let scale;
       switch (data.media_orientation) {
         case "L":
