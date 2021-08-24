@@ -416,8 +416,6 @@ export default function detailCustomItinerary(props) {
             <DateTimePickerModal
               isVisible={dateTimeModalDeparture}
               mode="datetime"
-              // display="inline"
-              date={new Date()}
               locale="en_id"
               onConfirm={(date) => {
                 timeConverter(date);
@@ -464,8 +462,6 @@ export default function detailCustomItinerary(props) {
             <DateTimePickerModal
               isVisible={dateTimeModalArrival}
               mode="datetime"
-              // display="inline"
-              date={new Date()}
               locale="en_id"
               onConfirm={(date) => {
                 timeConverter(date);
@@ -543,10 +539,11 @@ export default function detailCustomItinerary(props) {
           >
             {t("Notes")}
           </Text>
-          <FloatingInput
-            label={t("Notes")}
+          <TextInput
+            placeholder={t("Notes")}
             value={note}
             onChangeText={setNote}
+            style={styles.textInputNotes}
           />
         </View>
         <View style={styles.ViewContainerFile}>
@@ -920,6 +917,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingBottom: Platform.OS === "ios" ? 5 : 0,
     paddingTop: Platform.OS === "ios" ? 25 : 15,
+  },
+  textInputNotes: {
+    flex: 1,
+    fontFamily: "Lato-Regular",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "black",
+    color: "black",
+    fontSize: 14,
+    paddingBottom: Platform.OS === "ios" ? 5 : 0,
+    paddingLeft: 1,
   },
   uploadFile: {
     width: "100%",
