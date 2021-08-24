@@ -260,6 +260,9 @@ import Nextwhite from "./files/nextwhite.svg";
 import Notfound404 from "./files/404notfound.svg";
 import Nextabu from "./files/nextabu.svg";
 import Prevabu from "./files/prevabu.svg";
+import Padlock from "./files/padlock.svg";
+import Newglobe from "./files/newglobe.svg";
+import Groupborder from "./files/groupborder.svg";
 
 export {
   LikeWhite,
@@ -524,4 +527,7 @@ export {
   Notfound404,
   Nextabu,
   Prevabu,
+  Padlock,
+  Newglobe,
+  Groupborder,
 };
