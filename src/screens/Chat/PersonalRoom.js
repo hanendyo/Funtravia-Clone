@@ -70,7 +70,13 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [token, setToken] = useState(null);
-  const socket = io(CHATSERVER);
+  const socket = io(CHATSERVER, {
+    withCredentials: true,
+    extraHeaders: {
+      Authorization: token,
+    },
+  });
+  // console.log(token);
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
   // console.log(message);
@@ -281,9 +287,9 @@ export default function Room({ navigation, route }) {
             />
           </TouchableOpacity>
           <Text
+            type="bold"
+            size="title"
             style={{
-              fontFamily: "Lato-Bold",
-              fontSize: 16,
               color: "white",
               alignSelf: "center",
               paddingHorizontal: 10,
@@ -298,21 +304,24 @@ export default function Room({ navigation, route }) {
       paddingRight: 20,
     },
   };
+  // console.log("----", socket.connected);
 
   useEffect(() => {
-    // console.log("b");
     socket.emit("join", room);
-    socket.on("connection", (socket) => {
-      console.log(socket);
-      console.log("socket");
+    socket.on("connect", () => {
+      console.log("socket_connect");
+      // socket.emitBuffered();
+      // socket.sendBuffer = [];
     });
     navigation.setOptions(navigationOptions);
     if (init) {
+      console.log("aa");
       getUserToken();
+      setChatHistory();
       // setConnection();
     }
     socket.on("new_chat_personal", (data) => {
-      // console.log("c");
+      console.log("c");
       setChatHistory(data);
     });
     return () => socket.disconnect();
@@ -333,15 +342,60 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistory = async (data) => {
+    // console.log("dara");
     let history = await AsyncStorage.getItem("history_" + room);
-    if (data) {
-      if (history) {
-        let recent = JSON.parse(history);
+    if (history) {
+      let recent = JSON.parse(history);
+      if (data) {
         recent.push(data);
         await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
         setMessage(recent);
       } else {
-        await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
+        setMessage(recent);
+      }
+    } else {
+      await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
+      setMessage([data]);
+    }
+  };
+
+  const setChatHistory_offline = async (data) => {
+    // console.log("dara");
+    let history = await AsyncStorage.getItem("history_" + room);
+
+    let historyoff = await AsyncStorage.getItem("historyoff_" + room);
+    if (historyoff) {
+      let recent_off = JSON.parse(historyoff);
+      recent_off.push(data);
+      if (history) {
+        let recent = JSON.parse(history);
+        await AsyncStorage.setItem(
+          "historyoff_" + room,
+          JSON.stringify(recent_off)
+        );
+        let all_his = recent.concat(recent_off);
+        setMessage(all_his);
+      } else {
+        await AsyncStorage.setItem(
+          "historyoff_" + room,
+          JSON.stringify(recent)
+        );
+        setMessage(recent);
+      }
+    } else {
+      if (history) {
+        let recent = JSON.parse(history);
+        await AsyncStorage.setItem(
+          "historyoff_" + room,
+          JSON.stringify([data])
+        );
+        let all_his = recent.concat([data]);
+        setMessage(all_his);
+      } else {
+        await AsyncStorage.setItem(
+          "historyoff_" + room,
+          JSON.stringify([data])
+        );
         setMessage([data]);
       }
     }
@@ -360,6 +414,7 @@ export default function Room({ navigation, route }) {
       }
     );
     let responseJson = await response.json();
+    // console.log(responseJson);
     if (responseJson.data) {
       await AsyncStorage.setItem(
         "history_" + room,
@@ -369,28 +424,33 @@ export default function Room({ navigation, route }) {
     }
   };
 
+  const sendOffline = async (data) => {
+    data = Object.assign(data, { is_send: false });
+    setChatHistory_offline(data);
+  };
+
   const submitChatMessage = async () => {
     // console.log(a);
     if (button) {
       SetkeyboardOpenState(false);
       if (chat && chat.replace(/\s/g, "").length) {
         await setButton(false);
+        let dateTime = new Date();
         let chatData = {
           room: room,
           chat: "personal",
           type: "text",
           text: chat,
           user_id: user.id,
+          time: dateTime,
         };
-        await fetch(`${CHATSERVER}/api/personal/send`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `room=${room}&type=text&chat=personal&text=${chat}&user_id=${user.id}`,
-        });
-        await socket.emit("message", chatData);
+
+        if (socket.connected) {
+          await socket.emit("message", chatData);
+        } else {
+          sendOffline(chatData);
+        }
+        console.log(socket);
         await setChat("");
         await setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
@@ -457,7 +517,6 @@ export default function Room({ navigation, route }) {
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
-    // console.log(tmpRChat);
 
     let date = null;
     if (index == 0) {
@@ -510,7 +569,13 @@ export default function Room({ navigation, route }) {
           ]}
         >
           {user.id == item.user_id ? (
-            <Text size="small" style={{ marginRight: 5 }}>
+            <Text
+              size="small"
+              style={{
+                marginRight: 5,
+                color: item.is_send == false ? "#D75995" : "#464646",
+              }}
+            >
               {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
             </Text>
           ) : null}
@@ -519,6 +584,7 @@ export default function Room({ navigation, route }) {
             user_id={user.id}
             tmpRChat={tmpRChat}
             navigation={navigation}
+            socket={socket}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>
@@ -774,11 +840,10 @@ export default function Room({ navigation, route }) {
                 borderColor: "#D1D1D1",
                 borderWidth: 1,
                 width: width - 130,
-                maxHeight: 70,
                 alignSelf: "center",
+                borderRadius: 50,
+
                 backgroundColor: "#f3f3f3",
-                borderRadius: 20,
-                paddingHorizontal: 15,
               }}
             >
               <TextInput
@@ -791,15 +856,13 @@ export default function Room({ navigation, route }) {
                 style={
                   Platform.OS == "ios"
                     ? {
-                        maxHeight: 70,
+                        maxHeight: 100,
                         margin: 10,
-                        paddingBottom: 5,
-                        paddingLeft: 15,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
                       }
                     : {
-                        maxHeight: 70,
+                        maxHeight: 100,
                         marginVertical: 5,
                         marginHorizontal: 10,
                         padding: 0,
@@ -894,11 +957,9 @@ export default function Room({ navigation, route }) {
               borderColor: "#D1D1D1",
               borderWidth: 1,
               width: width - 130,
-              maxHeight: 70,
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
-              borderRadius: 20,
-              // paddingHorizontal: 15,
+              borderRadius: 50,
             }}
           >
             <TextInput
@@ -911,15 +972,13 @@ export default function Room({ navigation, route }) {
               style={
                 Platform.OS == "ios"
                   ? {
-                      maxHeight: 70,
+                      maxHeight: 100,
                       margin: 10,
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
-                      paddingBottom: 5,
-                      paddingLeft: 15,
                     }
                   : {
-                      maxHeight: 70,
+                      maxHeight: 100,
                       marginVertical: 5,
                       marginHorizontal: 10,
                       padding: 0,
