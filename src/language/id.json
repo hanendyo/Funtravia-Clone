@@ -622,5 +622,18 @@
   "Carrier": "Pembawa",
   "Notes": "Catatan",
   "Attachment": "Sisipan",
-  "ChooseFile": "Pilih Dokumen"
+  "ChooseFile": "Pilih Dokumen",
+  "HotelName": "Nama hotel",
+  "SearchForHotel": "Cari hotel",
+  "checkIn": "Waktu masuk",
+  "checkOut": "Waktu keluar",
+  "inputAlertHotelName": "Wajib mengisi nama hotel",
+  "inputAlertAddress": "Wajib mengisi alamat hotel",
+  "inputAlertBookingRef": "Wajib mengisi referensi pemesanan",
+  "inputAlertCheckIn": "Wajib mengisi waktu masuk",
+  "inputAlertCheckOut": "Wajib mengisi waktu keluar",
+  "inputAlertFile": "Wajib mengisi sisipan",
+  "inputAlertGuestName": "Wajib mengisi nama tamu"
+  
+
 }

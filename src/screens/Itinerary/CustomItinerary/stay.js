@@ -184,24 +184,24 @@ export default function detailCustomItinerary(props) {
 
   // state
   let [dataState, setdataState] = useState({
-    day_id: null, //wajib
-    title: null, // == hotel_name
-    icon: null, //gb_tour
+    day_id: "", //wajib
+    title: "", // == hotel_name
+    icon: "", //gb_tour
     qty: 1, //
-    address: null, //wajib
+    address: "", //wajib
     latitude: 0, //wajib
     longitude: 0, //wajib
-    note: null, //ga wajib
-    time: null, //hardcode
-    duration: null, //hardcode
+    note: "", //ga wajib
+    time: "", //hardcode
+    duration: "", //hardcode
     status: false, //
     order: [], //0
     total_price: 0,
-    hotel_name: null, //wajib
-    guest_name: null, //wajib
-    booking_ref: null, //wajib
-    checkin: null, //wajib
-    checkout: null, //wajib
+    hotel_name: "", //wajib
+    guest_name: "", //wajib
+    booking_ref: "", //wajib
+    checkin: "", //wajib
+    checkout: "", //wajib
     file: [], //wajib
   });
 
@@ -215,9 +215,6 @@ export default function detailCustomItinerary(props) {
     checkoutValid: true, //wajib,
     fileValid: true, //wajib
   });
-
-  // console.log(`item valid awal2: `, itemValid);
-  // console.log(`useState awal2: `, dataState);
 
   // const validation = (name, value) => {
   //   if (!value || value === "" || value == null) {
@@ -308,18 +305,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const modalValidation = () => {
-    // setItemValid({
-    //   hotelNameValid: modalStateValidation("hotel_name"),
-    //   addressValid: modalStateValidation("address"),
-    //   checkinValid: modalStateValidation("checkin"),
-    //   checkoutValid: modalStateValidation("checkout"),
-    //   fileValid: modalStateValidation("file"),
-    //   guestNameValid: modalStateValidation("guest_name"),
-    //   bookingRefValid: modalStateValidation("booking_ref"),
-    // });
-
-    // setItemValid()
-
     setItemValid((prev) => {
       return {
         ...prev,
@@ -356,19 +341,17 @@ export default function detailCustomItinerary(props) {
       itemValid.addressValid &&
       itemValid.checkinValid &&
       itemValid.checkoutValid &&
-      itemValid.fileValid &&
       itemValid.guestNameValid &&
       itemValid.bookingRefValid &&
       dataState.day_id &&
       dataState.icon &&
       dataState.title &&
-      dataState.address
+      dataState.address &&
+      dataState.guest_name &&
+      dataState.booking_ref
     ) {
       submitDataAPI();
-      console.log(`DATASTATE: `, dataState);
     } else {
-      console.log(`DATASTATE else: `, dataState);
-      console.log(`item valid else: `, itemValid);
       setAlertPopUp({
         ...alertPopUp,
         show: true,
@@ -377,6 +360,11 @@ export default function detailCustomItinerary(props) {
       });
     }
   };
+
+  let [renderDate, setRenderDate] = useState({
+    renderCheckIn: "",
+    renderCheckOut: "",
+  });
 
   const timeConverter = (date) => {
     //! Hanendyo's work'
@@ -395,7 +383,6 @@ export default function detailCustomItinerary(props) {
     let formattedDate = `${year}-${months}-${day}T${h}:${m}:${s}`;
     let formatForScreen = `${year}-${months}-${day} ${h}:${m}:${s}`;
 
-    console.log(formattedDate);
     if (timeModalCheckIn) {
       setdataState((prevCin) => {
         return {
@@ -403,7 +390,11 @@ export default function detailCustomItinerary(props) {
           ["checkin"]: formattedDate,
         };
       });
+
       // setCheckInCheck(formatForScreen);
+      setRenderDate((prev) => {
+        return { ...prev, ["renderCheckIn"]: formatForScreen };
+      });
     }
 
     if (timeModalCheckOut) {
@@ -413,7 +404,11 @@ export default function detailCustomItinerary(props) {
           ["checkout"]: formattedDate,
         };
       });
+
       // setCheckoutCheck(formatForScreen);
+      setRenderDate((prev) => {
+        return { ...prev, ["renderCheckOut"]: formatForScreen };
+      });
     }
   };
 
@@ -434,37 +429,9 @@ export default function detailCustomItinerary(props) {
 
   useEffect(() => {
     //! Hanendyo's work
-    console.log(`DATASTATE USE EFFECT: `, dataState);
-    console.log(`DAY ID: `, props.route.params.dayId);
   }, [dataState]);
 
   const simpanketimeline = (inputan) => {
-    // if (
-    //   !inputan.hotel_name ||
-    //   inputan.hotel_name === "" ||
-    //   !inputan.address ||
-    //   inputan.address === "" ||
-    //   !inputan.guest_name ||
-    //   inputan.guest_name === "" ||
-    //   !inputan.booking_ref ||
-    //   inputan.booking_ref === "" ||
-    //   !inputan.checkin ||
-    //   inputan.checkin === "" ||
-    //   !inputan.checkout ||
-    //   inputan.checkout === "" ||
-    //   !inputan.file ||
-    //   inputan.file === ""
-    // ) {
-    //   setAlertPopUp({
-    //     ...alertPopUp,
-    //     show: true,
-    //     judul: "Some Form Field Empty",
-    //     detail: "",
-    //   });
-    // } else {
-    //   // submitDataAPI()
-    //   modalValidation();
-    // }
     modalValidation();
   };
 
@@ -500,7 +467,6 @@ export default function detailCustomItinerary(props) {
         throw new Error("Error input");
       }
       if (response.data) {
-        console.log(`RESPONSE AFTER SUBMIT: `, response.data);
         if (response.data.add_custom_accomodation.code !== 200) {
           throw new Error(response.data.add_custom_accomodation.message);
         } else {
@@ -544,6 +510,7 @@ export default function detailCustomItinerary(props) {
               alignContent: "center",
               alignItems: "center",
               marginBottom: 10,
+              marginTop: 10,
             }}
           >
             <View
@@ -559,40 +526,60 @@ export default function detailCustomItinerary(props) {
             >
               <Stay height={30} width={30} />
             </View>
-            <FloatingInput
-              label={t("HotelName")}
-              autoCorrect={false}
+            <View
               style={{
                 flex: 1,
-                // fontFamily: "Lato-Regular",
-                // paddingBottom: 10,
-                // borderBottomWidth: 1,
-                // borderBottomColor: "#d3d3d3",
-                // borderBottomEndRadius: 8,
-                // marginRight: -5,
                 marginLeft: 10,
                 marginBottom: 10,
               }}
-              // customTextStyle={{
-              //   color: itemValid.hotelNameValid === false ? "#464646" : "#D75995",
-              // }}
-              editable={false}
-              value={dataState.hotel_name}
-            />
-            {itemValid.hotelNameValid === false ? (
-              <Text
-                type="regular"
-                size="small"
+            >
+              {dataState.hotel_name == "" ? null : (
+                <Text
+                  style={{
+                    position: "absolute",
+                    top: -10,
+                    left: 0,
+                    fontFamily: "Lato-Regular",
+                    fontSize: 14,
+                    color: "#A0A0A0",
+                  }}
+                >
+                  {t("HotelName")}
+                </Text>
+              )}
+              <FloatingInput
+                placeholder={t("HotelName")}
+                autoCorrect={false}
                 style={{
-                  color: "#D75995",
-                  position: "absolute",
-                  bottom: -5,
-                  left: 60,
+                  flex: 1,
+                  fontFamily: "Lato-Regular",
+                  paddingBottom: 10,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d3d3d3",
+                  borderBottomEndRadius: 8,
+                  fontSize: 14,
                 }}
-              >
-                {"*" + t("inputAlertHotelName")}
-              </Text>
-            ) : null}
+                // customTextStyle={{
+                //   color: itemValid.hotelNameValid === false ? "#464646" : "#D75995",
+                // }}
+                editable={false}
+                value={dataState.hotel_name}
+              />
+              {itemValid.hotelNameValid === false ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                    position: "absolute",
+                    bottom: -15,
+                    left: 0,
+                  }}
+                >
+                  {"*" + t("inputAlertHotelName")}
+                </Text>
+              ) : null}
+            </View>
 
             <TouchableOpacity
               onPress={() => setModalHotelName(true)}
@@ -605,15 +592,28 @@ export default function detailCustomItinerary(props) {
               }}
             />
           </View>
-          <View>
+          <View style={{ marginBottom: 20 }}>
+            {dataState.address == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("address")}
+              </Text>
+            )}
             <TextInput
               placeholder={t("address")}
               autoCorrect={false}
               style={{
-                flex: 1,
                 // padding: 0,
                 fontFamily: "Lato-Regular",
-                paddingTop: 5,
+                paddingTop: 20,
                 paddingBottom: 10,
                 borderBottomWidth: 1,
                 borderBottomColor: "#d3d3d3",
@@ -622,9 +622,6 @@ export default function detailCustomItinerary(props) {
               onChangeText={(e) => {
                 setdataState({ ...dataState, ["address"]: e });
               }}
-              // onSubmitEditing={(e) => {
-              //   setdataState({ ...dataState, ["address"]: e });
-              // }}
             />
             {itemValid.addressValid === false ? (
               <Text
@@ -641,7 +638,21 @@ export default function detailCustomItinerary(props) {
             ) : null}
           </View>
 
-          <View>
+          <View style={{ marginBottom: 10 }}>
+            {dataState.guest_name == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("Guest Name")}
+              </Text>
+            )}
             <TextInput
               placeholder={t("Guest Name")}
               autoCorrect={false}
@@ -685,6 +696,7 @@ export default function detailCustomItinerary(props) {
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
+              marginBottom: 20,
             }}
           >
             <View
@@ -700,6 +712,20 @@ export default function detailCustomItinerary(props) {
                 borderBottomEndRadius: 10,
               }}
             >
+              {dataState.checkin == "" ? null : (
+                <Text
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 25,
+                    fontFamily: "Lato-Regular",
+                    color: "#A0A0A0",
+                    fontSize: 14,
+                  }}
+                >
+                  {t("checkIn")}
+                </Text>
+              )}
               <CalendarIcon height={15} width={15} />
               <TextInput
                 placeholder={t("checkIn")}
@@ -714,7 +740,7 @@ export default function detailCustomItinerary(props) {
                   marginLeft: 10,
                   marginRight: 10,
                 }}
-                value={dataState.checkin}
+                value={renderDate.renderCheckIn}
               />
               {itemValid.checkinValid === false ? (
                 <Text
@@ -744,7 +770,7 @@ export default function detailCustomItinerary(props) {
               <DateTimePickerModal
                 isVisible={timeModalCheckIn}
                 mode="datetime"
-                display="inline"
+                // display="inline"
                 locale="en_id"
                 onConfirm={(date) => {
                   timeConverter(date);
@@ -767,6 +793,20 @@ export default function detailCustomItinerary(props) {
                 marginLeft: 10,
               }}
             >
+              {dataState.checkout == "" ? null : (
+                <Text
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 25,
+                    fontFamily: "Lato-Regular",
+                    color: "#A0A0A0",
+                    fontSize: 14,
+                  }}
+                >
+                  {t("checkOut")}
+                </Text>
+              )}
               <CalendarIcon height={15} width={15} />
               <TextInput
                 placeholder={t("checkOut")}
@@ -780,7 +820,7 @@ export default function detailCustomItinerary(props) {
                   marginLeft: 10,
                   marginRight: 10,
                 }}
-                value={dataState.checkout}
+                value={renderDate.renderCheckOut}
               />
               {itemValid.checkoutValid === false ? (
                 <Text
@@ -810,7 +850,7 @@ export default function detailCustomItinerary(props) {
               <DateTimePickerModal
                 isVisible={timeModalCheckOut}
                 mode="datetime"
-                display="inline"
+                // display="inline"
                 locale="en_id"
                 onConfirm={(date) => {
                   timeConverter(date);
@@ -821,7 +861,21 @@ export default function detailCustomItinerary(props) {
             </View>
           </View>
 
-          <View>
+          <View style={{ marginBottom: 20 }}>
+            {dataState.booking_ref == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("BookingRef")}
+              </Text>
+            )}
             <TextInput
               placeholder={t("BookingRef")}
               autoCorrect={false}
@@ -870,7 +924,6 @@ export default function detailCustomItinerary(props) {
               </Text>
             ) : null}
           </View>
-
           <Text
             type={"bold"}
             size="label"
@@ -880,36 +933,53 @@ export default function detailCustomItinerary(props) {
           >
             {t("Notes")}
           </Text>
-          <TextInput
-            placeholder={t("Notes")}
-            autoCorrect={false}
-            style={{
-              // borderWidth: 1,
-              fontFamily: "Lato-Regular",
-              paddingTop: 10,
-              paddingBottom: 10,
-              flex: 1,
-              // padding: 0,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d3d3d3",
-            }}
-            value={dataState.note}
-            onChangeText={(e) => {
-              setdataState({ ...dataState, ["note"]: e });
-            }}
-            onSubmitEditing={(e) => {
-              setdataState({ ...dataState, ["note"]: e });
-            }}
-          />
-          <Text
-            size="label"
-            type="bold"
-            style={{
-              paddingTop: 20,
-            }}
-          >
-            {t("Attachment")}
-          </Text>
+          <View style={{ marginBottom: 10 }}>
+            {dataState.note == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("Notes")}
+              </Text>
+            )}
+            <TextInput
+              placeholder={t("Notes")}
+              autoCorrect={false}
+              style={{
+                // borderWidth: 1,
+                fontFamily: "Lato-Regular",
+                paddingTop: 20,
+                paddingBottom: 10,
+                flex: 1,
+                // padding: 0,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d3d3d3",
+              }}
+              value={dataState.note}
+              onChangeText={(e) => {
+                setdataState({ ...dataState, ["note"]: e });
+              }}
+              onSubmitEditing={(e) => {
+                setdataState({ ...dataState, ["note"]: e });
+              }}
+            />
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                paddingTop: 20,
+                marginBottom: -10,
+              }}
+            >
+              {t("Attachment")}
+            </Text>
+          </View>
 
           <View style={{ flex: 1, marginVertical: 10 }}>
             <TouchableOpacity
@@ -928,7 +998,7 @@ export default function detailCustomItinerary(props) {
                 alignItems: "center",
                 paddingVertical: 10,
                 flexDirection: "row",
-                marginBottom: 5,
+                marginBottom: 10,
               }}
             >
               <New height={15} width={15} />
@@ -941,55 +1011,39 @@ export default function detailCustomItinerary(props) {
                 {t("ChooseFile")}
               </Text>
             </TouchableOpacity>
-            {itemValid.fileValid === false ? (
-              <Text
-                type="regular"
-                size="small"
-                style={{
-                  color: "#D75995",
-                  position: "absolute",
-                  bottom: -15,
-                }}
-              >
-                {"*" + t("inputAlertFile")}
-              </Text>
-            ) : (
-              dataState.file.map((data, index) => {
-                return (
-                  <View
+            {dataState.file.map((data, index) => {
+              return (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignContent: "flex-start",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Text style={{ width: 30 }}>{index + 1}. </Text>
+                  <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      let temp = [...dataState.file];
+                      temp.splice(index, 1);
+                      setdataState((prevFile) => {
+                        return {
+                          ...prevFile,
+                          ["file"]: temp,
+                        };
+                      });
+                    }}
                     style={{
                       flexDirection: "row",
                       alignContent: "flex-start",
                       alignItems: "flex-start",
                     }}
                   >
-                    <Text style={{ width: 30 }}>{index + 1}. </Text>
-                    <Text style={{ flex: 1, paddingBottom: 5 }}>
-                      {data.name}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        let temp = [...dataState.file];
-                        temp.splice(index, 1);
-                        setdataState((prevFile) => {
-                          return {
-                            ...prevFile,
-                            ["file"]: temp,
-                          };
-                        });
-                      }}
-                      style={{
-                        flexDirection: "row",
-                        alignContent: "flex-start",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <Xhitam width={10} height={10} />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })
-            )}
+                    <Xhitam width={10} height={10} />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
           </View>
         </View>
       </ScrollView>
@@ -1166,7 +1220,6 @@ export default function detailCustomItinerary(props) {
                   });
 
                   setModalHotelName(false);
-                  console.log(`DATA: `, data);
                 }
               }}
               query={{
@@ -1176,7 +1229,6 @@ export default function detailCustomItinerary(props) {
               }}
               autoFocus={true}
               listViewDisplayed="auto"
-              onFail={(error) => console.log(error)}
               currentLocation={true}
               placeholder={t("SearchForHotel")}
               // currentLocationLabel="Nearby location"
@@ -1277,8 +1329,7 @@ export default function detailCustomItinerary(props) {
         >
           <Button
             onPress={() => {
-              // simpanketimeline(dataState);
-              modalValidation();
+              simpanketimeline();
             }}
             text={t("save")}
           />

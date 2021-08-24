@@ -417,7 +417,7 @@ export default function detailCustomItinerary(props) {
               isVisible={dateTimeModalDeparture}
               mode="datetime"
               // display="inline"
-              // date={new Date()}
+              date={new Date()}
               locale="en_id"
               onConfirm={(date) => {
                 timeConverter(date);
@@ -465,7 +465,7 @@ export default function detailCustomItinerary(props) {
               isVisible={dateTimeModalArrival}
               mode="datetime"
               // display="inline"
-              // date={new Date()}
+              date={new Date()}
               locale="en_id"
               onConfirm={(date) => {
                 timeConverter(date);
@@ -599,7 +599,6 @@ export default function detailCustomItinerary(props) {
         }}
         animationIn="slideInRight"
         animationOut="slideOutRight"
-        hasBackdrop={false}
         isVisible={modalFrom || modalTo}
         style={{
           backgroundColor: "#209fae",

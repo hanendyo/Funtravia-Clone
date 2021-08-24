@@ -114,23 +114,23 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - Permission-Camera (3.0.5):
+  - Permission-Camera (3.0.4):
     - RNPermissions
-  - Permission-Contacts (3.0.5):
+  - Permission-Contacts (3.0.4):
     - RNPermissions
-  - Permission-LocationAccuracy (3.0.5):
+  - Permission-LocationAccuracy (3.0.4):
     - RNPermissions
-  - Permission-LocationAlways (3.0.5):
+  - Permission-LocationAlways (3.0.4):
     - RNPermissions
-  - Permission-LocationWhenInUse (3.0.5):
+  - Permission-LocationWhenInUse (3.0.4):
     - RNPermissions
-  - Permission-MediaLibrary (3.0.5):
+  - Permission-MediaLibrary (3.0.4):
     - RNPermissions
-  - Permission-Notifications (3.0.5):
+  - Permission-Notifications (3.0.4):
     - RNPermissions
-  - Permission-PhotoLibrary (3.0.5):
+  - Permission-PhotoLibrary (3.0.4):
     - RNPermissions
-  - Permission-PhotoLibraryAddOnly (3.0.5):
+  - Permission-PhotoLibraryAddOnly (3.0.4):
     - RNPermissions
   - PromisesObjC (1.2.12)
   - RCTRequired (0.63.4)
@@ -324,7 +324,7 @@ PODS:
     - React-RCTImage
   - react-native-maps (0.27.1):
     - React
-  - react-native-safe-area-context (3.3.0):
+  - react-native-safe-area-context (3.2.0):
     - React-Core
   - react-native-splash-screen (3.2.0):
     - React
@@ -333,7 +333,7 @@ PODS:
     - react-native-video/Video (= 5.1.1)
   - react-native-video/Video (5.1.1):
     - React-Core
-  - react-native-webview (11.13.0):
+  - react-native-webview (11.6.6):
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -401,17 +401,17 @@ PODS:
     - React-Core
   - RNCCheckbox (0.5.8):
     - React-Core
-  - RNCClipboard (1.8.4):
+  - RNCClipboard (1.8.2):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPushNotificationIOS (1.9.0):
+  - RNCPushNotificationIOS (1.8.0):
     - React-Core
   - RNDateTimePicker (3.5.2):
     - React-Core
-  - RNDeviceInfo (8.1.7):
+  - RNDeviceInfo (8.1.3):
     - React-Core
-  - RNFastImage (8.3.7):
+  - RNFastImage (8.3.4):
     - React-Core
     - SDWebImage (~> 5.8)
     - SDWebImageWebPCoder (~> 0.6.1)
@@ -438,7 +438,7 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController
-  - RNPermissions (3.0.5):
+  - RNPermissions (3.0.4):
     - React-Core
   - RNReanimated (1.13.0):
     - React
@@ -715,15 +715,15 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
-  Permission-Contacts: 4bd4bdbbcec21ce0175e02cc4925070a773204cf
-  Permission-LocationAccuracy: c008fa8c4a90fcb6e33f465c2a8684e92d93b794
-  Permission-LocationAlways: 0704c3bcce11f98f8d6ddf34c49c65893ec64b09
-  Permission-LocationWhenInUse: e1168a583654f1d2d34d3a18c4c6518ce409ad2a
-  Permission-MediaLibrary: ca07553882f0533f67739cdea7486c369b6556f0
-  Permission-Notifications: 16ccd862111103378a7bab9fb1c5c71addffc348
-  Permission-PhotoLibrary: 0748c1a490fad126dfe36dbea8234dedfe59cc27
-  Permission-PhotoLibraryAddOnly: 224d33cea3c2f1f8982a2a4e343c0726fba3acf9
+  Permission-Camera: 74dc395c37a06ebe915069c5dca954c7a2a5a2e3
+  Permission-Contacts: bfcef5b0e4f59be6add84b393fd6f22ed0aa6752
+  Permission-LocationAccuracy: ee72e91271cb33794f71aef86a03a3cff5dfd7c0
+  Permission-LocationAlways: d3ac15e4bf8f4f5f4e224b4fea6f84b14fa19132
+  Permission-LocationWhenInUse: ebef6bf8a123d382f25e9990468cfc8a76fbadf5
+  Permission-MediaLibrary: f57d9a116468c560c2a4a2a479fc211b770f7a92
+  Permission-Notifications: 5b4a12a9b52866667423c93d3af8e43b81872cf4
+  Permission-PhotoLibrary: 440f206f0d36e5951c4c9b28567f60471fdddfb5
+  Permission-PhotoLibraryAddOnly: 0ac89da5e01e80479947b517091a67c9e462c99a
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
@@ -741,10 +741,10 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 7c9436da6dfdecd9526c62eac62ea2bc3f0cc8ea
   react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
-  react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
+  react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
-  react-native-webview: 133a6a5149f963259646e710b4545c67ef35d7c9
+  react-native-webview: e6eddf2722f5e7220eae7229b516efabb1ed0acd
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -758,19 +758,19 @@ SPEC CHECKSUMS:
   ReactNativeUiLib: cde7263a7d308b60161cd286f95c9433e79f2f7d
   RNCAsyncStorage: 56a3355a10b5d660c48c6e37325ac85ebfd09885
   RNCCheckbox: 6bd119c26c6eb8264a29d59ff66cb70a14de3349
-  RNCClipboard: ddd4d291537f1667209c9c405aaa4307297e252e
+  RNCClipboard: 18e2e6048edf841b1225b81025969ba8330f3251
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNCPushNotificationIOS: 5bffde624d1fd15bfc8b2fd202b012a517a6dc9b
+  RNCPushNotificationIOS: 61a7c72bd1ebad3568025957d001e0f0e7b32191
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
-  RNDeviceInfo: ace1442cd0f7d01292a39a3b587666177eaf8cb0
-  RNFastImage: a7384db75df352500261e8e8f1ac2026def26102
+  RNDeviceInfo: 8d3a29207835f972bce883723882980143270d55
+  RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   RNFBApp: 02bde3edecf2e9694b908a5d3504e03449980f20
   RNFBMessaging: 1823217d31e942531cc3f51fb5367dcbc69c1e10
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNImageCropPicker: 08ba3a2e2f4f8833d606f01906c371e382c4dea9
-  RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
+  RNPermissions: c46788f4cd402287425983e04a4c9bb4356036eb
   RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
@@ -781,6 +781,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 52286de9236eb7235585162a1973be16833d4684
+PODFILE CHECKSUM: 83fd3b217f8f9c2e3a70e7f2392560fea55875d9
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.10.1
