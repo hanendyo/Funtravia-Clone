@@ -54,6 +54,8 @@ import {
   FunAnimatedImage,
   RenderMaps,
   FunMaps,
+  CopyLink,
+  shareAction,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import JournalProvince from "../../../graphQL/Query/Province/JournalProvince";
@@ -759,6 +761,7 @@ export default function CityDetail(props) {
             </View>
           </View>
         ) : null}
+
         {/* Activities */}
         {render && render.destination_group.length > 0 ? (
           <View
@@ -782,7 +785,6 @@ export default function CityDetail(props) {
               style={{
                 marginTop: 10,
                 borderRadius: 10,
-                paddingBottom: 5,
                 backgroundColor: "#FFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -810,15 +812,17 @@ export default function CityDetail(props) {
                           key={"keydestination" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
-                              idgroup: item.id,
-                              idprovince: render.id,
+                              idtype: item.id_type,
+                              idcity: render.id,
                               token: token,
                             });
                           }}
                           style={{
                             width: "25%",
-                            alignContent: "center",
-                            alignItems: "center",
+
+                            // alignContent: "center",
+                            // alignItems: "center",
+                            // alignSelf: "center",
                             padding: 5,
                           }}
                         >
@@ -838,10 +842,13 @@ export default function CityDetail(props) {
                               />
                             </View>
                           ) : (
+                            // <View>
+
+                            // </View>
                             <View
                               style={{
-                                height: 60,
-                                marginVertical: 10,
+                                // height: 60,
+                                marginVertical: 5,
                               }}
                             >
                               <View
@@ -885,9 +892,8 @@ export default function CityDetail(props) {
                           key={"keydestination1" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
-                              idgroup: item.id,
-                              idprovince: render.id,
-                              token: token,
+                              idtype: item.id,
+                              idcity: render.id,
                             });
                           }}
                           style={{
@@ -926,7 +932,11 @@ export default function CityDetail(props) {
                 <View
                   style={{
                     width: "100%",
-                    marginTop: 10,
+                    marginTop:
+                      tutup == true && render.destination_group.length > 7
+                        ? 10
+                        : 0,
+
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -1580,6 +1590,7 @@ export default function CityDetail(props) {
           style={{
             flexDirection: "column",
             paddingTop: 15,
+            paddingBottom: 15,
           }}
         >
           <View>
@@ -1903,7 +1914,6 @@ export default function CityDetail(props) {
                                   ? "#209fae"
                                   : "#646464",
                               textAlign: "center",
-                              marginTop: 3,
                             }}
                           >
                             {bulan[index]}
@@ -2892,8 +2902,8 @@ export default function CityDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 0.8,
-            borderColor: "#d1d1d1",
+            // borderBottomWidth: 0.8,
+            // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -2907,8 +2917,8 @@ export default function CityDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
                   width:
                     props.navigationState.routes.length <= 2
@@ -3503,7 +3513,6 @@ export default function CityDetail(props) {
             style={{
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              // paddingHorizontal: 20,
               borderRadius: 5,
             }}
           >
@@ -3515,7 +3524,6 @@ export default function CityDetail(props) {
                 borderTopLeftRadius: 5,
                 borderTopRightRadius: 5,
                 backgroundColor: "#f6f6f6",
-                // height: 50,
                 justifyContent: "center",
               }}
             >
@@ -3540,7 +3548,6 @@ export default function CityDetail(props) {
               style={{
                 alignItems: "center",
                 borderBottomWidth: 1,
-                // height: 50,
                 borderColor: "#d1d1d1",
               }}
               onPress={() => {
@@ -3584,7 +3591,7 @@ export default function CityDetail(props) {
               }}
               onPress={() => {
                 CopyLink({
-                  from: "city",
+                  from: "province",
                   target: dataProvince.province_detail_v2.id,
                 });
                 SetShareModal(false);
@@ -3598,113 +3605,6 @@ export default function CityDetail(props) {
         </View>
       </ModalRN>
     </View>
-
-    // <View style={styles.container}>
-    //   <StaBar backgroundColor="#14646e" barStyle="light-content" />
-    //   <Animated.View
-    //     style={{
-    //       position: "absolute",
-    //       top: SafeStatusBar,
-    //       zIndex: 9999,
-    //       flexDirection: "row",
-    //       justifyContent: "space-between",
-    //       alignContent: "center",
-    //       alignItems: "center",
-    //       height: 55,
-    //       width: Dimensions.get("screen").width,
-    //     }}
-    //   >
-    //     <Button
-    //       text={""}
-    //       size="medium"
-    //       type="circle"
-    //       variant="transparent"
-    //       onPress={() => props.navigation.goBack()}
-    //       style={{
-    //         height: 50,
-    //         marginLeft: 8,
-    //       }}
-    //     >
-    //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    //     </Button>
-    //     <TouchableOpacity
-    //       onPress={(x) =>
-    //         props.navigation.push("SearchPg", {
-    //           province_id: dataProvince.province_detail_v2.id,
-    //           searchInput: "",
-    //           locationname: lisProvince.name,
-    //           aktifsearch: true,
-    //         })
-    //       }
-    //       style={{
-    //         width: Dimensions.get("screen").width - 90,
-    //         backgroundColor: "rgba(0,0,0,0.2)",
-    //         flexDirection: "row",
-    //         alignContent: "center",
-    //         alignItems: "center",
-    //         padding: 10,
-    //       }}
-    //     >
-    //       <Image
-    //         source={search_button}
-    //         style={{
-    //           height: 20,
-    //           width: 20,
-    //           resizeMode: "contain",
-    //           marginHorizontal: 10,
-    //         }}
-    //       ></Image>
-    //       {/* <Input
-    //         value={search}
-    //         style={{
-    //           height: 20,
-    //           padding: 0,
-    //           textAlign: "left",
-    //           fontFamily: "Lato-Regular",
-    //           fontSize: 14,
-    //           color: "white",
-    //         }}
-    //         placeholderTextColor={"white"}
-    //         underlineColorAndroid="transparent"
-    //         onChangeText={(x) => setTextc(x)}
-    //         placeholder={"Search in " + lisProvince.name}
-    //         returnKeyType="search"
-    //         onSubmitEditing={(x) =>
-    //           props.navigation.push("SearchPg", {
-    //             idcity: dataProvince.province_detail_v2.id,
-    //             searchInput: search,
-    //             aktifsearch: true,
-    //           })
-    //         }
-    //       /> */}
-    //       <Text
-    //         size="readable"
-    //         type="bold"
-    //         style={{
-    //           color: "#FFFFFF",
-    //         }}
-    //       >
-    //         {t("searchin") + lisProvince.name}
-    //       </Text>
-    //     </TouchableOpacity>
-    //     <Button
-    //       text={""}
-    //       size="medium"
-    //       type="circle"
-    //       variant="transparent"
-    //       // onPress={() => setshowside(true)}
-    //       style={{
-    //         height: 50,
-    //       }}
-    //     >
-    //       {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
-    //     </Button>
-    //   </Animated.View>
-
-    //   {renderTabView()}
-    //   {renderHeader()}
-    //   {renderCustomRefresh()}
-    // </View>
   );
 }
 

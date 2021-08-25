@@ -25,6 +25,7 @@ import {
   Sticker,
   Emoticon,
   Star,
+  AddHijau,
 } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
@@ -84,7 +85,7 @@ export default function ChatTypelayout({
         }}
         style={{
           borderWidth: 1,
-          borderColor: "#DAF0F2",
+          borderColor: "#209FAE",
           borderRadius: 10,
           minHeight: 330,
           marginVertical: 10,
@@ -114,7 +115,7 @@ export default function ChatTypelayout({
             // type="black"
             // numberOfLines={1}
           >
-            {t("checkCity")}
+            {t("checkDestination")}
           </Text>
           <Text
             size="title"
@@ -125,16 +126,11 @@ export default function ChatTypelayout({
             {data.name}
           </Text>
         </View>
-        <View
-          style={{
-            borderTopWidth: 0.5,
-            borderTopColor: "d1d1d1",
-          }}
-        >
+        <View>
           <Pressable
             style={{
               alignContent: "center",
-              alignItems: "center",
+              alignItems: "flex-end",
             }}
             onPress={() => {
               navigation.navigate("CountryStack", {
@@ -147,16 +143,137 @@ export default function ChatTypelayout({
               });
             }}
           >
-            <Text
-              type="bold"
-              // size="label"
+            <View
               style={{
-                color: "#209FAE",
-                margin: 10,
+                backgroundColor: "#DAF0F2",
+                borderRadius: 3,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 5,
+                marginRight: 10,
+                marginBottom: 10,
+                marginTop: 5,
+                borderRadius: 5,
               }}
             >
-              {t("visitCity")}
-            </Text>
+              <Text
+                type="bold"
+                // size="label"
+                style={{
+                  color: "#209FAE",
+                  margin: 5,
+                }}
+              >
+                {" "}
+                {t("seedetail")}
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      </Pressable>
+    );
+  }
+
+  // tag province
+  if (item.type == "tag_province") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate("CountryStack", {
+            screen: "Province",
+            params: {
+              data: {
+                id: data.id,
+              },
+            },
+          });
+        }}
+        style={{
+          borderWidth: 1,
+          borderColor: "#209FAE",
+          borderRadius: 10,
+          minHeight: 330,
+          marginVertical: 10,
+          width: 250,
+          backgroundColor: "#F6F6F6",
+        }}
+      >
+        <FunImage
+          source={{ uri: data.cover }}
+          style={{
+            width: 220,
+            height: 220,
+            alignSelf: "center",
+            margin: 15,
+            borderRadius: 10,
+          }}
+        />
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 15,
+          }}
+        >
+          {/* Title */}
+          <Text
+            size="small"
+            // type="black"
+            // numberOfLines={1}
+          >
+            {t("checkDestination")}
+          </Text>
+          <Text
+            size="title"
+            type="black"
+            style={{ marginTop: 2 }}
+            // numberOfLines={1}
+          >
+            {data.name}
+          </Text>
+        </View>
+        <View>
+          <Pressable
+            style={{
+              alignContent: "center",
+              alignItems: "flex-end",
+            }}
+            onPress={() => {
+              navigation.navigate("CountryStack", {
+                screen: "Province",
+                params: {
+                  data: {
+                    id: data.id,
+                  },
+                },
+              });
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#DAF0F2",
+                borderRadius: 3,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 5,
+                marginRight: 10,
+                marginBottom: 10,
+                marginTop: 5,
+                borderRadius: 5,
+              }}
+            >
+              <Text
+                type="bold"
+                // size="label"
+                style={{
+                  color: "#209FAE",
+                  margin: 5,
+                }}
+              >
+                {" "}
+                {t("seedetail")}
+              </Text>
+            </View>
           </Pressable>
         </View>
       </Pressable>
@@ -165,6 +282,7 @@ export default function ChatTypelayout({
 
   if (item.type == "tag_destination") {
     let data = JSON.parse(item.text);
+    console.log("data", data);
     return (
       <Pressable
         onPress={() => {
@@ -175,7 +293,7 @@ export default function ChatTypelayout({
         }}
         style={{
           borderWidth: 1,
-          borderColor: "#DAF0F2",
+          borderColor: "#209FAE",
           borderRadius: 10,
           minHeight: 330,
 
@@ -283,16 +401,11 @@ export default function ChatTypelayout({
             ) : null}
           </View>
         </View>
-        <View
-          style={{
-            borderTopWidth: 0.5,
-            borderTopColor: "d1d1d1",
-          }}
-        >
+        <View>
           <Pressable
             style={{
               alignContent: "center",
-              alignItems: "center",
+              alignItems: "flex-end",
             }}
             onPress={() => {
               navigation.push("ItineraryStack", {
@@ -304,16 +417,35 @@ export default function ChatTypelayout({
               });
             }}
           >
-            <Text
-              type="bold"
-              // size="label"
+            <View
               style={{
-                color: "#209FAE",
-                margin: 10,
+                backgroundColor: "#DAF0F2",
+                borderRadius: 3,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 5,
+                marginRight: 10,
+                marginBottom: 10,
+                marginTop: 5,
+                borderRadius: 5,
               }}
             >
-              {t("addToMy")}
-            </Text>
+              <AddHijau
+                width={10}
+                height={10}
+                style={{ backgroundColor: "#DAF0F2" }}
+              />
+              <Text
+                type="bold"
+                size="description"
+                style={{
+                  margin: 5,
+                  color: "#209FAE",
+                }}
+              >
+                {t("addToPlan")}
+              </Text>
+            </View>
           </Pressable>
         </View>
       </Pressable>
@@ -351,7 +483,7 @@ export default function ChatTypelayout({
           }}
           style={{
             borderWidth: 1,
-            borderColor: "#DAF0F2",
+            borderColor: "#209FAE",
             borderRadius: 10,
             paddingVertical: 10,
             // minHeight: 330,

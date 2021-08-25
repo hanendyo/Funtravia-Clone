@@ -151,8 +151,24 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={(style, {})} size="description" type="regular">
+          <Text style={style} size="description" type="regular">
             {data_city.name}
+          </Text>
+        </View>
+      );
+    }
+
+    if (data.type == "tag_province") {
+      let data_province = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            {data_province.name}
           </Text>
         </View>
       );

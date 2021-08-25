@@ -264,6 +264,7 @@ import Padlock from "./files/padlock.svg";
 import Newglobe from "./files/newglobe.svg";
 import Groupborder from "./files/groupborder.svg";
 import BlockDestination from "./files/block_destination.svg";
+import AddHijau from "./files/AddHijau.svg";
 
 export {
   LikeWhite,
@@ -532,4 +533,5 @@ export {
   Newglobe,
   Groupborder,
   BlockDestination,
+  AddHijau,
 };
