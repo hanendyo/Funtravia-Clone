@@ -801,7 +801,6 @@ export default function CityDetail(props) {
               style={{
                 marginTop: 10,
                 borderRadius: 10,
-                paddingBottom: 5,
                 backgroundColor: "#FFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -836,8 +835,10 @@ export default function CityDetail(props) {
                           }}
                           style={{
                             width: "25%",
-                            alignContent: "center",
-                            alignItems: "center",
+
+                            // alignContent: "center",
+                            // alignItems: "center",
+                            // alignSelf: "center",
                             padding: 5,
                           }}
                         >
@@ -857,10 +858,13 @@ export default function CityDetail(props) {
                               />
                             </View>
                           ) : (
+                            // <View>
+
+                            // </View>
                             <View
                               style={{
-                                height: 60,
-                                marginVertical: 10,
+                                // height: 60,
+                                marginVertical: 5,
                               }}
                             >
                               <View
@@ -944,7 +948,11 @@ export default function CityDetail(props) {
                 <View
                   style={{
                     width: "100%",
-                    marginTop: 10,
+                    marginTop:
+                      tutup == true && render.destination_type.length > 7
+                        ? 10
+                        : 0,
+
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -1936,7 +1944,6 @@ export default function CityDetail(props) {
                                   ? "#209fae"
                                   : "#646464",
                               textAlign: "center",
-                              marginTop: 3,
                             }}
                           >
                             {bulan[index]}
