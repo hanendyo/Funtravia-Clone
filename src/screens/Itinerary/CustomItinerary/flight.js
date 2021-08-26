@@ -208,18 +208,16 @@ export default function detailCustomItinerary(props) {
   const validate = (name) => {
     if (name === "flightNumber" && flightNumber.length === 0) {
       return false;
-    } else if (
-      (name === "timeArrCheck" && timeArrCheck.length === 0) ||
-      (name === "timeDepCheck" && timeDepCheck.length === 0)
-    ) {
+    } else if (name === "timeArrCheck" && timeArrCheck.length === 0) {
       return false;
-    } else if (
-      (name === "from" || name === "to") &&
-      (from.length === 0 || to.length === 0)
-    ) {
+    } else if (name === "timeDepCheck" && timeDepCheck.length === 0) {
       return false;
-    } else if ((name === "from" || name === "to") && from === to) {
+    } else if (name === "from" && from.length === 0) {
       return false;
+    } else if (name === "to" && to.length === 0) {
+      return false;
+      // } else if ((name === "from" || name === "to") && from === to) {
+      //   return false;
     } else {
       return true;
     }
@@ -294,8 +292,7 @@ export default function detailCustomItinerary(props) {
     }
   };
 
-  //-- Attachment
-  const mutationValid = () => {
+  const validateData = () => {
     setItemValid({
       flightNumber: validate("flightNumber"),
       timeArrCheck: validate("timeArrCheck"),
@@ -303,16 +300,16 @@ export default function detailCustomItinerary(props) {
       from: validate("from"),
       to: validate("to"),
     });
-    if (
-      itemValid.flightNumber &&
-      itemValid.timeArrCheck &&
-      itemValid.timeDepCheck &&
-      itemValid.from &&
-      itemValid.to
-    ) {
+  };
+
+  const mutationValid = () => {
+    validateData();
+    if (flightNumber && timeArrCheck && timeDepCheck && from && to) {
       mutationInput();
     }
   };
+
+  //-- Attachment
 
   const pickFile = async () => {
     try {
@@ -535,7 +532,10 @@ export default function detailCustomItinerary(props) {
           <Text
             type={"bold"}
             size="label"
-            style={{ position: "relative", top: 5 }}
+            style={{
+              position: "relative",
+              top: 5,
+            }}
           >
             {t("Notes")}
           </Text>
@@ -550,6 +550,24 @@ export default function detailCustomItinerary(props) {
           <Text size="label" type="bold">
             {t("Attachment")}
           </Text>
+          {attachment.map((data, index) => {
+            return (
+              <View style={styles.attachment}>
+                <Text style={{ width: 30 }}>{index + 1}. </Text>
+                <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    let temp = [...attachment];
+                    temp.splice(index, 1);
+                    setAttachment(temp);
+                  }}
+                  style={styles.attachmentTimes}
+                >
+                  <Xhitam width={10} height={10} />
+                </TouchableOpacity>
+              </View>
+            );
+          })}
 
           <View style={{ flex: 1, marginVertical: 10 }}>
             <TouchableOpacity
@@ -569,24 +587,6 @@ export default function detailCustomItinerary(props) {
               </Text>
             </TouchableOpacity>
           </View>
-          {attachment.map((data, index) => {
-            return (
-              <View style={styles.attachment}>
-                <Text style={{ width: 30 }}>{index + 1}. </Text>
-                <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    let temp = [...attachment];
-                    temp.splice(index, 1);
-                    setAttachment(temp);
-                  }}
-                  style={styles.attachmentTimes}
-                >
-                  <Xhitam width={10} height={10} />
-                </TouchableOpacity>
-              </View>
-            );
-          })}
         </View>
       </ScrollView>
 
@@ -596,6 +596,7 @@ export default function detailCustomItinerary(props) {
         }}
         animationIn="slideInRight"
         animationOut="slideOutRight"
+        hasBackdrop={false}
         isVisible={modalFrom || modalTo}
         style={{
           backgroundColor: "#209fae",
@@ -838,7 +839,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  ViewInputFlight: { flex: 1, marginLeft: 10, marginBottom: 5 },
+  ViewInputFlight: {
+    flex: 1,
+    marginLeft: 10,
+    marginBottom: Platform.OS === "ios" ? 15 : 5,
+  },
   flightLogo: {
     marginRight: 10,
   },
@@ -926,6 +931,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 14,
     paddingBottom: Platform.OS === "ios" ? 5 : 0,
+    paddingTop: Platform.OS === "ios" ? 15 : 0,
     paddingLeft: 1,
   },
   uploadFile: {
@@ -954,7 +960,7 @@ const styles = StyleSheet.create({
   },
   floatPlaceholder: {
     position: "absolute",
-    top: Platform.OS === "ios" ? -5 : -10,
+    top: -10,
     left: Platform.OS === "ios" ? 25 : 30,
     fontFamily: "Lato-Regular",
     color: "#A0A0A0",
