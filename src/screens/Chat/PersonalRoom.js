@@ -18,6 +18,8 @@ import {
   BackHandler,
 } from "react-native";
 import io from "socket.io-client";
+import Modal from "react-native-modal";
+
 import {
   Arrowbackwhite,
   Send,
@@ -25,12 +27,22 @@ import {
   Chat,
   Sticker,
   Emoticon,
+  CameraChat,
 } from "../../assets/svg";
-import { Button, Text, Errors, FunImage, StickerModal } from "../../component";
+import NetInfo from "@react-native-community/netinfo";
+import { useNetInfo } from "@react-native-community/netinfo";
+import {
+  Button,
+  Text,
+  Errors,
+  FunImage,
+  StickerModal,
+  FunImageAutoSize,
+} from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER } from "../../config";
+import { CHATSERVER, RESTFULL_API } from "../../config";
 import Toast from "react-native-fast-toast";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
@@ -38,6 +50,8 @@ import DeviceInfo from "react-native-device-info";
 import { Keyboard } from "react-native-ui-lib";
 import AnimatedPlayer from "react-native-animated-webp";
 import ChatTypelayout from "./ChatTypelayout";
+import ImagePicker from "react-native-image-crop-picker";
+import { ASSETS_SERVER } from "../../config";
 
 // import "./CustomKeyboard/demoKeyboards";
 const KeyboardAccessoryView = Keyboard.KeyboardAccessoryView;
@@ -60,7 +74,7 @@ export default function Room({ navigation, route }) {
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
-
+  const [modal_camera, setmodalCamera] = useState(false);
   const toastRef = useRef();
   const refInput = useRef();
   const { width, height } = Dimensions.get("screen");
@@ -141,18 +155,18 @@ export default function Room({ navigation, route }) {
       initialProps: { title },
     });
   };
-
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     BackHandler.addEventListener(navigation.goBack());
-  //     return true;
-  //   };
-
-  //   const backHandler = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     backAction
-  //   );
-  // }, []);
+  const [connected, SetConnection] = useState(false);
+  const connection_check = useNetInfo();
+  useEffect(() => {
+    const cek_koneksi = NetInfo.addEventListener((state) => {
+      if (state.isConnected) {
+        SetConnection(true);
+      } else {
+        SetConnection(false);
+      }
+    });
+    cek_koneksi();
+  }, [connection_check]);
 
   const onHeightChanged = (keyboardAccessoryViewHeight) => {
     // console.log(keyboardAccessoryViewHeight);
@@ -217,6 +231,141 @@ export default function Room({ navigation, route }) {
         <View style={styles.separatorLine} />
       </View>
     );
+  };
+
+  const pickcamera = async () => {
+    ImagePicker.openCamera({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      // cropperCircleOverlay: true,
+      // includeBase64: true,
+    }).then((image) => {
+      console.log(image);
+      let id = create_UUID();
+      _uploadimage(image, id);
+      // setdataImage(image.data);
+      let dateTime = new Date();
+
+      let chatData = {
+        id: id,
+        room: room,
+        chat: "personal",
+        type: "att_image",
+        text: "Mengirim Gambar...",
+        user_id: user.id,
+        time: dateTime,
+        is_send: false,
+      };
+      // setChatHistory(chatData);
+      // setdataImagepatch(image.path);
+      setmodalCamera(false);
+      // upload(image.data);
+    });
+  };
+
+  const pickGallery = async () => {
+    ImagePicker.openPicker({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      // cropperCircleOverlay: true,
+      // includeBase64: true,
+    }).then((image) => {
+      let id = create_UUID();
+      _uploadimage(image, id);
+      // setdataImage(image.data);
+      let dateTime = new Date();
+
+      let chatData = {
+        id: id,
+        room: room,
+        chat: "personal",
+        type: "att_image",
+        text: "Mengirim Gambar...",
+        user_id: user.id,
+        time: dateTime,
+        is_send: false,
+      };
+      // setChatHistory(chatData);
+      // setdataImage(image.data);
+      // setdataImagepatch(image.path);
+      setmodalCamera(false);
+      // upload(image.data);
+    });
+  };
+
+  const _uploadimage = async (image, id) => {
+    try {
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, "0");
+      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      var yyyy = today.getFullYear();
+
+      today = dd + "/" + mm + "/" + yyyy;
+      var formData = new FormData();
+      formData.append("id", id);
+      let ext = image.mime.split("/");
+      let image_name = "imageChat." + ext[1];
+      formData.append("img", {
+        name: image_name,
+        type: image.mime,
+        uri:
+          Platform.OS === "android"
+            ? image.path
+            : photo.path.replace("file://", ""),
+      });
+      // console.log("formData", formData);
+      let response = await fetch(
+        `${RESTFULL_API}room/personal/upload_image_chat`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+            "Content-Type": "multipart/form-data",
+          },
+          body: formData,
+        }
+      );
+      let responseJson = await response.json();
+      // console.log("responseJson", responseJson);
+      if (responseJson.status == true) {
+        // getUserAndToken();
+        let dateTime = new Date();
+        let chatData = {
+          id: id,
+          room: room,
+          chat: "personal",
+          type: "att_image",
+          text: responseJson.filepath,
+          user_id: user.id,
+          time: dateTime,
+          is_send: true,
+        };
+        if (socket.connected) {
+          await socket.emit("message", chatData);
+        } else {
+          sendOffline(chatData);
+        }
+        RNToasty.Show({
+          duration: 1,
+          title: "Success upload image",
+          position: "bottom",
+        });
+      } else {
+        //   setloading(false);
+        throw new Error(responseJson.message);
+      }
+    } catch (error) {
+      // setloading(false);
+      RNToasty.Show({
+        duration: 1,
+        title: "error : someting wrong!",
+        position: "bottom",
+      });
+      console.log(error);
+    }
   };
 
   let flatListRef = useRef();
@@ -315,17 +464,19 @@ export default function Room({ navigation, route }) {
     });
     navigation.setOptions(navigationOptions);
     if (init) {
-      console.log("aa");
       getUserToken();
       setChatHistory();
       // setConnection();
     }
     socket.on("new_chat_personal", (data) => {
-      console.log("c");
+      // console.log("c");
       setChatHistory(data);
     });
+
     return () => socket.disconnect();
   }, []);
+
+  useEffect(() => {}, []);
 
   const setConnection = () => {
     socket.emit("join", room);
@@ -354,49 +505,11 @@ export default function Room({ navigation, route }) {
         setMessage(recent);
       }
     } else {
-      await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
-      setMessage([data]);
-    }
-  };
-
-  const setChatHistory_offline = async (data) => {
-    // console.log("dara");
-    let history = await AsyncStorage.getItem("history_" + room);
-
-    let historyoff = await AsyncStorage.getItem("historyoff_" + room);
-    if (historyoff) {
-      let recent_off = JSON.parse(historyoff);
-      recent_off.push(data);
-      if (history) {
-        let recent = JSON.parse(history);
-        await AsyncStorage.setItem(
-          "historyoff_" + room,
-          JSON.stringify(recent_off)
-        );
-        let all_his = recent.concat(recent_off);
-        setMessage(all_his);
-      } else {
-        await AsyncStorage.setItem(
-          "historyoff_" + room,
-          JSON.stringify(recent)
-        );
-        setMessage(recent);
-      }
-    } else {
-      if (history) {
-        let recent = JSON.parse(history);
-        await AsyncStorage.setItem(
-          "historyoff_" + room,
-          JSON.stringify([data])
-        );
-        let all_his = recent.concat([data]);
-        setMessage(all_his);
-      } else {
-        await AsyncStorage.setItem(
-          "historyoff_" + room,
-          JSON.stringify([data])
-        );
+      if (data) {
+        await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
         setMessage([data]);
+      } else {
+        getUserToken();
       }
     }
   };
@@ -426,17 +539,32 @@ export default function Room({ navigation, route }) {
 
   const sendOffline = async (data) => {
     data = Object.assign(data, { is_send: false });
-    setChatHistory_offline(data);
+    setChatHistory(data);
   };
+
+  function create_UUID() {
+    var dt = new Date().getTime();
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+      c
+    ) {
+      var r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+    });
+    return uuid;
+  }
 
   const submitChatMessage = async () => {
     // console.log(a);
+    // console.log("create_UUID", create_UUID());
+    let uuid = create_UUID();
     if (button) {
       SetkeyboardOpenState(false);
       if (chat && chat.replace(/\s/g, "").length) {
         await setButton(false);
         let dateTime = new Date();
         let chatData = {
+          id: uuid,
           room: room,
           chat: "personal",
           type: "text",
@@ -450,7 +578,6 @@ export default function Room({ navigation, route }) {
         } else {
           sendOffline(chatData);
         }
-        console.log(socket);
         await setChat("");
         await setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
@@ -597,22 +724,22 @@ export default function Room({ navigation, route }) {
   };
 
   const [messages, setMessages] = useState("");
-  const [modalError, setModalError] = useState(false);
+  // const [modalError, setmodalCameraError] = useState(false);
   const [_stickerModal, setStickerModal] = useState(false);
 
-  const modals = () => {
-    setModalError(true);
-    setMessages("Sticker Coming Soon");
-  };
+  // const modals = () => {
+  //   setmodalCameraError(true);
+  //   setMessages("Sticker Coming Soon");
+  // };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <Toast ref={toastRef} />
-      <Errors
+      {/* <Errors
         modals={modalError}
-        setModals={(e) => setModalError(e)}
+        setmodalCameras={(e) => setmodalCameraError(e)}
         message={messages}
-      />
+      /> */}
       <View
         style={{
           flex: 1,
@@ -871,6 +998,7 @@ export default function Room({ navigation, route }) {
                       }
                 }
               />
+              <CameraChat width={40} height={40} />
             </View>
             <Button
               text=""
@@ -960,6 +1088,7 @@ export default function Room({ navigation, route }) {
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
               borderRadius: 50,
+              flexDirection: "row",
             }}
           >
             <TextInput
@@ -973,20 +1102,38 @@ export default function Room({ navigation, route }) {
                 Platform.OS == "ios"
                   ? {
                       maxHeight: 100,
-                      margin: 10,
+                      marginVertical: 10,
+                      marginLeft: 10,
+                      width: "80%",
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
                   : {
                       maxHeight: 100,
                       marginVertical: 5,
-                      marginHorizontal: 10,
+                      marginLeft: 10,
                       padding: 0,
+                      width: "80%",
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
+                      // borderWidth: 1,
                     }
               }
             />
+            <Pressable
+              onPress={() => {
+                setmodalCamera(true);
+              }}
+              style={{
+                // borderWidth: 1,
+                width: "15%",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CameraChat width={25} height={25} />
+            </Pressable>
           </View>
           <Button
             text=""
@@ -1000,6 +1147,51 @@ export default function Room({ navigation, route }) {
           </Button>
         </KeyboardAvoidingView>
       )}
+      <Modal
+        onBackdropPress={() => {
+          setmodalCamera(false);
+        }}
+        onRequestClose={() => setmodalCamera(false)}
+        onDismiss={() => setmodalCamera(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modal_camera}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 60,
+            padding: 20,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => pickcamera()}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("OpenCamera")}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => pickGallery()}
+          >
+            <Text size="description" type="regular" style={{}}>
+              {t("OpenGallery")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

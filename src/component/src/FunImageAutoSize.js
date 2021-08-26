@@ -25,6 +25,7 @@ export default function FunImageAutoSize({
   let [temp, setTemp] = useState([]);
   let [progress, setProgress] = useState();
   let path;
+
   if (url && url !== undefined) {
     let extension = Platform.OS === "android" ? "file://" : "";
     let name = sh.unique(url);
@@ -78,7 +79,7 @@ export default function FunImageAutoSize({
       path = uri;
     }
   }
-  // console.log(style);
+  console.log("aaa", path);
 
   if (loading) {
     return (

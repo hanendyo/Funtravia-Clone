@@ -572,6 +572,53 @@ export default function ChatTypelayout({
     }
   }
 
+  if (item.type == "att_image") {
+    return (
+      <Pressable
+        onPress={() => {
+          // navigation.push("FeedStack", {
+          //   screen: "CommentPost",
+          //   params: {
+          //     post_id: data.id,
+          //     //   comment_id: data.comment_feed.id,
+          //   },
+          // });
+        }}
+        style={{
+          borderWidth: 1,
+          borderColor: "#DAF0F2",
+          borderRadius: 10,
+          padding: 10,
+          // minHeight: 330,
+          // padding: 10,
+          marginVertical: 10,
+          // flexDirection: "row",
+          backgroundColor: "#F6F6F6",
+          // shadowColor: "#DAF0F2",
+          // shadowOffset: {
+          //   width: 0,
+          //   height: 5,
+          // },
+          // shadowOpacity: 0.1,
+          // shadowRadius: 6.27,
+
+          // elevation: 6,
+        }}
+      >
+        <FunImageAutoSize
+          source={{ uri: item.text }}
+          style={{
+            width: 250,
+            height: 250,
+            alignSelf: "center",
+            // marginVertical: 10,
+            // borderRadius: 10,
+          }}
+        />
+      </Pressable>
+    );
+  }
+
   return (
     <View
       style={[

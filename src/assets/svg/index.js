@@ -265,6 +265,7 @@ import Newglobe from "./files/newglobe.svg";
 import Groupborder from "./files/groupborder.svg";
 import BlockDestination from "./files/block_destination.svg";
 import AddHijau from "./files/AddHijau.svg";
+import CameraChat from "./files/camera_chat.svg";
 
 export {
   LikeWhite,
@@ -534,4 +535,5 @@ export {
   Groupborder,
   BlockDestination,
   AddHijau,
+  CameraChat,
 };
