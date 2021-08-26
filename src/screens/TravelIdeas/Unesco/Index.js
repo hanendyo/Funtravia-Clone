@@ -35,6 +35,7 @@ import {
   Select,
   PinHitam,
   Arrowbackwhite,
+  PinHijau,
 } from "../../../assets/svg";
 import { Button, Text, Truncate, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -61,7 +62,8 @@ const SafeStatusBar = Platform.select({
 });
 const HeaderHeight = Platform.select({
   ios: Notch ? 335 - 48 : 335 - 20,
-  android: 305 - StatusBar.currentHeight,
+  // android: 305 - StatusBar.currentHeight,
+  android: 325 - StatusBar.currentHeight,
 });
 
 const tab2ItemSize = (width - 40) / 3;
@@ -244,7 +246,7 @@ export default function Unesco({ navigation, route }) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeft: () => (
@@ -315,7 +317,7 @@ export default function Unesco({ navigation, route }) {
   const PosisiCountry = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     // outputRange: [HeaderHeight - 125, 50, TabBarHeight + 10],
-    outputRange: [HeaderHeight - 125, -10, -100],
+    outputRange: [HeaderHeight - 135, -10, -100],
     extrapolate: "clamp",
   });
 
@@ -340,6 +342,7 @@ export default function Unesco({ navigation, route }) {
   }
 
   console.log("listdestinasi_unesco", listdestinasi_unesco);
+
   /**
    * PanResponder for header
    */
@@ -357,8 +360,6 @@ export default function Unesco({ navigation, route }) {
       SetDataBanner(dataBanner.get_banner);
     },
   });
-
-  // console.log(Banner);
 
   const headerPanResponder = useRef(
     PanResponder.create({
@@ -629,7 +630,7 @@ export default function Unesco({ navigation, route }) {
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - 100,
+            height: HeaderHeight - 120,
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
@@ -655,21 +656,22 @@ export default function Unesco({ navigation, route }) {
         <View
           style={{
             flex: 1,
-            marginTop: 35,
+            marginTop: 40,
             paddingHorizontal: 20,
             // height: 200,
             zIndex: -10,
           }}
         >
-          <Text size="label" type="bold" style={{ marginBottom: 5 }}>
+          <Text size="title" type="bold" style={{ marginBottom: 5 }}>
             {Banner && Banner.title
               ? Banner.title
               : "UNESCO World Heritage Centre"}
           </Text>
           <Text
-            size="description"
+            size="label"
             style={{
               textAlign: "justify",
+              lineHeight: 20,
             }}
           >
             {Banner && Banner.description
@@ -683,6 +685,7 @@ export default function Unesco({ navigation, route }) {
   };
 
   const renderCulture = ({ item, index }) => {
+    console.log("item", item);
     return (
       <Pressable
         // onPress={() => {
@@ -700,25 +703,47 @@ export default function Unesco({ navigation, route }) {
         }
         style={{
           flexDirection: "row",
-          paddingHorizontal: 10,
+          marginHorizontal: 15,
           marginVertical: 5,
           flex: 1,
           // borderWidth: 1,
+          backgroundColor: "#FFF",
+          shadowColor: "#FFF",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 6,
+          borderRadius: 5,
         }}
       >
-        <View style={{ width: "35%", height: 85 }}>
+        <View
+          style={{
+            width: 150,
+            height: 130,
+          }}
+        >
           <Image
             source={{ uri: item.images.image }}
-            style={{ width: "100%", height: 85, borderRadius: 5 }}
+            style={{
+              width: 150,
+              height: 130,
+              borderTopLeftRadius: 5,
+              borderBottomLeftRadius: 5,
+            }}
             resizeMode="cover"
           />
         </View>
         <View
           style={{
             marginHorizontal: 10,
-            marginVertical: 5,
+            marginTop: 5,
             width: "60%",
             justifyContent: "space-between",
+            flex: 1,
+            marginBottom: 8,
           }}
         >
           <View>
@@ -730,7 +755,7 @@ export default function Unesco({ navigation, route }) {
             </Text>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <PinHitam height={15} width={15} />
+            <PinHijau height={15} width={15} style={{ marginRight: 5 }} />
             <Text numberOfLines={1} size="description" type="regular">
               {item.cities.name}, {item.province.name}
             </Text>
@@ -850,7 +875,7 @@ export default function Unesco({ navigation, route }) {
             <View
               style={{
                 marginVertical: 5,
-                marginHorizontal: 10,
+                marginHorizontal: 20,
               }}
             >
               <Text size="label" type="bold">

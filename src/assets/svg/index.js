@@ -263,6 +263,9 @@ import Prevabu from "./files/prevabu.svg";
 import Padlock from "./files/padlock.svg";
 import Newglobe from "./files/newglobe.svg";
 import Groupborder from "./files/groupborder.svg";
+import BlockDestination from "./files/block_destination.svg";
+import AddHijau from "./files/AddHijau.svg";
+import CameraChat from "./files/camera_chat.svg";
 
 export {
   LikeWhite,
@@ -530,4 +533,7 @@ export {
   Padlock,
   Newglobe,
   Groupborder,
+  BlockDestination,
+  AddHijau,
+  CameraChat,
 };

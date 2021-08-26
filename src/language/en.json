@@ -628,5 +628,13 @@
   "inputAlertCheckIn": "Must input check in time",
   "inputAlertCheckOut": "Must input check out time",
   "inputAlertFile": "Must input attachment",
-  "inputAlertGuestName": "Must input guest name"
+  "inputAlertGuestName": "Must input guest name",
+  "PublicFacility": "Public Facility",
+  "GreatFor": "Greate For",
+  "OperationTime": "Operation Time",
+  "NearbyPlace": "Nearby Place",
+  "WhereSubDestination": "Where they were recorded",
+  "MovieLocation": "Movie Location",
+  "SubDestinationPhoto": "Photos collection from visitor",
+  "seedetail": "See details"
 }

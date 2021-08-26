@@ -15,6 +15,7 @@ import {
   Pressable,
   ImageBackground,
   FlatList,
+  Modal as ModalRN,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DetailProvince from "../../../graphQL/Query/Province/DetailProvince";
@@ -33,6 +34,10 @@ import {
   TravelStories,
   LikeRed,
   Logofuntravianew,
+  ShareBlack,
+  Xgray,
+  Nextabu,
+  Prevabu,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -49,6 +54,8 @@ import {
   FunAnimatedImage,
   RenderMaps,
   FunMaps,
+  CopyLink,
+  shareAction,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import JournalProvince from "../../../graphQL/Query/Province/JournalProvince";
@@ -68,7 +75,7 @@ import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 50;
+const TabBarHeight = 45;
 const HeaderHeight = 300;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
@@ -109,6 +116,7 @@ export default function CityDetail(props) {
   const [tab2Data] = useState(Array(1).fill(0));
 
   let scrollRef = useRef();
+  const [sharemodal, SetShareModal] = useState(false);
   let [full, setFull] = useState(false);
   /**
    * ref
@@ -128,6 +136,22 @@ export default function CityDetail(props) {
     outputRange: [0, -50],
     extrapolate: "clamp",
   });
+
+  let hides = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    })
+  );
+
+  let hide = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
 
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
@@ -309,7 +333,7 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
-      setList_journal(dataJournal.journal_by_city);
+      setList_journal(dataJournal.journal_by_province);
     },
   });
 
@@ -657,32 +681,34 @@ export default function CityDetail(props) {
 
     return (
       // Deskripsi
-      <View>
+      <View
+        style={{
+          marginTop: 5,
+        }}
+      >
         {render && render.description ? (
           <View
             style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              flexDirection: "column",
+              justifyContent: "flex-start",
+              paddingHorizontal: 5,
             }}
           >
             <View>
-              <Text type="bold" size="label" style={{}}>
+              <Text type="bold" size="title" style={{ marginBottom: 5 }}>
                 {t("generalInformation")}
               </Text>
-
               {full == false && render.description.length > 120 ? (
                 <Text
                   size="readable"
                   type="regular"
                   style={{
-                    textAlign: "justify",
+                    textAlign: "left",
                     lineHeight: 20,
                   }}
                 >
                   <Truncate
                     text={render ? render.description : null}
-                    length={120}
+                    length={160}
                   />
                 </Text>
               ) : (
@@ -690,7 +716,7 @@ export default function CityDetail(props) {
                   size="readable"
                   type="regular"
                   style={{
-                    textAlign: "justify",
+                    textAlign: "left",
                     lineHeight: 20,
                   }}
                 >
@@ -712,7 +738,6 @@ export default function CityDetail(props) {
                     style={{
                       color: "#209FAE",
                       lineHeight: 20,
-                      marginTop: 5,
                     }}
                   >
                     {t("readMore")}
@@ -736,27 +761,30 @@ export default function CityDetail(props) {
             </View>
           </View>
         ) : null}
+
         {/* Activities */}
         {render && render.destination_group.length > 0 ? (
           <View
             style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
+              paddingTop: 15,
               width: "100%",
             }}
           >
-            <Text size="label" type="bold" style={{}}>
-              {t("activities&Experience")}
-            </Text>
-            <Text size="description">{t("exprole&inspiredtrip")}</Text>
+            <View
+              style={{
+                paddingHorizontal: 5,
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                {t("activities&Experience")}
+              </Text>
+              <Text size="description">{t("exprole&inspiredtrip")}</Text>
+            </View>
+
             <View
               style={{
                 marginTop: 10,
-                width: "100%",
-                borderRadius: 5,
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingBottom: 10,
+                borderRadius: 10,
                 backgroundColor: "#FFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -765,14 +793,15 @@ export default function CityDetail(props) {
                 },
                 shadowOpacity: 0.1,
                 shadowRadius: 6.27,
-
                 elevation: 6,
               }}
             >
               <View
                 style={{
                   width: "100%",
+                  paddingVertical: 10,
                   flexWrap: "wrap",
+                  paddingHorizontal: 10,
                   flexDirection: "row",
                 }}
               >
@@ -783,17 +812,17 @@ export default function CityDetail(props) {
                           key={"keydestination" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
-                              idgroup: item.id,
-                              idprovince: render.id,
+                              idtype: item.id_type,
+                              idcity: render.id,
                               token: token,
                             });
                           }}
                           style={{
-                            // borderWidth: 1,
                             width: "25%",
-                            // justifyContent: '',
-                            alignContent: "center",
-                            alignItems: "center",
+
+                            // alignContent: "center",
+                            // alignItems: "center",
+                            // alignSelf: "center",
                             padding: 5,
                           }}
                         >
@@ -813,33 +842,38 @@ export default function CityDetail(props) {
                               />
                             </View>
                           ) : (
+                            // <View>
+
+                            // </View>
                             <View
                               style={{
-                                height: 60,
-                                marginTop: 5,
+                                // height: 60,
+                                marginVertical: 5,
                               }}
                             >
                               <View
                                 style={{
-                                  height: 50,
-                                  width: 50,
-                                  borderRadius: 30,
+                                  height: 60,
+                                  width: 60,
+                                  borderRadius: 40,
                                   backgroundColor: "#F6F6F6",
                                   justifyContent: "center",
                                   alignItems: "center",
+                                  alignSelf: "center",
                                 }}
                               >
                                 <FunIcon
                                   icon={item.icon ? item.icon : "w-fog"}
-                                  height={40}
-                                  width={40}
+                                  height={50}
+                                  width={50}
                                   style={{
                                     bottom: -3,
                                   }}
                                 />
                               </View>
+
                               <Text
-                                size="small"
+                                size="description"
                                 style={{
                                   textAlign: "center",
                                   marginTop: 3,
@@ -858,9 +892,8 @@ export default function CityDetail(props) {
                           key={"keydestination1" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
-                              idgroup: item.id,
-                              idprovince: render.id,
-                              token: token,
+                              idtype: item.id,
+                              idcity: render.id,
                             });
                           }}
                           style={{
@@ -884,7 +917,7 @@ export default function CityDetail(props) {
                               }}
                             />
                             <Text
-                              size="small"
+                              size="description"
                               style={{
                                 textAlign: "center",
                                 marginTop: 3,
@@ -899,7 +932,11 @@ export default function CityDetail(props) {
                 <View
                   style={{
                     width: "100%",
-                    marginTop: 10,
+                    marginTop:
+                      tutup == true && render.destination_group.length > 7
+                        ? 10
+                        : 0,
+
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -944,32 +981,37 @@ export default function CityDetail(props) {
         {/* at Glance with Tabs */}
         <View
           style={{
-            paddingVertical: 10,
-            paddingHorizontal: 15,
+            paddingTop: 15,
             width: "100%",
           }}
         >
-          {i18n.language === "id" ? (
-            <Text size="label" type="bold" style={{}}>
-              {t("atGlance")}
+          <View
+            style={{
+              paddingHorizontal: 5,
+            }}
+          >
+            {i18n.language === "id" ? (
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                {t("atGlance")}
 
-              <Capital text={render ? render.name : ""} />
-            </Text>
-          ) : (
-            <Text size="label" type="bold" style={{}}>
-              <Capital text={render ? render.name : ""} />
+                <Capital text={render ? render.name : ""} />
+              </Text>
+            ) : (
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                <Capital text={render ? render.name : ""} />
 
-              {t("atGlance")}
-            </Text>
-          )}
-          <Text size="description">{t("geography&religion")}</Text>
+                {t("atGlance")}
+              </Text>
+            )}
+            <Text size="description">{t("geography&religion")}</Text>
+          </View>
           <View
             style={{
               marginTop: 10,
               borderRadius: 10,
+              paddingBottom: 10,
               minHeight: 50,
               justifyContent: "center",
-              padding: 10,
               backgroundColor: "#FFF",
               shadowColor: "#000",
               shadowOffset: {
@@ -984,106 +1026,143 @@ export default function CityDetail(props) {
             <Tabs
               tabBarUnderlineStyle={{
                 backgroundColor: "#209FAE",
+                height: 2,
               }}
               tabContainerStyle={{
                 backgroundColor: "white",
                 elevation: 0,
+                height: 45,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
               }}
-              // locked={false}
             >
               <Tab
-                heading={t("map")}
+                heading={t("Map")}
                 tabStyle={{
                   backgroundColor: "white",
                   elevation: 0,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#209FAE",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                  borderTopLeftRadius: 10,
                 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{
+                  backgroundColor: "white",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                  borderTopLeftRadius: 10,
+                }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#6C6C6C",
                 }}
                 activeTextStyle={{
                   fontFamily: "Lato-Bold",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#209FAE",
                 }}
               >
-                {/* // <View></View> */}
-                <FunMaps
-                  icon={render?.map ? render?.map : "mk-belitung"}
-                  height={250}
-                  width={width - 70}
+                <View
                   style={{
-                    bottom: -3,
+                    marginHorizontal: 10,
                   }}
-                />
+                >
+                  <FunMaps
+                    icon={render?.map ? render?.map : "mk-belitung"}
+                    height={250}
+                    width={width - 70}
+                    style={{
+                      bottom: -3,
+                    }}
+                  />
+                </View>
               </Tab>
+
               <Tab
                 heading={t("climate")}
                 tabStyle={{
                   backgroundColor: "white",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#209FAE",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{
+                  backgroundColor: "white",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#6C6C6C",
                 }}
                 activeTextStyle={{
                   fontFamily: "Lato-Bold",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#209FAE",
                 }}
               >
-                <Image
-                  source={
-                    render?.countries?.climate
-                      ? { uri: render.countries.climate }
-                      : default_image
-                  }
+                <View
                   style={{
-                    width: "100%",
-                    height: width * 0.7,
-                    resizeMode: "center",
+                    marginHorizontal: 10,
                   }}
-                ></Image>
+                >
+                  <Image
+                    source={
+                      render?.countries?.climate
+                        ? { uri: render.countries.climate }
+                        : default_image
+                    }
+                    style={{
+                      width: "100%",
+                      height: width * 0.7,
+                      resizeMode: "center",
+                    }}
+                  ></Image>
+                </View>
               </Tab>
               <Tab
                 heading={t("religion")}
                 tabStyle={{
                   backgroundColor: "white",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#209FAE",
+                  borderBottomColor: "#d1d1d1",
+                  borderTopRightRadius: 10,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{
+                  backgroundColor: "white",
+                  borderBottomColor: "#d1d1d1",
+                  borderTopRightRadius: 10,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#6C6C6C",
                 }}
                 activeTextStyle={{
                   fontFamily: "Lato-Bold",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#209FAE",
                 }}
               >
-                <Image
-                  source={
-                    render?.countries?.religion
-                      ? { uri: render.countries.religion }
-                      : default_image
-                  }
+                <View
                   style={{
-                    width: "100%",
-                    height: width * 0.7,
-                    resizeMode: "center",
+                    marginHorizontal: 10,
                   }}
-                ></Image>
+                >
+                  <Image
+                    source={
+                      render?.countries?.religion
+                        ? { uri: render.countries.religion }
+                        : default_image
+                    }
+                    style={{
+                      width: "100%",
+                      height: width * 0.7,
+                      resizeMode: "center",
+                    }}
+                  ></Image>
+                </View>
               </Tab>
             </Tabs>
           </View>
@@ -1093,19 +1172,26 @@ export default function CityDetail(props) {
         {renderjournal && renderjournal.length > 0 ? (
           <View
             style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
+              paddingTop: 15,
               width: "100%",
             }}
           >
-            <Text size="label" type="bold" style={{}}>
-              {t("traveljournal")}
-            </Text>
-            <Text size="description">{t("traveldiscovery")}</Text>
+            <View
+              style={{
+                paddingHorizontal: 5,
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                {t("traveljournal")}
+              </Text>
+              <Text size="description">{t("traveldiscovery")}</Text>
+            </View>
+
             <View
               style={{
                 marginTop: 10,
                 borderRadius: 10,
+
                 minHeight: 50,
                 justifyContent: "center",
                 padding: 10,
@@ -1122,11 +1208,12 @@ export default function CityDetail(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  listkey={"imagesliderjournal"}
+                  key={"imagesliderjournalsdsd"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
                     borderTopRightRadius: 5,
+
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
@@ -1134,6 +1221,7 @@ export default function CityDetail(props) {
                       {item.map((dataX, indeks) => {
                         return (
                           <Pressable
+                            key={"jrnla" + indeks}
                             onPress={() =>
                               props.navigation.push("JournalStackNavigation", {
                                 screen: "DetailJournal",
@@ -1144,8 +1232,9 @@ export default function CityDetail(props) {
                             }
                             style={{
                               flexDirection: "row",
-                              width: width - 70,
+                              width: width - 50,
                               height: width * 0.2,
+
                               padding: 5,
                             }}
                           >
@@ -1197,7 +1286,8 @@ export default function CityDetail(props) {
                               <View
                                 style={{
                                   zIndex: 900,
-                                  marginTop: 30,
+                                  marginTop: 15,
+                                  marginLeft: 10,
                                 }}
                               >
                                 {dataX.liked === false ? (
@@ -1498,9 +1588,9 @@ export default function CityDetail(props) {
         {/* Event */}
         <View
           style={{
-            paddingHorizontal: 15,
-            paddingVertical: 10,
             flexDirection: "column",
+            paddingTop: 15,
+            paddingBottom: 15,
           }}
         >
           <View>
@@ -1508,18 +1598,53 @@ export default function CityDetail(props) {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                // borderWidth: 1,
-                paddingHorizontal: 0,
+                paddingHorizontal: 5,
               }}
             >
-              <Text type="bold" size="label" style={{}}>
+              <Text type="bold" size="title" style={{ marginBottom: 3 }}>
                 {t("festival&event")}
               </Text>
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("listevent", {
+                    params: {
+                      idcity: render.id,
+                      idcountries: "",
+                      // idcountries:
+                    },
+                  });
+                }}
+              ></Ripple>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+                paddingHorizontal: 5,
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  width: "75%",
+                }}
+              >
+                <Text
+                  size="description"
+                  style={{
+                    textAlign: "justify",
+                    // marginBottom: 5,
+                  }}
+                >
+                  {t("exprolefestival&eventcity")}
+                </Text>
+              </View>
+
+              <Ripple
+                onPress={() => {
+                  props.navigation.navigate("listevent", {
                     idcity: render.id,
-                    // idcountries:
                   });
                 }}
               >
@@ -1536,27 +1661,11 @@ export default function CityDetail(props) {
             </View>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text
-                size="description"
-                style={{
-                  textAlign: "justify",
-                }}
-              >
-                {t("exprolefestival&eventcity")}
-              </Text>
-            </View>
-            <View
-              style={{
                 marginTop: 10,
                 backgroundColor: "white",
                 width: "100%",
                 shadowColor: "#000",
+                borderRadius: 10,
                 shadowOffset: {
                   width: 0,
                   height: 5,
@@ -1579,8 +1688,8 @@ export default function CityDetail(props) {
                       ]
                 }
                 style={{
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
                   // width: Dimensions.get('screen').width - 40,
                 }}
                 customSlide={({ index, item, style, width }) => (
@@ -1603,102 +1712,152 @@ export default function CityDetail(props) {
                           : default_image
                       }
                       style={{
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
                         height: Dimensions.get("screen").width * 0.4,
-                        width: Dimensions.get("screen").width - 40,
+                        width: Dimensions.get("screen").width - 30,
                         alignContent: "center",
                         alignItems: "center",
                         justifyContent: "flex-end",
                       }}
                       imageStyle={{
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
                         height: Dimensions.get("screen").width * 0.4,
-                        width: Dimensions.get("screen").width - 40,
-                        resizeMode: "cover",
+                        width: Dimensions.get("screen").width - 30,
+                        // resizeMode: "cover",
                       }}
-                    >
-                      <LinearGradient
-                        colors={["rgba(0, 0, 0, 0.50)", "rgba(0, 0, 0, 0)"]}
-                        start={{ x: 0, y: 1 }}
-                        end={{ x: 0, y: 0 }}
-                        style={{
-                          height: "30%",
-                          width: "100%",
-                          alignContent: "center",
-                          alignItems: "center",
-                          justifyContent: "flex-end",
-                          padding: 25,
-                        }}
-                      >
-                        {/* <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                          }}
-                        >
-                          {item.name ? item.name : ""}
-                        </Text> */}
-                      </LinearGradient>
-                    </ImageBackground>
+                    ></ImageBackground>
                   </Ripple>
                 )}
                 customButtons={(position, move) => (
-                  <View
-                    style={{
-                      width: width - 40,
-                      position: "absolute",
-                      bottom: 10,
-                      left: 0,
-                      alignContent: "center",
-                      alignItems: "center",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }} // onPress={() => {
-                    //   props.navigation.navigate("Abouts");
-                    // }}
-                  >
+                  <View>
+                    {/* hide custom bottom */}
+                    <View
+                      style={{
+                        width: width - 40,
+                        position: "absolute",
+                        bottom: 10,
+                        borderWidth: 1,
+                        display: "none",
+                        left: 0,
+                        alignContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {(dataevent?.event?.length > 0
+                        ? dataevent?.event
+                        : [default_image]
+                      ).map((item, index) => {
+                        return (
+                          <TouchableHighlight
+                            key={"keyevent" + index}
+                            underlayColor="#f7f7f700"
+                            onPress={() => move(index)}
+                          >
+                            <View
+                              style={{
+                                height: position === index ? 7 : 5,
+                                width: position === index ? 7 : 5,
+                                borderRadius: position === index ? 7 : 3,
+                                backgroundColor:
+                                  position === index ? "#209fae" : "white",
+                                marginHorizontal: 2,
+                              }}
+                            ></View>
+                          </TouchableHighlight>
+                        );
+                      })}
+                      {/* show title event and move position */}
+                    </View>
                     {(dataevent?.event?.length > 0
                       ? dataevent?.event
                       : [default_image]
-                    ).map((image, index) => {
-                      return (
-                        <TouchableHighlight
-                          key={"keyevent" + index}
-                          underlayColor="#f7f7f700"
-                          onPress={() => move(index)}
-                        >
+                    ).map((item, index) => (
+                      <View>
+                        {position == index ? (
                           <View
                             style={{
-                              height: position === index ? 7 : 5,
-                              width: position === index ? 7 : 5,
-                              borderRadius: position === index ? 7 : 3,
-                              backgroundColor:
-                                position === index ? "#209fae" : "white",
-                              marginHorizontal: 2,
+                              width: "100%",
+                              alignContent: "center",
+                              alignItems: "center",
+
+                              flexDirection: "row",
+                              height: 40,
+                              backgroundColor: "#FFFFFF",
                             }}
-                          ></View>
-                        </TouchableHighlight>
-                      );
-                    })}
+                          >
+                            <View
+                              style={{
+                                width: "100%",
+                                paddingHorizontal: 25,
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  flexDirection: "row",
+                                  width: 15,
+                                }}
+                              >
+                                {dataevent?.event?.length > 0 && index !== 0 ? (
+                                  <Ripple onPress={() => move(position - 1)}>
+                                    <Prevabu height={15} width={15} />
+                                  </Ripple>
+                                ) : null}
+                              </View>
+
+                              <View style={{}}>
+                                {dataevent?.event?.length > 0 ? (
+                                  <Text
+                                    size="title"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    <Truncate text={item.name} length={35} />
+                                  </Text>
+                                ) : (
+                                  <Text
+                                    size="title"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {"Tidak ada event bulan ini"}
+                                  </Text>
+                                )}
+                              </View>
+                              <View
+                                style={{
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  flexDirection: "row",
+                                }}
+                              >
+                                {dataevent?.event?.length > 0 &&
+                                index !== dataevent?.event?.length - 1 ? (
+                                  <Ripple onPress={() => move(position + 1)}>
+                                    <Nextabu height={15} width={15} />
+                                  </Ripple>
+                                ) : null}
+                              </View>
+                            </View>
+                          </View>
+                        ) : null}
+                      </View>
+                    ))}
                   </View>
                 )}
               />
-              <View
-                style={{
-                  width: "100%",
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: 40,
-                  backgroundColor: "#209fae",
-                }}
-              >
-                <Text size="label" type="bold" style={{ color: "white" }}>
-                  <Gettahun />
-                </Text>
-              </View>
+
               <View
                 style={{
                   width: "100%",
@@ -1719,10 +1878,17 @@ export default function CityDetail(props) {
                               dataevent.month === item.month ? "#DAF0F2" : null,
                             // borderWidth: 1,
                             width: "33.3%",
+                            height: 38,
                             // justifyContent: '',
                             alignContent: "center",
                             alignItems: "center",
                             padding: 7,
+                            borderBottomWidth:
+                              dataevent.month === item.month ? 2 : 0,
+                            borderBottomColor:
+                              dataevent.month === item.month
+                                ? "#209fae"
+                                : "#646464",
                             borderTopWidth: 0.5,
                             borderLeftWidth:
                               index !== 0 &&
@@ -1732,19 +1898,22 @@ export default function CityDetail(props) {
                                 ? 0.5
                                 : 0,
                             // borderRightWidth: 0.5,
-                            borderColor: "#209fae",
+                            borderColor: "#d1d1d1",
                           }}
                         >
                           <Text
-                            size="description"
-                            type="bold"
+                            size="title"
+                            type={
+                              dataevent.month === item.month
+                                ? "bold"
+                                : "regular"
+                            }
                             style={{
                               color:
                                 dataevent.month === item.month
                                   ? "#209fae"
                                   : "#646464",
                               textAlign: "center",
-                              marginTop: 3,
                             }}
                           >
                             {bulan[index]}
@@ -1786,6 +1955,7 @@ export default function CityDetail(props) {
             </View>
           </View>
         </View>
+
         {/* Itinerary Terbaru */}
         {renderItinerary.length > 0 ? (
           <View
@@ -2237,7 +2407,6 @@ export default function CityDetail(props) {
     return (
       <View
         style={{
-          paddingHorizontal: 15,
           paddingVertical: 5,
         }}
       >
@@ -2260,9 +2429,16 @@ export default function CityDetail(props) {
                 return (
                   <View key={index}>
                     {i.type === "image" ? (
-                      <View style={{ marginVertical: 10 }}>
+                      <View>
                         {i.title ? (
-                          <Text size="label" type="bold">
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+                            }}
+                          >
                             {i.title}
                           </Text>
                         ) : null}
@@ -2270,18 +2446,15 @@ export default function CityDetail(props) {
                         <View
                           style={{
                             alignItems: "center",
-                            marginTop: i.title ? 20 : 0,
                           }}
                         >
                           <FunImage
-                            source={
-                              i?.image ? { uri: i?.image } : default_image
-                            }
+                            source={i.image ? { uri: i.image } : default_image}
                             resizeMode={"cover"}
                             style={{
                               borderWidth: 0.4,
+                              marginTop: i.title ? 5 : 0,
                               borderColor: "#d3d3d3",
-
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -2293,20 +2466,24 @@ export default function CityDetail(props) {
                           style={{
                             textAlign: "left",
                             marginTop: 5,
+                            marginBottom: 15,
                             color: "#616161",
+                            paddingHorizontal: 5,
                           }}
                         >
                           {i.text ? i.text : ""}
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View>
                         {i.title ? (
                           <Text
-                            size="label"
+                            size="title"
                             type="bold"
                             style={{
-                              // marginBottom: 5,
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+
                               color: "#464646",
                             }}
                           >
@@ -2314,13 +2491,15 @@ export default function CityDetail(props) {
                           </Text>
                         ) : null}
                         <Text
-                          size="readable"
+                          size="title"
                           type="regular"
                           style={{
-                            marginTop: i.title ? 20 : 0,
-                            lineHeight: 20,
+                            lineHeight: 22,
                             textAlign: "left",
                             color: "#464646",
+                            marginBottom: 15,
+
+                            paddingHorizontal: 5,
                           }}
                         >
                           {i.text ? i.text : ""}
@@ -2485,6 +2664,7 @@ export default function CityDetail(props) {
   /**
    * render Helper
    */
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -2527,7 +2707,7 @@ export default function CityDetail(props) {
         <Animated.Image
           style={{
             width: "100%",
-            height: "80%",
+            height: "85%",
             resizeMode: "cover",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
@@ -2540,94 +2720,91 @@ export default function CityDetail(props) {
         />
         <Animated.View
           style={{
-            height: 55,
+            // height: 55,
             width: Dimensions.get("screen").width,
-            backgroundColor: "#209fae",
-            paddingHorizontal: 20,
-            paddingVertical: 5,
+            backgroundColor: "#FFFFFF",
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             alignItems: "center",
             alignContent: "center",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
           }}
         >
-          <View>
-            <Text size="title" type="black" style={{ color: "white" }}>
-              {dataProvince && dataProvince.province_detail_v2 ? (
-                <Truncate
-                  text={Capital({
-                    text: dataProvince.province_detail_v2.name,
-                  })}
-                  length={20}
-                ></Truncate>
-              ) : null}
-            </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              paddingHorizontal: 20,
+            }}
+          >
             <View
               style={{
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-                marginTop: 2,
+                flex: 1,
+                justifyContent: "center",
+                paddingTop: 10,
+                display: "flex",
               }}
             >
-              <PinWhite height={15} width={15} />
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginLeft: 5, color: "white" }}
-              >
-                {dataProvince && dataProvince.province_detail_v2
-                  ? dataProvince.province_detail_v2.countries.name.toUpperCase()
-                  : "-"}
+              <Text size="title" type="bold">
+                {dataProvince && dataProvince.province_detail_v2 ? (
+                  <Truncate
+                    text={Capital({
+                      text: dataProvince.province_detail_v2.name,
+                    })}
+                    length={20}
+                  ></Truncate>
+                ) : null}
               </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginTop: 5,
+                  marginBottom: 3,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <PinHijau height={12} width={12} />
+                  <Text size="label" type="regular" style={{ marginLeft: 10 }}>
+                    {dataProvince && dataProvince.province_detail_v2
+                      ? dataProvince.province_detail_v2.countries.name
+                      : "-"}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                justifyContent: "center",
+                display: "flex",
+              }}
+            >
+              <Pressable
+                onPress={() => SetShareModal(true)}
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  marginRight: 2,
+                  height: 30,
+                  width: 30,
+                  borderRadius: 17,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ShareBlack height={15} width={15} />
+              </Pressable>
             </View>
           </View>
         </Animated.View>
-
-        <Animated.View style={[styles.overlay]}>
-          <Animated.View
-            style={{
-              height: "100%",
-              width: "100%",
-              position: "absolute",
-              zIndex: 1,
-              backgroundColor: "rgba(0, 0, 0, 0.38)",
-              top: 0,
-              left: 0,
-              // opacity: imageOpacity,
-            }}
-          ></Animated.View>
-        </Animated.View>
       </Animated.View>
-    );
-  };
-
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 2,
-          borderBottomColor: focused ? "#209fae" : "white",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Text
-          style={[
-            focused ? styles.labelActive : styles.label,
-            {
-              opacity: focused ? 1 : 0.7,
-              height: 38,
-              paddingTop: 2,
-            },
-          ]}
-        >
-          {route.title}
-        </Text>
-      </View>
     );
   };
 
@@ -2690,7 +2867,7 @@ export default function CityDetail(props) {
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
-          paddingHorizontal: 10,
+          paddingHorizontal: 15,
           minHeight: height - SafeStatusBar + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
@@ -2725,16 +2902,14 @@ export default function CityDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 0.8,
-            borderColor: "#d1d1d1",
+            // borderBottomWidth: 0.8,
+            // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
               onPress={() => {
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
                   index: index,
                   animated: true,
                 });
@@ -2742,21 +2917,19 @@ export default function CityDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
-                  paddingHorizontal: 15,
                   width:
-                    props.navigationState.routes.length < 2
+                    props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
-                      : // : props.navigationState.routes.length < 3
-                        // ? Dimensions.get("screen").width * 0.5
-                        // : props.navigationState.routes.length < 4
-                        // ? Dimensions.get("screen").width * 0.33
-                        null,
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
                   height: TabBarHeight,
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
                 <Text
@@ -2764,22 +2937,17 @@ export default function CityDetail(props) {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
-                      // borderWidth: 1,
                       borderBottomWidth: 0,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      height: 38,
-                      paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
                     },
                   ]}
                 >
-                  {item.key}
+                  <Truncate text={item.key} length={15} />
                 </Text>
               </View>
             </Ripple>
@@ -3109,12 +3277,15 @@ export default function CityDetail(props) {
           position: "absolute",
           top: SafeStatusBar,
           zIndex: 9999,
+          opacity: hides.current,
           flexDirection: "row",
           justifyContent: "space-between",
+          // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
+          marginHorizontal: 20,
           height: 55,
-          width: Dimensions.get("screen").width,
+          width: Dimensions.get("screen").width - 40,
         }}
       >
         <Button
@@ -3125,10 +3296,22 @@ export default function CityDetail(props) {
           onPress={() => props.navigation.goBack()}
           style={{
             height: 50,
-            marginLeft: 8,
+            // marginLeft: 8,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.3)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Animated.View>
         </Button>
         <TouchableOpacity
           onPress={(x) =>
@@ -3140,7 +3323,113 @@ export default function CityDetail(props) {
             })
           }
           style={{
-            width: Dimensions.get("screen").width - 90,
+            width: Dimensions.get("screen").width - 130,
+            backgroundColor: "rgba(0,0,0,0.3)",
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Image
+            source={search_button}
+            style={{
+              height: 20,
+              width: 20,
+              resizeMode: "contain",
+              marginHorizontal: 10,
+            }}
+          ></Image>
+
+          <View>
+            <Text
+              size="readable"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("searchin") + lisProvince.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          // onPress={() => setshowside(true)}
+          style={{
+            height: 50,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.3)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+          </Animated.View>
+        </Button>
+      </Animated.View>
+
+      {/* jika scrollheader, animated show */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Animated.View>
+        </Button>
+        <TouchableOpacity
+          onPress={(x) =>
+            props.navigation.push("SearchPg", {
+              province_id: dataProvince.province_detail_v2.id,
+              searchInput: "",
+              locationname: lisProvince.name,
+              aktifsearch: true,
+            })
+          }
+          style={{
+            width: Dimensions.get("screen").width - 130,
             backgroundColor: "rgba(0,0,0,0.2)",
             flexDirection: "row",
             alignContent: "center",
@@ -3157,38 +3446,18 @@ export default function CityDetail(props) {
               marginHorizontal: 10,
             }}
           ></Image>
-          {/* <Input
-            value={search}
-            style={{
-              height: 20,
-              padding: 0,
-              textAlign: "left",
-              fontFamily: "Lato-Regular",
-              fontSize: 14,
-              color: "white",
-            }}
-            placeholderTextColor={"white"}
-            underlineColorAndroid="transparent"
-            onChangeText={(x) => setTextc(x)}
-            placeholder={"Search in " + lisProvince.name}
-            returnKeyType="search"
-            onSubmitEditing={(x) =>
-              props.navigation.push("SearchPg", {
-                idcity: dataProvince.province_detail_v2.id,
-                searchInput: search,
-                aktifsearch: true,
-              })
-            }
-          /> */}
-          <Text
-            size="readable"
-            type="bold"
-            style={{
-              color: "#FFFFFF",
-            }}
-          >
-            {t("searchin") + lisProvince.name}
-          </Text>
+
+          <View>
+            <Text
+              size="readable"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("searchin") + lisProvince.name}
+            </Text>
+          </View>
         </TouchableOpacity>
         <Button
           text={""}
@@ -3200,13 +3469,141 @@ export default function CityDetail(props) {
             height: 50,
           }}
         >
-          {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
+          <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
         </Button>
       </Animated.View>
 
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
+
+      {/* modal share */}
+      <ModalRN
+        useNativeDriver={true}
+        visible={sharemodal}
+        onRequestClose={() => SetShareModal(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => SetShareModal(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => SetShareModal(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                SetShareModal(false);
+                props.navigation.push("CountryStack", {
+                  screen: "SendProvince",
+                  params: {
+                    province: dataProvince.province_detail_v2,
+                  },
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("send_to")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                shareAction({
+                  from: "province",
+                  target: dataProvince.province_detail_v2,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("share")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                CopyLink({
+                  from: "province",
+                  target: dataProvince.province_detail_v2.id,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("copyLink")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ModalRN>
     </View>
   );
 }
@@ -3232,7 +3629,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Regular" },
   labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
   tab: {
     elevation: 0,
