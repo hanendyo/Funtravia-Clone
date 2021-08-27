@@ -2150,8 +2150,8 @@ export default function ItineraryDetail(props) {
   const Formattime = (berangkat, tiba) => {
     let awal = berangkat.split(" ");
     let akhir = tiba.split(" ");
-    console.log(awal[1].substring(0, 5));
-    console.log(akhir[1]);
+    // console.log(awal[1].substring(0, 5));
+    // console.log(akhir[1]);
     return "" + awal[1].substring(0, 5) + " - " + akhir[1].substring(0, 5);
   };
 
@@ -2159,8 +2159,8 @@ export default function ItineraryDetail(props) {
 
   const renderItinerary = ({ item, index }) => {
     const x = dataList.length - 1;
-    console.log(item?.detail_flight);
-    console.log(item?.detail_accomodation);
+    // console.log(item?.detail_flight);
+    // console.log(item?.detail_accomodation);
     return (
       <View
         style={{
@@ -5004,6 +5004,9 @@ export default function ItineraryDetail(props) {
     await setModalss(true);
   };
 
+  console.log("start", datadetail?.itinerary_detail?.start_date);
+  console.log("end", datadetail?.itinerary_detail?.end_date);
+
   const setdataimagepost = async (data, inde) => {
     setIndexs(inde);
     var tempdatas = [];
@@ -5298,8 +5301,8 @@ export default function ItineraryDetail(props) {
                   params: {
                     itineraryId: itineraryId,
                     dayId: idDay,
-                    startDate: dataList?.itinerary_detail?.start_date,
-                    endDate: dataList?.itinerary_detail?.end_date,
+                    startDate: datadetail?.itinerary_detail?.start_date,
+                    endDate: datadetail?.itinerary_detail?.end_date,
                   },
                 });
               }}
@@ -5344,8 +5347,8 @@ export default function ItineraryDetail(props) {
                   params: {
                     itineraryId: itineraryId,
                     dayId: idDay,
-                    startDate: dataList?.itinerary_detail?.start_date,
-                    endDate: dataList?.itinerary_detail?.end_date,
+                    startDate: datadetail?.itinerary_detail?.start_date,
+                    endDate: datadetail?.itinerary_detail?.end_date,
                   },
                 });
               }}
