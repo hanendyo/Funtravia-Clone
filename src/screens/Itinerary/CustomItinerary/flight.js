@@ -204,6 +204,7 @@ export default function detailCustomItinerary(props) {
     from: true,
     to: true,
   });
+  console.log(props);
 
   const validate = (name) => {
     if (name === "flightNumber" && flightNumber.length === 0) {
