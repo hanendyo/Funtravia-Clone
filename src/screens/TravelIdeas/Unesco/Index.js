@@ -50,7 +50,7 @@ const Notch = DeviceInfo.hasNotch();
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 48;
+const TabBarHeight = 50;
 // const HeaderHeight = width - 100;
 // const SafeStatusBar = Platform.select({
 //   ios: 44,
@@ -61,9 +61,9 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 const HeaderHeight = Platform.select({
-  ios: Notch ? 335 - 48 : 335 - 20,
+  ios: Notch ? 350 - 48 : 350 - 20,
   // android: 305 - StatusBar.currentHeight,
-  android: 325 - StatusBar.currentHeight,
+  android: 320 - StatusBar.currentHeight,
 });
 
 const tab2ItemSize = (width - 40) / 3;
@@ -638,7 +638,7 @@ export default function Unesco({ navigation, route }) {
               source={{ uri: Banner.banner_asset[0].filepath }}
               style={{
                 width: width,
-                height: HeaderHeight - 100,
+                height: HeaderHeight - 110,
               }}
               resizeMode="cover"
             />
@@ -647,7 +647,7 @@ export default function Unesco({ navigation, route }) {
               source={unesco}
               style={{
                 width: width,
-                height: HeaderHeight - 100,
+                height: HeaderHeight - 110,
               }}
               resizeMode="cover"
             />
@@ -708,13 +708,21 @@ export default function Unesco({ navigation, route }) {
           flex: 1,
           // borderWidth: 1,
           backgroundColor: "#FFF",
-          shadowColor: "#FFF",
+          // shadowColor: "#FFF",
+          // shadowOffset: {
+          //   width: 0,
+          //   height: 5,
+          // },
+          // shadowOpacity: 0.1,
+          // shadowRadius: 6.27,
+
+          shadowColor: "#000",
           shadowOffset: {
             width: 0,
-            height: 5,
+            height: 3,
           },
-          shadowOpacity: 0.1,
-          shadowRadius: 6.27,
+          shadowOpacity: 0.27,
+          shadowRadius: 4.65,
           elevation: 6,
           borderRadius: 5,
         }}
@@ -770,7 +778,9 @@ export default function Unesco({ navigation, route }) {
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
+          {
+            opacity: focused ? 1 : 0.7,
+          },
         ]}
       >
         {route.title}
@@ -874,7 +884,8 @@ export default function Unesco({ navigation, route }) {
           ListHeaderComponent={
             <View
               style={{
-                marginVertical: 5,
+                marginBottom: 5,
+                marginTop: 15,
                 marginHorizontal: 20,
               }}
             >
@@ -1076,10 +1087,12 @@ export default function Unesco({ navigation, route }) {
             />
           ) : (
             <Text
-              size="label"
+              size="title"
               type="bold"
               style={{
                 marginRight: 10,
+                // borderWidth: 1,
+                marginBottom: 5,
               }}
             >
               {selectedCountry?.name}
@@ -1108,13 +1121,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },
-  labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Bold" },
+  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
   tab: {
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
     height: TabBarHeight,
+
+    // borderWidth: 2,
   },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
 });

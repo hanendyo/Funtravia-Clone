@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
-import { Arrowbackwhite, LikeEmpty } from "../../assets/svg";
+import { Arrowbackwhite, LikeEmpty, SearchWhite } from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
@@ -26,6 +26,8 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 export default function Journal(props) {
   const { t } = useTranslation();
+  const [idCategory, setIdCategory] = useState(null);
+  const [indexCategory, setIndexCategory] = useState(0);
   let [search, setSearch] = useState({
     category_id: null,
     order_by: null,
@@ -52,8 +54,11 @@ export default function Journal(props) {
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -67,6 +72,27 @@ export default function Journal(props) {
         }}
       >
         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
+    headerRight: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() =>
+          props.navigation.navigate("JournalCategory", {
+            category: idCategory,
+            index: indexCategory,
+          })
+        }
+        style={{
+          height: 55,
+          // borderWidth: 1,
+          marginRight: 10,
+        }}
+      >
+        <SearchWhite height={20} width={20} />
       </Button>
     ),
   };
@@ -657,12 +683,16 @@ export default function Journal(props) {
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
             <Pressable
-              onPress={() =>
+              onPress={() => {
                 props.navigation.navigate("JournalCategory", {
                   category: item.id,
                   index: index,
-                })
-              }
+                });
+                console.log("item", item);
+                console.log("index", index);
+                setIndexCategory(index);
+                setIdCategory(item?.id);
+              }}
             >
               <Text
                 style={{
@@ -796,7 +826,7 @@ export default function Journal(props) {
                     width: "75%",
                     paddingLeft: 15,
                     justifyContent: "space-between",
-                    felx: 1,
+                    // felx: 1,
                   }}
                 >
                   <View>

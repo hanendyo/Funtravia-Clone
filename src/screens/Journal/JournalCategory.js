@@ -10,7 +10,12 @@ import {
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image } from "../../assets/png";
-import { Arrowbackwhite, LikeEmpty, Search } from "../../assets/svg";
+import {
+  Arrowbackwhite,
+  LikeEmpty,
+  Search,
+  SearchWhite,
+} from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
@@ -21,10 +26,10 @@ import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function JournalCategory(props) {
+  console.log("props category journal", props);
   let [category, setCategory] = useState(props.route.params.category);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
-  console.log("index :", props.route.params.index);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -38,7 +43,7 @@ export default function JournalCategory(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -93,6 +98,8 @@ export default function JournalCategory(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
+
+  console.log("datalist category", dataList);
 
   let list = [];
   if (dataList && "datas" in dataList.journal_list) {
@@ -208,22 +215,58 @@ export default function JournalCategory(props) {
       >
         <View
           style={{
-            height: "40%",
-            borderRadius: 2,
             flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#DAF0F2",
+            marginTop: 15,
+            width: Dimensions.get("screen").width - 30,
             marginHorizontal: 15,
-            marginVertical: 10,
           }}
         >
-          <Search height={15} width={15} style={{ marginLeft: 10 }} />
-          <TextInput
-            fontSize={14}
-            placeholder="Search"
-            onChangeText={(x) => setSearch(x)}
-            style={{ width: "90%" }}
-          />
+          <View
+            style={{
+              height: 40,
+              borderRadius: 5,
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#f6f6f6",
+              // marginVertical: 10,
+              // width: "80%",
+              flex: 1,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#209fae",
+                borderBottomLeftRadius: 5,
+                borderTopLeftRadius: 5,
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                width: 40,
+              }}
+            >
+              <SearchWhite height={20} width={20} />
+            </View>
+            <TextInput
+              fontSize={16}
+              placeholder={t("search")}
+              onChangeText={(x) => setSearch(x)}
+              style={{ marginHorizontal: 10, flex: 1 }}
+            />
+          </View>
+          <Pressable
+            style={{
+              height: 40,
+              marginLeft: 5,
+              borderRadius: 5,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => props.navigation.goBack()}
+          >
+            <Text size="label" type="regular">
+              {t("cancel")}
+            </Text>
+          </Pressable>
         </View>
         {dataCategory ? (
           <FlatList
@@ -231,7 +274,8 @@ export default function JournalCategory(props) {
             initialScrollIndex={props.route.params.index}
             contentContainerStyle={{
               flexDirection: "row",
-              paddingRight: 10,
+              paddingRight: 15,
+              marginTop: 15,
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -243,11 +287,11 @@ export default function JournalCategory(props) {
                     padding: 10,
                     backgroundColor:
                       category === item.id ? "#209FAE" : "#F6F6F6",
-                    marginLeft: 10,
+                    marginLeft: 15,
                     borderRadius: 5,
                     color: category === item.id ? "white" : "black",
                   }}
-                  size={"description"}
+                  size={"label"}
                   type={"bold"}
                 >
                   {item.name}
@@ -262,8 +306,9 @@ export default function JournalCategory(props) {
           style={{
             flex: 1,
             width: Dimensions.get("window").width,
-            paddingHorizontal: 10,
+            paddingHorizontal: 15,
             alignContent: "center",
+            backgroundColor: "#FFF",
           }}
         >
           <FlatList
@@ -279,31 +324,31 @@ export default function JournalCategory(props) {
                       item.firstimg ? { uri: item.firstimg } : default_image
                     }
                     style={{
-                      width: "21%",
+                      width: "25%",
                       height: 110,
                       borderRadius: 10,
                     }}
                   />
                   <View
                     style={{
-                      width: "79%",
+                      width: "75%",
                       marginVertical: 5,
-                      paddingLeft: 10,
+                      paddingLeft: 15,
                       justifyContent: "space-between",
                     }}
                   >
                     <View>
                       <Text
                         style={{ color: "#209FAE" }}
-                        size={"small"}
+                        size={"description"}
                         type={"bold"}
                       >
                         #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
                       </Text>
                       <Text
-                        size={"label"}
+                        size={"title"}
                         type={"bold"}
-                        style={{ color: "#3E3E3E", marginTop: 5 }}
+                        style={{ color: "#3E3E3E" }}
                         numberOfLines={1}
                       >
                         {item.title}
@@ -313,12 +358,12 @@ export default function JournalCategory(props) {
                         /> */}
                       </Text>
                       <Text
-                        size={"small"}
+                        size={"label"}
                         type={"regular"}
                         style={{
-                          textAlign: "justify",
+                          textAlign: "left",
                           marginTop: 5,
-                          lineHeight: 16,
+                          lineHeight: 18,
                         }}
                         numberOfLines={2}
                       >
@@ -336,7 +381,7 @@ export default function JournalCategory(props) {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text size={"small"} type={"regular"}>
+                        <Text size={"description"} type={"regular"}>
                           {dateFormatMonthYears(item.date)}
                         </Text>
                         <View
@@ -348,7 +393,7 @@ export default function JournalCategory(props) {
                           <LikeEmpty width={10} height={10} />
                           <Text
                             style={{ marginLeft: 5 }}
-                            size={"small"}
+                            size={"description"}
                             type={"regular"}
                           >
                             {item.article_response_count > 0
@@ -364,9 +409,9 @@ export default function JournalCategory(props) {
                 </Pressable>
                 <View
                   style={{
-                    margin: 10,
+                    marginVertical: 15,
                     borderBottomColor: "#f6f6f6",
-                    borderBottomWidth: 0.9,
+                    borderBottomWidth: 1,
                   }}
                 />
               </View>
@@ -374,6 +419,7 @@ export default function JournalCategory(props) {
             keyExtractor={(item) => item.id}
             nestedScrollEnabled
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ marginTop: 15 }}
             refreshing={refreshing}
             refreshControl={
               <RefreshControl
