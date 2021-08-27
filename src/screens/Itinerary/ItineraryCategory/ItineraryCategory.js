@@ -47,6 +47,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import { RNToasty } from "react-native-toasty";
 
 export default function ItineraryCategory(props) {
+  console.log("props category", props);
   const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState();
