@@ -15,6 +15,7 @@ import {
   Pressable,
   ImageBackground,
   FlatList,
+  Modal as ModalRN,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
@@ -33,6 +34,8 @@ import {
   TravelStories,
   LikeRed,
   Logofuntravianew,
+  ShareBlack,
+  Xgray,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -71,7 +74,7 @@ import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 50;
+const TabBarHeight = 45;
 const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
@@ -91,6 +94,7 @@ export default function Country(props) {
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
+  const [sharemodal, SetShareModal] = useState(false);
   let Bln = new Date().getMonth();
   let Bln1 = 0;
   if (Bln < 10) {
@@ -98,6 +102,7 @@ export default function Country(props) {
   } else {
     Bln1 = Bln + 1;
   }
+
   // let Bln1 = Bln + 1;
   let years = new Date().getFullYear();
 
@@ -133,6 +138,22 @@ export default function Country(props) {
     outputRange: [1, 0.5, 0],
     extrapolate: "clamp",
   });
+
+  let hides = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    })
+  );
+
+  let hide = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
 
   useEffect(() => {
     refreshData();
@@ -552,107 +573,113 @@ export default function Country(props) {
         {render && render.description ? (
           <View
             style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              flexDirection: "column",
+              justifyContent: "flex-start",
+              paddingHorizontal: 5,
             }}
           >
-            <Text type="bold" size="label" style={{}}>
-              {t("generalInformation")}
-            </Text>
-            {full == false && render.description.length > 120 ? (
-              <Text
-                size="readable"
-                type="regular"
-                style={{
-                  textAlign: "justify",
-                  lineHeight: 20,
-                }}
-              >
-                <Truncate
-                  text={render ? render.description : null}
-                  length={120}
-                />
+            <View>
+              <Text type="bold" size="title" style={{ marginBottom: 5 }}>
+                {t("generalInformation")}
               </Text>
-            ) : (
-              <Text
-                size="readable"
-                type="regular"
-                style={{
-                  textAlign: "justify",
-                  lineHeight: 20,
-                }}
-              >
-                {render ? render.description : null}
-              </Text>
-            )}
-            {full == false && render.description.length > 120 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  setFull(true);
-                }}
-                style={{
-                  height: 20,
-                }}
-              >
+              {full == false && render.description.length > 120 ? (
                 <Text
                   size="readable"
                   type="regular"
                   style={{
-                    color: "#209FAE",
+                    textAlign: "left",
                     lineHeight: 20,
-                    marginTop: 5,
                   }}
                 >
-                  {t("readMore")}
+                  <Truncate
+                    text={render ? render.description : null}
+                    length={160}
+                  />
                 </Text>
-              </TouchableOpacity>
-            ) : full == true && render.description.length > 120 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  setFull(false);
-                }}
-              >
+              ) : (
                 <Text
                   size="readable"
                   type="regular"
-                  style={{ color: "#209FAE" }}
+                  style={{
+                    textAlign: "left",
+                    lineHeight: 20,
+                  }}
                 >
-                  {t("readless")}
+                  {render ? render.description : null}
                 </Text>
-              </TouchableOpacity>
-            ) : null}
+              )}
+              {full == false && render.description.length > 120 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setFull(true);
+                  }}
+                  style={{
+                    height: 20,
+                  }}
+                >
+                  <Text
+                    size="readable"
+                    type="regular"
+                    style={{
+                      color: "#209FAE",
+                      lineHeight: 20,
+                    }}
+                  >
+                    {t("readMore")}
+                  </Text>
+                </TouchableOpacity>
+              ) : full == true && render.description.length > 120 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setFull(false);
+                  }}
+                >
+                  <Text
+                    size="readable"
+                    type="regular"
+                    style={{ color: "#209FAE" }}
+                  >
+                    {t("readless")}
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
           </View>
         ) : null}
 
-        {/* Glance */}
+        {/* at Glance with Tabs */}
         <View
           style={{
-            paddingVertical: 10,
-            paddingHorizontal: 15,
+            paddingTop: 15,
             width: "100%",
           }}
         >
-          {i18n.language === "id" ? (
-            <Text size="label" type="bold" style={{}}>
-              {t("atGlance")}
+          <View
+            style={{
+              paddingHorizontal: 5,
+            }}
+          >
+            {i18n.language === "id" ? (
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                {t("atGlance")}
 
-              <Capital text={render ? render.name : null} />
-            </Text>
-          ) : (
-            <Text size="label" type="bold" style={{}}>
-              <Capital text={render ? render.name : null} />
+                <Capital text={render ? render.name : ""} />
+              </Text>
+            ) : (
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                <Capital text={render ? render.name : ""} />
 
-              {t("atGlance")}
-            </Text>
-          )}
+                {t("atGlance")}
+              </Text>
+            )}
+            <Text size="description">{t("geography&religion")}</Text>
+          </View>
           <View
             style={{
               marginTop: 10,
               borderRadius: 10,
+              paddingBottom: 10,
               minHeight: 50,
               justifyContent: "center",
-              padding: 10,
               backgroundColor: "#FFF",
               shadowColor: "#000",
               shadowOffset: {
@@ -667,100 +694,141 @@ export default function Country(props) {
             <Tabs
               tabBarUnderlineStyle={{
                 backgroundColor: "#209FAE",
+                height: 2,
               }}
               tabContainerStyle={{
                 backgroundColor: "white",
                 elevation: 0,
+                height: 45,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
               }}
             >
               <Tab
-                heading={t("map")}
+                heading={t("Map")}
                 tabStyle={{
                   backgroundColor: "white",
                   elevation: 0,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#209FAE",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                  borderTopLeftRadius: 10,
                 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{
+                  backgroundColor: "white",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                  borderTopLeftRadius: 10,
+                }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#6C6C6C",
                 }}
                 activeTextStyle={{
                   fontFamily: "Lato-Bold",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#209FAE",
                 }}
               >
-                <FunMaps
-                  icon={render?.map ? render.map : "mk-belitung"}
-                  height={250}
-                  width={width - 70}
+                <View
                   style={{
-                    bottom: -3,
+                    marginHorizontal: 10,
                   }}
-                />
+                >
+                  <FunMaps
+                    icon={render?.map ? render?.map : "mk-belitung"}
+                    height={250}
+                    width={width - 50}
+                    style={{
+                      bottom: -3,
+                    }}
+                  />
+                </View>
               </Tab>
+
               <Tab
                 heading={t("climate")}
                 tabStyle={{
                   backgroundColor: "white",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#209FAE",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{
+                  backgroundColor: "white",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#6C6C6C",
                 }}
                 activeTextStyle={{
                   fontFamily: "Lato-Bold",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#209FAE",
                 }}
               >
-                <Image
-                  source={
-                    render?.climate ? { uri: render.climate } : default_image
-                  }
+                <View
                   style={{
-                    width: "100%",
-                    height: width * 0.7,
-                    resizeMode: "center",
+                    marginHorizontal: 10,
                   }}
-                ></Image>
+                >
+                  <Image
+                    source={
+                      render?.climate ? { uri: render?.climate } : default_image
+                    }
+                    style={{
+                      width: "100%",
+                      height: width * 0.7,
+                      resizeMode: "center",
+                    }}
+                  ></Image>
+                </View>
               </Tab>
               <Tab
                 heading={t("religion")}
                 tabStyle={{
                   backgroundColor: "white",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#209FAE",
+                  borderBottomColor: "#d1d1d1",
+                  borderTopRightRadius: 10,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
                 }}
-                activeTabStyle={{ backgroundColor: "white" }}
+                activeTabStyle={{
+                  backgroundColor: "white",
+                  borderBottomColor: "#d1d1d1",
+                  borderTopRightRadius: 10,
+                  borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                }}
                 textStyle={{
                   fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#6C6C6C",
                 }}
                 activeTextStyle={{
                   fontFamily: "Lato-Bold",
-                  fontSize: 14,
+                  fontSize: 16,
                   color: "#209FAE",
                 }}
               >
-                <Image
-                  source={
-                    render?.religion ? { uri: render.religion } : default_image
-                  }
+                <View
                   style={{
-                    width: "100%",
-                    height: width * 0.7,
-                    resizeMode: "center",
+                    marginHorizontal: 10,
                   }}
-                ></Image>
+                >
+                  <Image
+                    source={
+                      render?.religion
+                        ? { uri: render?.religion }
+                        : default_image
+                    }
+                    style={{
+                      width: "100%",
+                      height: width * 0.7,
+                      resizeMode: "center",
+                    }}
+                  ></Image>
+                </View>
               </Tab>
             </Tabs>
           </View>
@@ -770,19 +838,26 @@ export default function Country(props) {
         {renderjournal && renderjournal.length > 0 ? (
           <View
             style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
+              paddingTop: 15,
               width: "100%",
             }}
           >
-            <Text size="label" type="bold" style={{}}>
-              {t("traveljournal")}
-            </Text>
-            <Text size="description">{t("traveldiscovery")}</Text>
+            <View
+              style={{
+                paddingHorizontal: 5,
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                {t("traveljournal")}
+              </Text>
+              <Text size="description">{t("traveldiscovery")}</Text>
+            </View>
+
             <View
               style={{
                 marginTop: 10,
                 borderRadius: 10,
+
                 minHeight: 50,
                 justifyContent: "center",
                 padding: 10,
@@ -799,7 +874,7 @@ export default function Country(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  listkey={"imagesliderJournal"}
+                  key={"imagesliderjournalsdsd"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -808,11 +883,11 @@ export default function Country(props) {
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
-                    <View key={"tetts" + index}>
-                      {item.map((dataX, index) => {
+                    <View key={"ky" + index}>
+                      {item.map((dataX, indeks) => {
                         return (
                           <Pressable
-                            key={"keyjournal" + index}
+                            key={"jrnla" + indeks}
                             onPress={() =>
                               props.navigation.push("JournalStackNavigation", {
                                 screen: "DetailJournal",
@@ -823,17 +898,18 @@ export default function Country(props) {
                             }
                             style={{
                               flexDirection: "row",
-                              width: width - 70,
-                              padding: 5,
+                              width: width - 50,
                               height: width * 0.2,
+
+                              padding: 5,
                             }}
                           >
-                            {dataX && dataX.picture ? (
-                              <Image
+                            {dataX && dataX.userby ? (
+                              <FunImage
                                 source={
                                   item.picture
                                     ? {
-                                        uri: dataX.picture,
+                                        uri: dataX.userby.picture,
                                       }
                                     : null
                                 }
@@ -843,7 +919,7 @@ export default function Country(props) {
                                   borderRadius: 5,
                                   margin: 5,
                                 }}
-                              ></Image>
+                              />
                             ) : (
                               <Logofuntravianew height={55} width={55} />
                             )}
@@ -876,7 +952,8 @@ export default function Country(props) {
                               <View
                                 style={{
                                   zIndex: 900,
-                                  marginTop: 30,
+                                  marginTop: 15,
+                                  marginLeft: 10,
                                 }}
                               >
                                 {dataX.liked === false ? (
@@ -890,10 +967,10 @@ export default function Country(props) {
                                       alignItems: "center",
                                     }}
                                     onPress={() =>
-                                      _likedjournal(dataX.id, index)
+                                      _likedjournal(dataX.id, indeks, item)
                                     }
                                   >
-                                    <LikeEmpty height={15} width={15} />
+                                    <LikeEmpty height={12} width={12} />
                                   </Ripple>
                                 ) : (
                                   <Ripple
@@ -906,10 +983,10 @@ export default function Country(props) {
                                       alignItems: "center",
                                     }}
                                     onPress={() =>
-                                      _unlikedjournal(dataX.id, index)
+                                      _unlikedjournal(dataX.id, indeks, item)
                                     }
                                   >
-                                    <LikeRed height={15} width={15} />
+                                    <LikeRed height={12} width={12} />
                                   </Ripple>
                                 )}
                               </View>
@@ -933,9 +1010,8 @@ export default function Country(props) {
                         (image, index) => {
                           return (
                             <TouchableHighlight
-                              key={"keyjournal1" + index}
+                              key={"keys" + index}
                               underlayColor="#f7f7f700"
-                              // onPress={() => move(index)}
                             >
                               <View
                                 style={{
@@ -1612,6 +1688,8 @@ export default function Country(props) {
     });
   };
 
+  console.log("data", data);
+
   const startRefreshAction = () => {
     if (Platform.OS === "ios") {
       listRefArr.current.forEach((listRef) => {
@@ -1728,6 +1806,7 @@ export default function Country(props) {
   /**
    * render Helper
    */
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -1770,104 +1849,241 @@ export default function Country(props) {
         <Animated.Image
           style={{
             width: "100%",
-            height: "80%",
+            height: "85%",
             resizeMode: "cover",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            data && data.country_detail && data.country_detail.cover
+            data && data.country_detail.cover
               ? { uri: data.country_detail.cover }
               : default_image
           }
         />
         <Animated.View
           style={{
-            height: 55,
+            // height: 55,
             width: Dimensions.get("screen").width,
-            backgroundColor: "#209fae",
-            paddingHorizontal: 20,
-            paddingVertical: 5,
+            backgroundColor: "#FFFFFF",
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             alignItems: "center",
             alignContent: "center",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
           }}
         >
-          <View>
-            <Text size="title" type="black" style={{ color: "white" }}>
-              {data && data.country_detail ? (
-                <Truncate
-                  text={Capital({
-                    text: data.country_detail.name,
-                  })}
-                  length={20}
-                ></Truncate>
-              ) : null}
-            </Text>
-          </View>
-        </Animated.View>
-        <Animated.View style={[styles.overlay]}>
-          <Animated.View
+          <View
             style={{
-              height: "100%",
-              width: "100%",
-              position: "absolute",
-              zIndex: 1,
-              backgroundColor: "rgba(0, 0, 0, 0.38)",
-              top: 0,
-              left: 0,
-              // opacity: imageOpacity,
+              flexDirection: "row",
+              paddingHorizontal: 20,
             }}
-          ></Animated.View>
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                paddingTop: 10,
+                display: "flex",
+              }}
+            >
+              <Text size="title" type="bold">
+                {data && data.country_detail ? (
+                  <Truncate
+                    text={Capital({
+                      text: data.country_detail.name,
+                    })}
+                    length={20}
+                  ></Truncate>
+                ) : null}
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginTop: 5,
+                  marginBottom: 3,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <PinHijau height={12} width={12} />
+                  {/* <Text size="label" type="regular" style={{ marginLeft: 10 }}>
+                    {data && data.country_detail
+                      ? data.country_detail.countries.name
+                      : "-"}
+                  </Text> */}
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                justifyContent: "center",
+                display: "flex",
+              }}
+            >
+              <Pressable
+                onPress={() => SetShareModal(true)}
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  marginRight: 2,
+                  height: 30,
+                  width: 30,
+                  borderRadius: 17,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ShareBlack height={15} width={15} />
+              </Pressable>
+            </View>
+          </View>
         </Animated.View>
       </Animated.View>
     );
   };
 
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 2,
-          borderBottomColor: focused ? "#209fae" : "white",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Text
-          style={[
-            focused ? styles.labelActive : styles.label,
-            {
-              opacity: focused ? 1 : 0.7,
-              height: 38,
-              paddingTop: 2,
-            },
-          ]}
-        >
-          {route.title}
-        </Text>
-      </View>
-    );
-  };
+  // const renderHeader = () => {
+  //   const y = scrollY.interpolate({
+  //     inputRange: [0, HeaderHeight],
+  //     outputRange: [0, -HeaderHeight + 55],
+  //     extrapolateRight: "clamp",
+  //     // extrapolate: 'clamp',
+  //   });
+  //   return (
+  //     <Animated.View
+  //       {...headerPanResponder.panHandlers}
+  //       style={[styles.header, { transform: [{ translateY: y }] }]}
+  //       style={{
+  //         transform: [{ translateY: y }],
+  //         top: SafeStatusBar,
+  //         height: HeaderHeight,
+  //         width: "100%",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         position: "absolute",
+  //         backgroundColor: "#209fae",
+  //       }}
+  //     >
+  //       <Sidebar
+  //         props={props}
+  //         show={showside}
+  //         Data={() => {
+  //           return (
+  //             <View
+  //               style={{
+  //                 padding: 10,
+  //                 width: "100%",
+  //                 justifyContent: "flex-start",
+  //               }}
+  //             ></View>
+  //           );
+  //         }}
+  //         setClose={(e) => setshowside(false)}
+  //       />
+
+  //       <Animated.Image
+  //         style={{
+  //           width: "100%",
+  //           height: "90%",
+  //           resizeMode: "cover",
+  //           opacity: imageOpacity,
+  //           transform: [{ translateY: imageTranslate }],
+  //         }}
+  //         source={
+  //           data && data.country_detail.cover
+  //             ? { uri: data.country_detail.cover }
+  //             : default_image
+  //         }
+  //       />
+  //       <Animated.View
+  //         style={{
+  //           // height: 55,
+  //           width: Dimensions.get("screen").width,
+  //           backgroundColor: "#FFFFFF",
+  //           flexDirection: "row",
+  //           justifyContent: "flex-end",
+  //           alignItems: "center",
+  //           alignContent: "center",
+
+  //           opacity: imageOpacity,
+  //           transform: [{ translateY: imageTranslate }],
+  //         }}
+  //       >
+  //         <View
+  //           style={{
+  //             flexDirection: "row",
+  //             paddingHorizontal: 20,
+  //           }}
+  //         >
+  //           <View
+  //             style={{
+  //               flex: 1,
+  //               justifyContent: "center",
+  //               paddingTop: 10,
+  //               // borderWidth: 1,
+  //               // paddingBottom: 10,
+  //               display: "flex",
+  //             }}
+  //           >
+  //             <Text size="title" type="bold">
+  //               {data && data.country_detail ? (
+  //                 <Truncate
+  //                   text={Capital({
+  //                     text: data.country_detail.name,
+  //                   })}
+  //                   length={20}
+  //                 ></Truncate>
+  //               ) : null}
+  //             </Text>
+  //           </View>
+  //           <View
+  //             style={{
+  //               justifyContent: "center",
+  //               display: "flex",
+  //               paddingTop: 10,
+  //               // borderWidth: 1,
+  //             }}
+  //           >
+  //             <Pressable
+  //               onPress={() => SetShareModal(true)}
+  //               style={{
+  //                 backgroundColor: "#F6F6F6",
+  //                 marginRight: 2,
+  //                 height: 27,
+  //                 width: 27,
+  //                 borderRadius: 17,
+  //                 alignItems: "center",
+  //                 justifyContent: "center",
+  //               }}
+  //             >
+  //               <ShareBlack height={12} width={12} />
+  //             </Pressable>
+  //           </View>
+  //         </View>
+  //       </Animated.View>
+  //     </Animated.View>
+  //   );
+  // };
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
-    // let numCols;
 
     let data;
     let renderItem;
     switch (route.key) {
       case "general":
-        // numCols = 2;
         data = tabGeneral;
         renderItem = RenderGeneral;
         break;
       default:
-        // numCols = 3;
         data = tab2Data;
         renderItem = (e) => RenderArticle(e, route.data);
         break;
@@ -1913,7 +2129,7 @@ export default function Country(props) {
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
-          paddingHorizontal: 10,
+          paddingHorizontal: 15,
           minHeight: height - SafeStatusBar + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
@@ -1949,8 +2165,6 @@ export default function Country(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 0.8,
-            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -1966,21 +2180,19 @@ export default function Country(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
-                  paddingHorizontal: 15,
                   width:
-                    props.navigationState.routes.length < 2
+                    props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
-                      : // : props.navigationState.routes.length < 3
-                        // ? Dimensions.get("screen").width * 0.5
-                        // : props.navigationState.routes.length < 4
-                        // ? Dimensions.get("screen").width * 0.33
-                        null,
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
                   height: TabBarHeight,
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
                 <Text
@@ -1988,22 +2200,18 @@ export default function Country(props) {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
-                      // borderWidth: 1,
                       borderBottomWidth: 0,
+
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      height: 38,
-                      paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
                     },
                   ]}
                 >
-                  {item.key}
+                  <Truncate text={item?.key ? item?.key : "-"} length={15} />
                 </Text>
               </View>
             </Ripple>
@@ -2333,12 +2541,15 @@ export default function Country(props) {
           position: "absolute",
           top: SafeStatusBar,
           zIndex: 9999,
+          opacity: hides.current,
           flexDirection: "row",
           justifyContent: "space-between",
+          // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
+          marginHorizontal: 20,
           height: 55,
-          width: Dimensions.get("screen").width,
+          width: Dimensions.get("screen").width - 40,
         }}
       >
         <Button
@@ -2349,10 +2560,22 @@ export default function Country(props) {
           onPress={() => props.navigation.goBack()}
           style={{
             height: 50,
-            marginLeft: 8,
+            // marginLeft: 8,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Animated.View>
         </Button>
         <TouchableOpacity
           onPress={(x) =>
@@ -2364,8 +2587,8 @@ export default function Country(props) {
             })
           }
           style={{
-            width: Dimensions.get("screen").width - 90,
-            backgroundColor: "rgba(0,0,0,0.2)",
+            width: Dimensions.get("screen").width - 130,
+            backgroundColor: "rgba(0,0,0,0.5)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -2381,38 +2604,18 @@ export default function Country(props) {
               marginHorizontal: 10,
             }}
           ></Image>
-          {/* <Input
-            value={search}
-            style={{
-              height: 20,
-              padding: 0,
-              textAlign: "left",
-              fontFamily: "Lato-Regular",
-              fontSize: 14,
-              color: "white",
-            }}
-            placeholderTextColor={"white"}
-            underlineColorAndroid="transparent"
-            onChangeText={(x) => setTextc(x)}
-            placeholder={"Search in " + data?.country_detail?.name}
-            returnKeyType="search"
-            onSubmitEditing={(x) =>
-              props.navigation.push("SearchPg", {
-                idcountry: data.country_detail.id,
-                searchInput: search,
-                aktifsearch: true,
-              })
-            }
-          /> */}
-          <Text
-            size="readable"
-            type="bold"
-            style={{
-              color: "#FFFFFF",
-            }}
-          >
-            {t("searchin") + data?.country_detail?.name}
-          </Text>
+
+          <View>
+            <Text
+              size="readable"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("searchin") + data?.country_detail?.name}
+            </Text>
+          </View>
         </TouchableOpacity>
         <Button
           text={""}
@@ -2424,13 +2627,354 @@ export default function Country(props) {
             height: 50,
           }}
         >
-          {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+          </Animated.View>
         </Button>
       </Animated.View>
+
+      {/* jika scrollheader, animated show */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          </Animated.View>
+        </Button>
+        <TouchableOpacity
+          onPress={(x) =>
+            props.navigation.push("SearchPg", {
+              idcountry: data.country_detail.id,
+              searchInput: "",
+              locationname: data?.country_detail?.name,
+              aktifsearch: true,
+            })
+          }
+          style={{
+            width: Dimensions.get("screen").width - 130,
+            backgroundColor: "rgba(0,0,0,0.3)",
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Image
+            source={search_button}
+            style={{
+              height: 20,
+              width: 20,
+              resizeMode: "contain",
+              marginHorizontal: 10,
+            }}
+          ></Image>
+
+          <View>
+            <Text
+              size="readable"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("searchin") + data?.country_detail?.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          // onPress={() => setshowside(true)}
+          style={{
+            height: 50,
+          }}
+        >
+          <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+        </Button>
+      </Animated.View>
+
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
+
+      {/* modal share */}
+      <ModalRN
+        useNativeDriver={true}
+        visible={sharemodal}
+        onRequestClose={() => SetShareModal(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => SetShareModal(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => SetShareModal(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                SetShareModal(false);
+                props.navigation.push("CountryStack", {
+                  screen: "SendProvince",
+                  params: {
+                    province: dataProvince.province_detail_v2,
+                  },
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("send_to")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                shareAction({
+                  from: "province",
+                  target: dataProvince.province_detail_v2,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("share")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                CopyLink({
+                  from: "province",
+                  target: dataProvince.province_detail_v2.id,
+                });
+                SetShareModal(false);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("copyLink")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ModalRN>
     </View>
+
+    // <View style={styles.container}>
+    //   <StaBar backgroundColor="#14646e" barStyle="light-content" />
+    //   <Animated.View
+    //     style={{
+    //       position: "absolute",
+    //       top: SafeStatusBar,
+    //       zIndex: 9999,
+    //       flexDirection: "row",
+    //       justifyContent: "space-between",
+    //       alignContent: "center",
+    //       alignItems: "center",
+    //       height: 55,
+    //       width: Dimensions.get("screen").width,
+    //     }}
+    //   >
+    //     <Button
+    //       text={""}
+    //       size="medium"
+    //       type="circle"
+    //       variant="transparent"
+    //       onPress={() => props.navigation.goBack()}
+    //       style={{
+    //         height: 50,
+    //         marginLeft: 8,
+    //       }}
+    //     >
+    //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+    //     </Button>
+    //     <TouchableOpacity
+    //       onPress={(x) =>
+    //         props.navigation.push("SearchPg", {
+    //           idcountry: data.country_detail.id,
+    //           searchInput: "",
+    //           locationname: data?.country_detail?.name,
+    //           aktifsearch: true,
+    //         })
+    //       }
+    //       style={{
+    //         width: Dimensions.get("screen").width - 90,
+    //         backgroundColor: "rgba(0,0,0,0.2)",
+    //         flexDirection: "row",
+    //         alignContent: "center",
+    //         alignItems: "center",
+    //         padding: 10,
+    //       }}
+    //     >
+    //       <Image
+    //         source={search_button}
+    //         style={{
+    //           height: 20,
+    //           width: 20,
+    //           resizeMode: "contain",
+    //           marginHorizontal: 10,
+    //         }}
+    //       ></Image>
+    //       {/* <Input
+    //         value={search}
+    //         style={{
+    //           height: 20,
+    //           padding: 0,
+    //           textAlign: "left",
+    //           fontFamily: "Lato-Regular",
+    //           fontSize: 14,
+    //           color: "white",
+    //         }}
+    //         placeholderTextColor={"white"}
+    //         underlineColorAndroid="transparent"
+    //         onChangeText={(x) => setTextc(x)}
+    //         placeholder={"Search in " + data?.country_detail?.name}
+    //         returnKeyType="search"
+    //         onSubmitEditing={(x) =>
+    //           props.navigation.push("SearchPg", {
+    //             idcountry: data.country_detail.id,
+    //             searchInput: search,
+    //             aktifsearch: true,
+    //           })
+    //         }
+    //       /> */}
+    //       <Text
+    //         size="readable"
+    //         type="bold"
+    //         style={{
+    //           color: "#FFFFFF",
+    //         }}
+    //       >
+    //         {t("searchin") + data?.country_detail?.name}
+    //       </Text>
+    //     </TouchableOpacity>
+    //     <Button
+    //       text={""}
+    //       size="medium"
+    //       type="circle"
+    //       variant="transparent"
+    //       // onPress={() => setshowside(true)}
+    //       style={{
+    //         height: 50,
+    //       }}
+    //     >
+    //       {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
+    //     </Button>
+    //   </Animated.View>
+    //   {renderTabView()}
+    //   {renderHeader()}
+    //   {renderCustomRefresh()}
+    // </View>
   );
 }
 
@@ -2455,8 +2999,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },
-  labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
+  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
   tab: {
     elevation: 0,
     shadowOpacity: 0,

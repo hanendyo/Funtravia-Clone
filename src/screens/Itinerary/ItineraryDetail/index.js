@@ -5295,7 +5295,12 @@ export default function ItineraryDetail(props) {
                 setModalcustom(false);
                 props.navigation.push("ItineraryStack", {
                   screen: "customFlight",
-                  params: { itineraryId: itineraryId, dayId: idDay },
+                  params: {
+                    itineraryId: itineraryId,
+                    dayId: idDay,
+                    startDate: dataList?.itinerary_detail?.start_date,
+                    endDate: dataList?.itinerary_detail?.end_date,
+                  },
                 });
               }}
               style={{
@@ -5336,7 +5341,12 @@ export default function ItineraryDetail(props) {
                 setModalcustom(false);
                 props.navigation.push("ItineraryStack", {
                   screen: "customStay",
-                  params: { itineraryId: itineraryId, dayId: idDay },
+                  params: {
+                    itineraryId: itineraryId,
+                    dayId: idDay,
+                    startDate: dataList?.itinerary_detail?.start_date,
+                    endDate: dataList?.itinerary_detail?.end_date,
+                  },
                 });
               }}
               style={{

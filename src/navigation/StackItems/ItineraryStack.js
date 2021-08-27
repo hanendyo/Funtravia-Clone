@@ -23,6 +23,7 @@ import copyItinerary from "../../screens/Itinerary/CopyItinerary/Index";
 import detailItinerary from "../../screens/Itinerary/ItineraryDetail/detailItinerary";
 import customFlight from "../../screens/Itinerary/CustomItinerary/flight";
 import customStay from "../../screens/Itinerary/CustomItinerary/stay";
+import ItinerarySearchCategory from "../../screens/Itinerary/ItineraryPopular/ItinerarySearch";
 
 const ItineraryStack = createStackNavigator();
 export default function ItineraryStackNavigation() {
@@ -224,6 +225,15 @@ export default function ItineraryStackNavigation() {
       <ItineraryStack.Screen
         name="customStay"
         component={customStay}
+        options={{
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ItineraryStack.Screen
+        name="ItinerarySearchCategory"
+        component={ItinerarySearchCategory}
         options={{
           headerTransparent: false,
           headerTintColor: "white",
