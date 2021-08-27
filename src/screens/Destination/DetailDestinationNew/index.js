@@ -1433,7 +1433,7 @@ const Index = (props) => {
               style={{
                 marginTop: 10,
                 borderRadius: 10,
-                minHeight: 50,
+                minHeight: 60,
                 justifyContent: "center",
                 padding: 10,
                 backgroundColor: "#FFF",
@@ -1455,6 +1455,7 @@ const Index = (props) => {
                 style={{
                   flexDirection: "row",
                   flexWrap: "wrap",
+                  // borderWidth: 1,
                 }}
               >
                 {dataDestination &&
@@ -1463,10 +1464,11 @@ const Index = (props) => {
                       <View
                         key={"desk" + index}
                         style={{
-                          marginTop: 10,
+                          // marginTop: 10,
                           width: (width - 50) / 4,
                           justifyContent: "center",
                           alignItems: "center",
+                          // borderWidth: 1,
                         }}
                       >
                         <View
@@ -1477,14 +1479,15 @@ const Index = (props) => {
                             // backgroundColor: "#F6F6F6",
                             justifyContent: "center",
                             alignItems: "center",
+                            // borderWidth: 1,
                           }}
                         >
-                          <FunIcon icon={item?.icon} height={50} width={50} />
+                          <FunIcon icon={item?.icon} height={60} width={60} />
                         </View>
                         <Text
                           size="description"
                           type="regular"
-                          // style={{ marginTop: 5 }}
+                          style={{ marginTop: -5 }}
                         >
                           {item?.name}
                         </Text>
@@ -1540,7 +1543,7 @@ const Index = (props) => {
                     <View
                       key={"fac" + index}
                       style={{
-                        marginTop: 10,
+                        // marginTop: 10,
                         width: (width - 50) / 4,
                         justifyContent: "center",
                         alignItems: "center",
@@ -1556,12 +1559,12 @@ const Index = (props) => {
                           alignItems: "center",
                         }}
                       >
-                        <FunIcon icon={item?.icon} height={50} width={50} />
+                        <FunIcon icon={item?.icon} height={60} width={60} />
                       </View>
                       <Text
                         // size="small"
                         type="light"
-                        // style={{ marginTop: 5 }}
+                        style={{ marginTop: -5 }}
                       >
                         {item?.name}
                       </Text>
@@ -1644,7 +1647,7 @@ const Index = (props) => {
                       source={{ uri: item?.cover }}
                       style={{
                         height: 150,
-                        width: 150,
+                        width: 120,
                         borderTopLeftRadius: 10,
                         borderBottomLeftRadius: 10,
                       }}
@@ -1670,6 +1673,7 @@ const Index = (props) => {
                         }}
                         numberOfLines={6}
                       >
+                        {item?.description}
                         {item?.description}
                       </Text>
                     </View>
@@ -1840,7 +1844,7 @@ const Index = (props) => {
                     borderWidth: 1,
                     borderColor: "#F3F3F3",
                     borderRadius: 10,
-                    height: 170,
+                    height: 190,
                     // padding: 10,
                     marginTop: 5,
                     width: "100%",
@@ -1861,7 +1865,7 @@ const Index = (props) => {
                     <FunImage
                       source={{ uri: item.images.image }}
                       style={{
-                        width: 130,
+                        width: 160,
                         height: "100%",
                         borderBottomLeftRadius: 10,
                         borderTopLeftRadius: 10,
@@ -1876,8 +1880,10 @@ const Index = (props) => {
                         top: 10,
                         right: 10,
                         left: 10,
-                        width: 110,
+                        width: "87%",
                         zIndex: 2,
+                        // borderWidth: 3,
+                        borderColor: "#209fae",
                       }}
                     >
                       {item.liked === true ? (
@@ -1967,6 +1973,9 @@ const Index = (props) => {
                           }}
                         >
                           {item.name}
+                          {item.name}
+                          {item.name}
+                          {item.name}
                         </Text>
                       </View>
 
@@ -2050,8 +2059,8 @@ const Index = (props) => {
                                       key={"grat" + index}
                                       icon={item.icon}
                                       fill="#464646"
-                                      height={45}
-                                      width={45}
+                                      height={40}
+                                      width={40}
                                     />
                                   ) : null;
                                 })
@@ -2062,7 +2071,7 @@ const Index = (props) => {
                       <View
                         style={{
                           justifyContent: "flex-end",
-                          width: 80,
+                          width: 70,
                           paddingBottom: 5,
                           paddingRight: 5,
                         }}

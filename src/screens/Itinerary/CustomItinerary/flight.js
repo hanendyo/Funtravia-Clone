@@ -46,6 +46,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
+  console.log("props flight", props);
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
