@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Modal as ModalRN,
   TextInput,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, FunIcon, Text } from "../../../component";
@@ -43,7 +44,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import Ripple from "react-native-material-ripple";
 import Skeletonindex from "./Skeletonindex";
 import { RNToasty } from "react-native-toasty";
-import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
+import ListFotoAlbum from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 
@@ -367,30 +368,37 @@ export default function ItinerarySearchCategory(props) {
   };
 
   let [dataAlbums, setDataAlbums] = useState(null);
+  console.log("dataAlbums search", dataAlbums);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       refetch();
+      refetchAlbum();
       loadAsync();
-      QueryFotoAlbum();
     });
     return unsubscribe;
   }, [props.navigation]);
 
-  const [
-    QueryFotoAlbum,
-    { data: dataFotoAlbum, loading: loadingFotoAlbum, error: errorFotoAlbum },
-  ] = useLazyQuery(ListFotoAlbum, {
+  const {
+    data: dataAlbum,
+    loading: loadingFotoAlbum,
+    refetch: refetchAlbum,
+  } = useQuery(ListFotoAlbum, {
     fetchPolicy: "network-only",
+    variables: {
+      keyword: textSearch,
+      limit: 100,
+      offset: 0,
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${props?.route?.params?.token}`,
       },
     },
-    variables: { user_id: setting?.user?.id, keyword: textSearch },
-    onCompleted: () => setDataAlbums(dataFotoAlbum?.list_albums),
+    onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
@@ -923,8 +931,11 @@ export default function ItinerarySearchCategory(props) {
           {dataAlbums.map((item, index) => {
             return (
               <Pressable
+                focusable={true}
+                keyboardShouldPersistTaps={"handled"}
                 key={index}
                 onPress={() => {
+                  Keyboard.dismiss();
                   props.navigation.push("ProfileStack", {
                     screen: "albumdetail",
                     params: {
@@ -1368,6 +1379,8 @@ export default function ItinerarySearchCategory(props) {
             />
           </View>
           <Pressable
+            focusable={true}
+            keyboardShouldPersistTaps={"handled"}
             style={{
               height: 40,
               marginLeft: 5,
@@ -1375,7 +1388,10 @@ export default function ItinerarySearchCategory(props) {
               justifyContent: "center",
               alignItems: "center",
             }}
-            onPress={() => props.navigation.goBack()}
+            onPress={async () => {
+              await Keyboard.dismiss();
+              await props.navigation.goBack();
+            }}
           >
             <Text size="label" type="regular">
               {t("cancel")}

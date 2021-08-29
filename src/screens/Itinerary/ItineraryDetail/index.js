@@ -5004,9 +5004,6 @@ export default function ItineraryDetail(props) {
     await setModalss(true);
   };
 
-  console.log("start", datadetail?.itinerary_detail?.start_date);
-  console.log("end", datadetail?.itinerary_detail?.end_date);
-
   const setdataimagepost = async (data, inde) => {
     setIndexs(inde);
     var tempdatas = [];

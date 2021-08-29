@@ -45,12 +45,14 @@ function HomeStack(props) {
 }
 
 const Tripstack = createStackNavigator();
-function TripPlaningscreen() {
+function TripPlaningscreen(props) {
+  console.log("props bottom", props);
   return (
     <Tripstack.Navigator initialRouteName={"TripPlaning"}>
       <Tripstack.Screen
         name="TripPlaning"
         component={TripPlaning}
+        initialParams={{ token: props.route.params.token }}
         options={{
           headerShown: true,
           headerTransparent: true,
@@ -164,6 +166,7 @@ export default function BottomNavigationItems(props) {
       <MainNavigator.Screen
         name="TripBottomPlaning"
         component={TripPlaningscreen}
+        initialParams={{ token: props.route.params.token }}
         options={{
           tabBarVisible: false,
           tabBarLabel: "Trip Planner",
