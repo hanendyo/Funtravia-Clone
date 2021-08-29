@@ -36,6 +36,8 @@ import {
   Logofuntravianew,
   ShareBlack,
   Xgray,
+  Nextabu,
+  Prevabu,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -521,7 +523,7 @@ export default function Country(props) {
 
                 alignContent: "center",
                 alignItems: "center",
-                paddingVertical: 7,
+                padding: 10,
                 paddingHorizontal: 0,
                 borderRightWidth:
                   index !== 8 &&
@@ -539,16 +541,16 @@ export default function Country(props) {
                       : 0
                     : 0,
 
-                borderColor: "#209fae",
+                borderColor: "#d1d1d1",
               }}
             >
               <Text
-                size="description"
-                type="bold"
+                size="title"
+                type="regular"
                 numberOfLines={1}
                 style={{
                   textAlign: "center",
-                  marginTop: 3,
+
                   width: "100%",
                 }}
               >
@@ -1049,22 +1051,28 @@ export default function Country(props) {
         {render?.city ? (
           <View
             style={{
-              paddingHorizontal: 15,
-              paddingVertical: 10,
+              paddingTop: 15,
               flexDirection: "column",
             }}
           >
-            <Text type="bold" size="label" style={{}}>
-              {t("popularDestination")}
-            </Text>
-            <Text
-              size="description"
+            <View
               style={{
-                textAlign: "justify",
+                paddingHorizontal: 5,
               }}
             >
-              {t("Goodplacegoodtrip")}
-            </Text>
+              <Text type="bold" size="title" style={{ marginBottom: 3 }}>
+                {t("popularDestination")}
+              </Text>
+              <Text
+                size="description"
+                style={{
+                  textAlign: "justify",
+                }}
+              >
+                {t("Goodplacegoodtrip")}
+              </Text>
+            </View>
+
             <View
               style={{
                 marginTop: 10,
@@ -1072,6 +1080,7 @@ export default function Country(props) {
                 minHeight: 50,
                 justifyContent: "center",
                 padding: 10,
+
                 backgroundColor: "#FFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -1090,27 +1099,118 @@ export default function Country(props) {
                   borderTopLeftRadius: 5,
                   borderTopRightRadius: 5,
                   backgroundColor: "#white",
-                  width: Dimensions.get("screen").width - 69,
+
+                  width: Dimensions.get("screen").width,
                 }}
+                customButtons={(position, move) => (
+                  <View
+                    style={{
+                      alignContent: "center",
+                      alignItems: "center",
+                      marginLeft: 2,
+                      position: "absolute",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      width: Dimensions.get("screen").width - 55,
+                    }}
+                  >
+                    {(render?.city?.length > 0
+                      ? render?.city
+                      : [default_image]
+                    ).map((item, index) => (
+                      <View>
+                        {position == index ? (
+                          <View
+                            style={{
+                              width: "100%",
+                              alignContent: "center",
+                              alignItems: "center",
+
+                              flexDirection: "row",
+                              height: 40,
+                              backgroundColor: "#FFFFFF",
+                            }}
+                          >
+                            <View
+                              style={{
+                                width: "100%",
+                                paddingHorizontal: 5,
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  flexDirection: "row",
+                                  width: 15,
+                                }}
+                              >
+                                {render?.city?.length > 0 && index !== 0 ? (
+                                  <Ripple onPress={() => move(position - 1)}>
+                                    <Prevabu height={15} width={15} />
+                                  </Ripple>
+                                ) : null}
+                              </View>
+
+                              <View style={{}}>
+                                {render?.city?.length > 0 ? (
+                                  <Text
+                                    size="title"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    <Truncate
+                                      text={item?.name ? item.name : "-"}
+                                      length={35}
+                                    />
+                                  </Text>
+                                ) : (
+                                  <Text
+                                    size="title"
+                                    type="bold"
+                                    style={{
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {"Tidak ada event bulan ini"}
+                                  </Text>
+                                )}
+                              </View>
+                              <View
+                                style={{
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  flexDirection: "row",
+                                }}
+                              >
+                                {render?.city?.length > 0 &&
+                                index !== render?.city?.length - 1 ? (
+                                  <Ripple onPress={() => move(position + 1)}>
+                                    <Nextabu height={15} width={15} />
+                                  </Ripple>
+                                ) : null}
+                              </View>
+                            </View>
+                          </View>
+                        ) : null}
+                      </View>
+                    ))}
+                  </View>
+                )}
                 customSlide={({ index, item, style, width }) => (
                   <View
                     key={"aaas" + index}
                     style={{
-                      width: Dimensions.get("screen").width - 69,
+                      width: Dimensions.get("screen").width,
+                      marginTop: 40,
                       alignItems: "center",
                       alignContent: "center",
                     }}
                   >
-                    <Text
-                      size="label"
-                      type="bold"
-                      style={{
-                        textAlign: "center",
-                        marginTop: 3,
-                      }}
-                    >
-                      <Capital text={item.name} />
-                    </Text>
                     <Ripple
                       onPress={() => {
                         props.navigation.navigate("CountryStack", {
@@ -1125,16 +1225,18 @@ export default function Country(props) {
                         });
                       }}
                       style={{
-                        height: width * 0.4,
+                        height: width * 0.5,
                         width: "100%",
                         borderRadius: 10,
+                        marginLeft: 2,
                         marginVertical: 2,
                       }}
                     >
                       <Image
                         style={{
                           height: "100%",
-                          width: "100%",
+                          width: Dimensions.get("screen").width - 57,
+                          marginLeft: 2,
                           borderRadius: 10,
                         }}
                         source={
@@ -1147,6 +1249,7 @@ export default function Country(props) {
                         width: "100%",
                         flexWrap: "wrap",
                         flexDirection: "row",
+                        marginTop: 10,
                         justifyContent: "flex-start",
                       }}
                     >
@@ -1169,17 +1272,20 @@ export default function Country(props) {
                               }}
                               style={{
                                 // width: (width - 60) / 4,
+                                // borderWidth: 1,
+                                marginLeft: 2,
+                                marginHorizontal: 10,
                                 alignContent: "center",
                                 alignItems: "center",
                                 borderColor: "#209fae",
-                                padding: 2,
+                                // padding: 2,
                               }}
                             >
                               <Image
                                 style={{
                                   borderRadius: 10,
-                                  height: (width - 80) / 4,
-                                  width: (width - 88) / 4,
+                                  height: (width - 110) / 4,
+                                  width: (width - 110) / 4,
                                 }}
                                 source={
                                   item.images
@@ -1190,16 +1296,16 @@ export default function Country(props) {
                                 }
                               ></Image>
                               <Text
-                                size="small"
+                                size="description"
                                 type="bold"
                                 style={{
                                   textAlign: "center",
-                                  marginTop: 3,
+                                  marginVertical: 5,
                                 }}
                               >
                                 <Truncate
                                   text={Capital({
-                                    text: item.name,
+                                    text: item?.name ? item.name : "",
                                   })}
                                   length={13}
                                 />
@@ -1222,40 +1328,6 @@ export default function Country(props) {
                     </View>
                   </View>
                 )}
-                customButtons={(position, move) => (
-                  <View
-                    style={{
-                      paddingVertical: 10,
-                      alignContent: "center",
-                      alignItems: "center",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {(render.city.length ? render.city : []).map(
-                      (image, index) => {
-                        return (
-                          <TouchableHighlight
-                            key={"keycity" + index}
-                            underlayColor="#f7f7f700"
-                            // onPress={() => move(index)}
-                          >
-                            <View
-                              style={{
-                                height: position === index ? 5 : 5,
-                                width: position === index ? 15 : 5,
-                                borderRadius: position === index ? 7 : 3,
-                                backgroundColor:
-                                  position === index ? "#209fae" : "#d3d3d3",
-                                marginHorizontal: 3,
-                              }}
-                            ></View>
-                          </TouchableHighlight>
-                        );
-                      }
-                    )}
-                  </View>
-                )}
               />
             </View>
           </View>
@@ -1265,41 +1337,46 @@ export default function Country(props) {
         {render?.article_type && render.article_type.length > 0 ? (
           <View
             style={{
-              paddingHorizontal: 20,
-              paddingVertical: 10,
+              marginTop: 15,
               flexDirection: "column",
             }}
           >
             <View>
-              {i18n.language === "id" ? (
-                <Text size="label" type="bold" style={{}}>
-                  {t("uniquefacts")}
-
-                  <Capital text={render?.name} />
-                </Text>
-              ) : (
-                <Text size="label" type="bold" style={{}}>
-                  <Capital text={render?.name} />
-
-                  {t("uniquefacts")}
-                </Text>
-              )}
-
-              <Text
-                size="description"
+              <View
                 style={{
-                  textAlign: "justify",
+                  paddingHorizontal: 5,
                 }}
               >
-                {t("Explorefindout")}
-              </Text>
+                {i18n.language === "id" ? (
+                  <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                    {t("uniquefacts")}
+
+                    <Capital text={render?.name} />
+                  </Text>
+                ) : (
+                  <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                    <Capital text={render?.name} />
+
+                    {t("uniquefacts")}
+                  </Text>
+                )}
+
+                <Text
+                  size="description"
+                  style={{
+                    textAlign: "justify",
+                  }}
+                >
+                  {t("Explorefindout")}
+                </Text>
+              </View>
               <View
                 style={{
                   marginTop: 10,
                   borderRadius: 10,
                   minHeight: 50,
                   justifyContent: "center",
-                  //   padding: 10,
+
                   backgroundColor: "#FFF",
                   shadowColor: "#000",
                   shadowOffset: {
@@ -1316,8 +1393,8 @@ export default function Country(props) {
                   style={{
                     height: width * 0.4,
                     width: "100%",
-                    borderTopLeftRadius: 5,
-                    borderTopRightRadius: 5,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
                   }}
                   source={render ? { uri: render.cover_facts } : default_image}
                 ></Image>
@@ -1328,10 +1405,12 @@ export default function Country(props) {
                     alignItems: "center",
                     justifyContent: "center",
                     height: 40,
-                    backgroundColor: "#209FAE",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: 0.5,
+                    // backgroundColor: "#209FAE",
                   }}
                 >
-                  <Text size="label" type="bold" style={{ color: "white" }}>
+                  <Text size="title" type="bold" style={{ color: "#464646" }}>
                     Indonesian Facts
                   </Text>
                 </View>
@@ -1358,7 +1437,224 @@ export default function Country(props) {
         ) : null}
 
         {/* Essential with Tabs */}
-        <View
+        {/* Essential with Tabs */}
+        {render?.practical?.length > 0 || render?.about?.length > 0 ? (
+          <View
+            style={{
+              paddingTop: 15,
+              paddingBottom: 15,
+              width: "100%",
+            }}
+          >
+            <View
+              style={{
+                paddingHorizontal: 5,
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginBottom: 3 }}>
+                {t("essentials")}
+              </Text>
+              <Text size="description">{t("gooddestinationtrip")}</Text>
+            </View>
+
+            <View
+              style={{
+                marginTop: 10,
+                borderRadius: 10,
+                paddingBottom: 10,
+                minHeight: 50,
+                justifyContent: "center",
+                backgroundColor: "#FFF",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 5,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 6.27,
+                elevation: 6,
+              }}
+            >
+              <Tabs
+                tabBarUnderlineStyle={{
+                  backgroundColor: "#209FAE",
+                  height: 2,
+                }}
+                tabContainerStyle={{
+                  backgroundColor: "white",
+                  elevation: 0,
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                }}
+                style={{}}
+                // locked={false}
+              >
+                <Tab
+                  heading={t("About")}
+                  tabStyle={{
+                    backgroundColor: "white",
+                    elevation: 0,
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopLeftRadius: 10,
+                  }}
+                  activeTabStyle={{
+                    backgroundColor: "white",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopLeftRadius: 10,
+                  }}
+                  textStyle={{
+                    fontFamily: "Lato-Regular",
+                    fontSize: 16,
+                    color: "#6C6C6C",
+                  }}
+                  activeTextStyle={{
+                    fontFamily: "Lato-Bold",
+                    fontSize: 16,
+                    color: "#209FAE",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "100%",
+                      paddingVertical: 10,
+                      flexWrap: "wrap",
+                      paddingHorizontal: 10,
+                      flexDirection: "row",
+                    }}
+                  >
+                    {render.about.length > 0
+                      ? render.about.map((item, index) => (
+                          <Ripple
+                            key={"keyabout" + index}
+                            onPress={() => {
+                              props.navigation.navigate("AboutCountry", {
+                                active: item.id,
+                                country_id: render.id,
+                                indexcountry: index,
+                              });
+                            }}
+                            style={{
+                              width: "33.333%",
+                              alignContent: "center",
+                              alignItems: "center",
+                              padding: 5,
+                            }}
+                          >
+                            <View
+                              style={{
+                                height: 45,
+                              }}
+                            >
+                              <FunIcon
+                                icon={item.icon ? item.icon : "w-fog"}
+                                height={50}
+                                width={50}
+                                style={{
+                                  bottom: -3,
+                                }}
+                              />
+                            </View>
+                            <Text
+                              size="description"
+                              style={{
+                                textAlign: "center",
+                                marginTop: 5,
+                              }}
+                            >
+                              {item.name}
+                            </Text>
+                          </Ripple>
+                        ))
+                      : null}
+                  </View>
+                </Tab>
+
+                <Tab
+                  heading={t("Practical")}
+                  tabStyle={{
+                    backgroundColor: "white",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopRightRadius: 10,
+                  }}
+                  activeTabStyle={{
+                    backgroundColor: "white",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: Platform.OS == "ios" ? 0 : 1,
+                    borderTopRightRadius: 10,
+                  }}
+                  textStyle={{
+                    fontFamily: "Lato-Regular",
+                    fontSize: 16,
+                    color: "#6C6C6C",
+                  }}
+                  activeTextStyle={{
+                    fontFamily: "Lato-Bold",
+                    fontSize: 16,
+                    color: "#209FAE",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "100%",
+                      paddingVertical: 10,
+                      flexWrap: "wrap",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {render.practical.length > 0
+                      ? render.practical.map((item, index) => (
+                          <Ripple
+                            key={"keypractical" + index}
+                            onPress={() => {
+                              props.navigation.navigate("PracticalCountry", {
+                                active: item.id,
+                                country_id: render.id,
+                                indexcountry: index,
+                              });
+                            }}
+                            style={{
+                              width: "33.333%",
+                              alignContent: "center",
+                              alignItems: "center",
+                              padding: 5,
+                            }}
+                          >
+                            <View
+                              style={{
+                                height: 45,
+                              }}
+                            >
+                              <FunIcon
+                                icon={item.icon ? item.icon : "w-fog"}
+                                height={45}
+                                width={45}
+                                style={{
+                                  bottom: -3,
+                                }}
+                              />
+                            </View>
+                            <Text
+                              size="description"
+                              style={{
+                                textAlign: "center",
+                                marginTop: 5,
+                              }}
+                            >
+                              {item.name}
+                            </Text>
+                          </Ripple>
+                        ))
+                      : null}
+                  </View>
+                </Tab>
+              </Tabs>
+            </View>
+          </View>
+        ) : null}
+        {/* <View
           style={{
             paddingVertical: 10,
             paddingHorizontal: 15,
@@ -1548,17 +1844,17 @@ export default function Country(props) {
             </Tabs>
           </View>
         </View>
+       */}
       </View>
     );
   };
   const RenderArticle = (e, dataR) => {
     let render = [];
     render = dataR;
+
     return (
       <View
-        // key={"art" + index}
         style={{
-          paddingHorizontal: 15,
           paddingVertical: 5,
         }}
       >
@@ -1581,9 +1877,16 @@ export default function Country(props) {
                 return (
                   <View key={index}>
                     {i.type === "image" ? (
-                      <View style={{ marginVertical: 10 }}>
+                      <View>
                         {i.title ? (
-                          <Text size="label" type="bold">
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+                            }}
+                          >
                             {i.title}
                           </Text>
                         ) : null}
@@ -1591,7 +1894,6 @@ export default function Country(props) {
                         <View
                           style={{
                             alignItems: "center",
-                            marginTop: i.title ? 20 : 0,
                           }}
                         >
                           <FunImage
@@ -1599,8 +1901,8 @@ export default function Country(props) {
                             resizeMode={"cover"}
                             style={{
                               borderWidth: 0.4,
+                              marginTop: i.title ? 5 : 0,
                               borderColor: "#d3d3d3",
-
                               height: Dimensions.get("screen").width * 0.4,
                               width: "100%",
                             }}
@@ -1612,20 +1914,24 @@ export default function Country(props) {
                           style={{
                             textAlign: "left",
                             marginTop: 5,
+                            marginBottom: 15,
                             color: "#616161",
+                            paddingHorizontal: 5,
                           }}
                         >
                           {i.text ? i.text : ""}
                         </Text>
                       </View>
                     ) : (
-                      <View style={{ marginVertical: 10 }}>
+                      <View>
                         {i.title ? (
                           <Text
-                            size="label"
+                            size="title"
                             type="bold"
                             style={{
-                              // marginBottom: 5,
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+
                               color: "#464646",
                             }}
                           >
@@ -1633,13 +1939,15 @@ export default function Country(props) {
                           </Text>
                         ) : null}
                         <Text
-                          size="readable"
+                          size="title"
                           type="regular"
                           style={{
-                            marginTop: i.title ? 20 : 0,
-                            lineHeight: 20,
+                            lineHeight: 22,
                             textAlign: "left",
                             color: "#464646",
+                            marginBottom: 15,
+
+                            paddingHorizontal: 5,
                           }}
                         >
                           {i.text ? i.text : ""}
@@ -1891,7 +2199,9 @@ export default function Country(props) {
                 {data && data.country_detail ? (
                   <Truncate
                     text={Capital({
-                      text: data.country_detail.name,
+                      text: data?.country_detail?.name
+                        ? data.country_detail.name
+                        : "",
                     })}
                     length={20}
                   ></Truncate>
@@ -1914,12 +2224,12 @@ export default function Country(props) {
                     alignItems: "center",
                   }}
                 >
-                  <PinHijau height={12} width={12} />
-                  {/* <Text size="label" type="regular" style={{ marginLeft: 10 }}>
+                  <PinHijau height={14} width={14} />
+                  <Text size="label" type="regular" style={{ marginLeft: 5 }}>
                     {data && data.country_detail
-                      ? data.country_detail.countries.name
+                      ? data.country_detail.continent.name
                       : "-"}
-                  </Text> */}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -1950,129 +2260,6 @@ export default function Country(props) {
     );
   };
 
-  // const renderHeader = () => {
-  //   const y = scrollY.interpolate({
-  //     inputRange: [0, HeaderHeight],
-  //     outputRange: [0, -HeaderHeight + 55],
-  //     extrapolateRight: "clamp",
-  //     // extrapolate: 'clamp',
-  //   });
-  //   return (
-  //     <Animated.View
-  //       {...headerPanResponder.panHandlers}
-  //       style={[styles.header, { transform: [{ translateY: y }] }]}
-  //       style={{
-  //         transform: [{ translateY: y }],
-  //         top: SafeStatusBar,
-  //         height: HeaderHeight,
-  //         width: "100%",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         position: "absolute",
-  //         backgroundColor: "#209fae",
-  //       }}
-  //     >
-  //       <Sidebar
-  //         props={props}
-  //         show={showside}
-  //         Data={() => {
-  //           return (
-  //             <View
-  //               style={{
-  //                 padding: 10,
-  //                 width: "100%",
-  //                 justifyContent: "flex-start",
-  //               }}
-  //             ></View>
-  //           );
-  //         }}
-  //         setClose={(e) => setshowside(false)}
-  //       />
-
-  //       <Animated.Image
-  //         style={{
-  //           width: "100%",
-  //           height: "90%",
-  //           resizeMode: "cover",
-  //           opacity: imageOpacity,
-  //           transform: [{ translateY: imageTranslate }],
-  //         }}
-  //         source={
-  //           data && data.country_detail.cover
-  //             ? { uri: data.country_detail.cover }
-  //             : default_image
-  //         }
-  //       />
-  //       <Animated.View
-  //         style={{
-  //           // height: 55,
-  //           width: Dimensions.get("screen").width,
-  //           backgroundColor: "#FFFFFF",
-  //           flexDirection: "row",
-  //           justifyContent: "flex-end",
-  //           alignItems: "center",
-  //           alignContent: "center",
-
-  //           opacity: imageOpacity,
-  //           transform: [{ translateY: imageTranslate }],
-  //         }}
-  //       >
-  //         <View
-  //           style={{
-  //             flexDirection: "row",
-  //             paddingHorizontal: 20,
-  //           }}
-  //         >
-  //           <View
-  //             style={{
-  //               flex: 1,
-  //               justifyContent: "center",
-  //               paddingTop: 10,
-  //               // borderWidth: 1,
-  //               // paddingBottom: 10,
-  //               display: "flex",
-  //             }}
-  //           >
-  //             <Text size="title" type="bold">
-  //               {data && data.country_detail ? (
-  //                 <Truncate
-  //                   text={Capital({
-  //                     text: data.country_detail.name,
-  //                   })}
-  //                   length={20}
-  //                 ></Truncate>
-  //               ) : null}
-  //             </Text>
-  //           </View>
-  //           <View
-  //             style={{
-  //               justifyContent: "center",
-  //               display: "flex",
-  //               paddingTop: 10,
-  //               // borderWidth: 1,
-  //             }}
-  //           >
-  //             <Pressable
-  //               onPress={() => SetShareModal(true)}
-  //               style={{
-  //                 backgroundColor: "#F6F6F6",
-  //                 marginRight: 2,
-  //                 height: 27,
-  //                 width: 27,
-  //                 borderRadius: 17,
-  //                 alignItems: "center",
-  //                 justifyContent: "center",
-  //               }}
-  //             >
-  //               <ShareBlack height={12} width={12} />
-  //             </Pressable>
-  //           </View>
-  //         </View>
-  //       </Animated.View>
-  //     </Animated.View>
-  //   );
-  // };
-
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
 
@@ -2094,8 +2281,6 @@ export default function Country(props) {
         scrollToOverflowEnabled={true}
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
-        // numColumns={numCols}
-
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);
@@ -2869,112 +3054,6 @@ export default function Country(props) {
         </View>
       </ModalRN>
     </View>
-
-    // <View style={styles.container}>
-    //   <StaBar backgroundColor="#14646e" barStyle="light-content" />
-    //   <Animated.View
-    //     style={{
-    //       position: "absolute",
-    //       top: SafeStatusBar,
-    //       zIndex: 9999,
-    //       flexDirection: "row",
-    //       justifyContent: "space-between",
-    //       alignContent: "center",
-    //       alignItems: "center",
-    //       height: 55,
-    //       width: Dimensions.get("screen").width,
-    //     }}
-    //   >
-    //     <Button
-    //       text={""}
-    //       size="medium"
-    //       type="circle"
-    //       variant="transparent"
-    //       onPress={() => props.navigation.goBack()}
-    //       style={{
-    //         height: 50,
-    //         marginLeft: 8,
-    //       }}
-    //     >
-    //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    //     </Button>
-    //     <TouchableOpacity
-    //       onPress={(x) =>
-    //         props.navigation.push("SearchPg", {
-    //           idcountry: data.country_detail.id,
-    //           searchInput: "",
-    //           locationname: data?.country_detail?.name,
-    //           aktifsearch: true,
-    //         })
-    //       }
-    //       style={{
-    //         width: Dimensions.get("screen").width - 90,
-    //         backgroundColor: "rgba(0,0,0,0.2)",
-    //         flexDirection: "row",
-    //         alignContent: "center",
-    //         alignItems: "center",
-    //         padding: 10,
-    //       }}
-    //     >
-    //       <Image
-    //         source={search_button}
-    //         style={{
-    //           height: 20,
-    //           width: 20,
-    //           resizeMode: "contain",
-    //           marginHorizontal: 10,
-    //         }}
-    //       ></Image>
-    //       {/* <Input
-    //         value={search}
-    //         style={{
-    //           height: 20,
-    //           padding: 0,
-    //           textAlign: "left",
-    //           fontFamily: "Lato-Regular",
-    //           fontSize: 14,
-    //           color: "white",
-    //         }}
-    //         placeholderTextColor={"white"}
-    //         underlineColorAndroid="transparent"
-    //         onChangeText={(x) => setTextc(x)}
-    //         placeholder={"Search in " + data?.country_detail?.name}
-    //         returnKeyType="search"
-    //         onSubmitEditing={(x) =>
-    //           props.navigation.push("SearchPg", {
-    //             idcountry: data.country_detail.id,
-    //             searchInput: search,
-    //             aktifsearch: true,
-    //           })
-    //         }
-    //       /> */}
-    //       <Text
-    //         size="readable"
-    //         type="bold"
-    //         style={{
-    //           color: "#FFFFFF",
-    //         }}
-    //       >
-    //         {t("searchin") + data?.country_detail?.name}
-    //       </Text>
-    //     </TouchableOpacity>
-    //     <Button
-    //       text={""}
-    //       size="medium"
-    //       type="circle"
-    //       variant="transparent"
-    //       // onPress={() => setshowside(true)}
-    //       style={{
-    //         height: 50,
-    //       }}
-    //     >
-    //       {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
-    //     </Button>
-    //   </Animated.View>
-    //   {renderTabView()}
-    //   {renderHeader()}
-    //   {renderCustomRefresh()}
-    // </View>
   );
 }
 

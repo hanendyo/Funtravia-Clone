@@ -3605,6 +3605,7 @@ export default function CityDetail(props) {
         </View>
       </ModalRN>
     </View>
+  
   );
 }
 

@@ -267,6 +267,7 @@ import BlockDestination from "./files/block_destination.svg";
 import AddHijau from "./files/AddHijau.svg";
 import CameraChat from "./files/camera_chat.svg";
 import Above from "./files/atas.svg";
+import AcceptNotif from "./files/acceptnotif.svg";
 
 export {
   LikeWhite,
@@ -538,4 +539,5 @@ export {
   AddHijau,
   CameraChat,
   Above,
+  AcceptNotif,
 };

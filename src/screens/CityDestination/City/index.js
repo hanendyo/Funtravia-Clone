@@ -1293,10 +1293,16 @@ export default function CityDetail(props) {
                                   }}
                                   type="bold"
                                 >
-                                  <Truncate text={dataX.title} length={28} />
+                                  <Truncate
+                                    text={dataX?.title ? dataX.title : ""}
+                                    length={28}
+                                  />
                                 </Text>
                                 <Text>
-                                  <Truncate text={dataX.text} length={60} />
+                                  <Truncate
+                                    text={dataX?.text ? dataX.text : ""}
+                                    length={60}
+                                  />
                                 </Text>
                               </View>
                               <View
@@ -1851,7 +1857,10 @@ export default function CityDetail(props) {
                                       textAlign: "center",
                                     }}
                                   >
-                                    <Truncate text={item.name} length={35} />
+                                    <Truncate
+                                      text={item?.name ? item.name : ""}
+                                      length={35}
+                                    />
                                   </Text>
                                 ) : (
                                   <Text
@@ -2277,7 +2286,10 @@ export default function CityDetail(props) {
                                     marginTop: 5,
                                   }}
                                 >
-                                  <Truncate text={item.name} length={40} />
+                                  <Truncate
+                                    text={item?.name ? item.name : ""}
+                                    length={40}
+                                  />
                                 </Text>
                                 <View
                                   style={{
@@ -2849,7 +2861,9 @@ export default function CityDetail(props) {
                 {dataCity && dataCity.CitiesInformation ? (
                   <Truncate
                     text={Capital({
-                      text: dataCity.CitiesInformation.name,
+                      text: dataCity?.CitiesInformation?.name
+                        ? dataCity.CitiesInformation.name
+                        : "",
                     })}
                     length={20}
                   ></Truncate>
@@ -3084,7 +3098,7 @@ export default function CityDetail(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item.key} length={15} />
+                  <Truncate text={item?.key ? item.key : ""} length={15} />
                 </Text>
               </View>
             </Ripple>
