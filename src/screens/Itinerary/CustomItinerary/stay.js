@@ -208,100 +208,113 @@ export default function detailCustomItinerary(props) {
   });
 
   const [itemValid, setItemValid] = useState({
-    bookingRefValid: true, //wajib
-    guestNameValid: true, //wajib
+    booking_ref: true, //wajib
+    guest_name: true, //wajib
     // modal field
-    hotelNameValid: true, //wajib
-    addressValid: true, //wajib
-    checkinValid: true, //wajib
-    checkoutValid: true, //wajib,
-    fileValid: true, //wajib
+    hotel_name: true, //wajib
+    address: true, //wajib
+    checkin: true, //wajib
+    checkout: true, //wajib,
+    file: true, //wajib
+  });
+  
+  const [secondState, setSecondState] = useState({
+    hotel_name: "",
+    checkin: "",
+    checkout: "",
   });
 
-  // const validation = (name, value) => {
-  //   if (!value || value === "" || value == null) {
-  //     return false;
-  //   } else if (name === "hotel_name") {
-  //     return dataState.hotel_name != null ? true : false;
-  //   } else if (name === "booking_ref") {
-  //     return value.length != null ? true : false;
-  //   } else if (name === "guest_name") {
-  //     return value.length != null ? true : false;
-  //   } else if (name === "address") {
-  //     return dataState.address != null ? true : false;
-  //   } else if (name === "checkin") {
-  //     return dataState.checkin != null ? true : false;
-  //   } else if (name === "checkout") {
-  //     return dataState.checkout != null ? true : false;
-  //   } else if (name === "file") {
-  //     return dataState.file != null || dataState.file != [] ? true : false;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-  // const onChangeValidation = (name) => (text) => {
-  //   let check = validation(name, text);
-  //   setItemValid({ ...itemValid, [name]: check });
-  // };
+  let startDate = props.route.params.startDate.split(' ').join('T');
+  let endDate = props.route.params.endDate.split(' ').join('T');
+
+  const validation = (name, value) => {
+    if (!value || value === "" || value == null) {
+      return false;
+    } else if (name === "hotel_name") {
+      return dataState.hotel_name != "" ? true : false;
+    } else if (name === "booking_ref") {
+      return value.length != "" ? true : false;
+    } else if (name === "guest_name") {
+      return value.length != "" ? true : false;
+    } else if (name === "address") {
+      return dataState.address != "" ? true : false;
+    } else if (name === "checkin") {
+      return dataState.checkin != "" ? true : false;
+    } else if (name === "checkout") {
+      return dataState.checkout != "" ? true : false;
+    } else {
+      return true;
+    }
+  };
+
+  const onChangeValidation = (name) => (text) => {
+    let check = validation(name, text);
+    setdataState({ ...dataState, [name]: text });
+    setItemValid((prev) => {
+      return { ...prev, [name]: check };
+    });
+    console.log(`DATA STATE VALID: `, dataState);
+    console.log(`ITEM VALID: `, itemValid);
+  };
 
   const modalStateValidation = (name) => {
     if (name === "hotel_name") {
       return dataState.hotel_name == null || dataState.hotel_name.length == 0
         ? setItemValid((prevNameHotel) => {
-            return { ...prevNameHotel, ["hotelNameValid"]: false };
+            return { ...prevNameHotel, ["hotel_name"]: false };
           })
         : setItemValid((prevNameHotel) => {
-            return { ...prevNameHotel, ["hotelNameValid"]: true };
+            return { ...prevNameHotel, ["hotel_name"]: true };
           });
     } else if (name === "address") {
       return dataState.address == null || dataState.address == ""
         ? setItemValid((prevAddress) => {
-            return { ...prevAddress, ["addressValid"]: false };
+            return { ...prevAddress, ["address"]: false };
           })
         : setItemValid((prevAddress) => {
-            return { ...prevAddress, ["addressValid"]: true };
+            return { ...prevAddress, ["address"]: true };
           });
     } else if (name === "checkin") {
       return dataState.checkin == null || dataState.checkin == ""
         ? setItemValid((prevCheckIn) => {
-            return { ...prevCheckIn, ["checkinValid"]: false };
+            return { ...prevCheckIn, ["checkin"]: false };
           })
         : setItemValid((prevCheckIn) => {
-            return { ...prevCheckIn, ["checkinValid"]: true };
+            return { ...prevCheckIn, ["checkin"]: true };
           });
     } else if (name === "checkout") {
       return dataState.checkout == null || dataState.checkout == ""
         ? setItemValid((prev) => {
-            return { ...prev, ["checkoutValid"]: false };
+            return { ...prev, ["checkout"]: false };
           })
         : setItemValid((prev) => {
-            return { ...prev, ["checkoutValid"]: true };
+            return { ...prev, ["checkout"]: true };
           });
     } else if (name === "guest_name") {
       return dataState.guest_name == null || dataState.guest_name == ""
         ? setItemValid((prev) => {
-            return { ...prev, ["guestNameValid"]: false };
+            return { ...prev, ["guest_name"]: false };
           })
         : setItemValid((prev) => {
-            return { ...prev, ["guestNameValid"]: true };
+            return { ...prev, ["guest_name"]: true };
           });
     } else if (name === "booking_ref") {
       return dataState.booking_ref == null || dataState.booking_ref == ""
         ? setItemValid((prev) => {
-            return { ...prev, ["bookingRefValid"]: false };
+            return { ...prev, ["booking_ref"]: false };
           })
         : setItemValid((prev) => {
-            return { ...prev, ["bookingRefValid"]: true };
+            return { ...prev, ["booking_ref"]: true };
           });
     } else if (name === "file") {
       return dataState.file == null ||
         dataState.file == [] ||
         dataState.file.length == 0
         ? setItemValid((prev) => {
-            return { ...prev, ["fileValid"]: false };
+            return { ...prev, ["file"]: false };
           })
         : setItemValid((prev) => {
-            return { ...prev, ["fileValid"]: true };
+            return { ...prev, ["file"]: true };
           });
     }
   };
@@ -310,57 +323,54 @@ export default function detailCustomItinerary(props) {
     setItemValid((prev) => {
       return {
         ...prev,
-        ["hotelNameValid"]: modalStateValidation("hotel_name"),
+        ["hotel_name"]: modalStateValidation("hotel_name"),
       };
     });
     setItemValid((prev) => {
-      return { ...prev, ["addressValid"]: modalStateValidation("address") };
+      return { ...prev, ["address"]: modalStateValidation("address") };
     });
     setItemValid((prev) => {
       return {
         ...prev,
-        ["guestNameValid"]: modalStateValidation("guest_name"),
+        ["guest_name"]: modalStateValidation("guest_name"),
       };
     });
     setItemValid((prev) => {
-      return { ...prev, ["checkinValid"]: modalStateValidation("checkin") };
+      return { ...prev, ["checkin"]: modalStateValidation("checkin") };
     });
     setItemValid((prev) => {
-      return { ...prev, ["checkoutValid"]: modalStateValidation("checkout") };
+      return { ...prev, ["checkout"]: modalStateValidation("checkout") };
     });
     setItemValid((prev) => {
       return {
         ...prev,
-        ["boookingRefValid"]: modalStateValidation("booking_ref"),
+        ["booking_ref"]: modalStateValidation("booking_ref"),
       };
     });
     setItemValid((prev) => {
-      return { ...prev, ["fileValid"]: modalStateValidation("file") };
+      return { ...prev, ["file"]: modalStateValidation("file") };
     });
 
     if (
-      itemValid.hotelNameValid &&
-      itemValid.addressValid &&
-      itemValid.checkinValid &&
-      itemValid.checkoutValid &&
-      itemValid.guestNameValid &&
-      itemValid.bookingRefValid &&
-      dataState.day_id &&
-      dataState.icon &&
-      dataState.title &&
-      dataState.address &&
-      dataState.guest_name &&
-      dataState.booking_ref
+      dataState.hotel_name == null ||
+      dataState.hotel_name == "" ||
+      dataState.address == null ||
+      dataState.address == "" ||
+      dataState.guest_name == null ||
+      dataState.guest_name == "" ||
+      dataState.checkin == null ||
+      dataState.checkin == "" ||
+      dataState.checkout == null ||
+      dataState.checkout == ""
     ) {
-      // console.log(`DATA STATE SUBMIT: `, dataState);
-      submitDataAPI();
-    } else {
       setAlertPopUp({
         ...alertPopUp,
         show: true,
-        judul: "Some Form Field Empty",
+        judul: t("someFormFieldIsEmpty"),
         detail: "",
       });
+    } else {
+      submitDataAPI();
     }
   };
 
@@ -415,6 +425,7 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+
   const [mutation, { loading, data, error }] = useMutation(
     AddCustomAccomodation,
     {
@@ -440,7 +451,6 @@ export default function detailCustomItinerary(props) {
 
   const submitDataAPI = async () => {
     //! Hanendyo's work
-
     // POST DATA STATE ke https://dev-gql.funtravia.com/graphql
     try {
       let response = await mutation({
@@ -486,6 +496,7 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  console.log(`PROPS: `, props);
   return (
     <SafeAreaView
       style={{
@@ -572,19 +583,21 @@ export default function detailCustomItinerary(props) {
                 editable={false}
                 value={dataState.hotel_name}
               />
-              {itemValid.hotelNameValid === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={{
-                    color: "#D75995",
-                    position: "absolute",
-                    bottom: -15,
-                    left: 0,
-                  }}
-                >
-                  {"*" + t("inputAlertHotelName")}
-                </Text>
+              {dataState.hotel_name == "" ? (
+                itemValid.hotel_name === false ? (
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{
+                      color: "#D75995",
+                      position: "absolute",
+                      bottom: -15,
+                      left: 0,
+                    }}
+                  >
+                    {"*" + t("inputAlertHotelName")}
+                  </Text>
+                ) : null
               ) : null}
             </View>
 
@@ -619,9 +632,6 @@ export default function detailCustomItinerary(props) {
               autoCorrect={false}
               style={{
                 paddingTop: Platform.OS === "ios" ? 20 : 15,
-                // paddingBottom: 5,
-                // borderBottomWidth: 1,
-                // borderBottomColor: "#d3d3d3"
                 flex: 1,
                 fontFamily: "Lato-Regular",
                 paddingBottom: 5,
@@ -630,22 +640,23 @@ export default function detailCustomItinerary(props) {
                 fontSize: 14,
               }}
               value={dataState.address}
-              onChangeText={(e) => {
-                setdataState({ ...dataState, ["address"]: e });
-              }}
+              onChangeText={onChangeValidation("address")}
             />
-            {itemValid.addressValid === false ? (
-              <Text
-                type="regular"
-                size="small"
-                style={{
-                  color: "#D75995",
-                  position: "absolute",
-                  bottom: -15,
-                }}
-              >
-                {"*" + t("inputAlertAddress")}
-              </Text>
+            {dataState.address == "" ? (
+              itemValid.address === false ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                    position: "absolute",
+                    bottom: -15,
+                    left: 0,
+                  }}
+                >
+                  {"*" + t("inputAlertAddress")}
+                </Text>
+              ) : null
             ) : null}
           </View>
 
@@ -658,11 +669,9 @@ export default function detailCustomItinerary(props) {
                 borderBottomColor: "#d3d3d3",
               }}
               value={dataState.guest_name}
-              onChangeText={(e) => {
-                setdataState({ ...dataState, ["guest_name"]: e });
-              }}
+              onChangeText={onChangeValidation("guest_name")}
             />
-            {itemValid.guestNameValid === false ? (
+            {itemValid.guest_name === false ? (
               <Text
                 type="regular"
                 size="small"
@@ -730,19 +739,24 @@ export default function detailCustomItinerary(props) {
                 }}
                 value={renderDate.renderCheckIn}
               />
-              {itemValid.checkinValid === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={{
-                    color: "#D75995",
-                    position: "absolute",
-                    bottom: -15,
-                    left: 1,
-                  }}
-                >
-                  {"*" + t("inputAlertCheckIn")}
-                </Text>
+              {/* {
+                dateValidation()
+              }, */}
+              {dataState.checkin == "" ? (
+                itemValid.checkin === false ? (
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{
+                      color: "#D75995",
+                      position: "absolute",
+                      bottom: -15,
+                      left: 0,
+                    }}
+                  >
+                    {"*" + t("inputAlertCheckIn")}
+                  </Text>
+                ) : null
               ) : null}
               <TouchableOpacity
                 onPress={() => setTimeModalCheckIn(true)}
@@ -758,6 +772,8 @@ export default function detailCustomItinerary(props) {
               <DateTimePickerModal
                 isVisible={timeModalCheckIn}
                 mode="datetime"
+                minimumDate={new Date(startDate)}
+                maximumDate={new Date(endDate)}
                 // display="inline"
                 locale="en_id"
                 onConfirm={(date) => {
@@ -810,19 +826,21 @@ export default function detailCustomItinerary(props) {
                 }}
                 value={renderDate.renderCheckOut}
               />
-              {itemValid.checkoutValid === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={{
-                    color: "#D75995",
-                    position: "absolute",
-                    bottom: -15,
-                    left: 1,
-                  }}
-                >
-                  {"*" + t("inputAlertCheckOut")}
-                </Text>
+              {dataState.checkout == "" ? (
+                itemValid.checkout === false ? (
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{
+                      color: "#D75995",
+                      position: "absolute",
+                      bottom: -15,
+                      left: 0,
+                    }}
+                  >
+                    {"*" + t("inputAlertCheckOut")}
+                  </Text>
+                ) : null
               ) : null}
               <TouchableOpacity
                 onPress={() => setTimeModalCheckOut(true)}
@@ -838,6 +856,8 @@ export default function detailCustomItinerary(props) {
               <DateTimePickerModal
                 isVisible={timeModalCheckOut}
                 mode="datetime"
+                minimumDate={new Date(startDate)}
+                maximumDate={new Date(endDate)}
                 // display="inline"
                 locale="en_id"
                 onConfirm={(date) => {
@@ -858,16 +878,9 @@ export default function detailCustomItinerary(props) {
                 borderBottomColor: "#d3d3d3",
               }}
               value={dataState.booking_ref}
-              onChangeText={(e) => {
-                setdataState((prev) => {
-                  return {
-                    ...prev,
-                    ["booking_ref"]: e,
-                  };
-                });
-              }}
+              onChangeText={onChangeValidation("booking_ref")}
             />
-            {itemValid.bookingRefValid === false ? (
+            {itemValid.booking_ref === false ? (
               <Text
                 type="regular"
                 size="small"
@@ -1111,7 +1124,7 @@ export default function detailCustomItinerary(props) {
                 language: "id", // language of the results
               }}
               fetchDetails={true}
-              onPress={(data, details) => {
+              onPress={async (data, details) => {
                 // 'details' is provided when fetchDetails = true
                 if (modalHotelName) {
                   setdataState((prevName) => {
@@ -1119,6 +1132,10 @@ export default function detailCustomItinerary(props) {
                       ...prevName,
                       ["hotel_name"]: data.structured_formatting.main_text,
                     };
+                  });
+                  setSecondState({
+                    ...secondState,
+                    ["hotel_name"]: data.structured_formatting.main_text,
                   });
                   setdataState((prevAddress) => {
                     return {
@@ -1189,8 +1206,18 @@ export default function detailCustomItinerary(props) {
                     };
                   });
 
-                  setModalHotelName(false);
+                  if (dataState.hotel_name !== "") {
+                    // await setItemValid({...prev, ['hotel_name']: true});
+                    // await setItemValid({...prev, ['address']: true});
+                    console.log(`DOING ASYNC`);
+                  } else {
+                    console.log(`FAILED ASY`);
+                  }
                 }
+
+                console.log(`IVAL: `, itemValid);
+                console.log(`DSTATE: `, dataState);
+                setModalHotelName(false);
               }}
               query={{
                 key: API_KEY,
