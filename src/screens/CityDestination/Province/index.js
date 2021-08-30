@@ -1598,7 +1598,6 @@ export default function CityDetail(props) {
           style={{
             flexDirection: "column",
             paddingTop: 15,
-            paddingBottom: 15,
           }}
         >
           <View>
@@ -1649,23 +1648,15 @@ export default function CityDetail(props) {
                 </Text>
               </View>
 
-              <Ripple
-                onPress={() => {
-                  props.navigation.navigate("listevent", {
-                    idcity: render.id,
-                  });
+              <Text
+                type="bold"
+                size="description"
+                style={{
+                  color: "#209fae",
                 }}
               >
-                <Text
-                  type="bold"
-                  size="description"
-                  style={{
-                    color: "#209fae",
-                  }}
-                >
-                  {t("viewAll")}
-                </Text>
-              </Ripple>
+                {t("viewAll")}
+              </Text>
             </View>
             <View
               style={{
@@ -1746,7 +1737,6 @@ export default function CityDetail(props) {
                         width: width - 40,
                         position: "absolute",
                         bottom: 10,
-                        borderWidth: 1,
                         display: "none",
                         left: 0,
                         alignContent: "center",
@@ -1829,10 +1819,7 @@ export default function CityDetail(props) {
                                       textAlign: "center",
                                     }}
                                   >
-                                    <Truncate
-                                      text={item?.name ? item.name : ""}
-                                      length={35}
-                                    />
+                                    <Truncate text={item.name} length={35} />
                                   </Text>
                                 ) : (
                                   <Text
@@ -3321,7 +3308,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "rgba(0,0,0,0.3)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3344,7 +3331,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: "rgba(0,0,0,0.3)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3389,7 +3376,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "rgba(0,0,0,0.3)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3629,6 +3616,113 @@ export default function CityDetail(props) {
         </View>
       </ModalRN>
     </View>
+
+    // <View style={styles.container}>
+    //   <StaBar backgroundColor="#14646e" barStyle="light-content" />
+    //   <Animated.View
+    //     style={{
+    //       position: "absolute",
+    //       top: SafeStatusBar,
+    //       zIndex: 9999,
+    //       flexDirection: "row",
+    //       justifyContent: "space-between",
+    //       alignContent: "center",
+    //       alignItems: "center",
+    //       height: 55,
+    //       width: Dimensions.get("screen").width,
+    //     }}
+    //   >
+    //     <Button
+    //       text={""}
+    //       size="medium"
+    //       type="circle"
+    //       variant="transparent"
+    //       onPress={() => props.navigation.goBack()}
+    //       style={{
+    //         height: 50,
+    //         marginLeft: 8,
+    //       }}
+    //     >
+    //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+    //     </Button>
+    //     <TouchableOpacity
+    //       onPress={(x) =>
+    //         props.navigation.push("SearchPg", {
+    //           province_id: dataProvince.province_detail_v2.id,
+    //           searchInput: "",
+    //           locationname: lisProvince.name,
+    //           aktifsearch: true,
+    //         })
+    //       }
+    //       style={{
+    //         width: Dimensions.get("screen").width - 90,
+    //         backgroundColor: "rgba(0,0,0,0.2)",
+    //         flexDirection: "row",
+    //         alignContent: "center",
+    //         alignItems: "center",
+    //         padding: 10,
+    //       }}
+    //     >
+    //       <Image
+    //         source={search_button}
+    //         style={{
+    //           height: 20,
+    //           width: 20,
+    //           resizeMode: "contain",
+    //           marginHorizontal: 10,
+    //         }}
+    //       ></Image>
+    //       {/* <Input
+    //         value={search}
+    //         style={{
+    //           height: 20,
+    //           padding: 0,
+    //           textAlign: "left",
+    //           fontFamily: "Lato-Regular",
+    //           fontSize: 14,
+    //           color: "white",
+    //         }}
+    //         placeholderTextColor={"white"}
+    //         underlineColorAndroid="transparent"
+    //         onChangeText={(x) => setTextc(x)}
+    //         placeholder={"Search in " + lisProvince.name}
+    //         returnKeyType="search"
+    //         onSubmitEditing={(x) =>
+    //           props.navigation.push("SearchPg", {
+    //             idcity: dataProvince.province_detail_v2.id,
+    //             searchInput: search,
+    //             aktifsearch: true,
+    //           })
+    //         }
+    //       /> */}
+    //       <Text
+    //         size="readable"
+    //         type="bold"
+    //         style={{
+    //           color: "#FFFFFF",
+    //         }}
+    //       >
+    //         {t("searchin") + lisProvince.name}
+    //       </Text>
+    //     </TouchableOpacity>
+    //     <Button
+    //       text={""}
+    //       size="medium"
+    //       type="circle"
+    //       variant="transparent"
+    //       // onPress={() => setshowside(true)}
+    //       style={{
+    //         height: 50,
+    //       }}
+    //     >
+    //       {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
+    //     </Button>
+    //   </Animated.View>
+
+    //   {renderTabView()}
+    //   {renderHeader()}
+    //   {renderCustomRefresh()}
+    // </View>
   );
 }
 
