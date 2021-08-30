@@ -7,19 +7,22 @@ import {
   TouchableOpacity,
   Alert,
   SafeAreaView,
+  Modal,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tab, Tabs, ScrollableTab } from "native-base";
 import ActivePlan from "./ActivePlan";
 import FinishTrip from "./FinishTrip";
 import PlanList from "./PlanList";
-import { Arrowbackwhite } from "../../../assets/svg";
+import { Arrowbackwhite, Xgray } from "../../../assets/svg";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import listitinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import { useTranslation } from "react-i18next";
 import { Button, Loading } from "../../../component";
 
 export default function TripPlaning(props) {
+  let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
     title: "Your Trip",
     headerTransparent: false,
@@ -68,8 +71,8 @@ export default function TripPlaning(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
     if (tkn === null) {
-      Alert.alert("Silahkan Login terlebih dahulu");
-      props.navigation.navigate("HomeScreen");
+      setModalLogin(true);
+      // props.navigation.navigate("HomeScreen");
     } else {
       console.log(tkn);
       // await GetListitinplan();
@@ -147,6 +150,157 @@ export default function TripPlaning(props) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Modal
+        useNativeDriver={true}
+        visible={modalLogin}
+        onRequestClose={() => true}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 120,
+            marginHorizontal: 60,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginTop: Dimensions.get("screen").height / 4,
+            borderRadius: 5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 120,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#f6f6f6",
+                borderRadius: 5,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  marginTop: 12,
+                  marginBottom: 15,
+                }}
+                size="title"
+                type="bold"
+              >
+                {t("LoginFirst")}
+              </Text>
+              <Pressable
+                onPress={() => {
+                  props.navigation.navigate("HomeScreen");
+                  setModalLogin(false);
+                }}
+                style={{
+                  height: 50,
+                  width: 55,
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                marginHorizontal: 30,
+                marginBottom: 15,
+                marginTop: 12,
+              }}
+            >
+              <Text style={{ marginBottom: 5 }} size="title" type="bold">
+                {t("nextLogin")}
+              </Text>
+              <Text
+                style={{ textAlign: "center", lineHeight: 18 }}
+                size="label"
+                type="regular"
+              >
+                {t("textLogin")}
+              </Text>
+            </View>
+            <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
+              <Button
+                style={{ marginBottom: 5 }}
+                onPress={() => {
+                  setModalLogin(false);
+                  props.navigation.push("AuthStack", {
+                    screen: "LoginScreen",
+                  });
+                }}
+                type="icon"
+                text={t("signin")}
+              ></Button>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginVertical: 5,
+                }}
+              >
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+                <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                  {t("or")}
+                </Text>
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ color: "#209FAE" }}
+                  onPress={() => {
+                    setModalLogin(false);
+                    props.navigation.push("AuthStack", {
+                      screen: "RegisterScreen",
+                    });
+                  }}
+                >
+                  {t("createAkunLogin")}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <Loading show={loading} />
       {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
 

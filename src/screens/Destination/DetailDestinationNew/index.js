@@ -1973,9 +1973,6 @@ const Index = (props) => {
                           }}
                         >
                           {item.name}
-                          {item.name}
-                          {item.name}
-                          {item.name}
                         </Text>
                       </View>
 
