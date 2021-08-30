@@ -31,9 +31,7 @@ import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
 
-export default function SendProvince({ navigation, route }) {
-  console.log("navigate", navigation);
-  console.log("route", route);
+export default function SendCountry({ navigation, route }) {
   const socket = io(CHATSERVER);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
@@ -190,24 +188,25 @@ export default function SendProvince({ navigation, route }) {
       );
 
       let responseJson = await response.json();
-      // console.log(responseJson);
+
       if (responseJson) {
         socket.emit("join", responseJson.id);
         socket.on("connection", (socket) => {
           console.log(socket);
           console.log("socket");
         });
-        let dataProvince = route.params.province;
+        let dataCountry = route.params.country;
+
         let constain = {
-          id: dataProvince?.id,
-          cover: dataProvince?.cover,
-          name: dataProvince?.name,
-          description: dataProvince?.description,
+          id: dataCountry?.id,
+          cover: dataCountry?.cover,
+          name: dataCountry?.name,
+          description: dataCountry?.description,
         };
         let chatData = {
           room: responseJson.id,
           chat: "personal",
-          type: "tag_province",
+          type: "tag_country",
           text: JSON.stringify(constain),
           user_id: user.id,
         };
@@ -219,7 +218,7 @@ export default function SendProvince({ navigation, route }) {
           },
           body: `room=${
             responseJson.id
-          }&type=tag_province&chat=personal&text=${JSON.stringify(
+          }&type=tag_country&chat=personal&text=${JSON.stringify(
             constain
           )}&user_id=${user.id}`,
         });
@@ -272,17 +271,17 @@ export default function SendProvince({ navigation, route }) {
         console.log("socket");
       });
       let from = value.itinerary ? "itinerary" : "group";
-      let dataProvince = route.params.country;
+      let dataCountry = route.params.country;
       let constain = {
-        id: dataProvince?.id,
-        cover: dataProvince?.cover,
-        name: dataProvince?.name,
-        description: dataProvince?.description,
+        id: dataCountry?.id,
+        cover: dataCountry?.cover,
+        name: dataCountry?.name,
+        description: dataCountry?.description,
       };
       let chatData = {
         room: value.group_id,
         chat: "group",
-        type: "tag_province",
+        type: "tag_country",
         text: JSON.stringify(constain),
         user_id: user.id,
       };
@@ -292,7 +291,7 @@ export default function SendProvince({ navigation, route }) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: `user_id=${user.id}&type=tag_province&chat=group&room=${
+        body: `user_id=${user.id}&type=tag_country&chat=group&room=${
           value.group_id
         }&from=${from}&text=${JSON.stringify(constain)}&name=${
           user.first_name

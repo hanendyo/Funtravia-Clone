@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Button } from "../../component";
 import { useTranslation } from "react-i18next";
 export default function Privacy(props) {
@@ -39,7 +39,11 @@ export default function Privacy(props) {
           }
         }
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -75,7 +79,11 @@ Privacy.navigationOptions = ({ navigation }) => ({
       variant="transparent"
       onPress={() => navigation.goBack()}
     >
-      <Arrowbackwhite height={20} width={20} />
+      {Platform.OS == "ios" ? (
+        <Arrowbackios height={15} width={15}></Arrowbackios>
+      ) : (
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      )}
     </Button>
   ),
   headerLeftContainerStyle: {

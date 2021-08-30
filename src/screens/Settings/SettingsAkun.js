@@ -18,6 +18,7 @@ import {
   Arrowbackwhite,
   Nextpremier,
   Xgray,
+  Arrowbackios,
 } from "../../assets/svg";
 import { calendar_blue, Bg_soon } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -90,7 +91,11 @@ export default function SettingsAkun(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {
