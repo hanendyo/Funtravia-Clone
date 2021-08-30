@@ -61,9 +61,10 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 const HeaderHeight = Platform.select({
-  ios: Notch ? 350 - 48 : 350 - 20,
+  ios: Notch ? 360 - 48 : 360 - 20,
   // android: 305 - StatusBar.currentHeight,
-  android: 320 - StatusBar.currentHeight,
+  // android: 320 - StatusBar.currentHeight,
+  android: 340 - StatusBar.currentHeight,
 });
 
 const tab2ItemSize = (width - 40) / 3;
@@ -630,7 +631,7 @@ export default function Unesco({ navigation, route }) {
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - 120,
+            height: HeaderHeight - 150,
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
@@ -638,7 +639,7 @@ export default function Unesco({ navigation, route }) {
               source={{ uri: Banner.banner_asset[0].filepath }}
               style={{
                 width: width,
-                height: HeaderHeight - 110,
+                height: HeaderHeight - 120,
               }}
               resizeMode="cover"
             />
@@ -647,7 +648,7 @@ export default function Unesco({ navigation, route }) {
               source={unesco}
               style={{
                 width: width,
-                height: HeaderHeight - 110,
+                height: HeaderHeight - 120,
               }}
               resizeMode="cover"
             />
@@ -656,9 +657,8 @@ export default function Unesco({ navigation, route }) {
         <View
           style={{
             flex: 1,
-            marginTop: 40,
+            marginTop: 55,
             paddingHorizontal: 20,
-            // height: 200,
             zIndex: -10,
           }}
         >
@@ -670,8 +670,8 @@ export default function Unesco({ navigation, route }) {
           <Text
             size="label"
             style={{
-              textAlign: "justify",
-              lineHeight: 20,
+              textAlign: "left",
+              lineHeight: 22,
             }}
           >
             {Banner && Banner.description
@@ -706,16 +706,7 @@ export default function Unesco({ navigation, route }) {
           marginHorizontal: 15,
           marginVertical: 5,
           flex: 1,
-          // borderWidth: 1,
           backgroundColor: "#FFF",
-          // shadowColor: "#FFF",
-          // shadowOffset: {
-          //   width: 0,
-          //   height: 5,
-          // },
-          // shadowOpacity: 0.1,
-          // shadowRadius: 6.27,
-
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
@@ -725,19 +716,20 @@ export default function Unesco({ navigation, route }) {
           shadowRadius: 4.65,
           elevation: 6,
           borderRadius: 5,
+          // borderWidth: 1,
         }}
       >
         <View
           style={{
-            width: 150,
-            height: 130,
+            width: 140,
+            height: 110,
           }}
         >
           <Image
             source={{ uri: item.images.image }}
             style={{
-              width: 150,
-              height: 130,
+              width: 140,
+              height: 110,
               borderTopLeftRadius: 5,
               borderBottomLeftRadius: 5,
             }}
@@ -758,12 +750,20 @@ export default function Unesco({ navigation, route }) {
             <Text type="bold" size="label" numberOfLines={1}>
               {item.name}
             </Text>
-            <Text numberOfLines={2} style={{ lineHeight: 16 }}>
+            {/* <Text numberOfLines={2} style={{ lineHeight: 16 }}>
               {item.description}
+            </Text> */}
+            <Text
+              numberOfLines={2}
+              style={{ lineHeight: 16 }}
+              size="label"
+              type="regular"
+            >
+              (1999)
             </Text>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <PinHijau height={15} width={15} style={{ marginRight: 5 }} />
+            <PinHijau height={18} width={18} style={{ marginRight: 5 }} />
             <Text numberOfLines={1} size="description" type="regular">
               {item.cities.name}, {item.province.name}
             </Text>
@@ -889,7 +889,7 @@ export default function Unesco({ navigation, route }) {
                 marginHorizontal: 20,
               }}
             >
-              <Text size="label" type="bold">
+              <Text size="title" type="bold">
                 {dataR.length} sites
               </Text>
             </View>
@@ -916,7 +916,7 @@ export default function Unesco({ navigation, route }) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 0],
+      outputRange: [HeaderHeight - 3, 0],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -1035,7 +1035,7 @@ export default function Unesco({ navigation, route }) {
       <Animated.View
         style={{
           position: "absolute",
-          // top: HeaderHeight - 120,
+          top: HeaderHeight - 335,
           transform: [{ translateY: PosisiCountry }],
           alignItems: "center",
           width: "100%",
@@ -1048,8 +1048,8 @@ export default function Unesco({ navigation, route }) {
           onPress={() => setModelCountry(true)}
           style={({ pressed }) => [
             {
-              height: 44,
-              borderRadius: 20,
+              height: 50,
+              borderRadius: 25,
               // borderWidth: 1,
               borderColor: "grey",
               paddingVertical: 10,
@@ -1127,7 +1127,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
-    height: TabBarHeight,
+    height: TabBarHeight + 5,
 
     // borderWidth: 2,
   },

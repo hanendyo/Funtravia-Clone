@@ -200,7 +200,11 @@ export default function Notification(props) {
         <Invitation navigation={props.navigation} token={token} />
       ) : null;
     } else if (route.key == "group") {
-      return <View></View>;
+      return token ? (
+        <View>
+          <Text>{""}</Text>
+        </View>
+      ) : null;
       // return <Information navigation={props.navigation} />;
     }
   };
@@ -243,12 +247,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   label: {
-    fontSize: 14,
-    color: "#464646",
+    fontSize: 16,
+    color: "#000000",
     fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },
@@ -258,5 +262,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     height: 50,
   },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
 });

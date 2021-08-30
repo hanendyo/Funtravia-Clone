@@ -16,7 +16,7 @@ import {
   dateFormatForNotif,
   dateFormats,
 } from "../../../component/src/dateformatter";
-import { Star, Play } from "../../../assets/svg";
+import { Star, Play, AcceptNotif } from "../../../assets/svg";
 import AcceptInvitation from "../../../graphQL/Mutation/Notification/AcceptInvitation";
 import RejectInvitation from "../../../graphQL/Mutation/Notification/RejectInvitation";
 import IsRead from "../../../graphQL/Mutation/Notification/IsRead";
@@ -800,28 +800,24 @@ export default function Invitation({ navigation, token }) {
     );
   }
   const RenderTrans = ({ item }) => {
+    //  notif for invite itinerary_buddy
     if (item.notification_type == "itinerary_buddy" && item.itinerary_buddy) {
       return (
         <Pressable
           onPress={() => handle_areaklik_buddy(item)}
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
-            // borderBottomWidth: 0.2,
-            // borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D1D1D1",
             width: Dimensions.get("screen").width,
-            borderTopWidth: 0.2,
-            borderTopColor: "#D1D1D1",
           }}
         >
           <View
             style={{
               flexDirection: "row",
-              // justifyContent: '',
-              // alignItems: "center",
-              width: Dimensions.get("screen").width - 20,
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
               paddingVertical: 15,
-              // borderWidth: 1,
-              marginLeft: 10,
             }}
           >
             <Pressable
@@ -845,10 +841,8 @@ export default function Invitation({ navigation, token }) {
                   height: 50,
                   width: 50,
                   alignSelf: "center",
-                  // borderWidth: 1,
                   borderRadius: 25,
                   resizeMode: "cover",
-                  borderRadius: 25,
                 }}
                 source={
                   item.itinerary_buddy.userinvite &&
@@ -863,7 +857,6 @@ export default function Invitation({ navigation, token }) {
             <View
               style={{
                 flexDirection: "column",
-                // borderWidth: 1,
                 width: "65%",
                 paddingLeft: 10,
               }}
@@ -872,44 +865,24 @@ export default function Invitation({ navigation, token }) {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  // alignItems:'flex-end'
-                  // borderWidth: 1,
                 }}
               >
                 <Text
                   type="bold"
                   size="label"
                   style={{
-                    // fontFamily: "Lato-Bold",
                     color: "#464646",
-                    // width: "70%",
-                    // fontSize: 15,
                     marginBottom: 5,
                   }}
                 >
                   {t("hi")} {item.itinerary_buddy.myuser?.first_name},{" "}
                   {t("hiJoinTrip")}
                 </Text>
-                {/* <Text
-									size="small"
-									style={{
-										// fontFamily: "Lato-Bold",
-										color: "#464646",
-										// width: '30%',
-										// fontSize: 15,
-										marginBottom: 5,
-									}}
-								>
-									{duration(item.created_at)}
-								</Text> */}
               </View>
               <Text
                 type="regular"
-                size="label"
+                size="description"
                 style={{
-                  // fontFamily: "Lato-Regular",
-                  // fontSize: 15,
-                  // width: "70%",
                   color: "#464646",
                   marginBottom: 7,
                 }}
@@ -923,7 +896,6 @@ export default function Invitation({ navigation, token }) {
                 <View
                   style={{
                     flexDirection: "row",
-                    // backgroundColor: '#32CD32',
                     justifyContent: "flex-start",
                     paddingHorizontal: 3,
                     paddingVertical: 5,
@@ -931,27 +903,27 @@ export default function Invitation({ navigation, token }) {
                     width: "100%",
                     alignContent: "center",
                     borderRadius: 5,
-                    // borderWidth: 1,
                   }}
                 >
                   <Button
                     onPress={() => accept(item)}
-                    size="small"
+                    size="medium"
                     style={{
-                      fontFamily: "lato-semibold",
+                      fontFamily: "Lato-Regular",
                       width: 100,
+                      height: 30,
                     }}
                     color="primary"
-                    // type="circle"
                     text={t("accept")}
                   />
                   <Button
                     onPress={() => reject(item)}
                     style={{
                       width: 80,
+                      height: 30,
                       // opacity: 100,
                     }}
-                    size="small"
+                    size="medium"
                     color="secondary"
                     variant="transparent"
                     text={t("reject")}
@@ -961,9 +933,10 @@ export default function Invitation({ navigation, token }) {
                 item.itinerary_buddy.accepted_at != null &&
                 item.itinerary_buddy.rejected_at == null ? (
                 <View style={{ flexDirection: "row" }}>
-                  <Checkblok width="15" height="15" />
+                  <AcceptNotif width="14" height="14" />
                   <Text
-                    size="small"
+                    size="description"
+                    type="regular"
                     style={{
                       marginLeft: 5,
                       color: "#209FAE",
@@ -975,7 +948,8 @@ export default function Invitation({ navigation, token }) {
               ) : (
                 <View>
                   <Text
-                    size="small"
+                    size="description"
+                    type="regular"
                     style={{
                       color: "#D75995",
                     }}
@@ -991,15 +965,15 @@ export default function Invitation({ navigation, token }) {
                 alignSelf: "flex-start",
                 // justifyContent: "flex-end",
                 alignItems: "flex-end",
-                width: "20%",
+                width: "17%",
                 // borderWidth: 1,
               }}
             >
               <Text
-                size="small"
+                size="description"
                 style={{
                   // textAlign: "right",
-                  color: "#464646",
+                  color: "#6c6c6c",
                   // width: '30%',
                   // fontSize: 15,
                   marginBottom: 5,
@@ -1017,21 +991,17 @@ export default function Invitation({ navigation, token }) {
           onPress={() => handle_areaklik_comment(item)}
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
-            // borderBottomWidth: 0.2,
-            // borderBottomColor: "#D1D1D1",
-            borderTopWidth: 0.2,
-            borderTopColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D1D1D1",
           }}
         >
           <View
             style={{
               flexDirection: "row",
-              // justifyContent: "",
               alignItems: "center",
-              width: Dimensions.get("screen").width - 20,
-              paddingTop: 15,
-              marginLeft: 10,
-              marginBottom: 10,
+              width: Dimensions.get("screen").width,
+              paddingHorizontal: 15,
+              paddingVertical: 15,
             }}
           >
             <Pressable
@@ -1055,7 +1025,7 @@ export default function Invitation({ navigation, token }) {
                   height: 50,
                   width: 50,
                   alignSelf: "center",
-                  // borderWidth: 1,
+
                   borderRadius: 25,
                   resizeMode: "cover",
                   borderRadius: 25,
@@ -1072,7 +1042,7 @@ export default function Invitation({ navigation, token }) {
             <View
               style={{
                 flexDirection: "column",
-                // borderWidth: 1,
+
                 width: "65%",
                 paddingLeft: 10,
               }}
@@ -1088,10 +1058,7 @@ export default function Invitation({ navigation, token }) {
                   type="bold"
                   size="label"
                   style={{
-                    // fontFamily: "Lato-Bold",
                     color: "#464646",
-                    // width: '100%',
-                    // fontSize: 15,
                   }}
                 >
                   {item.comment_feed.user?.first_name}{" "}
@@ -1108,23 +1075,22 @@ export default function Invitation({ navigation, token }) {
               >
                 <Text
                   type="regular"
-                  size="label"
+                  size="description"
                   style={{
-                    // fontFamily: "Lato-Regular",
-                    // fontSize: 15,
-                    // width: '100%',
                     color: "#464646",
                     marginBottom: 7,
-                    // marginRight: 10,
+                    marginRight: 2,
                   }}
                 >
                   {t("commentPost")}{" "}
                 </Text>
                 <Text
-                  size="small"
+                  size="description"
+                  type="regular"
                   style={{
                     // textAlign: "right",
-                    color: "#464646",
+                    color: "#6c6c6c",
+
                     // width: '30%',
                     // fontSize: 15,
                     marginBottom: 5,
@@ -1161,7 +1127,7 @@ export default function Invitation({ navigation, token }) {
               style={{
                 flexDirection: "column",
                 alignSelf: "flex-start",
-                // justifyContent: "flex-end",
+
                 alignItems: "flex-end",
                 width: "20%",
                 // borderWidth: 1,
@@ -1228,16 +1194,13 @@ export default function Invitation({ navigation, token }) {
             style={{
               flexDirection: "row",
               // justifyContent: "",
-              width: Dimensions.get("screen").width - 20,
+              width: Dimensions.get("screen").width,
               paddingBottom: 15,
-              marginLeft: 10,
-              // borderWidth: 1,
             }}
           >
             <View
               style={{
-                width: "17%",
-                // borderWidth: 1,
+                width: "19%",
               }}
             ></View>
             <View
@@ -1245,8 +1208,7 @@ export default function Invitation({ navigation, token }) {
                 backgroundColor: item.isread == false ? "#FFFFFF" : "#F6F6F6",
                 padding: 10,
                 borderRadius: 5,
-                // marginLeft: 10,
-                width: "83%",
+                width: "77%",
               }}
             >
               <Text
@@ -1271,24 +1233,20 @@ export default function Invitation({ navigation, token }) {
           onPress={() => handle_areaklik_like(item)}
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
-            borderTopWidth: 0.2,
-            borderTopColor: "#D1D1D1",
-            paddingHorizontal: 10,
+
             width: Dimensions.get("screen").width,
-            // borderBottomWidth: 0.2,
-            // borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D1D1D1",
           }}
         >
           <View
             style={{
               flexDirection: "row",
-              // justifyContent: "space-between",
               alignItems: "center",
-              width: Dimensions.get("screen").width - 20,
-              // width: "100%",
               // borderWidth: 1,
+              width: Dimensions.get("screen").width,
               paddingVertical: 15,
-              // borderColor: /,
+              paddingHorizontal: 15,
             }}
           >
             <Pressable
@@ -1304,7 +1262,6 @@ export default function Invitation({ navigation, token }) {
               }}
               style={{
                 alignContent: "flex-start",
-                // marginRight: 10,
                 width: "15%",
               }}
             >
@@ -1312,8 +1269,8 @@ export default function Invitation({ navigation, token }) {
                 style={{
                   height: 50,
                   width: 50,
-                  // alignSelf: "center",
-                  // borderWidth: 1,
+                  alignSelf: "center",
+
                   borderRadius: 25,
                   resizeMode: "cover",
                   borderRadius: 25,
@@ -1365,7 +1322,7 @@ export default function Invitation({ navigation, token }) {
               >
                 <Text
                   type="regular"
-                  size="label"
+                  size="description"
                   style={{
                     // fontFamily: "Lato-Regular",
                     // fontSize: 15,
@@ -1378,10 +1335,10 @@ export default function Invitation({ navigation, token }) {
                   {t("likeYourPost")}
                 </Text>
                 <Text
-                  size="small"
+                  size="description"
                   style={{
                     // textAlign: "right",
-                    color: "#464646",
+                    color: "#6c6c6c",
                     // width: '30%',
                     // fontSize: 15,
                     marginBottom: 5,
@@ -1429,20 +1386,18 @@ export default function Invitation({ navigation, token }) {
           onPress={() => handle_areaklik_follow(item)}
           style={{
             backgroundColor: item?.isread == false ? "#EDF5F5" : "white",
-            // borderBottomWidth: 0.2,
-            // borderBottomColor: "#D1D1D1",
-            borderTopWidth: 0.2,
-            borderTopColor: "#D1D1D1",
+
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D1D1D1",
           }}
         >
           <View
             style={{
               flexDirection: "row",
-              // justifyContent: '',
-              width: Dimensions.get("screen").width - 20,
+
+              width: Dimensions.get("screen").width,
               paddingVertical: 15,
-              // borderWidth: 1,
-              marginLeft: 10,
+              paddingHorizontal: 15,
             }}
           >
             <View
@@ -1457,7 +1412,7 @@ export default function Invitation({ navigation, token }) {
                   height: 50,
                   width: 50,
                   alignSelf: "center",
-                  // borderWidth: 1,
+
                   borderRadius: 25,
                   resizeMode: "cover",
                   borderRadius: 25,
@@ -1474,7 +1429,7 @@ export default function Invitation({ navigation, token }) {
             <View
               style={{
                 flexDirection: "column",
-                // borderWidth: 1,
+
                 width: "65%",
                 paddingLeft: 10,
               }}
@@ -1511,7 +1466,7 @@ export default function Invitation({ navigation, token }) {
               >
                 <Text
                   type="regular"
-                  size="label"
+                  size="description"
                   style={{
                     // fontFamily: "Lato-Regular",
                     // fontSize: 15,
@@ -1535,7 +1490,7 @@ export default function Invitation({ navigation, token }) {
                   >
                     <Text
                       type="regular"
-                      size="label"
+                      size="description"
                       style={{
                         color: "#209fae",
                       }}
@@ -1552,14 +1507,14 @@ export default function Invitation({ navigation, token }) {
                 alignSelf: "flex-start",
                 // justifyContent: "flex-end",
                 alignItems: "flex-end",
-                width: "20%",
+                width: "17%",
               }}
             >
               <Text
-                size="small"
+                size="description"
                 style={{
                   // textAlign: "right",
-                  color: "#464646",
+                  color: "#6c6c6c",
                   // width: '30%',
                   // fontSize: 15,
                   marginBottom: 5,
@@ -1604,6 +1559,7 @@ export default function Invitation({ navigation, token }) {
           padding: 20,
           backgroundColor: "#FFFFFF",
           shadowColor: "#6F7273",
+
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 1,
           shadowRadius: 2,

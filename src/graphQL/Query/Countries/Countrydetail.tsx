@@ -14,6 +14,10 @@ const country_detail = gql`
       images {
         image
       }
+      continent {
+        id
+        name
+      }
       map
       city {
         id
