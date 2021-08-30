@@ -12,6 +12,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackblack,
+  Arrowbackios,
   Arrowbackwhite,
   Check,
   Search,
@@ -34,7 +35,7 @@ export default function SettingCity(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle:t("country"),
+    headerTitle: t("country"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -62,7 +63,11 @@ export default function SettingCity(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -83,18 +88,16 @@ export default function SettingCity(props) {
     }, 1000);
   }, []);
 
-  console.log("data", data)
+  console.log("data", data);
 
   const pushselected = async () => {
     if (storage?.countries && data) {
       var tempData = [...data];
-      console.log("tempData", tempData)
+      console.log("tempData", tempData);
       for (var i of tempData) {
         ({ ...i, selected: false });
       }
-      var index = tempData.findIndex(
-        (k) => k["id"] === storage?.countries?.id
-      );
+      var index = tempData.findIndex((k) => k["id"] === storage?.countries?.id);
       if (index >= 0) {
         ({ ...tempData[index], selected: true });
       }
@@ -242,7 +245,8 @@ export default function SettingCity(props) {
                   size="description"
                   type="regular"
                   style={{
-                    color: storage?.countries.id == item.id ? "#209fae" : "#000",
+                    color:
+                      storage?.countries.id == item.id ? "#209fae" : "#000",
                   }}
                 >
                   {item.name

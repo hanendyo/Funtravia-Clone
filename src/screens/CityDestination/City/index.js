@@ -42,6 +42,7 @@ import {
   Globe,
   Newglobe,
   Padlock,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -221,9 +222,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   setLoadings(false);
+    // }, 2000);
     const Journalitinerarydata = props.navigation.addListener("focus", () => {
       getJournalCity();
       getItineraryCity;
@@ -315,10 +316,9 @@ export default function CityDetail(props) {
       }
       setdataevent(eventavailable);
       getJournalCity();
+      setLoadings(false);
     },
   });
-
-  // console.log("data", dataCity);
 
   const Goto = (item) => {
     if (item?.id) {
@@ -2775,7 +2775,7 @@ export default function CityDetail(props) {
   };
 
   /**
-   * render Helper
+   * render HEader
    */
   const renderHeader = () => {
     const y = scrollY.interpolate({
@@ -2909,9 +2909,15 @@ export default function CityDetail(props) {
                       style={{ marginLeft: 10 }}
                     >
                       {t("cityof")} {t("province")}{" "}
-                      {dataCity && dataCity.CitiesInformation
+                      {/* {dataCity && dataCity.CitiesInformation
                         ? dataCity.CitiesInformation.province.name
-                        : "-"}
+                        : "-"} */}
+                      {Capital({
+                        text:
+                          dataCity && dataCity.CitiesInformation
+                            ? dataCity.CitiesInformation.province.name
+                            : "-",
+                      })}
                     </Text>
                   ) : (
                     <Text
@@ -3456,12 +3462,16 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={20} width={20}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3475,7 +3485,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.3)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3491,29 +3501,7 @@ export default function CityDetail(props) {
               marginHorizontal: 10,
             }}
           ></Image>
-          {/* <Input
-            value={search}
-            style={{
-              height: 20,
-              padding: 0,
-              textAlign: "left",
-              fontFamily: "Lato-Regular",
-              fontSize: 14,
-              color: "white",
-            }}
-            placeholderTextColor={"white"}
-            underlineColorAndroid="transparent"
-            onChangeText={(x) => setTextc(x)}
-            placeholder={"Search in " + listCity.name}
-            returnKeyType="search"
-            onSubmitEditing={(x) =>
-              props.navigation.push("SearchPg", {
-                idcity: dataCity.CitiesInformation.id,
-                searchInput: search,
-                aktifsearch: true,
-              })
-            }
-          /> */}
+
           <View>
             <Text
               size="readable"
@@ -3542,7 +3530,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3589,7 +3577,11 @@ export default function CityDetail(props) {
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={20} width={20}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3603,7 +3595,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.2)",
+            backgroundColor: "rgba(0,0,0,0.3)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",

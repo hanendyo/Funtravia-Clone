@@ -17,7 +17,7 @@ import {
 import { Arrowbackwhite, Garuda, Calendargreen } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
-import { Text, Button, FunImage } from "../../component";
+import { Text, Button, FunImage, Truncate } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useLazyQuery } from "@apollo/client";
 import Practical from "../../graphQL/Query/Cities/Practical";
@@ -65,7 +65,7 @@ export default function PracticalInformation(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -216,102 +216,6 @@ export default function PracticalInformation(props) {
       </View>
     );
   };
-  const Rendercontent = ({ active, practical }) => {
-    let index = practical.findIndex((k) => k["id"] === actives);
-    let datas = practical ? practical[index] : null;
-
-    return (
-      <View style={{ padding: 20 }}>
-        {datas && datas.information_article_detail.length
-          ? datas.information_article_detail.map((i, index) => {
-              return (
-                <View key={index}>
-                  {i.type === "image" ? (
-                    <View style={{ marginVertical: 10 }}>
-                      {i.title ? (
-                        <Text size="label" type="bold">
-                          {i.title}
-                        </Text>
-                      ) : null}
-
-                      <View
-                        style={{
-                          alignItems: "center",
-                        }}
-                      >
-                        <FunImage
-                          source={i.image ? { uri: i.image } : default_image}
-                          resizeMode={"cover"}
-                          style={{
-                            borderWidth: 0.4,
-                            borderColor: "#d3d3d3",
-                            marginTop: 5,
-                            height: Dimensions.get("screen").width * 0.4,
-                            width: "100%",
-                          }}
-                        />
-                      </View>
-                      <Text
-                        size="small"
-                        type="regular"
-                        style={{
-                          textAlign: "justify",
-                          marginTop: 5,
-                          color: "#464646",
-                        }}
-                      >
-                        {i.text ? i.text : ""}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={{ marginVertical: 10 }}>
-                      {i.title ? (
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={{
-                            marginBottom: 5,
-                            color: "#464646",
-                          }}
-                        >
-                          {i.title}
-                        </Text>
-                      ) : null}
-                      <Text
-                        size="readable"
-                        type="regular"
-                        style={{
-                          marginTop: 5,
-                          textAlign: "justify",
-                          color: "#464646",
-                        }}
-                      >
-                        {i.text ? i.text : ""}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              );
-            })
-          : null
-        //  (
-        //   <View style={{ alignItems: "center" }}>
-        //     <Text
-        //       type="regular"
-        //       size="title"
-        //       style={{
-        //         textAlign: "justify",
-        //         color: "#464646",
-        //       }}
-        //     >
-        //       {t("noArticle")}
-        //     </Text>
-        //   </View>
-        // )
-        }
-      </View>
-    );
-  };
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex];
@@ -360,6 +264,7 @@ export default function PracticalInformation(props) {
         }
         contentContainerStyle={{
           paddingTop: TabBarHeight,
+          paddingHorizontal: 15,
         }}
         data={data}
         renderItem={renderItem}
@@ -370,79 +275,110 @@ export default function PracticalInformation(props) {
     let index = tabIndex;
     let datas = practical ? practical[index] : null;
     return (
-      <View style={{ padding: 20 }}>
+      <View
+        style={{
+          paddingVertical: 15,
+        }}
+      >
         {datas && datas.information_article_detail.length
           ? datas.information_article_detail.map((i, index) => {
-              return (
-                <View key={index}>
-                  {i.type === "image" ? (
-                    <View style={{ marginVertical: 10 }}>
-                      {i.title ? (
-                        <Text size="label" type="bold">
-                          {i.title}
-                        </Text>
-                      ) : null}
+              if (!i) {
+                <View key={"content" + index} style={{ alignItems: "center" }}>
+                  <Text
+                    type="regular"
+                    size="title"
+                    style={{
+                      textAlign: "justify",
+                      color: "#464646",
+                    }}
+                  >
+                    {t("noArticle")}
+                  </Text>
+                </View>;
+              } else {
+                return (
+                  <View key={index}>
+                    {i.type === "image" ? (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
 
-                      <View
-                        style={{
-                          alignItems: "center",
-                          marginTop: i.title ? 20 : 0,
-                        }}
-                      >
-                        <FunImage
-                          source={i.image ? { uri: i.image } : default_image}
-                          resizeMode={"cover"}
+                        <View
                           style={{
-                            borderWidth: 0.4,
-                            borderColor: "#d3d3d3",
-
-                            height: Dimensions.get("screen").width * 0.4,
-                            width: "100%",
-                          }}
-                        />
-                      </View>
-                      <Text
-                        size="description"
-                        type="light"
-                        style={{
-                          textAlign: "left",
-                          marginTop: 5,
-                          color: "#616161",
-                        }}
-                      >
-                        {i.text ? i.text : ""}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={{ marginVertical: 10 }}>
-                      {i.title ? (
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={{
-                            // marginBottom: 5,
-                            color: "#464646",
+                            alignItems: "center",
                           }}
                         >
-                          {i.title}
+                          <FunImage
+                            source={i.image ? { uri: i.image } : default_image}
+                            resizeMode={"cover"}
+                            style={{
+                              borderWidth: 0.4,
+                              marginTop: i.title ? 5 : 0,
+                              borderColor: "#d3d3d3",
+                              height: Dimensions.get("screen").width * 0.4,
+                              width: "100%",
+                            }}
+                          />
+                        </View>
+                        <Text
+                          size="description"
+                          type="light"
+                          style={{
+                            textAlign: "left",
+                            marginTop: 5,
+                            marginBottom: 15,
+                            color: "#616161",
+                            paddingHorizontal: 5,
+                          }}
+                        >
+                          {i.text ? i.text : ""}
                         </Text>
-                      ) : null}
-                      <Text
-                        size="readable"
-                        type="regular"
-                        style={{
-                          marginTop: i.title ? 20 : 0,
-                          lineHeight: 20,
-                          textAlign: "left",
-                          color: "#464646",
-                        }}
-                      >
-                        {i.text ? i.text : ""}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              );
+                      </View>
+                    ) : (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+
+                              color: "#464646",
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
+                        <Text
+                          size="title"
+                          type="regular"
+                          style={{
+                            lineHeight: 22,
+                            textAlign: "left",
+                            color: "#464646",
+                            marginBottom: 15,
+
+                            paddingHorizontal: 5,
+                          }}
+                        >
+                          {i.text ? i.text : ""}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              }
             })
           : null}
       </View>
@@ -453,79 +389,110 @@ export default function PracticalInformation(props) {
     let datas = practical ? practical[index] : null;
 
     return (
-      <View style={{ padding: 20 }}>
+      <View
+        style={{
+          paddingVertical: 15,
+        }}
+      >
         {datas && datas.information_article_detail.length
           ? datas.information_article_detail.map((i, index) => {
-              return (
-                <View key={index}>
-                  {i.type === "image" ? (
-                    <View style={{ marginVertical: 10 }}>
-                      {i.title ? (
-                        <Text size="label" type="bold">
-                          {i.title}
-                        </Text>
-                      ) : null}
+              if (!i) {
+                <View key={"content" + index} style={{ alignItems: "center" }}>
+                  <Text
+                    type="regular"
+                    size="title"
+                    style={{
+                      textAlign: "justify",
+                      color: "#464646",
+                    }}
+                  >
+                    {t("noArticle")}
+                  </Text>
+                </View>;
+              } else {
+                return (
+                  <View key={index}>
+                    {i.type === "image" ? (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
 
-                      <View
-                        style={{
-                          alignItems: "center",
-                          marginTop: i.title ? 20 : 0,
-                        }}
-                      >
-                        <FunImage
-                          source={i.image ? { uri: i.image } : default_image}
-                          resizeMode={"cover"}
+                        <View
                           style={{
-                            borderWidth: 0.4,
-                            borderColor: "#d3d3d3",
-
-                            height: Dimensions.get("screen").width * 0.4,
-                            width: "100%",
-                          }}
-                        />
-                      </View>
-                      <Text
-                        size="description"
-                        type="light"
-                        style={{
-                          textAlign: "left",
-                          marginTop: 5,
-                          color: "#616161",
-                        }}
-                      >
-                        {i.text ? i.text : ""}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={{ marginVertical: 10 }}>
-                      {i.title ? (
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={{
-                            // marginBottom: 5,
-                            color: "#464646",
+                            alignItems: "center",
                           }}
                         >
-                          {i.title}
+                          <FunImage
+                            source={i.image ? { uri: i.image } : default_image}
+                            resizeMode={"cover"}
+                            style={{
+                              borderWidth: 0.4,
+                              marginTop: i.title ? 5 : 0,
+                              borderColor: "#d3d3d3",
+                              height: Dimensions.get("screen").width * 0.4,
+                              width: "100%",
+                            }}
+                          />
+                        </View>
+                        <Text
+                          size="description"
+                          type="light"
+                          style={{
+                            textAlign: "left",
+                            marginTop: 5,
+                            marginBottom: 15,
+                            color: "#616161",
+                            paddingHorizontal: 5,
+                          }}
+                        >
+                          {i.text ? i.text : ""}
                         </Text>
-                      ) : null}
-                      <Text
-                        size="readable"
-                        type="regular"
-                        style={{
-                          marginTop: i.title ? 20 : 0,
-                          lineHeight: 20,
-                          textAlign: "left",
-                          color: "#464646",
-                        }}
-                      >
-                        {i.text ? i.text : ""}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              );
+                      </View>
+                    ) : (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+
+                              color: "#464646",
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
+                        <Text
+                          size="title"
+                          type="regular"
+                          style={{
+                            lineHeight: 22,
+                            textAlign: "left",
+                            color: "#464646",
+                            marginBottom: 15,
+
+                            paddingHorizontal: 5,
+                          }}
+                        >
+                          {i.text ? i.text : ""}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              }
             })
           : null}
       </View>
@@ -550,7 +517,7 @@ export default function PracticalInformation(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "#DAF0F2",
-            borderBottomWidth: 0.5,
+            // borderBottomWidth: 0.5,
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -566,21 +533,20 @@ export default function PracticalInformation(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#DAF0F2",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
                   paddingHorizontal: 15,
                   width:
-                    props.navigationState.routes.length < 2
+                    props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
-                      : // : props.navigationState.routes.length < 3
-                        // ? Dimensions.get("screen").width * 0.5
-                        // : props.navigationState.routes.length < 4
-                        // ? Dimensions.get("screen").width * 0.33
-                        null,
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
                   height: TabBarHeight,
                   alignItems: "center",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
                 <Text
@@ -588,74 +554,24 @@ export default function PracticalInformation(props) {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 0.7,
-                      height: 38,
-                      paddingTop: 2,
+                      borderBottomWidth: 0,
+
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props.navigationState.routes.length > 1
+                          ? "#FFFFFF"
+                          : "#209fae",
                       textTransform: "capitalize",
                     },
                   ]}
                 >
-                  {item.title}
+                  <Truncate text={item?.title ? item.title : ""} length={14} />
                 </Text>
               </View>
             </Ripple>
           )}
         />
-        {/* <ScrollView
-          horizontal={true}
-          style={{
-            width: "100%",
-            backgroundColor: "#DAF0F2",
-          }}
-          // contentContainerStyle={{
-          //   width:"100%"
-          // }}
-          showsHorizontalScrollIndicator={false}
-        >
-          <TabBar
-            {...props}
-            onTabPress={({ route, preventDefault }) => {
-              if (isListGliding.current) {
-                preventDefault();
-              }
-            }}
-            style={{
-              elevation: 0,
-              shadowOpacity: 0,
-              flex: 1,
-              backgroundColor: "#DAF0F2",
-              width: "100%",
-              height: TabBarHeight,
-              // borderBottomWidth: 1,
-              // borderBottomColor: "#daf0f2",
-            }}
-            renderLabel={renderLabel}
-            indicatorStyle={styles.indicator}
-          />
-        </ScrollView> */}
       </Animated.View>
-    );
-  };
-
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 2,
-          borderBottomColor: focused ? "#209fae" : "#DAF0F2",
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Text
-          style={[
-            focused ? styles.labelActive : styles.label,
-            { opacity: focused ? 1 : 0.7, height: 33 },
-          ]}
-        >
-          {route.title}
-        </Text>
-      </View>
     );
   };
 

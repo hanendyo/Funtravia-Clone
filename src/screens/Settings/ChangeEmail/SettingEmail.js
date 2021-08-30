@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Arrowbackwhite } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { View, Dimensions, CheckBox } from "react-native";
@@ -30,7 +30,11 @@ export default function SettingEmail(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Arrowbackwhite, LogoEmail } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, LogoEmail } from "../../../assets/svg";
 import { Text, Button, Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
 import {
@@ -64,7 +64,11 @@ export default function SettingEmailVerify(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {

@@ -458,7 +458,8 @@ export default function ListEventHome(props) {
             setheightjudul(height);
           }}
           style={{
-            padding: 15,
+            paddingHorizontal: 15,
+            paddingTop: 15,
           }}
         >
           <Text
@@ -832,6 +833,7 @@ export default function ListEventHome(props) {
                 opacity: focused ? 1 : 0.5,
                 //  borderWidth: 1,
                 margin: 0,
+                paddingBottom: 10,
               }}
             >
               {route.title}

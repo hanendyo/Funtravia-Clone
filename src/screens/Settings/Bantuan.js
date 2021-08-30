@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
 import { WebView } from "react-native-webview";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Button } from "../../component";
 export default function Bantuan(props) {
   const { t, i18n } = useTranslation();
@@ -55,7 +55,11 @@ export default function Bantuan(props) {
           }
         }
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -102,7 +106,11 @@ Bantuan.navigationOptions = ({ navigation }) => ({
       variant="transparent"
       onPress={() => navigation.goBack()}
     >
-      <Arrowbackwhite height={20} width={20} />
+      {Platform.OS == "ios" ? (
+        <Arrowbackios height={15} width={15}></Arrowbackios>
+      ) : (
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      )}
     </Button>
   ),
   headerLeftContainerStyle: {

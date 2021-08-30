@@ -963,19 +963,15 @@ export default function Invitation({ navigation, token }) {
               style={{
                 flexDirection: "column",
                 alignSelf: "flex-start",
-                // justifyContent: "flex-end",
                 alignItems: "flex-end",
                 width: "17%",
-                // borderWidth: 1,
               }}
             >
               <Text
                 size="description"
                 style={{
-                  // textAlign: "right",
                   color: "#6c6c6c",
-                  // width: '30%',
-                  // fontSize: 15,
+
                   marginBottom: 5,
                 }}
               >

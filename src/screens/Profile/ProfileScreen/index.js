@@ -41,6 +41,7 @@ import {
   Albumgreen,
   Allpost,
   Allpostgreen,
+  Arrowbackios,
   Arrowbackwhite,
   Google,
   Message,
@@ -98,7 +99,7 @@ export default function OtherProfile(props) {
   let [users, setuser] = useState(null);
   let [id, seID] = useState(props.route.params.idUser);
   let [position, setposition] = useState(false);
-  // console.log(token);
+
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
@@ -136,7 +137,7 @@ export default function OtherProfile(props) {
 
     await LoadUserProfile();
   };
-  // console.log(token);
+
   const [
     Getdatapost,
     { data: dataposting, loading: loadingpost, error: errorpost },
@@ -414,10 +415,7 @@ export default function OtherProfile(props) {
           });
         }
       }
-    } catch (error) {
-      console.error(error);
-      // setLoading(false);
-    }
+    } catch (error) {}
   };
 
   const [tabIndex, setIndex] = useState(0);
@@ -590,71 +588,71 @@ export default function OtherProfile(props) {
     })
   );
 
-  const HeaderComponent = {
-    headerShown: true,
-    title: "",
-    headerTransparent: true,
-    headerTintColor: "white",
-    headerTitle: "",
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-      alignSelf: "center",
-      // paddingLeft: Platform.select({
-      //   // ios: 44,
-      //   ios: 0,
-      //   android: 40,
-      // }),
-    },
-    headerLeftContainerStyle: {
-      background: "#FFF",
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   title: "",
+  //   headerTransparent: true,
+  //   headerTintColor: "white",
+  //   headerTitle: "",
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 14,
+  //     color: "white",
+  //     alignSelf: "center",
+  //     // paddingLeft: Platform.select({
+  //     //   // ios: 44,
+  //     //   ios: 0,
+  //     //   android: 40,
+  //     // }),
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
 
-      marginLeft: 10,
-    },
-    headerLeft: () => (
-      <View>
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 55,
-          }}
-        >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        </Button>
-      </View>
-    ),
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <View>
+  //       <Button
+  //         text={""}
+  //         size="medium"
+  //         type="circle"
+  //         variant="transparent"
+  //         onPress={() => props.navigation.goBack()}
+  //         style={{
+  //           height: 55,
+  //         }}
+  //       >
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       </Button>
+  //     </View>
+  //   ),
 
-    headerRight: () =>
-      position && position === "other" ? (
-        <Ripple
-          onPress={() => _handlemessage(props.route.params.idUser, token)}
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          style={{
-            zIndex: 99999999,
-            height: 50,
-            width: 50,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Message height={20} width={20}></Message>
-        </Ripple>
-      ) : null,
-  };
+  //   headerRight: () =>
+  //     position && position === "other" ? (
+  //       <Ripple
+  //         onPress={() => _handlemessage(props.route.params.idUser, token)}
+  //         text={""}
+  //         size="medium"
+  //         type="circle"
+  //         variant="transparent"
+  //         style={{
+  //           zIndex: 99999999,
+  //           height: 50,
+  //           width: 50,
+  //           justifyContent: "center",
+  //           alignItems: "center",
+  //         }}
+  //       >
+  //         <Message height={20} width={20}></Message>
+  //       </Ripple>
+  //     ) : null,
+  // };
 
   useEffect(() => {
     QueryFotoAlbum();
@@ -845,9 +843,9 @@ export default function OtherProfile(props) {
     });
     return (
       <Animated.View
-        onLayout={() => {
-          props.navigation.setOptions(HeaderComponent);
-        }}
+        // onLayout={() => {
+        //   props.navigation.setOptions(HeaderComponent);
+        // }}
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
@@ -1201,7 +1199,6 @@ export default function OtherProfile(props) {
   };
 
   const renderPost = (tabPost, e) => {
-    // console.log(e);
     if (tabPost === 0) {
       return (
         <Post
@@ -1450,83 +1447,83 @@ export default function OtherProfile(props) {
           _tabIndex.current = id;
           setIndex(id);
 
-          props.navigation.setOptions({
-            headerLeft: () => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  text={""}
-                  size="medium"
-                  type="circle"
-                  variant="transparent"
-                  onPress={() => props.navigation.goBack()}
-                  style={{
-                    height: 55,
-                  }}
-                >
-                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-                </Button>
+          // props.navigation.setOptions({
+          //   headerLeft: () => (
+          //     <View
+          //       style={{
+          //         flexDirection: "row",
+          //         alignContent: "center",
+          //         alignItems: "center",
+          //       }}
+          //     >
+          //       <Button
+          //         text={""}
+          //         size="medium"
+          //         type="circle"
+          //         variant="transparent"
+          //         onPress={() => props.navigation.goBack()}
+          //         style={{
+          //           height: 55,
+          //         }}
+          //       >
+          //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          //       </Button>
 
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    left: 55,
-                    opacity: hides.current,
-                  }}
-                >
-                  <Text
-                    size="label"
-                    type="bold"
-                    style={{
-                      color: "#fff",
-                    }}
-                  >
-                    {t("profile")}
-                  </Text>
-                </Animated.View>
+          //       <Animated.View
+          //         style={{
+          //           position: "absolute",
+          //           left: 55,
+          //           opacity: hides.current,
+          //         }}
+          //       >
+          //         <Text
+          //           size="label"
+          //           type="bold"
+          //           style={{
+          //             color: "#fff",
+          //           }}
+          //         >
+          //           {t("profile")}
+          //         </Text>
+          //       </Animated.View>
 
-                <Animated.Image
-                  source={
-                    data?.user_profilebyid?.picture
-                      ? { uri: data?.user_profilebyid?.picture }
-                      : DefaultProfileSquare
-                  }
-                  style={{
-                    width: width / 9,
-                    height: width / 9,
-                    borderRadius: width / 18,
-                    borderWidth: 2,
-                    borderColor: "#FFF",
-                    opacity: hide.current,
-                  }}
-                />
-              </View>
-            ),
-            headerTitle: (
-              <View>
-                <Animated.View
-                  style={{
-                    opacity: hide.current,
-                  }}
-                >
-                  <Text
-                    type="bold"
-                    style={{
-                      color: "#fff",
-                    }}
-                  >
-                    {data?.user_profilebyid?.first_name}{" "}
-                    {data?.user_profilebyid?.last_name}
-                  </Text>
-                </Animated.View>
-              </View>
-            ),
-          });
+          //       <Animated.Image
+          //         source={
+          //           data?.user_profilebyid?.picture
+          //             ? { uri: data?.user_profilebyid?.picture }
+          //             : DefaultProfileSquare
+          //         }
+          //         style={{
+          //           width: width / 9,
+          //           height: width / 9,
+          //           borderRadius: width / 18,
+          //           borderWidth: 2,
+          //           borderColor: "#FFF",
+          //           opacity: hide.current,
+          //         }}
+          //       />
+          //     </View>
+          //   ),
+          //   headerTitle: (
+          //     <View>
+          //       <Animated.View
+          //         style={{
+          //           opacity: hide.current,
+          //         }}
+          //       >
+          //         <Text
+          //           type="bold"
+          //           style={{
+          //             color: "#fff",
+          //           }}
+          //         >
+          //           {data?.user_profilebyid?.first_name}{" "}
+          //           {data?.user_profilebyid?.last_name}
+          //         </Text>
+          //       </Animated.View>
+          //     </View>
+          //   ),
+          // });
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
@@ -1731,6 +1728,140 @@ export default function OtherProfile(props) {
   return (
     <View style={styles.container}>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
+
+      {/* header before scroll */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hides.current,
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
+          marginLeft: 10,
+          height: 55,
+
+          width: Dimensions.get("screen").width,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+        <Animated.Text
+          // size="title"
+          // type="bold"
+          style={{
+            opacity: hides.current,
+            color: "#fff",
+            marginLeft: 10,
+            fontSize: 16,
+            fontFamily: "Lato-Bold",
+          }}
+        >
+          {t("profile")}
+        </Animated.Text>
+      </Animated.View>
+      {/* header after scroll */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
+          marginLeft: 10,
+          height: 55,
+
+          width: Dimensions.get("screen").width,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            marginRight: 10,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+        <Animated.Image
+          source={
+            data?.user_profilebyid?.picture
+              ? { uri: data?.user_profilebyid?.picture }
+              : DefaultProfileSquare
+          }
+          style={{
+            width: width / 9,
+            height: width / 9,
+            borderRadius: width / 18,
+            borderWidth: 2,
+            borderColor: "#FFF",
+            marginRight: 10,
+            opacity: hide.current,
+          }}
+        />
+        <Animated.View
+          style={{
+            opacity: hide.current,
+          }}
+        >
+          <Text
+            // type="bold"
+            style={{
+              color: "#fff",
+              fontFamily: "Lato-Bold",
+              fontSize: 16,
+            }}
+          >
+            {data?.user_profilebyid?.first_name}{" "}
+            {data?.user_profilebyid?.last_name}
+          </Text>
+        </Animated.View>
+      </Animated.View>
+
       {renderTabView()}
       {renderHeader(dataUser)}
       {renderCustomRefresh()}

@@ -407,7 +407,7 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPushNotificationIOS (1.8.0):
+  - RNCPushNotificationIOS (1.9.0):
     - React-Core
   - RNDateTimePicker (3.5.2):
     - React-Core
@@ -766,7 +766,7 @@ SPEC CHECKSUMS:
   RNCCheckbox: 6bd119c26c6eb8264a29d59ff66cb70a14de3349
   RNCClipboard: ddd4d291537f1667209c9c405aaa4307297e252e
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNCPushNotificationIOS: 61a7c72bd1ebad3568025957d001e0f0e7b32191
+  RNCPushNotificationIOS: 5bffde624d1fd15bfc8b2fd202b012a517a6dc9b
   RNDateTimePicker: 7658208086d86d09e1627b5c34ba0cf237c60140
   RNDeviceInfo: ace1442cd0f7d01292a39a3b587666177eaf8cb0
   RNFastImage: a7384db75df352500261e8e8f1ac2026def26102
