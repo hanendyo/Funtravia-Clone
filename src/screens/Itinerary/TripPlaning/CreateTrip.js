@@ -42,11 +42,11 @@ import { gql } from "apollo-boost";
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
 export default function Trip(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
-    title: "Trip Planing",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Trip Planing",
+    headerTitle: t("TripPlanning"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -55,7 +55,7 @@ export default function Trip(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -80,7 +80,6 @@ export default function Trip(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [country, setCountry] = useState("");
   let [countrys, setCountrys] = useState("");
   let [modalcountry, setModalcountry] = useState(false);

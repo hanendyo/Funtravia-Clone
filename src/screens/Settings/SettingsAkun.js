@@ -17,6 +17,7 @@ import {
   OptionsVertBlack,
   Arrowbackwhite,
   Nextpremier,
+  Xgray,
 } from "../../assets/svg";
 import { calendar_blue, Bg_soon } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -57,6 +58,8 @@ export default function SettingsAkun(props) {
   let [soon, setSoon] = useState(false);
   let [index, setIndex] = useState(0);
   let [dataCitySetting, setDataCitySetting] = useState();
+
+  console.log("datas", dates);
 
   const closeBirth = () => {
     setModalBirth(false);
@@ -445,13 +448,11 @@ export default function SettingsAkun(props) {
         <ModalRN
           onRequestClose={() => setModalBirth(false)}
           onBackdropPress={() => setModalBirth(false)}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
           visible={modalBirth}
           transparent={true}
         >
           <Pressable
-            // onPress={() => setModalBirth(false)}
+            onPress={() => setModalBirth(false)}
             style={{
               backgroundColor: "rgba(0,0,0,0.7)",
               flex: 1,
@@ -466,26 +467,57 @@ export default function SettingsAkun(props) {
             <View
               style={{
                 backgroundColor: "#fff",
-                width: Dimensions.get("screen").width - 40,
-                paddingVertical: 40,
-                paddingHorizontal: 50,
+                width: Dimensions.get("screen").width - 110,
                 borderRadius: 5,
               }}
             >
-              <Text size="description" type="bold">
-                {t("birthdate")}
-              </Text>
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  borderRadius: 5,
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 12, marginBottom: 15 }}
+                >
+                  {t("birthdate")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalBirth(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
               <Pressable
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
                   borderBottomWidth: 1,
-                  paddingVertical: 10,
+                  borderBottomColor: "#464646",
+                  marginTop: 30,
+                  marginHorizontal: 20,
                 }}
                 onPress={() => closeBirth()}
               >
-                <Text size="description" type="regular">
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 10 }}
+                >
                   {dates ? dateFormatYMD(dates) : t("birthofdate")}
                 </Text>
                 <CustomImage
@@ -495,15 +527,17 @@ export default function SettingsAkun(props) {
               </Pressable>
               <View
                 style={{
-                  marginTop: 20,
+                  marginVertical: 20,
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  marginHorizontal: 30,
                 }}
               >
                 <Button
+                  variant="transparent"
                   size="medium"
                   style={{ width: "48%" }}
-                  color="green"
+                  // color="green"
                   text={t("cancel")}
                   onPress={() => setModalBirth(false)}
                 ></Button>
@@ -528,19 +562,23 @@ export default function SettingsAkun(props) {
 
         {/* Modal Jenis Kelamin */}
 
-        <Modal
+        <ModalRN
           onRequestClose={() => setModalGender(false)}
           onBackdropPress={() => setModalGender(false)}
-          animationIn="slideInUp"
-          animationOut="slideOutDown"
-          isVisible={modalGender}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
+          transparent={true}
+          visible={modalGender}
         >
+          <Pressable
+            onPress={() => setModalGender(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
           <View
             style={{
               flex: 1,
@@ -548,23 +586,51 @@ export default function SettingsAkun(props) {
               alignItems: "center",
               alignSelf: "center",
               alignContent: "center",
-              width: Dimensions.get("screen").width - 40,
+              borderRadius: 5,
+              width: Dimensions.get("screen").width - 110,
             }}
           >
             <View
               style={{
                 backgroundColor: "#fff",
-                width: Dimensions.get("screen").width - 40,
-                paddingVertical: 40,
-                paddingHorizontal: 50,
+                width: Dimensions.get("screen").width - 110,
                 borderRadius: 5,
               }}
             >
-              <Text size="description" type="bold">
-                {t("gender")}
-              </Text>
               <View
                 style={{
+                  backgroundColor: "#f6f6f6",
+                  borderRadius: 5,
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 12, marginBottom: 15 }}
+                >
+                  {t("gender")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setModalGender(false)}
+                style={{
+                  height: 50,
+                  width: 55,
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <View
+                style={{
+                  marginHorizontal: 20,
+                  borderBottomColor: "#464646",
                   borderBottomWidth: 1,
                 }}
               >
@@ -587,15 +653,16 @@ export default function SettingsAkun(props) {
               </View>
               <View
                 style={{
-                  marginTop: 20,
+                  marginVertical: 30,
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  marginHorizontal: 20,
                 }}
               >
                 <Button
                   size="medium"
                   style={{ width: "48%" }}
-                  color="green"
+                  variant="transparent"
                   text={t("cancel")}
                   onPress={() => setModalGender(false)}
                 ></Button>
@@ -608,7 +675,7 @@ export default function SettingsAkun(props) {
               </View>
             </View>
           </View>
-        </Modal>
+        </ModalRN>
         {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
         <View
           style={{

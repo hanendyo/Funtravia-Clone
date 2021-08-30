@@ -115,6 +115,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
         <View
           style={{
             flexDirection: "row",
+            alignContent: "center",
           }}
         >
           <Tagdestination width={11} height={11} style={{ marginRight: 4 }} />
@@ -148,6 +149,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
         <View
           style={{
             flexDirection: "row",
+            alignContent: "center",
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
@@ -164,11 +166,28 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
         <View
           style={{
             flexDirection: "row",
+            alignContent: "center",
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
           <Text style={style} size="description" type="regular">
             {data_province.name}
+          </Text>
+        </View>
+      );
+    }
+
+    if (data.type == "att_image") {
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            Image
           </Text>
         </View>
       );

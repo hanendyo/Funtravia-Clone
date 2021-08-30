@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Modal as ModalRN,
   TextInput,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, FunIcon, Text } from "../../../component";
@@ -43,7 +44,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import Ripple from "react-native-material-ripple";
 import Skeletonindex from "./Skeletonindex";
 import { RNToasty } from "react-native-toasty";
-import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
+import ListFotoAlbum from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 
@@ -367,30 +368,37 @@ export default function ItinerarySearchCategory(props) {
   };
 
   let [dataAlbums, setDataAlbums] = useState(null);
+  console.log("dataAlbums search", dataAlbums);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       refetch();
+      refetchAlbum();
       loadAsync();
-      QueryFotoAlbum();
     });
     return unsubscribe;
   }, [props.navigation]);
 
-  const [
-    QueryFotoAlbum,
-    { data: dataFotoAlbum, loading: loadingFotoAlbum, error: errorFotoAlbum },
-  ] = useLazyQuery(ListFotoAlbum, {
+  const {
+    data: dataAlbum,
+    loading: loadingFotoAlbum,
+    refetch: refetchAlbum,
+  } = useQuery(ListFotoAlbum, {
     fetchPolicy: "network-only",
+    variables: {
+      keyword: textSearch,
+      limit: 100,
+      offset: 0,
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${props?.route?.params?.token}`,
       },
     },
-    variables: { user_id: setting?.user?.id, keyword: textSearch },
-    onCompleted: () => setDataAlbums(dataFotoAlbum?.list_albums),
+    onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
@@ -474,49 +482,32 @@ export default function ItinerarySearchCategory(props) {
             paddingTop: 15,
           }}
         >
-          <FlatList
-            data={list_populer}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  height: 200,
-                  paddingHorizontal: 15,
-                  marginTop: 5,
-                }}
-              >
+          {loadingPopuler ? (
+            <View style={{ marginTop: 20 }}>
+              <ActivityIndicator color="$209fae" size="small" />
+            </View>
+          ) : (
+            <FlatList
+              data={list_populer}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
                 <View
                   style={{
-                    borderRadius: 5,
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: arrayShadow.shadowOpacity,
-                    shadowRadius: arrayShadow.shadowRadius,
-                    elevation: arrayShadow.elevation,
-                    justifyContent: "space-between",
-                    backgroundColor: "#f6f6f6",
-                    overflow: "hidden",
+                    height: 200,
+                    paddingHorizontal: 15,
+                    marginTop: 5,
                   }}
                 >
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate("ItineraryStack", {
-                        screen: "itindetail",
-                        params: {
-                          itintitle: item.name,
-                          country: item.id,
-                          token: token,
-                          status: "favorite",
-                          index: 0,
-                        },
-                      })
-                    }
+                  <View
                     style={{
-                      backgroundColor: "#FFFFFF",
-                      height: "77%",
-                      borderTopLeftRadius: 5,
-                      borderTopRightRadius: 5,
-                      flexDirection: "row",
-                      zIndex: -1,
+                      borderRadius: 5,
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: arrayShadow.shadowOpacity,
+                      shadowRadius: arrayShadow.shadowRadius,
+                      elevation: arrayShadow.elevation,
+                      justifyContent: "space-between",
+                      backgroundColor: "#f6f6f6",
+                      overflow: "hidden",
                     }}
                   >
                     <Pressable
@@ -528,249 +519,271 @@ export default function ItinerarySearchCategory(props) {
                             country: item.id,
                             token: token,
                             status: "favorite",
+                            index: 0,
                           },
                         })
                       }
-                    >
-                      <Image
-                        source={
-                          item && item.cover
-                            ? { uri: item.cover }
-                            : default_image
-                        }
-                        style={{
-                          height: "100%",
-                          width: Dimensions.get("screen").width * 0.37,
-                          borderTopLeftRadius: 5,
-                        }}
-                      />
-                      <View
-                        style={{
-                          position: "absolute",
-                          height: 30,
-                          marginTop: 10,
-                          margin: 5,
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          style={{
-                            height: 32,
-                            width: 32,
-                            borderRadius: 16,
-                            borderWidth: 1,
-                            borderColor: "rgba(52, 52, 52, 0.75)",
-                            zIndex: 1,
-                          }}
-                          source={
-                            item &&
-                            item.user_created &&
-                            item.user_created.picture
-                              ? { uri: item.user_created.picture }
-                              : default_image
-                          }
-                        />
-                        <Text
-                          size="description"
-                          type="bold"
-                          style={{
-                            zIndex: 0,
-                            paddingLeft: 5,
-                            backgroundColor: "rgba(0, 0, 0, 0.6)",
-                            borderRadius: 2,
-                            color: "white",
-                            marginLeft: -5,
-                            padding: 2,
-                            paddingBottom: 5,
-                          }}
-                        >
-                          {Truncate({
-                            text: item?.user_created?.first_name
-                              ? item?.user_created?.first_name
-                              : "unknown",
-                            length: 13,
-                          })}
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <View
                       style={{
-                        flex: 1,
-                        paddingHorizontal: 10,
                         backgroundColor: "#FFFFFF",
-                        overflow: "hidden",
-                        paddingVertical: 10,
-                        borderRadius: 3,
-                        justifyContent: "space-between",
-                        // borderWidth: 1,
+                        height: "77%",
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        flexDirection: "row",
+                        zIndex: -1,
                       }}
                     >
-                      <View style={{ justifyContent: "flex-start" }}>
+                      <Pressable
+                        onPress={() =>
+                          props.navigation.navigate("ItineraryStack", {
+                            screen: "itindetail",
+                            params: {
+                              itintitle: item.name,
+                              country: item.id,
+                              token: token,
+                              status: "favorite",
+                            },
+                          })
+                        }
+                      >
+                        <Image
+                          source={
+                            item && item.cover
+                              ? { uri: item.cover }
+                              : default_image
+                          }
+                          style={{
+                            height: "100%",
+                            width: Dimensions.get("screen").width * 0.37,
+                            borderTopLeftRadius: 5,
+                          }}
+                        />
+                        <View
+                          style={{
+                            position: "absolute",
+                            height: 30,
+                            marginTop: 10,
+                            margin: 5,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Image
+                            style={{
+                              height: 32,
+                              width: 32,
+                              borderRadius: 16,
+                              borderWidth: 1,
+                              borderColor: "rgba(52, 52, 52, 0.75)",
+                              zIndex: 1,
+                            }}
+                            source={
+                              item &&
+                              item.user_created &&
+                              item.user_created.picture
+                                ? { uri: item.user_created.picture }
+                                : default_image
+                            }
+                          />
+                          <Text
+                            size="description"
+                            type="bold"
+                            style={{
+                              zIndex: 0,
+                              paddingLeft: 5,
+                              backgroundColor: "rgba(0, 0, 0, 0.6)",
+                              borderRadius: 2,
+                              color: "white",
+                              marginLeft: -5,
+                              padding: 2,
+                              paddingBottom: 5,
+                            }}
+                          >
+                            {Truncate({
+                              text: item?.user_created?.first_name
+                                ? item?.user_created?.first_name
+                                : "unknown",
+                              length: 13,
+                            })}
+                          </Text>
+                        </View>
+                      </Pressable>
+                      <View
+                        style={{
+                          flex: 1,
+                          paddingHorizontal: 10,
+                          backgroundColor: "#FFFFFF",
+                          overflow: "hidden",
+                          paddingVertical: 10,
+                          borderRadius: 3,
+                          justifyContent: "space-between",
+                          // borderWidth: 1,
+                        }}
+                      >
+                        <View style={{ justifyContent: "flex-start" }}>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <View
+                                style={{
+                                  backgroundColor: "#DAF0F2",
+                                  borderWidth: 1,
+                                  borderRadius: 3,
+                                  borderColor: "#209FAE",
+                                  paddingHorizontal: 5,
+                                }}
+                              >
+                                <Text
+                                  type="bold"
+                                  size="description"
+                                  style={{ color: "#209FAE", paddingBottom: 3 }}
+                                >
+                                  {item?.categori?.name
+                                    ? item?.categori?.name
+                                    : "No Category"}
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  height: 6,
+                                  width: 6,
+                                  borderRadius: 3,
+                                  marginHorizontal: 10,
+                                  backgroundColor: "#000",
+                                }}
+                              />
+                              {item?.isprivate ? (
+                                <Padlock height={20} width={20} />
+                              ) : (
+                                <Newglobe height={20} width={20} />
+                              )}
+                            </View>
+                            <View>
+                              {item.liked === false ? (
+                                <TouchableOpacity
+                                  style={{
+                                    padding: 5,
+                                  }}
+                                  onPress={() => _liked(item.id, index, item)}
+                                >
+                                  <LikeEmpty height={15} width={15} />
+                                </TouchableOpacity>
+                              ) : (
+                                <TouchableOpacity
+                                  style={{
+                                    padding: 5,
+                                  }}
+                                  onPress={() => _unliked(item.id, index, item)}
+                                >
+                                  <LikeRed height={15} width={15} />
+                                </TouchableOpacity>
+                              )}
+                            </View>
+                          </View>
+                          <Text
+                            size="title"
+                            type="black"
+                            style={{ marginTop: 5 }}
+                            numberOfLines={2}
+                          >
+                            {item.name}
+                          </Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              marginTop: 5,
+                            }}
+                          >
+                            <PinHijau width={13} height={13} />
+                            <Text
+                              style={{ marginLeft: 5 }}
+                              size="description"
+                              type="regular"
+                            >
+                              {item?.country?.name}
+                            </Text>
+                            <Text>,</Text>
+                            <Text
+                              size="description"
+                              type="regular"
+                              style={{ marginLeft: 3 }}
+                            >
+                              {item?.city?.name}
+                            </Text>
+                          </View>
+                        </View>
                         <View
                           style={{
                             flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            marginTop: 20,
                           }}
                         >
                           <View
                             style={{
                               flexDirection: "row",
                               alignItems: "center",
+                              marginLeft: 3,
+                              marginRight: 10,
                             }}
                           >
-                            <View
-                              style={{
-                                backgroundColor: "#DAF0F2",
-                                borderWidth: 1,
-                                borderRadius: 3,
-                                borderColor: "#209FAE",
-                                paddingHorizontal: 5,
-                              }}
-                            >
-                              <Text
-                                type="bold"
-                                size="description"
-                                style={{ color: "#209FAE", paddingBottom: 3 }}
-                              >
-                                {item?.categori?.name
-                                  ? item?.categori?.name
-                                  : "No Category"}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                height: 6,
-                                width: 6,
-                                borderRadius: 3,
-                                marginHorizontal: 10,
-                                backgroundColor: "#000",
-                              }}
+                            <Calendargrey
+                              width={12}
+                              height={12}
+                              style={{ marginRight: 5 }}
                             />
-                            {item?.isprivate ? (
-                              <Padlock height={20} width={20} />
-                            ) : (
-                              <Newglobe height={20} width={20} />
-                            )}
-                          </View>
-                          <View>
-                            {item.liked === false ? (
-                              <TouchableOpacity
-                                style={{
-                                  padding: 5,
-                                }}
-                                onPress={() => _liked(item.id, index, item)}
-                              >
-                                <LikeEmpty height={15} width={15} />
-                              </TouchableOpacity>
-                            ) : (
-                              <TouchableOpacity
-                                style={{
-                                  padding: 5,
-                                }}
-                                onPress={() => _unliked(item.id, index, item)}
-                              >
-                                <LikeRed height={15} width={15} />
-                              </TouchableOpacity>
-                            )}
-                          </View>
-                        </View>
-                        <Text
-                          size="title"
-                          type="black"
-                          style={{ marginTop: 5 }}
-                          numberOfLines={2}
-                        >
-                          {item.name}
-                        </Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginTop: 5,
-                          }}
-                        >
-                          <PinHijau width={13} height={13} />
-                          <Text
-                            style={{ marginLeft: 5 }}
-                            size="description"
-                            type="regular"
-                          >
-                            {item?.country?.name}
-                          </Text>
-                          <Text>,</Text>
-                          <Text
-                            size="description"
-                            type="regular"
-                            style={{ marginLeft: 3 }}
-                          >
-                            {item?.city?.name}
-                          </Text>
-                        </View>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginTop: 20,
-                        }}
-                      >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginLeft: 3,
-                            marginRight: 10,
-                          }}
-                        >
-                          <Calendargrey
-                            width={12}
-                            height={12}
-                            style={{ marginRight: 5 }}
-                          />
 
-                          {item.start_date && item.end_date ? (
-                            <Text
-                              // style={{ marginLeft: 3 }}
-                              size="description"
-                              type="regular"
-                            >
-                              {getDN(item.start_date, item.end_date)}
-                            </Text>
-                          ) : null}
+                            {item.start_date && item.end_date ? (
+                              <Text
+                                // style={{ marginLeft: 3 }}
+                                size="description"
+                                type="regular"
+                              >
+                                {getDN(item.start_date, item.end_date)}
+                              </Text>
+                            ) : null}
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              // marginLeft: 10,
+                            }}
+                          >
+                            <User
+                              width={12}
+                              height={12}
+                              style={{ marginRight: 5 }}
+                            />
+                            {item.buddy_count > 1 ? (
+                              <Text size="description" type="regular">
+                                {(item && item.buddy_count
+                                  ? item.buddy_count
+                                  : null) +
+                                  " " +
+                                  t("persons")}
+                              </Text>
+                            ) : (
+                              <Text size="description" type="regular">
+                                {(item && item.buddy_count
+                                  ? item.buddy_count
+                                  : null) +
+                                  " " +
+                                  t("person")}
+                              </Text>
+                            )}
+                          </View>
                         </View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            // marginLeft: 10,
-                          }}
-                        >
-                          <User
-                            width={12}
-                            height={12}
-                            style={{ marginRight: 5 }}
-                          />
-                          {item.buddy_count > 1 ? (
-                            <Text size="description" type="regular">
-                              {(item && item.buddy_count
-                                ? item.buddy_count
-                                : null) +
-                                " " +
-                                t("persons")}
-                            </Text>
-                          ) : (
-                            <Text size="description" type="regular">
-                              {(item && item.buddy_count
-                                ? item.buddy_count
-                                : null) +
-                                " " +
-                                t("person")}
-                            </Text>
-                          )}
-                        </View>
-                      </View>
-                      {/* <View
+                        {/* <View
                             style={{
                               marginTop: 3,
                               flexDirection: "row",
@@ -789,92 +802,92 @@ export default function ItinerarySearchCategory(props) {
                               (283 reviews)
                             </Text>
                           </View> */}
-                    </View>
-                  </Pressable>
-                  <View
-                    style={{
-                      height: "20%",
-                      flexDirection: "row",
-                      backgroundColor: "#FFFFFF",
-                      borderBottomLeftRadius: 10,
-                      borderBottomRightRadius: 10,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Pressable
-                      onPress={() =>
-                        props.navigation.navigate("ItineraryStack", {
-                          screen: "itindetail",
-                          params: {
-                            itintitle: item.name,
-                            country: item.id,
-                            token: token,
-                            status: "favorite",
-                            index: 1,
-                          },
-                        })
-                      }
-                      style={{
-                        width: "50%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#D1D1D1",
-                        marginBottom: 5,
-                      }}
-                    >
-                      <TravelAlbum
-                        style={{ marginRight: 5 }}
-                        height={13}
-                        width={13}
-                      />
-                      <Text
-                        size="description"
-                        type="bold"
-                        style={{ color: "#209FAE" }}
-                      >
-                        Travel Album
-                      </Text>
+                      </View>
                     </Pressable>
-                    <Pressable
-                      onPress={() => setSoon(true)}
-                      // onPress={() =>
-                      //   props.navigation.navigate("ItineraryStack", {
-                      //     screen: "itindetail",
-                      //     params: {
-                      //       itintitle: item.name,
-                      //       country: item.id,
-                      //       token: token,
-                      //       status: "favorite",
-                      //       index: 2,
-                      //     },
-                      //   })
-                      // }
+                    <View
                       style={{
-                        width: "50%",
+                        height: "20%",
                         flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginBottom: 5,
+                        backgroundColor: "#FFFFFF",
+                        borderBottomLeftRadius: 10,
+                        borderBottomRightRadius: 10,
+                        justifyContent: "space-between",
                       }}
                     >
-                      <TravelStoriesdis
-                        style={{ marginRight: 5 }}
-                        height={13}
-                        width={13}
-                      />
-                      <Text
-                        size="description"
-                        type="regular"
+                      <Pressable
+                        onPress={() =>
+                          props.navigation.navigate("ItineraryStack", {
+                            screen: "itindetail",
+                            params: {
+                              itintitle: item.name,
+                              country: item.id,
+                              token: token,
+                              status: "favorite",
+                              index: 1,
+                            },
+                          })
+                        }
                         style={{
-                          color: "#c7c7c7",
+                          width: "50%",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRightWidth: 1,
+                          borderColor: "#D1D1D1",
+                          marginBottom: 5,
                         }}
-                        // style={{ color: "#209FAE" }}
                       >
-                        Travel Stories
-                      </Text>
-                      {/* <TravelStories
+                        <TravelAlbum
+                          style={{ marginRight: 5 }}
+                          height={13}
+                          width={13}
+                        />
+                        <Text
+                          size="description"
+                          type="bold"
+                          style={{ color: "#209FAE" }}
+                        >
+                          Travel Album
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => setSoon(true)}
+                        // onPress={() =>
+                        //   props.navigation.navigate("ItineraryStack", {
+                        //     screen: "itindetail",
+                        //     params: {
+                        //       itintitle: item.name,
+                        //       country: item.id,
+                        //       token: token,
+                        //       status: "favorite",
+                        //       index: 2,
+                        //     },
+                        //   })
+                        // }
+                        style={{
+                          width: "50%",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginBottom: 5,
+                        }}
+                      >
+                        <TravelStoriesdis
+                          style={{ marginRight: 5 }}
+                          height={13}
+                          width={13}
+                        />
+                        <Text
+                          size="description"
+                          type="regular"
+                          style={{
+                            color: "#c7c7c7",
+                          }}
+                          // style={{ color: "#209FAE" }}
+                        >
+                          Travel Stories
+                        </Text>
+                        {/* <TravelStories
                         style={{ marginRight: 5 }}
                         height={10}
                         width={10}
@@ -889,23 +902,24 @@ export default function ItinerarySearchCategory(props) {
                       >
                         Travel Stories
                       </Text> */}
-                    </Pressable>
+                      </Pressable>
+                    </View>
                   </View>
                 </View>
-              </View>
-            )}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => Refresh()}
-              />
-            }
-            onEndReachedThreshold={1}
-            onEndReached={handleOnEndReached}
-          />
+              )}
+              showsVerticalScrollIndicator={false}
+              refreshing={refreshing}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => Refresh()}
+                />
+              }
+              onEndReachedThreshold={1}
+              onEndReached={handleOnEndReached}
+            />
+          )}
         </View>
       );
     } else if (aktif == "Album") {
@@ -923,8 +937,11 @@ export default function ItinerarySearchCategory(props) {
           {dataAlbums.map((item, index) => {
             return (
               <Pressable
+                focusable={true}
+                keyboardShouldPersistTaps={"handled"}
                 key={index}
                 onPress={() => {
+                  Keyboard.dismiss();
                   props.navigation.push("ProfileStack", {
                     screen: "albumdetail",
                     params: {
@@ -1368,6 +1385,8 @@ export default function ItinerarySearchCategory(props) {
             />
           </View>
           <Pressable
+            focusable={true}
+            keyboardShouldPersistTaps={"handled"}
             style={{
               height: 40,
               marginLeft: 5,
@@ -1375,7 +1394,10 @@ export default function ItinerarySearchCategory(props) {
               justifyContent: "center",
               alignItems: "center",
             }}
-            onPress={() => props.navigation.goBack()}
+            onPress={async () => {
+              await Keyboard.dismiss();
+              await props.navigation.goBack();
+            }}
           >
             <Text size="label" type="regular">
               {t("cancel")}
@@ -1465,6 +1487,8 @@ export default function ItinerarySearchCategory(props) {
                           style={{
                             alignItems: "center",
                             justifyContent: "space-around",
+                            height: 65,
+                            width: 78,
                           }}
                         >
                           <FunIcon icon={item.icon} height={45} width={45} />

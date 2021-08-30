@@ -20,6 +20,7 @@ import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { useMutation } from "@apollo/client";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { Xgray } from "../../assets/svg";
 
 const { width, height } = Dimensions.get("screen");
 export default function SearchFeed({ props }) {
@@ -219,33 +220,64 @@ export default function SearchFeed({ props }) {
         ></Pressable>
         <View
           style={{
-            width: Dimensions.get("screen").width - 80,
-            marginHorizontal: 40,
+            width: Dimensions.get("screen").width - 120,
+            marginHorizontal: 60,
             backgroundColor: "#FFF",
             zIndex: 15,
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
-            borderRadius: 3,
             marginTop: Dimensions.get("screen").height / 4,
+            borderRadius: 5,
           }}
         >
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 80,
-              padding: 20,
-              paddingHorizontal: 20,
+              width: Dimensions.get("screen").width - 120,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
+                backgroundColor: "#f6f6f6",
+                borderRadius: 5,
                 alignItems: "center",
-                marginHorizontal: 5,
-                marginBottom: 10,
               }}
             >
-              <Text style={{ marginBottom: 5 }} size="label" type="bold">
+              <Text
+                style={{
+                  marginTop: 12,
+                  marginBottom: 15,
+                }}
+                size="title"
+                type="bold"
+              >
+                {t("LoginFirst")}
+              </Text>
+              <Pressable
+                onPress={() => setModalLogin(false)}
+                style={{
+                  height: 50,
+                  width: 55,
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+            </View>
+            <View
+              style={{
+                alignItems: "center",
+                marginHorizontal: 30,
+                marginBottom: 15,
+                marginTop: 12,
+              }}
+            >
+              <Text style={{ marginBottom: 5 }} size="title" type="bold">
                 {t("nextLogin")}
               </Text>
               <Text
@@ -256,60 +288,62 @@ export default function SearchFeed({ props }) {
                 {t("textLogin")}
               </Text>
             </View>
-            <Button
-              style={{ marginBottom: 5 }}
-              onPress={() => {
-                setModalLogin(false);
-                props.navigation.push("AuthStack", {
-                  screen: "LoginScreen",
-                });
-              }}
-              type="icon"
-              text={t("signin")}
-            ></Button>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                marginVertical: 5,
-              }}
-            >
-              <View
-                style={{
-                  width: 50,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d1d1d1",
-                  marginHorizontal: 10,
-                }}
-              ></View>
-              <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
-                {t("or")}
-              </Text>
-              <View
-                style={{
-                  width: 50,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d1d1d1",
-                  marginHorizontal: 10,
-                }}
-              ></View>
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Text
-                size="label"
-                type="bold"
-                style={{ color: "#209FAE" }}
+            <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
+              <Button
+                style={{ marginBottom: 5 }}
                 onPress={() => {
                   setModalLogin(false);
                   props.navigation.push("AuthStack", {
-                    screen: "RegisterScreen",
+                    screen: "LoginScreen",
                   });
                 }}
+                type="icon"
+                text={t("signin")}
+              ></Button>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginVertical: 5,
+                }}
               >
-                {t("createAkunLogin")}
-              </Text>
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+                <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                  {t("or")}
+                </Text>
+                <View
+                  style={{
+                    width: 50,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    marginHorizontal: 10,
+                  }}
+                ></View>
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ color: "#209FAE" }}
+                  onPress={() => {
+                    setModalLogin(false);
+                    props.navigation.push("AuthStack", {
+                      screen: "RegisterScreen",
+                    });
+                  }}
+                >
+                  {t("createAkunLogin")}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -325,7 +359,7 @@ export default function SearchFeed({ props }) {
           horizontal
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
-          data={datas ? datas : null}
+          data={datas}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               style={{
@@ -348,7 +382,7 @@ export default function SearchFeed({ props }) {
                 data={item}
                 user={users}
                 navigation={props.navigation}
-                token={token}
+                token={token ? token : props.route.params.token}
                 _like={(e) => _like(e)}
                 _unlike={(e) => _unlike(e)}
                 index={index}

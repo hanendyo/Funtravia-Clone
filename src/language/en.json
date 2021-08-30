@@ -637,5 +637,7 @@
   "MovieLocation": "Movie Location",
   "SubDestinationPhoto": "Photos collection from visitor",
   "seedetail": "See details",
-  "CategoryItin": "Category Itinerary"
+  "CategoryItin": "Category Itinerary",
+  "LoginFirst": "LoginFirst",
+  "reUpload": "Reupload"
 }

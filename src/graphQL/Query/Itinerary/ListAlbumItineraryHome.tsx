@@ -1,5 +1,5 @@
 import { gql } from "apollo-boost";
-const AlbumsItineraryHome = gql`
+const ListAlbumItineraryHome = gql`
   query($user_id: ID!, $keyword: String, $limit: Int, $offset: Int) {
     albums_itinerary_home(
       user_id: $user_id
@@ -28,4 +28,4 @@ const AlbumsItineraryHome = gql`
     }
   }
 `;
-export default AlbumsItineraryHome;
+export default ListAlbumItineraryHome;

@@ -55,7 +55,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import Ripple from "react-native-material-ripple";
 import Skeletonindex from "./Skeletonindex";
 import { RNToasty } from "react-native-toasty";
-import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
+import Albums from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import {
   dateFormatMonthYears,
@@ -72,6 +72,8 @@ export default function ItineraryPopuler(props) {
   let [soon, setSoon] = useState(false);
   let [idDataCategory, setidDataCategory] = useState(null);
   let [select, setSelect] = useState(true);
+  let [dataAlbums, setDataAlbums] = useState(null);
+  console.log("dataAlbums populer", dataAlbums);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -132,7 +134,7 @@ export default function ItineraryPopuler(props) {
         onPress={() =>
           props.navigation.navigate("ItineraryStack", {
             screen: "ItinerarySearchCategory",
-            params: null,
+            params: { token: token },
             // params: {
             //   category: idCategory,
             //   index: indexCategory,
@@ -406,31 +408,36 @@ export default function ItineraryPopuler(props) {
     // await fetchDataListPopuler();
   };
 
-  let [dataAlbums, setDataAlbums] = useState(null);
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       refetch();
       loadAsync();
-      QueryFotoAlbum();
+      // QueryFotoAlbum();
+      refetchAlbum();
     });
     return unsubscribe;
   }, [props.navigation]);
 
-  const [
-    QueryFotoAlbum,
-    { data: dataFotoAlbum, loading: loadingFotoAlbum, error: errorFotoAlbum },
-  ] = useLazyQuery(ListFotoAlbum, {
+  const {
+    data: dataAlbum,
+    loading: loadingFotoAlbum,
+    refetch: refetchAlbum,
+  } = useQuery(Albums, {
     fetchPolicy: "network-only",
+    variables: {
+      keyword: "",
+      limit: 100,
+      offset: 0,
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${props?.route?.params?.token}`,
       },
     },
-    variables: { user_id: setting?.user?.id, keyword: "" },
-    onCompleted: () => setDataAlbums(dataFotoAlbum?.list_albums),
+    onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),
+    notifyOnNetworkStatusChange: true,
   });
 
   const {
