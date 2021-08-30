@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import { WebView } from "react-native-webview";
-import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
+import { Nextpremier, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 
@@ -57,7 +57,11 @@ export default function About(props) {
           }
         }
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -102,7 +106,11 @@ About.navigationOptions = ({ navigation }) => ({
       variant="transparent"
       onPress={() => navigation.goBack()}
     >
-      <Arrowbackwhite height={20} width={20} />
+      {Platform.OS == "ios" ? (
+        <Arrowbackios height={15} width={15}></Arrowbackios>
+      ) : (
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      )}
     </Button>
   ),
   headerLeftContainerStyle: {

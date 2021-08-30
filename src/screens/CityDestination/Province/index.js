@@ -38,6 +38,7 @@ import {
   Xgray,
   Nextabu,
   Prevabu,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -210,9 +211,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   setLoadings(false);
+    // }, 2000);
     const Journaldata = props.navigation.addListener("focus", () => {
       getJournalCity();
     });
@@ -304,6 +305,7 @@ export default function CityDetail(props) {
         });
       }
       setdataevent(eventavailable);
+      setLoadings(false);
     },
   });
 
@@ -1277,10 +1279,16 @@ export default function CityDetail(props) {
                                   }}
                                   type="bold"
                                 >
-                                  <Truncate text={dataX.title} length={28} />
+                                  <Truncate
+                                    text={dataX?.title ? dataX.title : ""}
+                                    length={28}
+                                  />
                                 </Text>
                                 <Text>
-                                  <Truncate text={dataX.text} length={60} />
+                                  <Truncate
+                                    text={dataX?.title ? dataX.title : ""}
+                                    length={60}
+                                  />
                                 </Text>
                               </View>
                               <View
@@ -1821,7 +1829,10 @@ export default function CityDetail(props) {
                                       textAlign: "center",
                                     }}
                                   >
-                                    <Truncate text={item.name} length={35} />
+                                    <Truncate
+                                      text={item?.name ? item.name : ""}
+                                      length={35}
+                                    />
                                   </Text>
                                 ) : (
                                   <Text
@@ -2200,7 +2211,10 @@ export default function CityDetail(props) {
                                 marginTop: 5,
                               }}
                             >
-                              <Truncate text={item.name} length={40} />
+                              <Truncate
+                                text={item?.name ? item.name : ""}
+                                length={40}
+                              />
                             </Text>
                             <View></View>
                             <View
@@ -2749,7 +2763,9 @@ export default function CityDetail(props) {
                 {dataProvince && dataProvince.province_detail_v2 ? (
                   <Truncate
                     text={Capital({
-                      text: dataProvince.province_detail_v2.name,
+                      text: dataProvince?.province_detail_v2?.name
+                        ? dataProvince.province_detail_v2.name
+                        : "",
                     })}
                     length={20}
                   ></Truncate>
@@ -2947,7 +2963,7 @@ export default function CityDetail(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item.key} length={15} />
+                  <Truncate text={item?.key ? item.key : ""} length={15} />
                 </Text>
               </View>
             </Ripple>
@@ -3305,12 +3321,16 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3324,7 +3344,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.3)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3369,7 +3389,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3416,7 +3436,11 @@ export default function CityDetail(props) {
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3430,7 +3454,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.2)",
+            backgroundColor: "rgba(0,0,0,0.3)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3605,7 +3629,6 @@ export default function CityDetail(props) {
         </View>
       </ModalRN>
     </View>
-  
   );
 }
 

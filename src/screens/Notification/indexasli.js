@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ImageBackground,
-  Dimensions,
-  TextInput,
-  Platform,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, SafeAreaView, BackHandler, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { Text, Button, CustomImage } from "../../component";
-
+import { Text, Button } from "../../component";
 import { gql } from "apollo-boost";
-import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { Header, Content, Tab, Tabs, ScrollableTab } from "native-base";
+import { useLazyQuery } from "@apollo/react-hooks";
 import Information from "./DetailNotification/Information";
 import Invitation from "./DetailNotification/Invitation";
+import { TabBar, TabView } from "react-native-tab-view";
+import { useTranslation } from "react-i18next";
+import { Arrowbackwhite } from "../../assets/svg";
+
 const ListNotifikasi_ = gql`
   query {
     list_notification {
@@ -108,8 +101,8 @@ const ListNotifikasi_ = gql`
 `;
 
 export default function Notification(props) {
+  const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
-  let [preview, setPreview] = useState("list");
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -124,23 +117,50 @@ export default function Notification(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => {
+          props.navigation.goBack(null);
+        }}
+        style={{
+          height: 55,
+          marginLeft: 5,
+        }}
+      >
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      </Button>
+    ),
   };
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await GetListNotif();
-    console.log(tkn);
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
+    const backAction = () => {
+      BackHandler.addEventListener(props.navigation.goBack());
+      return true;
+    };
+
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   backAction
+    // );
+
+    // return () => backHandler.remove();
   }, []);
   const [
     GetListNotif,
@@ -155,69 +175,92 @@ export default function Notification(props) {
     },
   });
 
+  const renderLabel = ({ route, focused }) => {
+    return (
+      <Text
+        style={[
+          focused ? styles.labelActive : styles.label,
+          { opacity: focused ? 1 : 0.7 },
+        ]}
+      >
+        {route.title}
+      </Text>
+    );
+  };
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: "personal", title: "Notification" },
+    { key: "group", title: "Information" },
+  ]);
+
+  const renderScene = ({ route }) => {
+    if (route.key == "personal") {
+      return token ? (
+        <Invitation navigation={props.navigation} token={token} />
+      ) : null;
+    } else if (route.key == "group") {
+      return token ? (
+        <View>
+          <Text>{""}</Text>
+        </View>
+      ) : null;
+      // return <Information navigation={props.navigation} />;
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "center",
+      <TabView
+        lazy={true}
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={(props) => {
+          return (
+            <TabBar
+              {...props}
+              style={{
+                backgroundColor: "white",
+              }}
+              renderLabel={renderLabel}
+              indicatorStyle={styles.indicator}
+            />
+          );
         }}
-      >
-        <View>
-          <Tabs
-            scrollWithoutAnimation={false}
-            tabBarUnderlineStyle={{ backgroundColor: "#209FAE" }}
-            tabContainerStyle={{ borderWidth: 0 }}
-            renderTabBar={() => (
-              <ScrollableTab
-                style={{ backgroundColor: "white" }}
-                tabStyle={{ backgroundColor: "transparent" }}
-                tabsContainerStyle={{
-                  backgroundColor: "white",
-                }}
-                underlineStyle={{
-                  borderColor: "#209FAE",
-                  backgroundColor: "#209FAE",
-                }}
-              />
-            )}
-          >
-            <Tab
-              heading="Notification"
-              tabStyle={{ backgroundColor: "white" }}
-              activeTabStyle={{ backgroundColor: "white" }}
-              textStyle={{
-                fontFamily: "Lato-Bold",
-                color: "#6C6C6C",
-              }}
-              activeTextStyle={{
-                fontFamily: "Lato-Bold",
-                color: "#209FAE",
-              }}
-            >
-              {token ? (
-                <Invitation navigation={props.navigation} token={token} />
-              ) : null}
-            </Tab>
-            <Tab
-              heading="Information"
-              tabStyle={{ backgroundColor: "white" }}
-              activeTabStyle={{ backgroundColor: "white" }}
-              textStyle={{
-                fontFamily: "Lato-Bold",
-                color: "#6C6C6C",
-              }}
-              activeTextStyle={{
-                fontFamily: "Lato-Bold",
-                color: "#209FAE",
-              }}
-            ></Tab>
-          </Tabs>
-        </View>
-      </View>
+      />
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
+  header: {
+    height: 100,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    backgroundColor: "#FFF",
+  },
+  label: {
+    fontSize: 16,
+    color: "#000000",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
+  tab: {
+    elevation: 1,
+    shadowOpacity: 0.5,
+    backgroundColor: "#FFF",
+    height: 50,
+  },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
+});

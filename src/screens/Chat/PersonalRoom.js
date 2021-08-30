@@ -83,7 +83,7 @@ export default function Room({ navigation, route }) {
   const [user, setUser] = useState({});
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState("");
   const socket = io(CHATSERVER, {
     withCredentials: true,
     extraHeaders: {
@@ -546,7 +546,8 @@ export default function Room({ navigation, route }) {
     } else if (!init_data) {
       filteredList = init_local;
     }
-
+    console.log("fit", filteredList);
+    console.log("local", init_local);
     if (filteredList && filteredList.length > 0) {
       await AsyncStorage.setItem(
         "history_" + room,

@@ -3,7 +3,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { View, Dimensions, StyleSheet, Platform, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { inbox_setting, notif_bell } from "../../assets/png";
-import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
+import { Nextpremier, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import SettingNegara from "./SettingNegara";
 import SettingCurrency from "./SettingCurrency";
 import CountryList from "../../graphQL/Query/Countries/CountryList";
@@ -23,8 +23,6 @@ export default function Settings(props) {
   let [setting, setSetting] = useState("");
   let [country, setCountry] = useState();
   let [index, setIndex] = useState(0);
-  
-
 
   const HeaderComponent = {
     headerTitle: t("setting"),
@@ -46,7 +44,11 @@ export default function Settings(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {
@@ -88,12 +90,12 @@ export default function Settings(props) {
         "Content-Type": "application/json",
       },
     },
-    onCompleted : () => {
+    onCompleted: () => {
       const tempData = [...data.country_list];
       let index = tempData.findIndex((k) => k["id"] === setting.countries.id);
       setIndex(index);
-      setCountry(data.country_list)
-    }
+      setCountry(data.country_list);
+    },
   });
 
   const [
@@ -236,7 +238,7 @@ export default function Settings(props) {
                 token: token,
                 setSetting: (e) => setSetting(e),
                 index: index,
-                country:country
+                country: country,
               },
             })
           }
