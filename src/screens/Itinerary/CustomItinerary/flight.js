@@ -16,7 +16,7 @@ import {
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
   ArrowRight,
@@ -28,7 +28,7 @@ import {
   Xhitam,
   Pointmapgray,
 } from "../../../assets/svg";
-import { FloatingInput, Truncate } from "../../../component";
+import { FloatingInput, Truncate, Peringatan } from "../../../component";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -46,8 +46,6 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
-  console.log("props flight", props);
-
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -115,6 +113,8 @@ export default function detailCustomItinerary(props) {
   //params data
   const dayId = [props.route.params.dayId];
   const itineraryId = props.route.params.itineraryId;
+  const startDate = props.route.params.startDate.split(" ").join("T");
+  const endDate = props.route.params.endDate.split(" ").join("T");
 
   //modal
   const [modalFrom, setModalFrom] = useState(false);
@@ -159,6 +159,7 @@ export default function detailCustomItinerary(props) {
   const [timeDepCheck, setTimeDepCheck] = useState("");
   const [timeArrCheck, setTimeArrCheck] = useState("");
 
+  //DATE TIME PICKER
   const timeConverter = (date) => {
     const checkTime = (time) => {
       if (time < 10) {
@@ -186,6 +187,13 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  //  Alert
+  let [alertPopUp, setAlertPopUp] = useState({
+    show: false,
+    judul: "",
+    detail: "",
+  });
+
   const [mutation, { loading, data, error: errorSaved }] = useMutation(
     AddFlight,
     {
@@ -210,18 +218,16 @@ export default function detailCustomItinerary(props) {
   const validate = (name) => {
     if (name === "flightNumber" && flightNumber.length === 0) {
       return false;
-    } else if (
-      (name === "timeArrCheck" && timeArrCheck.length === 0) ||
-      (name === "timeDepCheck" && timeDepCheck.length === 0)
-    ) {
+    } else if (name === "timeArrCheck" && timeArrCheck.length === 0) {
       return false;
-    } else if (
-      (name === "from" || name === "to") &&
-      (from.length === 0 || to.length === 0)
-    ) {
+    } else if (name === "timeDepCheck" && timeDepCheck.length === 0) {
       return false;
-    } else if ((name === "from" || name === "to") && from === to) {
+    } else if (name === "from" && from.length === 0) {
       return false;
+    } else if (name === "to" && to.length === 0) {
+      return false;
+      // } else if ((name === "from" || name === "to") && from === to) {
+      //   return false;
     } else {
       return true;
     }
@@ -296,8 +302,7 @@ export default function detailCustomItinerary(props) {
     }
   };
 
-  //-- Attachment
-  const mutationValid = () => {
+  const validateData = () => {
     setItemValid({
       flightNumber: validate("flightNumber"),
       timeArrCheck: validate("timeArrCheck"),
@@ -305,16 +310,30 @@ export default function detailCustomItinerary(props) {
       from: validate("from"),
       to: validate("to"),
     });
+  };
+
+  const mutationValid = () => {
+    validateData();
     if (
-      itemValid.flightNumber &&
-      itemValid.timeArrCheck &&
-      itemValid.timeDepCheck &&
-      itemValid.from &&
-      itemValid.to
+      flightNumber.length === 0 &&
+      timeArrCheck.length === 0 &&
+      timeDepCheck.length === 0 &&
+      from.length === 0 &&
+      to.length === 0
     ) {
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Some Form Field Empty",
+        detail: "",
+      });
+    }
+    if (flightNumber && timeArrCheck && timeDepCheck && from && to) {
       mutationInput();
     }
   };
+
+  //-- Attachment
 
   const pickFile = async () => {
     try {
@@ -359,25 +378,20 @@ export default function detailCustomItinerary(props) {
             <Plane width={50} height={50} style={{ marginTop: 15 }} />
             <View style={styles.ViewInputFlight}>
               <FloatingInput
-                customTextStyle={{
-                  color:
-                    itemValid.flightNumber === false ? "#464646" : "D75995",
-                }}
                 label={t("FlightNo")}
                 value={flightNumber}
                 onChangeText={setFlightNumber}
               />
-              {itemValid.flightNumber === false ? (
-                <Text
-                  type="regular"
-                  size="small"
-                  style={styles.textAlertFlight}
-                >
-                  {t("inputAlertFlight")}
-                </Text>
+              {flightNumber.length === 0 ? (
+                itemValid.flightNumber === false ? (
+                  <Text type="regular" size="small" style={styles.textAlert}>
+                    {t("inputAlertFlight")}
+                  </Text>
+                ) : null
               ) : null}
             </View>
           </View>
+
           <View style={styles.ViewDate}>
             <View style={styles.ViewDateAndInput}>
               {timeDepCheck !== "" ? (
@@ -389,10 +403,6 @@ export default function detailCustomItinerary(props) {
                 // style={{ marginBottom: -10 }}
               />
               <TextInput
-                customTextStyle={{
-                  color:
-                    itemValid.timeDepCheck === false ? "#464646" : "D75995",
-                }}
                 placeholder={t("Departure")}
                 autoCorrect={false}
                 editable={false}
@@ -404,10 +414,12 @@ export default function detailCustomItinerary(props) {
                 }}
                 style={styles.TextDateInput}
               />
-              {itemValid.timeDepCheck === false ? (
-                <Text type="regular" size="small" style={styles.textAlert}>
-                  {t("inputAlertDateTime")}
-                </Text>
+              {timeDepCheck.length === 0 ? (
+                itemValid.timeDepCheck === false ? (
+                  <Text type="regular" size="small" style={styles.textAlert}>
+                    {t("inputAlertDateTime")}
+                  </Text>
+                ) : null
               ) : null}
               <TouchableOpacity
                 onPress={() => setDateTimeModalDeparture(true)}
@@ -419,6 +431,8 @@ export default function detailCustomItinerary(props) {
               isVisible={dateTimeModalDeparture}
               mode="datetime"
               locale="en_id"
+              minimumDate={new Date(startDate)}
+              maximumDate={new Date(endDate)}
               onConfirm={(date) => {
                 timeConverter(date);
                 setDateTimeModalDeparture(false);
@@ -435,10 +449,6 @@ export default function detailCustomItinerary(props) {
                 // style={{ marginBottom: -10 }}
               />
               <TextInput
-                customTextStyle={{
-                  color:
-                    itemValid.timeArrCheck === false ? "#464646" : "D75995",
-                }}
                 placeholder={t("Arrival")}
                 autoCorrect={false}
                 editable={false}
@@ -450,10 +460,12 @@ export default function detailCustomItinerary(props) {
                 }}
                 style={styles.TextDateInput}
               />
-              {itemValid.timeArrCheck === false ? (
-                <Text type="regular" size="small" style={styles.textAlert}>
-                  {t("inputAlertDateTime")}
-                </Text>
+              {timeArrCheck.length === 0 ? (
+                itemValid.timeArrCheck === false ? (
+                  <Text type="regular" size="small" style={styles.textAlert}>
+                    {t("inputAlertDateTime")}
+                  </Text>
+                ) : null
               ) : null}
               <TouchableOpacity
                 onPress={() => setDateTimeModalArrival(true)}
@@ -465,6 +477,8 @@ export default function detailCustomItinerary(props) {
               isVisible={dateTimeModalArrival}
               mode="datetime"
               locale="en_id"
+              minimumDate={new Date(startDate)}
+              maximumDate={new Date(endDate)}
               onConfirm={(date) => {
                 timeConverter(date);
                 setDateTimeModalArrival(false);
@@ -537,13 +551,17 @@ export default function detailCustomItinerary(props) {
           <Text
             type={"bold"}
             size="label"
-            style={{ position: "relative", top: 5 }}
+            style={{
+              position: "relative",
+              top: 5,
+            }}
           >
             {t("Notes")}
           </Text>
           <TextInput
             placeholder={t("Notes")}
             value={note}
+            autoCorrect={false}
             onChangeText={setNote}
             style={styles.textInputNotes}
           />
@@ -552,6 +570,24 @@ export default function detailCustomItinerary(props) {
           <Text size="label" type="bold">
             {t("Attachment")}
           </Text>
+          {attachment.map((data, index) => {
+            return (
+              <View style={styles.attachment}>
+                <Text style={{ width: 30 }}>{index + 1}. </Text>
+                <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    let temp = [...attachment];
+                    temp.splice(index, 1);
+                    setAttachment(temp);
+                  }}
+                  style={styles.attachmentTimes}
+                >
+                  <Xhitam width={10} height={10} />
+                </TouchableOpacity>
+              </View>
+            );
+          })}
 
           <View style={{ flex: 1, marginVertical: 10 }}>
             <TouchableOpacity
@@ -571,24 +607,6 @@ export default function detailCustomItinerary(props) {
               </Text>
             </TouchableOpacity>
           </View>
-          {attachment.map((data, index) => {
-            return (
-              <View style={styles.attachment}>
-                <Text style={{ width: 30 }}>{index + 1}. </Text>
-                <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    let temp = [...attachment];
-                    temp.splice(index, 1);
-                    setAttachment(temp);
-                  }}
-                  style={styles.attachmentTimes}
-                >
-                  <Xhitam width={10} height={10} />
-                </TouchableOpacity>
-              </View>
-            );
-          })}
         </View>
       </ScrollView>
 
@@ -598,6 +616,7 @@ export default function detailCustomItinerary(props) {
         }}
         animationIn="slideInRight"
         animationOut="slideOutRight"
+        hasBackdrop={false}
         isVisible={modalFrom || modalTo}
         style={{
           backgroundColor: "#209fae",
@@ -805,6 +824,17 @@ export default function detailCustomItinerary(props) {
             }}
             text={t("save")}
           />
+          <Peringatan
+            aler={alertPopUp}
+            setClose={() =>
+              setAlertPopUp({
+                ...alertPopUp,
+                show: false,
+                judul: "",
+                detail: "",
+              })
+            }
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -840,7 +870,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  ViewInputFlight: { flex: 1, marginLeft: 10, marginBottom: 5 },
+  ViewInputFlight: {
+    flex: 1,
+    marginLeft: 10,
+    marginBottom: Platform.OS === "ios" ? 15 : 5,
+  },
   flightLogo: {
     marginRight: 10,
   },
@@ -849,6 +883,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     alignItems: "center",
+    paddingTop: 5,
   },
   ViewDateAndInput: {
     flex: 1,
@@ -865,7 +900,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     width: 150,
-    fontSize: 14,
+    fontSize: Platform.OS === "ios" ? 14 : 13,
     color: "black",
   },
   TouchOpacityDate: {
@@ -928,6 +963,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 14,
     paddingBottom: Platform.OS === "ios" ? 5 : 0,
+    paddingTop: Platform.OS === "ios" ? 15 : 0,
     paddingLeft: 1,
   },
   uploadFile: {
@@ -956,8 +992,8 @@ const styles = StyleSheet.create({
   },
   floatPlaceholder: {
     position: "absolute",
-    top: Platform.OS === "ios" ? -5 : -10,
-    left: Platform.OS === "ios" ? 25 : 30,
+    top: -9,
+    left: Platform.OS === "ios" ? 25 : 28,
     fontFamily: "Lato-Regular",
     color: "#A0A0A0",
     fontSize: 14,
