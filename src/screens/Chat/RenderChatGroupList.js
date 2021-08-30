@@ -93,6 +93,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
         <View
           style={{
             flexDirection: "row",
+            alignContent: "center",
           }}
         >
           <Tagdestination width={11} height={11} style={{ marginRight: 4 }} />
@@ -126,11 +127,45 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
         <View
           style={{
             flexDirection: "row",
+            alignContent: "center",
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={(style, {})} size="description" type="regular">
+          <Text style={style} size="description" type="regular">
             {data_city.name}
+          </Text>
+        </View>
+      );
+    }
+
+    if (data.type == "tag_province") {
+      let data_province = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            {data_province.name}
+          </Text>
+        </View>
+      );
+    }
+
+    if (data.type == "att_image") {
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            Image
           </Text>
         </View>
       );

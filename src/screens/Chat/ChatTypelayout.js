@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
-  Image,
   Pressable,
+  ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import {
   Text,
@@ -17,6 +18,7 @@ import {
   FunImage,
   FunImageAutoSize,
 } from "../../component";
+import Image from "react-native-auto-scale-image";
 import {
   Arrowbackwhite,
   Send,
@@ -31,6 +33,7 @@ import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
+import ImageScaling from "./ImageScalingChat";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -39,21 +42,62 @@ export default function ChatTypelayout({
   navigation,
   tmpRChat,
   socket,
+  _uploadimage,
 }) {
   const { t } = useTranslation();
   const playerRef = useRef(null);
+  const [loading, setloading] = useState(true);
+  const Loadingkirim = () => {
+    setTimeout(() => {
+      setloading(false);
+    }, 20000);
+    if (loading) {
+      return <ActivityIndicator size="large" color="#209fae" />;
+    } else {
+      return (
+        <Pressable
+          onPress={() => {
+            let data = JSON.parse(item.text);
+            _uploadimage(data, item.id);
+            setloading(true);
+          }}
+          style={{
+            alignItems: "center",
+            backgroundColor: "#209fae",
+            alignContent: "center",
+            // flexDirection: "row",
+            justifyContent: "center",
+            borderRadius: 20,
+            opacity: 0.8,
+          }}
+        >
+          <Text
+            size="title"
+            type="bold"
+            style={{
+              color: "white",
+              margin: 10,
+            }}
+          >
+            {t("reUpload")}
+          </Text>
+        </Pressable>
+      );
+    }
+  };
 
   // useEffect(() => {
-  if (item.is_send == false) {
+  if (item.is_send == false && item.type !== "att_image") {
     if (socket.connected) {
-      console.log("aa");
+      // console.log("aa");
       let dateTime = new Date();
       item = Object.assign(item, { is_send: true, time: dateTime });
       socket.emit("message", item);
     }
   }
-  // }, []);
 
+  // }, []);
+  // sticker layout
   if (item.type == "sticker") {
     return (
       <AnimatedPlayer
@@ -68,7 +112,7 @@ export default function ChatTypelayout({
     );
   }
 
-  //  tag city
+  //  tag city layout
   if (item.type == "tag_city") {
     let data = JSON.parse(item.text);
     return (
@@ -174,7 +218,7 @@ export default function ChatTypelayout({
     );
   }
 
-  // tag province
+  // tag province layout
   if (item.type == "tag_province") {
     let data = JSON.parse(item.text);
     return (
@@ -280,9 +324,118 @@ export default function ChatTypelayout({
     );
   }
 
+  // tag country layout
+  if (item.type == "tag_country") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate("CountryStack", {
+            screen: "Country",
+            params: {
+              data: {
+                data: data,
+                exParam: true,
+              },
+            },
+          });
+        }}
+        style={{
+          borderWidth: 1,
+          borderColor: "#209FAE",
+          borderRadius: 10,
+          minHeight: 330,
+          marginVertical: 10,
+          width: 250,
+          backgroundColor: "#F6F6F6",
+        }}
+      >
+        <FunImage
+          source={{ uri: data.cover }}
+          style={{
+            width: 220,
+            height: 220,
+            alignSelf: "center",
+            margin: 15,
+            borderRadius: 10,
+          }}
+        />
+        <View
+          style={{
+            flex: 1,
+            marginHorizontal: 15,
+          }}
+        >
+          {/* Title */}
+          <Text
+            size="small"
+            // type="black"
+            // numberOfLines={1}
+          >
+            {t("checkDestination")}
+          </Text>
+          <Text
+            size="title"
+            type="black"
+            style={{ marginTop: 2 }}
+            // numberOfLines={1}
+          >
+            {data.name}
+          </Text>
+        </View>
+        <View>
+          <Pressable
+            style={{
+              alignContent: "center",
+              alignItems: "flex-end",
+            }}
+            onPress={() => {
+              navigation.navigate("CountryStack", {
+                screen: "Country",
+                params: {
+                  data: {
+                    data: data,
+                    exParam: true,
+                  },
+                },
+              });
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#DAF0F2",
+                borderRadius: 3,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 5,
+                marginRight: 10,
+                marginBottom: 10,
+                marginTop: 5,
+                borderRadius: 5,
+              }}
+            >
+              <Text
+                type="bold"
+                // size="label"
+                style={{
+                  color: "#209FAE",
+                  margin: 5,
+                }}
+              >
+                {" "}
+                {t("seedetail")}
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      </Pressable>
+    );
+  }
+
+  // tag_destination layout
   if (item.type == "tag_destination") {
     let data = JSON.parse(item.text);
-    console.log("data", data);
+    // console.log("data", data);
     return (
       <Pressable
         onPress={() => {
@@ -451,6 +604,8 @@ export default function ChatTypelayout({
       </Pressable>
     );
   }
+
+  // post layout
   if (item.type == "tag_post") {
     let data = JSON.parse(item.text);
     if (data.id) {
@@ -573,6 +728,8 @@ export default function ChatTypelayout({
   }
 
   if (item.type == "att_image") {
+    // att_image_layout
+
     return (
       <Pressable
         onPress={() => {
@@ -591,7 +748,7 @@ export default function ChatTypelayout({
           padding: 10,
           // minHeight: 330,
           // padding: 10,
-          marginVertical: 10,
+          marginVertical: 5,
           // flexDirection: "row",
           backgroundColor: "#F6F6F6",
           // shadowColor: "#DAF0F2",
@@ -605,16 +762,39 @@ export default function ChatTypelayout({
           // elevation: 6,
         }}
       >
-        <FunImageAutoSize
-          source={{ uri: item.text }}
-          style={{
-            width: 250,
-            height: 250,
-            alignSelf: "center",
-            // marginVertical: 10,
-            // borderRadius: 10,
-          }}
-        />
+        {item.is_send ? (
+          <ImageScaling
+            uri={item.text}
+            style={{
+              width: moderateScale(200, 2),
+              // maxHeight: 400,
+              // height: 200,
+              alignSelf: "center",
+              // marginVertical: 10,
+              // borderRadius: 10,
+              borderWidth: 1,
+            }}
+          />
+        ) : (
+          <ImageBackground
+            source={{ uri: JSON.parse(item.text).path }}
+            style={{
+              width: moderateScale(200, 2),
+              height: moderateScale(200, 2),
+              // maxHeight: 400,
+              alignSelf: "center",
+              flexDirection: "row",
+              // marginVertical: 10,
+              // borderRadius: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center",
+            }}
+            blurRadius={3}
+          >
+            <Loadingkirim />
+          </ImageBackground>
+        )}
       </Pressable>
     );
   }

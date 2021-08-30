@@ -268,6 +268,7 @@ import AddHijau from "./files/AddHijau.svg";
 import CameraChat from "./files/camera_chat.svg";
 import Above from "./files/atas.svg";
 import AcceptNotif from "./files/acceptnotif.svg";
+import Keyboard from "./files/keyboard.svg";
 
 export {
   LikeWhite,
@@ -540,4 +541,5 @@ export {
   CameraChat,
   Above,
   AcceptNotif,
+  Keyboard,
 };
