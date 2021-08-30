@@ -137,6 +137,7 @@ export default function RenderSinglePhoto({
         <FunImageAutoSize
           style={{
             width: Dimensions.get("screen").width - 40,
+            // width: Dimensions.get("screen").width - 40,
             height:
               data.media_orientation == "L"
                 ? L

@@ -79,7 +79,6 @@ export default function FunImageAutoSize({
       path = uri;
     }
   }
-  console.log("aaa", path);
 
   if (loading) {
     return (

@@ -30,17 +30,23 @@ import io from "socket.io-client";
 import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
+import { uniqueId } from "lodash";
 
 export default function SendDestination({ navigation, route }) {
-  const socket = io(CHATSERVER);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
+  const socket = io(CHATSERVER, {
+    withCredentials: true,
+    extraHeaders: {
+      Authorization: token,
+    },
+  });
   let [search, setSearch] = useState("");
   // console.log(route.params);
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [data_buddy, SetDatBuddy] = useState([]);
-  console.log(data_buddy);
+  // console.log(data_buddy);
   const [
     querywith,
     { loading: loadingwith, data: DataBuddy, error: errorwith },
@@ -104,6 +110,35 @@ export default function SendDestination({ navigation, route }) {
     getRoomGroup();
     navigation.setOptions(ChatOptions);
   }, []);
+
+  const setChatHistory = async (data) => {
+    // console.log("dara");
+    let history = await AsyncStorage.getItem("history_" + data.room);
+    if (history) {
+      let recent = JSON.parse(history);
+      if (data) {
+        let idx = recent.findIndex((x) => x.id === data.id);
+        if (idx < 0) {
+          recent.push(data);
+        } else {
+          recent[idx] = data;
+        }
+        await AsyncStorage.setItem(
+          "history_" + data.room,
+          JSON.stringify(recent)
+        );
+        // setMessage(recent);
+      } else {
+        // setMessage(recent);
+      }
+    } else {
+      await AsyncStorage.setItem(
+        "history_" + data.room,
+        JSON.stringify([data])
+      );
+      // setMessage([data]);
+    }
+  };
 
   const getUserAndToken = async () => {
     let token = await AsyncStorage.getItem("access_token");
@@ -171,6 +206,18 @@ export default function SendDestination({ navigation, route }) {
   let [indexUser, setIndexUser] = useState();
   let [indexGroup, setIndexGroup] = useState();
 
+  function create_UUID() {
+    var dt = new Date().getTime();
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+      c
+    ) {
+      var r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+    });
+    return uuid;
+  }
+
   const _sendMessage = async (id, index) => {
     setloadingsend(true);
     setIndexUser(index);
@@ -206,52 +253,58 @@ export default function SendDestination({ navigation, route }) {
           cities: dataDestination?.cities,
           images: dataDestination?.images,
         };
+        let uuid = create_UUID();
         let chatData = {
+          id: uuid,
           room: responseJson.id,
           chat: "personal",
           type: "tag_destination",
           text: JSON.stringify(constain),
           user_id: user.id,
         };
-        await fetch(`${CHATSERVER}/api/personal/send`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `room=${
-            responseJson.id
-          }&type=tag_destination&chat=personal&text=${JSON.stringify(
-            constain
-          )}&user_id=${user.id}`,
-        });
+        // await fetch(`${CHATSERVER}/api/personal/send`, {
+        //   method: "POST",
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //     "Content-Type": "application/x-www-form-urlencoded",
+        //   },
+        //   body: `room=${
+        //     responseJson.id
+        //   }&type=tag_destination&chat=personal&text=${JSON.stringify(
+        //     constain
+        //   )}&user_id=${user.id}`,
+        // });
         await socket.emit("message", chatData);
-
+        socket.on("new_chat_personal", (data) => {
+          setChatHistory(data);
+        });
         let change =
           responseJson.sender.id == user.id
             ? responseJson.receiver
             : responseJson.sender;
-        await socket.disconnect();
-        RNToasty.Show({
-          duration: 1,
-          title: t("successfullySent"),
-          position: "bottom",
-        });
-        navigation.dispatch(
-          StackActions.replace("ChatStack", {
-            screen: "RoomChat",
-            params: {
-              room_id: responseJson.id,
-              receiver: change.id,
-              name:
-                change.first_name +
-                " " +
-                (change.last_name ? change.last_name : ""),
-              picture: change.picture,
-            },
-          })
-        );
-        setloadingsend(false);
+        setTimeout(() => {
+          socket.disconnect();
+          RNToasty.Show({
+            duration: 1,
+            title: t("successfullySent"),
+            position: "bottom",
+          });
+          navigation.dispatch(
+            StackActions.replace("ChatStack", {
+              screen: "RoomChat",
+              params: {
+                room_id: responseJson.id,
+                receiver: change.id,
+                name:
+                  change.first_name +
+                  " " +
+                  (change.last_name ? change.last_name : ""),
+                picture: change.picture,
+              },
+            })
+          );
+          setloadingsend(false);
+        }, 2000);
       }
     } catch (error) {
       RNToasty.Show({
