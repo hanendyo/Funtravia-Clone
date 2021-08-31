@@ -23,7 +23,7 @@ import Services from "../../graphQL/Query/Wishlist/Services";
 import Trans from "../../graphQL/Query/Wishlist/Transportation";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, Xhitam } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, Xhitam } from "../../assets/svg";
 import { isNullableType } from "graphql";
 
 export default function Wishlist(props) {
@@ -41,7 +41,7 @@ export default function Wishlist(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -60,7 +60,11 @@ export default function Wishlist(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -360,7 +364,7 @@ export default function Wishlist(props) {
             }}
           >
             <Tabs
-              tabBarUnderlineStyle={{ backgroundColor: "#209FAE", height: 1.8 }}
+              tabBarUnderlineStyle={{ backgroundColor: "#209FAE", height: 2 }}
               tabContainerStyle={{ borderWidth: 0 }}
               locked={false}
               style={{ borderColor: "#d1d1d1" }}

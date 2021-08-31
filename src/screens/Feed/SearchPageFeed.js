@@ -21,6 +21,7 @@ import {
   OptionsVertWhite,
   Arrowbackwhite,
   Pinloc,
+  Arrowbackios,
 } from "../../assets/svg";
 import { useQuery } from "@apollo/react-hooks";
 import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
@@ -325,7 +326,11 @@ export default function Feed(props) {
               },
             ]}
           >
-            <Arrowbackwhite width={20} height={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Pressable>
           <View
             style={{

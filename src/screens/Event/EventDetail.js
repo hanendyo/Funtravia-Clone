@@ -39,6 +39,7 @@ import {
   Sharegreen,
   Arrowbackwhite,
   Mapsborder,
+  Arrowbackios,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text, Button, shareAction, FunImageBackground } from "../../component";
@@ -69,7 +70,7 @@ export default function EventDetail(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -88,7 +89,11 @@ export default function EventDetail(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerRight: () => (

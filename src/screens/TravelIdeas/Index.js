@@ -9,7 +9,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "../../component";
 import { travel_idea_ilust } from "../../assets/png";
-import { Right, Unesco, Movie } from "../../assets/svg";
+import { Right, Unesco, Movie, Arrowbackios } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite } from "../../assets/svg";
 import { Image } from "react-native";
@@ -47,7 +47,11 @@ export default function TravelIdeas(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

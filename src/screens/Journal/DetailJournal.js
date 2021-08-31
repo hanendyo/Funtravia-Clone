@@ -13,7 +13,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button, StatusBar as StaBar } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Arrowbackwhite, LikeEmpty, PanahBulat } from "../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  LikeEmpty,
+  PanahBulat,
+} from "../../assets/svg";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Truncate, Loading } from "../../component";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
@@ -86,11 +91,15 @@ export default function DetailJournal(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
       <Text
-        size="label"
-        type="regular"
+        size="title"
+        type="bold"
         numberOfLines={1}
         style={{ color: "#FFF", flex: 1 }}
       >
@@ -624,7 +633,7 @@ export default function DetailJournal(props) {
                               width: Dimensions.get("window").width,
                               height: Dimensions.get("window").height * 0.3,
                               marginTop: item.title ? 20 : 0,
-                              borderWidth: 1,
+                              // borderWidth: 1,
                             }}
                           />
                         ) : null}

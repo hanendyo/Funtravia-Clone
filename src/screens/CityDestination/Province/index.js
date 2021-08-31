@@ -3308,7 +3308,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3331,7 +3331,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.3)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3376,7 +3376,7 @@ export default function CityDetail(props) {
               width: 35,
 
               borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.3)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
             }}

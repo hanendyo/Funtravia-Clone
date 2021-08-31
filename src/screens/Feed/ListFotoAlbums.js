@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Text, Button } from "../../component";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import ListFotoAlbum from "../../graphQL/Query/Feed/ListFotoAlbum";
 import { useLazyQuery } from "@apollo/client";
@@ -34,7 +34,7 @@ export default function ListFotoAlbums(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -72,7 +72,11 @@ export default function ListFotoAlbums(props) {
                 });
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <View style={{ marginLeft: 5 }}>
           <Text size="label" type="bold" style={{ color: "#FFF" }}>
