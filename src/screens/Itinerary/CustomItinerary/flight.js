@@ -324,7 +324,7 @@ export default function detailCustomItinerary(props) {
       setAlertPopUp({
         ...alertPopUp,
         show: true,
-        judul: "Some Form Field Empty",
+        judul: t("someFormFieldIsEmpty"),
         detail: "",
       });
     }
@@ -495,10 +495,12 @@ export default function detailCustomItinerary(props) {
                 onChangeText={(e) => setFrom(e)}
                 style={styles.textInputOneLine}
               />
-              {itemValid.from === false ? (
-                <Text type="regular" size="small" style={styles.textAlert}>
-                  {t("inputAlertLocation")}
-                </Text>
+              {from.length === 0 ? (
+                itemValid.from === false ? (
+                  <Text type="regular" size="small" style={styles.textAlert}>
+                    {t("inputAlertLocation")}
+                  </Text>
+                ) : null
               ) : null}
               <TouchableOpacity
                 onPress={() => setModalFrom(true)}
@@ -519,10 +521,12 @@ export default function detailCustomItinerary(props) {
                 onChangeText={(e) => setTo(e)}
                 style={styles.textInputOneLineTo}
               />
-              {itemValid.to === false ? (
-                <Text type="regular" size="small" style={styles.textAlert}>
-                  {t("inputAlertLocation")}
-                </Text>
+              {to.length === 0 ? (
+                itemValid.to === false ? (
+                  <Text type="regular" size="small" style={styles.textAlert}>
+                    {t("inputAlertLocation")}
+                  </Text>
+                ) : null
               ) : null}
               <TouchableOpacity
                 onPress={() => setModalTo(true)}
@@ -830,8 +834,6 @@ export default function detailCustomItinerary(props) {
               setAlertPopUp({
                 ...alertPopUp,
                 show: false,
-                judul: "",
-                detail: "",
               })
             }
           />
