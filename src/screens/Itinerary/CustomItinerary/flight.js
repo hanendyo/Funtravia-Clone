@@ -268,7 +268,6 @@ export default function detailCustomItinerary(props) {
           file: attachment,
         },
       });
-
       if (loading) {
         setLoadingApp(true);
       }
@@ -330,6 +329,7 @@ export default function detailCustomItinerary(props) {
     }
     if (flightNumber && timeArrCheck && timeDepCheck && from && to) {
       mutationInput();
+      // console.log(attachment);
     }
   };
 
