@@ -38,6 +38,7 @@ import {
   Xgray,
   Nextabu,
   Prevabu,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -54,6 +55,8 @@ import {
   FunAnimatedImage,
   RenderMaps,
   FunMaps,
+  CopyLink,
+  shareAction,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
@@ -159,9 +162,9 @@ export default function Country(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   setLoadings(false);
+    // }, 2000);
     const Journaldata = props.navigation.addListener("focus", () => {});
     return Journaldata;
   }, [props.navigation]);
@@ -227,6 +230,7 @@ export default function Country(props) {
         });
 
         setRoutes(tab);
+        setLoadings(false);
       },
     }
   );
@@ -1654,197 +1658,6 @@ export default function Country(props) {
             </View>
           </View>
         ) : null}
-        {/* <View
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 15,
-            width: "100%",
-          }}
-        >
-          <Text size="label" type="bold" style={{}}>
-            {t("essentials")}
-          </Text>
-          <Text size="description">{t("gooddestinationtrip")}</Text>
-          <View
-            style={{
-              marginTop: 10,
-              borderRadius: 10,
-              minHeight: 50,
-              justifyContent: "center",
-              padding: 10,
-              backgroundColor: "#FFF",
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 5,
-              },
-              shadowOpacity: 0.1,
-              shadowRadius: 6.27,
-              elevation: 6,
-            }}
-          >
-            <Tabs
-              tabBarUnderlineStyle={{
-                backgroundColor: "#209FAE",
-              }}
-              tabContainerStyle={{
-                backgroundColor: "white",
-                elevation: 0,
-              }}
-              // locked={false}
-            >
-              <Tab
-                heading={t("About")}
-                tabStyle={{
-                  backgroundColor: "white",
-                  elevation: 0,
-                  borderBottomColor: "#209FAE",
-                  borderBottomWidth: 0.5,
-                }}
-                activeTabStyle={{
-                  backgroundColor: "white",
-                  borderBottomColor: "#209FAE",
-                  borderBottomWidth: 0.5,
-                }}
-                textStyle={{
-                  fontFamily: "Lato-Regular",
-                  fontSize: 14,
-                  color: "#6C6C6C",
-                }}
-                activeTextStyle={{
-                  fontFamily: "Lato-Bold",
-                  fontSize: 14,
-                  color: "#209FAE",
-                }}
-              >
-                <View
-                  style={{
-                    width: "100%",
-                    paddingVertical: 10,
-                    flexWrap: "wrap",
-                    flexDirection: "row",
-                  }}
-                >
-                  {render?.about.length > 0
-                    ? render.about.map((item, index) => (
-                        <Ripple
-                          key={"keyabout" + index}
-                          onPress={() => {
-                            props.navigation.navigate("AboutCountry", {
-                              active: item.id,
-                              country_id: render.id,
-                              indexcountry: index,
-                            });
-                          }}
-                          style={{
-                            width: "33.333%",
-                            alignContent: "center",
-                            alignItems: "center",
-                            padding: 5,
-                          }}
-                        >
-                          <View style={{ height: 45 }}>
-                            <FunIcon
-                              icon={item.icon ? item.icon : "w-fog"}
-                              height={40}
-                              width={40}
-                              style={{
-                                bottom: -3,
-                              }}
-                            />
-                          </View>
-                          <Text
-                            size="small"
-                            style={{
-                              textAlign: "center",
-                              marginTop: 5,
-                            }}
-                          >
-                            {item.name}
-                          </Text>
-                        </Ripple>
-                      ))
-                    : null}
-                </View>
-              </Tab>
-
-              <Tab
-                heading={t("Practical")}
-                tabStyle={{
-                  backgroundColor: "white",
-                  borderBottomColor: "#209FAE",
-                  borderBottomWidth: 0.5,
-                }}
-                activeTabStyle={{
-                  backgroundColor: "white",
-                  borderBottomColor: "#209FAE",
-                  borderBottomWidth: 0.5,
-                }}
-                textStyle={{
-                  fontFamily: "Lato-Regular",
-                  fontSize: 14,
-                  color: "#6C6C6C",
-                }}
-                activeTextStyle={{
-                  fontFamily: "Lato-Bold",
-                  fontSize: 14,
-                  color: "#209FAE",
-                }}
-              >
-                <View
-                  style={{
-                    width: "100%",
-                    paddingVertical: 20,
-                    flexWrap: "wrap",
-                    flexDirection: "row",
-                  }}
-                >
-                  {render?.practical.length > 0
-                    ? render.practical.map((item, index) => (
-                        <Ripple
-                          key={"keypractical" + index}
-                          onPress={() => {
-                            props.navigation.navigate("PracticalCountry", {
-                              active: item.id,
-                              country_id: render.id,
-                              indexcountry: index,
-                            });
-                          }}
-                          style={{
-                            width: "33.333%",
-                            alignContent: "center",
-                            alignItems: "center",
-                            padding: 5,
-                          }}
-                        >
-                          <View style={{ height: 45 }}>
-                            <FunIcon
-                              icon={item.icon ? item.icon : "w-fog"}
-                              height={40}
-                              width={40}
-                              style={{
-                                bottom: -3,
-                              }}
-                            />
-                          </View>
-                          <Text
-                            size="small"
-                            style={{
-                              textAlign: "center",
-                              marginTop: 5,
-                            }}
-                          >
-                            {item.name}
-                          </Text>
-                        </Ripple>
-                      ))
-                    : null}
-                </View>
-              </Tab>
-            </Tabs>
-          </View>
-        </View>
-       */}
       </View>
     );
   };
@@ -2759,7 +2572,11 @@ export default function Country(props) {
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -2865,7 +2682,11 @@ export default function Country(props) {
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3002,9 +2823,9 @@ export default function Country(props) {
               onPress={() => {
                 SetShareModal(false);
                 props.navigation.push("CountryStack", {
-                  screen: "SendProvince",
+                  screen: "SendCountry",
                   params: {
-                    province: dataProvince.province_detail_v2,
+                    country: data.country_detail,
                   },
                 });
               }}
@@ -3022,8 +2843,8 @@ export default function Country(props) {
               }}
               onPress={() => {
                 shareAction({
-                  from: "province",
-                  target: dataProvince.province_detail_v2,
+                  from: "country",
+                  target: data.country_detail,
                 });
                 SetShareModal(false);
               }}
@@ -3040,8 +2861,8 @@ export default function Country(props) {
               }}
               onPress={() => {
                 CopyLink({
-                  from: "province",
-                  target: dataProvince.province_detail_v2.id,
+                  from: "country",
+                  target: data.country_detail.id,
                 });
                 SetShareModal(false);
               }}

@@ -38,6 +38,7 @@ import {
   Xgray,
   Nextabu,
   Prevabu,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { default_image, search_button } from "../../../assets/png";
@@ -210,9 +211,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   setLoadings(false);
+    // }, 2000);
     const Journaldata = props.navigation.addListener("focus", () => {
       getJournalCity();
     });
@@ -304,6 +305,7 @@ export default function CityDetail(props) {
         });
       }
       setdataevent(eventavailable);
+      setLoadings(false);
     },
   });
 
@@ -1277,10 +1279,16 @@ export default function CityDetail(props) {
                                   }}
                                   type="bold"
                                 >
-                                  <Truncate text={dataX.title} length={28} />
+                                  <Truncate
+                                    text={dataX?.title ? dataX.title : ""}
+                                    length={28}
+                                  />
                                 </Text>
                                 <Text>
-                                  <Truncate text={dataX.text} length={60} />
+                                  <Truncate
+                                    text={dataX?.title ? dataX.title : ""}
+                                    length={60}
+                                  />
                                 </Text>
                               </View>
                               <View
@@ -1590,7 +1598,6 @@ export default function CityDetail(props) {
           style={{
             flexDirection: "column",
             paddingTop: 15,
-            paddingBottom: 15,
           }}
         >
           <View>
@@ -1641,23 +1648,15 @@ export default function CityDetail(props) {
                 </Text>
               </View>
 
-              <Ripple
-                onPress={() => {
-                  props.navigation.navigate("listevent", {
-                    idcity: render.id,
-                  });
+              <Text
+                type="bold"
+                size="description"
+                style={{
+                  color: "#209fae",
                 }}
               >
-                <Text
-                  type="bold"
-                  size="description"
-                  style={{
-                    color: "#209fae",
-                  }}
-                >
-                  {t("viewAll")}
-                </Text>
-              </Ripple>
+                {t("viewAll")}
+              </Text>
             </View>
             <View
               style={{
@@ -1738,7 +1737,6 @@ export default function CityDetail(props) {
                         width: width - 40,
                         position: "absolute",
                         bottom: 10,
-                        borderWidth: 1,
                         display: "none",
                         left: 0,
                         alignContent: "center",
@@ -2200,7 +2198,10 @@ export default function CityDetail(props) {
                                 marginTop: 5,
                               }}
                             >
-                              <Truncate text={item.name} length={40} />
+                              <Truncate
+                                text={item?.name ? item.name : ""}
+                                length={40}
+                              />
                             </Text>
                             <View></View>
                             <View
@@ -2749,7 +2750,9 @@ export default function CityDetail(props) {
                 {dataProvince && dataProvince.province_detail_v2 ? (
                   <Truncate
                     text={Capital({
-                      text: dataProvince.province_detail_v2.name,
+                      text: dataProvince?.province_detail_v2?.name
+                        ? dataProvince.province_detail_v2.name
+                        : "",
                     })}
                     length={20}
                   ></Truncate>
@@ -2947,7 +2950,7 @@ export default function CityDetail(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item.key} length={15} />
+                  <Truncate text={item?.key ? item.key : ""} length={15} />
                 </Text>
               </View>
             </Ripple>
@@ -3310,7 +3313,11 @@ export default function CityDetail(props) {
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3416,7 +3423,11 @@ export default function CityDetail(props) {
               alignItems: "center",
             }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Animated.View>
         </Button>
         <TouchableOpacity
@@ -3430,7 +3441,7 @@ export default function CityDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 130,
-            backgroundColor: "rgba(0,0,0,0.2)",
+            backgroundColor: "rgba(0,0,0,0.3)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -3605,7 +3616,113 @@ export default function CityDetail(props) {
         </View>
       </ModalRN>
     </View>
-  
+
+    // <View style={styles.container}>
+    //   <StaBar backgroundColor="#14646e" barStyle="light-content" />
+    //   <Animated.View
+    //     style={{
+    //       position: "absolute",
+    //       top: SafeStatusBar,
+    //       zIndex: 9999,
+    //       flexDirection: "row",
+    //       justifyContent: "space-between",
+    //       alignContent: "center",
+    //       alignItems: "center",
+    //       height: 55,
+    //       width: Dimensions.get("screen").width,
+    //     }}
+    //   >
+    //     <Button
+    //       text={""}
+    //       size="medium"
+    //       type="circle"
+    //       variant="transparent"
+    //       onPress={() => props.navigation.goBack()}
+    //       style={{
+    //         height: 50,
+    //         marginLeft: 8,
+    //       }}
+    //     >
+    //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+    //     </Button>
+    //     <TouchableOpacity
+    //       onPress={(x) =>
+    //         props.navigation.push("SearchPg", {
+    //           province_id: dataProvince.province_detail_v2.id,
+    //           searchInput: "",
+    //           locationname: lisProvince.name,
+    //           aktifsearch: true,
+    //         })
+    //       }
+    //       style={{
+    //         width: Dimensions.get("screen").width - 90,
+    //         backgroundColor: "rgba(0,0,0,0.2)",
+    //         flexDirection: "row",
+    //         alignContent: "center",
+    //         alignItems: "center",
+    //         padding: 10,
+    //       }}
+    //     >
+    //       <Image
+    //         source={search_button}
+    //         style={{
+    //           height: 20,
+    //           width: 20,
+    //           resizeMode: "contain",
+    //           marginHorizontal: 10,
+    //         }}
+    //       ></Image>
+    //       {/* <Input
+    //         value={search}
+    //         style={{
+    //           height: 20,
+    //           padding: 0,
+    //           textAlign: "left",
+    //           fontFamily: "Lato-Regular",
+    //           fontSize: 14,
+    //           color: "white",
+    //         }}
+    //         placeholderTextColor={"white"}
+    //         underlineColorAndroid="transparent"
+    //         onChangeText={(x) => setTextc(x)}
+    //         placeholder={"Search in " + lisProvince.name}
+    //         returnKeyType="search"
+    //         onSubmitEditing={(x) =>
+    //           props.navigation.push("SearchPg", {
+    //             idcity: dataProvince.province_detail_v2.id,
+    //             searchInput: search,
+    //             aktifsearch: true,
+    //           })
+    //         }
+    //       /> */}
+    //       <Text
+    //         size="readable"
+    //         type="bold"
+    //         style={{
+    //           color: "#FFFFFF",
+    //         }}
+    //       >
+    //         {t("searchin") + lisProvince.name}
+    //       </Text>
+    //     </TouchableOpacity>
+    //     <Button
+    //       text={""}
+    //       size="medium"
+    //       type="circle"
+    //       variant="transparent"
+    //       // onPress={() => setshowside(true)}
+    //       style={{
+    //         height: 50,
+    //       }}
+    //     >
+    //       {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
+    //     </Button>
+    //   </Animated.View>
+
+    //   {renderTabView()}
+    //   {renderHeader()}
+    //   {renderCustomRefresh()}
+    // </View>
   );
 }
 

@@ -36,6 +36,7 @@ import {
   Xgray,
   Mapsborder,
   BlockDestination,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
@@ -103,6 +104,13 @@ const Index = (props) => {
     android: StatusBar.currentHeight,
   });
 
+  // let hide = React.useRef(
+  //   scrollY.interpolate({
+  //     inputRange: [0, HEADER_SCROLL_DISTANCE],
+  //     outputRange: [0, 1],
+  //     extrapolate: "clamp",
+  //   })
+  // );
   // let SafeStatusBar = 0;
 
   let [newHeight, setNewHeight] = useState(0);
@@ -146,42 +154,42 @@ const Index = (props) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
 
-  const HeaderComponent = {
-    headerShown: true,
-    headerTransparent: true,
-    headerTintColor: "white",
-    headerTitle: data?.destinationById?.name,
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
-    headerLeftContainerStyle: {
-      background: "#FFF",
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   headerTransparent: true,
+  //   headerTintColor: "white",
+  //   headerTitle: data?.destinationById?.name,
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 18,
+  //     color: "white",
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
 
-      marginLeft: 10,
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
-    ),
-  };
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => props.navigation.goBack()}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //     </Button>
+  //   ),
+  // };
 
   const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
     variables: { id: props.route.params.id },
@@ -207,25 +215,25 @@ const Index = (props) => {
       setRoutes(tab);
 
       setDataDestination(data.destinationById);
-      props.navigation.setOptions({
-        headerTitle: (
-          // <Animated.View
-          // style={{
-          // }}
-          // >
-          <Animated.Text
-            size="label"
-            type="bold"
-            style={{
-              opacity: hide.current,
-              color: "#fff",
-            }}
-          >
-            {data?.destinationById?.name}
-          </Animated.Text>
-          // </Animated.View>
-        ),
-      });
+      // props.navigation.setOptions({
+      //   headerTitle: (
+      //     // <Animated.View
+      //     // style={{
+      //     // }}
+      //     // >
+      //     <Animated.Text
+      //       size="label"
+      //       type="bold"
+      //       style={{
+      //         opacity: hide.current,
+      //         color: "#fff",
+      //       }}
+      //     >
+      //       {data?.destinationById?.name}
+      //     </Animated.Text>
+      //     // </Animated.View>
+      //   ),
+      // });
     },
   });
 
@@ -503,7 +511,7 @@ const Index = (props) => {
   };
 
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
+    // props.navigation.setOptions(HeaderComponent);
     loadAsync();
     const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
@@ -634,6 +642,13 @@ const Index = (props) => {
     scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
       outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
+  let hides = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 0],
       extrapolate: "clamp",
     })
   );
@@ -2570,6 +2585,112 @@ const Index = (props) => {
   return (
     <View style={styles.container}>
       <Satbar backgroundColor="#14646E" />
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hides.current,
+          flexDirection: "row",
+          // justifyContent: "space-between",
+          // borderWidth: 1,
+
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+      </Animated.View>
+
+      {/* jika scrollheader, animated show */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          // justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+        <Animated.Text
+          // size="title"
+          // type="bold"
+          style={{
+            opacity: hide.current,
+            color: "#fff",
+            marginLeft: 10,
+            fontSize: 16,
+            fontFamily: "Lato-Bold",
+          }}
+        >
+          {data?.destinationById?.name}
+        </Animated.Text>
+      </Animated.View>
 
       {renderTabView()}
       {renderHeader()}

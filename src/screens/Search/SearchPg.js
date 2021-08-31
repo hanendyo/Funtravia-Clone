@@ -34,6 +34,7 @@ import {
   Xhitam,
   Love,
   Arrowbackwhite,
+  Arrowbackios,
 } from "../../assets/svg";
 import {
   search_button,
@@ -107,7 +108,12 @@ export default function SearchPg(props, { navigation, route }) {
     },
     headerLeft: () => (
       <TouchableOpacity onPress={() => onBackPress()}>
-        <Arrowbackwhite width={20} height={20} />
+        {/* <Arrowbackwhite width={20} height={20} /> */}
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </TouchableOpacity>
     ),
     headerLeftContainerStyle: {

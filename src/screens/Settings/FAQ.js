@@ -5,7 +5,7 @@ import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 
 import { WebView } from "react-native-webview";
 import { back_arrow_white } from "../../assets/png";
-import { Nextpremier, Arrowbackwhite } from "../../assets/svg";
+import { Nextpremier, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { Text, Button } from "../../component";
 export default function FAQ(props) {
   const HeaderComponent = {
@@ -41,7 +41,11 @@ export default function FAQ(props) {
           }
         }
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -77,7 +81,11 @@ FAQ.navigationOptions = ({ navigation }) => ({
       variant="transparent"
       onPress={() => navigation.goBack()}
     >
-      <Arrowbackwhite height={20} width={20} />
+      {Platform.OS == "ios" ? (
+        <Arrowbackios height={15} width={15}></Arrowbackios>
+      ) : (
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      )}
     </Button>
   ),
   headerLeftContainerStyle: {

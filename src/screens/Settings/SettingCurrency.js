@@ -15,7 +15,7 @@ import {
   // CheckBox,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Arrowbackwhite, Check } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, Check } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, StatusBar as StaBar } from "../../component";
 import Ripple from "react-native-material-ripple";
@@ -105,7 +105,6 @@ export default function SettingCurrency({
             setdataCurrency(tempData);
             masukan(selected);
             setModelSetCurrency(false);
-
           } else {
             throw new Error(response.data.update_currency_settings.message);
           }
@@ -176,7 +175,11 @@ export default function SettingCurrency({
               variant="transparent"
               onPress={() => setModelSetCurrency(false)}
             >
-              <Arrowbackwhite width={20} height={20} />
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
             </Button>
             <Text
               size="label"
@@ -209,7 +212,8 @@ export default function SettingCurrency({
                     paddingVertical: 15,
                     paddingHorizontal: 20,
                     borderBottomWidth: 0.5,
-                    borderBottomColor: selected.currency?.id == item.id ? "#209fae" : "#D1D1D1",
+                    borderBottomColor:
+                      selected.currency?.id == item.id ? "#209fae" : "#D1D1D1",
                     flexDirection: "row",
                     alignContent: "center",
                     alignItems: "center",
@@ -227,14 +231,31 @@ export default function SettingCurrency({
                         marginRight: 15,
                       }}
                     >
-                      <Text type="bold" size="label" style={{color:selected.currency?.id  == item.id ? "#209fae" : "#000",}} >
+                      <Text
+                        type="bold"
+                        size="label"
+                        style={{
+                          color:
+                            selected.currency?.id == item.id
+                              ? "#209fae"
+                              : "#000",
+                        }}
+                      >
                         {item.code}
                       </Text>
                     </View>
-                    <Text size="description" style={{color:selected.currency?.id  == item.id ? "#209fae" : "#000",}}>{item?.name}</Text>
+                    <Text
+                      size="description"
+                      style={{
+                        color:
+                          selected.currency?.id == item.id ? "#209fae" : "#000",
+                      }}
+                    >
+                      {item?.name}
+                    </Text>
                   </View>
                   <View>
-                    {selected.currency.id ==item.id  ? (
+                    {selected.currency.id == item.id ? (
                       <Check width={20} height={15} />
                     ) : null}
                   </View>
