@@ -20,7 +20,7 @@ import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, SharePutih } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, SharePutih } from "../../assets/svg";
 import { Image } from "react-native";
 import { ImageBackground } from "react-native";
 import { ScrollView } from "react-native";
@@ -64,7 +64,11 @@ export default function TravelGoalDetail(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -279,22 +283,21 @@ export default function TravelGoalDetail(props) {
       </View>
 
       {/* detail */}
-      {datadetail?.content?.map((item, index) => {
+      {datadetail?.content?.map((i, index) => {
         return (
-          <View
-            style={{ paddingHorizontal: 20, width: "100%", marginBottom: 10 }}
-          >
-            {item.type === "image" ? (
-              <View style={{ marginVertical: 0 }}>
-                {item.title ? (
+          <View style={{ paddingHorizontal: 15, width: "100%" }}>
+            {i.type === "image" ? (
+              <View>
+                {i.title ? (
                   <Text
-                    size="label"
+                    size="title"
                     type="bold"
                     style={{
-                      marginBottom: 15,
+                      marginBottom: 5,
+                      paddingHorizontal: 5,
                     }}
                   >
-                    {item.title}
+                    {i.title}
                   </Text>
                 ) : null}
 
@@ -304,12 +307,12 @@ export default function TravelGoalDetail(props) {
                   }}
                 >
                   <FunImage
-                    source={item.image ? { uri: item.image } : default_image}
+                    source={i.image ? { uri: i.image } : default_image}
                     resizeMode={"cover"}
                     style={{
                       borderWidth: 0.4,
+                      marginTop: i.title ? 5 : 0,
                       borderColor: "#d3d3d3",
-                      marginTop: 5,
                       height: Dimensions.get("screen").width * 0.4,
                       width: "100%",
                     }}
@@ -321,20 +324,24 @@ export default function TravelGoalDetail(props) {
                   style={{
                     textAlign: "left",
                     marginTop: 5,
+                    marginBottom: 15,
                     color: "#616161",
+                    paddingHorizontal: 5,
                   }}
                 >
-                  {item.text ? item.text : ""}
+                  {i.text ? i.text : ""}
                 </Text>
               </View>
             ) : (
-              <View style={{ marginVertical: 5 }}>
-                {item.title ? (
+              <View>
+                {i.title ? (
                   <Text
                     size="title"
                     type="bold"
                     style={{
-                      // marginBottom: 5,
+                      marginBottom: 5,
+                      paddingHorizontal: 5,
+
                       color: "#464646",
                     }}
                   >
@@ -342,16 +349,18 @@ export default function TravelGoalDetail(props) {
                   </Text>
                 ) : null}
                 <Text
-                  size="readable"
+                  size="title"
                   type="regular"
                   style={{
-                    // marginTop: 5,
-                    lineHeight: 20,
+                    lineHeight: 22,
                     textAlign: "left",
                     color: "#464646",
+                    marginBottom: 15,
+
+                    paddingHorizontal: 5,
                   }}
                 >
-                  {item.text ? item.text : ""}
+                  {i.text ? i.text : ""}
                 </Text>
               </View>
             )}

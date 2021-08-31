@@ -11,6 +11,7 @@ import {
 import { Text, Button } from "../../component";
 import { default_image } from "../../assets/png";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   LikeEmpty,
   Search,
@@ -62,7 +63,11 @@ export default function JournalCategory(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

@@ -12,7 +12,7 @@ import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/client";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Image } from "react-native";
 import { ImageBackground } from "react-native";
 import { ScrollView } from "react-native";
@@ -38,7 +38,7 @@ export default function TravelGoal(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -57,7 +57,11 @@ export default function TravelGoal(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

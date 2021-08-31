@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 export default function World({ navigation }) {
   let { t, i18n } = useTranslation();
   let [soon, setSoon] = useState(false);
-  console.log("navigation", navigation);
+  // console.log("navigation", navigation);
   const { width, height } = Dimensions.get("screen");
   const HeaderHeight = (height * 34) / 100;
   const ContentHeight = (height * 66) / 100;

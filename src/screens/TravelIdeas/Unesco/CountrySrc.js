@@ -18,6 +18,7 @@ import {
   Search,
   Filternewbiru,
   Xhitam,
+  Arrowbackios,
 } from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, FunIcon } from "../../../component";
@@ -199,10 +200,15 @@ export default function CountrySrc({
             variant="transparent"
             onPress={() => setModelCountry(false)}
           >
-            <Arrowbackwhite width={20} height={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
           <Text
-            size="label"
+            size="title"
+            type="bold"
             style={{
               color: "white",
             }}

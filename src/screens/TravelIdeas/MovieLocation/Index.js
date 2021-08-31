@@ -37,6 +37,7 @@ import {
   Select,
   LocationBlack,
   Arrowbackwhite,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Button, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -167,7 +168,7 @@ export default function MovieLocation({ navigation, route }) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeft: () => (
@@ -182,7 +183,11 @@ export default function MovieLocation({ navigation, route }) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

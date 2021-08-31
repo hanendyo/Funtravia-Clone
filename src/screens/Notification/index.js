@@ -8,7 +8,7 @@ import Information from "./DetailNotification/Information";
 import Invitation from "./DetailNotification/Invitation";
 import { TabBar, TabView } from "react-native-tab-view";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 
 const ListNotifikasi_ = gql`
   query {
@@ -137,7 +137,11 @@ export default function Notification(props) {
           marginLeft: 5,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

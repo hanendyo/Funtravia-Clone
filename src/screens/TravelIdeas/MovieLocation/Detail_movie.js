@@ -44,6 +44,7 @@ import {
   PinHijau,
   Love,
   LikeEmpty,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Button, FunIcon, Text, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -85,9 +86,28 @@ export default function Detail_movie(props, { navigation, route }) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          marginLeft: 10,
+          height: 55,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
+    ),
   };
 
   let [listdestinasi_bymovie, setlistdestinasi_bymovie] = useState([]);

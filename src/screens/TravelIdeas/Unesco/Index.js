@@ -36,6 +36,7 @@ import {
   PinHitam,
   Arrowbackwhite,
   PinHijau,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Button, Text, Truncate, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -262,7 +263,11 @@ export default function Unesco({ navigation, route }) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

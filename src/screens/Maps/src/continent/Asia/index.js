@@ -25,6 +25,7 @@ import Country from "../../../data/country/index.json";
 import { Text, StatusBar, Button } from "../../../../../component";
 import Flag from "../../../data/flag";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   PinAbu,
   PinBiru,
@@ -60,7 +61,8 @@ export default function Asia({ navigation }) {
       fontSize: 16,
       color: "white",
       position: BackUse.current.id === 142 ? null : "absolute",
-      top: BackUse.current.id === 142 ? null : -15,
+      top:
+        BackUse.current.id === 142 ? null : Platform.OS == "android" ? -9 : -10,
     },
 
     headerLeftContainerStyle: {
@@ -70,15 +72,20 @@ export default function Asia({ navigation }) {
       <View style={{ flexDirection: "row" }}>
         <View>
           <TouchableOpacity onPress={() => onBackPress()}>
-            <Arrowbackwhite width={20} height={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </TouchableOpacity>
         </View>
         {BackUse.current.id === "142" ? null : (
           <View
             style={{
               position: "absolute",
-              left: 63,
+              left: 40,
               top: -10,
+
               width: 120,
             }}
           >
