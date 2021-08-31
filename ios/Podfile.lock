@@ -324,7 +324,7 @@ PODS:
     - React-RCTImage
   - react-native-maps (0.27.1):
     - React
-  - react-native-netinfo (5.9.10):
+  - react-native-netinfo (6.0.1):
     - React-Core
   - react-native-safe-area-context (3.3.0):
     - React-Core
@@ -335,7 +335,7 @@ PODS:
     - react-native-video/Video (= 5.1.1)
   - react-native-video/Video (5.1.1):
     - React-Core
-  - react-native-webview (11.6.6):
+  - react-native-webview (11.13.0):
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -746,11 +746,11 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 7c9436da6dfdecd9526c62eac62ea2bc3f0cc8ea
   react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
-  react-native-netinfo: 30fb89fa913c342be82a887b56e96be6d71201dd
+  react-native-netinfo: 7cb7877ff31ebeb3d03ce0b4fbb616f121ddd859
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
-  react-native-webview: e6eddf2722f5e7220eae7229b516efabb1ed0acd
+  react-native-webview: 133a6a5149f963259646e710b4545c67ef35d7c9
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -787,6 +787,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 83fd3b217f8f9c2e3a70e7f2392560fea55875d9
+PODFILE CHECKSUM: 52286de9236eb7235585162a1973be16833d4684
 
 COCOAPODS: 1.10.2
