@@ -222,9 +222,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    // setTimeout(() => {
-    //   setLoadings(false);
-    // }, 2000);
+    setTimeout(() => {
+      setLoadings(false);
+    }, 2000);
     const Journalitinerarydata = props.navigation.addListener("focus", () => {
       getJournalCity();
       getItineraryCity;
@@ -316,7 +316,7 @@ export default function CityDetail(props) {
       }
       setdataevent(eventavailable);
       getJournalCity();
-      setLoadings(false);
+      // setLoadings(false);
     },
   });
 
@@ -3468,7 +3468,7 @@ export default function CityDetail(props) {
             }}
           >
             {Platform.OS == "ios" ? (
-              <Arrowbackios height={20} width={20}></Arrowbackios>
+              <Arrowbackios height={15} width={15}></Arrowbackios>
             ) : (
               <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
             )}
@@ -3578,7 +3578,7 @@ export default function CityDetail(props) {
             }}
           >
             {Platform.OS == "ios" ? (
-              <Arrowbackios height={20} width={20}></Arrowbackios>
+              <Arrowbackios height={15} width={15}></Arrowbackios>
             ) : (
               <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
             )}

@@ -11,10 +11,9 @@ import {
   Pressable,
   Animated,
   Platform,
-  StatusBar,
 } from "react-native";
 
-import { CustomImage, Truncate, StatusBar as Satbar } from "../../component";
+import { CustomImage } from "../../component";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import LinearGradient from "react-native-linear-gradient";
@@ -41,8 +40,6 @@ import {
   Arrowbackwhite,
   Mapsborder,
   Arrowbackios,
-  Kalenderhijau,
-  Jamhijau,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text, Button, shareAction, FunImageBackground } from "../../component";
@@ -50,8 +47,6 @@ import { StackActions } from "@react-navigation/native";
 import DetailEvent from "../../graphQL/Query/Event/DetailEvent";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
-import DeviceInfo from "react-native-device-info";
-import AutoHeightImage from "react-native-auto-height-image";
 
 export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
@@ -61,24 +56,12 @@ export default function EventDetail(props) {
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
-
-  const headerOpacityCurrent = yOffset.interpolate({
-    inputRange: [0, 200],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
-
-  let Notch = DeviceInfo.hasNotch();
-  let SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: StatusBar.currentHeight,
-  });
   const HeaderComponent = {
     headerShown: true,
     // title: "List Event",
     headerTransparent: true,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: props.route.params.name,
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -87,7 +70,7 @@ export default function EventDetail(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 18,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -106,41 +89,27 @@ export default function EventDetail(props) {
           height: 55,
         }}
       >
-        <Animated.View
-          style={{
-            height: 35,
-            width: 35,
-            // top: SafeStatusBar,
-            opacity: headerOpacityCurrent,
-            marginLeft: 15,
-            borderRadius: 30,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Animated.View>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
-    // headerRight: () => (
-    //   <Button
-    //     text={""}
-    //     size="medium"
-    //     type="circle"
-    //     variant="transparent"
-    //     onPress={() => setshowside(true)}
-    //     style={{
-    //       height: 55,
-    //     }}
-    //   >
-    //     <OptionsVertWhite height={20} width={20} />
-    //   </Button>
-    // ),
+    headerRight: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => setshowside(true)}
+        style={{
+          height: 55,
+        }}
+      >
+        <OptionsVertWhite height={20} width={20} />
+      </Button>
+    ),
   };
 
   const { t, i18n } = useTranslation();
@@ -658,64 +627,10 @@ export default function EventDetail(props) {
         <Animated.View
           style={{
             backgroundColor: "#209FAE",
-            position: "absolute",
-            left: 0,
-            right: 0,
-            // height: Platform.OS == "ios" ? 100 : 80,
-            height: Platform.select({
-              ios: Notch ? 100 : 70,
-              android: 80,
-            }),
-            flexDirection: "row",
-            top: 0,
-            bottom: 0,
+            ...StyleSheet.absoluteFillObject,
             opacity: headerOpacity,
           }}
-        >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => props.navigation.goBack()}
-            style={{
-              height: 50,
-              marginLeft: 18,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-                top: Platform.OS == "ios" ? SafeStatusBar : SafeStatusBar + 5,
-                borderRadius: 30,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-          <Animated.Text
-            style={{
-              color: "#fff",
-              marginLeft: 10,
-              fontSize: 18,
-              top:
-                Platform.OS == "ios" ? SafeStatusBar + 15 : SafeStatusBar + 17,
-              fontFamily: "Lato-Bold",
-            }}
-          >
-            <Truncate
-              text={dataevent?.name ? dataevent.name : ""}
-              length={35}
-            />
-          </Animated.Text>
-        </Animated.View>
+        />
       ),
       headerTransparent: true,
     });
@@ -739,15 +654,14 @@ export default function EventDetail(props) {
     );
   }
 
+  console.log("data", dataevent);
   return (
     <View
       style={{
         flex: 1,
         zIndex: -1,
-        width: Dimensions.get("screen").width,
       }}
     >
-      <Satbar backgroundColor="#14646E" />
       <View
         style={{
           flex: 2,
@@ -807,7 +721,7 @@ export default function EventDetail(props) {
               ? { uri: dataevent.images[0].image }
               : default_image
           }
-          style={{ height: Dimensions.get("window").height * 0.3 }}
+          style={{ height: Dimensions.get("window").height * 0.43 }}
           imageStyle={{ resizeMode: "cover" }}
         />
         <View
@@ -817,58 +731,40 @@ export default function EventDetail(props) {
         >
           <View
             style={{
-              paddingVertical: 15,
+              paddingTop: 15,
               paddingHorizontal: 20,
+              paddingBottom: 10,
               backgroundColor: "#FFF",
-              width: Dimensions.get("screen").width,
-              borderBottomWidth: 1,
-              borderBottomColor: "#d1d1d1",
-
+              marginBottom: 10,
               flexDirection: "row",
               justifyContent: "space-between",
             }}
           >
-            {/* name & category event */}
             <View
               style={{
-                width: "80%",
+                width: "78%",
                 flexDirection: "column",
+                paddingBottom: 15,
               }}
             >
-              <View
+              <Text
+                size="title"
+                type="bold"
                 style={{
-                  backgroundColor: "#f6f6f6",
-                  width: 150,
-                  marginBottom: 10,
-                  borderRadius: 30,
+                  width: "95%",
+                  marginBottom: 16,
                 }}
               >
+                {dataevent?.name}
+              </Text>
+              <View style={[styles.eventtype]}>
                 <Text
-                  size="readable"
+                  size="description"
                   style={{
                     textAlign: "center",
-                    color: "#14646E",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
                   }}
                 >
                   {dataevent?.category?.name}
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: "95%",
-                }}
-              >
-                <Text
-                  size="title"
-                  type="bold"
-                  style={{
-                    // fontFamily: "Lato-Bold",
-                    fontSize: 18,
-                  }}
-                >
-                  {dataevent?.name}
                 </Text>
               </View>
             </View>
@@ -876,10 +772,8 @@ export default function EventDetail(props) {
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "flex-end",
-                alignContent: "flex-end",
-
-                width: "20%",
+                alignContent: "flex-start",
+                width: "22%",
               }}
             >
               <View
@@ -891,9 +785,12 @@ export default function EventDetail(props) {
                   <Button
                     size="small"
                     type="circle"
-                    style={{
-                      backgroundColor: "#f6f6f6",
-                    }}
+                    color="tertiary"
+                    style={
+                      {
+                        // zIndex: 9999,
+                      }
+                    }
                     onPress={() => _liked(dataevent.id)}
                   >
                     <LikeEmpty height={18} width={18} />
@@ -902,9 +799,12 @@ export default function EventDetail(props) {
                   <Button
                     size="small"
                     type="circle"
-                    style={{
-                      backgroundColor: "#f6f6f6",
-                    }}
+                    color="tertiary"
+                    style={
+                      {
+                        // zIndex: 9999,
+                      }
+                    }
                     onPress={() => _unliked(dataevent.id)}
                   >
                     <LikeRed height={18} width={18} />
@@ -915,7 +815,6 @@ export default function EventDetail(props) {
               <View
                 style={{
                   alignItems: "center",
-                  marginLeft: 10,
                 }}
               >
                 <Button
@@ -927,42 +826,27 @@ export default function EventDetail(props) {
                   }
                   type="circle"
                   size="small"
-                  style={{
-                    backgroundColor: "#f6f6f6",
-                  }}
+                  // color='tertiary'
+                  variant="transparent"
+                  style={{}}
                 >
                   <Sharegreen height={20} width={20} />
                 </Button>
+                <Text size="small" style={{}}>
+                  {t("share")}
+                </Text>
               </View>
             </View>
           </View>
-          {/* description */}
           <View
             style={{
               width: Dimensions.get("screen").width,
-              paddingVertical: 15,
               paddingHorizontal: 20,
+              paddingBottom: 10,
             }}
           >
-            <View
-              style={{
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{
-                  textAlign: "left",
-                  lineHeight: 20,
-                }}
-              >
-                {t("AboutEvent")}
-              </Text>
-            </View>
             <Text
               size="readable"
-              type="regular"
               style={{
                 textAlign: "left",
                 lineHeight: 20,
@@ -971,13 +855,17 @@ export default function EventDetail(props) {
               {dataevent?.description}
             </Text>
           </View>
-          {/* event date */}
+          <View
+            style={{
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
           <View
             style={{
               paddingHorizontal: 20,
-              paddingBottom: 15,
+              paddingVertical: 20,
               flex: 1,
-
               flexDirection: "column",
               justifyContent: "center",
             }}
@@ -985,100 +873,35 @@ export default function EventDetail(props) {
             <View
               style={{
                 flexDirection: "row",
-                marginBottom: 10,
+                paddingBottom: 10,
               }}
             >
-              <View>
-                <View
-                  style={{
-                    backgroundColor: "#F6F6F6",
-                    padding: 6,
-                    marginRight: 10,
-                    justifyContent: "flex-start",
-                    borderRadius: 15,
-                  }}
-                >
-                  <Kalenderhijau width={18} height={18} />
-                </View>
-              </View>
-
-              <View
+              <CustomImage
+                customStyle={{
+                  width: 19,
+                  height: 19,
+                  marginTop: 2,
+                  marginRight: 8,
+                }}
+                customImageStyle={{
+                  width: 19,
+                  height: 19,
+                  resizeMode: "contain",
+                }}
+                source={calendar_blue}
+              />
+              <Text
+                size="readable"
+                type="bold"
                 style={{
-                  justifyContent: "center",
+                  paddingRight: 5,
+                  lineHeight: 20,
                 }}
               >
-                <Text
-                  size="readable"
-                  type="bold"
-                  style={{
-                    paddingRight: 5,
-                    lineHeight: 20,
-                  }}
-                >
-                  {t("eventDate")} :
-                </Text>
+                {t("eventDate")} :
+              </Text>
 
-                {dataevent?.is_repeat === true ? (
-                  <Text
-                    size="readable"
-                    type="regular"
-                    style={{
-                      paddingRight: 10,
-                      lineHeight: 20,
-                    }}
-                  >
-                    {handlerepeat(dataevent?.start_date, dataevent?.end_date)}
-                  </Text>
-                ) : (
-                  <Text
-                    size="readble"
-                    type="regular"
-                    style={{
-                      paddingRight: 10,
-                      lineHeight: 20,
-                    }}
-                  >
-                    {dateFormatBetween(
-                      dataevent?.start_date,
-                      dataevent?.end_date
-                    )}
-                  </Text>
-                )}
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View>
-                <View
-                  style={{
-                    backgroundColor: "#F6F6F6",
-                    padding: 6,
-                    marginRight: 10,
-                    justifyContent: "flex-start",
-                    borderRadius: 15,
-                  }}
-                >
-                  <Jamhijau width={18} height={18} />
-                </View>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  size="readable"
-                  type="bold"
-                  style={{
-                    paddingRight: 5,
-                    lineHeight: 20,
-                  }}
-                >
-                  {t("gatesOpen")} :
-                </Text>
+              {dataevent?.is_repeat === true ? (
                 <Text
                   size="readable"
                   type="regular"
@@ -1087,27 +910,87 @@ export default function EventDetail(props) {
                     lineHeight: 20,
                   }}
                 >
-                  {dataevent?.open}
+                  {handlerepeat(dataevent?.start_date, dataevent?.end_date)}
                 </Text>
-              </View>
+              ) : (
+                <Text
+                  size="readble"
+                  type="regular"
+                  style={{
+                    paddingRight: 10,
+                    lineHeight: 20,
+                  }}
+                >
+                  {dateFormatBetween(
+                    dataevent?.start_date,
+                    dataevent?.end_date
+                  )}
+                </Text>
+              )}
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <CustomImage
+                customStyle={{
+                  width: 19,
+                  height: 19,
+                  marginTop: 2,
+                  marginRight: 8,
+                }}
+                customImageStyle={{
+                  width: 19,
+                  height: 19,
+                  resizeMode: "contain",
+                }}
+                source={schedule_blue}
+              />
+              <Text
+                size="readable"
+                type="bold"
+                style={{
+                  paddingRight: 5,
+                  lineHeight: 20,
+                }}
+              >
+                {t("gatesOpen")} :
+              </Text>
+              <Text
+                size="readable"
+                type="regular"
+                style={{
+                  paddingRight: 10,
+                  lineHeight: 20,
+                }}
+              >
+                {dataevent?.open}
+              </Text>
             </View>
           </View>
-          {/* Penyelenggara event */}
           <View
             style={{
-              paddingTop: 10,
-              paddingBottom: 15,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              flex: 1,
+              flexDirection: "column",
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                paddingHorizontal: 20,
-                paddingBottom: 10,
+                paddingBottom: 14,
               }}
             >
               <Text
-                size="title"
+                size="label"
                 type="bold"
                 style={{
                   paddingRight: 5,
@@ -1116,27 +999,10 @@ export default function EventDetail(props) {
                 {t("organizedBy")}
               </Text>
             </View>
-
             <View
               style={{
-                paddingHorizontal: 15,
-                // borderWidth: 1,
-                marginHorizontal: 15,
-                borderColor: "#f6f6f6",
-                borderWidth: 0.5,
-                paddingVertical: 15,
-                borderRadius: 10,
-                flex: 1,
-                flexDirection: "column",
-                backgroundColor: "#FFF",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 5,
-                },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
+                flexDirection: "row",
+                paddingBottom: 5,
               }}
             >
               {dataevent && dataevent.vendor ? (
@@ -1146,27 +1012,9 @@ export default function EventDetail(props) {
                     paddingBottom: 5,
                   }}
                 >
-                  <CustomImage
-                    customStyle={{
-                      height: 45,
-
-                      marginRight: 10,
-                    }}
-                    customImageStyle={{ resizeMode: "contain" }}
-                    source={
-                      dataevent.vendor.cover
-                        ? {
-                            uri:
-                              "https://fa12.funtravia.com/" +
-                              dataevent.vendor.cover,
-                          }
-                        : default_image
-                    }
-                  />
                   <View
                     style={{
-                      alignItems: "center",
-                      justifyContent: "center",
+                      width: Dimensions.get("screen").width * 0.7,
                     }}
                   >
                     <Text
@@ -1178,6 +1026,20 @@ export default function EventDetail(props) {
                     >
                       {dataevent.vendor.name}
                     </Text>
+                  </View>
+                  <View>
+                    <CustomImage
+                      customStyle={{
+                        height: 45,
+                        marginHorizontal: 3,
+                      }}
+                      customImageStyle={{ resizeMode: "contain" }}
+                      source={
+                        dataevent.vendor.cover
+                          ? { uri: dataevent.vendor.cover }
+                          : default_image
+                      }
+                    />
                   </View>
                 </View>
               ) : (
@@ -1194,99 +1056,85 @@ export default function EventDetail(props) {
               )}
             </View>
           </View>
-
-          {/* address */}
           <View
             style={{
-              marginTop: 10,
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 0.5,
+            }}
+          />
+          <View
+            style={{
+              paddingHorizontal: 20,
+              flex: 3,
+              flexDirection: "column",
             }}
           >
             <View
               style={{
+                paddingVertical: 20,
                 flexDirection: "row",
-                paddingHorizontal: 20,
-                paddingBottom: 10,
+                paddingBottom: 7,
               }}
             >
               <Text
-                size="title"
+                size="label"
                 type="bold"
                 style={{
                   paddingRight: 5,
                   lineHeight: 20,
                 }}
               >
-                {t("venueAddress")}
+                {t("address")}
               </Text>
             </View>
             <View
               style={{
-                paddingHorizontal: 15,
-                marginHorizontal: 15,
-                borderColor: "#f6f6f6",
-                borderWidth: 0.5,
-                paddingVertical: 15,
-                borderRadius: 10,
-                flex: 1,
-                flexDirection: "column",
-                backgroundColor: "#FFF",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 5,
-                },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
-                marginBottom: 100,
+                flexDirection: "row",
+                paddingBottom: 90,
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
+                  width: Dimensions.get("screen").width * 0.7,
                 }}
               >
-                <View
+                <Text
+                  size="description"
                   style={{
-                    width: "75%",
-                    // borderWidth: 1,
+                    paddingRight: 5,
                   }}
                 >
-                  <Text
-                    size="label"
-                    style={{
-                      paddingRight: 5,
-                    }}
-                  >
-                    {dataevent?.address}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "flex-end",
-
-                    width: "25%",
+                  {dataevent?.address}
+                </Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable
+                  onPress={() => {
+                    Linking.openURL(
+                      Platform.OS == "ios"
+                        ? "maps://app?daddr=" +
+                            dataevent?.latitude +
+                            "+" +
+                            dataevent?.longitude
+                        : "google.navigation:q=" +
+                            dataevent?.latitude +
+                            "+" +
+                            dataevent?.longitude
+                    );
                   }}
                 >
-                  <Pressable
-                    onPress={() => {
-                      Linking.openURL(
-                        Platform.OS == "ios"
-                          ? "maps://app?daddr=" +
-                              dataevent?.latitude +
-                              "+" +
-                              dataevent?.longitude
-                          : "google.navigation:q=" +
-                              dataevent?.latitude +
-                              "+" +
-                              dataevent?.longitude
-                      );
-                    }}
-                  >
-                    <Mapsborder height={70} width={70} />
-                  </Pressable>
-                </View>
+                  <Mapsborder height={80} width={80} />
+                </Pressable>
               </View>
             </View>
           </View>

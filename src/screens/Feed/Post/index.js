@@ -447,6 +447,7 @@ export default function Post(props) {
     }
 
     let data_foto = dataCamera.edges;
+    console.log("datafoto", data_foto);
     let camera = {
       id: "0",
       mediaType: "camera",

@@ -872,24 +872,50 @@ export default function Invitation({ navigation, token }) {
                   size="label"
                   style={{
                     color: "#464646",
-                    marginBottom: 5,
+                    // marginBottom: 5,
                   }}
                 >
                   {t("hi")} {item.itinerary_buddy.myuser?.first_name},{" "}
                   {t("hiJoinTrip")}
                 </Text>
               </View>
-              <Text
-                type="regular"
-                size="description"
+              <View
                 style={{
-                  color: "#464646",
-                  marginBottom: 7,
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+
+                  alignItems: "center",
+                  flexWrap: "wrap",
                 }}
               >
-                {item.itinerary_buddy.userinvite?.first_name}{" "}
-                {t("inviteToTrip")}
-              </Text>
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{
+                    color: "#464646",
+                    marginBottom: 7,
+                    marginRight: 5,
+                  }}
+                >
+                  {item.itinerary_buddy.userinvite?.first_name}{" "}
+                  {t("inviteToTrip")}
+                </Text>
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{
+                    // textAlign: "right",
+                    color: "#6c6c6c",
+
+                    // width: '30%',
+                    // fontSize: 15,
+                    marginBottom: 5,
+                  }}
+                >
+                  {duration(item.tgl_buat)}
+                </Text>
+              </View>
+
               {item.itinerary_buddy.isconfrim == false &&
               item.itinerary_buddy.accepted_at == null &&
               item.itinerary_buddy.rejected_at == null ? (
@@ -898,7 +924,7 @@ export default function Invitation({ navigation, token }) {
                     flexDirection: "row",
                     justifyContent: "flex-start",
                     paddingHorizontal: 3,
-                    paddingVertical: 5,
+                    paddingTop: 5,
                     marginBottom: 5,
                     width: "100%",
                     alignContent: "center",
@@ -959,7 +985,7 @@ export default function Invitation({ navigation, token }) {
                 </View>
               )}
             </View>
-            <View
+            {/* <View
               style={{
                 flexDirection: "column",
                 alignSelf: "flex-start",
@@ -977,7 +1003,7 @@ export default function Invitation({ navigation, token }) {
               >
                 {duration(item.tgl_buat)}
               </Text>
-            </View>
+            </View> */}
           </View>
         </Pressable>
       );
@@ -997,6 +1023,7 @@ export default function Invitation({ navigation, token }) {
               alignItems: "center",
               width: Dimensions.get("screen").width,
               paddingHorizontal: 15,
+
               paddingVertical: 15,
             }}
           >
@@ -1075,7 +1102,7 @@ export default function Invitation({ navigation, token }) {
                   style={{
                     color: "#464646",
                     marginBottom: 7,
-                    marginRight: 2,
+                    marginRight: 5,
                   }}
                 >
                   {t("commentPost")}{" "}
@@ -1425,7 +1452,8 @@ export default function Invitation({ navigation, token }) {
             <View
               style={{
                 flexDirection: "column",
-
+                // borderWidth: 1,
+                justifyContent: "center",
                 width: "65%",
                 paddingLeft: 10,
               }}
@@ -1460,20 +1488,44 @@ export default function Invitation({ navigation, token }) {
                   flexWrap: "wrap",
                 }}
               >
-                <Text
-                  type="regular"
-                  size="description"
+                <View
                   style={{
-                    // fontFamily: "Lato-Regular",
-                    // fontSize: 15,
-                    // width: '100%',
-                    color: "#464646",
-                    marginBottom: 7,
-                    marginRight: 10,
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    flexWrap: "wrap",
                   }}
                 >
-                  {t("startedFollowingYou")}
-                </Text>
+                  <Text
+                    type="regular"
+                    size="description"
+                    style={{
+                      // fontFamily: "Lato-Regular",
+                      // fontSize: 15,
+                      // width: '100%',
+                      color: "#464646",
+                      marginBottom: 7,
+                      marginRight: 10,
+                    }}
+                  >
+                    {t("startedFollowingYou")}
+                  </Text>
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      // textAlign: "right",
+                      color: "#6c6c6c",
+
+                      // width: '30%',
+                      // fontSize: 15,
+                      marginBottom: 5,
+                    }}
+                  >
+                    {duration(item.tgl_buat)}
+                  </Text>
+                </View>
+
                 {item?.follow_user.user?.status_following == false ? (
                   <Pressable
                     onPress={() =>
@@ -1497,7 +1549,7 @@ export default function Invitation({ navigation, token }) {
                 ) : null}
               </View>
             </View>
-            <View
+            {/* <View
               style={{
                 flexDirection: "column",
                 alignSelf: "flex-start",
@@ -1518,7 +1570,7 @@ export default function Invitation({ navigation, token }) {
               >
                 {duration(item.tgl_buat)}
               </Text>
-            </View>
+            </View> */}
           </View>
         </Pressable>
       );
