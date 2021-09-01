@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, Button } from "../../../component";
+import { Text, Button, Peringatan } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite } from "../../../assets/svg";
@@ -54,7 +54,7 @@ export default function HasPassword(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 16,
+      fontSize: 18,
       color: "white",
     },
     headerLeft: () => (
@@ -98,19 +98,30 @@ export default function HasPassword(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   const [errors, setErrors] = useState("");
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 
   const onSubmit = async (text, text1) => {
     if (text === "") {
-      setModalVisible2(true);
-      return setErrors("Passwords cannot be empty");
+      return showAlert({
+        ...aler,
+        show: true,
+        judul: t("canNotEmpty"),
+      });
     }
     if (text1 === "") {
-      setModalVisible2(true);
-      return setErrors("Passwords cannot be empty");
+      return showAlert({
+        ...aler,
+        show: true,
+        judul: t("canNotEmpty"),
+      });
     }
 
     if (text1 !== text2) {
-      return (error["password2"] = true);
+      return showAlert({
+        ...aler,
+        show: true,
+        judul: t("canNotEmpty"),
+      });
     }
     if (token || token !== "") {
       try {
@@ -178,10 +189,16 @@ export default function HasPassword(props) {
       style={{
         width: Dimensions.get("screen").width * 0.9,
         marginHorizontal: 20,
-        marginTop: 20,
+        // marginTop: 20,
       }}
     >
-      <View style={{ flexDirection: "row" }}>
+      <Peringatan
+        aler={aler}
+        setClose={() =>
+          showAlert({ ...aler, show: false, judul: "", detail: "" })
+        }
+      />
+      <View style={{ flexDirection: "row", paddingTop: 10 }}>
         <Item
           floatingLabel
           style={{
@@ -194,12 +211,13 @@ export default function HasPassword(props) {
               fontSize: 14,
             }}
           >
-            <Text size="description">{t("CurrentPassword")}</Text>
+            <Text size="label" type="regular">
+              {t("CurrentPassword")}
+            </Text>
           </Label>
           <Input
             secureTextEntry={hide}
             style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-            // value={data.first_name ? data.first_name : ""}
             onChangeText={(e) => handleError(e)}
             keyboardType="default"
           />
@@ -233,7 +251,7 @@ export default function HasPassword(props) {
           )}
         </Pressable>
       </View>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingTop: 10 }}>
         <Item
           floatingLabel
           style={{
@@ -244,10 +262,10 @@ export default function HasPassword(props) {
             style={{
               fontFamily: "Lato-Regular",
               fontSize: 14,
-              marginTop: 10,
+              // marginTop: 10,
             }}
           >
-            <Text size="description">{t("NewPassword")}</Text>
+            <Text size="label">{t("NewPassword")}</Text>
           </Label>
           <Input
             secureTextEntry={hide1}
@@ -287,13 +305,13 @@ export default function HasPassword(props) {
         </Pressable>
       </View>
       {text1 && text1.length < 8 ? (
-        <Label>
+        <Label style={{ marginTop: 5 }}>
           <Text type="light" size="small" style={{ color: "#209FAE" }}>
             {t("inputWarningPassword")}
           </Text>
         </Label>
       ) : null}
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingTop: 10 }}>
         <Item
           floatingLabel
           style={{
@@ -304,10 +322,10 @@ export default function HasPassword(props) {
             style={{
               fontFamily: "Lato-Regular",
               fontSize: 14,
-              marginTop: 10,
+              // marginTop: 10,
             }}
           >
-            <Text size="description">{t("ConfirmPassword")}</Text>
+            <Text size="label">{t("ConfirmPassword")}</Text>
           </Label>
           <Input
             secureTextEntry={hide2}
@@ -348,7 +366,7 @@ export default function HasPassword(props) {
       </View>
 
       {text2 !== text1 ? (
-        <Label>
+        <Label style={{ marginTop: 5 }}>
           <Text type="light" size="small" style={{ color: "#209FAE" }}>
             {t("inputWarningRepeatPassword")}
           </Text>
@@ -415,7 +433,10 @@ export default function HasPassword(props) {
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
                 {"Failed" +
                   " " +
-                  errors.toString().replace("Error", "").replace(":", "")}
+                  errors
+                    .toString()
+                    .replace("Error", "")
+                    .replace(":", "")}
               </Text>
             ) : (
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
