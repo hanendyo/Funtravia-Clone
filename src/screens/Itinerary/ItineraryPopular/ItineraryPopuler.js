@@ -89,6 +89,8 @@ export default function ItineraryPopuler(props) {
     elevation: Platform.OS == "ios" ? 3 : 3.5,
   };
 
+  console.log(token);
+
   const HeaderComponent = {
     headerShown: true,
     title: "Itinerary",
