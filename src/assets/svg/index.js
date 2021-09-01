@@ -270,6 +270,8 @@ import Above from "./files/atas.svg";
 import AcceptNotif from "./files/acceptnotif.svg";
 import Keyboard from "./files/keyboard.svg";
 import Arrowbackios from "./files/arrowbackios.svg";
+import Jamhijau from "./files/JamHijau.svg";
+import Kalenderhijau from "./files/KalenderHijau.svg";
 
 export {
   LikeWhite,
@@ -544,4 +546,6 @@ export {
   AcceptNotif,
   Keyboard,
   Arrowbackios,
+  Jamhijau,
+  Kalenderhijau,
 };

@@ -211,9 +211,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    // setTimeout(() => {
-    //   setLoadings(false);
-    // }, 2000);
+    setTimeout(() => {
+      setLoadings(false);
+    }, 2000);
     const Journaldata = props.navigation.addListener("focus", () => {
       getJournalCity();
     });
@@ -305,7 +305,7 @@ export default function CityDetail(props) {
         });
       }
       setdataevent(eventavailable);
-      setLoadings(false);
+      // setLoadings(false);
     },
   });
 

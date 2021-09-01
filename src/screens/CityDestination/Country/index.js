@@ -162,9 +162,9 @@ export default function Country(props) {
 
   useEffect(() => {
     refreshData();
-    // setTimeout(() => {
-    //   setLoadings(false);
-    // }, 2000);
+    setTimeout(() => {
+      setLoadings(false);
+    }, 2000);
     const Journaldata = props.navigation.addListener("focus", () => {});
     return Journaldata;
   }, [props.navigation]);
@@ -230,7 +230,7 @@ export default function Country(props) {
         });
 
         setRoutes(tab);
-        setLoadings(false);
+        // setLoadings(false);
       },
     }
   );

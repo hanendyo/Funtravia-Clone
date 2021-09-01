@@ -24,7 +24,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 48;
+const TabBarHeight = 45;
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: 44,
