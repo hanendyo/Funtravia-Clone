@@ -131,14 +131,18 @@ export default function Settings(props) {
       {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
       <View
         style={{
-          flexDirection: "column",
-          marginVertical: 5,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
+          marginTop: 15,
+          marginHorizontal: 15,
+          backgroundColor: "#FFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 10,
         }}
       >
         <View
@@ -150,7 +154,7 @@ export default function Settings(props) {
           }}
         >
           <Text
-            size="label"
+            size="title"
             type="bold"
             style={{
               marginBottom: 10,
@@ -165,7 +169,7 @@ export default function Settings(props) {
               alignItems: "center",
             }}
           >
-            <Text size="description" type="regular">
+            <Text size="label" type="regular">
               {t("languages")}
             </Text>
             <View
@@ -244,7 +248,7 @@ export default function Settings(props) {
           }
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
             borderBottomColor: "#D1D1D1",
             borderBottomWidth: 0.5,
           }}
@@ -253,9 +257,11 @@ export default function Settings(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
-            <Text size="description" type="regular">
+            <Text size="label" type="regular">
               {t("country")}
             </Text>
             <View
@@ -265,7 +271,7 @@ export default function Settings(props) {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="light"
                 style={{
                   marginRight: 15,
@@ -273,7 +279,7 @@ export default function Settings(props) {
               >
                 {setting?.countries?.name}
               </Text>
-              <Nextpremier width={15} height={15} />
+              <Nextpremier width={12} height={12} />
             </View>
           </View>
         </Ripple>
@@ -282,16 +288,19 @@ export default function Settings(props) {
           onPress={() => setModelSetCurrency(true)}
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
           }}
         >
           <View
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginTop: 12,
+              marginBottom: 15,
+              // borderWidth: 1,
             }}
           >
-            <Text size="description" type="regular">
+            <Text size="label" type="regular">
               {t("currency")}
             </Text>
             <View
@@ -301,7 +310,7 @@ export default function Settings(props) {
               }}
             >
               <Text
-                size="description"
+                size="label"
                 type="light"
                 style={{
                   marginRight: 15,
@@ -309,21 +318,25 @@ export default function Settings(props) {
               >
                 {setting?.currency?.name}
               </Text>
-              <Nextpremier width={15} height={15} />
+              <Nextpremier width={12} height={12} />
             </View>
           </View>
         </Ripple>
       </View>
       <View
         style={{
-          flexDirection: "column",
-          marginVertical: 5,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
+          marginTop: 15,
+          marginHorizontal: 15,
+          backgroundColor: "#FFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 5,
         }}
       >
         <Ripple
@@ -333,16 +346,18 @@ export default function Settings(props) {
           }
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
           }}
         >
           <View
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
-            <Text size="description" type="regular">
+            <Text size="label" type="regular">
               {t("accountInformation")}
             </Text>
             <View
@@ -351,7 +366,7 @@ export default function Settings(props) {
                 alignItems: "center",
               }}
             >
-              <Nextpremier width={15} height={15} />
+              <Nextpremier width={12} height={12} />
             </View>
           </View>
         </Ripple>
@@ -502,20 +517,24 @@ export default function Settings(props) {
 			</View> */}
       <View
         style={{
-          flexDirection: "column",
-          marginVertical: 5,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
+          marginVertical: 15,
+          marginHorizontal: 15,
+          backgroundColor: "#FFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 10,
         }}
       >
         <View
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
             borderBottomColor: "#D1D1D1",
             borderBottomWidth: 0.5,
           }}
@@ -524,9 +543,11 @@ export default function Settings(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginTop: 13,
+              marginBottom: 15,
             }}
           >
-            <Text type="regular" size="description">
+            <Text type="regular" size="label">
               {t("appVersion")}
             </Text>
             <View
@@ -550,7 +571,7 @@ export default function Settings(props) {
           }}
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
             borderBottomColor: "#D1D1D1",
             borderBottomWidth: 0.5,
           }}
@@ -559,9 +580,11 @@ export default function Settings(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
-            <Text type="regular" size="description">
+            <Text type="regular" size="label">
               {t("aboutFuntravia")}
             </Text>
             <View
@@ -570,7 +593,7 @@ export default function Settings(props) {
                 alignItems: "center",
               }}
             >
-              <Nextpremier width={15} height={15} />
+              <Nextpremier width={12} height={12} />
             </View>
           </View>
         </Ripple>
@@ -581,7 +604,7 @@ export default function Settings(props) {
           }}
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
             borderBottomColor: "#D1D1D1",
             borderBottomWidth: 0.5,
           }}
@@ -590,9 +613,11 @@ export default function Settings(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
-            <Text type="regular" size="description">
+            <Text type="regular" size="label">
               {t("help")}
             </Text>
             <View
@@ -601,7 +626,7 @@ export default function Settings(props) {
                 alignItems: "center",
               }}
             >
-              <Nextpremier width={15} height={15} />
+              <Nextpremier width={12} height={12} />
             </View>
           </View>
         </Ripple>
@@ -612,7 +637,7 @@ export default function Settings(props) {
           }}
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
             borderBottomColor: "#D1D1D1",
             borderBottomWidth: 0.5,
           }}
@@ -621,9 +646,11 @@ export default function Settings(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
-            <Text type="regular" size="description">
+            <Text type="regular" size="label">
               {t("privacyPolicy")}
             </Text>
             <View
@@ -632,7 +659,7 @@ export default function Settings(props) {
                 alignItems: "center",
               }}
             >
-              <Nextpremier width={15} height={15} />
+              <Nextpremier width={12} height={12} />
             </View>
           </View>
         </Ripple>
@@ -643,16 +670,18 @@ export default function Settings(props) {
           }}
           style={{
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            // paddingVertical: 13,
           }}
         >
           <View
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
-            <Text type="regular" size="description">
+            <Text type="regular" size="label">
               {t("faq")}
             </Text>
             <View

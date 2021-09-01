@@ -60,8 +60,6 @@ export default function SettingsAkun(props) {
   let [index, setIndex] = useState(0);
   let [dataCitySetting, setDataCitySetting] = useState();
 
-  console.log("datas", dates);
-
   const closeBirth = () => {
     setModalBirth(false);
     setModalBirth1(true);
@@ -337,7 +335,7 @@ export default function SettingsAkun(props) {
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
-              borderRadius: 3,
+              borderRadius: 5,
               marginTop: Dimensions.get("screen").height / 4,
             }}
           >
@@ -349,6 +347,7 @@ export default function SettingsAkun(props) {
                 paddingHorizontal: 20,
                 alignItems: "center",
                 justifyContent: "center",
+                borderRadius: 5,
               }}
             >
               <Image
@@ -357,6 +356,7 @@ export default function SettingsAkun(props) {
                   height: Dimensions.get("screen").width - 180,
                   width: Dimensions.get("screen").width - 110,
                   position: "absolute",
+                  borderRadius: 5,
                 }}
               />
               <Text type="bold" size="h5">
@@ -684,14 +684,18 @@ export default function SettingsAkun(props) {
         {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
         <View
           style={{
-            flexDirection: "column",
-            marginTop: 5,
-            backgroundColor: "#FFFFFF",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
+            marginTop: 15,
+            marginHorizontal: 15,
+            backgroundColor: "#FFF",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6.27,
+            elevation: 2,
+            borderRadius: 10,
           }}
         >
           <View
@@ -700,7 +704,7 @@ export default function SettingsAkun(props) {
               paddingTop: 13,
             }}
           >
-            <Text size="label" type="bold">
+            <Text size="title" type="bold">
               {t("personalData")}
             </Text>
           </View>
@@ -709,7 +713,7 @@ export default function SettingsAkun(props) {
             // onPress={() => setModelSetNegara(true)}
             style={{
               paddingHorizontal: 15,
-              paddingVertical: 13,
+              // paddingVertical: 13,
               borderBottomColor: "#D1D1D1",
               borderBottomWidth: 0.5,
             }}
@@ -718,9 +722,11 @@ export default function SettingsAkun(props) {
               style={{
                 justifyContent: "space-between",
                 flexDirection: "row",
+                marginBottom: 15,
+                marginTop: 13,
               }}
             >
-              <Text size="description" type="regular">
+              <Text size="label" type="regular">
                 {t("firstName")}
               </Text>
               <View
@@ -729,7 +735,7 @@ export default function SettingsAkun(props) {
                   alignItems: "center",
                 }}
               >
-                <Text size="description" type="light" style={{}}>
+                <Text size="label" type="light" style={{}}>
                   <Truncate
                     text={
                       setting.user.first_name
@@ -747,7 +753,7 @@ export default function SettingsAkun(props) {
             // onPress={() => setModelSetNegara(true)}
             style={{
               paddingHorizontal: 15,
-              paddingVertical: 13,
+              // paddingVertical: 13,
               borderBottomColor: "#D1D1D1",
               borderBottomWidth: 0.5,
             }}
@@ -756,9 +762,11 @@ export default function SettingsAkun(props) {
               style={{
                 justifyContent: "space-between",
                 flexDirection: "row",
+                marginBottom: 15,
+                marginTop: 13,
               }}
             >
-              <Text size="description" type="regular">
+              <Text size="label" type="regular">
                 {t("lastName")}
               </Text>
               <View
@@ -784,7 +792,7 @@ export default function SettingsAkun(props) {
             rippleCentered={true}
             style={{
               paddingHorizontal: 15,
-              paddingVertical: 13,
+              // paddingVertical: 13,
               borderBottomColor: "#D1D1D1",
               borderBottomWidth: 0.5,
             }}
@@ -794,9 +802,11 @@ export default function SettingsAkun(props) {
               style={{
                 justifyContent: "space-between",
                 flexDirection: "row",
+                marginBottom: 15,
+                marginTop: 13,
               }}
             >
-              <Text size="description" type="regular">
+              <Text size="label" type="regular">
                 {t("gender")}
               </Text>
               <View
@@ -820,7 +830,7 @@ export default function SettingsAkun(props) {
             onPress={(e) => setModalBirth(true)}
             style={{
               paddingHorizontal: 15,
-              paddingVertical: 13,
+              // paddingVertical: 13,
               borderBottomColor: "#D1D1D1",
               borderBottomWidth: 0.5,
             }}
@@ -829,9 +839,11 @@ export default function SettingsAkun(props) {
               style={{
                 justifyContent: "space-between",
                 flexDirection: "row",
+                marginBottom: 15,
+                marginTop: 13,
               }}
             >
-              <Text size="description" type="regular">
+              <Text size="label" type="regular">
                 {t("birthdate")}
               </Text>
               <View
@@ -865,16 +877,18 @@ export default function SettingsAkun(props) {
             }
             style={{
               paddingHorizontal: 15,
-              paddingVertical: 13,
+              // paddingVertical: 13,
             }}
           >
             <View
               style={{
                 justifyContent: "space-between",
                 flexDirection: "row",
+                marginBottom: 15,
+                marginTop: 13,
               }}
             >
-              <Text size="description" type="regular">
+              <Text size="label" type="regular">
                 {t("cityOfRecidence")}
               </Text>
               <View
@@ -903,23 +917,28 @@ export default function SettingsAkun(props) {
         <View
           style={{
             flexDirection: "row",
-            marginTop: 4,
+            marginTop: 15,
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            marginHorizontal: 15,
+            // paddingVertical: 13,
             backgroundColor: "#FFFFFF",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6.27,
+            elevation: 2,
+            borderRadius: 10,
           }}
         >
-          <View>
+          <View style={{ marginVertical: 15, width: "100%" }}>
             <Text
               size="label"
               type="bold"
               style={{
-                marginBottom: 5,
+                marginBottom: 10,
               }}
             >
               {t("email")}
@@ -953,16 +972,21 @@ export default function SettingsAkun(props) {
                     >
                       <Text
                         type="regular"
-                        size="description"
+                        size="label"
                         style={{
                           alignSelf: "flex-start",
+                          marginBottom: 5,
                         }}
                       >
                         {setting && setting.user && setting.user.email
                           ? setting.user.email
                           : t("notSet")}
                       </Text>
-                      <Text type="regular" size="small">
+                      <Text
+                        type="regular"
+                        size="small"
+                        style={{ color: "#6c6c6c" }}
+                      >
                         {t("emailUsed")}
                       </Text>
                     </View>
@@ -981,6 +1005,7 @@ export default function SettingsAkun(props) {
                 style={{
                   width: Dimensions.get("screen").width * 0.9,
                   paddingHorizontal: 10,
+                  width: "100%",
                 }}
                 type="box"
                 size="medium"
@@ -1009,21 +1034,22 @@ export default function SettingsAkun(props) {
         <View
           style={{
             flexDirection: "row",
-            // marginTop: 4,
-            // borderWidth: 1,
-            borderTopWidth: 1,
-            borderTopColor: "#D1D1D1",
+            marginTop: 15,
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            marginHorizontal: 15,
             backgroundColor: "#FFFFFF",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6.27,
+            elevation: 2,
+            borderRadius: 10,
           }}
         >
-          <View>
+          <View style={{ marginVertical: 15, width: "100%" }}>
             <Text
               size="label"
               type="bold"
@@ -1055,14 +1081,19 @@ export default function SettingsAkun(props) {
                   >
                     <Text
                       type="regular"
-                      size="description"
+                      size="label"
                       style={{
                         alignSelf: "flex-start",
+                        marginVertical: 5,
                       }}
                     >
-                      {setting.user.phone}
+                      {setting.user.email}
                     </Text>
-                    <Text type="regular" size="small">
+                    <Text
+                      type="regular"
+                      size="small"
+                      style={{ color: "#6c6c6c" }}
+                    >
                       {t("phoneUsed")}
                     </Text>
                   </View>
@@ -1071,8 +1102,9 @@ export default function SettingsAkun(props) {
             ) : (
               <Button
                 style={{
-                  width: Dimensions.get("screen").width - 30,
+                  width: "100%",
                   paddingHorizontal: 10,
+                  marginTop: 5,
                 }}
                 type="box"
                 size="medium"
@@ -1096,17 +1128,19 @@ export default function SettingsAkun(props) {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: 4,
+            marginVertical: 15,
             paddingHorizontal: 15,
-            paddingVertical: 13,
+            marginHorizontal: 15,
             backgroundColor: "#FFFFFF",
-            borderBottomWidth: 1,
-            borderBottomColor: "#D1D1D1",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6.27,
+            elevation: 2,
+            borderRadius: 5,
           }}
           onPress={(x) => hasPassword(x)}
         >
@@ -1114,12 +1148,19 @@ export default function SettingsAkun(props) {
             size="label"
             type="regular"
             style={{
-              marginBottom: 5,
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
             {t("password")}
           </Text>
-          <Nextpremier width={15} height={15} />
+          <Nextpremier
+            width={15}
+            height={15}
+            style={{
+              marginVertical: 15,
+            }}
+          />
         </Pressable>
         {/* <Ripple
         onPress={() => null}

@@ -15,7 +15,14 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Akunsaya, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
-import { Next, Help, SettingsPutih, Xgray } from "../../assets/svg";
+import {
+  Next,
+  Help,
+  SettingsPutih,
+  Xgray,
+  Nextpremier,
+  Settings,
+} from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
 import { useTranslation } from "react-i18next";
 import { Button, Text, Truncate } from "../../component";
@@ -48,24 +55,24 @@ export default function MyAccount(props) {
       color: "white",
     },
 
-    headerRight: () => (
-      <TouchableOpacity
-        onPress={() =>
-          props.navigation.navigate("AccountStack", {
-            screen: "settings",
-            params: { datauser: datauser },
-          })
-        }
-        style={{
-          //   marginTop: 50,
-          marginRight: 15,
-          // zIndex: 5,
-          // position: "absolute",
-        }}
-      >
-        <SettingsPutih height={22} width={22} style={{}} />
-      </TouchableOpacity>
-    ),
+    // headerRight: () => (
+    //   <TouchableOpacity
+    //     onPress={() =>
+    //       props.navigation.navigate("AccountStack", {
+    //         screen: "settings",
+    //         params: { datauser: datauser },
+    //       })
+    //     }
+    //     style={{
+    //       //   marginTop: 50,
+    //       marginRight: 15,
+    //       // zIndex: 5,
+    //       // position: "absolute",
+    //     }}
+    //   >
+    //     {/* <SettingsPutih height={22} width={22} style={{}} /> */}
+    //   </TouchableOpacity>
+    // ),
   };
 
   const [mutationlogout, { loading, data, error }] = useMutation(Logout, {
@@ -272,7 +279,7 @@ export default function MyAccount(props) {
         <View
           style={{
             backgroundColor: "#FFFFFF",
-            marginTop: 10,
+            marginTop: 15,
             marginLeft: 15,
             marginRight: 15,
             marginBottom: 5,
@@ -289,8 +296,7 @@ export default function MyAccount(props) {
             },
             shadowOpacity: 0.1,
             shadowRadius: 6.27,
-
-            elevation: 6,
+            elevation: 2,
           }}
         >
           <View
@@ -334,43 +340,80 @@ export default function MyAccount(props) {
           </View>
           <View
             style={{
-              width: 200,
+              flex: 1,
               height: 120,
               marginLeft: 15,
-              // borderWidth: 1,
               justifyContent: "center",
+              flexDirection: "row",
             }}
           >
-            <Text type="bold" size="label">
-              {datauser && datauser.user_profile.first_name
-                ? datauser.user_profile.first_name
-                : null}{" "}
-              {datauser && datauser.user_profile.last_name
-                ? datauser.user_profile.last_name
-                : null}
-            </Text>
-            <Text>
-              @
-              {datauser && datauser.user_profile.username
-                ? datauser.user_profile.username
-                : null}
-            </Text>
-            <Button
-              text={t("seemyprofile")}
-              size="small"
+            <View style={{ width: "70%", justifyContent: "center" }}>
+              <Text type="bold" size="title">
+                {datauser && datauser.user_profile.first_name
+                  ? datauser.user_profile.first_name
+                  : null}{" "}
+                {datauser && datauser.user_profile.last_name
+                  ? datauser.user_profile.last_name
+                  : null}
+              </Text>
+              <Text size="label" type="regular">
+                @
+                {datauser && datauser.user_profile.username
+                  ? datauser.user_profile.username
+                  : null}
+              </Text>
+              <Pressable
+                onPress={() => {
+                  props.navigation.push("ProfileStack", {
+                    screen: "ProfileTab",
+                    params: { token: token },
+                  });
+                }}
+                style={{
+                  height: 20,
+                  marginTop: 20,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 10,
+                    color: "#209fae",
+                  }}
+                >
+                  {t("seemyprofile")}
+                </Text>
+                <Nextpremier
+                  height={10}
+                  width={10}
+                  style={{
+                    marginVertical: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                />
+              </Pressable>
+            </View>
+            <Pressable
+              onPress={() =>
+                props.navigation.navigate("AccountStack", {
+                  screen: "settings",
+                  params: { datauser: datauser },
+                })
+              }
               style={{
-                width: "60%",
-                height: "25%",
-                marginTop: 15,
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
               }}
-              onPress={() => {
-                // console.log(datauser.user_profile.id);
-                props.navigation.push("ProfileStack", {
-                  screen: "ProfileTab",
-                  params: { token: token },
-                });
-              }}
-            ></Button>
+            >
+              <Settings height={30} width={30} />
+            </Pressable>
           </View>
         </View>
         <View
@@ -389,7 +432,7 @@ export default function MyAccount(props) {
             // shadowOpacity: 0.1,
             // shadowRadius: 6.27,
 
-            // elevation: 6,
+            // elevation: 2,
             shadowColor: "#FFF",
             shadowOffset: {
               width: 0,
@@ -398,7 +441,7 @@ export default function MyAccount(props) {
             shadowOpacity: 0.1,
             shadowRadius: 6.27,
 
-            elevation: 6,
+            elevation: 2,
           }}
         >
           <Text type="bold" size="label" style={{ marginBottom: 10 }}>
@@ -408,13 +451,19 @@ export default function MyAccount(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               borderBottomWidth: 0.5,
-              borderBottomColor: "#d3d3d3",
+              borderBottomColor: "#d1d1d1",
             }}
           >
-            <Text>{t("fullName")}</Text>
-            <Text>
+            <Text
+              size="label"
+              type="regular"
+              style={{ marginTop: 5, marginBottom: 15 }}
+            >
+              {t("fullName")}
+            </Text>
+            <Text size="label" type="regular">
               {datauser && datauser.user_profile.first_name
                 ? datauser.user_profile.first_name
                 : null}{" "}
@@ -427,13 +476,23 @@ export default function MyAccount(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               borderBottomWidth: 0.5,
-              borderBottomColor: "#d3d3d3",
+              borderBottomColor: "#d1d1d1",
             }}
           >
-            <Text>{t("emailAddress")}</Text>
-            <Text>
+            <Text
+              size="label"
+              type="regular"
+              style={{ marginTop: 12, marginBottom: 15 }}
+            >
+              {t("emailAddress")}
+            </Text>
+            <Text
+              size="label"
+              type="regular"
+              style={{ marginTop: 12, marginBottom: 15 }}
+            >
               <Truncate
                 text={
                   datauser &&
@@ -450,13 +509,23 @@ export default function MyAccount(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               borderBottomWidth: 0.5,
-              borderBottomColor: "#d3d3d3",
+              borderBottomColor: "#d1d1d1",
             }}
           >
-            <Text>{t("phoneNumber")}</Text>
-            <Text>
+            <Text
+              style={{ marginTop: 12, marginBottom: 15 }}
+              size="label"
+              type="regular"
+            >
+              {t("phoneNumber")}
+            </Text>
+            <Text
+              style={{ marginTop: 12, marginBottom: 15 }}
+              size="label"
+              type="regular"
+            >
               {datauser && datauser.user_profile && datauser.user_profile.phone
                 ? datauser.user_profile.phone
                 : t("notSet")}
@@ -480,7 +549,7 @@ export default function MyAccount(props) {
             // shadowOpacity: 0.1,
             // shadowRadius: 6.27,
 
-            // elevation: 6,
+            // elevation: 2,
             shadowColor: "#FFF",
             shadowOffset: {
               width: 0,
@@ -489,7 +558,7 @@ export default function MyAccount(props) {
             shadowOpacity: 0.1,
             shadowRadius: 6.27,
 
-            elevation: 6,
+            elevation: 2,
           }}
         >
           <Text type="bold" size="label" style={{ marginBottom: 10 }}>
@@ -504,24 +573,30 @@ export default function MyAccount(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               borderBottomWidth: 0.5,
-              borderBottomColor: "#d3d3d3",
+              borderBottomColor: "#d1d1d1",
             }}
           >
-            <Text>{t("wishlist")}</Text>
+            <Text
+              size="label"
+              type="regular"
+              style={{ marginBottom: 15, marginTop: 5 }}
+            >
+              {t("wishlist")}
+            </Text>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
               }}
             >
-              <Text type="bold" style={{ marginRight: 10 }}>
+              <Text type="bold" size="label" style={{ marginRight: 10 }}>
                 {datauser &&
                 datauser.user_profile &&
                 datauser.user_profile.count_wishlist
                   ? datauser.user_profile.count_wishlist + " " + "Wishlist"
-                  : "No Wishlist"}
+                  : "0"}
               </Text>
               <Next width={15} height={15} />
             </View>
@@ -535,12 +610,18 @@ export default function MyAccount(props) {
             style={{
               justifyContent: "space-between",
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               borderBottomWidth: 0.5,
-              borderBottomColor: "#d3d3d3",
+              borderBottomColor: "#d1d1d1",
             }}
           >
-            <Text>{t("itenerariFavorit")}</Text>
+            <Text
+              size="label"
+              type="regular"
+              style={{ marginTop: 12, marginBottom: 15 }}
+            >
+              {t("itenerariFavorit")}
+            </Text>
             <View
               style={{
                 flexDirection: "row",
@@ -548,14 +629,14 @@ export default function MyAccount(props) {
                 alignItems: "center",
               }}
             >
-              <Text type="bold" style={{ marginRight: 10 }}>
+              <Text type="bold" size="label" style={{ marginRight: 10 }}>
                 {datauser &&
                 datauser.user_profile &&
                 datauser.user_profile.count_itinerary_favorit
                   ? datauser.user_profile.count_itinerary_favorit +
                     " " +
                     "Itinerary"
-                  : "No Itinerary"}
+                  : "0"}
               </Text>
               <Next width={15} height={15} />
             </View>
