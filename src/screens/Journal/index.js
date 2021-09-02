@@ -11,7 +11,12 @@ import {
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
-import { Arrowbackwhite, LikeEmpty, SearchWhite } from "../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  LikeEmpty,
+  SearchWhite,
+} from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
@@ -71,7 +76,11 @@ export default function Journal(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerRight: () => (

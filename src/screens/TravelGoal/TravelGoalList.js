@@ -13,7 +13,13 @@ import {
 } from "react-native";
 import { Button, Capital, CustomImage, Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, FilterIcon, Search, Xhitam } from "../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  FilterIcon,
+  Search,
+  Xhitam,
+} from "../../assets/svg";
 import TravelLists from "../../graphQL/Query/TravelGoal/TravelList";
 import Travelcategorys from "../../graphQL/Query/TravelGoal/Travelcategory";
 import { useLazyQuery, useQuery } from "@apollo/client";
@@ -37,7 +43,7 @@ export default function TravelGoalList(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -56,7 +62,11 @@ export default function TravelGoalList(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

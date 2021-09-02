@@ -2407,7 +2407,7 @@ const Index = (props) => {
               <View
                 style={{
                   // borderWidth: 1,
-                  borderBottomWidth: index == tabIndex ? 3 : 2,
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
                   // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
                   borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",

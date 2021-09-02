@@ -14,7 +14,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { dateFormatForNotif } from "../../component/src/dateformatter";
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Text, Button, StatusBar as StsBar } from "../../component";
 import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
 import AddComment from "./AddComment";
@@ -83,7 +83,11 @@ export default function JournalComment(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

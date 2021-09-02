@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Arrowbackios, Arrowbackwhite, LogoEmail } from "../../../assets/svg";
-import { Text, Button, Loading } from "../../../component";
+import { Text, Button, Loading, Peringatan } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { View, Dimensions, KeyboardAvoidingView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,7 +29,7 @@ export default function SettingEmailChange(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 16,
+      fontSize: 18,
       color: "white",
     },
     headerLeft: () => (
@@ -82,9 +82,24 @@ export default function SettingEmailChange(props) {
     },
   });
 
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
+
   const resultChangeEmail = async (oldEmail, newEmail) => {
+    if (oldEmail == "" && newEmail == "") {
+      return showAlert({
+        ...aler,
+        show: true,
+        judul: t("canNotEmpty"),
+        // detail: "lorem ipsum lorem ipsum lorem ipsum",
+      });
+    }
     if (setting.user.email === newEmail) {
-      alert("Email lama dan email baru tidak boleh sama");
+      return showAlert({
+        ...aler,
+        show: true,
+        judul: t("sameEmail"),
+        // detail: "lorem ipsum lorem ipsum lorem ipsum",
+      });
     }
     if (token || token !== "") {
       try {
@@ -110,10 +125,20 @@ export default function SettingEmailChange(props) {
           });
         }
       } catch (error) {
-        alert("" + error);
+        showAlert({
+          ...aler,
+          show: true,
+          judul: t("usedEmail"),
+          // detail: "lorem ipsum lorem ipsum lorem ipsum",
+        });
       }
     } else {
-      alert("Please Insert a Text");
+      showAlert({
+        ...aler,
+        show: true,
+        judul: "failed",
+        // detail: "lorem ipsum lorem ipsum lorem ipsum",
+      });
     }
   };
   return (
@@ -126,6 +151,13 @@ export default function SettingEmailChange(props) {
       keyboardVerticalOffset={Notch ? 90 : 65}
       enabled
     >
+      {/* <StatusBar backgroundColor="#14646E" /> */}
+      <Peringatan
+        aler={aler}
+        setClose={() =>
+          showAlert({ ...aler, show: false, judul: "", detail: "" })
+        }
+      />
       <Loading show={loadingEmail} />
       <ScrollView
         style={{
@@ -149,8 +181,8 @@ export default function SettingEmailChange(props) {
             alignItems: "center",
           }}
         >
-          <LogoEmail height={200} width={200} />
-          <Text size="title" type="bold">
+          <LogoEmail height={250} width={250} />
+          <Text size="h4" type="bold" style={{ marginTop: -30 }}>
             {t("ChangeEmail") + " " + "?"}
           </Text>
           <Text
@@ -159,39 +191,59 @@ export default function SettingEmailChange(props) {
               marginVertical: 10,
               flexWrap: "wrap-reverse",
             }}
-            size="description"
+            size="label"
             type="regular"
           >
             {t("registerEmail")}
           </Text>
-          <TextInput
+          <View
             style={{
-              marginVertical: 10,
-              borderWidth: 1,
-              borderColor: "#209FAE",
+              borderRadius: 3,
+              height: 45,
               backgroundColor: "#DAF0F2",
+              borderWidth: 1,
+              borderColor: "#209fae",
               width: "100%",
-              borderRadius: 5,
-              paddingHorizontal: 20,
-              paddingVertical: 5,
+              marginTop: 10,
+              paddingHorizontal: 10,
             }}
-            ref={ref1}
-            placeholder={t("currentEmail")}
-            onChangeText={(text1) => setEmail1(text1)}
-          ></TextInput>
-          <TextInput
+          >
+            <TextInput
+              keyboardType="email-address"
+              style={{
+                fontSize: 14,
+                width: "100%",
+              }}
+              ref={ref1}
+              placeholder={t("currentEmail")}
+              onChangeText={(text1) => setEmail1(text1)}
+              onSubmitEditing={(text1) => setEmail1(text1)}
+            ></TextInput>
+          </View>
+          <View
             style={{
-              marginVertical: 10,
+              borderRadius: 3,
+              height: 45,
+              backgroundColor: "#fff",
               borderWidth: 1,
               width: "100%",
-              borderRadius: 5,
-              paddingHorizontal: 20,
-              paddingVertical: 5,
+              borderColor: "#e1e1e1",
+              marginTop: 10,
+              paddingHorizontal: 10,
             }}
-            ref={ref2}
-            onChangeText={(text2) => setEmail2(text2)}
-            placeholder={t("newEmail")}
-          ></TextInput>
+          >
+            <TextInput
+              keyboardType="email-address"
+              style={{
+                width: "100%",
+                fontSize: 14,
+              }}
+              ref={ref2}
+              onChangeText={(text2) => setEmail2(text2)}
+              onSubmitEditing={(text2) => setEmail2(text2)}
+              placeholder={t("newEmail")}
+            ></TextInput>
+          </View>
         </View>
         <View
           style={{
@@ -202,7 +254,7 @@ export default function SettingEmailChange(props) {
         >
           <Button
             type="box"
-            size="medium"
+            size="large"
             color="secondary"
             text={t("save")}
             onPress={() => resultChangeEmail(email1, email2)}

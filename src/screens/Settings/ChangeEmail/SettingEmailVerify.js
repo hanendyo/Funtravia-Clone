@@ -245,16 +245,17 @@ export default function SettingEmailVerify(props) {
           }}
         >
           <LogoEmail height={200} width={200} />
-          <Text size="title" type="bold">
+          <Text size="h4" type="bold" style={{ marginTop: -20 }}>
             {t("verifyEmail")}
           </Text>
           <Text
             style={{
               textAlign: "center",
-              marginVertical: 10,
+              // marginVertical: 10,
+              marginTop: 15,
               flexWrap: "wrap-reverse",
             }}
-            size="description"
+            size="label"
             type="regular"
           >
             {t("verifyOtp") + " " + props.route.params.emailNew}

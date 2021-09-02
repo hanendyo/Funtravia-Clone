@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Text, Button, FloatingInput } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../../assets/svg";
-import { Pressable, Dimensions, Image } from "react-native";
+import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
+import { Pressable, Dimensions, Image, Platform } from "react-native";
 import Modal from "react-native-modal";
 import { Input, Item, Label, View } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -60,7 +60,11 @@ export default function AddPassword(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={20} width={20} />
+        ) : (
+          <Arrowbackwhite height={20} width={20} />
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {
@@ -173,15 +177,20 @@ export default function AddPassword(props) {
           floatingLabel
           style={{
             width: Dimensions.get("screen").width * 0.82,
+            fontSize: 14,
+            fontFamily: "Lato-Regular",
           }}
         >
           <Label
             style={{
               fontFamily: "Lato-Regular",
               fontSize: 14,
+              marginTop: 10,
             }}
           >
-            <Text size="description">{t("EnterPassword")}</Text>
+            <Text size="label" type="regular">
+              {t("EnterPassword")}
+            </Text>
           </Label>
           <Input
             secureTextEntry={hide}
@@ -229,7 +238,7 @@ export default function AddPassword(props) {
           </Text>
         </Label>
       ) : null}
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", paddingTop: 10 }}>
         <Item
           floatingLabel
           style={{
@@ -240,10 +249,11 @@ export default function AddPassword(props) {
             style={{
               fontFamily: "Lato-Regular",
               fontSize: 14,
-              marginTop: 10,
             }}
           >
-            <Text size="description">{t("ConfirmPasswords")}</Text>
+            <Text size="label" type="regular">
+              {t("ConfirmPasswords")}
+            </Text>
           </Label>
           <Input
             secureTextEntry={hide1}
@@ -251,7 +261,6 @@ export default function AddPassword(props) {
             onChangeText={(e) => handleError2(e, text1)}
             keyboardType="default"
           />
-          <Arrowbackwhite height={20} width={20} />
         </Item>
         <Pressable
           onPress={() => toggleTwo()}

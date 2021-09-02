@@ -640,5 +640,10 @@
   "seedetail": "See details",
   "CategoryItin": "Category Itinerary",
   "LoginFirst": "LoginFirst",
-  "reUpload": "Reupload"
+  "reUpload": "Reupload",
+  "AboutEvent": "About This Event",
+  "noItinerary": "No itinerary",
+  "canNotEmpty": "Some field can not be empty",
+  "sameEmail": "Old email and new email can't be the same",
+  "usedEmail": "Email already used"
 }
