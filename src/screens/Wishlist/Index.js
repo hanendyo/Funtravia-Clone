@@ -46,7 +46,6 @@ export default function Wishlist(props) {
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
     },
     headerLeft: () => (

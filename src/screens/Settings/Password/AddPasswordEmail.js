@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, Button } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, SetPass } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, SetPass } from "../../../assets/svg";
 import {
   Dimensions,
   KeyboardAvoidingView,
@@ -67,7 +67,11 @@ export default function AddPasswordEmail(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {
