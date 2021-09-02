@@ -428,6 +428,7 @@ export default function ListEventHome(props) {
           justifyContent: "flex-start",
           position: "absolute",
           backgroundColor: "#fff",
+          marginTop: -5 //! hanendyo's
           // marginTop: 50,
           // borderWidth: 1,
         }}
@@ -466,7 +467,6 @@ export default function ListEventHome(props) {
             size="label"
             type="bold"
             style={{
-              marginBottom: 15,
               textAlign: "justify",
             }}
           >
@@ -823,7 +823,8 @@ export default function ListEventHome(props) {
             backgroundColor: "#fff",
             height: TabBarHeight,
             // borderWidth: 1,
-            padding: 0,
+            paddingTop: 0,
+            marginTop: -5, //! hanendyo's
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -978,7 +979,7 @@ export default function ListEventHome(props) {
           ? [props.route.params.idcity]
           : null,
       countries:
-        search.country && search.country.length > 0
+        search.country && search.country.length > `0`
           ? search.country
           : props.route.params && props.route.params.idcountries
           ? [props.route.params.idcountries]
@@ -1358,7 +1359,7 @@ export default function ListEventHome(props) {
           zIndex: 5,
           paddingHorizontal: 15,
           paddingTop: 10,
-          paddingBottom: 5,
+          paddingBottom: 10,
           backgroundColor: "#fff",
           position: "absolute",
           top: 0,
@@ -1377,7 +1378,7 @@ export default function ListEventHome(props) {
             borderRadius: 3,
             paddingHorizontal: 10,
             borderColor: "#209FAE",
-            paddingBottom: 1,
+            paddingBottom: 0,
           }}
         >
           <Filternewbiru width={18} height={18} />
@@ -1667,6 +1668,7 @@ export default function ListEventHome(props) {
               >
                 {dataFilterCategoris.map((item, index) => (
                   <TouchableOpacity
+                    key={item.id}
                     onPress={() => _handleCheck(item["id"], index, item)}
                     style={{
                       flexDirection: "row",
@@ -1698,7 +1700,9 @@ export default function ListEventHome(props) {
                         }),
                       }}
                       onValueChange={() =>
-                        _handleCheck(item["id"], index, item)
+                        Platform.OS == 'ios' 
+                        ? null 
+                        :(_handleCheck(item["id"], index, item))
                       }
                       value={item["checked"]}
                     />
@@ -1709,6 +1713,7 @@ export default function ListEventHome(props) {
                       style={{
                         marginLeft: 0,
                         color: "#464646",
+                        marginTop: Platform.OS == 'ios' ? -5 : -2
                         // borderWidth: 5,
                       }}
                     >
