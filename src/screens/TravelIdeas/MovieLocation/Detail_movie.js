@@ -45,6 +45,7 @@ import {
   Love,
   LikeEmpty,
   Arrowbackios,
+  Arrowbackwhite,
 } from "../../../assets/svg";
 import { Button, FunIcon, Text, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -377,7 +378,7 @@ export default function Detail_movie(props, { navigation, route }) {
               marginTop: -22,
             }}
           >
-            <SharePutih height={15} width={15} />
+            <SharePutih height={20} width={20} />
             <Text
               type="bold"
               style={{

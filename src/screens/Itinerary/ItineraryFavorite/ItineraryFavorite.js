@@ -8,6 +8,7 @@ import {
   Platform,
   ActivityIndicator,
   Pressable,
+  Modal as ModalRN,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -16,7 +17,7 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { Button, Text } from "../../../component";
-import { default_image } from "../../../assets/png";
+import { default_image, Bg_soon } from "../../../assets/png";
 import {
   Arrowbackwhite,
   Calendargrey,
@@ -27,6 +28,8 @@ import {
   TravelStories,
   TravelAlbum,
   Search,
+  Newglobe,
+  Padlock,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -37,6 +40,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import { Loading } from "../../../component";
 import Ripple from "react-native-material-ripple";
 export default function ItineraryFavorite(props) {
+  let [soon, setSoon] = useState(false);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -50,13 +54,12 @@ export default function ItineraryFavorite(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
       marginLeft: -10,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -218,7 +221,7 @@ export default function ItineraryFavorite(props) {
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
     return (
       <View style={{ flexDirection: "row" }}>
-        <Text size="small">
+        <Text size="description">
           {Difference_In_Days + 1 > 1
             ? Difference_In_Days + 1 + " " + t("days")
             : Difference_In_Days + 1 + " " + t("day")}{" "}
@@ -240,79 +243,160 @@ export default function ItineraryFavorite(props) {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            borderRadius: 5,
+          }}
+        ></Pressable>
         <View
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width,
-            zIndex: 5,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
           }}
         >
           <View
             style={{
-              alignContent: "center",
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
               alignItems: "center",
               justifyContent: "center",
-              paddingVertical: 10,
-              height: 50,
-              zIndex: 5,
+              borderRadius: 5,
             }}
           >
-            <View
+            <Image
+              source={Bg_soon}
               style={{
-                backgroundColor: "#F0F0F0",
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                position: "absolute",
                 borderRadius: 5,
-                width: Dimensions.get("window").width - 20,
-                flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
               }}
-            >
-              <Search style={{ marginHorizontal: 20 }} />
-              <TextInput
-                underlineColorAndroid="transparent"
-                placeholder={t("search")}
-                style={{
-                  width: "100%",
-                  padding: 0,
-                }}
-                returnKeyType="search"
-                onChangeText={(x) => setTextInput(x)}
-              />
-            </View>
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
           </View>
         </View>
-        {data?.itinerary_list_favorite.length > 0 ? (
-          <FlatList
-            renderItem={({ item, index }) => (
+      </ModalRN>
+      <View
+        style={{
+          backgroundColor: "#fff",
+          backgroundColor: "#FFF",
+          shadowColor: "#FFF",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 6,
+        }}
+      >
+        <View
+          style={{
+            marginVertical: 15,
+            marginHorizontal: 15,
+            width: Dimensions.get("screen").width - 30,
+            height: 40,
+            backgroundColor: "#f6f6f6",
+            borderRadius: 5,
+            alignItems: "center",
+            flexDirection: "row",
+          }}
+        >
+          <Search height={20} width={20} style={{ marginHorizontal: 10 }} />
+          <TextInput
+            style={{ flex: 1, borderRadius: 5, marginRight: 5 }}
+            value={textInput}
+            underlineColorAndroid="transparent"
+            onChangeText={(x) => setTextInput(x)}
+            placeholder={t("search")}
+            placeholderTextColor="#464646"
+            returnKeyType="search"
+            autoFocus={true}
+            fontSize={16}
+          />
+        </View>
+      </View>
+      {data?.itinerary_list_favorite.length > 0 ? (
+        <FlatList
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                height: 200,
+                paddingHorizontal: 15,
+                marginTop: 15,
+              }}
+            >
               <View
                 style={{
-                  height: 145,
-                  paddingHorizontal: 15,
-                  marginTop: 5,
+                  borderRadius: 5,
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: arrayShadow.shadowOpacity,
+                  shadowRadius: arrayShadow.shadowRadius,
+                  elevation: arrayShadow.elevation,
+                  justifyContent: "space-between",
+                  backgroundColor: "#f6f6f6",
+                  overflow: "hidden",
                 }}
               >
-                <View
+                <Pressable
+                  onPress={() =>
+                    props.navigation.navigate("ItineraryStack", {
+                      screen: "itindetail",
+                      params: {
+                        itintitle: item.name,
+                        country: item.id,
+                        token: token,
+                        status: "favorite",
+                        index: 0,
+                      },
+                    })
+                  }
                   style={{
-                    borderRadius: 5,
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: arrayShadow.shadowOpacity,
-                    shadowRadius: arrayShadow.shadowRadius,
-                    elevation: arrayShadow.elevation,
-                    justifyContent: "space-between",
-                    backgroundColor: "#F7F7F7",
-                    overflow: "hidden",
+                    backgroundColor: "#FFFFFF",
+                    height: "77%",
+                    borderTopLeftRadius: 5,
+                    borderTopRightRadius: 5,
+                    flexDirection: "row",
+                    zIndex: -1,
                   }}
                 >
                   <Pressable
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      height: "77%",
-                      borderTopLeftRadius: 5,
-                      borderTopRightRadius: 5,
-                      flexDirection: "row",
-                    }}
                     onPress={() =>
                       props.navigation.navigate("ItineraryStack", {
                         screen: "itindetail",
@@ -325,96 +409,88 @@ export default function ItineraryFavorite(props) {
                       })
                     }
                   >
-                    <Ripple
-                      onPress={() =>
-                        props.navigation.navigate("ItineraryStack", {
-                          screen: "itindetail",
-                          params: {
-                            itintitle: item.name,
-                            country: item.id,
-                            token: token,
-                            status: "favorite",
-                          },
-                        })
+                    <Image
+                      source={
+                        item && item.cover ? { uri: item.cover } : default_image
                       }
+                      style={{
+                        height: "100%",
+                        width: Dimensions.get("screen").width * 0.37,
+                        borderTopLeftRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        position: "absolute",
+                        height: 30,
+                        marginTop: 10,
+                        margin: 5,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
                     >
                       <Image
+                        style={{
+                          height: 32,
+                          width: 32,
+                          borderRadius: 16,
+                          borderWidth: 1,
+                          borderColor: "rgba(52, 52, 52, 0.75)",
+                          zIndex: 1,
+                        }}
                         source={
-                          item && item.cover
-                            ? { uri: item.cover }
+                          item && item.user_created && item.user_created.picture
+                            ? { uri: item.user_created.picture }
                             : default_image
                         }
-                        style={{
-                          height: "100%",
-                          width: Dimensions.get("screen").width * 0.33,
-                          borderTopLeftRadius: 5,
-                        }}
                       />
+                      <Text
+                        size="description"
+                        type="bold"
+                        style={{
+                          zIndex: 0,
+                          paddingLeft: 5,
+                          backgroundColor: "rgba(0, 0, 0, 0.6)",
+                          borderRadius: 2,
+                          color: "white",
+                          marginLeft: -5,
+                          padding: 2,
+                          paddingBottom: 5,
+                        }}
+                      >
+                        {Truncate({
+                          text: item?.user_created?.first_name
+                            ? item?.user_created?.first_name
+                            : "unknown",
+                          length: 13,
+                        })}
+                      </Text>
+                    </View>
+                  </Pressable>
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingHorizontal: 10,
+                      backgroundColor: "#FFFFFF",
+                      overflow: "hidden",
+                      paddingVertical: 10,
+                      borderRadius: 3,
+                      justifyContent: "space-between",
+                      // borderWidth: 1,
+                    }}
+                  >
+                    <View style={{ justifyContent: "flex-start" }}>
                       <View
                         style={{
-                          position: "absolute",
-                          height: 30,
-                          marginTop: 10,
-                          margin: 5,
                           flexDirection: "row",
+                          justifyContent: "space-between",
                           alignItems: "center",
                         }}
                       >
-                        <Image
-                          style={{
-                            height: 32,
-                            width: 32,
-                            borderRadius: 16,
-                            borderWidth: 1,
-                            borderColor: "rgba(52, 52, 52, 0.8)",
-                            zIndex: 1,
-                          }}
-                          source={
-                            item &&
-                            item.user_created &&
-                            item.user_created.picture
-                              ? { uri: item.user_created.picture }
-                              : default_image
-                          }
-                        />
-                        <Text
-                          size="small"
-                          type="bold"
-                          style={{
-                            zIndex: 0,
-                            paddingLeft: 5,
-                            backgroundColor: "rgba(52, 52, 52, 0.8)",
-                            borderRadius: 2,
-                            color: "white",
-                            marginLeft: -5,
-                            padding: 2,
-                          }}
-                        >
-                          {Truncate({
-                            text: item?.user_created?.first_name
-                              ? item?.user_created?.first_name
-                              : "user_deleted",
-                            length: 13,
-                          })}
-                        </Text>
-                      </View>
-                    </Ripple>
-                    <View
-                      style={{
-                        width: Dimensions.get("screen").width * 0.58,
-                        paddingHorizontal: 10,
-                        backgroundColor: "#FFFFFF",
-                        marginVertical: 5,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <View>
                         <View
                           style={{
                             flexDirection: "row",
-                            justifyContent: "space-between",
                             alignItems: "center",
-                            marginTop: 5,
                           }}
                         >
                           <View
@@ -429,253 +505,326 @@ export default function ItineraryFavorite(props) {
                             <Text
                               type="bold"
                               size="description"
-                              style={{ color: "#209FAE" }}
+                              style={{ color: "#209FAE", paddingBottom: 3 }}
                             >
                               {item?.categori?.name
                                 ? item?.categori?.name
                                 : "No Category"}
                             </Text>
                           </View>
-                          <View>
-                            {item.liked === false ? (
-                              <Ripple onPress={() => _liked(item.id, index)}>
-                                <LikeEmpty height={15} width={15} />
-                              </Ripple>
-                            ) : (
-                              <Ripple onPress={() => _unliked(item.id, index)}>
-                                <LikeRed height={15} width={15} />
-                              </Ripple>
-                            )}
-                          </View>
-                        </View>
-                        <Text
-                          size="label"
-                          type="black"
-                          style={{ marginTop: 5 }}
-                        >
-                          <Truncate text={item.name} length={40} />
-                        </Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginTop: 5,
-                          }}
-                        >
-                          <PinHijau width={12} height={12} />
-                          <Text
-                            style={{ marginLeft: 2 }}
-                            size="small"
-                            type="regular"
-                          >
-                            {item?.country?.name}
-                          </Text>
-                          <Text>,</Text>
-                          <Text
-                            size="small"
-                            type="regular"
-                            style={{ marginLeft: 3 }}
-                          >
-                            {item?.city?.name}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            marginTop: 15,
-                          }}
-                        >
                           <View
                             style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              marginLeft: 3,
+                              height: 6,
+                              width: 6,
+                              borderRadius: 3,
+                              marginHorizontal: 10,
+                              backgroundColor: "#000",
                             }}
-                          >
-                            <Calendargrey width={10} height={10} />
-                            <Text
-                              style={{ marginLeft: 3 }}
-                              size="small"
-                              type="regular"
+                          />
+                          {item?.isprivate ? (
+                            <Padlock height={20} width={20} />
+                          ) : (
+                            <Newglobe height={20} width={20} />
+                          )}
+                        </View>
+                        <View>
+                          {item.liked === false ? (
+                            <TouchableOpacity
+                              style={{
+                                padding: 5,
+                              }}
+                              onPress={() => _liked(item.id, index, item)}
                             >
-                              {item.start_date && item.end_date
-                                ? getDN(item.start_date, item.end_date)
-                                : null}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              marginLeft: 15,
-                            }}
-                          >
-                            <User
-                              width={10}
-                              height={10}
-                              style={{ marginRight: 5 }}
-                            />
-                            {item.buddy_count > 1 ? (
-                              <Text size="small" type="regular">
-                                {(item && item.buddy_count
-                                  ? item.buddy_count
-                                  : null) +
-                                  " " +
-                                  t("persons")}
-                              </Text>
-                            ) : (
-                              <Text size="small" type="regular">
-                                {(item && item.buddy_count
-                                  ? item.buddy_count
-                                  : null) +
-                                  " " +
-                                  t("person")}
-                              </Text>
-                            )}
-                          </View>
+                              <LikeEmpty height={15} width={15} />
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              style={{
+                                padding: 5,
+                              }}
+                              onPress={() => _unliked(item.id, index, item)}
+                            >
+                              <LikeRed height={15} width={15} />
+                            </TouchableOpacity>
+                          )}
                         </View>
-                        {/* <View
-                          style={{
-                            marginTop: 3,
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
+                      </View>
+                      <Text
+                        size="title"
+                        type="black"
+                        style={{ marginTop: 5 }}
+                        numberOfLines={2}
+                      >
+                        {item.name}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginTop: 5,
+                        }}
+                      >
+                        <PinHijau width={13} height={13} />
+                        <Text
+                          style={{ marginLeft: 5 }}
+                          size="description"
+                          type="regular"
                         >
-                          <Star height={15} width={15} style={{}} />
-                          <Text
-                            style={{ marginLeft: 5, color: "#249FAE" }}
-                            size="small"
-                            type="bold"
-                          >
-                            4,1
-                          </Text>
-                          <Text style={{ marginLeft: 5 }} size="small" type="regular">
-                            (283 reviews)
-                          </Text>
-                        </View> */}
+                          {item?.country?.name}
+                        </Text>
+                        <Text>,</Text>
+                        <Text
+                          size="description"
+                          type="regular"
+                          style={{ marginLeft: 3 }}
+                        >
+                          {item?.city?.name}
+                        </Text>
                       </View>
                     </View>
-                  </Pressable>
-                  <View
-                    style={{
-                      // borderWidth: 1,
-                      height: "20%",
-                      flexDirection: "row",
-                      backgroundColor: "#FFFFFF",
-                      borderBottomLeftRadius: 10,
-                      borderBottomRightRadius: 10,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Ripple
+                    <View
                       style={{
-                        width: "50%",
                         flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#D1D1D1",
-                        marginBottom: 5,
+                        marginTop: 20,
                       }}
                     >
-                      <TravelAlbum
-                        style={{ marginRight: 5 }}
-                        height={10}
-                        width={10}
-                      />
-                      <Text
-                        size="small"
-                        type="bold"
-                        style={{ color: "#209FAE" }}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 3,
+                          marginRight: 10,
+                        }}
                       >
-                        Travel Album
-                      </Text>
-                    </Ripple>
-                    <Ripple
-                      style={{
-                        width: "50%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginBottom: 5,
-                      }}
-                    >
-                      <TravelStories
-                        style={{ marginRight: 5 }}
-                        height={10}
-                        width={10}
-                      />
-                      <Text
-                        size="small"
-                        type="bold"
-                        style={{ color: "#209FAE" }}
+                        <Calendargrey
+                          width={12}
+                          height={12}
+                          style={{ marginRight: 5 }}
+                        />
+
+                        {item.start_date && item.end_date ? (
+                          <Text
+                            // style={{ marginLeft: 3 }}
+                            size="description"
+                            type="regular"
+                          >
+                            {getDN(item.start_date, item.end_date)}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          // marginLeft: 10,
+                        }}
                       >
-                        Travel Stories
-                      </Text>
-                    </Ripple>
+                        <User
+                          width={12}
+                          height={12}
+                          style={{ marginRight: 5 }}
+                        />
+                        {item.buddy_count > 1 ? (
+                          <Text size="description" type="regular">
+                            {(item && item.buddy_count
+                              ? item.buddy_count
+                              : null) +
+                              " " +
+                              t("persons")}
+                          </Text>
+                        ) : (
+                          <Text size="description" type="regular">
+                            {(item && item.buddy_count
+                              ? item.buddy_count
+                              : null) +
+                              " " +
+                              t("person")}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    {/* <View
+                            style={{
+                              marginTop: 3,
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Star height={15} width={15} style={{}} />
+                            <Text
+                              style={{ marginLeft: 5, color: "#249FAE" }}
+                              size="small"
+                              type="bold"
+                            >
+                              4,1
+                            </Text>
+                            <Text style={{ marginLeft: 5 }} size="small" type="regular">
+                              (283 reviews)
+                            </Text>
+                          </View> */}
                   </View>
-                </View>
-              </View>
-            )}
-            ListFooterComponent={
-              loadingPopuler ? (
+                </Pressable>
                 <View
                   style={{
-                    flex: 1,
-                    backgroundColor: "white",
-                    height: Dimensions.get("screen").height,
-                    alignItems: "center",
-                    paddingVertical: 20,
+                    height: "20%",
+                    flexDirection: "row",
+                    backgroundColor: "#FFFFFF",
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <ActivityIndicator
-                    animating={true}
-                    size="small"
-                    color="#209FAE"
-                  />
+                  <Pressable
+                    onPress={() =>
+                      props.navigation.navigate("ItineraryStack", {
+                        screen: "itindetail",
+                        params: {
+                          itintitle: item.name,
+                          country: item.id,
+                          token: token,
+                          status: "favorite",
+                          index: 1,
+                        },
+                      })
+                    }
+                    style={{
+                      width: "50%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRightWidth: 1,
+                      borderColor: "#D1D1D1",
+                      marginBottom: 5,
+                    }}
+                  >
+                    <TravelAlbum
+                      style={{ marginRight: 5 }}
+                      height={13}
+                      width={13}
+                    />
+                    <Text
+                      size="description"
+                      type="bold"
+                      style={{ color: "#209FAE" }}
+                    >
+                      Travel Album
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setSoon(true)}
+                    // onPress={() =>
+                    //   props.navigation.navigate("ItineraryStack", {
+                    //     screen: "itindetail",
+                    //     params: {
+                    //       itintitle: item.name,
+                    //       country: item.id,
+                    //       token: token,
+                    //       status: "favorite",
+                    //       index: 2,
+                    //     },
+                    //   })
+                    // }
+                    style={{
+                      width: "50%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 5,
+                    }}
+                  >
+                    <TravelStories
+                      style={{ marginRight: 5 }}
+                      height={13}
+                      width={13}
+                    />
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{
+                        color: "#c7c7c7",
+                      }}
+                      // style={{ color: "#209FAE" }}
+                    >
+                      Travel Stories
+                    </Text>
+                    {/* <TravelStories
+                        style={{ marginRight: 5 }}
+                        height={10}
+                        width={10}
+                      />
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{
+                          color: "#c7c7c7",
+                        }}
+                        // style={{ color: "#209FAE" }}
+                      >
+                        Travel Stories
+                      </Text> */}
+                  </Pressable>
                 </View>
-              ) : null
-            }
-            data={data?.itinerary_list_favorite}
-            keyExtractor={(data) => data.id}
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={false}
-          />
-        ) : (
-          <View
-            style={{
-              backgroundColor: "white",
-              alignItems: "center",
-              paddingTop: 10,
-              flex: 1,
-            }}
-          >
-            {loadingPopuler ? (
-              <View
-                style={{
-                  width: width,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ActivityIndicator color="#209FAE" animating={true} />
               </View>
-            ) : (
+            </View>
+          )}
+          ListFooterComponent={
+            loadingPopuler ? (
               <View
                 style={{
-                  backgroundColor: "white",
-                  paddingVertical: 20,
                   flex: 1,
+                  backgroundColor: "white",
+                  height: Dimensions.get("screen").height,
+                  alignItems: "center",
+                  paddingVertical: 20,
                 }}
               >
-                <Text size="label" type="bold">
-                  Tidak Ada Data
-                </Text>
+                <ActivityIndicator
+                  animating={true}
+                  size="small"
+                  color="#209FAE"
+                />
               </View>
-            )}
-          </View>
-        )}
-      </View>
+            ) : null
+          }
+          data={data?.itinerary_list_favorite}
+          keyExtractor={(data) => data.id}
+          nestedScrollEnabled
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <View
+          style={{
+            backgroundColor: "white",
+            alignItems: "center",
+            paddingTop: 10,
+            flex: 1,
+          }}
+        >
+          {loadingPopuler ? (
+            <View
+              style={{
+                width: width,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator color="#209FAE" animating={true} />
+            </View>
+          ) : (
+            <View
+              style={{
+                backgroundColor: "white",
+                paddingVertical: 20,
+                flex: 1,
+              }}
+            >
+              <Text size="label" type="bold">
+                Tidak Ada Data
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 }

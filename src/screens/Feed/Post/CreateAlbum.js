@@ -14,7 +14,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useLazyQuery } from "@apollo/client";
-import { NewAlbum, Arrowbackwhite, Search } from "../../../assets/svg";
+import { NewAlbum, Arrowbackwhite, Search, Xgray } from "../../../assets/svg";
 import { Text, Button, Loading, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
@@ -55,7 +55,7 @@ export default function CreateAlbum(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -217,7 +217,7 @@ export default function CreateAlbum(props) {
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
+          { opacity: focused ? 1 : 0.7, marginBottom: 3 },
         ]}
       >
         {route.title}
@@ -506,7 +506,7 @@ export default function CreateAlbum(props) {
         <View
           style={{
             height: 40,
-            marginVertical: 10,
+            marginTop: 15,
             borderRadius: 5,
             backgroundColor: "#f6f6f6",
             alignItems: "center",
@@ -540,6 +540,7 @@ export default function CreateAlbum(props) {
               {...props}
               style={{
                 backgroundColor: "white",
+                height: 50,
               }}
               renderLabel={renderLabel}
               indicatorStyle={styles.indicator}
@@ -570,7 +571,7 @@ export default function CreateAlbum(props) {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{
-            width: Dimensions.get("screen").width - 30,
+            width: Dimensions.get("screen").width - 100,
             top: Dimensions.get("screen").height / 3,
             position: "absolute",
             zIndex: 15,
@@ -589,20 +590,41 @@ export default function CreateAlbum(props) {
             <View
               style={{
                 width: "100%",
-                paddingHorizontal: 15,
+                paddingHorizontal: 20,
                 borderBottomWidth: 1,
                 borderColor: "#d1d1d1",
+                backgroundColor: "#f6f6f6",
+                borderRadius: 5,
+                flexDirection: "row",
               }}
             >
-              <Text type="bold" size="title" style={{ marginVertical: 10 }}>
+              <Text
+                type="bold"
+                size="title"
+                style={{ marginBottom: 15, marginTop: 13 }}
+              >
                 New Album
               </Text>
+              <Pressable
+                onPress={() => setNewFeedAlbums(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 55,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
             </View>
             <View
               style={{
                 width: "100%",
-                paddingHorizontal: 15,
+                paddingHorizontal: 20,
                 // backgroundColor: "#f6f6f6",
+                marginVertical: 10,
               }}
             >
               <TextInput
@@ -628,7 +650,7 @@ export default function CreateAlbum(props) {
             <View
               style={{
                 width: "100%",
-                paddingHorizontal: 15,
+                paddingHorizontal: 20,
                 justifyContent: "flex-end",
                 flexDirection: "row",
               }}
