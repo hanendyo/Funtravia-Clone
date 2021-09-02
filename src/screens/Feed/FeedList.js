@@ -1034,7 +1034,7 @@ export default function FeedList({ props, token }) {
                           screen: "CreateListAlbum",
                           params: {
                             user_id: setting?.user_id,
-                            token: isPunctuatorToken,
+                            token: props.route.params.token,
                             file: "",
                             type: "",
                             location: "",

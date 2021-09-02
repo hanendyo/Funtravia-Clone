@@ -318,7 +318,7 @@ export default function tripalbumdetail(props) {
                     shareAction({ from: "itinerary", target: iditinerary })
                   }
                 >
-                  <Sharegreen height={15} width={15}></Sharegreen>
+                  <Sharegreen height={20} width={20}></Sharegreen>
                 </Button>
               </View>
             </View>

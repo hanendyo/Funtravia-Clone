@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { StackActions } from "@react-navigation/routers";
-import { Arrowbackwhite, NewAlbum, Search } from "../../../assets/svg";
+import { Arrowbackwhite, NewAlbum, Search, Xgray } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import Modal from "react-native-modal";
 import { Text, Button, FunImage } from "../../../component";
@@ -188,11 +188,7 @@ export default function ChooseAlbumItinerary(props) {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
+    <ScrollView style={{ backgroundColor: "#FFF" }} stickyHeaderIndices={[0]}>
       <View
         style={{
           width: Dimensions.get("screen").width,
@@ -200,6 +196,7 @@ export default function ChooseAlbumItinerary(props) {
           backgroundColor: "#fff",
           borderBottomWidth: 2,
           borderColor: "#e1e1e1",
+          paddingVertical: 10,
         }}
       >
         <View
@@ -229,109 +226,83 @@ export default function ChooseAlbumItinerary(props) {
           />
         </View>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          width: Dimensions.get("screen").width,
+      <View
+        style={{
+          flexDirection: "row",
           // height: Dimensions.get("screen").height,
-          paddingHorizontal: 15,
-          backgroundColor: "#FFF",
+          flexWrap: "wrap",
+          width: Dimensions.get("screen").width - 30,
+          // borderWidth: 3,
+          marginHorizontal: 15,
+          paddingBottom: 15,
         }}
       >
-        <View
+        <Pressable
+          onPress={() => setNewItineraryAlbums(true)}
           style={{
-            flexDirection: "row",
-            height: Dimensions.get("screen").height,
-            flexWrap: "wrap",
-            width: Dimensions.get("screen").width - 30,
+            width: (width - 33) / 3,
+            backgroundColor: "#FFF",
+            marginTop: 20,
           }}
         >
-          {loadingdetail ? (
-            <View
-              style={{
-                width: "100%",
-                marginTop: 20,
-                alignItems: "center",
-                alignSelf: "center",
-              }}
-            >
-              <ActivityIndicator size={"small"} color="#209fae" />
-            </View>
-          ) : (
+          <View
+            style={{
+              width: width / 3 - 20,
+              height: width / 3 - 20,
+              alignSelf: "center",
+              backgroundColor: "#ECECEC",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+            }}
+          >
+            <NewAlbum height={60} width={60} />
+          </View>
+          <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
+            <Text size="label" type="bold">
+              Create Album
+            </Text>
+          </View>
+        </Pressable>
+        {dataItinerarys &&
+          dataItinerarys?.album_itinerary_list.map((item, index) => (
             <Pressable
-              onPress={() => setNewItineraryAlbums(true)}
+              key={index}
+              onPress={() => pilih(item.id, item.title)}
               style={{
-                width: (width - 33) / 3,
+                width: (Dimensions.get("screen").width - 33) / 3,
                 backgroundColor: "#FFF",
                 marginTop: 20,
               }}
             >
               <View
                 style={{
-                  width: width / 3 - 20,
-                  height: width / 3 - 20,
+                  width: Dimensions.get("screen").width / 3 - 20,
+                  height: Dimensions.get("screen").width / 3 - 20,
                   alignSelf: "center",
-                  backgroundColor: "#ECECEC",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 5,
                 }}
               >
-                <NewAlbum height={60} width={60} />
+                <FunImage
+                  source={item.url ? { uri: item.cover } : default_image}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 5,
+                  }}
+                />
               </View>
               <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
                 <Text size="label" type="bold">
-                  Create Album
+                  {item.title}
+                </Text>
+                <Text size="description" type="light">
+                  {item.count_media} {" " + t("photo")}
+                  {/* {item.count_media > 1 ? "photos" : "photo"} */}
                 </Text>
               </View>
             </Pressable>
-          )}
-          {dataItinerarys &&
-            dataItinerarys?.album_itinerary_list.map((item, index) =>
-              loadingdetail ? (
-                <View style={{ marginTop: 20 }}>
-                  <ActivityIndicator size={"small"} color="#209fae" />
-                </View>
-              ) : (
-                <Pressable
-                  key={index}
-                  onPress={() => pilih(item.id, item.title)}
-                  style={{
-                    width: (width - 33) / 3,
-                    backgroundColor: "#FFF",
-                    marginTop: 20,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: width / 3 - 20,
-                      height: width / 3 - 20,
-                      alignSelf: "center",
-                    }}
-                  >
-                    <FunImage
-                      source={item.url ? { uri: item.cover } : default_image}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: 5,
-                      }}
-                    />
-                  </View>
-                  <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
-                    <Text size="label" type="bold">
-                      {item.title}
-                    </Text>
-                    <Text size="description" type="light">
-                      {item.count_media} {" " + t("photo")}
-                      {/* {item.count_media > 1 ? "photos" : "photo"} */}
-                    </Text>
-                  </View>
-                </Pressable>
-              )
-            )}
-        </View>
-      </ScrollView>
+          ))}
+      </View>
       <Modal
         useNativeDriver={true}
         visible={newItineraryAlbums}
@@ -354,13 +325,12 @@ export default function ChooseAlbumItinerary(props) {
           style={{
             width:
               Platform.OS == "ios"
-                ? Dimensions.get("screen").width - 10
-                : Dimensions.get("screen").width - 40,
-            paddingHorizontal: Platform.OS == "ios" ? 20 : 0,
+                ? Dimensions.get("screen").width - 70
+                : Dimensions.get("screen").width - 100,
             top: Dimensions.get("screen").height / 3,
             position: "absolute",
             zIndex: 15,
-            // paddingHorizontal: 15,
+            alignSelf: "center",
           }}
         >
           <View
@@ -375,14 +345,33 @@ export default function ChooseAlbumItinerary(props) {
             <View
               style={{
                 width: "100%",
-                paddingHorizontal: 15,
+                paddingHorizontal: 20,
+                backgroundColor: "#f6f6f6",
+                borderRadius: 5,
                 borderBottomWidth: 1,
                 borderColor: "#d1d1d1",
               }}
             >
-              <Text type="bold" size="title" style={{ marginVertical: 10 }}>
+              <Text
+                type="bold"
+                size="title"
+                style={{ marginBottom: 15, marginTop: 13 }}
+              >
                 New Album
               </Text>
+              <Pressable
+                onPress={() => setNewItineraryAlbums(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 55,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
             </View>
             <View
               style={{
@@ -437,6 +426,6 @@ export default function ChooseAlbumItinerary(props) {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
