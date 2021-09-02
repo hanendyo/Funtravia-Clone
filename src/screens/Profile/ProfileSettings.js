@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   BackHandler,
   KeyboardAvoidingView,
+  Pressable,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Button, Text, Loading } from "../../component";
@@ -467,19 +468,16 @@ export default function ProfileSettings(props) {
                 width: "100%",
               }}
             />
-            <Button
+            <Pressable
               onPress={() => setmodal(true)}
               style={{
                 position: "absolute",
                 right: -8,
                 bottom: 0,
               }}
-              type="circle"
-              color="secondary"
-              size="medium"
             >
-              <Addphoto width={18} height={18} />
-            </Button>
+              <Addphoto width={40} height={40} />
+            </Pressable>
           </View>
         </View>
         <View

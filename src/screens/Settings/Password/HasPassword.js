@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Text, Button, Peringatan } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../../assets/svg";
-import { Dimensions, Pressable, Image } from "react-native";
+import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
+import { Dimensions, Pressable, Image, Platform } from "react-native";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdateKataSandi";
@@ -64,7 +64,11 @@ export default function HasPassword(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
       >
-        <Arrowbackwhite height={20} width={20} />
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {
