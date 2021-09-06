@@ -8,12 +8,10 @@ import {
   Alert,
   TextInput,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import Modal from "react-native-modal";
-import { close } from "../../assets/png";
-import { Search, Filternewbiru } from "../../assets/svg";
-import { CustomImage } from "../../component";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Search, Filternewbiru, Xhitam } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
 import RegionList_v2 from "../../graphQL/Query/Countries/PopularDestination";
@@ -33,7 +31,6 @@ import {
 
 export default function AllDestination(props) {
   const { t } = useTranslation();
-  const [show, setShow] = useState(false);
 
   const HeaderComponent = {
     headerShown: true,
@@ -80,6 +77,7 @@ export default function AllDestination(props) {
   });
 
   const [dataResult, setDataResult] = useState([]);
+  const [show, setShow] = useState(false);
 
   const [GetRegionList, { data, loading, error }] = useLazyQuery(
     RegionList_v2,
@@ -136,7 +134,7 @@ export default function AllDestination(props) {
   };
 
   //Handle Checkbox
-  const handleCheck = (id, item) => {
+  const handleCheck = (id, item, index) => {
     let temp = [...filterRegion];
     let selected = { ...item };
     selected.checked = !selected.checked;
@@ -480,7 +478,7 @@ export default function AllDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.75,
+            height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
           }}
@@ -504,18 +502,17 @@ export default function AllDestination(props) {
               Filter
             </Text>
             <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                height: 20,
+                width: 32,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
               onPress={() => setShow(false)}
-              style={{ backgroundColor: "transparent", padding: 5 }}
             >
-              <CustomImage
-                customStyle={{
-                  height: 13,
-                  width: 13,
-                  alignSelf: "flex-start",
-                }}
-                customImageStyle={{ resizeMode: "contain" }}
-                source={close}
-              />
+              <Xhitam height={15} width={15} />
             </TouchableOpacity>
           </View>
           <View
@@ -603,10 +600,10 @@ export default function AllDestination(props) {
                   paddingHorizontal: 15,
                 }}
               >
-                {regionName.map((item) => (
+                {regionName.map((item, index) => (
                   <TouchableOpacity
                     key={item.id}
-                    onPress={() => handleCheck(item["id"], item)}
+                    onPress={() => handleCheck(item["id"], item, index)}
                     style={{
                       flexDirection: "row",
                       backgroundColor: "white",
@@ -635,12 +632,12 @@ export default function AllDestination(props) {
                           android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                         }),
                       }}
-                      // onValueChange={() =>
-                      //   Platform.OS == "ios"
-                      //     ? null
-                      //     : handleCheck(item["id"], item)
-                      // }
-                      onValueChange={() => handleCheck(item["id"], item)}
+                      // onValueChange={() => handleCheck(item["id"], item)}
+                      onValueChange={() =>
+                        Platform.OS == "ios"
+                          ? null
+                          : handleCheck(item["id"], item, index)
+                      }
                       value={item["checked"]}
                     />
 
@@ -649,7 +646,9 @@ export default function AllDestination(props) {
                       type="regular"
                       style={{
                         marginLeft: 0,
+                        marginRight: -10,
                         color: "#464646",
+                        marginTop: Platform.OS == "ios" ? -5 : -2,
                         // borderWidth: 5,
                       }}
                     >
