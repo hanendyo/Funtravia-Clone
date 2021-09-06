@@ -1049,7 +1049,6 @@ export default function ItineraryPopuler(props) {
                   style={{
                     flex: 1,
                     paddingHorizontal: 15,
-                    // borderWidth: 1,
                     justifyContent: "space-between",
                     paddingTop: 10,
                     paddingBottom: 13,
@@ -1058,7 +1057,16 @@ export default function ItineraryPopuler(props) {
                   <Text size={"label"} type="bold" numberOfLines={2}>
                     {item.title}
                   </Text>
-                  <View
+                  <Pressable
+                    onPress={() =>
+                      props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: item.id,
+                          token: token,
+                        },
+                      })
+                    }
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
@@ -1085,7 +1093,7 @@ export default function ItineraryPopuler(props) {
                     >
                       {item?.user?.first_name + " " + item?.user?.last_name}{" "}
                     </Text>
-                  </View>
+                  </Pressable>
                 </View>
               </Pressable>
             );
