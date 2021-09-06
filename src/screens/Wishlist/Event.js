@@ -10,6 +10,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { CustomImage } from "../../component";
 import {
@@ -23,6 +24,7 @@ import {
   LikeEmpty,
   PinHijau,
   Calendargrey,
+  Kalenderhijau,
 } from "../../assets/svg";
 import { Truncate } from "../../component";
 import { MapIconGrey, MapIconGreen, default_image } from "../../assets/png";
@@ -46,7 +48,6 @@ export default function Event({
   const { t, i18n } = useTranslation();
   let [selected] = useState(new Map());
   let [dataEv, setEv] = useState([]);
-  console.log("datadev", dataEv);
   const eventdetail = (data) => {
     props.route.params && props.route.params.iditinerary
       ? props.navigation.navigate("eventdetail", {
@@ -609,31 +610,33 @@ export default function Event({
       ) : (
         <FlatList
           contentContainerStyle={{
-            marginTop: 5,
+            marginTop: 15,
             justifyContent: "space-evenly",
-            paddingHorizontal: 5,
-            paddingBottom: 120,
+            paddingHorizontal: 15,
+            paddingBottom: 20,
           }}
           horizontal={false}
           data={dataEv}
           // renderItem={_renderItem}
-
           renderItem={({ item }) => (
-            <View
+            <Pressable
+              onPress={() => eventdetail(item)}
               style={{
-                justifyContent: "center",
-
-                width: Dimensions.get("screen").width * 0.5 - 16,
-                height: Dimensions.get("screen").width * 0.7,
-                margin: 6,
+                // justifyContent: "center",
+                width: (Dimensions.get("screen").width - 45) / 2,
+                height: 280,
                 flexDirection: "column",
-                backgroundColor: "white",
+                backgroundColor: "#FFF",
+                shadowColor: "#FFF",
+                shadowOffset: {
+                  width: 0,
+                  height: 5,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 6.27,
+                elevation: 6,
+                marginRight: 15,
                 borderRadius: 5,
-                shadowColor: "gray",
-                shadowOffset: { width: 2, height: 2 },
-                shadowOpacity: 1,
-                shadowRadius: 3,
-                elevation: 3,
               }}
             >
               <View
@@ -657,13 +660,14 @@ export default function Event({
                     alignSelf: "center",
                     justifyContent: "center",
                     backgroundColor: "rgba(226, 236, 248, 0.85)",
-                    paddingHorizontal: 10,
+                    // paddingHorizontal: 10,
                   }}
                 >
                   <Text
-                    size="small"
+                    size="description"
                     style={{
                       textAlign: "center",
+                      marginBottom: 2,
                     }}
                   >
                     {item.category.name}
@@ -751,9 +755,9 @@ export default function Event({
                   onPress={() => eventdetail(item)}
                   size="label"
                   type="bold"
-                  style={{}}
+                  numberOfLines={2}
                 >
-                  <Truncate text={item.name} length={27} />
+                  {item.name}
                 </Text>
                 <View
                   style={{
@@ -764,60 +768,14 @@ export default function Event({
                 >
                   <View
                     style={{
-                      // flex: 1,
-                      flexDirection: "row",
-                      width: "100%",
-                      borderColor: "grey",
-                    }}
-                  >
-                    {/* <CustomImage
-                    customStyle={{
-                      width: 15,
-                      height: 15,
-                      marginRight: 5,
-                    }}
-                    customImageStyle={{
-                      width: 15,
-                      height: 15,
-                      resizeMode: "contain",
-                    }}
-                    source={MapIconGreen}
-                  /> */}
-                    <PinHijau width={15} height={15} />
-                    <Text
-                      size="small"
-                      style={{
-                        width: "100%",
-                        marginLeft: 5,
-                      }}
-                    >
-                      {item.city.name}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      // flex: 1,
                       flexDirection: "row",
                       width: "100%",
                       marginBottom: 3,
                     }}
                   >
-                    {/* <CustomImage
-                    customStyle={{
-                      width: 15,
-                      height: 15,
-                      marginRight: 5,
-                    }}
-                    customImageStyle={{
-                      width: 15,
-                      height: 15,
-                      resizeMode: "contain",
-                    }}
-                    source={CalenderGrey}
-                  /> */}
-                    <Calendargrey width={15} height={15} />
+                    <Kalenderhijau width={15} height={15} />
                     <Text
-                      size="small"
+                      size="description"
                       style={{
                         paddingRight: 20,
                         width: "100%",
@@ -827,9 +785,28 @@ export default function Event({
                       {dateFormatBetween(item.start_date, item.end_date)}
                     </Text>
                   </View>
+                  <View
+                    style={{
+                      // flex: 1,
+                      flexDirection: "row",
+                      width: "100%",
+                      borderColor: "grey",
+                    }}
+                  >
+                    <PinHijau width={15} height={15} />
+                    <Text
+                      size="description"
+                      style={{
+                        width: "100%",
+                        marginLeft: 5,
+                      }}
+                    >
+                      {item.city.name}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </Pressable>
           )}
           numColumns={numColumns}
           keyExtractor={(item, index) => index.toString()}

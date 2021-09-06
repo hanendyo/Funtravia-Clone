@@ -1973,7 +1973,7 @@ export default function ItineraryDetail(props) {
                 // paddingHorizontal: 20,
               }}
             >
-              <Sharegreen height={15} width={15} />
+              <Sharegreen height={20} width={20} />
               <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
                 {t("share")}
               </Text>

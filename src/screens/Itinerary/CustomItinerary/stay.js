@@ -53,7 +53,6 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Modal from "react-native-modal";
 
 export default function detailCustomItinerary(props) {
-  console.log("props stay", props);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -253,8 +252,6 @@ export default function detailCustomItinerary(props) {
     setItemValid((prev) => {
       return { ...prev, [name]: check };
     });
-    console.log(`DATA STATE VALID: `, dataState);
-    console.log(`ITEM VALID: `, itemValid);
   };
 
   const modalStateValidation = (name) => {
@@ -496,7 +493,6 @@ export default function detailCustomItinerary(props) {
     }
   };
 
-  console.log(`PROPS: `, props);
   return (
     <SafeAreaView
       style={{
@@ -1205,18 +1201,7 @@ export default function detailCustomItinerary(props) {
                       ["status"]: false,
                     };
                   });
-
-                  if (dataState.hotel_name !== "") {
-                    // await setItemValid({...prev, ['hotel_name']: true});
-                    // await setItemValid({...prev, ['address']: true});
-                    console.log(`DOING ASYNC`);
-                  } else {
-                    console.log(`FAILED ASY`);
-                  }
                 }
-
-                console.log(`IVAL: `, itemValid);
-                console.log(`DSTATE: `, dataState);
                 setModalHotelName(false);
               }}
               query={{

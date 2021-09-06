@@ -2802,7 +2802,7 @@ export default function CityDetail(props) {
                   justifyContent: "center",
                 }}
               >
-                <ShareBlack height={15} width={15} />
+                <ShareBlack height={20} width={20} />
               </Pressable>
             </View>
           </View>

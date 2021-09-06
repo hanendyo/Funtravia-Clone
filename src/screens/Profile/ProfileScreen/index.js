@@ -1903,7 +1903,7 @@ export default function OtherProfile(props) {
                   alignItems: "center",
                 }}
               >
-                <Sharegreen height={15} width={15} />
+                <Sharegreen height={20} width={20} />
 
                 <Text
                   size="label"
