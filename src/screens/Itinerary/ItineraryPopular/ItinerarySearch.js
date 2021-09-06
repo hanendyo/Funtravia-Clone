@@ -1026,7 +1026,16 @@ export default function ItinerarySearchCategory(props) {
                   <Text size={"label"} type="bold" numberOfLines={2}>
                     {item.title}
                   </Text>
-                  <View
+                  <Pressable
+                    onPress={() =>
+                      props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: item.id,
+                          token: token,
+                        },
+                      })
+                    }
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
@@ -1053,7 +1062,7 @@ export default function ItinerarySearchCategory(props) {
                     >
                       {item?.user?.first_name + " " + item?.user?.last_name}{" "}
                     </Text>
-                  </View>
+                  </Pressable>
                 </View>
               </Pressable>
             );
