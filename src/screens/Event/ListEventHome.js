@@ -428,7 +428,7 @@ export default function ListEventHome(props) {
           justifyContent: "flex-start",
           position: "absolute",
           backgroundColor: "#fff",
-          marginTop: -5 //! hanendyo's
+          marginTop: 0 //! hanendyo's
           // marginTop: 50,
           // borderWidth: 1,
         }}
@@ -443,7 +443,6 @@ export default function ListEventHome(props) {
             }}
           />
         ) : (
-          // <View></View>
           <Image
             source={Eventcover}
             style={{
@@ -477,6 +476,7 @@ export default function ListEventHome(props) {
           <Text
             style={{
               textAlign: "justify",
+              paddingBottom: Platform.OS == 'ios' ? 10 : 8
             }}
           >
             {Banner && Banner.description
@@ -824,7 +824,7 @@ export default function ListEventHome(props) {
             height: TabBarHeight,
             // borderWidth: 1,
             paddingTop: 0,
-            marginTop: -5, //! hanendyo's
+            marginTop: -9, //! hanendyo's
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -1684,7 +1684,7 @@ export default function ListEventHome(props) {
                   >
                     <CheckBox
                       onCheckColor="#FFF"
-                      lineWidth={1}
+                      lineWidth={4}
                       onFillColor="#209FAE"
                       onTintColor="#209FAE"
                       boxType={"square"}
@@ -1712,6 +1712,7 @@ export default function ListEventHome(props) {
                       type="regular"
                       style={{
                         marginLeft: 0,
+                        marginRight: -10,
                         color: "#464646",
                         marginTop: Platform.OS == 'ios' ? -5 : -2
                         // borderWidth: 5,
