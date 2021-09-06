@@ -428,7 +428,7 @@ export default function ListEventHome(props) {
           justifyContent: "flex-start",
           position: "absolute",
           backgroundColor: "#fff",
-          marginTop: 0 //! hanendyo's
+          marginTop: 0, //! hanendyo's
           // marginTop: 50,
           // borderWidth: 1,
         }}
@@ -476,7 +476,7 @@ export default function ListEventHome(props) {
           <Text
             style={{
               textAlign: "justify",
-              paddingBottom: Platform.OS == 'ios' ? 10 : 8
+              paddingBottom: Platform.OS == "ios" ? 10 : 8,
             }}
           >
             {Banner && Banner.description
@@ -734,7 +734,6 @@ export default function ListEventHome(props) {
       case "tab2":
         numCols = 2;
         data = dataEvent;
-
         data = dataEventPublic;
         renderItem = (e) => rederTab1Item(e, "public");
         break;
@@ -1289,7 +1288,6 @@ export default function ListEventHome(props) {
 
     await setSearch(data);
     await setshow(false);
-
     getdataEvent();
     getdataEventPublic();
   };
@@ -1700,9 +1698,9 @@ export default function ListEventHome(props) {
                         }),
                       }}
                       onValueChange={() =>
-                        Platform.OS == 'ios' 
-                        ? null 
-                        :(_handleCheck(item["id"], index, item))
+                        Platform.OS == "ios"
+                          ? null
+                          : _handleCheck(item["id"], index, item)
                       }
                       value={item["checked"]}
                     />
@@ -1714,7 +1712,7 @@ export default function ListEventHome(props) {
                         marginLeft: 0,
                         marginRight: -10,
                         color: "#464646",
-                        marginTop: Platform.OS == 'ios' ? -5 : -2
+                        marginTop: Platform.OS == "ios" ? -5 : -2,
                         // borderWidth: 5,
                       }}
                     >

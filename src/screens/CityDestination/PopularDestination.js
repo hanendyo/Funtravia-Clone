@@ -6,13 +6,18 @@ import {
   Dimensions,
   FlatList,
   Alert,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import Modal from "react-native-modal";
+import { Search, Filternewbiru, Xhitam } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
-import RegionList from "../../graphQL/Query/Countries/RegionList";
+import RegionList_v2 from "../../graphQL/Query/Countries/PopularDestination";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/react-hooks";
+import CheckBox from "@react-native-community/checkbox";
 import Fillter from "./Fillter/index";
 import { Arrowbackwhite, OptionsVertWhite } from "../../assets/svg";
 import {
@@ -23,8 +28,10 @@ import {
   FunImageBackground,
   FunImage,
 } from "../../component";
+
 export default function AllDestination(props) {
   const { t } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     title: "Popular Destination",
@@ -66,22 +73,103 @@ export default function AllDestination(props) {
   let [selected] = useState(new Map());
   let [search, setSearch] = useState({
     type: null,
-    tag: null,
     keyword: null,
   });
 
-  const [GetRegionList, { data, loading, error }] = useLazyQuery(RegionList, {
-    variables: {
-      keyword: search.keyword ? search.keyword : "",
-      type: search.tag ? search.tag : "",
-    },
-  });
+  const [dataResult, setDataResult] = useState([]);
+  const [show, setShow] = useState(false);
+
+  const [GetRegionList, { data, loading, error }] = useLazyQuery(
+    RegionList_v2,
+    {
+      fetchPolicy: "network-only",
+      variables: {
+        keyword: search.keyword ? search.keyword : "",
+        type: search.type ? search.type : null,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      onCompleted: () => {
+        setDataResult(data);
+      },
+    }
+  );
+
+  //Filter Region
+  const [filterRegion, setFilterRegion] = useState([]);
+
+  const searchRegion = async (input) => {
+    let search = new RegExp(input, "i");
+    let result = filterRegion.filter((item) => search.test(item.name));
+    setRegionName(result);
+  };
+
+  //Filter Search City
+  const searchCity = async (input) => {
+    let data = { ...search };
+    data["keyword"] = input;
+    setSearch(data);
+  };
+
+  const [regionName, setRegionName] = useState([]);
+
+  const ClearAllFilter = () => {
+    let temp = [...regionName];
+    let tempData = [];
+    for (var x of temp) {
+      let data = { ...x };
+      data.checked = false;
+      tempData.push(data);
+    }
+    setRegionName(tempData);
+
+    let dataSearch = {
+      type: null,
+      keyword: null,
+    };
+    setSearch(dataSearch);
+    setShow(false);
+  };
+
+  //Handle Checkbox
+  const handleCheck = (id, item, index) => {
+    let temp = [...filterRegion];
+    let selected = { ...item };
+    selected.checked = !selected.checked;
+    let idx = temp.findIndex((key) => key.id === id);
+    temp.splice(idx, 1, selected);
+    setFilterRegion(temp);
+    setRegionName(temp);
+  };
+
+  //Handle Update Filter
+  const UpdateFilter = async () => {
+    let result = [];
+    for (let data of regionName) {
+      if (data.checked === true) {
+        result.push(data.id);
+      }
+    }
+
+    let filterResult = { ...search };
+    filterResult["type"] = result;
+
+    await setSearch(filterResult);
+    await setShow(false);
+    await GetRegionList();
+  };
 
   const [
     GetContinent,
     { data: dataFillter, loading: loadingcat, error: errorcat },
   ] = useLazyQuery(Continent, {
     fetchPolicy: "network-only",
+    onCompleted: () => {
+      setRegionName(dataFillter.continent_type);
+      setFilterRegion(dataFillter.continent_type);
+    },
   });
 
   const rupiah = (nilai) => {
@@ -96,6 +184,10 @@ export default function AllDestination(props) {
     }
 
     return jumlah;
+  };
+
+  const cekData = () => {
+    return search["type"]?.length;
   };
 
   useEffect(() => {
@@ -185,6 +277,7 @@ export default function AllDestination(props) {
             ? item.city.map((value, i) => {
                 return (
                   <TouchableOpacity
+                    key={i}
                     onPress={() => {
                       if (value.type == "province") {
                         props.navigation.navigate("CountryStack", {
@@ -285,25 +378,336 @@ export default function AllDestination(props) {
         backgroundColor: "white",
       }}
     >
-      {dataFillter && dataFillter.continent_type.length ? (
-        <Fillter
-          fillter={dataFillter.continent_type}
-          sendBack={(e) => setSearch(e)}
-        />
-      ) : null}
+      <View
+        onLayout={(event) => {
+          var { x, y, width, height } = event.nativeEvent.layout;
+          // setHeight(height);
+        }}
+        style={{
+          flexDirection: "row",
+          zIndex: 5,
+          paddingHorizontal: 15,
+          paddingTop: 10,
+          paddingBottom: 5,
+          backgroundColor: "#fff",
+          position: "absolute",
+          top: 0,
+        }}
+      >
+        <Button
+          size="small"
+          type="icon"
+          variant="bordered"
+          color="primary"
+          onPress={() => {
+            setShow(true);
+          }}
+          style={{
+            marginRight: 5,
+            borderRadius: 3,
+            paddingHorizontal: 10,
+            borderColor: "#209FAE",
+            paddingBottom: 1,
+          }}
+        >
+          <Filternewbiru width={18} height={18} />
+          {cekData() > 0 ? (
+            <View
+              style={{
+                backgroundColor: "#209fae",
+                marginLeft: 10,
+                width: 20,
+                paddingHorizontal: 5,
+                borderRadius: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Lato-Regular",
+                  color: "#ffff",
+                  fontSize: 15,
+                }}
+              >
+                {cekData()}
+              </Text>
+            </View>
+          ) : null}
+        </Button>
+        <View
+          style={{
+            backgroundColor: "#F0F0F0",
+            borderRadius: 3,
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
+
+            paddingHorizontal: 10,
+          }}
+        >
+          <Search width={15} height={15} />
+
+          <TextInput
+            underlineColorAndroid="transparent"
+            placeholder={t("search")}
+            style={{
+              width: "100%",
+              // borderWidth: 1,
+              marginLeft: 5,
+              padding: 0,
+            }}
+            returnKeyType="search"
+            onChangeText={(x) => searchCity(x)}
+            onSubmitEditing={(x) => searchCity(x)}
+          />
+        </View>
+      </View>
+
+      <Modal
+        isVisible={show}
+        onBackdropPress={() => {
+          setShow(false);
+        }}
+        onRequestClose={() => setShow(false)}
+        onDismiss={() => setShow(false)}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            height: Dimensions.get("screen").height * 0.6,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+              paddingHorizontal: 15,
+              paddingVertical: 20,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                color: "#464646",
+              }}
+            >
+              Filter
+            </Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                height: 20,
+                width: 32,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
+              onPress={() => setShow(false)}
+            >
+              <Xhitam height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              borderTopWidth: 0.5,
+              borderColor: "#d1d1d1",
+            }}
+          >
+            <View
+              style={{
+                width: "35%",
+                borderRightWidth: 0.5,
+                borderColor: "#d1d1d1",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  paddingBottom: 5,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftColor: "#209fae",
+                    borderLeftWidth: 5,
+                    marginLeft: 5,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: "#ffff",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      // fontSize: 20,
+                      // fontFamily: "Lato-Bold",
+                      color: "#464646",
+                      // marginTop: 10,
+                    }}
+                  >
+                    {t("region")}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View style={{ flex: 1 }}>
+              <View style={{ padding: 15 }}>
+                <View
+                  style={{
+                    backgroundColor: "#daf0f2",
+                    borderRadius: 5,
+                    // flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Search width={15} height={15} />
+
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    placeholder={t("search")}
+                    style={{
+                      width: "100%",
+                      // borderWidth: 1,
+                      marginLeft: 5,
+                      padding: 0,
+                    }}
+                    // returnKeyType="search"
+                    onChangeText={(x) => searchRegion(x)}
+                    onSubmitEditing={(x) => searchRegion(x)}
+                  />
+                </View>
+              </View>
+              <ScrollView
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 15,
+                }}
+              >
+                {regionName.map((item, index) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => handleCheck(item["id"], item, index)}
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "white",
+                      width: "49%",
+                      marginRight: 3,
+                      marginBottom: 20,
+                      justifyContent: "flex-start",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <CheckBox
+                      onCheckColor="#FFF"
+                      lineWidth={1}
+                      onFillColor="#209FAE"
+                      onTintColor="#209FAE"
+                      boxType={"square"}
+                      style={{
+                        alignSelf: "center",
+                        width: Platform.select({
+                          ios: 30,
+                          android: 35,
+                        }),
+                        transform: Platform.select({
+                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                        }),
+                      }}
+                      // onValueChange={() => handleCheck(item["id"], item)}
+                      onValueChange={() =>
+                        Platform.OS == "ios"
+                          ? null
+                          : handleCheck(item["id"], item, index)
+                      }
+                      value={item["checked"]}
+                    />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 0,
+                        marginRight: -10,
+                        color: "#464646",
+                        marginTop: Platform.OS == "ios" ? -5 : -2,
+                        // borderWidth: 5,
+                      }}
+                    >
+                      {item["name"]}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              zIndex: 6,
+              flexDirection: "row",
+              height: 80,
+              position: "absolute",
+              bottom: 0,
+              justifyContent: "space-around",
+              alignContent: "center",
+              alignItems: "center",
+              backgroundColor: "#ffffff",
+              width: Dimensions.get("screen").width,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              padding: 10,
+              paddingHorizontal: 10,
+            }}
+          >
+            <Button
+              variant="bordered"
+              color="secondary"
+              onPress={() => ClearAllFilter()}
+              style={{ width: "30%", borderColor: "#ffff" }}
+              text={t("clearAll")}
+            ></Button>
+            <Button
+              onPress={() => UpdateFilter()}
+              style={{ width: "65%" }}
+              text={t("apply")}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
 
       <FlatList
         contentContainerStyle={{
-          marginTop: 5,
+          marginTop: 50,
           justifyContent: "space-evenly",
           paddingStart: 10,
         }}
         horizontal={false}
-        data={
-          data && data.populer_city_destination.length
-            ? data.populer_city_destination
-            : null
-        }
+        data={dataResult ? dataResult.populer_city_destination_v2 : null}
         renderItem={({ item, index }) => <RenderList item={item} />}
         showsHorizontalScrollIndicator={false}
         extraData={selected}

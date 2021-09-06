@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Dimensions, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import Modal from "react-native-modal";
 import { CustomImage } from "../../../component";
 import CheckBox from "@react-native-community/checkbox";
@@ -7,6 +13,8 @@ import { close } from "../../../assets/png";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
+import { Search } from "../../../assets/svg";
+
 export default function FilterModal({
   show,
   datasfilter,
@@ -134,113 +142,93 @@ export default function FilterModal({
             />
           </TouchableOpacity>
         </View>
-        {/* ==================garis========================= */}
         <View
           style={{
-            borderBottomColor: "#D1D1D1",
-            borderBottomWidth: 1,
-            width: Dimensions.get("screen").width,
-            marginHorizontal: 15,
+            flexDirection: "row",
+            flex: 1,
+            borderTopWidth: 0.5,
+            borderColor: "#d1d1d1",
           }}
-        />
-        {/* ==================garis========================= */}
-        <ScrollView>
+        >
           <View
             style={{
-              flexDirection: "column",
-              justifyContent: "space-between",
-              width: "100%",
-              paddingHorizontal: 15,
-              paddingVertical: 20,
+              width: "35%",
+              borderRightWidth: 0.5,
+              borderColor: "#d1d1d1",
             }}
           >
-            <Text
-              type="bold"
-              size="title"
+            <View
               style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
-                color: "#464646",
+                backgroundColor: "#f6f6f6",
+                paddingBottom: 5,
               }}
             >
-              {t("categories")}
-            </Text>
-            <FlatList
-              contentContainerStyle={{
-                // marginHorizontal: 3,
-                paddingVertical: 15,
-                paddingRight: 10,
-                width: screenWidth - 40,
-              }}
-              data={dataFilterCategori}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => _handleCheck(item["id"], index)}
+              <View
+                style={{
+                  borderLeftColor: "#209fae",
+                  borderLeftWidth: 5,
+                  marginLeft: 5,
+                  justifyContent: "center",
+                  paddingVertical: 15,
+                  paddingHorizontal: 10,
+                  backgroundColor: "#ffff",
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="title"
                   style={{
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    borderColor: "#464646",
-                    width: "49%",
-                    marginRight: 3,
-                    marginBottom: 20,
-                    justifyContent: "flex-start",
-                    alignContent: "center",
-                    alignItems: "center",
+                    // fontSize: 20,
+                    // fontFamily: "Lato-Bold",
+                    color: "#464646",
+                    // marginTop: 10,
                   }}
                 >
-                  <View
-                    style={{
-                      width: "21%",
-                      height: "100%",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <CheckBox
-                      onCheckColor="#FFF"
-                      lineWidth={1}
-                      onFillColor="#209FAE"
-                      onTintColor="#209FAE"
-                      boxType={"square"}
-                      style={{
-                        alignSelf: "center",
-                        width: Platform.select({
-                          ios: 30,
-                          android: 35,
-                        }),
-                        transform: Platform.select({
-                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                        }),
-                      }}
-                      onValueChange={() => _handleCheck(item["id"], index)}
-                      value={item["checked"]}
-                    />
-                  </View>
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 16,
-                      // alignContent:'center',
-                      textAlign: "center",
-
-                      marginLeft: 0,
-                      color: "#464646",
-                    }}
-                  >
-                    {item["name"]}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={2}
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={false}
-              extraData={selected}
-            ></FlatList>
+                  {t("categories")}
+                </Text>
+              </View>
+            </View>
           </View>
-        </ScrollView>
+          <View style={{ flex: 1 }}>
+            <View style={{ padding: 15 }}>
+              <View
+                style={{
+                  backgroundColor: "#daf0f2",
+                  borderRadius: 5,
+                  // flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center",
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                }}
+              >
+                <Search width={15} height={15} />
+
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  placeholder={t("search")}
+                  style={{
+                    width: "100%",
+                    // borderWidth: 1,
+                    marginLeft: 5,
+                    padding: 0,
+                  }}
+                  // returnKeyType="search"
+                  onChangeText={(x) => searchkategori(x)}
+                  onSubmitEditing={(x) => searchkategori(x)}
+                />
+              </View>
+            </View>
+            <ScrollView
+              nestedScrollEnabled={true}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingHorizontal: 15,
+              }}
+            ></ScrollView>
+          </View>
+        </View>
         <View
           style={{
             flex: 1,
@@ -270,12 +258,12 @@ export default function FilterModal({
             variant="bordered"
             color="secondary"
             onPress={() => ClearAllFilter()}
-            style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+            style={{ width: "30%", borderColor: "#ffff" }}
             text={t("clearAll")}
           ></Button>
           <Button
             onPress={() => UpdateFilter()}
-            style={{ width: Dimensions.get("screen").width / 2 - 20 }}
+            style={{ width: "65%" }}
             text={t("apply")}
           ></Button>
         </View>
