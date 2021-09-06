@@ -30,6 +30,7 @@ import * as mime from "react-native-mime-types";
 import LinearGradient from "react-native-linear-gradient";
 import DeviceInfo from "react-native-device-info";
 
+
 export default function ProfileSettings(props) {
   const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
@@ -114,6 +115,9 @@ export default function ProfileSettings(props) {
     seting.current = setting;
     await setdatas("test");
   };
+
+  // const win = Dimensions.get('window')
+  // const ratio = Dimensions.get('window').width/220
 
   const backAction = () => {
     Alert.alert("", t("areyousure"), [
@@ -416,7 +420,7 @@ export default function ProfileSettings(props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={{}} showsVerticalScrollIndicator={false}>
+    <ScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}>
       <LinearGradient
         start={{ x: 0, y: 0 }} //here we are defined x as start position
         end={{ x: 0, y: -2 }} //here we can define axis but as end position
@@ -488,8 +492,7 @@ export default function ProfileSettings(props) {
         <View
           style={{
             backgroundColor: "#fff",
-            height: '100%'
-            // padding: 15,
+            height: Dimensions.get("window").height,
           }}
         >
           <View
