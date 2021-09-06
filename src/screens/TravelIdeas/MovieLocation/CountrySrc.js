@@ -7,11 +7,22 @@ import {
   Platform,
   TextInput,
   Pressable,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Arrowbackwhite, IdFlag, Check, Search } from "../../../assets/svg";
+import {
+  Arrowbackwhite,
+  IdFlag,
+  Check,
+  Search,
+  Arrowbackios,
+  Filternewbiru,
+} from "../../../assets/svg";
+import { close } from "../../../assets/png";
+import CheckBox from "@react-native-community/checkbox";
 import Modal from "react-native-modal";
-import { Text, Button, FunIcon } from "../../../component";
+import { Text, Button, FunIcon, CustomImage } from "../../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/react-hooks";
@@ -27,12 +38,10 @@ export default function CountrySrc({
   const { t } = useTranslation();
   let [datacountry, setdataCountry] = useState(data);
   let [select_continent, setContinentSelected] = useState("");
-  console.log(select_continent);
   let [keyword, setKeyword] = useState("");
+  let [modalFilter, setmodalFilter] = useState(false);
   let slider = useRef();
-
   let [continent_list, setDatacontinent] = useState([]);
-
   const {
     data: datacontinent,
     loading: loadingcontinent,
@@ -43,7 +52,7 @@ export default function CountrySrc({
       keyword: "",
     },
     onCompleted: () => {
-      continent_list = setDatacontinent(datacontinent.continent_list);
+      setDatacontinent(datacontinent.continent_list);
     },
   });
 
@@ -65,6 +74,25 @@ export default function CountrySrc({
       id: detail.id,
       name: detail.name,
     });
+  };
+
+  const _handleCheck = async (id, index, item) => {
+    let tempe = [...continent_list];
+    let items = { ...item };
+    items.checked = !items.checked;
+    let inde = tempe.findIndex((key) => key.id === id);
+    // console.log(inde);
+    tempe.splice(inde, 1, items);
+    await setDatacontinent(tempe);
+    await cekData();
+  };
+
+  console.log("continent", continent_list);
+
+  // Count data filter checked//
+  const cekData = () => {
+    let data = continent_list.filter((i) => i.checked === true);
+    return data.length;
   };
 
   useEffect(() => {}, []);
@@ -118,12 +146,18 @@ export default function CountrySrc({
             variant="transparent"
             onPress={() => setModelCountry(false)}
           >
-            <Arrowbackwhite width={15} height={15} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
           <Text
             size="label"
             style={{
               color: "white",
+              fontSize: 18,
+              fontFamily: "Lato-Bold",
             }}
           >
             {t("country")}
@@ -142,7 +176,7 @@ export default function CountrySrc({
             style={{
               width: Dimensions.get("screen").width,
               backgroundColor: "white",
-              paddingBottom: 20,
+              // paddingBottom: 20,
               shadowColor: "#d3d3d3",
               shadowOffset: {
                 width: 2,
@@ -159,17 +193,57 @@ export default function CountrySrc({
               style={{
                 alignContent: "center",
                 alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 10,
-                backgroundColor: "white",
-                // width: Dimensions.get("screen").width,
+
+                paddingHorizontal: 10,
+                height: 50,
+                justifyContent: "space-between",
+                flexDirection: "row",
+                width: Dimensions.get("screen").width,
               }}
             >
+              <Button
+                size="small"
+                type="icon"
+                variant="bordered"
+                color="primary"
+                onPress={() => {
+                  setmodalFilter(true);
+                }}
+                style={{
+                  marginRight: 5,
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Filternewbiru width={18} height={18} />
+                {cekData() > 0 ? (
+                  <View
+                    style={{
+                      backgroundColor: "#209fae",
+                      marginLeft: 10,
+                      width: 20,
+                      paddingHorizontal: 5,
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        color: "#ffff",
+                        fontSize: 15,
+                        // alignSelf: "center",
+                      }}
+                    >
+                      {cekData()}
+                    </Text>
+                  </View>
+                ) : null}
+              </Button>
+
               <View
                 style={{
-                  backgroundColor: "#DAF0F2",
+                  backgroundColor: "#F0F0F0",
                   borderRadius: 5,
-                  width: Dimensions.get("window").width - 20,
+                  flex: 1,
                   paddingHorizontal: 10,
                   flexDirection: "row",
                   alignItems: "center",
@@ -202,14 +276,12 @@ export default function CountrySrc({
               </View>
             </View>
 
-            <FlatList
+            {/* <FlatList
               data={continent_list}
               horizontal={true}
               contentContainerStyle={{
                 paddingHorizontal: 10,
-                // paddingBottom: 20,
                 backgroundColor: "white",
-                // width: Dimensions.get("window").width,
               }}
               keyExtractor={(item) => item.id}
               renderItem={({ item, index }) => {
@@ -219,6 +291,7 @@ export default function CountrySrc({
                     style={({ pressed }) => [
                       {
                         padding: 10,
+
                         // backgroundColor: pressed ? "#F6F6F7" : "white",
                         backgroundColor:
                           select_continent == item.id ? "#209FAE" : "#F6F6F6",
@@ -240,7 +313,7 @@ export default function CountrySrc({
                   </Pressable>
                 );
               }}
-            />
+            /> */}
           </View>
           <FlatList
             ref={slider}
@@ -297,7 +370,7 @@ export default function CountrySrc({
                     <Text size="description">{item.name}</Text>
                   </View>
                   <View>
-                    {item.selected && item.selected == true ? (
+                    {item.id == selectedCountry.id ? (
                       <Check width={20} height={15} />
                     ) : null}
                   </View>
@@ -308,6 +381,223 @@ export default function CountrySrc({
           />
         </View>
       </View>
+      {/* modal filter continent */}
+      <Modal
+        onBackdropPress={() => {
+          setmodalFilter(false);
+        }}
+        onRequestClose={() => setmodalFilter(false)}
+        onDismiss={() => setmodalFilter(false)}
+        isVisible={modalFilter}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            height: Dimensions.get("screen").height * 0.6,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+              paddingHorizontal: 15,
+              paddingVertical: 20,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                // fontSize: 20,
+                // fontFamily: "Lato-Bold",
+                color: "#464646",
+              }}
+            >
+              Filter
+            </Text>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                backgroundColor: "with",
+                height: 35,
+                width: 32,
+                top: 0,
+                right: 0,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
+              onPress={() => setmodalFilter(false)}
+            >
+              <CustomImage
+                customStyle={{
+                  height: 13,
+                  width: 13,
+                  alignSelf: "flex-start",
+                }}
+                customImageStyle={{ resizeMode: "contain" }}
+                source={close}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* garis bottom */}
+          <View
+            style={{
+              borderBottomColor: "#D1D1D1",
+              borderBottomWidth: 1,
+            }}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              borderTopWidth: 0.5,
+              borderColor: "#d1d1d1",
+            }}
+          >
+            {/* kiri filter */}
+            <View
+              style={{
+                width: "35%",
+                borderRightWidth: 0.5,
+                borderColor: "#d1d1d1",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  paddingBottom: 5,
+                }}
+              >
+                <View
+                  style={{
+                    borderLeftColor: "#209fae",
+                    borderLeftWidth: 5,
+                    marginLeft: 5,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: "#ffff",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      color: "#464646",
+                    }}
+                  >
+                    {t("continent")}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  padding: 15,
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#daf0f2",
+                    borderRadius: 5,
+                    // flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Search width={15} height={15} />
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    placeholder={t("search")}
+                    style={{
+                      width: "100%",
+                      // borderWidth: 1,
+                      marginLeft: 5,
+                      padding: 0,
+                    }}
+                    // returnKeyType="search"
+                    // onChangeText={(x) => searchkategori(x)}
+                    // onSubmitEditing={(x) => searchkategori(x)}
+                  />
+                </View>
+              </View>
+              <ScrollView
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 15,
+                }}
+              >
+                {continent_list.map((item, index) => (
+                  <TouchableOpacity
+                    // onPress={() => _handleCheck(item["id"], index, item)}
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "white",
+                      // borderColor: "#464646",
+                      width: "49%",
+                      marginRight: 3,
+                      marginBottom: 20,
+
+                      justifyContent: "flex-start",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <CheckBox
+                      onCheckColor="#FFF"
+                      lineWidth={1}
+                      onFillColor="#209FAE"
+                      onTintColor="#209FAE"
+                      boxType={"square"}
+                      style={{
+                        alignSelf: "center",
+                        width: Platform.select({
+                          ios: 30,
+                          android: 35,
+                        }),
+                        transform: Platform.select({
+                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                        }),
+                      }}
+                      onValueChange={() =>
+                        _handleCheck(item["id"], index, item)
+                      }
+                      value={item["checked"]}
+                    />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 0,
+                        color: "#464646",
+
+                        // borderWidth: 5,
+                      }}
+                    >
+                      {item["name"]}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }

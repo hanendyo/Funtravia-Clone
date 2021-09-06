@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useMutation } from "@apollo/react-hooks";
 import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 import { FunIcon } from "../../component";
+import { Arrowbackios } from "../../../assets/svg";
 
 export default function SettingNegara({
   modals,
@@ -134,7 +135,11 @@ export default function SettingNegara({
             variant="transparent"
             onPress={() => setModelSetNegara(false)}
           >
-            <Arrowbackwhite width={20} height={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
           <Text
             size="label"
