@@ -265,101 +265,136 @@ export default function NewGroup(props) {
     <SafeAreaView
       style={{
         flex: 1,
+        padding: 10,
         // borderWidth: 1,
       }}
     >
-      <Loading show={loading} />
-      <Modal
-        onBackdropPress={() => {
-          setmodal(false);
-        }}
-        animationType="fade"
-        onRequestClose={() => setmodal(false)}
-        onDismiss={() => setmodal(false)}
-        visible={modals}
-        transparent={true}
-        // style={{
-        //   justifyContent: "center",
-        //   alignItems: "center",
-        //   alignSelf: "center",
-        //   alignContent: "center",
-        //   backgroundColor: "#000",
-        // }}
-      >
-        <Pressable
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            alignSelf: "center",
-            backgroundColor: "#000",
-            opacity: 0.7,
-          }}
-          onPress={() => setmodal(false)}
-        />
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            alignSelf: "center",
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            top: Dimensions.get("screen").height / 3,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => pickcamera()}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenCamera")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => pickGallery()}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenGallery")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
       <View
         style={{
-          backgroundColor: "white",
-          paddingVertical: 20,
+          flex: 1,
+          borderRadius: 15,
         }}
       >
+        <Loading show={loading} />
+        <Modal
+          onBackdropPress={() => {
+            setmodal(false);
+          }}
+          animationType="fade"
+          onRequestClose={() => setmodal(false)}
+          onDismiss={() => setmodal(false)}
+          visible={modals}
+          transparent={true}
+          // style={{
+          //   justifyContent: "center",
+          //   alignItems: "center",
+          //   alignSelf: "center",
+          //   alignContent: "center",
+          //   backgroundColor: "#000",
+          // }}
+        >
+          <Pressable
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              alignSelf: "center",
+              backgroundColor: "#000",
+              opacity: 0.7,
+            }}
+            onPress={() => setmodal(false)}
+          />
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              alignSelf: "center",
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              top: Dimensions.get("screen").height / 3,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => pickcamera()}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => pickGallery()}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenGallery")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
         <View
           style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: 20,
-            height: 50,
-            zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            paddingVertical: 20,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
           }}
         >
           <View
             style={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: 5,
-              width: "100%",
-              height: 40,
-              flexDirection: "row",
+              alignContent: "center",
               alignItems: "center",
+              justifyContent: "space-between",
+              padding: 20,
+              height: 50,
+              zIndex: 5,
+              flexDirection: "row",
+              width: Dimensions.get("screen").width,
             }}
           >
-            {dataImagepatch != "" ? (
-              <View>
+            <View
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: 5,
+                width: "100%",
+                height: 40,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {dataImagepatch != "" ? (
+                <View>
+                  <Pressable
+                    onPress={() => setmodal(true)}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                      // borderWidth: 1.5,
+                      // borderColor: "#FFF",
+                      backgroundColor: "#D1D1D1",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 1,
+                      marginRight: 10,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: dataImagepatch }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                      }}
+                    />
+                  </Pressable>
+                </View>
+              ) : (
                 <Pressable
                   onPress={() => setmodal(true)}
                   style={{
@@ -375,163 +410,141 @@ export default function NewGroup(props) {
                     marginRight: 10,
                   }}
                 >
-                  <Image
-                    source={{ uri: dataImagepatch }}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 25,
-                    }}
-                  />
+                  <CameraIcon width={20} height={20} />
                 </Pressable>
-              </View>
-            ) : (
-              <Pressable
-                onPress={() => setmodal(true)}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  // borderWidth: 1.5,
-                  // borderColor: "#FFF",
-                  backgroundColor: "#D1D1D1",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 1,
-                  marginRight: 10,
-                }}
-              >
-                <CameraIcon width={20} height={20} />
-              </Pressable>
-            )}
+              )}
 
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={"Type group subject here...."}
-              maxLength={25}
-              style={{
-                width: "75%",
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-                borderBottomWidth: 1,
-                borderBottomColor: "#D1D1D1",
-              }}
-              item={title}
-              onChangeText={(text) => _settitle(text)}
-            />
+              <TextInput
+                underlineColorAndroid="transparent"
+                placeholder={"Type group subject here...."}
+                maxLength={25}
+                style={{
+                  width: "75%",
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#D1D1D1",
+                }}
+                item={title}
+                onChangeText={(text) => _settitle(text)}
+              />
+            </View>
           </View>
         </View>
-      </View>
-      <View
-        style={{
-          marginTop: 20,
-          margin: 20,
-          marginBottom: 5,
-        }}
-      >
-        <Text>Participant : {userSelected.length}</Text>
-      </View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : null}
-        keyboardVerticalOffset={Notch ? 90 : 65}
-        style={{
-          flex: 1,
-
-          // flexWrap: "wrap",
-          // flexDirection: "row",
-          paddingHorizontal: 10,
-          // borderWidth: 1,
-        }}
-      >
-        <FlatList
-          numColumns={5}
-          data={userSelected}
-          renderItem={({ item, index }) => (
-            <Pressable
-              key={index}
-              // onPress={() => selectUser(item)}
-              style={{
-                alignItems: "center",
-                alignContent: "center",
-                // justifyContent: "center",
-                // borderWidth: 1,
-                // width: Dimensions.get("screen").width - 20 / 5,
-              }}
-            >
-              <FunImage
-                Pressable={true}
+        <View
+          style={{
+            paddingTop: 20,
+            padding: 20,
+            paddingBottom: 5,
+            backgroundColor: "#FFFFFF",
+          }}
+        >
+          <Text>Participant : {userSelected.length}</Text>
+        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : null}
+          keyboardVerticalOffset={Notch ? 90 : 65}
+          style={{
+            flex: 1,
+            backgroundColor: "#FFFFFF",
+            // flexWrap: "wrap",
+            // flexDirection: "row",
+            paddingHorizontal: 10,
+            borderBottomLeftRadius: 15,
+            borderBottomRightRadius: 15,
+            // borderWidth: 1,
+          }}
+        >
+          <FlatList
+            numColumns={5}
+            data={userSelected}
+            renderItem={({ item, index }) => (
+              <Pressable
+                key={index}
                 // onPress={() => selectUser(item)}
-                source={
-                  item && item.picture ? { uri: item.picture } : default_image
-                }
                 style={{
-                  resizeMode: "cover",
-                  height: (Dimensions.get("screen").width - 20) / 5 - 20,
-                  width: (Dimensions.get("screen").width - 20) / 5 - 20,
-                  borderRadius: (Dimensions.get("screen").width - 20) / 5,
-                  marginVertical: 10,
-                  marginHorizontal: 10,
+                  alignItems: "center",
+                  alignContent: "center",
+                  // justifyContent: "center",
+                  // borderWidth: 1,
+                  // width: Dimensions.get("screen").width - 20 / 5,
                 }}
-              />
-              <Text>
-                <Truncate text={item.first_name} length={15} />
-                {/* {item.first_name} */}
-              </Text>
-            </Pressable>
-          )}
-        />
+              >
+                <FunImage
+                  Pressable={true}
+                  // onPress={() => selectUser(item)}
+                  source={
+                    item && item.picture ? { uri: item.picture } : default_image
+                  }
+                  style={{
+                    resizeMode: "cover",
+                    height: (Dimensions.get("screen").width - 40) / 5 - 20,
+                    width: (Dimensions.get("screen").width - 40) / 5 - 20,
+                    borderRadius: (Dimensions.get("screen").width - 40) / 5,
+                    marginVertical: 10,
+                    marginHorizontal: 10,
+                  }}
+                />
+                <Text>
+                  <Truncate text={item.first_name} length={15} />
+                  {/* {item.first_name} */}
+                </Text>
+              </Pressable>
+            )}
+          />
 
-        {title != "" ? (
-          !loading ? (
-            <Pressable
-              onPress={() => _createGrup()}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                borderWidth: 1.5,
-                borderColor: "#FFF",
-                backgroundColor: "#209FAE",
-                position: "relative",
-                bottom: 90,
-                marginBottom: -60,
-                right: 15,
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "flex-end",
-                zIndex: 1,
-              }}
-            >
-              <CheckWhite width={20} height={20} />
-            </Pressable>
-          ) : (
-            <Pressable
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 30,
-                borderWidth: 1.5,
-                borderColor: "#FFF",
-                backgroundColor: "#209FAE",
-                position: "relative",
-                bottom: 90,
-                marginBottom: -60,
-                right: 15,
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "flex-end",
-                zIndex: 1,
-              }}
-            >
-              <ActivityIndicator
-                animating={true}
-                color="#FFFFFF"
-                size="large"
-              />
-            </Pressable>
-          )
-        ) : null}
-      </KeyboardAvoidingView>
+          {title != "" ? (
+            !loading ? (
+              <Pressable
+                onPress={() => _createGrup()}
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                  borderWidth: 1.5,
+                  borderColor: "#FFF",
+                  backgroundColor: "#209FAE",
+                  position: "relative",
+                  bottom: 90,
+                  marginBottom: -60,
+                  right: 15,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  zIndex: 1,
+                }}
+              >
+                <CheckWhite width={20} height={20} />
+              </Pressable>
+            ) : (
+              <Pressable
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                  borderWidth: 1.5,
+                  borderColor: "#FFF",
+                  backgroundColor: "#209FAE",
+                  position: "relative",
+                  bottom: 90,
+                  marginBottom: -60,
+                  right: 15,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  zIndex: 1,
+                }}
+              >
+                <ActivityIndicator
+                  animating={true}
+                  color="#FFFFFF"
+                  size="large"
+                />
+              </Pressable>
+            )
+          ) : null}
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }

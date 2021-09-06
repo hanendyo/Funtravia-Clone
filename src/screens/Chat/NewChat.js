@@ -234,90 +234,101 @@ export default function NewChat({ navigation }) {
     <SafeAreaView
       style={{
         flex: 1,
+        padding: 10,
       }}
     >
       <Loading show={loading} />
-
       <View
         style={{
-          backgroundColor: "white",
-          paddingVertical: 10,
+          flex: 1,
+          borderRadius: 15,
+          backgroundColor: "#FFFFFF",
         }}
       >
         <View
           style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: 20,
-            height: 50,
-            zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            paddingVertical: 10,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
           }}
         >
           <View
             style={{
-              backgroundColor: "#f1f1f1",
-              borderRadius: 5,
-              width: "100%",
-              height: 40,
-              flexDirection: "row",
+              alignContent: "center",
               alignItems: "center",
+              justifyContent: "space-between",
+              padding: 20,
+              height: 50,
+              zIndex: 5,
+              flexDirection: "row",
+              width: Dimensions.get("screen").width - 20,
             }}
           >
-            <View>
-              <Image
-                source={search_button}
+            <View
+              style={{
+                backgroundColor: "#f1f1f1",
+                borderRadius: 5,
+                width: "100%",
+                height: 40,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View>
+                <Image
+                  source={search_button}
+                  style={{
+                    resizeMode: "cover",
+                    height: 17,
+                    width: 17,
+                    alignSelf: "center",
+                    zIndex: 100,
+                    marginHorizontal: 10,
+                  }}
+                />
+              </View>
+
+              <TextInput
+                underlineColorAndroid="transparent"
+                placeholder={t("search")}
                 style={{
-                  resizeMode: "cover",
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
+                  width: "100%",
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
                 }}
+                value={search}
+                onChangeText={(text) => _setSearch(text)}
               />
             </View>
-
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={t("search")}
-              style={{
-                width: "100%",
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-              value={search}
-              onChangeText={(text) => _setSearch(text)}
-            />
           </View>
         </View>
+
+        <ScrollView>
+          {loadingwith ? (
+            <View style={{ paddingVertical: 20 }}>
+              <ActivityIndicator animating={true} color="#209FAE" />
+            </View>
+          ) : DataBuddy && DataBuddy.search_travelwith.length > 0 ? (
+            <RenderBuddy databuddy={DataBuddy.search_travelwith} />
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 20,
+              }}
+            >
+              <Text size="label" type="bold">
+                Tidak ada data
+              </Text>
+            </View>
+          )}
+          {/* {DataBuddy && DataBuddy.search_travelwith ? (
+            <RenderBuddy databuddy={DataBuddy.search_travelwith} />
+          ) : null} */}
+        </ScrollView>
       </View>
-      <ScrollView>
-        {loadingwith ? (
-          <View style={{ paddingVertical: 20 }}>
-            <ActivityIndicator animating={true} color="#209FAE" />
-          </View>
-        ) : DataBuddy && DataBuddy.search_travelwith.length > 0 ? (
-          <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-        ) : (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 20,
-            }}
-          >
-            <Text size="label" type="bold">
-              Tidak ada data
-            </Text>
-          </View>
-        )}
-        {/* {DataBuddy && DataBuddy.search_travelwith ? (
-          <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-        ) : null} */}
-      </ScrollView>
     </SafeAreaView>
   );
 }
