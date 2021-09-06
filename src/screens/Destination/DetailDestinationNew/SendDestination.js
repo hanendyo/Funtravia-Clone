@@ -112,8 +112,9 @@ export default function SendDestination({ navigation, route }) {
   }, []);
 
   const setChatHistory = async (data) => {
-    // console.log("dara");
     let history = await AsyncStorage.getItem("history_" + data.room);
+    console.log("history", history);
+
     if (history) {
       let recent = JSON.parse(history);
       if (data) {
@@ -318,7 +319,7 @@ export default function SendDestination({ navigation, route }) {
   };
   const _sendMessageGroup = async (value, index) => {
     try {
-      console.log(index);
+      // console.log(index);
       setloadingsend(true);
       setIndexGroup(index);
       await socket.emit("join", value.group_id);

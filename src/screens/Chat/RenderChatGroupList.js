@@ -46,7 +46,14 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
   };
   if (dataGroupRes && dataGroupRes.length < 1) {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          borderBottomLeftRadius: 15,
+          borderBottomRightRadius: 15,
+          backgroundColor: "#FFFFFF",
+        }}
+      >
         <Kosong width={width} height={width} />
         <Button
           onPress={() => {
@@ -155,6 +162,23 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
       );
     }
 
+    if (data.type == "tag_country") {
+      let data_province = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            {data_province.name}
+          </Text>
+        </View>
+      );
+    }
+
     if (data.type == "att_image") {
       return (
         <View
@@ -179,7 +203,16 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
   };
 
   return (
-    <View style={{}}>
+    <View
+      style={{
+        flex: 1,
+        borderBottomLeftRadius: 15,
+        borderBottomRightRadius: 15,
+        paddingBottom: 10,
+        // paddingHorizontal: 5,
+        backgroundColor: "#FFFFFF",
+      }}
+    >
       <FlatList
         data={dataGroupRes}
         renderItem={({ item }) => (

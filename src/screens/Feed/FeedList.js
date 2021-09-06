@@ -89,7 +89,6 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  console.log("props feed", props);
   // useScrollToTop(ref);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);

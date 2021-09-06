@@ -475,13 +475,13 @@ export default function AddMember(props) {
         >
           <View
             style={{
-              backgroundColor: "#daf0f2",
+              backgroundColor: "#F6F6F6",
               borderRadius: 5,
               width: "100%",
               height: 40,
 
               borderWidth: 0.3,
-              borderColor: "#209fae",
+              borderColor: "#464646",
               // flex: 1,
               flexDirection: "row",
               alignItems: "center",
