@@ -16,7 +16,7 @@ import { CustomImage } from "../../component";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
-import RegionList from "../../graphQL/Query/Countries/RegionList";
+import RegionList_v2 from "../../graphQL/Query/Countries/PopularDestination";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/react-hooks";
 import CheckBox from "@react-native-community/checkbox";
@@ -30,6 +30,7 @@ import {
   FunImageBackground,
   FunImage,
 } from "../../component";
+
 export default function AllDestination(props) {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
@@ -75,30 +76,91 @@ export default function AllDestination(props) {
   let [selected] = useState(new Map());
   let [search, setSearch] = useState({
     type: null,
-    tag: null,
     keyword: null,
   });
 
-  const [GetRegionList, { data, loading, error }] = useLazyQuery(RegionList, {
-    variables: {
-      keyword: search.keyword ? search.keyword : "",
-      type: search.tag ? search.tag : "",
-    },
-  });
+  const [dataResult, setDataResult] = useState([]);
+
+  const [GetRegionList, { data, loading, error }] = useLazyQuery(
+    RegionList_v2,
+    {
+      fetchPolicy: "network-only",
+      variables: {
+        keyword: search.keyword ? search.keyword : "",
+        type: search.type ? search.type : null,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      onCompleted: () => {
+        setDataResult(data);
+      },
+    }
+  );
 
   //Filter Region
   const [filterRegion, setFilterRegion] = useState([]);
+
   const searchRegion = async (input) => {
     let search = new RegExp(input, "i");
     let result = filterRegion.filter((item) => search.test(item.name));
     setRegionName(result);
   };
 
+  //Filter Search City
+  const searchCity = async (input) => {
+    let data = { ...search };
+    data["keyword"] = input;
+    setSearch(data);
+  };
+
   const [regionName, setRegionName] = useState([]);
-  console.log(regionName);
 
   const ClearAllFilter = () => {
+    let temp = [...regionName];
+    let tempData = [];
+    for (var x of temp) {
+      let data = { ...x };
+      data.checked = false;
+      tempData.push(data);
+    }
+    setRegionName(tempData);
+
+    let dataSearch = {
+      type: null,
+      keyword: null,
+    };
+    setSearch(dataSearch);
     setShow(false);
+  };
+
+  //Handle Checkbox
+  const handleCheck = (id, item) => {
+    let temp = [...filterRegion];
+    let selected = { ...item };
+    selected.checked = !selected.checked;
+    let idx = temp.findIndex((key) => key.id === id);
+    temp.splice(idx, 1, selected);
+    setFilterRegion(temp);
+    setRegionName(temp);
+  };
+
+  //Handle Update Filter
+  const UpdateFilter = async () => {
+    let result = [];
+    for (let data of regionName) {
+      if (data.checked === true) {
+        result.push(data.id);
+      }
+    }
+
+    let filterResult = { ...search };
+    filterResult["type"] = result;
+
+    await setSearch(filterResult);
+    await setShow(false);
+    await GetRegionList();
   };
 
   const [
@@ -112,8 +174,6 @@ export default function AllDestination(props) {
     },
   });
 
-  // console.log("filter data : ", dataFillter);
-
   const rupiah = (nilai) => {
     let number_string = typeof nilai == "number" ? nilai.toString() : nilai,
       sisa = number_string.length % 3,
@@ -126,6 +186,10 @@ export default function AllDestination(props) {
     }
 
     return jumlah;
+  };
+
+  const cekData = () => {
+    return search["type"]?.length;
   };
 
   useEffect(() => {
@@ -349,6 +413,27 @@ export default function AllDestination(props) {
           }}
         >
           <Filternewbiru width={18} height={18} />
+          {cekData() > 0 ? (
+            <View
+              style={{
+                backgroundColor: "#209fae",
+                marginLeft: 10,
+                width: 20,
+                paddingHorizontal: 5,
+                borderRadius: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Lato-Regular",
+                  color: "#ffff",
+                  fontSize: 15,
+                }}
+              >
+                {cekData()}
+              </Text>
+            </View>
+          ) : null}
         </Button>
         <View
           style={{
@@ -374,8 +459,8 @@ export default function AllDestination(props) {
               padding: 0,
             }}
             returnKeyType="search"
-            onChangeText={(x) => searchRegion(x)}
-            onSubmitEditing={(x) => searchRegion(x)}
+            onChangeText={(x) => searchCity(x)}
+            onSubmitEditing={(x) => searchCity(x)}
           />
         </View>
       </View>
@@ -432,30 +517,6 @@ export default function AllDestination(props) {
                 source={close}
               />
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={{
-                position: "absolute",
-                backgroundColor: "with",
-                height: 20,
-                width: 32,
-                top: 0,
-                right: 0,
-                justifyContent: "flex-end",
-                alignContent: "flex-end",
-                alignItems: "flex-start",
-              }}
-              onPress={() => setShow(false)}
-            >
-              <CustomImage
-                customStyle={{
-                  height: 13,
-                  width: 13,
-                  alignSelf: "flex-start",
-                }}
-                customImageStyle={{ resizeMode: "contain" }}
-                source={close}
-              />
-            </TouchableOpacity> */}
           </View>
           <View
             style={{
@@ -542,14 +603,13 @@ export default function AllDestination(props) {
                   paddingHorizontal: 15,
                 }}
               >
-                {regionName.map((item, index) => (
+                {regionName.map((item) => (
                   <TouchableOpacity
-                    key={index}
-                    // onPress={() => _handleCheck(item["id"], index, item)}
+                    key={item.id}
+                    onPress={() => handleCheck(item["id"], item)}
                     style={{
                       flexDirection: "row",
                       backgroundColor: "white",
-                      // borderColor: "#464646",
                       width: "49%",
                       marginRight: 3,
                       marginBottom: 20,
@@ -576,8 +636,11 @@ export default function AllDestination(props) {
                         }),
                       }}
                       // onValueChange={() =>
-                      //   _handleCheck(item["id"], index, item)
+                      //   Platform.OS == "ios"
+                      //     ? null
+                      //     : handleCheck(item["id"], item)
                       // }
+                      onValueChange={() => handleCheck(item["id"], item)}
                       value={item["checked"]}
                     />
 
@@ -645,11 +708,7 @@ export default function AllDestination(props) {
           paddingStart: 10,
         }}
         horizontal={false}
-        data={
-          data && data.populer_city_destination.length
-            ? data.populer_city_destination
-            : null
-        }
+        data={dataResult ? dataResult.populer_city_destination_v2 : null}
         renderItem={({ item, index }) => <RenderList item={item} />}
         showsHorizontalScrollIndicator={false}
         extraData={selected}
