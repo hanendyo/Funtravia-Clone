@@ -151,179 +151,124 @@ export default function NewGroup({ navigation }) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "white",
+        padding: 10,
+        // backgroundColor: "white",
         // borderWidth: 1,
       }}
     >
       {/* <Loading show={loading} /> */}
-
       <View
         style={{
-          backgroundColor: "white",
-          paddingVertical: 10,
+          flex: 1,
+          // margin: 10,
+          borderRadius: 15,
         }}
       >
         <View
           style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: 20,
-            height: 50,
-            zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            paddingVertical: 10,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
           }}
         >
           <View
             style={{
-              backgroundColor: "#DAF0F2",
-              borderRadius: 5,
-              width: "100%",
-              height: 40,
-              flexDirection: "row",
+              alignContent: "center",
               alignItems: "center",
+              justifyContent: "space-between",
+              padding: 20,
+              height: 50,
+              zIndex: 5,
+              flexDirection: "row",
+              width: Dimensions.get("screen").width - 20,
             }}
           >
-            <View>
-              <CustomImage
-                source={search_button}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
-                }}
-              />
-            </View>
-
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={t("search")}
+            <View
               style={{
+                backgroundColor: "#F6F6F6",
+                borderRadius: 5,
                 width: "100%",
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-              }}
-              value={search}
-              onChangeText={(text) => _setSearch(text)}
-              onSubmitEditing={(text) => _setSearch(text)}
-            />
-          </View>
-        </View>
-        {userSelected && userSelected.length > 0 ? (
-          <FlatList
-            data={userSelected}
-            keyExtractor={(item) => "SELECTED_" + item.id}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              marginVertical: 10,
-              paddingHorizontal: 20,
-            }}
-            renderItem={({ item, index }) => (
-              <Pressable onPress={() => selectUser(item)}>
-                <FunImageBackground
-                  size="xs"
-                  source={
-                    item && item.picture ? { uri: item.picture } : default_image
-                  }
-                  style={{
-                    resizeMode: "cover",
-                    height: 55,
-                    width: 55,
-                    borderRadius: 30,
-                    marginRight: 20,
-                  }}
-                  imageStyle={{
-                    height: 55,
-                    width: 55,
-                    borderRadius: 30,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: 10,
-                      backgroundColor: "#D1D1D1",
-                      position: "absolute",
-                      bottom: 0,
-                      right: -5,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Xgray width={10} height={10} />
-                  </View>
-                </FunImageBackground>
-              </Pressable>
-            )}
-          />
-        ) : null}
-      </View>
-
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : null}
-        keyboardVerticalOffset={Notch ? 90 : 65}
-        style={{
-          backgroundColor: "#fff",
-          flex: 1,
-        }}
-      >
-        <FlatList
-          style={{}}
-          data={DataBuddy}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{}}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              onPress={() => selectUser(item)}
-              style={{
+                height: 40,
+                paddingHorizontal: 5,
                 flexDirection: "row",
-                width: Dimensions.get("screen").width,
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                justifyContent: "space-between",
                 alignItems: "center",
-                alignContent: "center",
               }}
             >
-              <View
+              <View>
+                <CustomImage
+                  source={search_button}
+                  customImageStyle={{ resizeMode: "cover" }}
+                  customStyle={{
+                    height: 17,
+                    width: 17,
+                    alignSelf: "center",
+                    zIndex: 100,
+                    marginHorizontal: 5,
+                  }}
+                />
+              </View>
+
+              <TextInput
+                underlineColorAndroid="transparent"
+                placeholder={t("search")}
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center",
+                  width: "100%",
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
                 }}
-              >
-                <FunImageBackground
-                  size="xs"
-                  source={
-                    item && item.picture ? { uri: item.picture } : default_image
+                value={search}
+                onChangeText={(text) => _setSearch(text)}
+                onSubmitEditing={(text) => _setSearch(text)}
+              />
+            </View>
+          </View>
+          {userSelected && userSelected.length > 0 ? (
+            <FlatList
+              data={userSelected}
+              keyExtractor={(item) => "SELECTED_" + item.id}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                marginVertical: 10,
+                paddingHorizontal: 20,
+              }}
+              renderItem={({ item, index }) => (
+                <Pressable
+                  onPress={() => selectUser(item)}
+                  style={
+                    {
+                      // borderRadius: 15,
+                      // margin: 10,
+                    }
                   }
-                  style={{
-                    resizeMode: "cover",
-                    height: 50,
-                    width: 50,
-                    borderRadius: 25,
-                  }}
-                  imageStyle={{
-                    height: 50,
-                    width: 50,
-                    borderRadius: 25,
-                  }}
                 >
-                  {userSelected.findIndex((k) => k["id"] === item.id) !== -1 ? (
+                  <FunImageBackground
+                    size="xs"
+                    source={
+                      item && item.picture
+                        ? { uri: item.picture }
+                        : default_image
+                    }
+                    style={{
+                      resizeMode: "cover",
+                      height: 55,
+                      width: 55,
+                      borderRadius: 30,
+                      marginRight: 20,
+                    }}
+                    imageStyle={{
+                      height: 55,
+                      width: 55,
+                      borderRadius: 30,
+                    }}
+                  >
                     <View
                       style={{
                         width: 20,
                         height: 20,
                         borderRadius: 10,
-                        borderWidth: 1.5,
-                        borderColor: "#FFF",
-                        backgroundColor: "#209fae",
+                        backgroundColor: "#D1D1D1",
                         position: "absolute",
                         bottom: 0,
                         right: -5,
@@ -331,62 +276,143 @@ export default function NewGroup({ navigation }) {
                         alignItems: "center",
                       }}
                     >
-                      <CheckWhite width={10} height={10} />
+                      <Xgray width={10} height={10} />
                     </View>
-                  ) : null}
-                </FunImageBackground>
-                <View>
-                  <Text
-                    size="label"
-                    type="bold"
-                    style={{
-                      marginLeft: 20,
-                    }}
-                    numberOfLines={1}
-                  >
-                    {item.first_name} {item.last_name ? item.last_name : ""}
-                  </Text>
+                  </FunImageBackground>
+                </Pressable>
+              )}
+            />
+          ) : null}
+        </View>
 
-                  <Text
-                    size="small"
-                    type="regular"
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : null}
+          keyboardVerticalOffset={Notch ? 90 : 65}
+          style={{
+            backgroundColor: "#fff",
+            flex: 1,
+            borderBottomLeftRadius: 15,
+            borderBottomRightRadius: 15,
+          }}
+        >
+          <FlatList
+            style={{}}
+            data={DataBuddy}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{}}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() => selectUser(item)}
+                style={{
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                  }}
+                >
+                  <FunImageBackground
+                    size="xs"
+                    source={
+                      item && item.picture
+                        ? { uri: item.picture }
+                        : default_image
+                    }
                     style={{
-                      marginLeft: 20,
+                      resizeMode: "cover",
+                      height: 50,
+                      width: 50,
+                      borderRadius: 25,
+                    }}
+                    imageStyle={{
+                      height: 50,
+                      width: 50,
+                      borderRadius: 25,
                     }}
                   >
-                    @{item.username}
-                  </Text>
+                    {userSelected.findIndex((k) => k["id"] === item.id) !==
+                    -1 ? (
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 10,
+                          borderWidth: 1.5,
+                          borderColor: "#FFF",
+                          backgroundColor: "#209fae",
+                          position: "absolute",
+                          bottom: 0,
+                          right: -5,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <CheckWhite width={10} height={10} />
+                      </View>
+                    ) : null}
+                  </FunImageBackground>
+                  <View>
+                    <Text
+                      size="label"
+                      type="bold"
+                      style={{
+                        marginLeft: 20,
+                      }}
+                      numberOfLines={1}
+                    >
+                      {item.first_name} {item.last_name ? item.last_name : ""}
+                    </Text>
+
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        marginLeft: 20,
+                      }}
+                    >
+                      @{item.username}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+              </TouchableOpacity>
+            )}
+          />
 
-        {/* tombol */}
-        {userSelected.length > 0 ? (
-          <Pressable
-            onPress={() => next_createGrup(userSelected)}
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              borderWidth: 1.5,
-              borderColor: "#FFF",
-              backgroundColor: "#209FAE",
-              position: "relative",
-              bottom: 90,
-              marginBottom: -60,
-              right: 15,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "flex-end",
-              zIndex: 1,
-            }}
-          >
-            <ArrowRight width={20} height={20} />
-          </Pressable>
-        ) : null}
-      </KeyboardAvoidingView>
+          {/* tombol */}
+          {userSelected.length > 0 ? (
+            <Pressable
+              onPress={() => next_createGrup(userSelected)}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                borderWidth: 1.5,
+                borderColor: "#FFF",
+                backgroundColor: "#209FAE",
+                position: "relative",
+                bottom: 90,
+                marginBottom: -60,
+                right: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "flex-end",
+                zIndex: 1,
+              }}
+            >
+              <ArrowRight width={20} height={20} />
+            </Pressable>
+          ) : null}
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }

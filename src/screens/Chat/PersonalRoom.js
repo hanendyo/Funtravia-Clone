@@ -15,6 +15,8 @@ import {
   Pressable,
   Switch,
   BackHandler,
+  ScrollView,
+  // FlatList,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
@@ -28,6 +30,7 @@ import {
   Emoticon,
   CameraChat,
   Keyboard as IconKeyboard,
+  Xgray,
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -93,6 +96,7 @@ export default function Room({ navigation, route }) {
   // console.log(token);
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
+  console.log(message.reverse(), "msg");
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -162,7 +166,7 @@ export default function Room({ navigation, route }) {
     const cek_koneksi = NetInfo.addEventListener((state) => {
       if (state.isConnected) {
         SetConnection(true);
-        initialHistory();
+        setConnectionMessage();
       } else {
         SetConnection(false);
       }
@@ -245,8 +249,6 @@ export default function Room({ navigation, route }) {
     }).then((image) => {
       // console.log(image);
       let id = create_UUID();
-      _uploadimage(image, id);
-      // setdataImage(image.data);
       let dateTime = new Date();
       image = JSON.stringify(image);
       let chatData = {
@@ -260,9 +262,13 @@ export default function Room({ navigation, route }) {
         is_send: false,
       };
       setChatHistory(chatData);
-      // setdataImagepatch(image.path);
+      setTimeout(function() {
+        _uploadimage(image, id);
+        if (flatListRef !== null && flatListRef.current) {
+          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+        }
+      }, 1000);
       setmodalCamera(false);
-      // upload(image.data);
     });
   };
 
@@ -274,11 +280,10 @@ export default function Room({ navigation, route }) {
       // cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
+      console.log(image);
       let id = create_UUID();
-      _uploadimage(image, id);
-      // setdataImage(image.data);
       let dateTime = new Date();
-
+      image = JSON.stringify(image);
       let chatData = {
         id: id,
         room: room,
@@ -290,15 +295,19 @@ export default function Room({ navigation, route }) {
         is_send: false,
       };
       setChatHistory(chatData);
-      // setdataImage(image.data);
-      // setdataImagepatch(image.path);
+      setTimeout(function() {
+        _uploadimage(image, id);
+        if (flatListRef !== null && flatListRef.current) {
+          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+        }
+      }, 1000);
       setmodalCamera(false);
-      // upload(image.data);
     });
   };
 
   const _uploadimage = async (image, id) => {
     try {
+      image = JSON.parse(image);
       var today = new Date();
       var dd = String(today.getDate()).padStart(2, "0");
       var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -317,7 +326,7 @@ export default function Room({ navigation, route }) {
             ? image.path
             : image.path.replace("file://", ""),
       });
-      // console.log("formData", formData);
+      console.log("formData", formData);
       let response = await fetch(
         `${RESTFULL_API}room/personal/upload_image_chat`,
         {
@@ -346,7 +355,7 @@ export default function Room({ navigation, route }) {
           is_send: true,
         };
         // if (socket.connected) {
-        await socket.emit("message", chatData);
+        socket.emit("message", chatData);
         // } else {
         //   sendOffline(chatData);
         // }
@@ -355,18 +364,23 @@ export default function Room({ navigation, route }) {
           title: "Success upload image",
           position: "bottom",
         });
+        setTimeout(function() {
+          if (flatListRef !== null && flatListRef.current) {
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          }
+        }, 2000);
       } else {
         //   setloading(false);
         throw new Error(responseJson.message);
       }
     } catch (error) {
-      // setloading(false);
-      RNToasty.Show({
-        duration: 1,
-        title: "error : someting wrong!",
-        position: "bottom",
-      });
-      console.log(error);
+      setChatHistory(chatData);
+      // RNToasty.Show({
+      //   duration: 1,
+      //   title: "error : someting wrong!",
+      //   position: "bottom",
+      // });
+      // console.log(error);
     }
   };
 
@@ -461,17 +475,12 @@ export default function Room({ navigation, route }) {
     socket.emit("join", room);
     socket.on("connect", () => {
       console.log("socket_connect");
-      // socket.emitBuffered();
-      // socket.sendBuffer = [];
     });
     navigation.setOptions(navigationOptions);
     if (init) {
       getUserToken();
-      // setChatHistory();
-      // setConnection();
     }
     socket.on("new_chat_personal", (data) => {
-      console.log("c");
       setChatHistory(data);
     });
 
@@ -480,7 +489,7 @@ export default function Room({ navigation, route }) {
 
   useEffect(() => {}, []);
 
-  const setConnection = () => {
+  const setConnectionMessage = () => {
     socket.emit("join", room);
   };
 
@@ -490,38 +499,40 @@ export default function Room({ navigation, route }) {
     let token = await AsyncStorage.getItem("access_token");
     if (token) {
       await setToken(token);
-      // await initialHistory(token);
+      await initialHistory(token);
     }
   };
 
-  const setChatHistory = async (data) => {
-    // console.log("dara");
+  const setChatHistoryRecive = async (data) => {
+    console.log("r", data);
     let history = await AsyncStorage.getItem("history_" + room);
-    if (history) {
-      let recent = JSON.parse(history);
-      if (data) {
-        let idx = recent.findIndex((x) => x.id === data.id);
-        if (idx < 0) {
-          recent.push(data);
-        } else {
-          recent[idx] = data;
-        }
-        await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
-        setMessage(recent);
+    let recent = JSON.parse(history);
+    recent.push(data);
+    setMessage((prev) => {
+      return prev.concat(data);
+    });
+  };
+
+  const setChatHistory = async (data) => {
+    let history = await AsyncStorage.getItem("history_" + room);
+    let recent = JSON.parse(history);
+    if (recent) {
+      let findInd = recent.findIndex((x) => x.id === data.id);
+      if (findInd >= 0) {
+        recent[findInd] = data;
       } else {
-        setMessage(recent);
+        recent.unshift(data);
       }
+      setMessage(recent);
+      await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
     } else {
-      if (data) {
-        await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
-        setMessage([data]);
-      } else {
-        await initialHistory(token);
-      }
+      await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
+      setMessage([data]);
     }
   };
 
   const initialHistory = async (access_token) => {
+    console.log("access_token", access_token);
     let response = await fetch(
       `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
       {
@@ -535,8 +546,8 @@ export default function Room({ navigation, route }) {
     );
     let responseJson = await response.json();
     let history = await AsyncStorage.getItem("history_" + room);
-    let init_local = JSON.parse(history);
-    let init_data = responseJson.data;
+    let init_local = await JSON.parse(history);
+    let init_data = await responseJson.data;
     let filteredList = [];
     if (init_local && init_data) {
       let merge = [...init_local, ...init_data];
@@ -554,21 +565,22 @@ export default function Room({ navigation, route }) {
         JSON.stringify(filteredList)
       );
       let new_array = [];
-      let split = filteredList;
-      while (split.length) {
-        new_array.unshift(split.splice(0, 20));
-      }
-      // console.log(new_array);
-      await setMessage(new_array[0]);
+      // let split = filteredList;
+      // while (split.length) {
+      //   if (split.length > 30) {
+      //     new_array.unshift(split.splice(0, 20));
+      //   } else {
+      //     new_array.unshift(split.splice(0, split.length));
+      //   }
+      // }
+
+      setMessage(filteredList);
       setBankMessage(new_array);
     }
   };
-  console.log(message);
   const handleOnStartReached = () => {
     console.log("infinty");
     if (bank_message.length > 0 && indexmessage < bank_message.length - 1) {
-      let merge_message = [...bank_message[indexmessage + 1], ...message];
-      setMessage(merge_message);
       // setMessage((m) => {
       //   return bank_message[indexmessage + 1].concat();
       // });
@@ -593,8 +605,6 @@ export default function Room({ navigation, route }) {
   }
 
   const submitChatMessage = async () => {
-    // console.log(a);
-    // console.log("create_UUID", create_UUID());
     let uuid = create_UUID();
     if (button) {
       SetkeyboardOpenState(false);
@@ -611,7 +621,7 @@ export default function Room({ navigation, route }) {
           time: dateTime,
         };
 
-        if (socket.connected) {
+        if (connected) {
           await socket.emit("message", chatData);
         } else {
           sendOffline(chatData);
@@ -619,9 +629,9 @@ export default function Room({ navigation, route }) {
         await setChat("");
         await setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
-            flatListRef.current.scrollToEnd({ animated: true });
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
           }
-        }, 1000);
+        }, 2000);
         await setButton(true);
       } else {
         // toastRef.current?.show(t("messagesEmpty"), {
@@ -684,12 +694,15 @@ export default function Room({ navigation, route }) {
     let timeChat = new Date(item.time).toTimeString();
 
     let date = null;
-    if (index == 0) {
-      date = timeStateChat;
-    }
-    if (
-      message[index - 1] &&
-      new Date(message[index - 1].time).toLocaleDateString() !== timeStateChat
+    if (index == message.length - 1) {
+      if (timeStateChat === timeState) {
+        date = t("toDay");
+      } else {
+        date = timeStateChat;
+      }
+    } else if (
+      message[index] &&
+      new Date(message[index + 1].time).toLocaleDateString() !== timeStateChat
     ) {
       if (timeStateChat === timeState) {
         date = t("toDay");
@@ -698,7 +711,7 @@ export default function Room({ navigation, route }) {
       }
     }
 
-    if (message[index - 1] && message[index - 1].user_id == item.user_id) {
+    if (message[index + 1] && message[index + 1].user_id == item.user_id) {
       if (date) {
         tmpRChat = true;
       } else {
@@ -725,7 +738,6 @@ export default function Room({ navigation, route }) {
             </Text>
           </View>
         ) : null}
-
         <View
           key={`chat_${index}`}
           style={[
@@ -793,17 +805,17 @@ export default function Room({ navigation, route }) {
         {message && message.length > 0 ? (
           <FlatList
             ref={flatListRef}
-            data={message}
+            data={message.reverse()}
             // inverted={true}
             // onContentSizeChange={() => {
             //   // if (flatListRef !== null && flatListRef.current) {
             //   //   flatListRef.current.scrollToEnd({ animated: false });
             //   // }
             // }}
-            initialScrollIndex={message.length - 1}
+            // initialScrollIndex={message.length - 1}
             renderItem={RenderChat}
             keyExtractor={(item, index) => `render_${index}`}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               paddingTop: 5,
@@ -813,8 +825,9 @@ export default function Room({ navigation, route }) {
               // borderWidth: 1,
             }}
             enableAutoscrollToTop={false}
-            onStartReached={handleOnStartReached}
-            onStartReachedThreshold={1} // optional
+            // onStartReached={handleOnStartReached}
+            // onStartReachedThreshold={1}
+            inverted
           />
         ) : null}
       </View>
@@ -1227,31 +1240,80 @@ export default function Room({ navigation, route }) {
       >
         <View
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
           }}
         >
-          <TouchableOpacity
+          <View
             style={{
-              paddingVertical: 10,
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
             }}
-            onPress={() => pickcamera()}
           >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenCamera")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => pickGallery()}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenGallery")}
-            </Text>
-          </TouchableOpacity>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                // height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setmodalCamera(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => pickcamera()}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomRightRadius: 5,
+                borderBottomLeftRadius: 5,
+              }}
+              onPress={() => pickGallery()}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("OpenGallery")}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   View,
   TextInput,
@@ -134,9 +134,12 @@ export default function Message({ navigation, route }) {
     return () => socket.disconnect();
   }, []);
 
-  const _searchAktifFunction = () => {
-    setSearchAktif(true);
+  const _searchAktifFunction = async () => {
+    await setSearchAktif(true);
     myStateRef.current = true;
+    if (searchAktif) {
+      srcinpt.current.focus();
+    }
     navigation.setOptions({
       headerTitle: t("search"),
       headerLeftContainerStyle: {
@@ -355,10 +358,11 @@ export default function Message({ navigation, route }) {
       );
     }
   };
-
+  const srcinpt = useRef();
   return (
     <View style={{ flex: 1 }}>
       {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
+      {/* <View style={{ flex: 1, borderRadius: 15 }}> */}
       <Modal
         useNativeDriver={true}
         visible={modalLogin}
@@ -455,7 +459,7 @@ export default function Message({ navigation, route }) {
                 style={{ marginBottom: 5 }}
                 onPress={() => {
                   setModalLogin(false);
-                  props.navigation.push("AuthStack", {
+                  navigation.push("AuthStack", {
                     screen: "LoginScreen",
                   });
                 }}
@@ -498,7 +502,7 @@ export default function Message({ navigation, route }) {
                   style={{ color: "#209FAE" }}
                   onPress={() => {
                     setModalLogin(false);
-                    props.navigation.push("AuthStack", {
+                    navigation.push("AuthStack", {
                       screen: "RegisterScreen",
                     });
                   }}
@@ -516,10 +520,17 @@ export default function Message({ navigation, route }) {
         message={messages}
       />
       {searchAktif ? (
-        <View style={{ backgroundColor: "#FFFFFF" }}>
+        <View
+          style={{
+            backgroundColor: "#FFFFFF",
+            // borderTopLeftRadius: 15,
+            // borderTopRightRadius: 15,
+          }}
+        >
           <View
             style={{
-              margin: 15,
+              marginHorizontal: 15,
+              marginTop: 15,
               backgroundColor: "#f6f6f6",
               flexDirection: "row",
               borderRadius: 3,
@@ -533,6 +544,7 @@ export default function Message({ navigation, route }) {
               style={{ marginHorizontal: 10 }}
             />
             <TextInput
+              ref={srcinpt}
               onChangeText={(e) => _searchHandle(e)}
               value={searchtext}
               placeholder="Search"
@@ -563,6 +575,8 @@ export default function Message({ navigation, route }) {
                 {...props}
                 style={{
                   backgroundColor: "white",
+                  // borderTopLeftRadius: searchAktif ? 0 : 15,
+                  // borderTopRightRadius: searchAktif ? 0 : 15,
                 }}
                 renderLabel={renderLabel}
                 indicatorStyle={styles.indicator}
@@ -571,6 +585,7 @@ export default function Message({ navigation, route }) {
           }}
         />
       )}
+      {/* </View> */}
     </View>
   );
 }

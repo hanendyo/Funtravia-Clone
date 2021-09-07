@@ -50,15 +50,14 @@ export default function ChatTypelayout({
   const Loadingkirim = () => {
     setTimeout(() => {
       setloading(false);
-    }, 20000);
+    }, 10000);
     if (loading) {
       return <ActivityIndicator size="large" color="#209fae" />;
     } else {
       return (
         <Pressable
           onPress={() => {
-            let data = JSON.parse(item.text);
-            _uploadimage(data, item.id);
+            _uploadimage(item.text, item.id);
             setloading(true);
           }}
           style={{
@@ -89,9 +88,6 @@ export default function ChatTypelayout({
   // useEffect(() => {
   if (item.is_send == false && item.type !== "att_image") {
     if (socket.connected) {
-      // console.log("aa");
-      let dateTime = new Date();
-      item = Object.assign(item, { is_send: true, time: dateTime });
       socket.emit("message", item);
     }
   }
@@ -743,9 +739,12 @@ export default function ChatTypelayout({
         }}
         style={{
           borderWidth: 1,
-          borderColor: "#DAF0F2",
+          borderColor: "#209fae",
+          justifyContent: "center",
+          alignContent: "center",
           borderRadius: 10,
-          padding: 10,
+          width: moderateScale(201, 2),
+          height: moderateScale(171, 2),
           // minHeight: 330,
           // padding: 10,
           marginVertical: 5,
@@ -763,16 +762,15 @@ export default function ChatTypelayout({
         }}
       >
         {item.is_send ? (
-          <ImageScaling
-            uri={item.text}
+          <FunImage
+            source={{ uri: item.text }}
             style={{
               width: moderateScale(200, 2),
-              // maxHeight: 400,
+              height: moderateScale(170, 2),
               // height: 200,
               alignSelf: "center",
               // marginVertical: 10,
-              // borderRadius: 10,
-              borderWidth: 1,
+              borderRadius: 10,
             }}
           />
         ) : (
@@ -780,8 +778,9 @@ export default function ChatTypelayout({
             source={{ uri: JSON.parse(item.text).path }}
             style={{
               width: moderateScale(200, 2),
-              height: moderateScale(200, 2),
+              height: moderateScale(170, 2),
               // maxHeight: 400,
+              borderRadius: 10,
               alignSelf: "center",
               flexDirection: "row",
               // marginVertical: 10,
@@ -789,6 +788,9 @@ export default function ChatTypelayout({
               justifyContent: "center",
               alignItems: "center",
               alignContent: "center",
+            }}
+            imageStyle={{
+              borderRadius: 10,
             }}
             blurRadius={3}
           >
