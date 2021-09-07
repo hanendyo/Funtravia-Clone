@@ -33,9 +33,8 @@ import DiscoverCard from "./DiscoverCard";
 import FunFeed from "./FunFeed";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 import User_Post from "../../graphQL/Query/Profile/post";
-import { NotificationBlue } from "../../assets/svg";
+import { NotificationBlue, ArrowRightHome, SearchHome } from "../../assets/svg";
 import { RNToasty } from "react-native-toasty";
-// import messaging from "@react-native-firebase/messaging";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
@@ -45,6 +44,8 @@ export default function Home(props) {
   let [data, setdata] = useState(null);
   let [shareId, setShareId] = useState(props.route.params.shareid);
   let [loadingModal, setLoadingModal] = useState(false);
+
+  console.log("data :", data);
   // console.log(token);
   const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
     Account,
@@ -200,17 +201,13 @@ export default function Home(props) {
         <View style={{ flex: 1 }}>
           <View
             style={{
-              // borderWidth: 1,
               flexDirection: "row",
-              // alignContent: "flex-end",
-              // alignItems: "flex-end",
               padding: 0,
             }}
           >
             <View
               style={{
                 width: 5,
-                // height: 15,
                 marginRight: 5,
                 backgroundColor: "#209FAE",
                 borderRadius: 20,
@@ -277,7 +274,7 @@ export default function Home(props) {
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
+        stickyHeaderIndices={[0]}
         onScroll={Animated.event(
           [
             {
@@ -294,48 +291,180 @@ export default function Home(props) {
       >
         <View
           style={{
-            backgroundColor: "#daf0f2",
+            backgroundColor: "rgba(231, 247, 247, 255)",
           }}
         >
-          <ImageBackground
-            source={sampul2}
+          <Animated.View
+            style={{
+              opacity: searchBG,
+              backgroundColor: "#FFF",
+              width: width,
+              height: 68,
+              position: "absolute",
+              top: 0,
+
+              shadowColor: "#464646",
+              shadowOffset: { width: 1, height: 1 },
+              shadowOpacity: 0.5,
+              elevation: 3,
+            }}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 20,
+              paddingTop: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => searchPage()}
+              style={{
+                alignItems: "center",
+                justifyContent: "flex-start",
+                height: 45,
+                flexDirection: "row",
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                borderWidth: 1.5,
+                borderColor: "#FFF",
+                alignSelf: "center",
+                paddingHorizontal: 20,
+                marginVertical: 7,
+                width: Dimensions.get("window").width - 80,
+                // shadowColor: "#464646",
+                // shadowOffset: { width: 0.5, height: 1 },
+                // shadowOpacity: 0.5,
+                // shadowRadius: 2,
+                // elevation: 4,
+              }}
+            >
+              <View
+                style={{
+                  marginRight: 10,
+                }}
+              >
+                {/* <CustomImage
+                  source={searchHome}
+                  customImageStyle={{ resizeMode: "cover" }}
+                  customStyle={{
+                    height: 15,
+                    width: 15,
+                    alignSelf: "center",
+                    zIndex: 100,
+                  }}
+                /> */}
+                <SearchHome height={15} width={15} />
+              </View>
+              <View>
+                <Text
+                  type="bold"
+                  style={{
+                    color: "#A9A9A9",
+                  }}
+                >
+                  {t("searchHome")}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <Pressable
+              onPress={() => props.navigation.navigate("Notification")}
+              style={{ paddingLeft: 10 }}
+            >
+              <NotificationBlue
+                height={30}
+                width={30}
+                color={"#1F99A7"}
+                fill={"#1F99A7"}
+                style={{
+                  shadowColor: "#464646",
+                  shadowOffset: {
+                    width: 0.5,
+                    height: 0.5,
+                  },
+                  shadowRadius: 0.2,
+                  shadowOpacity: 0.2,
+                }}
+              />
+              {datanotif && datanotif.count_notif.count > 0 ? (
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -3,
+                    top: 4,
+                    backgroundColor: "#D75995",
+                    minWidth: 15,
+                    borderWidth: 1,
+                    borderColor: "white",
+                    // height: 14,
+                    borderRadius: 50,
+                    // alignSelf: "center",
+                  }}
+                >
+                  {datanotif.count_notif.count > 100 ? (
+                    <Text
+                      type="bold"
+                      style={{
+                        fontSize: 10,
+                        color: "white",
+                        alignSelf: "center",
+                        paddingHorizontal: 2,
+                      }}
+                    >
+                      99+
+                    </Text>
+                  ) : (
+                    <Text
+                      type="bold"
+                      style={{
+                        fontSize: 10,
+                        color: "white",
+                        alignSelf: "center",
+                        paddingHorizontal: 2,
+                      }}
+                    >
+                      {datanotif.count_notif.count}
+                    </Text>
+                  )}
+                </View>
+              ) : null}
+            </Pressable>
+          </View>
+        </View>
+
+        <View
+          style={{
+            marginBottom: 25,
+          }}
+        >
+          <View
             style={{
               width: width,
-              height: ukuran + 50,
+              height: ukuran + 25,
               alignSelf: "flex-start",
               justifyContent: "flex-end",
               alignContent: "center",
               alignItems: "center",
-              // marginBottom: 2,
-              // borderWidth: 1,
-              backgroundColor: "#daf0f2",
+              backgroundColor: "rgba(231, 247, 247, 255)",
+              marginBottom: 10,
             }}
           >
             <View
               style={{
                 position: "absolute",
-                bottom: -10,
-                marginBottom: 5,
+                bottom: -15,
+                // marginBottom: 5,
               }}
             >
               <View
                 style={{
                   width: Dimensions.get("window").width - 40,
-                  height: ukuran + 10,
-                  borderRadius: 10,
-                  borderColor: "#209FAE",
-                  borderWidth: 1.5,
-                  backgroundColor: "#FFFFFF",
+                  height: ukuran - 27,
                   alignContent: "center",
                   alignItems: "center",
                   alignSelf: "center",
                   justifyContent: "center",
-                  shadowColor: "#6F7273",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 1,
-                  shadowRadius: 1,
-                  elevation: 3,
-                  padding: 10,
+                  paddingVertical: 10,
                   marginBottom: 10,
                 }}
               >
@@ -343,8 +472,7 @@ export default function Home(props) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    justifyContent: "center",
-                    flexDirection: "row",
+                    justifyContent: "flex-start",
                     flexWrap: "wrap",
                   }}
                 >
@@ -361,26 +489,15 @@ export default function Home(props) {
                         style={{
                           elevation: 2,
                           shadowColor: "#464646",
-                          backgroundColor: "#FFFFFF",
-                          shadowOffset: {
-                            width: 0,
-                            height: 0,
-                          },
-                          shadowRadius: 0.5,
-                          shadowOpacity: 0.5,
-                          borderRadius: 10,
                         }}
                       >
                         <FunImage
                           style={{
-                            width: ukuran - 15,
-                            height: ukuran - 15,
-                            borderRadius: 10,
-                            borderWidth: 3,
-                            borderColor: "#fff",
+                            width: ukuran - 50,
+                            height: ukuran - 50,
+                            borderRadius: 50,
                             resizeMode: "cover",
                           }}
-                          // defaultSource={DefaultProfileSquare}
                           source={
                             data && data.picture
                               ? {
@@ -390,389 +507,247 @@ export default function Home(props) {
                           }
                         />
                       </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity
-                        style={{
-                          elevation: 2,
-                          shadowColor: "#464646",
-                          backgroundColor: "#FFFFFF",
-                          shadowOffset: {
-                            width: 0,
-                            height: 0,
-                          },
-                          shadowRadius: 0.5,
-                          shadowOpacity: 0.5,
-                          borderRadius: 10,
-                        }}
-                      >
-                        <Image
-                          style={{
-                            width: ukuran - 15,
-                            height: ukuran - 15,
-                            borderRadius: 10,
-                            resizeMode: "cover",
-                            borderWidth: 3,
-                            borderColor: "white",
-                          }}
-                          source={DefaultProfileSquare}
-                        />
-                      </TouchableOpacity>
-                    )}
+                    ) : null}
                   </View>
                   {token !== null && token !== "" ? (
                     <View
                       style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignContent: "center",
-                        // marginLeft: 10,
-                        height: "100%",
-                        width: "100%",
-                        // borderWidth: 1,
+                        // flexDirection: "row",
+                        alignContent: "space-around",
+                        justifyContent: "space-between",
+                        width: "80%",
+                        marginLeft: 10,
+                        marginVertical: 5,
                       }}
                     >
+                      <Text size="title" type="black">
+                        {data && data.first_name ? `${data.first_name}` : null}
+                        {data && data.last_name ? ` ${data.last_name}` : null}
+                      </Text>
                       <View
                         style={{
                           flexDirection: "row",
-                          alignContent: "space-around",
+                          marginTop: 3,
                           justifyContent: "space-between",
-                          width: "100%",
                         }}
                       >
                         <Text
-                          size="title"
-                          type="black"
-                          style={{ marginLeft: 10 }}
-                        >
-                          {data && data.first_name
-                            ? `${data.first_name}`
-                            : "User Funtravia"}
-                          {data && data.last_name ? ` ${data.last_name}` : null}
-                        </Text>
-                        <Pressable
-                          onPress={() =>
-                            props.navigation.navigate("Notification")
-                          }
                           style={{
-                            paddingRight: 10,
+                            fontSize: 13,
                           }}
                         >
-                          <NotificationBlue
-                            height={20}
-                            width={20}
-                            color={"#1F99A7"}
-                            fill={"#1F99A7"}
+                          {data && data.username ? `@${data.username}` : null}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={goToProfile}
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                            width: 75,
+                          }}
+                        >
+                          <Text
                             style={{
-                              shadowColor: "#464646",
-                              shadowOffset: {
-                                width: 0.5,
-                                height: 0.5,
-                              },
-                              shadowRadius: 0.2,
-                              shadowOpacity: 0.2,
+                              color: "#209FAE",
+                              fontWeight: "bold",
+                              marginRight: 5,
                             }}
+                          >
+                            {t("viewProfile")}
+                          </Text>
+                          <ArrowRightHome
+                            width={6}
+                            height={8}
+                            style={{ marginTop: 2 }}
                           />
-                          {datanotif && datanotif.count_notif.count > 0 ? (
-                            <View
-                              style={{
-                                position: "absolute",
-                                right: 5,
-                                backgroundColor: "#D75995",
-                                minWidth: 14,
-                                borderWidth: 0.5,
-                                borderColor: "white",
-                                height: 14,
-                                borderRadius: 7,
-                              }}
-                            >
-                              {datanotif.count_notif.count > 100 ? (
-                                <Text
-                                  type="bold"
-                                  style={{
-                                    fontSize: 10,
-                                    color: "white",
-                                    alignSelf: "center",
-                                    paddingHorizontal: 2,
-                                  }}
-                                >
-                                  99+
-                                </Text>
-                              ) : (
-                                <Text
-                                  type="bold"
-                                  style={{
-                                    fontSize: 10,
-                                    color: "white",
-                                    alignSelf: "center",
-                                    paddingHorizontal: 2,
-                                  }}
-                                >
-                                  {datanotif.count_notif.count}
-                                </Text>
-                              )}
-                            </View>
-                          ) : null}
-                        </Pressable>
-                        {/* ) : null} */}
+                        </TouchableOpacity>
                       </View>
 
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "baseline",
-                          width: Dimensions.get("window").width,
-                          marginTop: 10,
-                        }}
-                      >
-                        <TouchableOpacity
-                          style={styles.statView}
-                          onPress={() =>
-                            props.navigation.push("ProfileStack", {
-                              screen: "myfeed",
-                              params: {
-                                token: token,
-                                datauser: data ? data : null,
-                              },
-                            })
-                          }
-                        >
-                          <Text
-                            size="label"
-                            type="black"
-                            style={styles.statNumber}
-                          >
-                            {data ? data.count_post : 0}
-                          </Text>
-                          <Text
-                            size="small"
-                            type="regular"
-                            style={styles.statLabel}
-                          >
-                            {t("post")}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.statView}
-                          onPress={() =>
-                            props.navigation.navigate("BottomStack", {
-                              screen: "TripBottomPlaning",
-                              params: { screen: "TripPlaning" },
-                            })
-                          }
-                        >
-                          <Text
-                            size="label"
-                            type="black"
-                            style={styles.statNumber}
-                          >
-                            {data ? data.count_my_itinerary : 0}
-                          </Text>
-                          <Text
-                            size="small"
-                            type="regular"
-                            style={styles.statLabel}
-                          >
-                            {t("trip")}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.statView}
-                          onPress={() =>
-                            props.navigation.navigate("ProfileStack", {
-                              screen: "FollowerPage",
-                            })
-                          }
-                        >
-                          <Text
-                            size="label"
-                            type="black"
-                            style={styles.statNumber}
-                          >
-                            {data ? data.count_follower : 0}
-                          </Text>
-                          <Text
-                            size="small"
-                            type="regular"
-                            style={styles.statLabel}
-                          >
-                            {t("followers")}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.statView}
-                          onPress={() =>
-                            props.navigation.navigate("ProfileStack", {
-                              screen: "FollowingPage",
-                            })
-                          }
-                        >
-                          <Text
-                            size="label"
-                            type="black"
-                            style={styles.statNumber}
-                          >
-                            {data ? data.count_following : 0}
-                          </Text>
-                          <Text
-                            size="small"
-                            type="regular"
-                            style={styles.statLabel}
-                          >
-                            {t("following")}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
+                      {/* ) : null} */}
                     </View>
                   ) : (
                     <View
                       style={{
-                        flex: 1,
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
-                        paddingLeft: 12,
-                        paddingTop: 5,
+                        width: Dimensions.get("window").width - 35,
                         height: "100%",
-                        width: "100%",
+                        padding: 3,
                       }}
                     >
-                      <Text size="description" type="bold">
-                        {t("createAnAccount")}
-                      </Text>
-                      <Text size="description" type="bold">
-                        {t("planyyourTrip")}
-                      </Text>
-                      <View
+                      <Text
                         style={{
-                          marginTop: 10,
-                          marginBottom: 20,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          width: "100%",
+                          fontFamily: "Lato",
+                          fontSize: 13,
                         }}
                       >
-                        <TouchableOpacity
-                          onPress={() => signUp()}
+                        {t("helloTraveler")}
+                        {","}
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: "Lato",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color: "black",
+                          marginTop: 3,
+                        }}
+                      >
+                        {t("welcomeToFuntravia")}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => login()}
+                        style={{
+                          position: "absolute",
+                          right: 10,
+                          top: 10,
+                          borderWidth: 1,
+                          borderColor: "#209fae",
+                          borderRadius: 3,
+                          paddingHorizontal: 22,
+                          paddingVertical: 7,
+                        }}
+                      >
+                        <Text
                           style={{
-                            paddingVertical: 7,
-                            paddingHorizontal: 20,
-                            borderRadius: 5,
-                            backgroundColor: "#209fae",
+                            fontFamily: "Lato",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                            color: "#209FAE",
                           }}
                         >
-                          <Text
-                            type="bold"
-                            style={{
-                              color: "#FFF",
-                            }}
-                          >
-                            {t("signUp")}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => login()}
-                          style={{
-                            marginLeft: 10,
-                            paddingVertical: 7,
-                            paddingHorizontal: 20,
-                            borderRadius: 5,
-                            backgroundColor: "#D75995",
-                          }}
-                        >
-                          <Text
-                            type="bold"
-                            style={{
-                              color: "#FFF",
-                            }}
-                          >
-                            {t("signIn")}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
+                          {t("signin")}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
               </View>
-            </View>
-          </ImageBackground>
-        </View>
-        <View
-          style={{
-            // shadowColor: "#FFF",
-            // shadowOffset: { width: 0, height: 1 },
-            // shadowOpacity: 1,
-            // shadowRadius: 1,
-            // marginTop: 10,
-            // elevation: 2,
-            backgroundColor: "#daf0f2",
-            // borderWidth: 1,
-          }}
-        >
-          <Animated.View
-            style={{
-              opacity: searchBG,
-              backgroundColor: "#FFF",
-              width: width,
-              paddingVertical: 5,
-              height: 58,
-              position: "absolute",
-              shadowColor: "#464646",
-              shadowOffset: { width: 1, height: 1 },
-              shadowOpacity: 0.5,
-              elevation: 3,
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => searchPage()}
-            style={{
-              alignItems: "center",
-              justifyContent: "flex-start",
-              height: 45,
-              flexDirection: "row",
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              borderWidth: 1.5,
-              borderColor: "#209fae",
-              alignSelf: "center",
-              paddingHorizontal: 20,
-              marginVertical: 5,
-              width: Dimensions.get("window").width - 40,
-              shadowColor: "#464646",
-              shadowOffset: { width: 0.5, height: 1 },
-              shadowOpacity: 0.5,
-              shadowRadius: 2,
-              elevation: 4,
-            }}
-          >
-            <View
-              style={{
-                marginRight: 10,
-              }}
-            >
-              <CustomImage
-                source={search_black}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                }}
-              />
-            </View>
-            <View>
-              <Text
-                size="small"
-                type="bold"
+              <View
                 style={{
-                  color: "#464646",
+                  width: Dimensions.get("window").width - 40,
+                  height: ukuran - 50,
+                  borderRadius: 5,
+                  borderColor: "#209FAE",
+                  borderWidth: 0.5,
+                  backgroundColor: "#FFFFFF",
+                  alignContent: "center",
+                  alignItems: "center",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  // shadowColor: "#6F7273",
+                  // shadowOffset: { width: 0, height: 1 },
+                  // shadowOpacity: 1,
+                  // shadowRadius: 1,
+                  // elevation: 3,
+                  padding: 10,
                 }}
               >
-                {t("searchHome")}
-              </Text>
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignContent: "center",
+                      // marginLeft: 10,
+                      height: "100%",
+                      width: "100%",
+                      // borderWidth: 1,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: Dimensions.get("window").width - 60,
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={styles.statView}
+                        onPress={() =>
+                          props.navigation.navigate("BottomStack", {
+                            screen: "TripBottomPlaning",
+                            params: { screen: "TripPlaning" },
+                          })
+                        }
+                      >
+                        <Text
+                          size="label"
+                          type="black"
+                          style={styles.statNumber}
+                        >
+                          {data ? data.count_my_itinerary : "-"}
+                        </Text>
+                        <Text
+                          size="medium"
+                          type="regular"
+                          style={styles.statLabel}
+                        >
+                          {t("Itinerary")}
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.statView}
+                        onPress={() =>
+                          props.navigation.navigate("ProfileStack", {
+                            screen: "FollowerPage",
+                          })
+                        }
+                      >
+                        <Text
+                          size="label"
+                          type="black"
+                          style={styles.statNumber}
+                        >
+                          {data ? data.count_follower : "-"}
+                        </Text>
+                        <Text
+                          size="medium"
+                          type="regular"
+                          style={styles.statLabel}
+                        >
+                          {t("followers")}
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.statView}
+                        onPress={() =>
+                          props.navigation.navigate("ProfileStack", {
+                            screen: "FollowingPage",
+                          })
+                        }
+                      >
+                        <Text
+                          size="label"
+                          type="black"
+                          style={styles.statNumber}
+                        >
+                          {data ? data.count_following : "-"}
+                        </Text>
+                        <Text
+                          size="medium"
+                          type="regular"
+                          style={styles.statLabel}
+                        >
+                          {t("following")}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
+
         <MenuNew props={props} />
         <HomeTitle
           title={t("popularCityDestination")}
@@ -820,7 +795,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#B8E0E5",
   },
   pointButtonText: {
-    fontSize: 13,
+    fontSize: 14,
     color: "#464646",
   },
   statNumber: {
@@ -829,10 +804,12 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     // color: '#B0B0B0',
+    paddingLeft: 5,
   },
   statView: {
-    width: (Dimensions.get("window").width - 30) / 6,
-    justifyContent: "space-evenly",
+    width: (Dimensions.get("window").width - 10) / 4,
+    justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
   },
 });

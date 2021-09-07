@@ -78,7 +78,7 @@
   "posts": " Posts",
   "followers": "Followers",
   "following": "Following",
-  "searchHome": "Search People, Destination, Event",
+  "searchHome": "Search Traveler, Destination, Accomodation",
   "flights": "Flights",
   "popularDestination": "Popular Destination",
   "hotels": "Hotels",
@@ -645,5 +645,8 @@
   "noItinerary": "No itinerary",
   "canNotEmpty": "Some field can not be empty",
   "sameEmail": "Old email and new email can't be the same",
-  "usedEmail": "Email already used"
+  "usedEmail": "Email already used",
+  "viewProfile": "View Profile",
+  "helloTraveler": "Hello Traveler",
+  "welcomeToFuntravia": "Welcome to Funtravia"
 }

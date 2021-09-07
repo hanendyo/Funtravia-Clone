@@ -272,8 +272,12 @@ import Keyboard from "./files/keyboard.svg";
 import Arrowbackios from "./files/arrowbackios.svg";
 import Jamhijau from "./files/JamHijau.svg";
 import Kalenderhijau from "./files/KalenderHijau.svg";
+import ArrowRightHome from "./files/ArrowRightHome.svg";
+import SearchHome from "./files/searchHome.svg";
 
 export {
+  SearchHome,
+  ArrowRightHome,
   LikeWhite,
   CommentWhite,
   TicketAvailable,

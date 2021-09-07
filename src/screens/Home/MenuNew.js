@@ -17,13 +17,12 @@ export default function MenuNew({ props }) {
   return (
     // <View style={styles.menuView}>
     <LinearGradient
-      colors={["rgba(255, 255, 255, 0)", "rgba(218, 240, 242, 100)"]}
+      colors={["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0)"]}
       start={{ x: 0, y: 1 }}
       end={{ x: 0, y: 0 }}
       style={{
         flexDirection: "row",
         width: "100%",
-        paddingTop: 15,
         justifyContent: "space-between",
         paddingHorizontal: 15,
         // borderWidth: 1,
@@ -47,7 +46,7 @@ export default function MenuNew({ props }) {
           type="bold"
           size="description"
           style={{
-            marginTop: 5,
+            marginTop: 0,
             textAlign: "center",
           }}
         >
@@ -72,7 +71,7 @@ export default function MenuNew({ props }) {
           type="bold"
           size="description"
           style={{
-            marginTop: 5,
+            marginTop: 0,
             textAlign: "center",
           }}
         >
@@ -97,7 +96,7 @@ export default function MenuNew({ props }) {
           type="bold"
           size="description"
           style={{
-            marginTop: 5,
+            marginTop: 0,
             textAlign: "center",
           }}
         >
