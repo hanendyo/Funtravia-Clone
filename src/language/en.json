@@ -309,7 +309,7 @@
   "addDestination": "Add Destination",
   "addOption": "Add Option",
   "completePlan": "Complete Plan",
-  "addDestinationForm": "Add Destination Form",
+  "addDestinationForm": "Add Destination",
   "createActivity": "Create New Activity",
   "addCustomActivity": "Add Custom Activity",
   "myWishlist": "My Wishlist",
@@ -648,5 +648,8 @@
   "usedEmail": "Email already used",
   "viewProfile": "View Profile",
   "helloTraveler": "Hello Traveler",
-  "welcomeToFuntravia": "Welcome to Funtravia"
+  "welcomeToFuntravia": "Welcome to Funtravia",
+  "textRecommendation": "Recommendation Movie Location in ",
+  "filmLocation": "Movie Location",
+  "getVacation": "Get ready to travel "
 }

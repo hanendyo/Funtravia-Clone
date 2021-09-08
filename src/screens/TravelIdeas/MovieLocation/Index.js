@@ -5,51 +5,38 @@ import {
   Dimensions,
   Image,
   ImageBackground,
-  PanResponder,
   Platform,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   View,
   ScrollView,
   FlatList,
   Pressable,
 } from "react-native";
-import {
-  bg_movielocation,
-  laskar_pelangi,
-  hit_n_run,
-  serigala_terakhir,
-  night_bus,
-  gundala,
-  headshot,
-  wiro_sableng,
-  the_raid_2,
-  merantau,
-  the_raid,
-  default_image,
-} from "../../../assets/png";
+import { default_image } from "../../../assets/png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
-  Kosong,
   Select,
-  LocationBlack,
   Arrowbackwhite,
   Arrowbackios,
+  LikeRed,
+  Logofuntravianew,
+  BlockDestination,
 } from "../../../assets/svg";
-import { Button, Text, Truncate } from "../../../component";
+import { Button, FunImage, Text, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { useQuery, useMutation, useLazyQuery } from "@apollo/react-hooks";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import MovieLocationQuery from "../../../graphQL/Query/TravelIdeas/MovieLocation";
 import MovieLocationFirstQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationFirst";
-import { TabBar, TabView } from "react-native-tab-view";
-import Ripple from "react-native-material-ripple";
 import CountrySrc from "./CountrySrc";
 import CountryListSrcMovie from "../../../graphQL/Query/Countries/CountryListSrcMovie";
 import DeviceInfo from "react-native-device-info";
 import BannerApps from "../../../graphQL/Query/Home/BannerApps";
+import DestinationMoviePopuler from "../../../graphQL/Query/TravelIdeas/DestinationMoviePopuler";
+import ImageSlider from "react-native-image-slider";
+import Ripple from "react-native-material-ripple";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -64,95 +51,40 @@ const HeaderHeight = Platform.select({
   ios: Notch ? 335 - 48 : 335 - 20,
   android: 305 - StatusBar.currentHeight,
 });
-// const SafeStatusBar = Platform.select({
-//   ios: 44,
-//   android: StatusBar.currentHeight,
-// });
-const tab2ItemSize = (width - 40) / 3;
-const PullToRefreshDist = 150;
-
-const data_movielocation_utama = {
-  id: "1",
-  judul: "Laskar Pelangi",
-  sinopsis:
-    "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-  cover: laskar_pelangi,
-};
-const data_film = [
-  {
-    id: "1",
-    judul: "The Raid",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: the_raid,
-  },
-  {
-    id: "2",
-    judul: "Merantau",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: merantau,
-  },
-  {
-    id: "3",
-    judul: "The Raid 2",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: the_raid_2,
-  },
-  {
-    id: "4",
-    judul: "Wiro Sableng",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: wiro_sableng,
-  },
-  {
-    id: "5",
-    judul: "Headshot",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: headshot,
-  },
-  {
-    id: "6",
-    judul: "Gundala",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: gundala,
-  },
-  {
-    id: "7",
-    judul: "Night Bus",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: night_bus,
-  },
-  {
-    id: "8",
-    judul: "Serigala Terakhir",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: serigala_terakhir,
-  },
-  {
-    id: "9",
-    judul: "Hit & Run",
-    sinopsis:
-      "In the 1970s, a group of 10 students struggles with poverty and develop hopes for the future in Gantong Village on the farming and tin mining island of Belitung off the east coast of Sumatra.",
-    cover: hit_n_run,
-  },
-];
 
 export default function MovieLocation({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
-  let [canScroll, setCanScroll] = useState(true);
+  let [destinationMovie, setDestinationMovie] = useState();
   const { t } = useTranslation();
   let [modalcountry, setModelCountry] = useState(false);
   let [selectedCountry, SetselectedCountry] = useState({
     // id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
     // name: "Indonesia",
   });
+
+  let renderDestinationMovie = [];
+  renderDestinationMovie = destinationMovie;
+
+  const spreadData = (data) => {
+    let tmpData = [];
+    let count = 1;
+    let tmpArray = [];
+    for (let val of data) {
+      if (count < 3) {
+        tmpArray.push(val);
+        count++;
+      } else {
+        tmpArray.push(val);
+        tmpData.push(tmpArray);
+        count = 1;
+        tmpArray = [];
+      }
+    }
+    if (tmpArray.length) {
+      tmpData.push(tmpArray);
+    }
+    return tmpData;
+  };
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -228,6 +160,27 @@ export default function MovieLocation({ navigation, route }) {
       },
     }
   );
+  const [
+    GetDestinationMovieMovie,
+    {
+      data: dataDestinationMovie,
+      loading: loadingDestinationMovie,
+      error: errorDestinationMovie,
+    },
+  ] = useLazyQuery(DestinationMoviePopuler, {
+    fetchPolicy: "network-only",
+    variables: {
+      countries_id: selectedCountry.id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () =>
+      setDestinationMovie(dataDestinationMovie?.destination_populer_with_movie),
+  });
 
   let movie_rekomendasi = [];
   if (data && data.movie_rekomendasi) {
@@ -258,7 +211,7 @@ export default function MovieLocation({ navigation, route }) {
     movie_most_populer = datafirst.movie_most_populer;
   }
 
-  const scrollY = useRef(new Animated.Value(0)).current;
+  console.log("movie_most_populer", movie_most_populer);
 
   const [Banner, SetDataBanner] = useState();
   const {
@@ -277,6 +230,7 @@ export default function MovieLocation({ navigation, route }) {
 
   useEffect(() => {
     loadAsync();
+    GetDestinationMovieMovie();
     navigation.setOptions(HeaderComponent);
   }, [route]);
   const loadAsync = async () => {
@@ -301,7 +255,7 @@ export default function MovieLocation({ navigation, route }) {
           justifyContent: "center",
           alignItems: "center",
           width: width,
-          height: HeaderHeight - 100,
+          height: HeaderHeight - 150,
         }}
       >
         {Banner && Banner.banner_asset.length > 0 ? (
@@ -309,19 +263,18 @@ export default function MovieLocation({ navigation, route }) {
             source={{ uri: Banner.banner_asset[0].filepath }}
             style={{
               width: width,
-              height: HeaderHeight - 100,
-              justifyContent: "center",
-              padding: 20,
+              height: HeaderHeight - 150,
+              paddingTop: 30,
+              alignItems: "center",
             }}
             resizeMode="cover"
           >
-            <Text size="label" style={{ marginBottom: 20 }}>
-              Get inspired #movielocation
-            </Text>
             <Text size="h5" type="black">
-              Movie Location
+              {t("filmLocation")}
             </Text>
-            <Text size="label">Explore Indonesia Movie Location</Text>
+            <Text size="description" type="regular">
+              {t("getVacation")}
+            </Text>
           </ImageBackground>
         ) : (
           <View />
@@ -351,9 +304,7 @@ export default function MovieLocation({ navigation, route }) {
         style={{
           alignItems: "center",
           alignSelf: "center",
-          // backgroundColor: "#FFFFFF",
-          // paddingBottom: 2,
-          top: HeaderHeight - 130,
+          top: HeaderHeight - 185,
           position: "absolute",
           paddingTop: 30,
         }}
@@ -362,11 +313,9 @@ export default function MovieLocation({ navigation, route }) {
           onPress={() => setModelCountry(true)}
           style={({ pressed }) => [
             {
-              height: 44,
-              borderRadius: 20,
+              height: 50,
+              borderRadius: 25,
               borderColor: "grey",
-              // paddingVertical: 20,
-              paddingHorizontal: 30,
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
@@ -400,239 +349,219 @@ export default function MovieLocation({ navigation, route }) {
               type="bold"
               style={{
                 marginRight: 10,
+                marginLeft: 20,
               }}
             >
               {selectedCountry?.name}
             </Text>
           )}
 
-          <Select height={10} width={10} />
+          <Select height={10} width={10} style={{ marginRight: 20 }} />
         </Pressable>
       </View>
 
       <View
         style={{
-          backgroundColor: "#FFFFFF",
-          padding: 15,
-          // shadowColor: "#DFDFDF",
-          // shadowOffset: {
-          //   width: 0,
-          //   height: 1,
-          // },
-          // shadowOpacity: 0.25,
-          // shadowRadius: 2.84,
-          // elevation: 3,
+          paddingTop: 40,
+          paddingBottom: 20,
+          paddingHorizontal: 20,
+          backgroundColor: "#f6f6f6",
         }}
       >
-        <View
+        <Text
+          size="title"
+          type="bold"
           style={{
-            justifyContent: "flex-start",
-            // paddingHorizontal: 20,
+            textAlign: "left",
           }}
         >
+          {t("textRecommendation")} {selectedCountry?.name}
+        </Text>
+        <Text
+          size="label"
+          type="regular"
+          style={{
+            textAlign: "left",
+          }}
+        >
+          This top movie location for you, get inspired for your next trip.
+        </Text>
+      </View>
+      <ImageSlider
+        key={"imagesliderjournalsdsd"}
+        images={
+          renderDestinationMovie ? spreadData(renderDestinationMovie) : []
+        }
+        style={{
+          backgroundColor: "#f6f6f6",
+        }}
+        customSlide={({ index, item, style, width }) => (
+          <View key={"ky" + index}>
+            {item.map((dataX, indeks) => {
+              return (
+                <Pressable
+                  key={"jrnla" + indeks}
+                  onPress={() => {
+                    navigation.navigate("CountryStack", {
+                      screen: "CityDetail",
+                      params: {
+                        data: {
+                          city_id: dataX.id,
+                          city_name: dataX.name,
+                        },
+                        exParam: true,
+                      },
+                    });
+                  }}
+                  style={{
+                    marginHorizontal: 15,
+                    marginBottom: 10,
+                    flexDirection: "row",
+                    borderRadius: 5,
+                    width: width - 30,
+                    height: width * 0.22,
+                    backgroundColor: "#fff",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 1,
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 1.41,
+                    elevation: 2,
+                    padding: 10,
+                  }}
+                >
+                  <Image
+                    style={{
+                      height: "100%",
+                      width: 70,
+                      borderRadius: 5,
+                      marginRight: 10,
+                    }}
+                    source={dataX ? { uri: dataX.cover } : null}
+                  />
+                  <View style={{ flex: 1, justifyContent: "space-around" }}>
+                    <Text
+                      size="title"
+                      type="bold"
+                      numberOfLines={1}
+                      style={{ lineHeight: 20 }}
+                    >
+                      {dataX.name}
+                    </Text>
+                    <Text
+                      size="label"
+                      type="regular"
+                      numberOfLines={2}
+                      style={{ lineHeight: 20 }}
+                    >
+                      {dataX.description}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+        customButtons={(position, move) => (
           <View
             style={{
-              marginVertical: 20,
+              paddingTop: 10,
+              paddingBottom: 15,
+              alignContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "center",
             }}
           >
-            <Text
-              size="description"
-              style={{
-                textAlign: "justify",
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vitae
-              ultrices consectetur arcu augue sit morbi ut. Maecenas semper
-              porta sit a risus aliquam.
-            </Text>
-          </View>
-          <Text size="title" type="black">
-            Top Movie Location
-          </Text>
-          {loadingfirst ? (
-            <View
-              style={{
-                width: width,
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: 30,
-              }}
-            >
-              <ActivityIndicator
-                animating={loadingfirst}
-                size="large"
-                color="#209fae"
-              />
-            </View>
-          ) : (
-            <Pressable
-              onPress={() => {
-                navigation.navigate("TravelIdeaStack", {
-                  screen: "Detail_movie",
-                  params: {
-                    movie_id: movie_most_populer.id,
-                    token: token,
-                  },
-                });
-              }}
-              style={{
-                flexDirection: "row",
-                marginVertical: 15,
-                width: width - 40,
-              }}
-            >
-              <View style={{ width: "30%", height: 140 }}>
-                <Image
-                  source={
-                    movie_most_populer.cover
-                      ? { uri: movie_most_populer?.cover }
-                      : default_image
-                  }
-                  style={{
-                    width: "100%",
-                    height: 140,
-                    borderRadius: 10,
-                  }}
-                  resizeMode="cover"
-                />
-              </View>
-              <View
-                style={{
-                  paddingLeft: 15,
-                  marginVertical: 5,
-                  justifyContent: "space-between",
-                  width: "70%",
-                }}
-              >
-                <View>
-                  <Text
-                    size="title"
-                    type="bold"
-                    style={{
-                      marginBottom: 5,
-                    }}
-                  >
-                    {movie_most_populer.title
-                      ? movie_most_populer.title
-                      : "No Movie"}
-                  </Text>
-                  <Text
-                    style={{
-                      // textAlign: "justify",
-                      width: "100%",
-                    }}
-                  >
-                    {movie_most_populer.description}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: "flex-start",
-                  }}
+            {(renderDestinationMovie
+              ? spreadData(renderDestinationMovie)
+              : []
+            ).map((image, index) => {
+              return (
+                <TouchableHighlight
+                  key={"keys" + index}
+                  underlayColor="#f7f7f700"
                 >
                   <View
                     style={{
-                      backgroundColor: "#DAF0F2",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      borderRadius: 5,
-                      flexDirection: "row",
-                      alignItems: "center",
+                      height: position === index ? 5 : 5,
+                      width: position === index ? 5 : 5,
+                      borderRadius: position === index ? 7 : 3,
+                      backgroundColor:
+                        position === index ? "#209fae" : "#d3d3d3",
+                      marginHorizontal: 3,
                     }}
-                  >
-                    <LocationBlack width={15} height={15} />
-                    <Text type="bold" style={{ marginLeft: 5 }}>
-                      {movie_most_populer.destination_count
-                        ? movie_most_populer.destination_count
-                        : 0}
-                      {" Locations"}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </Pressable>
-          )}
-        </View>
-      </View>
-      <View
-        style={{
-          padding: 20,
-        }}
-      >
+                  ></View>
+                </TouchableHighlight>
+              );
+            })}
+          </View>
+        )}
+      />
+      <View style={{ backgroundColor: "#fff", paddingVertical: 20 }}>
         <View
           style={{
+            marginHorizontal: 20,
             flexDirection: "row",
             alignItems: "center",
           }}
         >
-          <View
-            style={{
-              height: 20,
-              width: 6,
-              borderRadius: 3,
-              backgroundColor: "#209fae",
-              marginRight: 10,
-            }}
-          />
-          <Text size="title" type="bold">
-            Recommendation
+          <BlockDestination height={20} width={20} style={{ marginLeft: -7 }} />
+          <Text size="title" type="bold" style={{ paddingBottom: 3 }}>
+            Travel Inspiration
           </Text>
         </View>
-        <FlatList
-          data={movie_rekomendasi}
-          renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() => {
-                navigation.navigate("TravelIdeaStack", {
-                  screen: "Detail_movie",
-                  params: {
-                    movie_id: item.id,
-                    token: token,
-                  },
-                });
-              }}
-              style={{
-                width: "33.3333%",
-                paddingBottom: 15,
-              }}
-            >
-              <Image
-                source={item.cover ? { uri: item.cover } : default_image}
-                // source={item.cover}
-                style={{
-                  width: "92%",
-                  height: 150,
-                  borderRadius: 10,
-                }}
-                resizeMode="cover"
-              />
-              <Text type="bold">{item.title}</Text>
-            </Pressable>
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={3}
-          contentContainerStyle={{
-            paddingVertical: 10,
+        <Text
+          size="label"
+          type="regular"
+          style={{
+            marginHorizontal: 20,
+            lineHeight: 20,
+            textAlign: "left",
+            marginTop: 15,
           }}
-          ListFooterComponent={
-            loading ? (
-              <View
-                style={{
-                  width: width,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 30,
-                }}
-              >
-                <ActivityIndicator
-                  animating={loading}
-                  size="large"
-                  color="#209fae"
-                />
-              </View>
-            ) : null
-          }
-        />
+        >
+          Many famous movie locations are real and you can visit them. So,
+          although you might not actually be a wizard or an archaeologist
+          searching hidden treasure, you can relive the movie magic yourself.
+        </Text>
+        <Pressable
+          style={{
+            height: 220,
+            width: Dimensions.get("screen").width - 30,
+            backgroundColor: "#fff",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+            marginHorizontal: 15,
+            marginTop: 20,
+            borderRadius: 5,
+          }}
+        >
+          <Image
+            source={
+              movie_most_populer ? { uri: movie_most_populer?.cover } : null
+            }
+            style={{
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              height: "70%",
+            }}
+          />
+          <View style={{ flex: 1, padding: 10 }}>
+            <Text size="title" type="bold" style={{ lineHeight: 20 }}>
+              Visit the beatiful location from '{movie_most_populer?.title}' on
+              a short trip
+            </Text>
+          </View>
+        </Pressable>
       </View>
     </ScrollView>
   );

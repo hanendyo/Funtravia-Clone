@@ -22,6 +22,7 @@ import {
   LikeBlack,
   CommentBlack,
   Xgray,
+  AcceptNotif,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -42,7 +43,8 @@ import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
-import { isPunctuatorToken } from "graphql/language/lexer";
+import * as Progress from "react-native-progress";
+import ProgressBar from "react-native-progress/Bar";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -101,6 +103,7 @@ export default function FeedList({ props, token }) {
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -156,6 +159,7 @@ export default function FeedList({ props, token }) {
   });
 
   const SubmitData = async () => {
+    setLoaded(true);
     setTimeout(() => {
       if (ref) {
         ref?.current.scrollToIndex({ animated: true, index: 0 });
@@ -186,20 +190,25 @@ export default function FeedList({ props, token }) {
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          // console.log('masuk')
           await refetch();
           setTimeout(() => {
             if (ref) {
               ref?.current.scrollToIndex({ animated: true, index: 0 });
             }
           });
+          setTimeout(() => {
+            setLoaded(false);
+          }, 4000);
         } else {
+          setLoaded(false);
           throw new Error(response.data.create_post.message);
         }
       } else {
+        setLoaded(false);
         throw new Error("Error Input");
       }
     } catch (err) {
+      setLoaded(false);
       RNToasty.Show({
         duration: 1,
         title: t("failPost"),
@@ -327,7 +336,6 @@ export default function FeedList({ props, token }) {
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
       setDataFeed(dataPost.feed_post_pageing.datas);
-      console.log("oncomplted");
     },
   });
 
@@ -1323,6 +1331,47 @@ export default function FeedList({ props, token }) {
         </Modal>
       </View>
 
+      {loaded ? (
+        <View
+          style={{
+            backgroundColor: "#fff",
+            width: Dimensions.get("screen").width - 20,
+            marginHorizontal: 10,
+            borderRadius: 5,
+            paddingHorizontal: 15,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {loadingMutationPost ? (
+            <>
+              <Progress.Circle
+                size={40}
+                indeterminate={true}
+                color={"#209fae"}
+                borderWidth="2"
+                direction="clockwise"
+                style={{ marginVertical: 20 }}
+              />
+              <Text style={{ marginLeft: 15 }} size="label" type="regular">
+                Uploading . . .
+              </Text>
+            </>
+          ) : (
+            <>
+              <AcceptNotif
+                height="40"
+                width="40"
+                style={{ marginVertical: 20 }}
+              />
+              <Text style={{ marginLeft: 15 }} size="label" type="regular">
+                Uploaded
+              </Text>
+            </>
+          )}
+        </View>
+      ) : null}
+      {/* 
       {loadingMutationPost ? (
         <View
           style={{
@@ -1333,9 +1382,10 @@ export default function FeedList({ props, token }) {
             paddingHorizontal: 10,
           }}
         >
+          <Progress.Pie progress={0.4} size={50} />
           <ProgressBarAndroid styleAttr="Horizontal" color="#209fae" />
         </View>
-      ) : null}
+      ) : null} */}
       <FlatList
         ref={ref}
         data={dataFeed}
