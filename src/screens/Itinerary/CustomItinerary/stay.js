@@ -371,6 +371,12 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  let [dateStatus, setDateStatus] = useState({
+    start: true, 
+    end: true
+  })
+
+
   let [renderDate, setRenderDate] = useState({
     renderCheckIn: "",
     renderCheckOut: "",
@@ -493,6 +499,7 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  console.log(`PROPS: `, props);
   return (
     <SafeAreaView
       style={{

@@ -1165,7 +1165,7 @@ export default function OtherProfile(props) {
               }}
               type="regular"
               size="description"
-              style={{ textAlign: "justify" }}
+              style={{ textAlign: "left" }}
             >
               {data.bio ? data.bio : ""}
             </Text>
