@@ -5193,7 +5193,8 @@ export default function ItineraryDetail(props) {
             style={{
               backgroundColor: "white",
               width: "100%",
-              // borderWidth: 1,
+              borderTopRightRadius: 15,
+              borderTopLeftRadius: 15,
             }}
           >
             <View
@@ -5203,28 +5204,37 @@ export default function ItineraryDetail(props) {
                 justifyContent: "space-between",
                 alignContent: "center",
                 alignItems: "center",
-                backgroundColor: "#209FAE",
-                paddingVertical: 10,
+                borderTopRightRadius: 15,
+                borderTopLeftRadius: 15,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
                 paddingHorizontal: 20,
               }}
             >
               <Text
-                size="label"
+                size="title"
                 type="bold"
-                style={{
-                  color: "white",
-                }}
+                style={{ marginBottom: 15, marginTop: 13 }}
               >
                 {t("addDestinationForm")}
               </Text>
-              <TouchableOpacity
-                style={{}}
+              <Pressable
+                style={{
+                  height: 60,
+                  width: 60,
+                  justifyContent: "center",
+                  marginRight: -20,
+                }}
                 onPress={() => {
                   setModalcustom(false);
                 }}
               >
-                <Xhitam width={20} height={20} />
-              </TouchableOpacity>
+                <Xhitam
+                  width={15}
+                  height={15}
+                  style={{ alignSelf: "center" }}
+                />
+              </Pressable>
             </View>
 
             <TouchableOpacity
@@ -5281,11 +5291,11 @@ export default function ItineraryDetail(props) {
               >
                 <PlusBlack height={15} width={15} />
               </View>
-              <View>
-                <Text size="description" type="bold">
+              <View style={{ marginBottom: 5 }}>
+                <Text size="label" type="bold">
                   {t("createActivity")}
                 </Text>
-                <Text size="small" type="regular">
+                <Text size="description" type="regular">
                   {t("addCustomActivity")}
                 </Text>
               </View>
@@ -5327,11 +5337,11 @@ export default function ItineraryDetail(props) {
               >
                 <Flights height={25} width={25} />
               </View>
-              <View>
-                <Text size="description" type="bold">
+              <View style={{ marginBottom: 5 }}>
+                <Text size="label" type="bold">
                   {t("Flight")}
                 </Text>
-                <Text size="small" type="regular">
+                <Text size="description" type="regular">
                   {t("Add flight number to your itinerary")}
                 </Text>
               </View>
@@ -5374,10 +5384,10 @@ export default function ItineraryDetail(props) {
                 <Stay height={25} width={25} />
               </View>
               <View>
-                <Text size="description" type="bold">
+                <Text size="label" type="bold">
                   {t("Stay")}
                 </Text>
-                <Text size="small" type="regular">
+                <Text size="description" type="regular">
                   {t("Add place name")}
                 </Text>
               </View>
@@ -5438,11 +5448,11 @@ export default function ItineraryDetail(props) {
               >
                 <Love height={15} width={15} />
               </View>
-              <View>
-                <Text size="description" type="bold">
+              <View style={{ marginBottom: 5 }}>
+                <Text size="label" type="bold">
                   {t("myWishlist")}
                 </Text>
-                <Text size="small" type="regular">
+                <Text size="description" type="regular">
                   {t("addFromWishtlist")}
                 </Text>
               </View>
@@ -5508,11 +5518,11 @@ export default function ItineraryDetail(props) {
               >
                 <Google height={15} width={15} />
               </View>
-              <View>
-                <Text size="description" type="bold">
+              <View style={{ marginBottom: 5 }}>
+                <Text size="label" type="bold">
                   {t("searchFromGoogle")}
                 </Text>
-                <Text size="small" type="regular">
+                <Text size="description" type="regular">
                   {t("addDestinationGoogle")}
                 </Text>
               </View>
