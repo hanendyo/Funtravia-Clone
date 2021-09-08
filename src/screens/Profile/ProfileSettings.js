@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { Button, Text, Loading } from "../../component";
-import { Addphoto, Arrowbackwhite } from "../../assets/svg";
+import { Addphoto, Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Input, Item, Label } from "native-base";
 import { useTranslation } from "react-i18next";
 import EditProfile from "../../graphQL/Mutation/Profile/EditProfile";
@@ -29,7 +29,6 @@ import { ReactNativeFile } from "apollo-upload-client";
 import * as mime from "react-native-mime-types";
 import LinearGradient from "react-native-linear-gradient";
 import DeviceInfo from "react-native-device-info";
-
 
 export default function ProfileSettings(props) {
   const Notch = DeviceInfo.hasNotch();
@@ -68,15 +67,19 @@ export default function ProfileSettings(props) {
           onPress={() => props.navigation.goBack()}
           style={{
             // backgroundColor: "rgba(0,0,0,0.3)",
-            marginTop: -10,
+            marginTop: Platform.OS == "ios" ? 0 : -10,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <View
           style={{
             marginLeft: 10,
-            marginTop: -10,
+            marginTop: Platform.OS == "ios" ? 0 : -10,
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>
@@ -419,14 +422,24 @@ export default function ProfileSettings(props) {
     return true;
   };
 
+  // const Notch = DeviceInfo.hasNotch();
+  const HeightBar = Platform.select({
+    ios: Notch ? 95 : 70,
+    android: 70,
+  });
+
   return (
-    <ScrollView contentContainerStyle={{flex: 1}} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
       <LinearGradient
         start={{ x: 0, y: 0 }} //here we are defined x as start position
         end={{ x: 0, y: -2 }} //here we can define axis but as end position
         colors={["#209fae", "#68D7E3"]}
         style={{
-          height: Platform.OS == "ios" ? 90 : 70,
+          // height: Platform.OS == "ios" ? 95 : 70,
+          height: HeightBar,
         }}
       ></LinearGradient>
       {/* <ImageBackground
@@ -684,6 +697,7 @@ export default function ProfileSettings(props) {
                   {t("Bio")}
                 </Label>
                 <Input
+                  autoCorrect={false}
                   maxLength={160}
                   style={{
                     fontFamily: "Lato-Regular",

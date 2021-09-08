@@ -249,6 +249,7 @@ export default function Post(props) {
           album: props.route.params.album,
         },
       });
+      
 
       // for (var i = 0; i < checklistVideo.length; i++) {
       //   RNFetchBlob.fs
@@ -278,6 +279,7 @@ export default function Post(props) {
     }
   };
 
+  
   useEffect(() => {
     (async () => {
       await getAlbumRoll();
@@ -439,7 +441,7 @@ export default function Post(props) {
         dataCamera = await CameraRoll.getPhotos({
           first: 43,
           assetType: "All",
-          // groupTypes: "Album",
+          groupTypes: "Album",
           groupName: dataalbum.title,
           include: ["location", "filename", "imageSize", "playableDuration"],
         });
@@ -488,7 +490,7 @@ export default function Post(props) {
             after: page_info.end_cursor,
             first: 40,
             assetType: "All",
-            // groupTypes: "Album",
+            groupTypes: "Album",
             groupName: dataalbum.title,
             include: ["location", "filename", "imageSize", "playableDuration"],
           });
@@ -515,6 +517,7 @@ export default function Post(props) {
     await setIsVisible(false);
     await getImageFromRoll(item);
     await props.navigation.setParams({ title: item.title });
+    console.log(`SELECt ALBUM: `, item);
   };
 
   const _getDuration = (s) => {
@@ -608,6 +611,7 @@ export default function Post(props) {
                   onPress={() => selectAlbum(item)}
                 >
                   <Text>{item.title}</Text>
+                  {console.log(`item: `, item)}
                 </Button>
               )}
               keyExtractor={(item, index) => "" + index}
