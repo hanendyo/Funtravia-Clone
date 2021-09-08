@@ -215,25 +215,6 @@ const Index = (props) => {
       setRoutes(tab);
 
       setDataDestination(data.destinationById);
-      // props.navigation.setOptions({
-      //   headerTitle: (
-      //     // <Animated.View
-      //     // style={{
-      //     // }}
-      //     // >
-      //     <Animated.Text
-      //       size="label"
-      //       type="bold"
-      //       style={{
-      //         opacity: hide.current,
-      //         color: "#fff",
-      //       }}
-      //     >
-      //       {data?.destinationById?.name}
-      //     </Animated.Text>
-      //     // </Animated.View>
-      //   ),
-      // });
     },
   });
 
@@ -2080,6 +2061,7 @@ const Index = (props) => {
                           </View>
                         </View>
                       </View>
+
                       <View
                         style={{
                           justifyContent: "flex-end",
