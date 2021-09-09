@@ -96,9 +96,8 @@ export default function CountrySrc({
   // cek data filter
 
   const cekData = (data) => {
-    let dat = continent_list.filter((k) => k.checked === true);
-
-    return dat.length;
+    // let dat = continent_list.filter((k) => k.checked === true);
+    return select_continents.length;
   };
 
   // set filter
@@ -154,7 +153,7 @@ export default function CountrySrc({
     //   tempdatascountry[i].checked = false;
     //   tempdatascountry[i].show = false;
     // }
-
+    setshow(false);
     setContinentSelecteds([]);
     setDatacontinent([]);
     setDatacontinentfilter(tempes);
@@ -449,6 +448,9 @@ export default function CountrySrc({
             height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
+            borderTopWidth: 1,
+            borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
           }}
         >
           {/* bagian atas filter*/}
@@ -458,7 +460,7 @@ export default function CountrySrc({
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: 15,
-              paddingVertical: 20,
+              paddingVertical: 15,
             }}
           >
             <Text
@@ -484,7 +486,7 @@ export default function CountrySrc({
               }}
               onPress={() => setshow(false)}
             >
-              <Xhitam height={15} width={15} />
+              <Xhitam height={12} width={12} />
             </TouchableOpacity>
           </View>
           {/* bagian content filter */}
@@ -492,7 +494,7 @@ export default function CountrySrc({
             style={{
               flexDirection: "row",
               flex: 1,
-              borderTopWidth: 0.5,
+              borderTopWidth: 1,
               borderColor: "#d1d1d1",
             }}
           >
@@ -611,8 +613,13 @@ export default function CountrySrc({
                           android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                         }),
                       }}
+                      // onValueChange={() =>
+                      //   _handleCheck(item["id"], index, item)
+                      // }
                       onValueChange={() =>
-                        _handleCheck(item["id"], index, item)
+                        Platform.OS == "ios"
+                          ? null
+                          : _handleCheck(item["id"], index, item)
                       }
                       value={item["checked"]}
                     />
@@ -639,7 +646,7 @@ export default function CountrySrc({
               flex: 1,
               zIndex: 6,
               flexDirection: "row",
-              height: 80,
+              height: 75,
               position: "absolute",
               bottom: 0,
               justifyContent: "space-around",

@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from "react-native";
 import { default_image, imgPrivate } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
@@ -20,6 +21,8 @@ import {
   User,
   TravelAlbum,
   TravelStories,
+  Lock,
+  World,
 } from "../../../assets/svg";
 import { Truncate, Text, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -45,6 +48,7 @@ export default function ActivePlan({
   GetDataFinish,
   loadingdataActive,
 }) {
+  console.log(AData);
   const { height, width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
 
@@ -72,6 +76,13 @@ export default function ActivePlan({
     end = end.split(" ");
 
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
+  };
+
+  const capitalizeChar = (text) => {
+    let str = text.charAt(0).toUpperCase();
+    let str2 = text.slice(1, text.length);
+
+    return str + str2;
   };
 
   const RenderBuddy = ({ databuddy }) => {
@@ -134,9 +145,7 @@ export default function ActivePlan({
   };
 
   const getDN = (start, end) => {
-    var x = start;
-    var y = end,
-      start = start.split(" ");
+    start = start.split(" ");
     end = end.split(" ");
     var date1 = new Date(start[0]);
     var date2 = new Date(end[0]);
@@ -146,25 +155,19 @@ export default function ActivePlan({
     return (
       <View style={{ flexDirection: "row" }}>
         <Text
-          size="description"
           type={"regular"}
-          style={
-            {
-              // color: "white",
-            }
-          }
+          style={{
+            fontSize: 12,
+          }}
         >
           {Difference_In_Days + 1} {t("days")}
           {", "}
         </Text>
         <Text
-          size="description"
           type={"regular"}
-          style={
-            {
-              // color: "white",
-            }
-          }
+          style={{
+            fontSize: 12,
+          }}
         >
           {Difference_In_Days} {t("nights")}
         </Text>
@@ -386,7 +389,6 @@ export default function ActivePlan({
             <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
           }
           contentContainerStyle={{
-            marginTop: 5,
             justifyContent: "space-evenly",
             paddingStart: 10,
             paddingEnd: 10,
@@ -397,9 +399,11 @@ export default function ActivePlan({
           renderItem={({ item }) => (
             <View
               style={{
-                height: 150,
+                height: 157,
                 marginTop: 10,
                 borderRadius: 5,
+                borderWidth: 1,
+                borderColor: "#d1d1d1",
                 shadowOffset: { width: 0, height: 1 },
                 shadowOpacity: arrayShadow.shadowOpacity,
                 shadowRadius: arrayShadow.shadowRadius,
@@ -439,7 +443,7 @@ export default function ActivePlan({
                   }
                   style={{
                     height: "100%",
-                    width: "35%",
+                    width: "40%",
                     borderTopLeftRadius: 5,
                   }}
                   imageStyle={{
@@ -524,9 +528,9 @@ export default function ActivePlan({
 
                 <View
                   style={{
-                    width: "65%",
+                    width: "60%",
                     height: "100%",
-                    paddingHorizontal: 10,
+                    paddingHorizontal: 15,
                     backgroundColor: "#FFFFFF",
                     paddingVertical: 10,
                     overflow: "hidden",
@@ -537,8 +541,8 @@ export default function ActivePlan({
                     <View
                       style={{
                         flexDirection: "row",
-                        justifyContent: "space-between",
-                        aligndatas: "center",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
                       }}
                     >
                       <View
@@ -547,74 +551,67 @@ export default function ActivePlan({
                           borderWidth: 1,
                           borderRadius: 3,
                           borderColor: "#209FAE",
-                          paddingHorizontal: 5,
+                          marginRight: 10,
+                          paddingHorizontal: 4,
+                          paddingVertical: 1,
                         }}
                       >
                         <Text
                           type="bold"
-                          size="small"
-                          style={{ color: "#209FAE" }}
+                          style={{ color: "#209FAE", fontSize: 12 }}
                         >
                           {item?.categori?.name
                             ? item?.categori?.name
                             : "No Category"}
                         </Text>
                       </View>
+                      <View
+                        style={{
+                          width: 5,
+                          height: 5,
+                          alignSelf: "center",
+                          backgroundColor: "#000",
+                          borderRadius: 10,
+                          marginRight: 9,
+                        }}
+                      />
                       <View>
                         {item.isprivate == true ? (
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              backgroundColor: "rgba(0, 0, 0, 0.7)",
-                              paddingVertical: 3,
-                              paddingHorizontal: 10,
-                              borderRadius: 3,
-                              overflow: "hidden",
-                            }}
-                          >
-                            <Image
-                              source={imgPrivate}
-                              style={{
-                                height: 10,
-                                width: 10,
-                                marginRight: 5,
-                              }}
-                            />
-                            <Text
-                              size="small"
-                              type={"regular"}
-                              style={{
-                                color: "white",
-                              }}
-                            >
-                              {t("private")}
-                            </Text>
-                          </View>
-                        ) : null}
+                          <World width={15} height={15} />
+                        ) : (
+                          <Lock width={15} height={15} />
+                        )}
                       </View>
                     </View>
-                    <Text size="label" type="black" style={{ marginTop: 5 }}>
-                      <Truncate text={item.name} length={40} />
+                    <Text
+                      type="black"
+                      size="label"
+                      style={{
+                        marginTop: Platform.OS === "ios" ? 5 : 3,
+                        marginLeft: 2,
+                        // fontSize: 14,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      <Truncate text={capitalizeChar(item.name)} length={40} />
                     </Text>
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        marginTop: 5,
+                        marginTop: Platform.OS === "ios" ? 5 : 3,
                       }}
                     >
                       <PinHijau width={15} height={15} />
                       <Text
-                        style={{ marginLeft: 5 }}
-                        size="small"
+                        style={{ marginLeft: 3, fontSize: 12 }}
                         type="regular"
                       >
                         {item?.country?.name}
                       </Text>
                       <Text>,</Text>
                       <Text
-                        size="small"
+                        style={{ marginLeft: 3, fontSize: 12 }}
                         type="regular"
                         style={{ marginLeft: 3 }}
                       >
@@ -627,6 +624,7 @@ export default function ActivePlan({
                       // borderWidth: 1,
                       width: "100%",
                       flexDirection: "row",
+                      justifyContent: "space-between",
                     }}
                   >
                     <View
@@ -637,8 +635,8 @@ export default function ActivePlan({
                       }}
                     >
                       <Calendargrey
-                        width={10}
-                        height={10}
+                        width={13}
+                        height={13}
                         style={{ marginRight: 5 }}
                       />
                       {item.start_date && item.end_date
@@ -652,12 +650,14 @@ export default function ActivePlan({
                         marginLeft: 15,
                       }}
                     >
-                      <User width={10} height={10} style={{ marginRight: 5 }} />
-                      <Text size="small" type="regular">
+                      <User width={13} height={13} style={{ marginRight: 5 }} />
+                      <Text style={{ fontSize: 12 }} type="regular">
                         {(item && item.buddy.length
                           ? item.buddy.length
                           : null) + " "}
-                        {t("person")}
+                        {item && item.buddy.length > 1
+                          ? t("people")
+                          : t("person")}
                       </Text>
                     </View>
                   </View>
@@ -668,7 +668,7 @@ export default function ActivePlan({
                   paddingVertical: 3,
                   height: "25%",
                   flexDirection: "row",
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: "#F6F6F6",
                   borderBottomLeftRadius: 5,
                   borderBottomRightRadius: 5,
                   justifyContent: "space-between",
@@ -699,11 +699,11 @@ export default function ActivePlan({
                   }}
                 >
                   <TravelAlbum
-                    height={15}
-                    width={15}
+                    height={20}
+                    width={20}
                     style={{ marginRight: 5 }}
                   />
-                  <Text size="small" type="bold" style={{ color: "#209fae" }}>
+                  <Text type="bold" style={{ color: "#209fae", fontSize: 12 }}>
                     Travel Album
                   </Text>
                 </Ripple>
@@ -729,11 +729,11 @@ export default function ActivePlan({
                   }}
                 >
                   <TravelStories
-                    height={15}
-                    width={15}
+                    height={20}
+                    width={20}
                     style={{ marginRight: 5 }}
                   />
-                  <Text size="small" type="bold" style={{ color: "#209fae" }}>
+                  <Text type="bold" style={{ color: "#209fae", fontSize: 12 }}>
                     Travel Stories
                   </Text>
                 </Ripple>

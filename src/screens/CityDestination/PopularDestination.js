@@ -481,6 +481,9 @@ export default function AllDestination(props) {
             height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
+            // borderTopWidth: 1,
+            borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
           }}
         >
           <View
@@ -489,7 +492,9 @@ export default function AllDestination(props) {
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: 15,
-              paddingVertical: 20,
+              paddingVertical: 15,
+              borderBottomWidth: 1,
+              borderBottomColor: "#d1d1d1",
             }}
           >
             <Text
@@ -512,7 +517,7 @@ export default function AllDestination(props) {
               }}
               onPress={() => setShow(false)}
             >
-              <Xhitam height={15} width={15} />
+              <Xhitam height={12} width={12} />
             </TouchableOpacity>
           </View>
           <View

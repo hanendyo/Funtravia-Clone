@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   BackHandler,
   Alert,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -45,7 +46,6 @@ export default function Home(props) {
   let [shareId, setShareId] = useState(props.route.params.shareid);
   let [loadingModal, setLoadingModal] = useState(false);
 
-  console.log("data :", data);
   // console.log(token);
   const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
     Account,
@@ -126,7 +126,6 @@ export default function Home(props) {
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", (data) => {
-      console.log("masuk_focus");
       loadAsync();
     });
     return unsubscribe;
@@ -257,8 +256,23 @@ export default function Home(props) {
 
   const searchBG = scrollY.interpolate({
     inputRange: [0, height / 2, height],
-    outputRange: [0, 1, 1],
+    outputRange: [0, 0.5, 0.5],
     extrapolate: "clamp",
+  });
+
+  const elevationBG = scrollY.interpolate({
+    inputRange: [0, height / 2, height],
+    outputRange: [0, 3, 3],
+    extrapolate: "clamp",
+  });
+
+  const colorBG = scrollY.interpolate({
+    inputRange: [0, height / 2, height],
+    outputRange: [
+      "rgba(231, 247, 247, 255)",
+      "rgba(255, 255, 255, 1)",
+      "rgba(255, 255, 255, 1)",
+    ],
   });
 
   if (loadingModal) {
@@ -296,25 +310,16 @@ export default function Home(props) {
         >
           <Animated.View
             style={{
-              opacity: searchBG,
-              backgroundColor: "#FFF",
-              width: width,
-              height: 68,
-              position: "absolute",
-              top: 0,
-
-              shadowColor: "#464646",
-              shadowOffset: { width: 1, height: 1 },
-              shadowOpacity: 0.5,
-              elevation: 3,
-            }}
-          />
-          <View
-            style={{
               flexDirection: "row",
               alignItems: "center",
               paddingHorizontal: 20,
               paddingTop: 10,
+              paddingBottom: 5,
+              backgroundColor: colorBG,
+              shadowColor: "#464646",
+              shadowOffset: { width: 1, height: 1 },
+              shadowOpacity: searchBG,
+              elevation: elevationBG,
             }}
           >
             <TouchableOpacity
@@ -344,16 +349,6 @@ export default function Home(props) {
                   marginRight: 10,
                 }}
               >
-                {/* <CustomImage
-                  source={searchHome}
-                  customImageStyle={{ resizeMode: "cover" }}
-                  customStyle={{
-                    height: 15,
-                    width: 15,
-                    alignSelf: "center",
-                    zIndex: 100,
-                  }}
-                /> */}
                 <SearchHome height={15} width={15} />
               </View>
               <View>
@@ -429,7 +424,7 @@ export default function Home(props) {
                 </View>
               ) : null}
             </Pressable>
-          </View>
+          </Animated.View>
         </View>
 
         <View
@@ -453,7 +448,6 @@ export default function Home(props) {
               style={{
                 position: "absolute",
                 bottom: -15,
-                // marginBottom: 5,
               }}
             >
               <View
@@ -465,7 +459,7 @@ export default function Home(props) {
                   alignSelf: "center",
                   justifyContent: "center",
                   paddingVertical: 10,
-                  marginBottom: 10,
+                  marginBottom: 15,
                 }}
               >
                 <View

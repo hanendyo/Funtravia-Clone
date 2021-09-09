@@ -274,8 +274,12 @@ import Jamhijau from "./files/JamHijau.svg";
 import Kalenderhijau from "./files/KalenderHijau.svg";
 import ArrowRightHome from "./files/ArrowRightHome.svg";
 import SearchHome from "./files/searchHome.svg";
+import Lock from "./files/lock.svg";
+import World from "./files/world.svg";
 
 export {
+  Lock,
+  World,
   SearchHome,
   ArrowRightHome,
   LikeWhite,
