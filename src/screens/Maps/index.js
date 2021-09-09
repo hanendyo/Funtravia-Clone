@@ -200,133 +200,138 @@ export default function World({ navigation }) {
         }}
         scrollEnabled={false}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              item.available ? navigation.navigate(item.screen) : setSoon(true)
-            }
-            style={{
-              borderRadius: 5,
-              backgroundColor: "#FFF",
-              margin: 5,
-              marginTop: 10,
-            }}
-          >
-            {item.available ? (
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginLeft: 15,
-                    marginTop: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 5,
-                      // height: 15,
-                      marginRight: 5,
-                      backgroundColor: "#209FAE",
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                    }}
-                  ></View>
-
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      color: "#464646",
-                      textAlign: "center",
-                    }}
-                  >{`${item.name}`}</Text>
-                </View>
-                <Text
-                  type="regular"
-                  size="description"
-                  style={{
-                    color: "#464646",
-                    marginLeft: 23,
-                    // textAlign: "center",
-                  }}
-                >{`${item.count} Country`}</Text>
-              </View>
-            ) : (
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginLeft: 15,
-                    marginTop: 10,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 5,
-                      // height: 15,
-                      marginRight: 5,
-                      backgroundColor: "#209FAE",
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                    }}
-                  ></View>
-
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      color: "#464646",
-                      textAlign: "center",
-                    }}
-                  >{`${item.name}`}</Text>
-                </View>
-
-                <Text
-                  type="regular"
-                  size="description"
-                  style={{
-                    color: "#464646",
-                    marginLeft: 23,
-                    // textAlign: "center",
-                  }}
-                >{`${item.count} Country`}</Text>
-              </View>
-            )}
-            {!item.available ? (
-              <View
-                style={{
-                  position: "absolute",
-                  //   backgroundColor: "rgba(0,0,0,0.5)",
-                  width: "30%",
-                  height: "40%",
-                  borderRadius: 4,
-                  left: 65,
-                  top: 70,
-                  zIndex: 999,
-                  //   justifyContent: "center",
-                  //   alignItems: "center",
-                }}
-              >
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{
-                    color: "#808080",
-                    opacity: 0.4,
-                    textAlign: "center",
-                  }}
-                >
-                  Available Soon
-                </Text>
-              </View>
-            ) : null}
-            <View
+          console.log("item", item),
+          (
+            <TouchableOpacity
+              onPress={() =>
+                item.available
+                  ? navigation.navigate(item.screen)
+                  : setSoon(true)
+              }
               style={{
-                justifyContent: "flex-end",
+                borderRadius: 5,
+                backgroundColor: "#FFF",
+                margin: 5,
+                marginTop: 10,
               }}
             >
-              {item.map}
-            </View>
-          </TouchableOpacity>
+              {item.available ? (
+                <View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginLeft: 15,
+                      marginTop: 15,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 5,
+                        // height: 15,
+                        marginRight: 5,
+                        backgroundColor: "#209FAE",
+                        borderTopRightRadius: 20,
+                        borderBottomRightRadius: 20,
+                      }}
+                    ></View>
+
+                    <Text
+                      type="bold"
+                      size="title"
+                      style={{
+                        color: "#464646",
+                        textAlign: "center",
+                      }}
+                    >{`${item.name}`}</Text>
+                  </View>
+                  <Text
+                    type="regular"
+                    size="description"
+                    style={{
+                      color: "#464646",
+                      marginLeft: 23,
+                      // textAlign: "center",
+                    }}
+                  >{`${item.count} Country`}</Text>
+                </View>
+              ) : (
+                <View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginLeft: 15,
+                      marginTop: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 5,
+                        // height: 15,
+                        marginRight: 5,
+                        backgroundColor: "#209FAE",
+                        borderTopRightRadius: 20,
+                        borderBottomRightRadius: 20,
+                      }}
+                    ></View>
+
+                    <Text
+                      type="bold"
+                      size="title"
+                      style={{
+                        color: "#464646",
+                        textAlign: "center",
+                      }}
+                    >{`${item.name}`}</Text>
+                  </View>
+
+                  <Text
+                    type="regular"
+                    size="description"
+                    style={{
+                      color: "#464646",
+                      marginLeft: 23,
+                      // textAlign: "center",
+                    }}
+                  >{`${item.count} Country`}</Text>
+                </View>
+              )}
+              {!item.available ? (
+                <View
+                  style={{
+                    position: "absolute",
+                    //   backgroundColor: "rgba(0,0,0,0.5)",
+                    width: "30%",
+                    height: "40%",
+                    borderRadius: 4,
+                    left: 65,
+                    top: 70,
+                    zIndex: 999,
+                    //   justifyContent: "center",
+                    //   alignItems: "center",
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{
+                      color: "#808080",
+                      opacity: 0.4,
+                      textAlign: "center",
+                    }}
+                  >
+                    Available Soon
+                  </Text>
+                </View>
+              ) : null}
+              <View
+                style={{
+                  justifyContent: "flex-end",
+                }}
+              >
+                {item.map}
+              </View>
+            </TouchableOpacity>
+          )
         )}
       />
     </SafeAreaView>

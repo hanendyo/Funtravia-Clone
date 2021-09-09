@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView, BackHandler, View } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  BackHandler,
+  View,
+  Dimensions,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { gql } from "apollo-boost";
@@ -159,12 +165,7 @@ export default function Notification(props) {
       return true;
     };
 
-    // const backHandler = BackHandler.addEventListener(
-    //   "hardwareBackPress",
-    //   backAction
-    // );
-
-    // return () => backHandler.remove();
+ 
   }, []);
   const [
     GetListNotif,
@@ -254,11 +255,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000000",
     fontFamily: "Lato-Regular",
+    width: Dimensions.get("screen").width * 0.5,
+    textAlign: "center",
+    alignSelf: "center",
   },
   labelActive: {
     fontSize: 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
+    width: Dimensions.get("screen").width * 0.5,
+    textAlign: "center",
+    alignSelf: "center",
   },
   tab: {
     elevation: 1,
