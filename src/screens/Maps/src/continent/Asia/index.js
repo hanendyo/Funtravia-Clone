@@ -1,18 +1,20 @@
 import React, { useEffect, useCallback, useRef } from "react";
 import { useState } from "react";
 import {
-  SafeAreaView,
+  View,
+  Dimensions,
+  Animated,
+  Pressable,
   FlatList,
   TouchableOpacity,
-  View,
-  Pressable,
-  TextInput,
-  BackHandler,
-  ScrollView,
-  KeyboardAvoidingView,
-  Dimensions,
-  Platform,
 } from "react-native";
+import {
+  Arrowbackblack,
+  Next,
+  PinAbu,
+  PinBiru,
+} from "../../../../../assets/svg";
+import { StatusBar, Button, Text } from "../../../../../component";
 import { useTranslation } from "react-i18next";
 import M035 from "./src/new/035";
 import M143 from "./src/new/143";
@@ -22,137 +24,25 @@ import M145 from "./src/new/145";
 import M142 from "./src/new/142";
 import { ISO } from "../../../data/iso";
 import Country from "../../../data/country/index.json";
-import { Text, StatusBar, Button } from "../../../../../component";
-import Flag from "../../../data/flag";
-import {
-  Arrowbackios,
-  Arrowbackwhite,
-  PinAbu,
-  PinBiru,
-  PinHijau,
-  Search,
-  Xhitam,
-} from "../../../../../assets/svg";
-import { Keyboard, KeyboardEvent } from "react-native";
 import DeviceInfo from "react-native-device-info";
+import Flag from "../../../data/flag";
+const Notch = DeviceInfo.hasNotch();
 
 export default function Asia({ navigation }) {
-  const { t, i18n } = useTranslation();
-  const Notch = DeviceInfo.hasNotch();
+  const { t } = useTranslation();
 
   const [changeColor, setChangeColor] = useState("#209FAE");
   const [defaultColor, setDefaultColor] = useState("#DAF0F2");
-  const [Idcountry, setIdcountry] = useState("");
   const [subContinent, setSubContinent] = useState({
     id: "142",
     label: "All",
   });
+  let [countries, setCountries] = useState([]);
+  const [Idcountry, setIdcountry] = useState("");
   const BackUse = useRef(subContinent);
-  const HeaderComponent = {
-    headerTitle: "",
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 16,
-      color: "white",
-      position: BackUse.current.id === 142 ? null : "absolute",
-      top:
-        BackUse.current.id === 142 ? null : Platform.OS == "android" ? -9 : -10,
-    },
 
-    headerLeftContainerStyle: {
-      paddingLeft: 10,
-    },
-    headerLeft: () => (
-      <View style={{ flexDirection: "row" }}>
-        <View>
-          <TouchableOpacity onPress={() => onBackPress()}>
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </TouchableOpacity>
-        </View>
-        {BackUse.current.id === "142" ? null : (
-          <View
-            style={{
-              position: "absolute",
-              left: 40,
-              top: -10,
-
-              width: 120,
-            }}
-          >
-            <Text
-              size="label"
-              type="regular"
-              numberOfLines={1}
-              style={{
-                color: "#FFF",
-                flex: 1,
-                fontFamily: "Lato-Bold",
-                fontSize: 16,
-              }}
-            >
-              Destination
-            </Text>
-            <View style={{}}>
-              <Text
-                style={{
-                  color: "white",
-                  fontFamily: "Lato-Regular",
-                  fontSize: 14,
-                }}
-              >
-                {BackUse.current.label}
-              </Text>
-            </View>
-          </View>
-        )}
-      </View>
-    ),
-
-    headerRight: () => {
-      return null;
-    },
-  };
-
-  // awal keyboardheight
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
-  const onKeyboardShow = (event) =>
-    setKeyboardOffset(event.endCoordinates.height);
-  const onKeyboardHide = () => setKeyboardOffset(0);
-  const keyboardDidShowListener = useRef();
-  const keyboardDidHideListener = useRef();
-
-  useEffect(() => {
-    keyboardDidShowListener.current = Keyboard.addListener(
-      "keyboardWillShow",
-      onKeyboardShow
-    );
-    keyboardDidHideListener.current = Keyboard.addListener(
-      "keyboardWillHide",
-      onKeyboardHide
-    );
-
-    return () => {
-      keyboardDidShowListener.current.remove();
-      keyboardDidHideListener.current.remove();
-    };
-  }, []);
-  // akhir keyboardheight
-
+  //Data subcontinent
   const subContinentData = [
-    // {
-    //   id: "142",
-    //   label: "All",
-    // },
     {
       id: "035",
       label: "South-eastern Asia",
@@ -175,6 +65,7 @@ export default function Asia({ navigation }) {
     },
   ];
 
+  // component for view map
   const Components = {
     cm035: (
       <M035
@@ -227,6 +118,21 @@ export default function Asia({ navigation }) {
     ),
   };
 
+  const onBackPress = useCallback(() => {
+    if (BackUse.current.id !== "142") {
+      setSubContinent({ id: "142" });
+      InitialCountry({ id: "142" });
+      BackUse.current = {
+        id: "142",
+        label: "All",
+      };
+    } else {
+      console.log("tb");
+      navigation.goBack();
+    }
+    return true;
+  }, []);
+
   const InitialCountry = (item) => {
     // console.log(item);
     let data = ISO.filter((data) => {
@@ -252,362 +158,423 @@ export default function Asia({ navigation }) {
     setCountries(data);
   };
 
-  // manipulasi header
-  const setHeader = (item) => {
-    if (item !== "142") {
-      navigation.setOptions(HeaderComponent);
-    } else {
-      navigation.setOptions({ headerTitle: "ASIA" });
-    }
-  };
+  console.log("country", subContinent);
 
-  const onBackPress = useCallback(() => {
-    if (BackUse.current.id !== "142") {
-      setSubContinent({ id: "142" });
-      InitialCountry({ id: "142" });
-      setHeader("142");
-      BackUse.current = {
-        id: "142",
-        label: "All",
-      };
-    } else {
-      console.log("tb");
-      navigation.goBack();
-    }
-    return true;
-  }, []);
-
-  useEffect(() => {
-    navigation.addListener("focus", () => {
-      BackHandler.addEventListener("hardwareBackPress", onBackPress);
-    });
-
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    };
-  }, [navigation, onBackPress]);
-
-  useEffect(() => {
-    InitialCountry();
-  }, []);
-
-  let [countries, setCountries] = useState([]);
-  let [text, setText] = useState("");
-
-  const handleSubmit = (x) => {
-    setText(x);
-    searchcountry(x);
-  };
-
-  const searchcountry = async (e) => {
-    if (e) {
-      let filcountry = countries.filter((item) => {
-        if (item.name.toLowerCase().match(e.toLowerCase())) {
-          return item;
-        }
-      });
-      setCountries(filcountry);
-    } else {
-      InitialCountry(subContinent);
-    }
-  };
-
-  const onClearSearch = () => {
-    setText("");
-    searchcountry();
-  };
-
+  useEffect(() => {}, []);
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        style={
-          {
-            // borderWidth: 1,
-          }
-        }
-      >
-        {/* <StatusBar backgroundColor="#14646e" barStyle="light-content" /> */}
-        {/* filter region */}
+    <View
+      style={{
+        flex: 1,
 
+        width: Dimensions.get("screen").width,
+        backgroundColor: "#FFFFFF",
+      }}
+    >
+      <StatusBar backgroundColor="#14646E" />
+      <View
+        style={{
+          width: Dimensions.get("screen").width,
+
+          height: Platform.select({
+            ios: Notch
+              ? Dimensions.get("screen").height * 0.5
+              : Dimensions.get("screen").height * 0.6,
+            android: Dimensions.get("screen").height * 0.5,
+          }),
+          backgroundColor: "#FFFFFF",
+        }}
+      >
+        {/* view for map destination */}
         <View
           style={{
-            flexWrap: "wrap",
+            backgroundColor: "#f6f6f6",
             marginHorizontal: 15,
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingTop: 5,
-            paddingBottom: 5,
-            alignItems: "center",
-            borderColor: "#D1D1D1",
-            backgroundColor: "#FFF",
-            borderRadius: 5,
-            flexDirection: "row",
-            marginTop: 10,
-            // borderWidth: 1,
-            zIndex: 999999,
-            elevation: 1,
-            shadowColor: "#d3d3d3",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            marginTop: 15,
+
+            height: Platform.select({
+              ios: Notch
+                ? Dimensions.get("screen").height * 0.5 - 15
+                : Dimensions.get("screen").height * 0.6 - 15,
+              android: Dimensions.get("screen").height * 0.5 - 15,
+            }),
           }}
         >
+          <View style={{ flexDirection: "row" }}>
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => onBackPress()}
+              style={{
+                height: 55,
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackblack height={15} width={15}></Arrowbackblack>
+              ) : (
+                <Arrowbackblack height={20} width={20}></Arrowbackblack>
+              )}
+            </Button>
+            <View
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#464646",
+                  marginLeft: 10,
+                  fontSize: 18,
+
+                  fontFamily: "Lato-Bold",
+                }}
+              >
+                {t("destination")}
+              </Text>
+            </View>
+          </View>
+          {/* FOR MAP VIEW */}
           <View
             style={{
-              alignSelf: "center",
+              width: "100%",
+
+              height: Platform.select({
+                ios: Notch
+                  ? Dimensions.get("screen").height * 0.35
+                  : Dimensions.get("screen").height * 0.4,
+                android: Dimensions.get("screen").height * 0.35,
+              }),
+              justifyContent: "center",
             }}
           >
-            <Text
-              style={{
-                paddingLeft: 5,
-                paddingRight: 5,
-              }}
-              size={"description"}
-              type={"regular"}
-            >
-              Region :
-            </Text>
+            {Components[`cm${subContinent.id}`]}
           </View>
-          <FlatList
-            data={subContinentData}
-            contentContainerStyle={{
-              flexDirection: "row",
-              paddingHorizontal: 5,
-              marginTop: 5,
+          <View
+            style={{
+              width: "100%",
+              height: "15%",
+
+              justifyContent: "flex-end",
             }}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  {
-                    setSubContinent(item);
-                    InitialCountry(item);
-                    setHeader(item.id);
-                    BackUse.current = item;
-                  }
-                }}
+          >
+            <Pressable style={{}}>
+              <View
                 style={{
-                  backgroundColor:
-                    subContinent.id === item.id ? "#209FAE" : "#FFF",
-                  borderWidth: 0.5,
-                  borderColor:
-                    subContinent.id === item.id ? "#209FAE" : "#D1D1D1",
-                  paddingVertical: 8,
-                  paddingHorizontal: 10,
-                  borderRadius: 5,
-                  margin: 5,
+                  borderRadius: 10,
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignSelf: "center",
+                  borderColor: "#d3d3d3",
+                  borderWidth: 1,
+                  marginBottom: 10,
+                  backgroundColor: "#FFF",
                 }}
               >
                 <Text
-                  type="bold"
-                  size="description"
                   style={{
-                    color: subContinent.id === item.id ? "#FFF" : "#464646",
+                    color: "#209FAE",
+                    textAlign: "center",
+                    fontSize: 18,
+                    paddingVertical: 5,
+                    paddingHorizontal: 40,
+                    fontFamily: "Lato-Bold",
                   }}
-                >{`${item.label}`}</Text>
-              </TouchableOpacity>
-            )}
-          />
+                >
+                  {subContinent.id != "142" ? subContinent.label : "Asia"}
+                </Text>
+              </View>
+            </Pressable>
+          </View>
         </View>
+      </View>
 
-        {/* akhir filter region */}
+      {/* for continent list jika subcontinent == 142 */}
+      {subContinent.id == "142" ? (
         <View
           style={{
-            height: Platform.select({
-              ios: Notch
-                ? Dimensions.get("screen").height / 3
-                : Dimensions.get("screen").height / 2.5,
-              android: Dimensions.get("screen").height / 3,
-            }),
-
-            alignContent: "center",
-            alignSelf: "center",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {Components[`cm${subContinent.id}`]}
-        </View>
-        <View
-          style={{
-            backgroundColor: "#FFF",
-            shadowColor: "#d3d3d3",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 1,
-            shadowRadius: 2,
-            // marginTop: BackUse.current.id === "142" ? -15 : 0,
-            marginTop: 0,
-            margin: 15,
-            borderRadius: 10,
-            elevation: 1,
-            bottom:
-              Platform.OS === "ios" &&
-              keyboardOffset < 300 &&
-              keyboardOffset > 0
-                ? 80
-                : keyboardOffset > 300
-                ? 50
-                : 0,
-            // marginBottom: 200,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height * 0.5,
           }}
         >
           <View
             style={{
-              backgroundColor: "#f6f6f6",
-              borderRadius: 5,
-              margin: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              alignContent: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 5,
+              borderWidth: 1,
+              borderColor: "#d3d3d3",
+              borderTopRightRadius: 20,
+              borderTopLeftRadius: 20,
+              backgroundColor: "#FFFFFF",
+              height: "100%",
             }}
           >
-            <Search width={15} height={15} />
-
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={t("search")}
+            <View
               style={{
-                // borderWidth: 1,
-                width: "90%",
-                marginLeft: 5,
-                padding: 0,
+                justifyContent: "center",
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d3d3d3",
               }}
-              value={text}
-              returnKeyType="search"
-              onChangeText={(x) => handleSubmit(x)}
-              onSubmitEditing={(x) => handleSubmit(x)}
-            />
-            {text ? (
-              <TouchableOpacity
-                onPress={() => {
-                  onClearSearch();
-                }}
-              >
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "#464646",
-                    padding: 3,
-                    borderRadius: 15,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Xhitam width={7} height={7} />
-                </View>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <FlatList
-            data={countries}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <View
+            >
+              <Text
+                size="title"
+                type="regular"
                 style={{
                   paddingVertical: 15,
-                  paddingHorizontal: 15,
-                  borderBottomColor: "#dedede",
-                  borderBottomWidth: index === countries.length - 1 ? 0 : 1,
-                  marginVertical: 5,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  color: "#209FAE",
                 }}
               >
+                {t("region")}
+              </Text>
+            </View>
+            <FlatList
+              data={subContinentData}
+              contentContainerStyle={{
+                paddingHorizontal: 5,
+                marginTop: 5,
+              }}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
                 <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("CountryStack", {
-                      screen: "Country",
-                      params: {
-                        data: { id: Country[item["alpha-3"]].id },
-                      },
-                    })
-                  }
                   key={index}
+                  onPress={() => {
+                    {
+                      setSubContinent(item);
+                      InitialCountry(item);
+                      // setHeader(item.id);
+                      BackUse.current = item;
+                    }
+                  }}
                   style={{
-                    flexDirection: "row",
-                    flex: 1,
+                    borderBottomWidth: 1,
+                    marginHorizontal: 15,
+                    borderBottomColor: "#d3d3d3",
                   }}
                 >
-                  <Flag
-                    countryid={item["alpha-3"]}
-                    style={{ width: 50, marginRight: 15 }}
-                  />
-                  <Text size="label" type="reguler" style={{ marginLeft: 20 }}>
-                    {item.name}
-                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      marginHorizontal: 5,
+                      marginVertical: 20,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+
+                        alignItems: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 5,
+                          height: "60%",
+                          borderTopRightRadius: 30,
+                          borderBottomRightRadius: 30,
+                          marginRight: 10,
+                          backgroundColor: "#209FAE",
+                        }}
+                      ></View>
+                      <Text
+                        type="regular"
+                        size="readable"
+                      >{`${item.label}`}</Text>
+                    </View>
+                    <View style={{}}>
+                      <Next width={12} height={12} />
+                    </View>
+                  </View>
                 </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      ) : (
+        // for region berdasarkan sub continent
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height * 0.5,
+          }}
+        >
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: "#d3d3d3",
+              borderTopRightRadius: 20,
+              borderTopLeftRadius: 20,
+              backgroundColor: "#FFFFFF",
+              height: "100%",
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+
+                borderBottomWidth: 1,
+                borderBottomColor: "#d3d3d3",
+              }}
+            >
+              <View
+                style={{
+                  width: "70%",
+                  paddingLeft: 50,
+                  // alignItems: "center",
+                  // alignContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="regular"
+                  style={{
+                    paddingVertical: 15,
+                  }}
+                >
+                  {t("country")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: "30%",
+                  paddingLeft: 15,
+                  // alignItems: "center",
+                  // alignContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="regular"
+                  style={{
+                    paddingVertical: 15,
+                  }}
+                >
+                  {t("location")}
+                </Text>
+              </View>
+            </View>
+            <FlatList
+              data={countries}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
                 <View
                   style={{
-                    height: 30,
-                    width: 30,
-                    borderRadius: 50,
-                    alignSelf: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 15,
+                    borderBottomColor: "#dedede",
+                    borderBottomWidth: index === countries.length - 1 ? 0 : 1,
+                    marginVertical: 5,
+                    flexDirection: "row",
                     alignItems: "center",
-                    alignContent: "center",
-                    justifyContent: "center",
-                    // backgroundColor: "rgba(226, 236, 248, 0.85)",
-                    backgroundColor:
-                      Idcountry == item["alpha-3"] ? "#DAF0F2" : "#F6F6F6",
+                    justifyContent: "space-between",
                   }}
                 >
                   <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("CountryStack", {
+                        screen: "Country",
+                        params: {
+                          data: { id: Country[item["alpha-3"]].id },
+                        },
+                      })
+                    }
                     key={index}
-                    onPress={() => {
-                      {
-                        setSubContinent({ id: item["sub-region-code"] }),
-                          setIdcountry(
-                            item["alpha-3"] === Idcountry
-                              ? null
-                              : item["alpha-3"]
-                          );
-                        setHeader(item["sub-region-code"]);
-
-                        BackUse.current = {
-                          id: item["sub-region-code"],
-                          label: item["sub-region"],
-                        };
-                      }
-                    }}
                     style={{
-                      height: 30,
-                      width: 30,
-                      borderRadius: 50,
-                      alignSelf: "center",
-                      alignItems: "center",
-                      alignContent: "center",
-                      justifyContent: "center",
-                      zIndex: 9999,
+                      flex: 1,
                     }}
                   >
-                    {Idcountry == item["alpha-3"] ? (
-                      <PinBiru height={18} width={18} />
-                    ) : (
-                      <PinAbu height={18} width={18} />
-                    )}
+                    <View
+                      style={{
+                        width: "70%",
+
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Flag
+                        countryid={item["alpha-3"]}
+                        style={{ width: 50, marginRight: 15 }}
+                      />
+                      <Text
+                        size="label"
+                        type="reguler"
+                        style={{ marginLeft: 20 }}
+                      >
+                        {item.name}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
+                  <View
+                    style={{
+                      width: "30%",
+
+                      justifyContent: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 30,
+                        width: 30,
+                        borderRadius: 50,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+                        // backgroundColor: "rgba(226, 236, 248, 0.85)",
+                        backgroundColor:
+                          Idcountry == item["alpha-3"] ? "#DAF0F2" : "#F6F6F6",
+                      }}
+                    >
+                      <TouchableOpacity
+                        key={index}
+                        // onPress={() => {
+                        //   {
+                        //     setSubContinent({ id: item["sub-region-code"] }),
+                        //       setIdcountry(
+                        //         item["alpha-3"] === Idcountry
+                        //           ? null
+                        //           : item["alpha-3"]
+                        //       );
+                        //     setHeader(item["sub-region-code"]);
+
+                        //     BackUse.current = {
+                        //       id: item["sub-region-code"],
+                        //       label: item["sub-region"],
+                        //     };
+                        //   }
+                        // }}
+                        style={{
+                          height: 30,
+                          width: 30,
+                          borderRadius: 50,
+                          alignSelf: "center",
+                          alignItems: "center",
+                          alignContent: "center",
+                          justifyContent: "center",
+                          zIndex: 9999,
+                        }}
+                      >
+                        {Idcountry == item["alpha-3"] ? (
+                          <PinBiru height={18} width={18} />
+                        ) : (
+                          <PinAbu height={18} width={18} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
-              </View>
-            )}
-            // contentContainerStyle={{ marginHorizontal: 15 }}
-          />
+              )}
+            />
+          </View>
         </View>
-        <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Notch ? 320 : 170}
-          style={
-            {
-              // backgroundColor: "red",
-            }
-          }
-        ></KeyboardAvoidingView>
-      </ScrollView>
-    </SafeAreaView>
+      )}
+    </View>
   );
 }

@@ -276,11 +276,9 @@ export default function MainStackNavigator({
           name="Asia"
           component={Asia}
           options={{
-            headerShown: true,
-            headerTitle: "Asia",
+            headerShown: false,
+            headerTintColor: "white",
             headerBackTitleVisible: false,
-            headerTintColor: "#FFF",
-            headerStyle: { backgroundColor: "#209FAE" },
           }}
         />
         <Tab.Screen
