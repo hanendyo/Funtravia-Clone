@@ -24,6 +24,8 @@ import {
   Filternewbiru,
   BlockDestination,
   Arrowbackios,
+  UnescoIcon,
+  MovieIcon,
 } from "../../assets/svg";
 import Listdestination from "../../graphQL/Query/Destination/ListDestinationV2";
 import filterDestination from "../../graphQL/Query/Destination/Destinasifilter";
@@ -506,6 +508,7 @@ export default function ItineraryDestination(props) {
 
     await setfiltershow(filterz);
     await setfiltershowcity(filterd);
+    await cekData();
     await setSearch(data);
     await setshow(false);
   };
@@ -550,6 +553,7 @@ export default function ItineraryDestination(props) {
     hasil = hasil.concat(wle);
 
     setfiltershow(hasil);
+    cekData();
   };
 
   const _setSearch = async (teks) => {
@@ -593,6 +597,7 @@ export default function ItineraryDestination(props) {
     }
   };
 
+  const [filterResults, setfilterResults] = useState(0);
   // Count data filter checked//
   const cekData = (data) => {
     let dat = dataFilterCategori.filter((k) => k.checked === true);
@@ -601,8 +606,8 @@ export default function ItineraryDestination(props) {
     let datC = dataFilterCountry.filter((k) => k.checked === true);
 
     let countallFil = dat.length + datF.length + datL.length + datC.length;
-
-    return countallFil;
+    setfilterResults(countallFil);
+    // return countallFil;
   };
 
   const onSelectFilter = async (ceked, id, item) => {
@@ -748,7 +753,7 @@ export default function ItineraryDestination(props) {
         >
           <Filternewbiru width={18} height={18} />
 
-          {cekData() > 0 ? (
+          {filterResults > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
@@ -766,7 +771,7 @@ export default function ItineraryDestination(props) {
                   // alignSelf: "center",
                 }}
               >
-                {cekData(dataFilterCategori)}
+                {filterResults}
               </Text>
             </View>
           ) : null}
@@ -993,72 +998,119 @@ export default function ItineraryDestination(props) {
 
                 <View
                   style={{
+                    flex: 1,
                     flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 50,
-                    marginTop: 10,
-                    alignItems: "flex-end",
+                    marginTop: 5,
                   }}
                 >
-                  <View>
-                    <Text size="description" type="bold">
-                      Great for :
-                    </Text>
-                    <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "flex-end",
+                      // borderWidth: 1,
+                      paddingHorizontal: 7,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      {item?.movie_location?.length > 0 ? (
+                        <UnescoIcon
+                          height={33}
+                          width={33}
+                          style={{ marginRight: 5 }}
+                        />
+                      ) : null}
+                      {item?.name_type.toLowerCase().substr(0, 6) ==
+                      "unesco" ? (
+                        <MovieIcon height={33} width={33} />
+                      ) : null}
+                    </View>
+                    <View
+                      style={{
+                        marginBottom: item.greatfor.length > 0 ? 0 : 7,
+                      }}
+                    >
                       {item.greatfor.length > 0 ? (
-                        item.greatfor.map((item, index) => {
-                          return index < 3 ? (
-                            <FunIcon
-                              key={index}
-                              icon={item.icon}
-                              fill="#464646"
-                              height={35}
-                              width={35}
-                            />
-                          ) : null;
-                        })
-                      ) : (
-                        <Text>-</Text>
-                      )}
+                        <Text
+                          size="label"
+                          type="bold"
+                          // style={{ marginLeft: 5 }}
+                        >
+                          {t("GreatFor") + " :"}
+                        </Text>
+                      ) : null}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginLeft: -5,
+                        }}
+                      >
+                        {item.greatfor.length > 0
+                          ? item.greatfor.map((item, index) => {
+                              return index < 3 ? (
+                                <FunIcon
+                                  key={"grat" + index}
+                                  icon={item.icon}
+                                  fill="#464646"
+                                  height={40}
+                                  width={40}
+                                />
+                              ) : null;
+                            })
+                          : null}
+                      </View>
                     </View>
                   </View>
-                  <Button
-                    onPress={() => {
-                      if (token && token !== "" && token !== null) {
-                        props.route.params && props.route.params.iditinerary
-                          ? props.navigation.dispatch(
-                              StackActions.replace("ItineraryStack", {
-                                screen: "ItineraryChooseday",
-                                params: {
-                                  Iditinerary: props.route.params.iditinerary,
-                                  Kiriman: item.id,
-                                  token: token,
-                                  Position: "destination",
-                                  datadayaktif: props.route.params.datadayaktif,
-                                },
-                              })
-                            )
-                          : props.navigation.push("ItineraryStack", {
-                              screen: "ItineraryPlaning",
-                              params: {
-                                idkiriman: item.id,
-                                Position: "destination",
-                              },
-                            });
-                      } else {
-                        props.navigation.navigate("AuthStack", {
-                          screen: "LoginScreen",
-                        });
-                        RNToasty.Show({
-                          title: t("pleaselogin"),
-                          position: "bottom",
-                        });
-                      }
+                  <View
+                    style={{
+                      justifyContent: "flex-end",
+                      width: 70,
+                      paddingBottom: 5,
+                      paddingRight: 5,
                     }}
-                    size="small"
-                    text={"Add"}
-                    // style={{ marginTop: 15 }}
-                  />
+                  >
+                    <Button
+                      onPress={() => {
+                        if (token && token !== "" && token !== null) {
+                          props.route.params && props.route.params.iditinerary
+                            ? props.navigation.dispatch(
+                                StackActions.replace("ItineraryStack", {
+                                  screen: "ItineraryChooseday",
+                                  params: {
+                                    Iditinerary: props.route.params.iditinerary,
+                                    Kiriman: item.id,
+                                    token: token,
+                                    Position: "destination",
+                                    datadayaktif:
+                                      props.route.params.datadayaktif,
+                                  },
+                                })
+                              )
+                            : props.navigation.push("ItineraryStack", {
+                                screen: "ItineraryPlaning",
+                                params: {
+                                  idkiriman: item.id,
+                                  Position: "destination",
+                                },
+                              });
+                        } else {
+                          props.navigation.navigate("AuthStack", {
+                            screen: "LoginScreen",
+                          });
+                          RNToasty.Show({
+                            title: t("pleaselogin"),
+                            position: "bottom",
+                          });
+                        }
+                      }}
+                      size="small"
+                      text={"Add"}
+                      // style={{ marginTop: 15 }}
+                    />
+                  </View>
                 </View>
               </View>
             </Pressable>
@@ -1096,7 +1148,7 @@ export default function ItineraryDestination(props) {
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: 15,
-              paddingVertical: 20,
+              paddingVertical: 15,
             }}
           >
             <Text
@@ -1217,42 +1269,6 @@ export default function ItineraryDestination(props) {
                   </Text>
                 </View>
               </Pressable>
-              {/* 
-              <Pressable
-                onPress={() => {
-                  setaktif("country");
-                }}
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  paddingBottom: 5,
-                }}
-              >
-                <View
-                  style={{
-                    borderLeftColor:
-                      aktif === "country" ? "#209fae" : "#f6f6f6",
-                    borderLeftWidth: aktif === "country" ? 5 : 0,
-                    marginLeft: aktif === "country" ? 5 : 10,
-                    justifyContent: "center",
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    backgroundColor: aktif === "country" ? "#ffff" : "#f6f6f6",
-                  }}
-                >
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      // fontSize: 20,
-                      // fontFamily: "Lato-Bold",
-                      color: "#464646",
-                      // marginTop: 10,
-                    }}
-                  >
-                    {t("country")}
-                  </Text>
-                </View>
-              </Pressable> */}
 
               <Pressable
                 onPress={() => {
@@ -1278,10 +1294,7 @@ export default function ItineraryDestination(props) {
                     type="bold"
                     size="title"
                     style={{
-                      // fontSize: 20,
-                      // fontFamily: "Lato-Bold",
                       color: "#464646",
-                      // marginTop: 10,
                     }}
                   >
                     {t("location")}
@@ -1368,7 +1381,9 @@ export default function ItineraryDestination(props) {
                           }),
                         }}
                         onValueChange={() =>
-                          _handleCheck(item["id"], index, item)
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheck(item["id"], index, item)
                         }
                         value={item["checked"]}
                       />
