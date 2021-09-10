@@ -24,7 +24,13 @@ import {
   Logofuntravianew,
   BlockDestination,
 } from "../../../assets/svg";
-import { Button, FunImage, Text, Truncate } from "../../../component";
+import {
+  Button,
+  FunImage,
+  NavigateAction,
+  Text,
+  Truncate,
+} from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import MovieLocationQuery from "../../../graphQL/Query/TravelIdeas/MovieLocation";
@@ -211,8 +217,6 @@ export default function MovieLocation({ navigation, route }) {
     movie_most_populer = datafirst.movie_most_populer;
   }
 
-  console.log("movie_most_populer", movie_most_populer);
-
   const [Banner, SetDataBanner] = useState();
   const {
     data: dataBanner,
@@ -384,9 +388,21 @@ export default function MovieLocation({ navigation, route }) {
             textAlign: "left",
           }}
         >
-          This top movie location for you, get inspired for your next trip.
+          {t("subTitleMovie")}
         </Text>
       </View>
+      {loadingDestinationMovie ? (
+        <View
+          style={{
+            height: 220,
+            width: Dimensions.get("screen").width - 30,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#209fae" />
+        </View>
+      ) : null}
       <ImageSlider
         key={"imagesliderjournalsdsd"}
         images={
@@ -510,7 +526,7 @@ export default function MovieLocation({ navigation, route }) {
         >
           <BlockDestination height={20} width={20} style={{ marginLeft: -7 }} />
           <Text size="title" type="bold" style={{ paddingBottom: 3 }}>
-            Travel Inspiration
+            {t("insirationTravel")}
           </Text>
         </View>
         <Text
@@ -523,45 +539,68 @@ export default function MovieLocation({ navigation, route }) {
             marginTop: 15,
           }}
         >
-          Many famous movie locations are real and you can visit them. So,
-          although you might not actually be a wizard or an archaeologist
-          searching hidden treasure, you can relive the movie magic yourself.
+          {t("subInspirasiMovie")}
         </Text>
-        <Pressable
-          style={{
-            height: 220,
-            width: Dimensions.get("screen").width - 30,
-            backgroundColor: "#fff",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 1.41,
-            elevation: 2,
-            marginHorizontal: 15,
-            marginTop: 20,
-            borderRadius: 5,
-          }}
-        >
-          <Image
-            source={
-              movie_most_populer ? { uri: movie_most_populer?.cover } : null
-            }
+        {loadingfirst ? (
+          <View
             style={{
-              borderTopLeftRadius: 5,
-              borderTopRightRadius: 5,
-              height: "70%",
+              height: 220,
+              width: Dimensions.get("screen").width - 30,
+              justifyContent: "center",
+              alignItems: "center",
             }}
-          />
-          <View style={{ flex: 1, padding: 10 }}>
-            <Text size="title" type="bold" style={{ lineHeight: 20 }}>
-              Visit the beatiful location from '{movie_most_populer?.title}' on
-              a short trip
-            </Text>
+          >
+            <ActivityIndicator size="large" color="#209fae" />
           </View>
-        </Pressable>
+        ) : null}
+        {movie_most_populer &&
+          movie_most_populer.length > 0 &&
+          movie_most_populer.map((item, index) => {
+            return (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("TravelIdeaStack", {
+                    screen: "Detail_movie",
+                    params: {
+                      movie_id: item.id,
+                    },
+                  });
+                }}
+                key={"key detail" + index}
+                style={{
+                  height: 220,
+                  width: Dimensions.get("screen").width - 30,
+                  backgroundColor: "#fff",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 1,
+                  },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 1.41,
+                  elevation: 2,
+                  marginHorizontal: 15,
+                  marginTop: 20,
+                  borderRadius: 5,
+                }}
+              >
+                <Image
+                  source={item ? { uri: item?.cover } : null}
+                  style={{
+                    borderTopLeftRadius: 5,
+                    borderTopRightRadius: 5,
+                    height: "70%",
+                  }}
+                />
+                <View style={{ flex: 1, padding: 10 }}>
+                  <Text size="title" type="bold" style={{ lineHeight: 20 }}>
+                    {t("titleInspirasiMovie1")} '{item?.title}'
+                    {t("titleInspirasiMovie2")}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          })}
       </View>
     </ScrollView>
   );
