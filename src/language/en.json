@@ -651,5 +651,13 @@
   "welcomeToFuntravia": "Welcome to Funtravia",
   "textRecommendation": "Recommendation Movie Location in ",
   "filmLocation": "Movie Location",
-  "getVacation": "Get ready to travel "
+  "getVacation": "Get ready to travel ",
+  "subTitleMovie": "This top movie location for you, get inspired for your next trip.",
+  "insirationTravel": "Travel Inspiration",
+  "subInspirasiMovie": "Many famous movie locations are real and you can visit them. So, although you might not actually be a wizard or an archaeologist searching hidden treasure, you can relive the movie magic yourself.",
+  "titleInspirasiMovie1": "Visit the beatiful location from ",
+  "titleInspirasiMovie2": " on a short trip.",
+  "batasText1": "Interes to visit ",
+  "batasText2": " movie location taken place ?",
+  "letsText": "Let’s add those location for your trip!"
 }
