@@ -6,7 +6,7 @@ import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import { Text, Button } from "../../component";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Loading } from "../../component/index";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
@@ -43,7 +43,11 @@ export default function Following(props) {
           marginLeft: 5,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
