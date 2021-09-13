@@ -212,7 +212,7 @@ export default function Review({ item, index }, onSelect, props, token, t) {
           })
         }
       >
-        <Sharegreen />
+        <Sharegreen width={15} height={15} />
         <Text style={{ marginLeft: 5 }} type={"regular"} size={"description"}>
           {t("Sharethisreview")}
         </Text>

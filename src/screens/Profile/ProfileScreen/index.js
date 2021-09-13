@@ -1737,7 +1737,8 @@ export default function OtherProfile(props) {
           zIndex: 9999,
           opacity: hides.current,
           flexDirection: "row",
-          alignContent: "center",
+          justifyContent: position === "other" ? "space-between" : null,
+          alignContent: "flex-start",
           alignItems: "center",
           marginLeft: 10,
           height: 55,
@@ -1778,12 +1779,41 @@ export default function OtherProfile(props) {
             opacity: hides.current,
             color: "#fff",
             marginLeft: 10,
+            width: "70%",
+            textAlign: "left",
             fontSize: 16,
             fontFamily: "Lato-Bold",
           }}
         >
           {t("profile")}
         </Animated.Text>
+        {position && position === "other" ? (
+          <View
+            style={{
+              marginRight: 15,
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <Ripple
+              onPress={() => _handlemessage(props.route.params.idUser, token)}
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              style={{
+                zIndex: 99999999,
+                height: 50,
+                width: 50,
+
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Message height={20} width={20}></Message>
+            </Ripple>
+          </View>
+        ) : null}
       </Animated.View>
       {/* header after scroll */}
       <Animated.View
@@ -1794,6 +1824,7 @@ export default function OtherProfile(props) {
           opacity: hide.current,
           flexDirection: "row",
           alignContent: "center",
+          justifyContent: position === "other" ? "space-between" : null,
           alignItems: "center",
           marginLeft: 10,
           height: 55,
@@ -1846,12 +1877,14 @@ export default function OtherProfile(props) {
         <Animated.View
           style={{
             opacity: hide.current,
+            width: "50%",
           }}
         >
           <Text
             // type="bold"
             style={{
               color: "#fff",
+
               fontFamily: "Lato-Bold",
               fontSize: 16,
             }}
@@ -1860,6 +1893,33 @@ export default function OtherProfile(props) {
             {data?.user_profilebyid?.last_name}
           </Text>
         </Animated.View>
+        {position && position === "other" ? (
+          <View
+            style={{
+              marginRight: 15,
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <Ripple
+              onPress={() => _handlemessage(props.route.params.idUser, token)}
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              style={{
+                zIndex: 99999999,
+                height: 50,
+                width: 50,
+
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Message height={20} width={20}></Message>
+            </Ripple>
+          </View>
+        ) : null}
       </Animated.View>
 
       {renderTabView()}

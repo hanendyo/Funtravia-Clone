@@ -23,6 +23,13 @@ import { Text, Button } from "../../component";
 import { View } from "native-base";
 import { SvgCss } from "react-native-svg";
 import { useTranslation } from "react-i18next";
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
+
+const HeightFlatlist = Platform.select({
+  ios: Notch ? 115 : 55,
+  android: 115,
+});
 export default function World({ navigation }) {
   let { t, i18n } = useTranslation();
   let [soon, setSoon] = useState(false);
@@ -181,7 +188,7 @@ export default function World({ navigation }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           alignItems: "center",
-          height: ContentHeight - 115,
+          height: ContentHeight - HeightFlatlist,
           backgroundColor: "#FFFFFF",
           marginVertical: 5,
           shadowColor: "#FFF",
@@ -194,144 +201,140 @@ export default function World({ navigation }) {
 
           elevation: 6,
           marginLeft: 10,
+          overflow: "hidden",
           //   marginTop: -5,
           marginRight: 10,
           borderRadius: 20,
         }}
         scrollEnabled={false}
         renderItem={({ item }) => (
-          console.log("item", item),
-          (
-            <TouchableOpacity
-              onPress={() =>
-                item.available
-                  ? navigation.navigate(item.screen)
-                  : setSoon(true)
-              }
-              style={{
-                borderRadius: 5,
-                backgroundColor: "#FFF",
-                margin: 5,
-                marginTop: 10,
-              }}
-            >
-              {item.available ? (
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginLeft: 15,
-                      marginTop: 15,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 5,
-                        // height: 15,
-                        marginRight: 5,
-                        backgroundColor: "#209FAE",
-                        borderTopRightRadius: 20,
-                        borderBottomRightRadius: 20,
-                      }}
-                    ></View>
-
-                    <Text
-                      type="bold"
-                      size="title"
-                      style={{
-                        color: "#464646",
-                        textAlign: "center",
-                      }}
-                    >{`${item.name}`}</Text>
-                  </View>
-                  <Text
-                    type="regular"
-                    size="description"
-                    style={{
-                      color: "#464646",
-                      marginLeft: 23,
-                      // textAlign: "center",
-                    }}
-                  >{`${item.count} Country`}</Text>
-                </View>
-              ) : (
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginLeft: 15,
-                      marginTop: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 5,
-                        // height: 15,
-                        marginRight: 5,
-                        backgroundColor: "#209FAE",
-                        borderTopRightRadius: 20,
-                        borderBottomRightRadius: 20,
-                      }}
-                    ></View>
-
-                    <Text
-                      type="bold"
-                      size="title"
-                      style={{
-                        color: "#464646",
-                        textAlign: "center",
-                      }}
-                    >{`${item.name}`}</Text>
-                  </View>
-
-                  <Text
-                    type="regular"
-                    size="description"
-                    style={{
-                      color: "#464646",
-                      marginLeft: 23,
-                      // textAlign: "center",
-                    }}
-                  >{`${item.count} Country`}</Text>
-                </View>
-              )}
-              {!item.available ? (
+          <TouchableOpacity
+            onPress={() =>
+              item.available ? navigation.navigate(item.screen) : setSoon(true)
+            }
+            style={{
+              borderRadius: 5,
+              backgroundColor: "#FFF",
+              margin: 5,
+              marginTop: 10,
+            }}
+          >
+            {item.available ? (
+              <View>
                 <View
                   style={{
-                    position: "absolute",
-                    //   backgroundColor: "rgba(0,0,0,0.5)",
-                    width: "30%",
-                    height: "40%",
-                    borderRadius: 4,
-                    left: 65,
-                    top: 70,
-                    zIndex: 999,
-                    //   justifyContent: "center",
-                    //   alignItems: "center",
+                    flexDirection: "row",
+                    marginLeft: 15,
+                    marginTop: 15,
                   }}
                 >
-                  <Text
-                    size="description"
-                    type="bold"
+                  <View
                     style={{
-                      color: "#808080",
-                      opacity: 0.4,
+                      width: 5,
+                      // height: 15,
+                      marginRight: 5,
+                      backgroundColor: "#209FAE",
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                    }}
+                  ></View>
+
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      color: "#464646",
                       textAlign: "center",
                     }}
-                  >
-                    Available Soon
-                  </Text>
+                  >{`${item.name}`}</Text>
                 </View>
-              ) : null}
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{
+                    color: "#464646",
+                    marginLeft: 23,
+                    // textAlign: "center",
+                  }}
+                >{`${item.count} Country`}</Text>
+              </View>
+            ) : (
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginLeft: 15,
+                    marginTop: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 5,
+                      // height: 15,
+                      marginRight: 5,
+                      backgroundColor: "#209FAE",
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                    }}
+                  ></View>
+
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      color: "#464646",
+                      textAlign: "center",
+                    }}
+                  >{`${item.name}`}</Text>
+                </View>
+
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{
+                    color: "#464646",
+                    marginLeft: 23,
+                    // textAlign: "center",
+                  }}
+                >{`${item.count} Country`}</Text>
+              </View>
+            )}
+            {!item.available ? (
               <View
                 style={{
-                  justifyContent: "flex-end",
+                  position: "absolute",
+                  //   backgroundColor: "rgba(0,0,0,0.5)",
+                  width: "30%",
+                  height: "40%",
+                  borderRadius: 4,
+                  left: 65,
+                  top: 70,
+                  zIndex: 999,
+                  //   justifyContent: "center",
+                  //   alignItems: "center",
                 }}
               >
-                {item.map}
+                <Text
+                  size="description"
+                  type="bold"
+                  style={{
+                    color: "#808080",
+                    opacity: 0.4,
+                    textAlign: "center",
+                  }}
+                >
+                  Available Soon
+                </Text>
               </View>
-            </TouchableOpacity>
-          )
+            ) : null}
+            <View
+              style={{
+                justifyContent: "flex-end",
+              }}
+            >
+              {item.map}
+            </View>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>
