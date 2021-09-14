@@ -170,7 +170,7 @@ export default function Message({ navigation, route }) {
   };
   const myStateRef = React.useRef(searchAktif);
   const onBackPress = useCallback(() => {
-    console.log(myStateRef);
+    // console.log(myStateRef);
     if (myStateRef.current == true) {
       _searchNonaktifFunction();
       setSearchAktif(false);
@@ -221,7 +221,7 @@ export default function Message({ navigation, route }) {
   };
 
   const getRoomGroup = async () => {
-    console.log("EXEC");
+    // console.log("EXEC");
     let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
       method: "GET",
@@ -294,7 +294,7 @@ export default function Message({ navigation, route }) {
 
   const _searchHandle = (text) => {
     // if (active == "personal") {
-    console.log(text);
+    // console.log(text);
     SetSearchtext(text);
     if (text !== "") {
       let newData = data.filter(function(str) {

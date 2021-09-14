@@ -113,8 +113,6 @@ export default function SendMovie({ navigation, route }) {
 
   const setChatHistory = async (data) => {
     let history = await AsyncStorage.getItem("history_" + data.room);
-    console.log("history", history);
-
     if (history) {
       let recent = JSON.parse(history);
       if (data) {
@@ -147,7 +145,7 @@ export default function SendMovie({ navigation, route }) {
       await setToken(token);
       await _setSearch(null);
       await querywith();
-      console.log(token);
+      // console.log(token);
     }
 
     let data = await AsyncStorage.getItem("setting");
@@ -164,7 +162,6 @@ export default function SendMovie({ navigation, route }) {
   const [dataGroup, setDataGroup] = useState([]);
   // console.log(dataGroupRes);
   const getRoomGroup = async () => {
-    console.log("EXEC");
     setloading(true);
     let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
@@ -240,14 +237,14 @@ export default function SendMovie({ navigation, route }) {
       if (responseJson) {
         socket.emit("join", responseJson.id);
         socket.on("connection", (socket) => {
-          console.log(socket);
-          console.log("socket");
+          // console.log(socket);
+          // console.log("socket");
         });
         let dataMovie = route.params.movie;
         let constain = {
           id: dataMovie?.id,
           cover: dataMovie?.cover,
-          name: dataMovie?.name,
+          name: dataMovie?.title,
           description: dataMovie?.description,
         };
         let uuid = create_UUID();
@@ -320,21 +317,21 @@ export default function SendMovie({ navigation, route }) {
       setIndexGroup(index);
       await socket.emit("join", value.group_id);
       await socket.on("connection", (socket) => {
-        console.log(socket);
-        console.log("socket");
+        // console.log(socket);
+        // console.log("socket");
       });
       let from = value.itinerary ? "itinerary" : "group";
       let dataMovie = route.params.movie;
       let constain = {
         id: dataMovie?.id,
         cover: dataMovie?.cover,
-        name: dataMovie?.name,
+        name: dataMovie?.title,
         description: dataMovie?.description,
       };
       let chatData = {
         room: value.group_id,
         chat: "group",
-        type: "tag_destination",
+        type: "tag_movie",
         text: JSON.stringify(constain),
         user_id: user.id,
       };
@@ -351,7 +348,7 @@ export default function SendMovie({ navigation, route }) {
         } ${user.last_name}`,
       });
       await socket.emit("message", chatData);
-      console.log("kal", value);
+      // console.log("kal", value);
       RNToasty.Show({
         duration: 1,
         title: t("successfullySent"),

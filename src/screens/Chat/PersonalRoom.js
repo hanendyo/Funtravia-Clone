@@ -31,6 +31,7 @@ import {
   CameraChat,
   Keyboard as IconKeyboard,
   Xgray,
+  Errorr,
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -74,6 +75,7 @@ const keyboards = [
 ];
 
 export default function Room({ navigation, route }) {
+  // console.log("route", route);
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
@@ -93,10 +95,10 @@ export default function Room({ navigation, route }) {
       Authorization: token,
     },
   });
-  // console.log(token);
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
-  console.log(message.reverse(), "msg");
+  // console.log(message.reverse(), "msg");
+  console.log(message, "msg");
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -109,7 +111,6 @@ export default function Room({ navigation, route }) {
   const [keyboardOpenState, SetkeyboardOpenState] = useState(false);
 
   const onKeyboardItemSelected = (keyboardId, params) => {
-    console.log("utemselected");
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(
       params
     )}`;
@@ -175,7 +176,6 @@ export default function Room({ navigation, route }) {
   }, [connection_check]);
 
   const onHeightChanged = (keyboardAccessoryViewHeight) => {
-    // console.log(keyboardAccessoryViewHeight);
     if (Platform.OS == "ios") {
       // this.setState({ keyboardAccessoryViewHeight });
     }
@@ -247,7 +247,6 @@ export default function Room({ navigation, route }) {
       // cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
-      // console.log(image);
       let id = create_UUID();
       let dateTime = new Date();
       image = JSON.stringify(image);
@@ -279,33 +278,37 @@ export default function Room({ navigation, route }) {
       cropping: true,
       // cropperCircleOverlay: true,
       // includeBase64: true,
-    }).then((image) => {
-      console.log(image);
-      let id = create_UUID();
-      let dateTime = new Date();
-      image = JSON.stringify(image);
-      let chatData = {
-        id: id,
-        room: room,
-        chat: "personal",
-        type: "att_image",
-        text: image,
-        user_id: user.id,
-        time: dateTime,
-        is_send: false,
-      };
-      setChatHistory(chatData);
-      setTimeout(function() {
-        _uploadimage(image, id);
-        if (flatListRef !== null && flatListRef.current) {
-          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-        }
-      }, 1000);
-      setmodalCamera(false);
-    });
+    })
+      .then((image) => {
+        let id = create_UUID();
+        let dateTime = new Date();
+        image = JSON.stringify(image);
+        let chatData = {
+          id: id,
+          room: room,
+          chat: "personal",
+          type: "att_image",
+          text: image,
+          user_id: user.id,
+          time: dateTime,
+          is_send: false,
+        };
+        setChatHistory(chatData);
+        setTimeout(function() {
+          _uploadimage(image, id);
+          if (flatListRef !== null && flatListRef.current) {
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          }
+        }, 1000);
+        setmodalCamera(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const _uploadimage = async (image, id) => {
+    let chatData = {};
     try {
       image = JSON.parse(image);
       var today = new Date();
@@ -326,7 +329,6 @@ export default function Room({ navigation, route }) {
             ? image.path
             : image.path.replace("file://", ""),
       });
-      console.log("formData", formData);
       let response = await fetch(
         `${RESTFULL_API}room/personal/upload_image_chat`,
         {
@@ -340,7 +342,6 @@ export default function Room({ navigation, route }) {
         }
       );
       let responseJson = await response.json();
-      // console.log("responseJson", responseJson);
       if (responseJson.status == true) {
         // getUserAndToken();
         let dateTime = new Date();
@@ -380,7 +381,6 @@ export default function Room({ navigation, route }) {
       //   title: "error : someting wrong!",
       //   position: "bottom",
       // });
-      // console.log(error);
     }
   };
 
@@ -469,18 +469,18 @@ export default function Room({ navigation, route }) {
       paddingRight: 20,
     },
   };
-  // console.log("----", socket.connected);
 
   useEffect(() => {
     socket.emit("join", room);
-    socket.on("connect", () => {
-      console.log("socket_connect");
-    });
+    // socket.on("connect", () => {
+    //   console.log("socket_connect");
+    // });
     navigation.setOptions(navigationOptions);
     if (init) {
       getUserToken();
     }
     socket.on("new_chat_personal", (data) => {
+      console.log("data useeffcet", data);
       setChatHistory(data);
     });
 
@@ -504,7 +504,6 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistoryRecive = async (data) => {
-    console.log("r", data);
     let history = await AsyncStorage.getItem("history_" + room);
     let recent = JSON.parse(history);
     recent.push(data);
@@ -514,6 +513,7 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistory = async (data) => {
+    console.log("data history", data);
     let history = await AsyncStorage.getItem("history_" + room);
     let recent = JSON.parse(history);
     if (recent) {
@@ -523,6 +523,7 @@ export default function Room({ navigation, route }) {
       } else {
         recent.unshift(data);
       }
+      console.log("Recent", recent);
       setMessage(recent);
       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
     } else {
@@ -532,7 +533,6 @@ export default function Room({ navigation, route }) {
   };
 
   const initialHistory = async (access_token) => {
-    console.log("access_token", access_token);
     let response = await fetch(
       `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
       {
@@ -557,8 +557,6 @@ export default function Room({ navigation, route }) {
     } else if (!init_data) {
       filteredList = init_local;
     }
-    console.log("fit", filteredList);
-    console.log("local", init_local);
     if (filteredList && filteredList.length > 0) {
       await AsyncStorage.setItem(
         "history_" + room,
@@ -579,7 +577,6 @@ export default function Room({ navigation, route }) {
     }
   };
   const handleOnStartReached = () => {
-    console.log("infinty");
     if (bank_message.length > 0 && indexmessage < bank_message.length - 1) {
       // setMessage((m) => {
       //   return bank_message[indexmessage + 1].concat();
@@ -648,7 +645,6 @@ export default function Room({ navigation, route }) {
 
   const submitSticker = async (x) => {
     // if (button) {
-    // console.log("ini X", x);
     if (x && x.replace(/\s/g, "").length) {
       await setButton(false);
       let chatData = {
@@ -689,6 +685,7 @@ export default function Room({ navigation, route }) {
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
+    // console.log("item render", item);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
@@ -746,15 +743,26 @@ export default function Room({ navigation, route }) {
           ]}
         >
           {user.id == item.user_id ? (
-            <Text
-              size="small"
+            <View
               style={{
-                marginRight: 5,
-                color: item.is_send == false ? "#D75995" : "#464646",
+                flexDirection: "row",
+                // borderWidth: 1,
+                alignItems: "center",
               }}
             >
-              {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-            </Text>
+              {item.is_send == false ? <Errorr height={15} width={15} /> : null}
+              <Text
+                size="small"
+                style={{
+                  marginRight: 5,
+                  // color: item.is_send == false ? "#D75995" : "#464646",
+                  color: "#464646",
+                  marginLeft: 5,
+                }}
+              >
+                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+              </Text>
+            </View>
           ) : null}
           <ChatTypelayout
             item={item}
@@ -805,7 +813,7 @@ export default function Room({ navigation, route }) {
         {message && message.length > 0 ? (
           <FlatList
             ref={flatListRef}
-            data={message.reverse()}
+            data={message}
             // inverted={true}
             // onContentSizeChange={() => {
             //   // if (flatListRef !== null && flatListRef.current) {
@@ -1248,7 +1256,7 @@ export default function Room({ navigation, route }) {
             justifyContent: "space-around",
             alignItems: "center",
             borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 15,
           }}
         >
           <View

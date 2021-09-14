@@ -6,23 +6,22 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Image,
   FlatList,
   SafeAreaView,
   StatusBar,
-  Alert,
   Dimensions,
   Pressable,
   BackHandler,
+  Modal as ModalRN,
 } from "react-native";
 import io from "socket.io-client";
 import {
   Arrowbackwhite,
   Send,
-  Smile,
   Chat,
-  Sticker,
   Emoticon,
+  CameraChat,
+  Xgray,
 } from "../../assets/svg";
 import { Button, Text, FunImage, StickerModal } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
@@ -34,12 +33,13 @@ import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
 import { default_image } from "../../assets/png";
 import { Keyboard } from "react-native-ui-lib";
+import ImagePicker from "react-native-image-crop-picker";
 import ChatTypelayout from "./ChatTypelayout";
 
 export default function Room({ navigation, route }) {
   const Notch = DeviceInfo.hasNotch();
-  // console.log("route group room", route);
   const { width, height } = Dimensions.get("screen");
+  const [modal_camera, setmodalCamera] = useState(false);
   const [room, setRoom] = useState(route.params.room_id);
   const [from, setfrom] = useState(route.params.from);
   const [user, setUser] = useState({});
@@ -49,12 +49,13 @@ export default function Room({ navigation, route }) {
   const socket = io(CHATSERVER);
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
+  console.log("message", message);
   let flatListRef = useRef();
   const [keyboardOpenState, SetkeyboardOpenState] = useState(false);
   const refInput = useRef();
 
   const [dataDetail, setDatadetail] = useState();
-  // console.log(dataDetail);
+  // console.log("dataDetail", dataDetail);
   const KeyboardUtils = Keyboard.KeyboardUtils;
 
   const { t } = useTranslation();
@@ -186,7 +187,6 @@ export default function Room({ navigation, route }) {
     let dataResponse = await response.json();
     if (dataResponse.status == true) {
       await setDatadetail(dataResponse.grup);
-      console.log(dataResponse.grup);
       let update_header = {
         headerLeft: () => (
           <View
@@ -328,16 +328,12 @@ export default function Room({ navigation, route }) {
   }, [onBackPress]);
 
   useEffect(() => {
-    console.log("a");
-    socket.emit("join", room);
     navigation.setOptions(headerOptions);
     if (init) {
       getUserToken();
-      // setConnection();
     }
     socket.on("new_chat_group", (data) => {
       setChatHistory(data);
-      console.log("b");
     });
     socket.emit("join", room);
     return () => socket.disconnect();
@@ -391,7 +387,6 @@ export default function Room({ navigation, route }) {
       }
     );
     let responseJson = await response.json();
-    // console.log(room);
     if (responseJson.data) {
       await AsyncStorage.setItem(
         "history_" + room,
@@ -448,8 +443,6 @@ export default function Room({ navigation, route }) {
   };
 
   const submitSticker = async (x) => {
-    // if (button) {
-    // console.log("ini X", x);
     if (x && x.replace(/\s/g, "").length) {
       await setButton(false);
       let chatData = {
@@ -658,12 +651,182 @@ export default function Room({ navigation, route }) {
   //     }
   //   };
 
+  function create_UUID() {
+    var dt = new Date().getTime();
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+      c
+    ) {
+      var r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+    });
+    return uuid;
+  }
+
+  const pickcamera = async () => {
+    let chatData = {};
+    ImagePicker.openCamera({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      // cropperCircleOverlay: true,
+      // includeBase64: true,
+    })
+      .then((image) => {
+        let id = create_UUID();
+        let dateTime = new Date();
+        image = JSON.stringify(image);
+        let chatData = {
+          id: id,
+          room: room,
+          chat: "gorup",
+          type: "att_image",
+          text: image,
+          user_id: user.id,
+          time: dateTime,
+          is_send: false,
+        };
+        setChatHistory(chatData);
+        // setTimeout(function() {
+        //   _uploadimage(image, id);
+        //   if (flatListRef !== null && flatListRef.current) {
+        //     flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+        //   }
+        // }, 1000);
+        // setmodalCamera(false);
+      })
+      .catch((err) => {
+        RNToasty.Show({
+          title: "",
+          position: "bottom",
+        });
+      });
+  };
+
+  const pickGallery = async () => {
+    ImagePicker.openPicker({
+      // width: 500,
+      // height: 500,
+      cropping: true,
+      // cropperCircleOverlay: true,
+      // includeBase64: true,
+    })
+      .then((image) => {
+        let id = create_UUID();
+        let dateTime = new Date();
+        image = JSON.stringify(image);
+        let chatData = {
+          id: id,
+          room: room,
+          chat: "group",
+          type: "att_image",
+          text: image,
+          user_id: user.id,
+          time: dateTime,
+          is_send: false,
+        };
+        setChatHistory(chatData);
+        setTimeout(function() {
+          _uploadimage(image, id);
+          if (flatListRef !== null && flatListRef.current) {
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          }
+        }, 1000);
+        setmodalCamera(false);
+      })
+      .catch((err) => {
+        RNToasty.Show({
+          title: "",
+          position: "bottom",
+        });
+      });
+  };
+
+  const _uploadimage = async (image, id) => {
+    let chatData = {};
+    try {
+      image = JSON.parse(image);
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, "0");
+      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      var yyyy = today.getFullYear();
+
+      today = dd + "/" + mm + "/" + yyyy;
+      var formData = new FormData();
+      formData.append("id", id);
+      let ext = image.mime.split("/");
+      let image_name = "imageChat." + ext[1];
+      formData.append("img", {
+        name: image_name,
+        type: image.mime,
+        uri:
+          Platform.OS === "android"
+            ? image.path
+            : image.path.replace("file://", ""),
+      });
+      let response = await fetch(
+        `${RESTFULL_API}room/personal/upload_image_chat`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+            "Content-Type": "multipart/form-data",
+          },
+          body: formData,
+        }
+      );
+      let responseJson = await response.json();
+      // console.log("responseJson", responseJson);
+      if (responseJson.status == true) {
+        // getUserAndToken();
+        let dateTime = new Date();
+        let chatData = {
+          id: id,
+          room: room,
+          chat: "personal",
+          type: "att_image",
+          text: responseJson.filepath,
+          user_id: user.id,
+          time: dateTime,
+          is_send: true,
+        };
+        // if (socket.connected) {
+        socket.emit("message", chatData);
+        // } else {
+        //   sendOffline(chatData);
+        // }
+        RNToasty.Show({
+          duration: 1,
+          title: "Success upload image",
+          position: "bottom",
+        });
+        setTimeout(function() {
+          if (flatListRef !== null && flatListRef.current) {
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          }
+        }, 2000);
+      } else {
+        //   setloading(false);
+        throw new Error(responseJson.message);
+      }
+    } catch (error) {
+      setChatHistory(chatData);
+      // RNToasty.Show({
+      //   duration: 1,
+      //   title: "error : someting wrong!",
+      //   position: "bottom",
+      // });
+      // console.log(error);
+    }
+  };
+
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
+    console.log("index", index);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
-    // console.log(tmpRChat);
 
     let date = null;
     if (index == 0) {
@@ -689,6 +852,7 @@ export default function Room({ navigation, route }) {
     } else {
       tmpRChat = true;
     }
+
     return (
       <View>
         {date ? (
@@ -725,6 +889,9 @@ export default function Room({ navigation, route }) {
             user_id={user.id}
             tmpRChat={tmpRChat}
             navigation={navigation}
+            dataMember={dataDetail}
+            index={index}
+            datas={message}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>
@@ -739,6 +906,101 @@ export default function Room({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+      <ModalRN
+        onBackdropPress={() => {
+          setmodalCamera(false);
+        }}
+        animationType="fade"
+        onRequestClose={() => setmodalCamera(false)}
+        onDismiss={() => setmodalCamera(false)}
+        visible={modal_camera}
+        transparent={true}
+      >
+        <Pressable
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            alignSelf: "center",
+            backgroundColor: "#000",
+            opacity: 0.7,
+            position: "absolute",
+          }}
+          onPress={() => setmodalCamera(false)}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("option")}
+            </Text>
+            <Pressable
+              onPress={() => setmodalCamera(false)}
+              style={{
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d1d1d1",
+            }}
+            onPress={() => pickcamera()}
+          >
+            <Text
+              size="description"
+              type="regular"
+              style={{ marginTop: 15, marginBottom: 18 }}
+            >
+              {t("OpenCamera")}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+            }}
+            onPress={() => pickGallery()}
+          >
+            <Text
+              size="description"
+              type="regular"
+              style={{ marginTop: 15, marginBottom: 18 }}
+            >
+              {t("OpenGallery")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ModalRN>
       <View
         style={{
           flex: 1,
@@ -968,6 +1230,7 @@ export default function Room({ navigation, route }) {
               backgroundColor: "#f3f3f3",
               borderRadius: 20,
               // paddingHorizontal: 15,
+              flexDirection: "row",
             }}
           >
             <TextInput
@@ -980,23 +1243,37 @@ export default function Room({ navigation, route }) {
               style={
                 Platform.OS == "ios"
                   ? {
-                      maxHeight: 70,
-                      margin: 10,
-                      paddingBottom: 5,
-                      paddingLeft: 15,
+                      maxHeight: 100,
+                      marginVertical: 10,
+                      marginLeft: 10,
+                      width: "80%",
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
                   : {
-                      maxHeight: 70,
+                      maxHeight: 100,
                       marginVertical: 5,
-                      marginHorizontal: 10,
+                      marginLeft: 10,
                       padding: 0,
+                      width: "80%",
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
               }
             />
+            <Pressable
+              onPress={() => {
+                setmodalCamera(true);
+              }}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CameraChat width={25} height={25} />
+            </Pressable>
           </View>
           <Button
             text=""
