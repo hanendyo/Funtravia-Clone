@@ -276,6 +276,7 @@ import ArrowRightHome from "./files/ArrowRightHome.svg";
 import SearchHome from "./files/searchHome.svg";
 import Lock from "./files/lock.svg";
 import World from "./files/world.svg";
+import Reupload from "./files/reupload.svg";
 
 export {
   Lock,
@@ -556,4 +557,5 @@ export {
   Arrowbackios,
   Jamhijau,
   Kalenderhijau,
+  Reupload,
 };

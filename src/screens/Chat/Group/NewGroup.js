@@ -73,7 +73,7 @@ export default function NewGroup({ navigation }) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
       marginLeft: -10,
     },
