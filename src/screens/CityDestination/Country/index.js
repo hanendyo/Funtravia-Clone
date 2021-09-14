@@ -513,6 +513,7 @@ export default function Country(props) {
               onPress={() => {
                 props.navigation.push("ArticelCategory", {
                   id: item.id,
+                  indexArc: index,
                   header: header,
                   country: country,
                 });
