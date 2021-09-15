@@ -217,6 +217,7 @@ export default function SendMovie({ navigation, route }) {
   }
 
   const _sendMessage = async (id, index) => {
+    console.log("id", id);
     setloadingsend(true);
     setIndexUser(index);
     try {
@@ -226,7 +227,7 @@ export default function SendMovie({ navigation, route }) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + token,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
