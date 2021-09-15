@@ -9,10 +9,13 @@ export default async function shareAction({ from, target }) {
       Accept: "application/json",
       "Content-Type": "application/json",
     });
+
     let dataResponse = await response.json();
-    data = {
-      message: `Hi Travelers, visit this ${from} from funtravia ${dataResponse.result.link}`,
-      url: dataResponse.result.link,
+    const data = {
+      message: `Hi Travelers, visit this ${from}${
+        from == "movie" ? " location" : ""
+      } from funtravia ${dataResponse?.result?.link}`,
+      url: dataResponse?.result?.link,
     };
     const result = await Share.share(data);
     if (result.action === Share.sharedAction) {

@@ -26,6 +26,7 @@ import {
   Tagsticker,
   PinHitam,
   PinAbu,
+  Movie,
 } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
@@ -195,6 +196,23 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
           <Text style={style} size="description" type="regular">
             {data_province.name}
+          </Text>
+        </View>
+      );
+    }
+    if (data.type == "tag_movie") {
+      let data_movie = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            {data_movie.name}
           </Text>
         </View>
       );

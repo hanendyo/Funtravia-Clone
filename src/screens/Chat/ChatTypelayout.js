@@ -1,39 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   Dimensions,
-  FlatList,
   Pressable,
   ActivityIndicator,
   ImageBackground,
 } from "react-native";
-import {
-  Text,
-  Button,
-  Truncate,
-  StatusBar,
-  Errors,
-  FunImage,
-  FunImageAutoSize,
-} from "../../component";
+import { Text, FunImage, FunImageAutoSize } from "../../component";
 import Image from "react-native-auto-scale-image";
-import {
-  Arrowbackwhite,
-  Send,
-  Smile,
-  Chat,
-  Sticker,
-  Emoticon,
-  Star,
-  AddHijau,
-} from "../../assets/svg";
+import { Star, AddHijau, Reupload } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
-import ImageScaling from "./ImageScalingChat";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -43,7 +23,37 @@ export default function ChatTypelayout({
   tmpRChat,
   socket,
   _uploadimage,
+  dataMember,
+  index,
+  length,
+  datas,
 }) {
+  let [show, setShow] = useState(true);
+  let [items, setItems] = useState([]);
+
+  // console.log("datas", datas);
+  // console.log("item", item);
+  useEffect(() => {
+    if (item.chat == "group") {
+      for (let i of dataMember.buddy) {
+        item.user_id == i.user_id ? (item.user = i) : null;
+      }
+      for (let i in datas) {
+        let x = 1;
+        console.log("tes", ` ${i + x}`);
+        console.log("datas[i]", datas[{ i } + 1]);
+        if (datas[i] == item && datas[i]) {
+          console.log("true");
+        }
+        {
+          console.log("false");
+        }
+      }
+    }
+  }, []);
+  // let entries = Object.values(item);
+  // console.log("entries", entries);
+
   const { t } = useTranslation();
   const playerRef = useRef(null);
   const [loading, setloading] = useState(true);
@@ -62,24 +72,42 @@ export default function ChatTypelayout({
           }}
           style={{
             alignItems: "center",
-            backgroundColor: "#209fae",
             alignContent: "center",
-            // flexDirection: "row",
             justifyContent: "center",
-            borderRadius: 20,
-            opacity: 0.8,
+            height: 40,
+            width: 150,
+            borderRadius: 5,
           }}
         >
-          <Text
-            size="title"
-            type="bold"
+          <View
             style={{
-              color: "white",
-              margin: 10,
+              height: "100%",
+              width: "100%",
+              position: "absolute",
+              backgroundColor: "#000",
+              borderRadius: 5,
+              opacity: 0.3,
+            }}
+          ></View>
+          <View
+            style={{
+              position: "absolute",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            {t("reUpload")}
-          </Text>
+            <Reupload height={15} width={15} />
+            <Text
+              size="label"
+              type="regular"
+              style={{
+                color: "white",
+                marginLeft: 5,
+              }}
+            >
+              {t("reUpload")}
+            </Text>
+          </View>
         </Pressable>
       );
     }
@@ -431,7 +459,6 @@ export default function ChatTypelayout({
   // tag_destination layout
   if (item.type == "tag_destination") {
     let data = JSON.parse(item.text);
-    // console.log("data", data);
     return (
       <Pressable
         onPress={() => {
@@ -446,7 +473,7 @@ export default function ChatTypelayout({
           borderRadius: 10,
           minHeight: 330,
 
-          marginVertical: 10,
+          marginBottom: 10,
           width: 250,
 
           backgroundColor: "#F6F6F6",
@@ -605,7 +632,6 @@ export default function ChatTypelayout({
   if (item.type == "tag_post") {
     let data = JSON.parse(item.text);
     if (data.id) {
-      // console.log(data);
       let scale;
       switch (data.media_orientation) {
         case "L":
@@ -639,7 +665,7 @@ export default function ChatTypelayout({
             paddingVertical: 10,
             // minHeight: 330,
             // padding: 10,
-            marginVertical: 10,
+            marginBottom: 10,
             width: 250,
             // flexDirection: "row",
             backgroundColor: "#F6F6F6",
@@ -722,6 +748,61 @@ export default function ChatTypelayout({
       return null;
     }
   }
+  // movie layout
+  if (item.type == "tag_movie") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              // width: Dimensions.get("screen").width - 200,
+              padding: 10,
+              // justifyContent: "center",
+            }}
+          >
+            <Text size="small" type="regular">
+              Movie Location
+            </Text>
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={3}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 18, padding: 10 }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
 
   if (item.type == "att_image") {
     // att_image_layout
@@ -743,6 +824,8 @@ export default function ChatTypelayout({
           justifyContent: "center",
           alignContent: "center",
           borderRadius: 10,
+          borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+          borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
           width: moderateScale(201, 2),
           height: moderateScale(171, 2),
           // minHeight: 330,
@@ -767,6 +850,8 @@ export default function ChatTypelayout({
             style={{
               width: moderateScale(200, 2),
               height: moderateScale(170, 2),
+              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
               // height: 200,
               alignSelf: "center",
               // marginVertical: 10,
@@ -802,79 +887,86 @@ export default function ChatTypelayout({
   }
 
   return (
-    <View
-      style={[
-        styles.balloon,
-        user_id == item.user_id
-          ? {
-              backgroundColor: "#DAF0F2",
-              borderTopRightRadius: 0,
-            }
-          : {
-              backgroundColor: "#FFFFFF",
-              borderTopLeftRadius: 0,
-            },
-      ]}
-    >
-      <Text
-        size="description"
-        style={{
-          color: "#464646",
-          lineHeight: 18,
-        }}
-      >
-        {item.text}
-      </Text>
-      {tmpRChat ? (
-        <View
-          style={[
-            styles.arrowContainer,
-            user_id == item.user_id
-              ? styles.arrowRightContainer
-              : styles.arrowLeftContainer,
-          ]}
-        >
-          <Svg
-            style={
-              user_id == item.user_id ? styles.arrowRight : styles.arrowLeft
-            }
-            height="50"
-            width="50"
-          >
-            <Polygon
-              points={
-                user_id == item.user_id ? "0,01 15,01 5,12" : "20,01 0,01 12,12"
-              }
-              fill={user_id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-              stroke="#209FAE"
-              strokeWidth={0.7}
-            />
-          </Svg>
-          <Svg
-            style={[
-              { position: "absolute" },
-              user_id == item.user_id
-                ? {
-                    right: moderateScale(-5, 0.5),
-                  }
-                : {
-                    left: moderateScale(-5, 0.5),
-                  },
-            ]}
-            height="50"
-            width="50"
-          >
-            <Polygon
-              points={
-                user_id == item.user_id
-                  ? "0,1.3 15,1.1 5,12"
-                  : "20,01 0,01 12,13"
-              }
-              fill={user_id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-            />
-          </Svg>
-        </View>
+    <View>
+      {item.from == "group" ? (
+        <Text style={{ marginBottom: 5 }}>{item.name}</Text>
       ) : null}
+      <View
+        style={[
+          styles.balloon,
+          user_id == item.user_id
+            ? {
+                backgroundColor: "#DAF0F2",
+                borderTopRightRadius: 0,
+              }
+            : {
+                backgroundColor: "#FFFFFF",
+                borderTopLeftRadius: 0,
+              },
+        ]}
+      >
+        <Text
+          size="description"
+          style={{
+            color: "#464646",
+            lineHeight: 18,
+          }}
+        >
+          {item.text}
+        </Text>
+        {tmpRChat ? (
+          <View
+            style={[
+              styles.arrowContainer,
+              user_id == item.user_id
+                ? styles.arrowRightContainer
+                : styles.arrowLeftContainer,
+            ]}
+          >
+            <Svg
+              style={
+                user_id == item.user_id ? styles.arrowRight : styles.arrowLeft
+              }
+              height="50"
+              width="50"
+            >
+              <Polygon
+                points={
+                  user_id == item.user_id
+                    ? "0,01 15,01 5,12"
+                    : "20,01 0,01 12,12"
+                }
+                fill={user_id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+                stroke="#209FAE"
+                strokeWidth={0.7}
+              />
+            </Svg>
+            <Svg
+              style={[
+                { position: "absolute" },
+                user_id == item.user_id
+                  ? {
+                      right: moderateScale(-5, 0.5),
+                    }
+                  : {
+                      left: moderateScale(-5, 0.5),
+                    },
+              ]}
+              height="50"
+              width="50"
+            >
+              <Polygon
+                points={
+                  user_id == item.user_id
+                    ? "0,1.3 15,1.1 5,12"
+                    : "20,01 0,01 12,13"
+                }
+                fill={user_id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
+              />
+            </Svg>
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }

@@ -23,16 +23,11 @@ import {
 } from "../../../component";
 import {
   Arrowbackwhite,
-  Delete,
-  Member,
-  Memberblue,
-  PlusCircle,
-  ArrowRightBlue,
-  PensilPutih,
   AddParticipant,
   OptionsVertWhite,
-  Nextpremier,
-  Nextwhite,
+  Xgray,
+  Pencilgreen,
+  ArrowRightHome,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -80,24 +75,49 @@ export default function GroupDetail(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
       marginLeft: -10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
+      <View
         style={{
-          height: 55,
-          marginLeft: 10,
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          height: 50,
+          width: 50,
+          marginLeft: 20,
+          marginTop: 20,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+        <View
+          style={{
+            backgroundColor: "#000",
+            opacity: 0.6,
+            position: "absolute",
+            height: 50,
+            width: 50,
+            borderRadius: 25,
+          }}
+        ></View>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+          }}
+        >
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
+        </Button>
+      </View>
     ),
     headerRight: () => {
       let _menu = null;
@@ -107,10 +127,22 @@ export default function GroupDetail(props) {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
-            // paddingHorizontal: 10,
-            // borderWidth: 1,
+            height: 50,
+            width: 50,
+            marginRight: 20,
+            marginTop: 20,
           }}
         >
+          <View
+            style={{
+              backgroundColor: "#000",
+              opacity: 0.6,
+              position: "absolute",
+              height: 50,
+              width: 50,
+              borderRadius: 25,
+            }}
+          ></View>
           <Menu
             ref={(ref) => (_menu = ref)}
             button={
@@ -837,23 +869,7 @@ export default function GroupDetail(props) {
         onLayout={(event) => {
           setLayout(event.nativeEvent.layout);
         }}
-        style={
-          {
-            // borderWidth: 1,
-          }
-        }
       >
-        {/* {dataDetail?.type === "itinerary" ? (
-                    <FunImageBackground
-                        source={
-                            dataDetail && dataDetail.cover
-                                ? { uri: dataDetail?.cover }
-                                : default_image
-                        }
-                        style={{ width: width, height: 200 }}
-                        imageStyle={{ width: width, height: 200 }}
-                    ></FunImageBackground>
-                ) : ( */}
         <FunImageBackground
           source={
             dataDetail && dataDetail.link_picture
@@ -863,16 +879,14 @@ export default function GroupDetail(props) {
           style={{ width: width, height: 200 }}
           imageStyle={{ width: width, height: 200 }}
         ></FunImageBackground>
-        {/* )} */}
         <View
           style={{
-            height: 40,
             width: width,
             paddingHorizontal: 15,
-            alignItems: "center",
             flexDirection: "row",
-            backgroundColor: "#209FAE",
+            backgroundColor: "#fff",
             justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           <Text
@@ -880,34 +894,14 @@ export default function GroupDetail(props) {
             type="bold"
             numberOfLines={1}
             style={{
-              color: "#FFFFFF",
-              width: "70%",
-              paddingRight: 20,
+              color: "#000",
+              marginBottom: 15,
+              marginTop: 13,
             }}
           >
             {dataDetail?.title}
           </Text>
           {dataDetail && dataDetail.type == "itinerary" ? (
-            // <Pressable
-            //   onPress={() => goToItinerary(dataDetail)}
-            //   style={{
-            //     width: "30%",
-            //     alignItems: "center",
-            //     borderWidth: 1,
-            //     borderColor: "white",
-            //     padding: 5,
-            //     paddingHorizontal: 10,
-            //     borderRadius: 7,
-            //   }}
-            // >
-            //   <Text
-            //     style={{
-            //       color: "white",
-            //     }}
-            //   >
-            //     {t("viewTrip")}
-            //   </Text>
-            // </Pressable>
             <Pressable
               onPress={() => goToItinerary(dataDetail)}
               style={{
@@ -917,20 +911,15 @@ export default function GroupDetail(props) {
                 alignItems: "center",
               }}
             >
-              <Text
-                type="bold"
-                style={{
-                  color: "#FFFFFF",
-                  // marginVertical: 2,
-                }}
-              >
+              <Text type="bold" size="label" style={{ color: "#209fae" }}>
                 {t("viewTrip")}
               </Text>
-              <Nextwhite
+              <ArrowRightHome
                 width={12}
                 height={12}
                 style={{
-                  marginTop: 3,
+                  marginTop: 5,
+                  marginLeft: 5,
                 }}
               />
             </Pressable>
@@ -944,36 +933,36 @@ export default function GroupDetail(props) {
                 alignItems: "flex-end",
               }}
             >
-              <PensilPutih width={20} height={20} />
+              <Pencilgreen width={20} height={20} />
             </Pressable>
           )}
         </View>
       </View>
-      {/* <View
-                    style={{
-                        backgroundColor: "#f3f3f3",
-                        height: 10,
-                    }}
-                /> */}
+      <View
+        style={{
+          backgroundColor: "#f6f6f6",
+          height: 5,
+        }}
+      />
 
       <View
         style={{
-          paddingVertical: 15,
-          marginTop: 10,
           backgroundColor: "#FFFFFF",
         }}
       >
         <View
           style={{
             paddingHorizontal: 15,
-
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            paddingBottom: 10,
+            paddingTop: 13,
+            // borderWidth: 1,
           }}
         >
           <Text size="label" type="bold" style={{}}>
-            Member
+            {t("participants")}
           </Text>
           <View
             style={{
@@ -1043,7 +1032,6 @@ export default function GroupDetail(props) {
                         width: 50,
                         height: 50,
                         borderRadius: 25,
-                        marginRight: 20,
                         justifyContent: "center",
                         alignItems: "center",
                       }}
@@ -1051,7 +1039,13 @@ export default function GroupDetail(props) {
                       <AddParticipant width={25} height={25} />
                     </View>
                     <View>
-                      <Text>{t("addParticipant")}</Text>
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{ marginLeft: 15 }}
+                      >
+                        {t("addParticipant")}
+                      </Text>
                     </View>
                   </View>
                 </Pressable>
@@ -1100,56 +1094,81 @@ export default function GroupDetail(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 60,
-            marginHorizontal: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
               justifyContent: "center",
             }}
           >
-            <Text style={{ alignSelf: "center" }}>{t("alertHapusMember")}</Text>
-            <View
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {`${t("delete")} ${t("member")}`}
+            </Text>
+            <Pressable
+              onPress={() => setModalkick(false)}
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    DeleteBuddy(selected.id, room);
-                  } else {
-                    _kickMember(selected.user_id);
-                  }
-                  setModalkick(false);
-                }}
-                color="primary"
-                text={t("delete")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalkick(false);
-                }}
-                color="secondary"
-                variant="bordered"
-                text={t("cancel")}
-              ></Button>
-            </View>
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+            <Text
+              style={{ alignSelf: "center", textAlign: "center" }}
+              size="label"
+              type="regular"
+            >
+              {t("alertHapusMember")}
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              marginBottom: 10,
+            }}
+          >
+            <Button
+              onPress={() => {
+                if (from == "itinerary") {
+                  DeleteBuddy(selected.id, room);
+                } else {
+                  _kickMember(selected.user_id);
+                }
+                setModalkick(false);
+              }}
+              color="secondary"
+              text={t("delete")}
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalkick(false);
+              }}
+              variant="transparent"
+              text={t("cancel")}
+              style={{ marginTop: 5 }}
+            ></Button>
           </View>
         </View>
       </Modal>
@@ -1175,56 +1194,81 @@ export default function GroupDetail(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 60,
-            marginHorizontal: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
               justifyContent: "center",
             }}
           >
-            <Text style={{ alignSelf: "center" }}>{t("alertMakeAdmin")}</Text>
-            <View
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("makeAdmin")}
+            </Text>
+            <Pressable
+              onPress={() => setModalmakeadmin(false)}
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    SetAdminItinerary(selected.id, room);
-                  } else {
-                    _makeAdmin(selected.user_id);
-                  }
-                  setModalmakeadmin(false);
-                }}
-                color="primary"
-                text={t("makeAdmin")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalmakeadmin(false);
-                }}
-                color="secondary"
-                variant="bordered"
-                text={t("cancel")}
-              ></Button>
-            </View>
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+            <Text
+              style={{ alignSelf: "center", textAlign: "center" }}
+              size="label"
+              type="regular"
+            >
+              {t("alertMakeAdmin")}
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+            }}
+          >
+            <Button
+              onPress={() => {
+                if (from == "itinerary") {
+                  SetAdminItinerary(selected.id, room);
+                } else {
+                  _makeAdmin(selected.user_id);
+                }
+                setModalmakeadmin(false);
+              }}
+              color="primary"
+              text={t("makeAdmin")}
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalmakeadmin(false);
+              }}
+              // color="secondary"
+              variant="transparent"
+              text={t("cancel")}
+              style={{ marginTop: 5, marginBottom: 15 }}
+            ></Button>
           </View>
         </View>
       </Modal>
@@ -1250,56 +1294,81 @@ export default function GroupDetail(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 60,
-            marginHorizontal: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
               justifyContent: "center",
             }}
           >
-            <Text style={{ alignSelf: "center" }}>{t("alertRemoveAdmin")}</Text>
-            <View
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("removeAdmin")}
+            </Text>
+            <Pressable
+              onPress={() => setModalremoveadmin(false)}
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    RemoveAdminItinerary(selected.id, room);
-                  } else {
-                    _removeAdmin(selected.user_id);
-                  }
-                  setModalremoveadmin(false);
-                }}
-                color="primary"
-                text={t("removeAdmin")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalremoveadmin(false);
-                }}
-                color="secondary"
-                variant="bordered"
-                text={t("cancel")}
-              ></Button>
-            </View>
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+            <Text
+              style={{ alignSelf: "center", textAlign: "center" }}
+              size="label"
+              type="regular"
+            >
+              {t("alertRemoveAdmin")}
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+            }}
+          >
+            <Button
+              onPress={() => {
+                if (from == "itinerary") {
+                  RemoveAdminItinerary(selected.id, room);
+                } else {
+                  _removeAdmin(selected.user_id);
+                }
+                setModalremoveadmin(false);
+              }}
+              color="secondary"
+              text={t("removeAdmin")}
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalremoveadmin(false);
+              }}
+              // color="secondary"
+              variant="transparent"
+              text={t("cancel")}
+              style={{ marginTop: 5, marginBottom: 15 }}
+            ></Button>
           </View>
         </View>
       </Modal>
@@ -1325,101 +1394,106 @@ export default function GroupDetail(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 60,
-            marginHorizontal: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              paddingVertical: 15,
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
               justifyContent: "center",
             }}
           >
-            <View
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("newGroupName")}
+            </Text>
+            <Pressable
+              onPress={() => setModalrename(false)}
               style={{
-                paddingHorizontal: 15,
-                paddingBottom: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: "#D1D1D1",
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Text
-                size="title"
-                type="bold"
-                style={{ alignSelf: "flex-start" }}
-              >
-                {t("newGroupName")}
-              </Text>
-            </View>
-            <View
-              style={{
-                // borderColor: "#D1D1D1",
-                width: width - 100,
-                marginVertical: 15,
-                alignSelf: "center",
-                backgroundColor: "#f6f6f6",
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View
+            style={{
+              // borderColor: "#D1D1D1",
+              width: width - 140,
+              marginVertical: 20,
+              alignSelf: "center",
+              borderRadius: 5,
+              backgroundColor: "#f6f6f6",
+            }}
+          >
+            <TextInput
+              value={textName}
+              placeholder="Group name"
+              placeholderTextColor="#6C6C6C"
+              onChangeText={(text) => setTextName(text)}
+              maxLength={25}
+              style={
+                Platform.OS == "ios"
+                  ? { maxHeight: 100, margin: 10 }
+                  : {
+                      maxHeight: 100,
+                      marginVertical: 5,
+                      marginHorizontal: 10,
+                      padding: 0,
+                    }
+              }
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              paddingHorizontal: 15,
+              marginBottom: 20,
+            }}
+          >
+            <Button
+              onPress={() => {
+                setModalrename(false);
+                setTextName(dataDetail?.title);
               }}
-            >
-              <TextInput
-                value={textName}
-                placeholder="Group name"
-                placeholderTextColor="#6C6C6C"
-                onChangeText={(text) => setTextName(text)}
-                maxLength={25}
-                style={
-                  Platform.OS == "ios"
-                    ? { maxHeight: 100, margin: 10 }
-                    : {
-                        maxHeight: 100,
-                        marginVertical: 5,
-                        marginHorizontal: 10,
-                        padding: 0,
-                      }
-                }
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                // paddingVertical: 15,
-                paddingHorizontal: 15,
+              size="medium"
+              color="transparant"
+              text={t("cancel")}
+            ></Button>
+            <Button
+              onPress={() => {
+                _renameGroup(textName);
+                setModalrename(false);
               }}
-            >
-              <Button
-                onPress={() => {
-                  setModalrename(false);
-                  setTextName(dataDetail?.title);
-                }}
-                size="medium"
-                color="transparant"
-                text={t("cancel")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  _renameGroup(textName);
-                  setModalrename(false);
-                }}
-                style={{
-                  marginLeft: 10,
-                }}
-                color="primary"
-                text={t("submit")}
-              ></Button>
-            </View>
+              style={{
+                marginLeft: 10,
+              }}
+              color="primary"
+              text={t("submit")}
+            ></Button>
           </View>
         </View>
       </Modal>
+
       {/* modal change cover */}
       <Modal
         onBackdropPress={() => {
@@ -1430,13 +1504,6 @@ export default function GroupDetail(props) {
         onDismiss={() => setmodalCover(false)}
         visible={modalCover}
         transparent={true}
-        // style={{
-        //   justifyContent: "center",
-        //   alignItems: "center",
-        //   alignSelf: "center",
-        //   alignContent: "center",
-        //   backgroundColor: "#000",
-        // }}
       >
         <Pressable
           style={{
@@ -1445,37 +1512,79 @@ export default function GroupDetail(props) {
             alignSelf: "center",
             backgroundColor: "#000",
             opacity: 0.7,
+            position: "absolute",
           }}
           onPress={() => setmodalCover(false)}
         />
         <View
           style={{
-            position: "absolute",
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            alignSelf: "center",
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            top: Dimensions.get("screen").height / 3,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
+          <View
+            style={{
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("option")}
+            </Text>
+            <Pressable
+              onPress={() => setmodalCover(false)}
+              style={{
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
           <TouchableOpacity
             style={{
-              paddingVertical: 10,
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d1d1d1",
             }}
             onPress={() => _changecoverCamera()}
           >
-            <Text size="description" type="regular" style={{}}>
+            <Text
+              size="description"
+              type="regular"
+              style={{ marginTop: 15, marginBottom: 18 }}
+            >
               {t("OpenCamera")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              paddingVertical: 10,
+              alignItems: "center",
             }}
             onPress={() => _changecoverGalery()}
           >
-            <Text size="description" type="regular" style={{}}>
+            <Text
+              size="description"
+              type="regular"
+              style={{ marginTop: 15, marginBottom: 18 }}
+            >
               {t("OpenGallery")}
             </Text>
           </TouchableOpacity>
@@ -1503,60 +1612,82 @@ export default function GroupDetail(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width - 60,
-            marginHorizontal: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
             backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 3,
+            borderRadius: 5,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
               justifyContent: "center",
             }}
           >
-            <Text style={{ alignSelf: "center" }}>
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("removeAdmin")}
+            </Text>
+            <Pressable
+              onPress={() => setModalleft(false)}
+              style={{
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+            <Text
+              style={{ textAlign: "center", lineHeight: 20 }}
+              size="label"
+              type="regular"
+            >
               {from == "itinerary"
                 ? t("alertLeftGroupItinerary")
                 : t("alertLeftGroup")}
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-                paddingHorizontal: 40,
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+            }}
+          >
+            <Button
+              onPress={() => {
+                if (from == "itinerary") {
+                  _leftItinerary(room);
+                } else {
+                  _leftGroup(room);
+                }
+                setModalleft(false);
               }}
-            >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    _leftItinerary(room);
-                  } else {
-                    _leftGroup(room);
-                  }
-                  setModalleft(false);
-                }}
-                color="primary"
-                text={t("exitGroup")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalleft(false);
-                }}
-                color="secondary"
-                variant="bordered"
-                text={t("cancel")}
-              ></Button>
-            </View>
+              color="secondary"
+              text={t("exitGroup")}
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalleft(false);
+              }}
+              style={{ marginTop: 5, marginBottom: 10 }}
+              variant="transparent"
+              text={t("cancel")}
+            ></Button>
           </View>
         </View>
       </Modal>

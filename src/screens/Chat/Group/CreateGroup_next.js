@@ -4,41 +4,27 @@ import {
   Dimensions,
   TextInput,
   Image,
-  ScrollView,
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
-  ImageBackground,
   FlatList,
   Pressable,
-  Alert,
   Modal,
   KeyboardAvoidingView,
 } from "react-native";
-import {
-  Button,
-  Text,
-  Truncate,
-  CustomImage,
-  Loading,
-  FunImage,
-} from "../../../component";
-import { default_image, search_button } from "../../../assets/png";
+import { Button, Text, Truncate, Loading, FunImage } from "../../../component";
+import { default_image } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
-  SendMessage,
   CheckWhite,
-  Xhitam,
-  Xgray,
-  ArrowRight,
   CameraIcon,
+  Xgray,
 } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER, RESTFULL_CHAT } from "../../../config";
-// import Modal from "react-native-modal";
+import { RESTFULL_CHAT } from "../../../config";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { RNToasty } from "react-native-toasty";
@@ -82,7 +68,7 @@ export default function NewGroup(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
       marginLeft: -10,
     },
@@ -285,13 +271,6 @@ export default function NewGroup(props) {
           onDismiss={() => setmodal(false)}
           visible={modals}
           transparent={true}
-          // style={{
-          //   justifyContent: "center",
-          //   alignItems: "center",
-          //   alignSelf: "center",
-          //   alignContent: "center",
-          //   backgroundColor: "#000",
-          // }}
         >
           <Pressable
             style={{
@@ -300,37 +279,79 @@ export default function NewGroup(props) {
               alignSelf: "center",
               backgroundColor: "#000",
               opacity: 0.7,
+              position: "absolute",
             }}
             onPress={() => setmodal(false)}
           />
           <View
             style={{
-              position: "absolute",
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              alignSelf: "center",
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              top: Dimensions.get("screen").height / 3,
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              backgroundColor: "#FFF",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
             }}
           >
+            <View
+              style={{
+                flexDirection: "row",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                paddingHorizontal: 20,
+                backgroundColor: "#f6f6f6",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 13, marginBottom: 15 }}
+              >
+                {t("option")}
+              </Text>
+              <Pressable
+                onPress={() => setmodal(false)}
+                style={{
+                  height: 50,
+                  width: 55,
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+            </View>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
               }}
               onPress={() => pickcamera()}
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginTop: 15, marginBottom: 18 }}
+              >
                 {t("OpenCamera")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                paddingVertical: 10,
+                alignItems: "center",
               }}
               onPress={() => pickGallery()}
             >
-              <Text size="description" type="regular" style={{}}>
+              <Text
+                size="description"
+                type="regular"
+                style={{ marginTop: 15, marginBottom: 18 }}
+              >
                 {t("OpenGallery")}
               </Text>
             </TouchableOpacity>

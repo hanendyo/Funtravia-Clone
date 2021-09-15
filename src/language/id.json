@@ -356,7 +356,8 @@
   "EditNotes": "Sunting Catatan",
   "alertsave": "Apakah anda ingin menyimpan perubahan sebelumnya?",
   "alertHapusPost": "Apakah anda ingin menghapus postingan ini?",
-  "from": "dari",
+  "until": "Sampai",
+  "pressHere": "Tekan disini",
   "member": "Anggota",
   "TripOwner": "Pemilik",
   "Invitemorebuddy": "Undang teman lainnya",
@@ -661,5 +662,15 @@
   "uploadFailed": "Unggah Gagal",
   "reupload": "Unggah Ulang",
   "uploading": "Mengunggah . . .",
-  "uploaded": "Berhasil Mengunggah"
+  "uploaded": "Berhasil Mengunggah",
+  "subTitleMovie": "Lokasi film teratas ini untuk Anda, dapatkan inspirasi untuk perjalanan Anda berikutnya.",
+  "insirationTravel": "Insiprasi Perjalanan",
+  "subInspirasiMovie": "Banyak lokasi film terkenal yang nyata dan Anda dapat mengunjunginya. Jadi, meskipun Anda mungkin bukan penyihir atau arkeolog mencari harta karun, Anda dapat menghidupkan kembali keajaiban film sendiri.",
+  "titleInspirasiMovie1": "Kunjungi lokasi indah dari ",
+  "titleInspirasiMovie2": " dalam waktu singkat perjalanan.",
+  "batasText1": "Minat untuk mengunjungi lokasi film",
+  "batasText2": " berlangsung ?",
+  "letsText": "Mari tambahkan lokasi tersebut untuk perjalanan Anda!",
+  "date": "Tanggal",
+  "price": "Harga"
 }

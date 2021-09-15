@@ -875,8 +875,8 @@ export default function ItineraryPopuler(props) {
                     >
                       <TravelAlbum
                         style={{ marginRight: 5 }}
-                        height={13}
-                        width={13}
+                        height={20}
+                        width={20}
                       />
                       <Text
                         size="description"
@@ -910,8 +910,8 @@ export default function ItineraryPopuler(props) {
                     >
                       <TravelStoriesdis
                         style={{ marginRight: 5 }}
-                        height={13}
-                        width={13}
+                        height={20}
+                        width={20}
                       />
                       <Text
                         size="description"
@@ -1353,6 +1353,7 @@ export default function ItineraryPopuler(props) {
               paddingHorizontal: 20,
               alignItems: "center",
               justifyContent: "center",
+              borderRadius: 10,
             }}
           >
             <Image
@@ -1360,6 +1361,7 @@ export default function ItineraryPopuler(props) {
               style={{
                 height: Dimensions.get("screen").width - 180,
                 width: Dimensions.get("screen").width - 110,
+                borderRadius: 10,
                 position: "absolute",
               }}
             />

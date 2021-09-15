@@ -354,7 +354,8 @@
   "EditNotes": "Edit Note",
   "alertsave": "Apakah anda ingin menyimpan perubahan sebelumnya?",
   "alertHapusPost": "Do you want to delete this post ?",
-  "from": "from",
+  "until": "Until",
+  "pressHere": "Press here",
   "member": "Member",
   "TripOwner": "Trip Owner",
   "Invitemorebuddy": "Invite more buddy",
@@ -655,5 +656,15 @@
   "uploadFailed": "Upload Failed",
   "reupload": "Reuload",
   "uploading": "Uploading . . .",
-  "uploaded": "Uploaded"
+  "uploaded": "Uploaded",
+  "subTitleMovie": "This top movie location for you, get inspired for your next trip.",
+  "insirationTravel": "Travel Inspiration",
+  "subInspirasiMovie": "Many famous movie locations are real and you can visit them. So, although you might not actually be a wizard or an archaeologist searching hidden treasure, you can relive the movie magic yourself.",
+  "titleInspirasiMovie1": "Visit the beatiful location from ",
+  "titleInspirasiMovie2": " on a short trip.",
+  "batasText1": "Interes to visit ",
+  "batasText2": " movie location taken place ?",
+  "letsText": "Let’s add those location for your trip!",
+  "date": "Date",
+  "price": "Price"
 }

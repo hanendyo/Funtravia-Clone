@@ -19,6 +19,7 @@ export default async function CopyLink({ from, target }) {
       // tintColor: rgb(32, 159, 174),
     });
   } catch (error) {
+    console.log(error);
     RNToasty.Show({
       title: "failed to link copied to clipboard",
       position: "bottom",
