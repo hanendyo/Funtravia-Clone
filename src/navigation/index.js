@@ -34,6 +34,7 @@ import DestinationMaps from "../screens/Maps";
 import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew/index";
 import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
 import SendDestination from "../screens/Destination/DetailDestinationNew/SendDestination";
+import SearchListEventHome from "../screens/Event/SearchListEventHome";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({
@@ -225,6 +226,11 @@ export default function MainStackNavigator({
         <Tab.Screen
           name="listEventHome"
           component={listeventhome}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="searchListEventHome"
+          component={SearchListEventHome}
           options={{ headerShown: false }}
         />
         <Tab.Screen

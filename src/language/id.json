@@ -356,7 +356,8 @@
   "EditNotes": "Sunting Catatan",
   "alertsave": "Apakah anda ingin menyimpan perubahan sebelumnya?",
   "alertHapusPost": "Apakah anda ingin menghapus postingan ini?",
-  "from": "dari",
+  "until": "Sampai",
+  "pressHere": "Tekan disini",
   "member": "Anggota",
   "TripOwner": "Pemilik",
   "Invitemorebuddy": "Undang teman lainnya",
@@ -665,5 +666,7 @@
   "titleInspirasiMovie2": " dalam waktu singkat perjalanan.",
   "batasText1": "Minat untuk mengunjungi lokasi film",
   "batasText2": " berlangsung ?",
-  "letsText": "Mari tambahkan lokasi tersebut untuk perjalanan Anda!"
+  "letsText": "Mari tambahkan lokasi tersebut untuk perjalanan Anda!",
+  "date": "Tanggal",
+  "price": "Harga"
 }
