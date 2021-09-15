@@ -1,13 +1,18 @@
 import { gql } from "apollo-boost";
 const Destination = gql`
-  query($keyword: String) {
-    listdetination_wishlist(keyword: $keyword) {
+  query {
+    listdetination_wishlist(keyword: "") {
       id
       name
-      liked
-      rating
       cover
+      rating
       count_review
+      liked
+      type {
+        id
+        name
+        icon
+      }
       cities {
         id
         name
@@ -22,6 +27,12 @@ const Destination = gql`
       }
       images {
         image
+      }
+      movie_location {
+        id
+        title
+        description
+        cover
       }
     }
   }

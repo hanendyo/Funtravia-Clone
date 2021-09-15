@@ -333,6 +333,7 @@ export default function SendPost({ navigation, route }) {
         style={[
           focused ? styles.labelActive : styles.label,
           { opacity: focused ? 1 : 0.7 },
+          { marginBottom: 7 },
         ]}
       >
         {route.title}
