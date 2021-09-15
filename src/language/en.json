@@ -651,5 +651,9 @@
   "welcomeToFuntravia": "Welcome to Funtravia",
   "textRecommendation": "Recommendation Movie Location in ",
   "filmLocation": "Movie Location",
-  "getVacation": "Get ready to travel "
+  "getVacation": "Get ready to travel ",
+  "uploadFailed": "Upload Failed",
+  "reupload": "Reuload",
+  "uploading": "Uploading . . .",
+  "uploaded": "Uploaded"
 }

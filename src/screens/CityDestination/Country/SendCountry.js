@@ -61,7 +61,7 @@ export default function SendCountry({ navigation, route }) {
   });
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "Send Province",
+    headerTitle: "Send Country",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -334,6 +334,7 @@ export default function SendCountry({ navigation, route }) {
         style={[
           focused ? styles.labelActive : styles.label,
           { opacity: focused ? 1 : 0.7 },
+          { marginBottom: 7 },
         ]}
       >
         {route.title}

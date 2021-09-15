@@ -26,6 +26,8 @@ import {
   TravelAlbum,
   TravelStories,
   BlockDestination,
+  UnescoIcon,
+  MovieIcon,
 } from "../../assets/svg";
 import { Ticket, MapIconGreen, default_image } from "../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
@@ -47,18 +49,6 @@ export default function Destination({
   const { t, i18n } = useTranslation();
   let [dataDes, setDes] = useState([]);
 
-  const [
-    mutationUnliked,
-    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-  ] = useMutation(UnLiked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
   // get data destination
   const [
     getDes,
@@ -79,7 +69,20 @@ export default function Destination({
     },
   });
 
-  const _unliked = async (id) => {
+  //Muutation unlike
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(UnLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _unlikedAnother = async (id) => {
     if (token || token !== "") {
       try {
         let response = await mutationUnliked({
@@ -392,6 +395,23 @@ export default function Destination({
                         flexDirection: "row",
                       }}
                     >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        {item.movie_location?.length > 0 ? (
+                          <UnescoIcon
+                            height={33}
+                            width={33}
+                            style={{ marginRight: 5 }}
+                          />
+                        ) : null}
+                        {item.type?.name.toLowerCase().substr(0, 6) ==
+                        "unesco" ? (
+                          <MovieIcon height={33} width={33} />
+                        ) : null}
+                      </View>
                       {dataDes?.destinationById?.movie_location?.length > 0 ? (
                         <UnescoIcon
                           height={33}

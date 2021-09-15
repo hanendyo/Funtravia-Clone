@@ -23,6 +23,7 @@ import {
   CommentBlack,
   Xgray,
   AcceptNotif,
+  Errorr,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -180,13 +181,13 @@ export default function FeedList({ props, token }) {
         },
       });
       console.log("response", response);
-      if (errorMutationPost) {
-        RNToasty({
-          duration: 1,
-          title: t("failPost"),
-          position: "bottom",
-        });
-      }
+      // if (errorMutationPost) {
+      //   RNToasty({
+      //     duration: 1,
+      //     title: t("failPost"),
+      //     position: "bottom",
+      //   });
+      // }
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
@@ -205,15 +206,17 @@ export default function FeedList({ props, token }) {
         }
       } else {
         setLoaded(false);
+        setUploadFailed(true);
         throw new Error("Error Input");
       }
     } catch (err) {
       setLoaded(false);
-      RNToasty.Show({
-        duration: 1,
-        title: t("failPost"),
-        position: "bottom",
-      });
+      setUploadFailed(true);
+      // RNToasty.Show({
+      //   duration: 1,
+      //   title: t("failPost"),
+      //   position: "bottom",
+      // });
     }
   };
 
@@ -313,6 +316,7 @@ export default function FeedList({ props, token }) {
     }
   };
 
+  const [uploadFailed, setUploadFailed] = useState(false);
   const {
     loading: loadingPost,
     data: dataPost,
@@ -428,6 +432,7 @@ export default function FeedList({ props, token }) {
       setModalLogin(true);
     }
   };
+
   const duration = (datetime) => {
     datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
@@ -497,6 +502,24 @@ export default function FeedList({ props, token }) {
     const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
   }, [props.route.params?.isPost]);
+
+  // console.log("async storage : ", AsyncStorage.getItem("userUpload"));
+
+  const createPost = () => {
+    if (token && token !== null && token !== "") {
+      props.navigation.navigate("FeedStack", {
+        screen: "Post",
+      });
+      const uploading = true;
+      // try {
+      //   AsyncStorage.setItem("userUpload");
+      // } catch (e) {
+      //   console.log("error async", e);
+      // }
+    } else {
+      setModalLogin(true);
+    }
+  };
 
   const countKoment = (id) => {
     const tempd = [...dataFeed];
@@ -1354,7 +1377,7 @@ export default function FeedList({ props, token }) {
                 style={{ marginVertical: 20 }}
               />
               <Text style={{ marginLeft: 15 }} size="label" type="regular">
-                Uploading . . .
+                {t("uploading")}
               </Text>
             </>
           ) : (
@@ -1365,27 +1388,64 @@ export default function FeedList({ props, token }) {
                 style={{ marginVertical: 20 }}
               />
               <Text style={{ marginLeft: 15 }} size="label" type="regular">
-                Uploaded
+                {t("uploaded")}
               </Text>
             </>
           )}
         </View>
-      ) : null}
-      {/* 
-      {loadingMutationPost ? (
+      ) : (
         <View
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "#FFF",
             width: Dimensions.get("screen").width - 20,
             marginHorizontal: 10,
             borderRadius: 5,
-            paddingHorizontal: 10,
+            paddingHorizontal: 15,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <Progress.Pie progress={0.4} size={50} />
-          <ProgressBarAndroid styleAttr="Horizontal" color="#209fae" />
+          {uploadFailed ? (
+            <>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Errorr height="40" width="40" style={{ marginVertical: 20 }} />
+                <Text style={{ marginLeft: 15 }} size="label" type="regular">
+                  {t("uploadFailed")}
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  onPress={() => createPost()}
+                  style={{
+                    backgroundColor: "#209FAE",
+                    padding: 7,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text style={{ color: "#FFF" }} size="label" type="regular">
+                    {t("reupload")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setUploadFailed(false)}
+                  style={{
+                    backgroundColor: "#d1d1d1",
+                    padding: 7,
+                    borderRadius: 5,
+                    marginLeft: 10,
+                  }}
+                >
+                  <Text style={{ color: "#FFF" }} size="label" type="regular">
+                    {t("cancel")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : null}
         </View>
-      ) : null} */}
+      )}
+
       <FlatList
         ref={ref}
         data={dataFeed}

@@ -657,5 +657,9 @@
   "welcomeToFuntravia": "Selamat Datang di Funtravia",
   "textRecommendation": "Rekomendasi Lokasi Film di ",
   "filmLocation": "Lokasi Film",
-  "getVacation": "Bersiap untuk Liburan "
+  "getVacation": "Bersiap untuk Liburan ",
+  "uploadFailed": "Unggah Gagal",
+  "reupload": "Unggah Ulang",
+  "uploading": "Mengunggah . . .",
+  "uploaded": "Berhasil Mengunggah"
 }
