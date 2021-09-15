@@ -438,8 +438,8 @@ export default function ListEventHome(props) {
         style={{
           position: "absolute",
           transform: [{ translateY: y }],
-          // height:Platform.OS == 'ios' ? 270 : 232,
-          height:HeaderHeight,
+          height:Platform.OS == 'ios' ? 270 : 222,
+          // height:HeaderHeight,
           width: "100%",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -899,8 +899,8 @@ export default function ListEventHome(props) {
       <Animated.View
         style={{
           zIndex: Platform.OS == 'ios' ? 1 : 9999,
-          // position: Platform.OS == 'ios' ? "relative" : "absolute",
-          position: 'relative',
+          position: Platform.OS == 'ios' ? "relative" : "absolute",
+          // position: 'relative',
           transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
@@ -921,7 +921,7 @@ export default function ListEventHome(props) {
             shadowOpacity: 0,
             backgroundColor: "#fff",
             height: TabBarHeight,
-            marginBottom: Platform.OS == 'ios' ? -40 : -40,
+            marginBottom: Platform.OS == 'ios' ? -40 : 0,
           }}
           renderLabel={({ route, focused }) => (
             <Text
