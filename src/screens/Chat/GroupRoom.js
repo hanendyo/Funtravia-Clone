@@ -27,7 +27,7 @@ import { Button, Text, FunImage, StickerModal } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER, API_DOMAIN } from "../../config";
+import { CHATSERVER, API_DOMAIN, RESTFULL_API } from "../../config";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
@@ -49,13 +49,11 @@ export default function Room({ navigation, route }) {
   const socket = io(CHATSERVER);
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
-  console.log("message", message);
   let flatListRef = useRef();
   const [keyboardOpenState, SetkeyboardOpenState] = useState(false);
   const refInput = useRef();
 
   const [dataDetail, setDatadetail] = useState();
-  // console.log("dataDetail", dataDetail);
   const KeyboardUtils = Keyboard.KeyboardUtils;
 
   const { t } = useTranslation();
@@ -333,6 +331,7 @@ export default function Room({ navigation, route }) {
       getUserToken();
     }
     socket.on("new_chat_group", (data) => {
+      console.log("data effec", data);
       setChatHistory(data);
     });
     socket.emit("join", room);
@@ -360,14 +359,17 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistory = async (data) => {
+    console.log("data hist", data);
     let history = await AsyncStorage.getItem("history_" + room);
     if (data) {
       if (history) {
+        console.log("ada");
         let recent = JSON.parse(history);
         recent.push(data);
         await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
         setMessage(recent);
       } else {
+        console.log("tidak ada");
         await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
         setMessage([data]);
       }
@@ -387,6 +389,7 @@ export default function Room({ navigation, route }) {
       }
     );
     let responseJson = await response.json();
+    console.log("responseJson", responseJson);
     if (responseJson.data) {
       await AsyncStorage.setItem(
         "history_" + room,
@@ -413,14 +416,14 @@ export default function Room({ navigation, route }) {
           user_id: user.id,
           name: `${user.first_name} ${user.last_name}`,
         };
-        await fetch(`${CHATSERVER}/api/group/send`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `user_id=${user.id}&type=text&chat=group&room=${room}&from=${from}&text=${chat}&name=${user.first_name} ${user.last_name}`,
-        });
+        // await fetch(`${CHATSERVER}/api/group/send`, {
+        //   method: "POST",
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //     "Content-Type": "application/x-www-form-urlencoded",
+        //   },
+        //   body: `user_id=${user.id}&type=text&chat=group&room=${room}&from=${from}&text=${chat}&name=${user.first_name} ${user.last_name}`,
+        // });
         await socket.emit("message", chatData);
         await setChat("");
         await setTimeout(function() {
@@ -729,7 +732,7 @@ export default function Room({ navigation, route }) {
         setTimeout(function() {
           _uploadimage(image, id);
           if (flatListRef !== null && flatListRef.current) {
-            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+            flatListRef.current.scrollToEnd({ animated: true, offset: 0 });
           }
         }, 1000);
         setmodalCamera(false);
@@ -742,8 +745,10 @@ export default function Room({ navigation, route }) {
       });
   };
 
+  console.log("message", message);
+
   const _uploadimage = async (image, id) => {
-    let chatData = {};
+    // let chatData = {};
     try {
       image = JSON.parse(image);
       var today = new Date();
@@ -777,7 +782,6 @@ export default function Room({ navigation, route }) {
         }
       );
       let responseJson = await response.json();
-      // console.log("responseJson", responseJson);
       if (responseJson.status == true) {
         // getUserAndToken();
         let dateTime = new Date();
@@ -811,7 +815,8 @@ export default function Room({ navigation, route }) {
         throw new Error(responseJson.message);
       }
     } catch (error) {
-      setChatHistory(chatData);
+      console.log(error);
+      // setChatHistory(chatData);
       // RNToasty.Show({
       //   duration: 1,
       //   title: "error : someting wrong!",
@@ -823,7 +828,6 @@ export default function Room({ navigation, route }) {
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
-    console.log("index", index);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
@@ -892,6 +896,7 @@ export default function Room({ navigation, route }) {
             dataMember={dataDetail}
             index={index}
             datas={message}
+            _uploadimage={(image, id) => _uploadimage(image, id)}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>
