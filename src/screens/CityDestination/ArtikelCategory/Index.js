@@ -1,5 +1,6 @@
 import { View } from "native-base";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Dimensions,
   Image,
@@ -7,6 +8,10 @@ import {
   Pressable,
   RefreshControl,
   ActivityIndicator,
+  SafeAreaView,
+  Animated,
+  PanResponder,
+  StyleSheet,
 } from "react-native";
 import { Text, Button } from "../../../component";
 import { default_image } from "../../../assets/png";
@@ -18,11 +23,22 @@ import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import Category from "../../../graphQL/Query/Countries/Articlecategory";
 import { TextInput } from "react-native-gesture-handler";
+import { TabView } from "react-native-tab-view";
+import Ripple from "react-native-material-ripple";
 
 export default function ArtikelCategory(props) {
-  let [category, setCategory] = useState(props.route.params.id);
-  let { width, height } = Dimensions.get("screen");
-  let [search, setSearch] = useState("");
+  let [token, setToken] = useState("");
+  const [routes, setRoutes] = useState([0]);
+  const [tabIndex, setIndex] = useState("");
+  const TabBarHeight = 45;
+  const [canScroll, setCanScroll] = useState(true);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const _tabIndex = useRef(0);
+  const listRefArr = useRef([]);
+  let scrollRef = useRef();
+  const [actives, setActives] = useState(props.route.params.id);
+  const [tabData] = useState(Array(1).fill(0));
+  const [tabData1] = useState(Array(1).fill(0));
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -36,12 +52,11 @@ export default function ArtikelCategory(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -60,82 +75,23 @@ export default function ArtikelCategory(props) {
     ),
   };
 
-  const { t } = useTranslation();
-
-  const {
-    data: dataList,
-    loading: loadingList,
-    fetchMore,
-    refetch,
-    networkStatus,
-  } = useQuery(ArtikelList, {
-    variables: {
-      category_id: category,
-      country_id: props.route.params.country,
-      limit: 10,
-      offset: 0,
-      keyword: search,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
+  const listPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
+        return false;
       },
-    },
-    notifyOnNetworkStatusChange: true,
-  });
-
-  let list = [];
-  if (dataList && "datas" in dataList.list_articel_country_category) {
-    list = dataList.list_articel_country_category.datas;
-  }
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const Refresh = useCallback(() => {
-    setRefreshing(true);
-    refetch();
-    wait(1000).then(() => {
-      setRefreshing(false);
-    });
-  }, []);
-  const wait = (timeout) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
-    });
-  };
-
-  const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.list_articel_country_category;
-    const datas = [
-      ...prev.list_articel_country_category.datas,
-      ...fetchMoreResult.list_articel_country_category.datas,
-    ];
-
-    return Object.assign({}, prev, {
-      list: {
-        __typename: prev.list_articel_country_category.__typename,
-        page_info,
-        datas,
+      onShouldBlockNativeResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        headerScrollY.stopAnimation();
       },
-    });
-  };
+    })
+  ).current;
 
-  const handleOnEndReached = () => {
-    if (dataList.list_articel_country_category.page_info.hasNextPage) {
-      return fetchMore({
-        variables: {
-          category_id: null,
-          keyword: search,
-          orderby: null,
-          limit: 10,
-          offset: dataList.list_articel_country_category.page_info.offset,
-        },
-        updateQuery: onUpdate,
-      });
-    }
-  };
-
+  // useQuery Category by id country
   const {
     data: dataCategory,
     loading: loadingCategory,
@@ -151,262 +107,336 @@ export default function ArtikelCategory(props) {
         "Content-Type": "application/json",
       },
     },
-  });
+    onCompleted: () => {
+      let tab = [];
 
-  const ArticelDetail = (data) => {
-    props.navigation.push("ArticelDetail", {
-      id: data.id,
-      category_id: category,
-      country_id: props.route.params.country,
-      title: data.title,
-    });
-  };
+      dataCategory.category_article_bycountry.map((item, index) => {
+        tab.push({ key: item.id, title: item.name });
+      });
+
+      setRoutes(tab);
+      setIndex(props.route.params.indexArc);
+    },
+  });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      // fetchCategory();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
 
-  {
-    /* ======================================= Render All ====================================================*/
-  }
+    setTimeout(() => {
+      scrollRef.current?.scrollToIndex({
+        index: props.route.params.indexArc,
+        animated: true,
+      });
+    }, 3000);
+  }, []);
 
-  return (
-    <View style={{ flex: 1 }}>
-      <View
+  // render Tab View
+  const renderTabView = () => {
+    return (
+      <TabView
+        onSwipeStart={() => setCanScroll(false)}
+        onSwipeEnd={() => setCanScroll(true)}
+        onIndexChange={(id) => {
+          _tabIndex.current = id;
+          setIndex(id);
+          scrollRef.current?.scrollToIndex({
+            index: id,
+            animated: true,
+          });
+        }}
+        navigationState={{ index: tabIndex, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        initialLayout={{
+          height: 0,
+          width: Dimensions.get("screen").width,
+        }}
+      />
+    );
+  };
+
+  // render Scene
+  const renderScene = ({ route }) => {
+    const focused = route.key === routes[tabIndex];
+    let numCols;
+    let data;
+    let renderItem;
+
+    switch (route.key) {
+      case actives:
+        // numCols = 2;
+        data = tabData;
+        renderItem = renderactive;
+        break;
+      default:
+        data = tabData1;
+        renderItem = renderlain;
+    }
+    return (
+      <Animated.FlatList
+        scrollToOverflowEnabled={true}
+        {...listPanResponder.panHandlers}
+        ref={(ref) => {
+          if (ref) {
+            const found = listRefArr.current.find((e) => e.key === route.key);
+            if (!found) {
+              listRefArr.current.push({
+                key: route.key,
+                value: ref,
+              });
+            }
+          }
+        }}
+        scrollEventThrottle={16}
+        onScroll={
+          focused
+            ? Animated.event(
+                [
+                  {
+                    nativeEvent: { contentOffset: { y: scrollY } },
+                  },
+                ],
+                { useNativeDriver: true }
+              )
+            : null
+        }
+        contentContainerStyle={{
+          paddingTop: TabBarHeight,
+          paddingHorizontal: 15,
+        }}
+        data={data}
+        renderItem={renderItem}
+      />
+    );
+  };
+
+  // render Tabbar
+  const renderTabBar = (props) => {
+    return (
+      <Animated.View
         style={{
-          backgroundColor: "white",
-          height: 110,
+          top: 0,
+          zIndex: 1,
+          position: "absolute",
+          // transform: [{ translateY: y }],
+          width: "100%",
         }}
       >
-        <View
-          style={{
-            height: "40%",
-            borderRadius: 2,
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#DAF0F2",
-            marginHorizontal: 15,
-            marginVertical: 10,
-          }}
-        >
-          <Search height={15} width={15} style={{ marginLeft: 10 }} />
-          <TextInput
-            fontSize={14}
-            placeholder="Search"
-            onChangeText={(x) => setSearch(x)}
-            style={{ width: "90%" }}
-          />
-        </View>
         <FlatList
-          data={dataCategory?.category_article_bycountry}
-          contentContainerStyle={{
-            flexDirection: "row",
-            paddingRight: 10,
-          }}
+          key={"listtabbar"}
+          ref={scrollRef}
+          data={props?.navigationState?.routes}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <Pressable onPress={() => setCategory(item.id)}>
-              <Text
-                style={{
-                  padding: 10,
-                  backgroundColor: category === item.id ? "#209FAE" : "#F6F6F6",
-                  marginLeft: 10,
-                  borderRadius: 5,
-                  color: category === item.id ? "white" : "black",
-                }}
-                size={"description"}
-                type={"bold"}
-              >
-                {item.name}
-              </Text>
-            </Pressable>
-          )}
-        />
-      </View>
-      {list.length > 0 ? (
-        <View
           style={{
-            flex: 1,
-            width: Dimensions.get("window").width,
-            paddingHorizontal: 10,
-            alignContent: "center",
+            backgroundColor: "#F6F6F6",
+            // borderBottomWidth: 0.5,
           }}
-        >
-          <FlatList
-            data={list}
-            renderItem={({ item, index }) => (
-              <Pressable
-                style={{
-                  flexDirection: "row",
-                  padding: 2,
+          renderItem={({ item, index }) => (
+            console.log("item", item),
+            (
+              <Ripple
+                onPress={() => {
+                  setIndex(index);
+                  scrollRef.current?.scrollToIndex({
+                    // y: 0,
+                    // x: 100,
+                    index: index,
+                    animated: true,
+                  });
                 }}
-                onPress={() => ArticelDetail(item)}
               >
-                <Image
-                  source={
-                    item.firstimg ? { uri: item.firstimg } : default_image
-                  }
-                  style={{
-                    width: "21%",
-                    height: 110,
-                    borderRadius: 10,
-                  }}
-                />
                 <View
                   style={{
-                    width: "79%",
-                    marginVertical: 5,
-                    paddingLeft: 10,
-                    justifyContent: "space-between",
+                    borderBottomWidth: index == tabIndex ? 2 : 1,
+                    borderBottomColor:
+                      index == tabIndex ? "#209fae" : "#d1d1d1",
+                    alignContent: "center",
+                    paddingHorizontal: 15,
+                    width:
+                      props?.navigationState.routes?.length <= 2
+                        ? Dimensions.get("screen").width * 0.5
+                        : props.navigationState.routes.length > 2
+                        ? Dimensions.get("screen").width * 0.333
+                        : null,
+                    height: TabBarHeight,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
                   }}
                 >
-                  <View>
-                    <Text
-                      style={{ color: "#209FAE" }}
-                      size={"small"}
-                      type={"bold"}
-                    >
-                      #{item?.countries?.name.toLowerCase().replace(/ /g, "")} #
-                      {item?.category?.name.toLowerCase().replace(/ /g, "")}
-                    </Text>
-                    <Text
-                      size={"label"}
-                      type={"bold"}
-                      style={{ color: "#3E3E3E", marginTop: 5 }}
-                    >
-                      <Truncate
-                        text={item.title ? item.title : ""}
-                        length={40}
-                      />
-                    </Text>
-                    <Text
-                      size={"small"}
-                      type={"regular"}
-                      style={{
-                        textAlign: "justify",
-                        marginTop: 5,
-                        lineHeight: 16,
-                      }}
-                    >
-                      <Truncate
-                        text={item.firsttxt ? item.firsttxt : ""}
-                        length={100}
-                      />
-                    </Text>
-                  </View>
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Text size={"small"} type={"regular"}>
-                        {dateFormatMonthYears(item.date)}
-                      </Text>
-                      {/* <View
+                  <Text
+                    style={[
+                      index == tabIndex ? styles.labelActive : styles.label,
+                      {
+                        opacity: index == tabIndex ? 1 : 0.7,
+                        borderBottomWidth: 0,
+
+                        borderBottomColor:
+                          index == tabIndex &&
+                          props?.navigationState.routes?.length > 1
+                            ? "#FFFFFF"
+                            : "#209fae",
+                        textTransform: "capitalize",
+                      },
+                    ]}
+                  >
+                    <Truncate
+                      text={item?.title ? item.title : ""}
+                      length={14}
+                    />
+                  </Text>
+                </View>
+              </Ripple>
+            )
+          )}
+        />
+      </Animated.View>
+    );
+  };
+
+  // render active
+  const renderactive = () => {
+    let index = tabIndex;
+    // let datas = category ? category[index] : null;
+    // console.log("datas", datas);
+    return (
+      <View
+        style={{
+          paddingVertical: 15,
+        }}
+      ></View>
+    );
+  };
+
+  // render lain
+  const renderlain = () => {
+    let index = tabIndex;
+    // let datas = category ? category[index] : null;
+    return (
+      <View
+        style={{
+          paddingVertical: 15,
+        }}
+      >
+        {/* {datas && datas.length
+          ? datas.map((i, index) => {
+              if (!i) {
+                <View key={"content" + index} style={{ alignItems: "center" }}>
+                  <Text
+                    type="regular"
+                    size="title"
+                    style={{
+                      textAlign: "justify",
+                      color: "#464646",
+                    }}
+                  >
+                    {t("noArticle")}
+                  </Text>
+                </View>;
+              } else {
+                return (
+                  <View key={index}>
+                    {i.type === "image" ? (
+                      <View>
+                        {i.title ? (
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+                            }}
+                          >
+                            {i.title}
+                          </Text>
+                        ) : null}
+
+                        <View
                           style={{
-                            flexDirection: "row",
                             alignItems: "center",
                           }}
                         >
-                          <LikeEmpty width={10} height={10} />
+                          <FunImage
+                            source={i.image ? { uri: i.image } : default_image}
+                            resizeMode={"cover"}
+                            style={{
+                              borderWidth: 0.4,
+                              marginTop: i.title ? 5 : 0,
+                              borderColor: "#d3d3d3",
+                              height: Dimensions.get("screen").width * 0.4,
+                              width: "100%",
+                            }}
+                          />
+                        </View>
+                        <Text
+                          size="description"
+                          type="light"
+                          style={{
+                            textAlign: "left",
+                            marginTop: 5,
+                            marginBottom: 15,
+                            color: "#616161",
+                            paddingHorizontal: 5,
+                          }}
+                        >
+                          {i.text ? i.text : ""}
+                        </Text>
+                      </View>
+                    ) : (
+                      <View>
+                        {i.title ? (
                           <Text
-                            style={{ marginLeft: 5 }}
-                            size={"small"}
-                            type={"regular"}
+                            size="title"
+                            type="bold"
+                            style={{
+                              marginBottom: 5,
+                              paddingHorizontal: 5,
+
+                              color: "#464646",
+                            }}
                           >
-                            {item.article_response_count > 0
-                              ? item.article_response_count +
-                                " " +
-                                t("likeMany")
-                              : item.article_response_count + " " + t("like")}
+                            {i.title}
                           </Text>
-                        </View> */}
-                    </View>
+                        ) : null}
+                        <Text
+                          size="title"
+                          type="regular"
+                          style={{
+                            lineHeight: 22,
+                            textAlign: "left",
+                            color: "#464646",
+                            marginBottom: 15,
+
+                            paddingHorizontal: 5,
+                          }}
+                        >
+                          {i.text ? i.text : ""}
+                        </Text>
+                      </View>
+                    )}
                   </View>
-                </View>
-              </Pressable>
-            )}
-            ItemSeparatorComponent={() => {
-              return (
-                <View
-                  style={{
-                    height: 2,
-                    backgroundColor: "#f6f6f6",
-                  }}
-                ></View>
-              );
-            }}
-            contentContainerStyle={
-              {
-                // paddingTop: 10,
-                // backgroundColor: "#f3f3f3",
+                );
               }
-            }
-            keyExtractor={(item) => item.id}
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => Refresh()}
-              />
-            }
-            ListFooterComponent={
-              loadingList ? (
-                <View
-                  style={{
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ActivityIndicator color="#209FAE" animating={true} />
-                </View>
-              ) : null
-            }
-            onEndReachedThreshold={1}
-            onEndReached={handleOnEndReached}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            backgroundColor: "white",
-            alignItems: "center",
-            paddingTop: 10,
-            flex: 1,
-          }}
-        >
-          {loadingList ? (
-            <View
-              style={{
-                width: width,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <ActivityIndicator color="#209FAE" animating={true} />
-            </View>
-          ) : (
-            <View
-              style={{ backgroundColor: "white", paddingVertical: 20, flex: 1 }}
-            >
-              <Text size="label" type="bold">
-                Tidak Ada Data
-              </Text>
-            </View>
-          )}
-        </View>
-      )}
-    </View>
+            })
+          : null} */}
+      </View>
+    );
+  };
+
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+      }}
+    >
+      {renderTabView()}
+    </SafeAreaView>
   );
 }
+const styles = StyleSheet.create({
+  indicator: { backgroundColor: "#209FAE", height: 0 },
+  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Bold" },
+  labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
+});
