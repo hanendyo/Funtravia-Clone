@@ -68,7 +68,7 @@ import { color } from "react-native-reanimated";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 41;
+const TabBarHeight = 60;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
@@ -448,8 +448,6 @@ export default function ListEventHome(props) {
           justifyContent: "flex-start",
           backgroundColor: "white",
           zIndex: Platform.OS == "ios" ? 1 : 0,
-          // borderWidth: 2,
-          // borderColor: "green",
         }}
       >
         {Banner && Banner.banner_asset.length > 0 ? (
@@ -520,7 +518,8 @@ export default function ListEventHome(props) {
             position: "absolute",
             flexDirection: "row",
             // paddingBottom: 20,
-            marginTop: Platform.OS == "ios" ? 158 : 135,
+            // marginTop: Platform.OS == "ios" ? 158 : 135,
+            marginTop: Platform.OS == "ios" ? 158 : 160,
             // zIndex: 1
           }}
         >
@@ -530,7 +529,7 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               borderWidth: 2,
               borderRightWidth: 0,
-              paddingVertical: 10,
+              // paddingVertical: 10,
               paddingHorizontal: 20,
               borderBottomLeftRadius: 20,
               borderTopStartRadius: 20,
@@ -548,11 +547,12 @@ export default function ListEventHome(props) {
               style={{
                 marginRight: 10,
                 color: "#fff",
+                paddingBottom: 5,
               }}
             >
               {Capital({ text: country?.name })}
             </Text>
-            <Down width={10} height={10} style={{ marginTop: 5 }} />
+            <Down width={10} height={10} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -878,9 +878,9 @@ export default function ListEventHome(props) {
         onScrollEndDrag={(e) => onScrollEndDrag(e)}
         onMomentumScrollEnd={onMomentumScrollEnd}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListHeaderComponent={() => <View style={{ height: 10 }} />}
+        // ListHeaderComponent={() => <View style={{ height: -100 }} />}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight + heightview,
+          paddingTop: HeaderHeight + TabBarHeight - 15,
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -895,7 +895,7 @@ export default function ListEventHome(props) {
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
-      inputRange: [heightview, HeaderHeight],
+      inputRange: [heightview - 10, HeaderHeight],
       outputRange: [HeaderHeight, heightview - 40],
       extrapolateRight: "clamp",
     });
@@ -925,6 +925,7 @@ export default function ListEventHome(props) {
             // backgroundColor: "#fff",
             backgroundColor: "white",
             height: TabBarHeight,
+
             // marginBottom: Platform.OS == "ios" ? -40 : 0
           }}
           renderLabel={({ route, focused }) => (
@@ -933,9 +934,7 @@ export default function ListEventHome(props) {
               type="bold"
               style={{
                 opacity: focused ? 1 : 0.5,
-                //  borderWidth: 1,
-                margin: 0,
-                paddingBottom: 10,
+                marginTop: 12,
               }}
             >
               {route.title}

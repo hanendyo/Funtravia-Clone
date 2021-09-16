@@ -56,9 +56,9 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 
-export default function Detail_movie(props, { navigation, route }) {
+export default function Detail_movie(props) {
   let [token, setToken] = useState(props.route.params.token);
-  let movie_id = props.route.params.movie_id;
+  let movie_id = props?.route?.params?.movie_id;
   let [modalShare, setModalShare] = useState(false);
   let [movie_byid, setMoviebyid] = useState({});
   const { t } = useTranslation();
@@ -68,7 +68,7 @@ export default function Detail_movie(props, { navigation, route }) {
     tabBarVisble: false,
     tabBarLabel: "Unesco",
     headerTintColor: "white",
-    headerTitle: movie_byid.title,
+    headerTitle: movie_byid?.title,
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -127,7 +127,7 @@ export default function Detail_movie(props, { navigation, route }) {
   ] = useLazyQuery(MovieLocationByIDQuery, {
     variables: {
       // movie_id: movie_id,
-      movie_id: props?.route?.params?.movie_id,
+      movie_id: props.route.params.movie_id,
     },
     fetchPolicy: "network-only",
     context: {
@@ -137,7 +137,7 @@ export default function Detail_movie(props, { navigation, route }) {
       },
     },
     onCompleted: () => {
-      setMoviebyid(datamovie.movie_detail);
+      setMoviebyid(datamovie?.movie_detail);
     },
   });
 
@@ -152,6 +152,7 @@ export default function Detail_movie(props, { navigation, route }) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    // refetchmovie();
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
     });
@@ -401,7 +402,6 @@ export default function Detail_movie(props, { navigation, route }) {
                 // height: 50,
                 borderColor: "#d1d1d1",
               }}
-              // onPress={() => console.log(props.navigation.navigate)}
               onPress={() => {
                 setModalShare(false);
                 props.navigation.navigate("TravelIdeaStack", {
@@ -425,7 +425,7 @@ export default function Detail_movie(props, { navigation, route }) {
                 setModalShare(false);
                 shareAction({
                   from: "movie",
-                  target: movie_byid.id,
+                  target: movie_byid?.id,
                 });
               }}
             >
@@ -444,7 +444,7 @@ export default function Detail_movie(props, { navigation, route }) {
                 setModalShare(false);
                 CopyLink({
                   from: "movie",
-                  target: movie_byid.id,
+                  target: movie_byid?.id,
                 });
               }}
             >
@@ -464,7 +464,9 @@ export default function Detail_movie(props, { navigation, route }) {
         }}
       >
         <ImageBackground
-          source={movie_byid.cover ? { uri: movie_byid.cover } : default_image}
+          source={
+            movie_byid?.cover ? { uri: movie_byid?.cover } : default_image
+          }
           style={{
             width: width,
             height: HeaderHeight - HeaderHeight / 2,
@@ -548,7 +550,7 @@ export default function Detail_movie(props, { navigation, route }) {
           }}
         >
           <Text size="title" type="bold" style={{ marginBottom: 5 }}>
-            {movie_byid.title}
+            {movie_byid?.title}
           </Text>
           <Text
             type="regular"
@@ -558,7 +560,7 @@ export default function Detail_movie(props, { navigation, route }) {
               lineHeight: 20,
             }}
           >
-            {movie_byid.description}
+            {movie_byid?.description}
           </Text>
         </View>
       </View>
@@ -629,7 +631,7 @@ export default function Detail_movie(props, { navigation, route }) {
             size="label"
             type="bold"
           >
-            {t("batasText1")} {movie_byid.title} {t("batasText2")}
+            {t("batasText1")} {movie_byid?.title} {t("batasText2")}
           </Text>
           <Text
             style={{ textAlign: "center", marginBottom: 30 }}

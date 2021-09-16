@@ -313,14 +313,10 @@ export default function SendMovie({ navigation, route }) {
   };
   const _sendMessageGroup = async (value, index) => {
     try {
-      // console.log(index);
       setloadingsend(true);
       setIndexGroup(index);
       await socket.emit("join", value.group_id);
-      await socket.on("connection", (socket) => {
-        // console.log(socket);
-        // console.log("socket");
-      });
+      await socket.on("connection", (socket) => {});
       let from = value.itinerary ? "itinerary" : "group";
       let dataMovie = route.params.movie;
       let constain = {
@@ -342,7 +338,7 @@ export default function SendMovie({ navigation, route }) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: `user_id=${user.id}&type=tag_destination&chat=group&room=${
+        body: `user_id=${user.id}&type=tag_movie&chat=group&room=${
           value.group_id
         }&from=${from}&text=${JSON.stringify(constain)}&name=${
           user.first_name
