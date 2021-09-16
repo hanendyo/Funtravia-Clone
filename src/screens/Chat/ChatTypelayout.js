@@ -733,8 +733,17 @@ export default function ChatTypelayout({
   // movie layout
   if (item.type == "tag_movie") {
     let data = JSON.parse(item.text);
+    console.log("data movie", data);
     return (
       <Pressable
+        onPress={() => {
+          navigation.navigate("TravelIdeaStack", {
+            screen: "Detail_movie",
+            params: {
+              movie_id: data.id,
+            },
+          });
+        }}
         style={{
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
@@ -791,14 +800,6 @@ export default function ChatTypelayout({
 
     return (
       <Pressable
-        onPress={() => {
-          navigation.navigate("TravelIdeaStack", {
-            screen: "Detail_movie",
-            params: {
-              movie_id: item.id,
-            },
-          });
-        }}
         style={{
           borderWidth: 1,
           borderColor: "#209fae",

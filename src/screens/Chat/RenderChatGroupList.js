@@ -179,6 +179,24 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
       );
     }
 
+    if (data.type == "tag_movie") {
+      let data_movie = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
+          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+          <Text style={style} size="description" type="regular">
+            {data_movie.name}
+          </Text>
+        </View>
+      );
+    }
+
     if (data.type == "att_image") {
       return (
         <View
