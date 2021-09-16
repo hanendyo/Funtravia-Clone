@@ -169,7 +169,7 @@ export default function ListEventHome(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: "List Event",
+    // title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: "Event",
@@ -429,7 +429,10 @@ export default function ListEventHome(props) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [heightview, HeaderHeight],
-      outputRange: [heightview, -HeaderHeight - 45],
+      outputRange:
+        Platform.OS == "ios"
+          ? [heightview, -HeaderHeight - 40]
+          : [heightview, -HeaderHeight - 40],
       extrapolateRight: "clamp",
     });
     return (
@@ -438,17 +441,17 @@ export default function ListEventHome(props) {
         style={{
           position: "absolute",
           transform: [{ translateY: y }],
-          height:Platform.OS == 'ios' ? 270 : 222,
-          // height:HeaderHeight,
+          // height: Platform.OS == "ios" ? 270 : 222,
+          height: HeaderHeight,
           width: "100%",
           alignItems: "center",
           justifyContent: "flex-start",
-          backgroundColor: "red",
-          zIndex: Platform.OS == 'ios' ? 1 : 1,
+          backgroundColor: "white",
+          zIndex: Platform.OS == "ios" ? 1 : 0,
+          // borderWidth: 2,
+          // borderColor: "green",
         }}
       >
-       
-
         {Banner && Banner.banner_asset.length > 0 ? (
           <FunImage
             source={{ uri: Banner.banner_asset[0].filepath }}
@@ -462,7 +465,7 @@ export default function ListEventHome(props) {
               // height: 0.1,
               width: "100%",
               resizeMode: "cover",
-              // position: "absolute",
+              marginBottom: 0,
             }}
           />
         ) : (
@@ -485,7 +488,8 @@ export default function ListEventHome(props) {
             paddingHorizontal: 20,
             paddingTop: 35,
             backgroundColor: "white",
-            height: Platform.OS == 'ios' ? 120 : 125
+            // borderWidth: 2,
+            // height: Platform.OS == "ios" ? 120 : 125
           }}
         >
           <Text
@@ -503,7 +507,7 @@ export default function ListEventHome(props) {
           <Text
             style={{
               textAlign: "justify",
-              marginBottom: Platform.OS == "ios" ? (Notch ? 50 : 55) : 40,
+              marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
             }}
           >
             {Banner && Banner.description
@@ -516,7 +520,7 @@ export default function ListEventHome(props) {
             position: "absolute",
             flexDirection: "row",
             // paddingBottom: 20,
-            marginTop: Platform.OS == 'ios' ? 158 : 135,
+            marginTop: Platform.OS == "ios" ? 158 : 135,
             // zIndex: 1
           }}
         >
@@ -898,14 +902,13 @@ export default function ListEventHome(props) {
     return (
       <Animated.View
         style={{
-          zIndex: Platform.OS == 'ios' ? 1 : 9999,
-          position: Platform.OS == 'ios' ? "relative" : "absolute",
-          // position: 'relative',
+          zIndex: Platform.OS == "ios" ? 1 : 1,
           transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
           borderBottomColor: "#daf0f2",
-          marginTop: Platform.OS == 'ios' ? 40 : 39,
+          marginTop: Platform.OS == "ios" ? 40 : 30,
+          marginBottom: Platform.OS == "ios" ? -45 : -45,
           // paddingTop: 3,
         }}
       >
@@ -919,9 +922,10 @@ export default function ListEventHome(props) {
           style={{
             elevation: 0,
             shadowOpacity: 0,
-            backgroundColor: "#fff",
+            // backgroundColor: "#fff",
+            backgroundColor: "white",
             height: TabBarHeight,
-            marginBottom: Platform.OS == 'ios' ? -40 : 0,
+            // marginBottom: Platform.OS == "ios" ? -40 : 0
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -1114,7 +1118,7 @@ export default function ListEventHome(props) {
           width: "100%",
           alignContent: "center",
           alignItems: "center",
-          marginBottom: 460
+          marginBottom: 460,
           // transform: [{ translateY: displays }],
         }}
       >

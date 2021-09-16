@@ -250,7 +250,7 @@ export default function SearchListEventHome(props) {
   const [multiSliderValue, setMultiSliderValue] = useState([0, 1000000]);
   const multiSliderValuesChange = values => {
     console.log(`multi: `, multiSliderValue);
-    setMultiSliderValue(values)
+    setMultiSliderValue(values);
     console.log(`multi: `, multiSliderValue);
   };
 
@@ -258,15 +258,37 @@ export default function SearchListEventHome(props) {
     return (
       <View style={styles.ViewContainer}>
         <View style={styles.SliderWrapper}>
-          <View style={{marginBottom: 130, marginLeft: -40}}>
+          <View style={{ marginBottom: 130, marginLeft: -40 }}>
             <Text>{t("price")}</Text>
-            <Text style={{fontWeight: 'bold'}}>{`IDR ${multiSliderValue[0]} - ${multiSliderValue[1]}`}</Text>
+            <Text
+              style={{ fontWeight: "bold" }}
+            >{`IDR ${multiSliderValue[0]} - ${multiSliderValue[1]}`}</Text>
           </View>
           <View style={styles.LabelWrapper}>
             <Text style={styles.LabelTextBot}> {multiSliderValue[0]} </Text>
-            <Text style={{position: 'absolute', top: Platform.OS == 'ios' ? 96 : 95, right: 90, fontSize: 14 }}> {`Min. Cost`} </Text>
+            <Text
+              style={{
+                position: "absolute",
+                top: Platform.OS == "ios" ? 96 : 95,
+                right: 90,
+                fontSize: 14
+              }}
+            >
+              {" "}
+              {`Min. Cost`}{" "}
+            </Text>
             <Text style={styles.LabelTextTop}> {multiSliderValue[1]} </Text>
-            <Text style={{position: 'absolute', top: -105, right: 90, fontSize: 14 }}> {`Max. Cost`} </Text>
+            <Text
+              style={{
+                position: "absolute",
+                top: -105,
+                right: 90,
+                fontSize: 14
+              }}
+            >
+              {" "}
+              {`Max. Cost`}{" "}
+            </Text>
           </View>
           <MultiSlider
             markerStyle={{
@@ -1021,7 +1043,7 @@ export default function SearchListEventHome(props) {
             height: TabBarHeight,
             // borderWidth: 1,
             paddingTop: 0,
-            marginTop: -9 //! hanendyo's
+            marginTop: -10 //! hanendyo's
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -1030,8 +1052,7 @@ export default function SearchListEventHome(props) {
               style={{
                 opacity: focused ? 1 : 0.5,
                 //  borderWidth: 1,
-                margin: 5,
-                paddingBottom: 10
+                paddingBottom: 5
               }}
             >
               {route.title}
@@ -1316,9 +1337,11 @@ export default function SearchListEventHome(props) {
             flexDirection: "column",
             height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
-            backgroundColor: "white"
-            // borderTopLeftRadius: 15,
-            // borderTopRightRadius: 15,
+            backgroundColor: "white",
+            // borderTopStartRadius: 15,
+            // borderTopEndRadius: 15
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15
           }}
         >
           {/* Header */}
@@ -1510,7 +1533,7 @@ export default function SearchListEventHome(props) {
                 >
                   <View
                     style={{
-                      backgroundColor: "#daf0f2",
+                      backgroundColor: "#f6f6f6",
                       borderRadius: 5,
                       // flex: 1,
                       flexDirection: "row",
@@ -1623,7 +1646,7 @@ export default function SearchListEventHome(props) {
                   </Text>
                   <View
                     style={{
-                      flexDirection: "row",
+                      flexDirection: "row"
                     }}
                   >
                     <TextInput
@@ -2010,7 +2033,7 @@ export default function SearchListEventHome(props) {
     date_from: null,
     date_until: null,
     price_start: null,
-    price_end: null,
+    price_end: null
   });
 
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
@@ -2447,20 +2470,19 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: "center",
     fontSize: 14,
-    marginBottom: Platform.OS == 'ios' ? 250 : 180,
-
+    marginBottom: Platform.OS == "ios" ? 250 : 180
   },
   ViewContainer: {
     alignSelf: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   LabelWrapper: {
     flexDirection: "row",
     justifyContent: "space-between"
   },
   LabelTextTop: {
-    position: 'absolute',
-    marginTop: Platform.OS == 'ios' ? -105 : -107,
+    position: "absolute",
+    marginTop: Platform.OS == "ios" ? -105 : -107,
     marginLeft: 100,
     fontSize: 14,
     backgroundColor: "#daf0f2",
@@ -2471,9 +2493,9 @@ const styles = StyleSheet.create({
     paddingVertical: 2
   },
   LabelTextBot: {
-    position: 'absolute',
+    position: "absolute",
     fontSize: 14,
-    marginTop: Platform.OS == 'ios' ? 95 : 93,
+    marginTop: Platform.OS == "ios" ? 95 : 93,
     marginLeft: 100,
     backgroundColor: "#daf0f2",
     borderRadius: 5,
