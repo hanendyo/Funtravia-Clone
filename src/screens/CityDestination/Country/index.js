@@ -76,6 +76,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
+import categoryArticle from "../../../graphQL/Query/Countries/Articlecategory";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -203,6 +204,7 @@ export default function Country(props) {
     await setToken(tkn);
     await getJournal();
     await getPackageDetail();
+    await getCountryfact();
   };
 
   const [getPackageDetail, { loading, data, error }] = useLazyQuery(
@@ -252,6 +254,32 @@ export default function Country(props) {
     },
     onCompleted: () => {
       setListJournal(dataJournal.journal_by_country);
+    },
+  });
+
+  // get article country facts
+
+  let [countryfact, setCountryfact] = useState([]);
+  const [
+    getCountryfact,
+    {
+      loading: loadingcountryfact,
+      data: datacountryfact,
+      error: errorcountryfact,
+    },
+  ] = useLazyQuery(categoryArticle, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.data.id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setCountryfact(datacountryfact.category_article_bycountry);
     },
   });
 
@@ -489,7 +517,8 @@ export default function Country(props) {
     }
   };
 
-  const Renderfact = ({ data, header, country }) => {
+  const Renderfact = ({ datas, header, country }) => {
+    let data = countryfact;
     var y = data.length;
     var x = 2;
     var z = 3;
@@ -516,6 +545,7 @@ export default function Country(props) {
                   indexArc: index,
                   header: header,
                   country: country,
+                  article: item.article,
                 });
               }}
               style={{
@@ -550,12 +580,12 @@ export default function Country(props) {
               }}
             >
               <Text
-                size="title"
+                size="readable"
                 type="regular"
                 numberOfLines={1}
                 style={{
                   textAlign: "center",
-
+                  padding: 2,
                   width: "100%",
                 }}
               >
@@ -1809,8 +1839,6 @@ export default function Country(props) {
       }
     });
   };
-
-  console.log("data", data);
 
   const startRefreshAction = () => {
     if (Platform.OS === "ios") {

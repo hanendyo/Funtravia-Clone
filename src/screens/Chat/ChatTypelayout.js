@@ -8,12 +8,13 @@ import {
   ImageBackground,
 } from "react-native";
 import { Text, FunImage, FunImageAutoSize } from "../../component";
-import Image from "react-native-auto-scale-image";
 import { Star, AddHijau, Reupload } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CHATSERVER } from "../../config";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -28,32 +29,13 @@ export default function ChatTypelayout({
   length,
   datas,
 }) {
-  let [show, setShow] = useState(true);
-  let [items, setItems] = useState([]);
-
-  // console.log("datas", datas);
-  // console.log("item", item);
-  useEffect(() => {
-    if (item.chat == "group") {
-      for (let i of dataMember.buddy) {
-        item.user_id == i.user_id ? (item.user = i) : null;
-      }
-      for (let i in datas) {
-        let x = 1;
-        console.log("tes", ` ${i + x}`);
-        console.log("datas[i]", datas[{ i } + 1]);
-        if (datas[i] == item && datas[i]) {
-          console.log("true");
-        }
-        {
-          console.log("false");
-        }
-      }
-    }
-  }, []);
-  // let entries = Object.values(item);
-  // console.log("entries", entries);
-
+  // useEffect(() => {
+  //   if (item.chat == "group") {
+  //     for (let i of dataMember.buddy) {
+  //       item.user_id == i.user_id ? (item.user = i) : null;
+  //     }
+  //   }
+  // }, []);
   const { t } = useTranslation();
   const playerRef = useRef(null);
   const [loading, setloading] = useState(true);
@@ -751,8 +733,17 @@ export default function ChatTypelayout({
   // movie layout
   if (item.type == "tag_movie") {
     let data = JSON.parse(item.text);
+    console.log("data movie", data);
     return (
       <Pressable
+        onPress={() => {
+          navigation.navigate("TravelIdeaStack", {
+            screen: "Detail_movie",
+            params: {
+              movie_id: data.id,
+            },
+          });
+        }}
         style={{
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
@@ -809,15 +800,6 @@ export default function ChatTypelayout({
 
     return (
       <Pressable
-        onPress={() => {
-          // navigation.push("FeedStack", {
-          //   screen: "CommentPost",
-          //   params: {
-          //     post_id: data.id,
-          //     //   comment_id: data.comment_feed.id,
-          //   },
-          // });
-        }}
         style={{
           borderWidth: 1,
           borderColor: "#209fae",
@@ -828,20 +810,8 @@ export default function ChatTypelayout({
           borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
           width: moderateScale(201, 2),
           height: moderateScale(171, 2),
-          // minHeight: 330,
-          // padding: 10,
           marginVertical: 5,
-          // flexDirection: "row",
           backgroundColor: "#F6F6F6",
-          // shadowColor: "#DAF0F2",
-          // shadowOffset: {
-          //   width: 0,
-          //   height: 5,
-          // },
-          // shadowOpacity: 0.1,
-          // shadowRadius: 6.27,
-
-          // elevation: 6,
         }}
       >
         {item.is_send ? (
@@ -888,8 +858,10 @@ export default function ChatTypelayout({
 
   return (
     <View>
-      {item.from == "group" ? (
-        <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+      {item.chat == "group" ? (
+        item.user_id == user_id ? null : (
+          <Text style={{ marginBottom: 5 }}>{datas[index].name}</Text>
+        )
       ) : null}
       <View
         style={[

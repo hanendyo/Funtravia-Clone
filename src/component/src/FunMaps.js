@@ -23,13 +23,13 @@ export default function FunMaps({
   const url = `${ICONSERVER}${variant[icon.substring(0, 2)]}/${
     icon.split("-")[1]
   }.svg`;
-  console.log("url-map", url);
+
   let [loading, setLoading] = useState(false);
   let [error, setError] = useState(false);
   const extension = Platform.OS === "android" ? "file://" : "";
   const name = sh.unique(url);
   const path = `${extension}${RNFS.CachesDirectoryPath}/${name}.svg`;
-
+  const [status, setStatus] = useState(false);
   RNFS.exists(path)
     .then((exists) => {
       if (!exists) {
@@ -40,9 +40,12 @@ export default function FunMaps({
         }).promise.then((res) => {
           console.log("res", res.statusCode);
           if (res.statusCode === "200") {
+            console.log("res", res.statusCode);
+            setStatus(true);
             setTimeout(() => setLoading(false), 1000);
-            console.log("SUCCESS CACHE ICON", url);
           } else {
+            console.log("res", res.statusCode);
+            setStatus(false);
             setLoading(false);
             setError(true);
           }
@@ -50,6 +53,7 @@ export default function FunMaps({
       }
     })
     .catch((error) => {
+      setStatus(false);
       setLoading(false);
     });
 
@@ -57,19 +61,22 @@ export default function FunMaps({
     return <ActivityIndicator />;
   }
 
-  if (error) {
+  console.log("status", status);
+  if (status) {
+    console.log("fromcarche");
     return (
       <SvgCssUri
-        uri={url}
+        uri={path}
         width={width ? width : 50}
         height={height ? height : 50}
         fill={fill ? fill : "#464646"}
       />
     );
   } else {
+    console.log("fromservice");
     return (
       <SvgCssUri
-        uri={error ? url : path}
+        uri={url}
         width={width ? width : 50}
         height={height ? height : 50}
         fill={fill ? fill : "#464646"}

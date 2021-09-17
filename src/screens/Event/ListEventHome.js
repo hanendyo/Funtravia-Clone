@@ -68,7 +68,7 @@ import { color } from "react-native-reanimated";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 41;
+const TabBarHeight = 60;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
@@ -169,7 +169,7 @@ export default function ListEventHome(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: "List Event",
+    // title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: "Event",
@@ -429,7 +429,10 @@ export default function ListEventHome(props) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [heightview, HeaderHeight],
-      outputRange: [heightview, -HeaderHeight - 45],
+      outputRange:
+        Platform.OS == "ios"
+          ? [heightview, -HeaderHeight - 40]
+          : [heightview, -HeaderHeight - 40],
       extrapolateRight: "clamp",
     });
     return (
@@ -438,17 +441,15 @@ export default function ListEventHome(props) {
         style={{
           position: "absolute",
           transform: [{ translateY: y }],
-          // height:Platform.OS == 'ios' ? 270 : 232,
-          height:HeaderHeight,
+          // height: Platform.OS == "ios" ? 270 : 222,
+          height: HeaderHeight,
           width: "100%",
           alignItems: "center",
           justifyContent: "flex-start",
-          backgroundColor: "red",
-          zIndex: Platform.OS == 'ios' ? 1 : 1,
+          backgroundColor: "white",
+          zIndex: Platform.OS == "ios" ? 1 : 0,
         }}
       >
-       
-
         {Banner && Banner.banner_asset.length > 0 ? (
           <FunImage
             source={{ uri: Banner.banner_asset[0].filepath }}
@@ -462,7 +463,7 @@ export default function ListEventHome(props) {
               // height: 0.1,
               width: "100%",
               resizeMode: "cover",
-              // position: "absolute",
+              marginBottom: 0,
             }}
           />
         ) : (
@@ -485,7 +486,8 @@ export default function ListEventHome(props) {
             paddingHorizontal: 20,
             paddingTop: 35,
             backgroundColor: "white",
-            height: Platform.OS == 'ios' ? 120 : 125
+            // borderWidth: 2,
+            // height: Platform.OS == "ios" ? 120 : 125
           }}
         >
           <Text
@@ -503,7 +505,7 @@ export default function ListEventHome(props) {
           <Text
             style={{
               textAlign: "justify",
-              marginBottom: Platform.OS == "ios" ? (Notch ? 50 : 55) : 40,
+              marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
             }}
           >
             {Banner && Banner.description
@@ -516,7 +518,8 @@ export default function ListEventHome(props) {
             position: "absolute",
             flexDirection: "row",
             // paddingBottom: 20,
-            marginTop: Platform.OS == 'ios' ? 158 : 135,
+            // marginTop: Platform.OS == "ios" ? 158 : 135,
+            marginTop: Platform.OS == "ios" ? 158 : 160,
             // zIndex: 1
           }}
         >
@@ -526,7 +529,7 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               borderWidth: 2,
               borderRightWidth: 0,
-              paddingVertical: 10,
+              // paddingVertical: 10,
               paddingHorizontal: 20,
               borderBottomLeftRadius: 20,
               borderTopStartRadius: 20,
@@ -544,11 +547,12 @@ export default function ListEventHome(props) {
               style={{
                 marginRight: 10,
                 color: "#fff",
+                paddingBottom: 5,
               }}
             >
               {Capital({ text: country?.name })}
             </Text>
-            <Down width={10} height={10} style={{ marginTop: 5 }} />
+            <Down width={10} height={10} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -874,9 +878,9 @@ export default function ListEventHome(props) {
         onScrollEndDrag={(e) => onScrollEndDrag(e)}
         onMomentumScrollEnd={onMomentumScrollEnd}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListHeaderComponent={() => <View style={{ height: 10 }} />}
+        // ListHeaderComponent={() => <View style={{ height: -100 }} />}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight + heightview,
+          paddingTop: HeaderHeight + TabBarHeight - 15,
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -891,21 +895,20 @@ export default function ListEventHome(props) {
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
-      inputRange: [heightview, HeaderHeight],
+      inputRange: [heightview - 10, HeaderHeight],
       outputRange: [HeaderHeight, heightview - 40],
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
         style={{
-          zIndex: Platform.OS == 'ios' ? 1 : 9999,
-          // position: Platform.OS == 'ios' ? "relative" : "absolute",
-          position: 'relative',
+          zIndex: Platform.OS == "ios" ? 1 : 1,
           transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
           borderBottomColor: "#daf0f2",
-          marginTop: Platform.OS == 'ios' ? 40 : 39,
+          marginTop: Platform.OS == "ios" ? 40 : 30,
+          marginBottom: Platform.OS == "ios" ? -45 : -45,
           // paddingTop: 3,
         }}
       >
@@ -919,9 +922,11 @@ export default function ListEventHome(props) {
           style={{
             elevation: 0,
             shadowOpacity: 0,
-            backgroundColor: "#fff",
+            // backgroundColor: "#fff",
+            backgroundColor: "white",
             height: TabBarHeight,
-            marginBottom: Platform.OS == 'ios' ? -40 : -40,
+
+            // marginBottom: Platform.OS == "ios" ? -40 : 0
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -929,9 +934,7 @@ export default function ListEventHome(props) {
               type="bold"
               style={{
                 opacity: focused ? 1 : 0.5,
-                //  borderWidth: 1,
-                margin: 0,
-                paddingBottom: 10,
+                marginTop: 12,
               }}
             >
               {route.title}
@@ -1114,7 +1117,7 @@ export default function ListEventHome(props) {
           width: "100%",
           alignContent: "center",
           alignItems: "center",
-          marginBottom: 460
+          marginBottom: 460,
           // transform: [{ translateY: displays }],
         }}
       >
