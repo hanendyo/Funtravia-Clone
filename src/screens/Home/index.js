@@ -254,25 +254,26 @@ export default function Home(props) {
 
   let [scrollY] = useState(new Animated.Value(0));
 
-  const searchBG = scrollY.interpolate({
-    inputRange: [0, height / 2, height],
-    outputRange: [0, 0.5, 0.5],
+  const shadowBG = scrollY.interpolate({
+    inputRange: [0, height / 2],
+    outputRange: [0, 0.5],
     extrapolate: "clamp",
   });
 
   const elevationBG = scrollY.interpolate({
-    inputRange: [0, height / 2, height],
-    outputRange: [0, 3, 3],
+    inputRange: [0, height / 2],
+    outputRange: [0, 3],
     extrapolate: "clamp",
   });
 
   const colorBG = scrollY.interpolate({
-    inputRange: [0, height / 2, height],
-    outputRange: [
-      "rgba(231, 247, 247, 255)",
-      "rgba(255, 255, 255, 1)",
-      "rgba(255, 255, 255, 1)",
-    ],
+    inputRange: [0, height / 2],
+    outputRange: ["rgba(231, 247, 247, 255)", "rgba(255, 255, 255, 1)"],
+  });
+
+  const searchBG = scrollY.interpolate({
+    inputRange: [0, height / 2],
+    outputRange: ["#FFF", "#F6F6F6"],
   });
 
   if (loadingModal) {
@@ -318,57 +319,61 @@ export default function Home(props) {
               backgroundColor: colorBG,
               shadowColor: "#464646",
               shadowOffset: { width: 1, height: 1 },
-              shadowOpacity: searchBG,
+              shadowOpacity: shadowBG,
               elevation: elevationBG,
             }}
           >
-            <TouchableOpacity
-              onPress={() => searchPage()}
+            <Animated.View
               style={{
-                alignItems: "center",
-                justifyContent: "flex-start",
-                height: 45,
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                borderRadius: 5,
-                borderWidth: 1.5,
-                borderColor: "#FFF",
-                alignSelf: "center",
-                paddingHorizontal: 20,
-                marginVertical: 7,
+                backgroundColor: searchBG,
+                paddingHorizontal: Platform.OS === "ios" ? 20 : 10,
+                marginVertical: Platform.OS === "ios" ? 7 : 3,
+                // backgroundColor: "red",
                 width: Dimensions.get("window").width - 80,
-                // shadowColor: "#464646",
-                // shadowOffset: { width: 0.5, height: 1 },
-                // shadowOpacity: 0.5,
-                // shadowRadius: 2,
-                // elevation: 4,
+                borderRadius: 3,
+                borderWidth: 1.5,
+                borderColor: searchBG,
               }}
             >
-              <View
+              <TouchableOpacity
+                onPress={() => searchPage()}
                 style={{
-                  marginRight: 10,
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  height: Platform.OS === "ios" ? 45 : 34,
+                  flexDirection: "row",
+                  borderColor: "#F6F6F6",
+                  alignSelf: "center",
+                  width: "100%",
                 }}
               >
-                <SearchHome height={15} width={15} />
-              </View>
-              <View>
-                <Text
-                  type="bold"
+                <View
                   style={{
-                    color: "#A9A9A9",
+                    marginRight: 10,
                   }}
                 >
-                  {t("searchHome")}
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <SearchHome height={15} width={15} />
+                </View>
+                <View>
+                  <Text
+                    type="bold"
+                    style={{
+                      color: "#A9A9A9",
+                    }}
+                  >
+                    {t("searchHome")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </Animated.View>
+
             <Pressable
               onPress={() => props.navigation.navigate("Notification")}
-              style={{ paddingLeft: 10 }}
+              style={{ paddingLeft: Platform.OS === "ios" ? 10 : 5 }}
             >
               <NotificationBlue
-                height={30}
-                width={30}
+                height={29}
+                width={29}
                 color={"#1F99A7"}
                 fill={"#1F99A7"}
                 style={{
@@ -429,13 +434,13 @@ export default function Home(props) {
 
         <View
           style={{
-            marginBottom: 25,
+            marginBottom: Platform.OS === "ios" ? 15 : 10,
           }}
         >
           <View
             style={{
               width: width,
-              height: ukuran + 25,
+              height: Platform.OS === "ios" ? ukuran + 25 : ukuran + 7,
               alignSelf: "flex-start",
               justifyContent: "flex-end",
               alignContent: "center",
@@ -459,7 +464,7 @@ export default function Home(props) {
                   alignSelf: "center",
                   justifyContent: "center",
                   paddingVertical: 10,
-                  marginBottom: 15,
+                  marginBottom: Platform.OS === "ios" ? 15 : 5,
                 }}
               >
                 <View
@@ -487,8 +492,10 @@ export default function Home(props) {
                       >
                         <FunImage
                           style={{
-                            width: ukuran - 50,
-                            height: ukuran - 50,
+                            width:
+                              Platform.OS === "ios" ? ukuran - 55 : ukuran - 60,
+                            height:
+                              Platform.OS === "ios" ? ukuran - 55 : ukuran - 60,
                             borderRadius: 50,
                             resizeMode: "cover",
                           }}
@@ -509,9 +516,9 @@ export default function Home(props) {
                         // flexDirection: "row",
                         alignContent: "space-around",
                         justifyContent: "space-between",
-                        width: "80%",
+                        width: Platform.OS === "ios" ? "83%" : "85%",
                         marginLeft: 10,
-                        marginVertical: 5,
+                        marginVertical: Platform.OS === "ios" ? 5 : 7,
                       }}
                     >
                       <Text size="title" type="black">
@@ -521,7 +528,7 @@ export default function Home(props) {
                       <View
                         style={{
                           flexDirection: "row",
-                          marginTop: 3,
+                          marginTop: Platform.OS === "ios" ? 3 : 0,
                           justifyContent: "space-between",
                         }}
                       >
@@ -619,8 +626,8 @@ export default function Home(props) {
               <View
                 style={{
                   width: Dimensions.get("window").width - 40,
-                  height: ukuran - 50,
-                  borderRadius: 5,
+                  height: Platform.OS === "ios" ? ukuran - 50 : ukuran - 53,
+                  borderRadius: 3,
                   borderColor: "#209FAE",
                   borderWidth: 0.5,
                   backgroundColor: "#FFFFFF",

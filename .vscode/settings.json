@@ -1,12 +1,11 @@
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.fontSize": 12,
-    "debug.console.fontSize": 10,
-    "scm.inputFontSize": 10,
-    "terminal.integrated.fontSize": 10,
-    "markdown.preview.fontSize": 10,
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+  "editor.formatOnSave": true,
+  "editor.fontSize": 12,
+  "debug.console.fontSize": 10,
+  "scm.inputFontSize": 10,
+  "terminal.integrated.fontSize": 10,
+  "markdown.preview.fontSize": 10,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

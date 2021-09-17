@@ -216,15 +216,15 @@ export default function detailCustomItinerary(props) {
     checkout: true, //wajib,
     file: true, //wajib
   });
-  
+
   const [secondState, setSecondState] = useState({
     hotel_name: "",
     checkin: "",
     checkout: "",
   });
 
-  let startDate = props.route.params.startDate.split(' ').join('T');
-  let endDate = props.route.params.endDate.split(' ').join('T');
+  let startDate = props.route.params.startDate.split(" ").join("T");
+  let endDate = props.route.params.endDate.split(" ").join("T");
 
   const validation = (name, value) => {
     if (!value || value === "" || value == null) {
@@ -372,10 +372,9 @@ export default function detailCustomItinerary(props) {
   };
 
   let [dateStatus, setDateStatus] = useState({
-    start: true, 
-    end: true
-  })
-
+    start: true,
+    end: true,
+  });
 
   let [renderDate, setRenderDate] = useState({
     renderCheckIn: "",
@@ -427,7 +426,6 @@ export default function detailCustomItinerary(props) {
       });
     }
   };
-
 
   const [mutation, { loading, data, error }] = useMutation(
     AddCustomAccomodation,
@@ -1328,8 +1326,6 @@ export default function detailCustomItinerary(props) {
               setAlertPopUp({
                 ...alertPopUp,
                 show: false,
-                judul: "",
-                detail: "",
               })
             }
           />
