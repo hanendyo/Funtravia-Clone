@@ -24,29 +24,26 @@ export default function MenuNew({ props }) {
         flexDirection: "row",
         width: "100%",
         justifyContent: "space-between",
-        paddingHorizontal: 15,
-        // borderWidth: 1,
+        paddingHorizontal: 10,
       }}
     >
       <View
         style={{
           width: (width - 40) / 3,
-          marginBottom: 5,
           alignItems: "center",
-          //   borderWidth: 1,
         }}
       >
         <TouchableOpacity
           style={styles.menu}
           onPress={() => props.navigation.navigate("DestinationMaps")}
         >
-          <DestinationHome width="65" height="65" />
+          <DestinationHome width="55" height="55" />
         </TouchableOpacity>
         <Text
           type="bold"
           size="description"
           style={{
-            marginTop: 0,
+            marginTop: Platform.OS === "ios" ? 0 : -4,
             textAlign: "center",
           }}
         >
@@ -56,22 +53,20 @@ export default function MenuNew({ props }) {
       <View
         style={{
           width: (width - 40) / 3,
-          marginBottom: 5,
           alignItems: "center",
-          //   borderWidth: 1,
         }}
       >
         <TouchableOpacity
           style={styles.menu}
           onPress={() => props.navigation.navigate("listEventHome")}
         >
-          <EventHome width="65" height="65" />
+          <EventHome width="55" height="55" />
         </TouchableOpacity>
         <Text
           type="bold"
           size="description"
           style={{
-            marginTop: 0,
+            marginTop: Platform.OS === "ios" ? 0 : -4,
             textAlign: "center",
           }}
         >
@@ -81,7 +76,6 @@ export default function MenuNew({ props }) {
       <View
         style={{
           width: (width - 40) / 3,
-          marginBottom: 5,
           alignItems: "center",
           //   borderWidth: 1,
         }}
@@ -90,17 +84,17 @@ export default function MenuNew({ props }) {
           style={styles.menu}
           onPress={() => props.navigation.navigate("TravelGoal")}
         >
-          <TravelJournal width="65" height="65" />
+          <TravelJournal width="55" height="55" />
         </TouchableOpacity>
         <Text
           type="bold"
           size="description"
           style={{
-            marginTop: 0,
+            marginTop: Platform.OS === "ios" ? 0 : -4,
             textAlign: "center",
           }}
         >
-          {t("Travel Goal")}
+          {t("Travel Goals")}
         </Text>
       </View>
     </LinearGradient>

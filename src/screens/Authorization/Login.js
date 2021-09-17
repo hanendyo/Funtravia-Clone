@@ -203,9 +203,7 @@ export default function Login({ navigation, route }) {
       <StatusBar backgroundColor="#14646E" />
       <Peringatan
         aler={aler}
-        setClose={() =>
-          showAlert({ ...aler, show: false, judul: "", detail: "" })
-        }
+        setClose={() => showAlert({ ...aler, show: false })}
       />
       <ScrollView
         style={[styles.main, { paddingTop: 40 }]}
