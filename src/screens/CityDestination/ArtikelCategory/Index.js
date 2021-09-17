@@ -13,7 +13,7 @@ import {
   PanResponder,
   StyleSheet,
 } from "react-native";
-import { Text, Button } from "../../../component";
+import { Text, Button, FunImage } from "../../../component";
 import { default_image } from "../../../assets/png";
 import { Arrowbackwhite, LikeEmpty, Search } from "../../../assets/svg";
 import ArtikelList from "../../../graphQL/Query/Countries/Articlelist";
@@ -27,9 +27,11 @@ import { TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 
 export default function ArtikelCategory(props) {
+  const [articles, setArticles] = useState(props.route.params.article);
+  console.log("art", articles);
   let [token, setToken] = useState("");
   const [routes, setRoutes] = useState([0]);
-  const [tabIndex, setIndex] = useState("");
+  const [tabIndex, setIndex] = useState(0);
   const TabBarHeight = 45;
   const [canScroll, setCanScroll] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -39,6 +41,7 @@ export default function ArtikelCategory(props) {
   const [actives, setActives] = useState(props.route.params.id);
   const [tabData] = useState(Array(1).fill(0));
   const [tabData1] = useState(Array(1).fill(0));
+  const headerScrollY = useRef(new Animated.Value(0)).current;
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -108,20 +111,25 @@ export default function ArtikelCategory(props) {
       },
     },
     onCompleted: () => {
-      let tab = [];
-
-      dataCategory.category_article_bycountry.map((item, index) => {
-        tab.push({ key: item.id, title: item.name });
-      });
-
-      setRoutes(tab);
-      setIndex(props.route.params.indexArc);
+      // let tab = [];
+      // dataCategory.category_article_bycountry.map((item, index) => {
+      //   tab.push({ key: item.id, title: item.name });
+      // });
+      // setRoutes(tab);
     },
   });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
 
+    let tab = [];
+
+    articles.map((item, index) => {
+      console.log("item", item);
+      tab.push({ key: item.id, title: item.title });
+    });
+
+    setRoutes(tab);
     setTimeout(() => {
       scrollRef.current?.scrollToIndex({
         index: props.route.params.indexArc,
@@ -163,14 +171,13 @@ export default function ArtikelCategory(props) {
     let renderItem;
 
     switch (route.key) {
-      case actives:
-        // numCols = 2;
+      case "general":
         data = tabData;
         renderItem = renderactive;
         break;
       default:
         data = tabData1;
-        renderItem = renderlain;
+        renderItem = renderactive;
     }
     return (
       <Animated.FlatList
@@ -233,62 +240,55 @@ export default function ArtikelCategory(props) {
             // borderBottomWidth: 0.5,
           }}
           renderItem={({ item, index }) => (
-            console.log("item", item),
-            (
-              <Ripple
-                onPress={() => {
-                  setIndex(index);
-                  scrollRef.current?.scrollToIndex({
-                    // y: 0,
-                    // x: 100,
-                    index: index,
-                    animated: true,
-                  });
+            <Ripple
+              onPress={() => {
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  // y: 0,
+                  // x: 100,
+                  index: index,
+                  animated: true,
+                });
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  alignContent: "center",
+                  paddingHorizontal: 15,
+                  width:
+                    props?.navigationState.routes?.length <= 2
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
-                <View
-                  style={{
-                    borderBottomWidth: index == tabIndex ? 2 : 1,
-                    borderBottomColor:
-                      index == tabIndex ? "#209fae" : "#d1d1d1",
-                    alignContent: "center",
-                    paddingHorizontal: 15,
-                    width:
-                      props?.navigationState.routes?.length <= 2
-                        ? Dimensions.get("screen").width * 0.5
-                        : props.navigationState.routes.length > 2
-                        ? Dimensions.get("screen").width * 0.333
-                        : null,
-                    height: TabBarHeight,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "center",
-                  }}
-                >
-                  <Text
-                    style={[
-                      index == tabIndex ? styles.labelActive : styles.label,
-                      {
-                        opacity: index == tabIndex ? 1 : 0.7,
-                        borderBottomWidth: 0,
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 0.7,
+                      borderBottomWidth: 0,
 
-                        borderBottomColor:
-                          index == tabIndex &&
-                          props?.navigationState.routes?.length > 1
-                            ? "#FFFFFF"
-                            : "#209fae",
-                        textTransform: "capitalize",
-                      },
-                    ]}
-                  >
-                    <Truncate
-                      text={item?.title ? item.title : ""}
-                      length={14}
-                    />
-                  </Text>
-                </View>
-              </Ripple>
-            )
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props?.navigationState.routes?.length > 1
+                          ? "#FFFFFF"
+                          : "#209fae",
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  <Truncate text={item?.title ? item.title : ""} length={14} />
+                </Text>
+              </View>
+            </Ripple>
           )}
         />
       </Animated.View>
@@ -298,28 +298,15 @@ export default function ArtikelCategory(props) {
   // render active
   const renderactive = () => {
     let index = tabIndex;
-    // let datas = category ? category[index] : null;
-    // console.log("datas", datas);
-    return (
-      <View
-        style={{
-          paddingVertical: 15,
-        }}
-      ></View>
-    );
-  };
+    let datas = articles[index]?.content ? articles[index].content : null;
 
-  // render lain
-  const renderlain = () => {
-    let index = tabIndex;
-    // let datas = category ? category[index] : null;
     return (
       <View
         style={{
           paddingVertical: 15,
         }}
       >
-        {/* {datas && datas.length
+        {datas && datas.length
           ? datas.map((i, index) => {
               if (!i) {
                 <View key={"content" + index} style={{ alignItems: "center" }}>
@@ -419,7 +406,7 @@ export default function ArtikelCategory(props) {
                 );
               }
             })
-          : null} */}
+          : null}
       </View>
     );
   };
