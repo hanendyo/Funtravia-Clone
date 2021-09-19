@@ -95,6 +95,8 @@ export default function ChatTypelayout({
     }
   };
 
+  console.log("item type layour", item);
+
   // useEffect(() => {
   if (item.is_send == false && item.type !== "att_image") {
     if (socket.connected) {
@@ -683,7 +685,7 @@ export default function ChatTypelayout({
             </Text>
           </View>
           <FunImageAutoSize
-            source={{ uri: data?.assets[0].filepath }}
+            source={data ? { uri: data?.assets[0].filepath } : null}
             style={{
               width: 250,
               height: 250 * scale,
