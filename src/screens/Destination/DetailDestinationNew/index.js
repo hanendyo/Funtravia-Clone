@@ -708,7 +708,7 @@ const Index = (props) => {
                 justifyContent: "space-around",
               }}
             >
-              <Text size="h5" type="black" numberOfLines={1}>
+              <Text size="title" type="black" numberOfLines={1}>
                 {data?.destinationById?.name}
               </Text>
               <View style={{ flexDirection: "row", marginTop: 5 }}>
@@ -718,14 +718,14 @@ const Index = (props) => {
                     backgroundColor: "#F4F4F4",
                     // padding: 3,
                     marginRight: 10,
-                    height: 30,
+                    height: 25,
                     justifyContent: "center",
                   }}
                 >
                   <Text
-                    size="label"
+                    size="description"
                     type="bold"
-                    style={{ marginHorizontal: 10 }}
+                    style={{ marginHorizontal: 10, marginBottom: 3 }}
                   >
                     {data?.destinationById?.type?.name}
                   </Text>
@@ -738,12 +738,12 @@ const Index = (props) => {
                     flexDirection: "row",
                     marginRight: 10,
                     alignItems: "center",
-                    height: 30,
+                    height: 25,
                   }}
                 >
                   <Star height={15} width={15} style={{ marginLeft: 10 }} />
                   <Text
-                    size="label"
+                    size="description"
                     type="bold"
                     style={{ marginLeft: 5, marginRight: 10 }}
                   >
@@ -758,7 +758,7 @@ const Index = (props) => {
                   }}
                 >
                   <Text
-                    size="label"
+                    size="description"
                     type="regular"
                     style={{ color: "#209FAE" }}
                   >
@@ -843,7 +843,7 @@ const Index = (props) => {
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 18,
-                height: 50,
+                height: 45,
                 paddingVertical: 7,
                 flexDirection: "row",
                 backgroundColor: "#FFF",
@@ -861,7 +861,7 @@ const Index = (props) => {
                   paddingHorizontal: 15,
                 }}
               >
-                <UnescoIcon height={30} width={30} style={{ marginRight: 5 }} />
+                <UnescoIcon height={27} width={27} style={{ marginRight: 5 }} />
                 <Text size="description" type="regular">
                   UNESCO
                 </Text>
@@ -940,7 +940,7 @@ const Index = (props) => {
                     let lines = line - 1;
                     setTambahan(lines * 20);
                   }}
-                  size="label"
+                  size="description"
                   type="regular"
                   style={{ lineHeight: 18 }}
                   numberOfLines={2}
@@ -1016,7 +1016,7 @@ const Index = (props) => {
                   style={{ marginRight: 10, aligmSelf: "center" }}
                 />
                 <Text
-                  size="label"
+                  size="description"
                   type="regular"
                   style={{ lineHeight: 18 }}
                   numberOfLines={2}
@@ -1088,7 +1088,7 @@ const Index = (props) => {
                   style={{ marginRight: 10, alignSelf: "center" }}
                 />
                 <Text
-                  size="label"
+                  size="description"
                   type="regular"
                   numberOfLines={2}
                   style={{ lineHeight: 18 }}
@@ -1478,7 +1478,7 @@ const Index = (props) => {
                             // borderWidth: 1,
                           }}
                         >
-                          <FunIcon icon={item?.icon} height={60} width={60} />
+                          <FunIcon icon={item?.icon} height={50} width={50} />
                         </View>
                         <Text
                           size="description"
@@ -1555,7 +1555,7 @@ const Index = (props) => {
                           alignItems: "center",
                         }}
                       >
-                        <FunIcon icon={item?.icon} height={60} width={60} />
+                        <FunIcon icon={item?.icon} height={50} width={50} />
                       </View>
                       <Text
                         // size="small"
@@ -1840,7 +1840,8 @@ const Index = (props) => {
                     borderWidth: 1,
                     borderColor: "#F3F3F3",
                     borderRadius: 10,
-                    height: 190,
+                    // height: 190,
+                    height: Dimensions.get("screen").height / 5,
                     // padding: 10,
                     marginTop: 5,
                     width: "100%",
@@ -1861,7 +1862,8 @@ const Index = (props) => {
                     <FunImage
                       source={{ uri: item.images.image }}
                       style={{
-                        width: 160,
+                        // width: 160,
+                        width: Dimensions.get("screen").width / 2.7,
                         height: "100%",
                         borderBottomLeftRadius: 10,
                         borderTopLeftRadius: 10,
@@ -1943,12 +1945,13 @@ const Index = (props) => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <View style={{ borderWidth: 0 }}>
+                    <View>
                       {/* Title */}
                       <View
                         style={{
                           flexDirection: "row",
                           paddingHorizontal: 3,
+                          marginBottom: 5,
                           // alignItems: "center",
                         }}
                       >
@@ -1958,14 +1961,14 @@ const Index = (props) => {
                           style={{ marginTop: 5 }}
                         />
                         <Text
-                          size="title"
+                          size="label"
                           type="bold"
                           numberOfLines={2}
                           style={{
                             marginLeft: 5,
-                            marginBottom: 2,
                             flexWrap: "wrap",
                             width: "90%",
+                            marginTop: 2,
                           }}
                         >
                           {item.name}
@@ -2014,15 +2017,15 @@ const Index = (props) => {
                         >
                           {data?.destinationById?.movie_location?.length > 0 ? (
                             <UnescoIcon
-                              height={33}
-                              width={33}
+                              height={28}
+                              width={28}
                               style={{ marginRight: 5 }}
                             />
                           ) : null}
                           {data?.destinationById?.type?.name
                             .toLowerCase()
                             .substr(0, 6) == "unesco" ? (
-                            <MovieIcon height={33} width={33} />
+                            <MovieIcon height={28} width={28} />
                           ) : null}
                         </View>
                         <View
@@ -2032,7 +2035,7 @@ const Index = (props) => {
                         >
                           {item.greatfor.length > 0 ? (
                             <Text
-                              size="label"
+                              size="description"
                               type="bold"
                               // style={{ marginLeft: 5 }}
                             >
@@ -2052,8 +2055,8 @@ const Index = (props) => {
                                       key={"grat" + index}
                                       icon={item.icon}
                                       fill="#464646"
-                                      height={40}
-                                      width={40}
+                                      height={37}
+                                      width={37}
                                     />
                                   ) : null;
                                 })
@@ -2065,16 +2068,17 @@ const Index = (props) => {
                       <View
                         style={{
                           justifyContent: "flex-end",
-                          width: 70,
+                          width: 65,
                           paddingBottom: 5,
                           paddingRight: 5,
+                          // height: 30,
                         }}
                       >
                         <Button
                           onPress={() => addToPlan(item)}
                           size="small"
                           text={"Add"}
-                          // style={{ marginTop: 15 }}
+                          style={{ height: 25 }}
                         />
                       </View>
                     </View>
@@ -2864,7 +2868,10 @@ const Index = (props) => {
             >
               <Xgray width={15} height={15} />
             </Pressable>
-            <View
+            <Pressable
+              onPress={() =>
+                Linking.openURL(`tel:${data.destinationById.phone1}`)
+              }
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -2889,8 +2896,21 @@ const Index = (props) => {
               ) : (
                 <Text style={{ marginLeft: 10 }}>-</Text>
               )}
-            </View>
-            <View
+            </Pressable>
+            <Pressable
+              onPress={async () => {
+                const supported = await Linking.canOpenURL(
+                  data.destinationById.website
+                );
+                if (supported) {
+                  await Linking.openURL(`${data.destinationById.website}`);
+                } else {
+                  RNToasty.Show({
+                    title: `Don't know how to open this URL: ${url}`,
+                    position: "bottom",
+                  });
+                }
+              }}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -2915,8 +2935,21 @@ const Index = (props) => {
               ) : (
                 <Text style={{ marginLeft: 10 }}>-</Text>
               )}
-            </View>
-            <View
+            </Pressable>
+            <Pressable
+              onPress={async () => {
+                const supported = await Linking.canOpenURL(
+                  data.destinationById.instagram
+                );
+                if (supported) {
+                  await Linking.openURL(`${data.destinationById.instagram}`);
+                } else {
+                  RNToasty.Show({
+                    title: `Don't know how to open this URL: ${data.destinationById.instagram}`,
+                    position: "bottom",
+                  });
+                }
+              }}
               style={{
                 flexDirection: "row",
                 paddingHorizontal: 20,
@@ -2941,7 +2974,7 @@ const Index = (props) => {
               ) : (
                 <Text style={{ marginLeft: 10 }}>-</Text>
               )}
-            </View>
+            </Pressable>
           </View>
         </View>
       </ModalRN>
@@ -3152,8 +3185,8 @@ const styles = StyleSheet.create({
   // },
   //   label: { fontSize: 14, color: "#222" },
   indicator: { backgroundColor: "#209FAE" },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Regular" },
+  labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
 });
 
 export default Index;

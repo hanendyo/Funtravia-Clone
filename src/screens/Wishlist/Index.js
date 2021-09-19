@@ -5,6 +5,7 @@ import {
   Dimensions,
   TextInput,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "../../component";
@@ -298,7 +299,7 @@ export default function Wishlist(props) {
               }}
             >
               <Text
-                size="title"
+                size="label"
                 type="bold"
                 style={{ color: index == 0 ? "#209fae" : "#464646" }}
               >
@@ -327,7 +328,7 @@ export default function Wishlist(props) {
               }}
             >
               <Text
-                size="title"
+                size="label"
                 type="bold"
                 style={{ color: index == 1 ? "#209fae" : "#464646" }}
               >

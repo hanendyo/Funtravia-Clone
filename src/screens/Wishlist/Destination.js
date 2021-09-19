@@ -222,9 +222,8 @@ export default function Destination({
                 borderWidth: 1,
                 borderColor: "#F3F3F3",
                 borderRadius: 10,
-                height: 190,
-                // padding: 10,
-                // marginTop: 5,
+                // height: 190,
+                height: Dimensions.get("screen").height / 5,
                 marginBottom: 15,
                 width: "100%",
                 flexDirection: "row",
@@ -244,7 +243,8 @@ export default function Destination({
                 <FunImage
                   source={{ uri: item.images.image }}
                   style={{
-                    width: 160,
+                    // width: 160,
+                    width: Dimensions.get("screen").width / 2.7,
                     height: "100%",
                     borderBottomLeftRadius: 10,
                     borderTopLeftRadius: 10,
@@ -303,7 +303,7 @@ export default function Destination({
                         justifyContent: "center",
                         alignItems: "center",
                         paddingHorizontal: 5,
-                        height: 25,
+                        height: 20,
                       }}
                     >
                       <Star height={15} width={15} />
@@ -341,7 +341,7 @@ export default function Destination({
                       style={{ marginTop: 5 }}
                     />
                     <Text
-                      size="title"
+                      size="label"
                       type="bold"
                       numberOfLines={2}
                       style={{
@@ -402,14 +402,14 @@ export default function Destination({
                       >
                         {item.movie_location?.length > 0 ? (
                           <UnescoIcon
-                            height={33}
-                            width={33}
+                            height={30}
+                            width={30}
                             style={{ marginRight: 5 }}
                           />
                         ) : null}
                         {item.type?.name.toLowerCase().substr(0, 6) ==
                         "unesco" ? (
-                          <MovieIcon height={33} width={33} />
+                          <MovieIcon height={30} width={30} />
                         ) : null}
                       </View>
                       {dataDes?.destinationById?.movie_location?.length > 0 ? (
@@ -452,8 +452,8 @@ export default function Destination({
                                   key={"grat" + index}
                                   icon={item.icon}
                                   fill="#464646"
-                                  height={40}
-                                  width={40}
+                                  height={37}
+                                  width={37}
                                 />
                               ) : null;
                             })
@@ -464,7 +464,7 @@ export default function Destination({
                   <View
                     style={{
                       justifyContent: "flex-end",
-                      width: 70,
+                      width: 65,
                       paddingBottom: 5,
                       paddingRight: 5,
                     }}
