@@ -1763,30 +1763,7 @@ export default function ItineraryDetail(props) {
           backgroundColor: "#209fae",
         }}
       >
-        <Animated.View
-          style={{
-            height: 90,
-            width: "100%",
-            position: "absolute",
-            zIndex: 1,
-
-            top: 0,
-            left: 0,
-            opacity: imageOpacity,
-          }}
-        >
-          <LinearGradient
-            colors={["rgba(0, 0, 0, 0.8)", "rgba(34, 34, 34, 0)"]}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{
-              height: 90,
-              width: "100%",
-            }}
-          ></LinearGradient>
-        </Animated.View>
         <Animated.Image
-          // source={Cover ? { uri: Cover } : default_image}
           source={
             rD.cover
               ? { uri: rD.cover }

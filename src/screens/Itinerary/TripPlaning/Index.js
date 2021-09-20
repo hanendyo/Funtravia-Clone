@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ActivePlan from "./ActivePlan";
 import FinishTrip from "./FinishTrip";
 import PlanList from "./PlanList";
-import { Arrowbackwhite, Xgray } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, Xgray } from "../../../assets/svg";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 import { Button, Text } from "../../../component";
@@ -59,7 +59,11 @@ export default function TripPlaning(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

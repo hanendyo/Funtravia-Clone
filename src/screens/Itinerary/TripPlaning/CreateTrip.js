@@ -5,6 +5,8 @@ import {
   Arrowbackwhite,
   Xhitam,
   Bottom,
+  Arrowbackios,
+  Check,
 } from "../../../assets/svg";
 import {
   Dimensions,
@@ -75,7 +77,11 @@ export default function Trip(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -316,9 +322,10 @@ export default function Trip(props) {
   };
 
   const setcity = async (id, name) => {
+    let namecity = name.toLowerCase();
     await setIdCity(id);
     await setModalcity(false);
-    await setCity(name);
+    await setCity(namecity);
     await setsearchcity([]);
   };
 
@@ -422,6 +429,7 @@ export default function Trip(props) {
           position: "absolute",
           zIndex: 1,
           top: 0,
+          padding: 0,
           backgroundColor: "#209FAE",
           height: Dimensions.get("screen").height * 0.2,
           width: Dimensions.get("screen").width,
@@ -542,90 +550,135 @@ export default function Trip(props) {
               >
                 <View
                   style={{
+                    flexDirection: "column",
+                    height: Dimensions.get("screen").height * 0.6,
                     width: Dimensions.get("screen").width,
-                    padding: 5,
-                    backgroundColor: "#209fae",
-                    borderTopEndRadius: 5,
-                    borderTopLeftRadius: 5,
-                  }}
-                >
-                  <TouchableOpacity
-                    style={{
-                      alignSelf: "flex-end",
-                      height: 30,
-                      width: 30,
-                      zIndex: 999,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onPress={() => setModalcountry(false)}
-                  >
-                    <Xhitam height={15} width={15} />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width,
-                    minHeight: Dimensions.get("screen").height * 0.5,
+                    borderTopRightRadius: 15,
+                    borderTopLeftRadius: 15,
                     backgroundColor: "white",
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
                   }}
                 >
-                  <Item floatingLabel style={{}}>
-                    <Label
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      paddingHorizontal: 15,
+                      paddingTop: 15,
+                      paddingBottom: 15,
+                    }}
+                  >
+                    <View
                       style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 14,
+                        justifyContent: "center",
                       }}
                     >
-                      {t("Search Country")}
-                    </Label>
-                    <Input
+                      <Text
+                        type="bold"
+                        size="title"
+                        style={{
+                          color: "#464646",
+                        }}
+                      >
+                        {t("SearchCountry")}
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
                       style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 16,
+                        alignSelf: "flex-end",
+                        height: 30,
+                        width: 30,
+                        zIndex: 999,
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
-                      autoCorrect={false}
-                      value={countrys}
-                      onChangeText={(text) => Searchcountry(text)}
-                      returnKeyType="search"
-                      keyboardType="default"
-                    />
-                  </Item>
-                  {datacountry && datacountry.country_search.length > 0 ? (
-                    <FlatList
-                      style={{
-                        width: "100%",
-                        maxHeight: Dimensions.get("screen").width - 50,
-                      }}
-                      showsVerticalScrollIndicator={false}
-                      keyExtractor={(item, index) => `${index}`}
-                      data={datacountry.country_search}
-                      renderItem={({ item }) => (
-                        <TouchableOpacity
-                          style={{
-                            // backgroundColor: 'white',
-                            width: "100%",
-                            padding: 10,
-                          }}
-                          onPress={() => setcont(item.id, item.name)}
-                        >
-                          <Text size="title" type="regular" style={{}}>
-                            {item.name}
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    />
-                  ) : null}
+                      onPress={() => setModalcountry(false)}
+                    >
+                      <Xhitam height={15} width={15} />
+                    </TouchableOpacity>
+                  </View>
+                  {/* garis bottom */}
+                  <View
+                    style={{
+                      borderBottomColor: "#D1D1D1",
+                      borderBottomWidth: 1,
+                      marginBottom: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      minHeight: Dimensions.get("screen").height * 0.5,
+                      backgroundColor: "white",
+
+                      paddingHorizontal: 20,
+                      paddingBottom: 10,
+                    }}
+                  >
+                    <Item floatingLabel style={{}}>
+                      <Label
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 14,
+                        }}
+                      >
+                        {t("SearchCountry")}
+                      </Label>
+                      <Input
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 16,
+                        }}
+                        autoCorrect={false}
+                        value={countrys}
+                        onChangeText={(text) => Searchcountry(text)}
+                        returnKeyType="search"
+                        keyboardType="default"
+                      />
+                    </Item>
+                    {datacountry && datacountry.country_search.length > 0 ? (
+                      <FlatList
+                        style={{
+                          width: "100%",
+                          maxHeight: Dimensions.get("screen").width - 50,
+                        }}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => `${index}`}
+                        data={datacountry.country_search}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={{
+                              // backgroundColor: 'white',
+                              width: "100%",
+                              padding: 10,
+                            }}
+                            onPress={() => setcont(item.id, item.name)}
+                          >
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                size="title"
+                                type="regular"
+                                style={{ textTransform: "capitalize" }}
+                              >
+                                {item.name}
+                              </Text>
+
+                              {item.id == idCountry ? (
+                                <Check width={20} height={15} />
+                              ) : null}
+                            </View>
+                          </TouchableOpacity>
+                        )}
+                      />
+                    ) : null}
+                  </View>
                 </View>
               </Modal>
 
@@ -645,6 +698,7 @@ export default function Trip(props) {
                     style={{
                       fontFamily: "Lato-Regular",
                       fontSize: 14,
+                      color: idCountry ? null : "#dedede",
                     }}
                   >
                     {t("City")}
@@ -695,97 +749,132 @@ export default function Trip(props) {
               >
                 <View
                   style={{
+                    flexDirection: "column",
+                    height: Dimensions.get("screen").height * 0.6,
                     width: Dimensions.get("screen").width,
-                    // height: 15,
-                    padding: 5,
-                    backgroundColor: "#209fae",
-                    borderTopEndRadius: 5,
-                    borderTopLeftRadius: 5,
-                  }}
-                >
-                  <TouchableOpacity
-                    style={{
-                      alignSelf: "flex-end",
-                      height: 30,
-                      width: 30,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onPress={() => setModalcity(false)}
-                  >
-                    <Xhitam height={15} width={15} />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width,
-                    minHeight: Dimensions.get("screen").height * 0.5,
-
+                    borderTopRightRadius: 15,
+                    borderTopLeftRadius: 15,
                     backgroundColor: "white",
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                    paddingHorizontal: 20,
                   }}
                 >
-                  <Item
-                    floatingLabel
+                  <View
                     style={{
-                      marginVertical: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      paddingHorizontal: 15,
+                      paddingTop: 15,
+                      marginBottom: 15,
                     }}
                   >
-                    <Label
+                    <View
                       style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 14,
+                        justifyContent: "center",
                       }}
                     >
-                      {t("SearchCity")}
-                    </Label>
-                    <Input
+                      <Text
+                        type="bold"
+                        size="title"
+                        style={{
+                          color: "#464646",
+                        }}
+                      >
+                        {t("SearchCity")}
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
                       style={{
-                        fontFamily: "Lato-Regular",
-                        fontSize: 16,
+                        alignSelf: "flex-end",
+                        height: 30,
+                        width: 30,
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
-                      returnKeyType="search"
-                      autoCorrect={false}
-                      value={citys}
-                      onChangeText={(text) => {
-                        Searchcity(text);
-                      }}
-                      // onSubmitEditing={}
-                      keyboardType="default"
-                    />
-                  </Item>
-                  {datacity && datacity.cities_search.length > 0 ? (
-                    <FlatList
-                      style={{
-                        width: "100%",
-                        maxHeight: Dimensions.get("screen").width - 40,
-                      }}
-                      showsVerticalScrollIndicator={false}
-                      keyExtractor={(item, index) => `${index}`}
-                      data={datacity.cities_search}
-                      renderItem={({ item }) => (
-                        <TouchableOpacity
-                          style={{
-                            width: "100%",
-                            padding: 10,
-                          }}
-                          onPress={() => setcity(item.id, item.name)}
-                        >
-                          <Text size="title" type="regular" style={{}}>
-                            {item.name}
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-                    />
-                  ) : null}
+                      onPress={() => setModalcity(false)}
+                    >
+                      <Xhitam height={15} width={15} />
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      borderBottomColor: "#D1D1D1",
+                      borderBottomWidth: 1,
+                      marginBottom: 5,
+                    }}
+                  />
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      minHeight: Dimensions.get("screen").height * 0.5,
+                      backgroundColor: "white",
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <Item floatingLabel>
+                      <Label
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 14,
+                        }}
+                      >
+                        {t("SearchCity")}
+                      </Label>
+                      <Input
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 16,
+                        }}
+                        returnKeyType="search"
+                        autoCorrect={false}
+                        value={citys}
+                        onChangeText={(text) => {
+                          Searchcity(text);
+                        }}
+                        // onSubmitEditing={}
+                        keyboardType="default"
+                      />
+                    </Item>
+                    {datacity && datacity.cities_search.length > 0 ? (
+                      <FlatList
+                        style={{
+                          width: "100%",
+                          maxHeight: Dimensions.get("screen").width - 40,
+                        }}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => `${index}`}
+                        data={datacity.cities_search}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={{
+                              width: "100%",
+                              padding: 10,
+                            }}
+                            onPress={() => setcity(item.id, item.name)}
+                          >
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                size="title"
+                                type="regular"
+                                style={{ textTransform: "capitalize" }}
+                              >
+                                {item.name}
+                              </Text>
+                              {item.id == idCity ? (
+                                <Check width={20} height={15} />
+                              ) : null}
+                            </View>
+                          </TouchableOpacity>
+                        )}
+                      />
+                    ) : null}
+                  </View>
                 </View>
               </Modal>
 
