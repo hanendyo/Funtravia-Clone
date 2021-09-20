@@ -672,5 +672,8 @@
   "batasText2": " berlangsung ?",
   "letsText": "Mari tambahkan lokasi tersebut untuk perjalanan Anda!",
   "date": "Tanggal",
-  "price": "Harga"
+  "price": "Harga",
+  "maxCost": "Harga Maksimal",
+  "minCost": "Harga Minimal",
+  "inputCost": "Masukkan Harga"
 }
