@@ -247,122 +247,437 @@ export default function SearchListEventHome(props) {
     end_date: "",
   });
 
-  const [multiSliderValue, setMultiSliderValue] = useState([0, 1000000]);
-  const multiSliderValuesChange = (values) => {
-    console.log(`multi: `, multiSliderValue);
-    setMultiSliderValue(values);
-    console.log(`multi: `, multiSliderValue);
-  };
+  const [keyboardIsUp, setKeyboardIsUp] = useState(false);
+
+  const [priceValue, setPriceValue] = useState({
+    min: 0,
+    max: 1000000,
+  });
+
+  // const priceValuesChange = (values) => {
+  //   console.log(`multi: `, priceValue);
+  //   setPriceValue(values);
+  //   console.log(`multi: `, priceValue);
+  // };
+
+  const [renderPriceValues, setRenderPriceValues] = useState({
+    min: 0,
+    max: 1000000,
+  });
+
+  function numberWithDot(x) {
+    if (x === "" || x === undefined) {
+      if (priceValue.min === "" || priceValue.min === undefined) {
+        setPriceValue({ ...priceValue, min: 0 });
+      } else if (priceValue.max === "" || priceValue.max === undefined) {
+        setPriceValue({ ...priceValue, max: 1000000 });
+      }
+    } else {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+  }
+
+  const convertNumber = () => {};
 
   const [scrollStatus, setScrollStatus] = useState({ scrollEnabled: false });
   const enableScrollFunction = () => setScrollStatus({ scrollEnabled: true });
   const disableScrollFunction = () => setScrollStatus({ scrollEnabled: false });
 
-  const slider = () => {
+  const categoryFilter = () => {
     return (
-      <View style={styles.ViewContainer}>
-        <View style={styles.SliderWrapper}>
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            padding: 15,
+          }}
+        >
           <View
             style={{
-              marginBottom: Platform.OS == "ios" ? (Notch ? 130 : 80) : 130,
-              marginLeft: -40,
-              marginTop: Platform.OS == "ios" ? (Notch ? 15 : 15) : 15,
+              backgroundColor: "#f6f6f6",
+              borderRadius: 5,
+              // flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 5,
             }}
           >
-            <Text>{t("price")}</Text>
-            <Text
-              style={{ fontWeight: "bold" }}
-            >{`IDR ${multiSliderValue[0]} - ${multiSliderValue[1]}`}</Text>
-          </View>
-          <View style={styles.LabelWrapper}>
-            <Text style={styles.LabelTextBot}> {multiSliderValue[0]} </Text>
-            <Text
+            <Search width={15} height={15} />
+
+            <TextInput
+              underlineColorAndroid="transparent"
+              placeholder={t("search")}
               style={{
-                position: "absolute",
-                top: Platform.OS == "ios" ? 96 : 95,
-                right: 100,
-                fontSize: 14,
+                width: "100%",
+                // borderWidth: 1,
+                marginLeft: 5,
+                padding: 0,
+              }}
+              // returnKeyType="search"
+              onChangeText={(x) => searchkategori(x)}
+              onSubmitEditing={(x) => searchkategori(x)}
+            />
+          </View>
+        </View>
+        <ScrollView
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 15,
+          }}
+        >
+          {dataFilterCategoris.map((item, index) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => _handleCheck(item["id"], index, item)}
+              style={{
+                flexDirection: "row",
+                backgroundColor: "white",
+                // borderColor: "#464646",
+                width: "49%",
+                marginRight: 3,
+                marginBottom: 20,
+                justifyContent: "flex-start",
+                alignContent: "center",
+                alignItems: "center",
               }}
             >
-              {`Min. Cost`}
-            </Text>
-            <Text style={styles.LabelTextTop}> {multiSliderValue[1]} </Text>
-            <Text
+              <CheckBox
+                onCheckColor="#FFF"
+                lineWidth={4}
+                onFillColor="#209FAE"
+                onTintColor="#209FAE"
+                boxType={"square"}
+                style={{
+                  alignSelf: "center",
+                  width: Platform.select({
+                    ios: 30,
+                    android: 35,
+                  }),
+                  transform: Platform.select({
+                    ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                    android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                  }),
+                }}
+                // onValueChange={() =>
+                //   Platform.OS == "ios"
+                //     ? null
+                //     : _handleCheck(item["id"], index, item)
+                // }
+                value={item["checked"]}
+              />
+
+              <Text
+                size="label"
+                type="regular"
+                style={{
+                  marginLeft: 0,
+                  marginRight: -10,
+                  color: "#464646",
+                  marginTop: Platform.OS == "ios" ? -5 : -2,
+                  // borderWidth: 5,
+                }}
+              >
+                {item["name"]}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
+  const dateFilter = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+          paddingVertical: 15,
+          flexDirection: "row",
+        }}
+      >
+        {/* start */}
+        <View>
+          <Text
+            style={{
+              paddingTop: 10,
+              // flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 80,
+            }}
+          >
+            {t("From")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <TextInput
+              placeholder={t("pressHere")}
+              autoCorrect={false}
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              value={renderDate.render_start_date}
+            />
+            <TouchableOpacity
+              onPress={() => setTimeModalStartDate(true)}
               style={{
                 position: "absolute",
-                top: Platform.OS == "ios" ? (Notch ? -105 : -55) : -105,
-                right: 100,
-                fontSize: 14,
+                top: 0,
+                left: 0,
+                align: "center",
+                width: "100%",
+                height: "100%",
               }}
-            >
-              {`Max. Cost`}
-            </Text>
+            />
+            <DateTimePickerModal
+              isVisible={timeModalStartDate}
+              mode="date"
+              // display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setTimeModalStartDate(false);
+              }}
+              onCancel={() => setTimeModalStartDate(false)}
+            />
           </View>
-          {/* <ScrollView scrollEnabled={scrollStatus.scrollEnabled}> */}
-          <MultiSlider
-            // onValuesChangeStart={enableScrollFunction}
-            // onValuesChangeFinish={disableScrollFunction}
-            markerStyle={{
-              ...Platform.select({
-                ios: {
-                  height: 15,
-                  width: 15,
-                  backgroundColor: "#209fae",
-                  shadowColor: "#000000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 0,
-                  },
-                  shadowRadius: 1,
-                  shadowOpacity: 0,
-                },
-                android: {
-                  height: 15,
-                  width: 15,
-                  backgroundColor: "#209fae",
-                  shadowColor: "#000000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 0,
-                  },
-                  shadowRadius: 1,
-                  shadowOpacity: 0,
-                },
-              }),
+        </View>
+        {/* DASH */}
+        <View
+          style={{
+            paddingTop: 45,
+            paddingLeft: 10,
+            flexDirection: "row",
+            // justifyContent: "center",
+            // alignContent: "center",
+            // alignItems: "center",
+            // marginBottom: 10,
+            marginRight: 10,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#d3d3d3",
+              width: 10,
+              height: 2,
+              marginTop: Platform.OS == "ios" ? 10 : 15,
             }}
-            vertical={true}
-            track={{
-              ...Platform.select({
-                android: {
-                  height: 15,
-                  width: 15,
-                  borderRadius: 10,
-                  backgroundColor: "red",
-                },
-              }),
+          ></View>
+        </View>
+        {/* end */}
+        <View>
+          <Text
+            style={{
+              paddingTop: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 65,
             }}
-            selectedStyle={{
-              backgroundColor: "#209fae",
+          >
+            {t("until")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
             }}
-            trackStyle={{
-              backgroundColor: "#209fae",
+          >
+            <TextInput
+              placeholder={t("pressHere")}
+              autoCorrect={false}
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              value={renderDate.render_end_date}
+            />
+            <TouchableOpacity
+              onPress={() => setTimeModalEndDate(true)}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                align: "center",
+                width: "100%",
+                height: "100%",
+              }}
+            />
+            <DateTimePickerModal
+              isVisible={timeModalEndDate}
+              mode="date"
+              // display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setTimeModalEndDate(false);
+              }}
+              onCancel={() => setTimeModalEndDate(false)}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const priceFilter = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+          paddingVertical: 15,
+        }}
+      >
+        <View
+          style={{
+            marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 10) : 10,
+            marginTop: Platform.OS == "ios" ? (Notch ? 15 : 15) : 15,
+          }}
+        >
+          <Text>{t("price")}</Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {`IDR ${numberWithDot(priceValue.min)} - ${numberWithDot(
+              priceValue.max
+            )}`}
+          </Text>
+        </View>
+        {/* start */}
+        <View
+          keyboardShouldPersistTaps="handled"
+          style={{
+            marginBottom: Platform.OS == "ios" ? (Notch ? 20 : 15) : 20,
+          }}
+        >
+          <Text
+            style={{
+              paddingTop: 10,
+              // flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 80,
             }}
-            touchDimensions={{
-              height: 100,
-              width: 100,
-              borderRadius: 100,
-              slipDisplacement: 100,
+          >
+            {t("minCost")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
             }}
-            showSteps={true}
-            values={[multiSliderValue[0], multiSliderValue[1]]}
-            sliderLength={Platform.OS == "ios" ? (Notch ? 200 : 150) : 200}
-            onValuesChange={multiSliderValuesChange}
-            min={0}
-            max={1000000}
-            allowOverlap={false}
-            minMarkerOverlapDistance={20}
-          />
-          {/* </ScrollView> */}
+          >
+            <TextInput
+              placeholder={t("inputCost")}
+              autoCorrect={false}
+              keyboardType="numeric"
+              type="number"
+              // keyboardType="decimal-pad"
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              value={priceValue.min}
+              onChangeText={(x) => {
+                if (x === null) {
+                  setPriceValue({ ...priceValue, min: 0 });
+                  setRenderPriceValues({ ...renderPriceValues, min: 0 });
+                } else {
+                  setPriceValue({ ...priceValue, min: x });
+                }
+                setKeyboardIsUp(true);
+              }}
+            />
+          </View>
+        </View>
+        {/* DASH */}
+        <View
+          style={{
+            justifyContent: "center",
+            alignContent: "center",
+            alignItems: "center",
+            marginBottom: Platform.OS == "ios" ? (Notch ? 5 : 0) : 5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#d3d3d3",
+              width: 2,
+              height: Platform.OS == "ios" ? (Notch ? 40 : 20) : 40,
+            }}
+          ></View>
+        </View>
+        {/* end */}
+        <View>
+          <Text
+            style={{
+              paddingTop: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 65,
+            }}
+          >
+            {t("maxCost")}
+          </Text>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <TextInput
+              placeholder={t("inputCost")}
+              autoCorrect={false}
+              // keyboardVerticalOffset={
+              //   Platform.OS == "ios" ? (Notch ? 100 : 150) : null
+              // }
+              keyboardType="numeric"
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              value={priceValue.max}
+              onChangeText={(x) => {
+                if (x === null) {
+                  setPriceValue({ ...priceValue, max: 1000000 });
+                } else {
+                  setPriceValue({ ...priceValue, max: x });
+                }
+                setKeyboardIsUp(true);
+              }}
+            />
+          </ScrollView>
         </View>
       </View>
     );
@@ -454,8 +769,6 @@ export default function SearchListEventHome(props) {
       setRenderDate((prev) => {
         return { ...prev, ["render_start_date"]: formatForScreen };
       });
-      console.log(`tessss: `, renderDate.render_date_start);
-      console.log(`4screen: `, formatForScreen);
     }
 
     if (timeModalEndDate) {
@@ -1332,13 +1645,13 @@ export default function SearchListEventHome(props) {
   const renderFilterCategory = () => {
     return (
       <Modal
-        // onLayout={() => dataCountrySelect()}
         onBackdropPress={() => {
           setshow(false);
         }}
         onRequestClose={() => setshow(false)}
         onDismiss={() => setshow(false)}
         isVisible={show}
+        avoidKeyboard={true}
         style={{
           justifyContent: "flex-end",
           margin: 0,
@@ -1536,260 +1849,9 @@ export default function SearchListEventHome(props) {
               </View>
             </View>
             {/* badan B */}
-            {filterCheck.category ? (
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    padding: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "#f6f6f6",
-                      borderRadius: 5,
-                      // flex: 1,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignContent: "center",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                    }}
-                  >
-                    <Search width={15} height={15} />
-
-                    <TextInput
-                      underlineColorAndroid="transparent"
-                      placeholder={t("search")}
-                      style={{
-                        width: "100%",
-                        // borderWidth: 1,
-                        marginLeft: 5,
-                        padding: 0,
-                      }}
-                      // returnKeyType="search"
-                      onChangeText={(x) => searchkategori(x)}
-                      onSubmitEditing={(x) => searchkategori(x)}
-                    />
-                  </View>
-                </View>
-                <ScrollView
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingHorizontal: 15,
-                  }}
-                >
-                  {dataFilterCategoris.map((item, index) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      onPress={() => _handleCheck(item["id"], index, item)}
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "white",
-                        // borderColor: "#464646",
-                        width: "49%",
-                        marginRight: 3,
-                        marginBottom: 20,
-                        justifyContent: "flex-start",
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <CheckBox
-                        onCheckColor="#FFF"
-                        lineWidth={4}
-                        onFillColor="#209FAE"
-                        onTintColor="#209FAE"
-                        boxType={"square"}
-                        style={{
-                          alignSelf: "center",
-                          width: Platform.select({
-                            ios: 30,
-                            android: 35,
-                          }),
-                          transform: Platform.select({
-                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                          }),
-                        }}
-                        // onValueChange={() =>
-                        //   Platform.OS == "ios"
-                        //     ? null
-                        //     : _handleCheck(item["id"], index, item)
-                        // }
-                        value={item["checked"]}
-                      />
-
-                      <Text
-                        size="label"
-                        type="regular"
-                        style={{
-                          marginLeft: 0,
-                          marginRight: -10,
-                          color: "#464646",
-                          marginTop: Platform.OS == "ios" ? -5 : -2,
-                          // borderWidth: 5,
-                        }}
-                      >
-                        {item["name"]}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            ) : null}
-            {/* badan b date */}
-            {filterCheck.date ? (
-              <View
-                style={{
-                  flex: 1,
-                  paddingHorizontal:
-                    Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
-                  paddingVertical: 15,
-                  flexDirection: "row",
-                }}
-              >
-                {/* start */}
-                <View>
-                  <Text
-                    style={{
-                      paddingTop: 10,
-                      // flexDirection: "row",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      marginBottom: 10,
-                      marginRight: 80,
-                    }}
-                  >
-                    {t("From")}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <TextInput
-                      placeholder={t("pressHere")}
-                      autoCorrect={false}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        fontFamily: "Lato-Regular",
-                        borderColor: "#d3d3d3",
-                        fontSize: 14,
-                        borderWidth: 1,
-                      }}
-                      value={renderDate.render_start_date}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setTimeModalStartDate(true)}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        align: "center",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                    <DateTimePickerModal
-                      isVisible={timeModalStartDate}
-                      mode="date"
-                      // display="inline"
-                      locale="en_id"
-                      onConfirm={(date) => {
-                        timeConverter(date);
-                        setTimeModalStartDate(false);
-                      }}
-                      onCancel={() => setTimeModalStartDate(false)}
-                    />
-                  </View>
-                </View>
-                {/* DASH */}
-                <View
-                  style={{
-                    paddingTop: 45,
-                    paddingLeft: 10,
-                    flexDirection: "row",
-                    // justifyContent: "center",
-                    // alignContent: "center",
-                    // alignItems: "center",
-                    // marginBottom: 10,
-                    marginRight: 10,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "#d3d3d3",
-                      width: 10,
-                      height: 2,
-                      marginTop: Platform.OS == "ios" ? 10 : 15,
-                    }}
-                  ></View>
-                </View>
-                {/* end */}
-                <View>
-                  <Text
-                    style={{
-                      paddingTop: 10,
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      marginBottom: 10,
-                      marginRight: 65,
-                    }}
-                  >
-                    {t("until")}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <TextInput
-                      placeholder={t("pressHere")}
-                      autoCorrect={false}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        fontFamily: "Lato-Regular",
-                        borderColor: "#d3d3d3",
-                        fontSize: 14,
-                        borderWidth: 1,
-                      }}
-                      value={renderDate.render_end_date}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setTimeModalEndDate(true)}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        align: "center",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                    <DateTimePickerModal
-                      isVisible={timeModalEndDate}
-                      mode="date"
-                      // display="inline"
-                      locale="en_id"
-                      onConfirm={(date) => {
-                        timeConverter(date);
-                        setTimeModalEndDate(false);
-                      }}
-                      onCancel={() => setTimeModalEndDate(false)}
-                    />
-                  </View>
-                </View>
-              </View>
-            ) : null}
-            {filterCheck.price ? slider() : null}
+            {filterCheck.category ? categoryFilter() : null}
+            {filterCheck.date ? dateFilter() : null}
+            {filterCheck.price ? priceFilter() : null}
           </View>
           {/* button */}
           <View
@@ -2384,11 +2446,8 @@ export default function SearchListEventHome(props) {
     data["type"] = hasil;
     data["date_from"] = dateData.start_date;
     data["date_until"] = dateData.end_date;
-    data["price_start"] = multiSliderValue[0];
-    data["price_end"] = multiSliderValue[1];
-
-    console.log(`HASIL HEI: `, hasil);
-    console.log(`data HEI: `, data);
+    data["price_start"] = priceValue.min;
+    data["price_end"] = priceValue.max;
 
     await setSearch(data);
     await setshow(false);
@@ -2438,7 +2497,7 @@ export default function SearchListEventHome(props) {
       render_start_date: "",
       render_end_date: "",
     });
-    await setMultiSliderValue([0, 1000000]);
+    await setPriceValue({ min: 0, max: 1000000 });
     await setshow(false);
     await setmonth(" - ");
   };
@@ -2471,10 +2530,6 @@ export default function SearchListEventHome(props) {
     (search["price_start"] > 0 && search["price_end"] == 1000000)
       ? array.push(price)
       : null;
-
-    console.log(`BOI: `, array);
-
-    // console.log(`TOTAL: `, total());
 
     return array?.length;
   };

@@ -666,5 +666,8 @@
   "batasText2": " movie location taken place ?",
   "letsText": "Let’s add those location for your trip!",
   "date": "Date",
-  "price": "Price"
+  "price": "Price",
+  "maxCost": "Max. Cost",
+  "minCost": "Min. Cost",
+  "inputCost": "Input Cost"
 }
