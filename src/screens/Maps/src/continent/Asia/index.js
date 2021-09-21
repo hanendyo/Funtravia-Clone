@@ -8,9 +8,11 @@ import {
   FlatList,
   TouchableOpacity,
   KeyboardAvoidingView,
+  BackHandler,
 } from "react-native";
 import {
   Arrowbackblack,
+  GlobeMap,
   Next,
   PinAbu,
   PinBiru,
@@ -167,6 +169,17 @@ export default function Asia({ navigation }) {
   const keyboardDidShowListener = useRef();
   const keyboardDidHideListener = useRef();
 
+  // hardwarebackpress
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    };
+  }, [navigation, onBackPress]);
+
   useEffect(() => {
     keyboardDidShowListener.current = Keyboard.addListener(
       "keyboardWillShow",
@@ -222,41 +235,68 @@ export default function Asia({ navigation }) {
             }),
           }}
         >
-          <View style={{ flexDirection: "row" }}>
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              onPress={() => onBackPress()}
-              style={{
-                height: 55,
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackblack height={15} width={15}></Arrowbackblack>
-              ) : (
-                <Arrowbackblack height={20} width={20}></Arrowbackblack>
-              )}
-            </Button>
+          {/* backhandler */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                onPress={() => onBackPress()}
+                style={{
+                  height: 55,
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackblack height={15} width={15}></Arrowbackblack>
+                ) : (
+                  <Arrowbackblack height={20} width={20}></Arrowbackblack>
+                )}
+              </Button>
+              <View
+                style={{
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#464646",
+                    marginLeft: 10,
+                    fontSize: 18,
+
+                    fontFamily: "Lato-Bold",
+                  }}
+                >
+                  {t("destination")}
+                </Text>
+              </View>
+            </View>
             <View
               style={{
                 justifyContent: "center",
+                paddingRight: 5,
               }}
             >
-              <Text
+              <Pressable
+                onPress={() => {
+                  navigation.goBack();
+                }}
                 style={{
-                  color: "#464646",
-                  marginLeft: 10,
-                  fontSize: 18,
-
-                  fontFamily: "Lato-Bold",
+                  // borderWidth: 1,
+                  padding: 5,
                 }}
               >
-                {t("destination")}
-              </Text>
+                <GlobeMap width={25} height={25} />
+              </Pressable>
             </View>
           </View>
+
           {/* FOR MAP VIEW */}
           <View
             style={{
