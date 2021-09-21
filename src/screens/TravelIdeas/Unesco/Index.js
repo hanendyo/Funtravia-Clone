@@ -685,6 +685,76 @@ export default function Unesco({ navigation, route }) {
             {selectedCountry?.name}.
           </Text>
         </View>
+        <View
+          style={{
+            position: "absolute",
+            top: HeaderHeight - 160,
+            // top: height - (Platform.OS == "ios" ? (Notch ? 745 : 488) : 630),
+            // transform: [{ translateY: PosisiCountry }],
+            alignItems: "center",
+            width: "100%",
+            height: 44,
+            // backgroundColor: "#FFFFFF",
+            zIndex: 100,
+          }}
+        >
+          <Pressable
+            onPress={() => setModelCountry(true)}
+            style={({ pressed }) => [
+              {
+                height: 50,
+                borderRadius: 25,
+                // borderWidth: 1,
+                borderColor: "grey",
+                paddingVertical: 10,
+                paddingHorizontal: 30,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                // bottom: -22,
+                // left: "30%",
+                backgroundColor: pressed ? "#F6F6F7" : "white",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.22,
+                shadowRadius: 1.46,
+                elevation: 3,
+                flexDirection: "row",
+                // position: "absolute",
+                // transform: [{ translateY: PosisiCountry }],
+                // alignItems: "center",
+              },
+            ]}
+          >
+            {loadingcountry ? (
+              <ActivityIndicator
+                animating
+                size="small"
+                color="#209fae"
+                style={{
+                  paddingTop: 10,
+                  paddingHorizontal: 10,
+                }}
+              />
+            ) : (
+              <Text
+                size="title"
+                type="bold"
+                style={{
+                  marginRight: 10,
+                  // borderWidth: 1,
+                  marginBottom: 5,
+                }}
+              >
+                {selectedCountry?.name}
+              </Text>
+            )}
+            <Select height={10} width={10} />
+          </Pressable>
+        </View>
       </Animated.View>
     );
   };
@@ -1037,75 +1107,7 @@ export default function Unesco({ navigation, route }) {
         modalshown={modalcountry}
         setModelCountry={(e) => setModelCountry(e)}
       />
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: HeaderHeight - 335,
-          transform: [{ translateY: PosisiCountry }],
-          alignItems: "center",
-          width: "100%",
-          height: 44,
-          // backgroundColor: "#FFFFFF",
-          zIndex: 100,
-        }}
-      >
-        <Pressable
-          onPress={() => setModelCountry(true)}
-          style={({ pressed }) => [
-            {
-              height: 50,
-              borderRadius: 25,
-              // borderWidth: 1,
-              borderColor: "grey",
-              paddingVertical: 10,
-              paddingHorizontal: 30,
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              // bottom: -22,
-              // left: "30%",
-              backgroundColor: pressed ? "#F6F6F7" : "white",
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.22,
-              shadowRadius: 1.46,
-              elevation: 3,
-              flexDirection: "row",
-              // position: "absolute",
-              // transform: [{ translateY: PosisiCountry }],
-              // alignItems: "center",
-            },
-          ]}
-        >
-          {loadingcountry ? (
-            <ActivityIndicator
-              animating
-              size="small"
-              color="#209fae"
-              style={{
-                paddingTop: 10,
-                paddingHorizontal: 10,
-              }}
-            />
-          ) : (
-            <Text
-              size="title"
-              type="bold"
-              style={{
-                marginRight: 10,
-                // borderWidth: 1,
-                marginBottom: 5,
-              }}
-            >
-              {selectedCountry?.name}
-            </Text>
-          )}
-          <Select height={10} width={10} />
-        </Pressable>
-      </Animated.View>
+
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
