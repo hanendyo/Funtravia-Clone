@@ -220,49 +220,77 @@ export default function SettingCity(props) {
           })}
           data={data}
           renderItem={({ item, index }) => (
-            <Ripple
-              onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
-              onPress={() => hasil(item)}
-              style={{
-                paddingVertical: 15,
-                paddingHorizontal: 20,
-                borderBottomWidth: 0.5,
-                borderBottomColor:
-                  storage.countries?.id == item.id ? "#209fae" : "#D1D1D1",
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <View
+            console.log("negara", item),
+            (
+              <Ripple
+                onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+                onPress={() => hasil(item)}
                 style={{
-                  marginRight: 15,
-                  elevation: 1,
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor:
+                    storage.countries?.id == item.id ? "#209fae" : "#D1D1D1",
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
-                <Text
-                  size="description"
-                  type="regular"
+                <View
                   style={{
-                    color:
-                      storage?.countries.id == item.id ? "#209fae" : "#000",
+                    marginRight: 15,
+                    flexDirection: "row",
+                    elevation: 1,
                   }}
                 >
-                  {item.name
-                    .toString()
-                    .toLowerCase()
-                    .replace(/\b[a-z]/g, function(letter) {
-                      return letter.toUpperCase();
-                    })}
-                </Text>
-              </View>
-              <View>
-                {storage?.countries.id == item.id ? (
-                  <Check width={20} height={15} />
-                ) : null}
-              </View>
-            </Ripple>
+                  <View
+                    style={{
+                      shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 3,
+                      },
+                      shadowOpacity: 0.29,
+                      shadowRadius: 4.65,
+                      // borderWidth: 1,
+                      elevation: 7,
+                    }}
+                  >
+                    <FunIcon
+                      icon={item.flag}
+                      width={25}
+                      height={20}
+                      style={{
+                        borderWidth: 1,
+                      }}
+                    />
+                  </View>
+
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      paddingLeft: 15,
+                      color:
+                        storage?.countries.id == item.id ? "#209fae" : "#000",
+                    }}
+                  >
+                    {item.name
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function(letter) {
+                        return letter.toUpperCase();
+                      })}
+                  </Text>
+                </View>
+                <View>
+                  {storage?.countries.id == item.id ? (
+                    <Check width={20} height={15} />
+                  ) : null}
+                </View>
+              </Ripple>
+            )
           )}
           keyExtractor={(item) => item.id}
         />

@@ -34,7 +34,7 @@ import CreateItinerary from "../../../graphQL/Mutation/Itinerary/CreateItinerary
 import Country from "../../../graphQL/Query/Itinerary/Country";
 import City from "../../../graphQL/Query/Itinerary/City";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
-import { Truncate, Loading, Button, Text } from "../../../component";
+import { Truncate, Loading, Button, Text, FunIcon } from "../../../component";
 import { useTranslation } from "react-i18next";
 import DropDownPicker from "react-native-dropdown-picker";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
@@ -662,16 +662,48 @@ export default function Trip(props) {
                                 justifyContent: "space-between",
                               }}
                             >
-                              <Text
-                                size="title"
-                                type="regular"
-                                style={{ textTransform: "capitalize" }}
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                }}
                               >
-                                {item.name}
-                              </Text>
-
+                                <View
+                                  style={{
+                                    shadowColor: "#000",
+                                    shadowOffset: {
+                                      width: 0,
+                                      height: 3,
+                                    },
+                                    shadowOpacity: 0.29,
+                                    shadowRadius: 4.65,
+                                    width: 25,
+                                    elevation: 7,
+                                  }}
+                                >
+                                  <FunIcon
+                                    icon={item.flag}
+                                    width={25}
+                                    height={20}
+                                    style={{
+                                      borderWidth: 1,
+                                    }}
+                                  />
+                                </View>
+                                <Text
+                                  size="title"
+                                  type="regular"
+                                  style={{
+                                    textTransform: "capitalize",
+                                    paddingLeft: 15,
+                                  }}
+                                >
+                                  {item.name}
+                                </Text>
+                              </View>
                               {item.id == idCountry ? (
-                                <Check width={20} height={15} />
+                                <View>
+                                  <Check width={20} height={15} />
+                                </View>
                               ) : null}
                             </View>
                           </TouchableOpacity>
@@ -694,15 +726,29 @@ export default function Trip(props) {
                     marginVertical: 10,
                   }}
                 >
-                  <Label
-                    style={{
-                      fontFamily: "Lato-Regular",
-                      fontSize: 14,
-                      color: idCountry ? null : "#dedede",
-                    }}
-                  >
-                    {t("City")}
-                  </Label>
+                  {idCountry ? (
+                    <Label
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        fontSize: 14,
+                        color: "#000",
+                        opacity: 0.7,
+                      }}
+                    >
+                      {t("City")}
+                    </Label>
+                  ) : (
+                    <Label
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        fontSize: 14,
+                        color: "#dedede",
+                      }}
+                    >
+                      {t("City")}
+                    </Label>
+                  )}
+
                   <Input
                     editable={false}
                     autoCorrect={false}

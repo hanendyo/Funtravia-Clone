@@ -277,6 +277,7 @@ import SearchHome from "./files/searchHome.svg";
 import Lock from "./files/lock.svg";
 import World from "./files/world.svg";
 import Reupload from "./files/reupload.svg";
+import GlobeMap from "./files/globemap.svg";
 
 export {
   Lock,
@@ -558,4 +559,5 @@ export {
   Jamhijau,
   Kalenderhijau,
   Reupload,
+  GlobeMap,
 };

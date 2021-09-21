@@ -225,7 +225,7 @@ export default function SettingCity(props) {
           })}
           data={data}
           renderItem={({ item, index }) => (
-            <Ripple
+            <Pressable
               // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
               onPress={() => hasil(item)}
               style={{
@@ -266,7 +266,7 @@ export default function SettingCity(props) {
                   <Check width={20} height={15} />
                 ) : null}
               </View>
-            </Ripple>
+            </Pressable>
           )}
           keyExtractor={(item) => item /*  */.id}
         />
