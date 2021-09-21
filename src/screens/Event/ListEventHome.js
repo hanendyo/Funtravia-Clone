@@ -81,6 +81,12 @@ const PullToRefreshDist = 150;
 export default function ListEventHome(props) {
   let [heightjudul, setheightjudul] = useState(150);
   let HeaderHeight = Dimensions.get("screen").height * 0.15 + heightjudul;
+  const HeaderHeightCustom = Platform.select({
+    ios: Notch ? 360 - 48 : 360 - 20,
+    // android: 305 - StatusBar.currentHeight,
+    // android: 320 - StatusBar.currentHeight,
+    android: 340 - StatusBar.currentHeight,
+  });
   let [heightview, setheight] = useState(0);
   const { t, i18n } = useTranslation();
 
@@ -458,7 +464,7 @@ export default function ListEventHome(props) {
                 Platform.OS == "ios"
                   ? Notch
                     ? Dimensions.get("screen").height * 0.2
-                    : Dimensions.get("screen").height * 0.25
+                    : Dimensions.get("screen").height * 0.22
                   : Dimensions.get("screen").height * 0.2,
               // height: 0.1,
               width: "100%",
@@ -517,9 +523,14 @@ export default function ListEventHome(props) {
           style={{
             position: "absolute",
             flexDirection: "row",
+            // top: HeaderHeightCustom - 160,
+            top:
+              HeaderHeightCustom -
+              (Platform.OS == "ios" ? (Notch ? 155 : 215) : 183),
             // paddingBottom: 20,
             // marginTop: Platform.OS == "ios" ? 158 : 135,
-            marginTop: Platform.OS == "ios" ? 158 : 160,
+            // marginTop: Platform.OS == "ios" ? 158 : 160,
+
             // zIndex: 1
           }}
         >
@@ -907,7 +918,7 @@ export default function ListEventHome(props) {
           width: "100%",
           borderBottomWidth: 2,
           borderBottomColor: "#daf0f2",
-          marginTop: Platform.OS == "ios" ? 40 : 30,
+          marginTop: Platform.OS == "ios" ? (Notch ? 40 : 35) : 30,
           marginBottom: Platform.OS == "ios" ? -45 : -45,
           // paddingTop: 3,
         }}
@@ -1125,6 +1136,7 @@ export default function ListEventHome(props) {
           style={{
             flexDirection: "row",
             paddingBottom: 20,
+            top: HeaderHeight - 160,
           }}
         >
           <TouchableOpacity
@@ -1564,9 +1576,6 @@ export default function ListEventHome(props) {
             </View>
             {filterCountry.length > 0
               ? filterCountry.map((item, index) => (
-                  // console.log(`DATA KONT: `, datacountry),
-                  // datacountry.length > 0 ?
-
                   <Pressable
                     onPress={() => handlecountry(item, index)}
                     style={{
@@ -1619,9 +1628,6 @@ export default function ListEventHome(props) {
                   </Pressable>
                 ))
               : datacountry.map((item, index) => (
-                  // console.log(`DATA KONT: `, datacountry),
-                  // datacountry.length > 0 ?
-
                   <Pressable
                     onPress={() => handlecountry(item, index)}
                     style={{
@@ -2145,13 +2151,8 @@ export default function ListEventHome(props) {
   const [filterCountry, setFilterCountry] = useState([]);
   const searchCountry = async (teks) => {
     let searching = new RegExp(teks, "i");
-
-    console.log(`KONTRI: `, searching);
-
     let b = datacountry.filter((item) => searching.test(item.name));
 
-    console.log(`B: `, b);
-    // setdataCountry(b);
     setFilterCountry(b);
   };
 

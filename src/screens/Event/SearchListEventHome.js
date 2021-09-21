@@ -63,7 +63,6 @@ import { Alert } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
 import { RNToasty } from "react-native-toasty";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -251,14 +250,8 @@ export default function SearchListEventHome(props) {
 
   const [priceValue, setPriceValue] = useState({
     min: 0,
-    max: 1000000,
+    max: "any",
   });
-
-  // const priceValuesChange = (values) => {
-  //   console.log(`multi: `, priceValue);
-  //   setPriceValue(values);
-  //   console.log(`multi: `, priceValue);
-  // };
 
   const [renderPriceValues, setRenderPriceValues] = useState({
     min: 0,
@@ -270,7 +263,7 @@ export default function SearchListEventHome(props) {
       if (priceValue.min === "" || priceValue.min === undefined) {
         setPriceValue({ ...priceValue, min: 0 });
       } else if (priceValue.max === "" || priceValue.max === undefined) {
-        setPriceValue({ ...priceValue, max: 1000000 });
+        setPriceValue({ ...priceValue, max: "any" });
       }
     } else {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -540,7 +533,7 @@ export default function SearchListEventHome(props) {
     );
   };
 
-  const priceFilter = () => {
+  const PriceFilter = () => {
     return (
       <View
         style={{
@@ -556,7 +549,7 @@ export default function SearchListEventHome(props) {
           }}
         >
           <Text>{t("price")}</Text>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
             {`IDR ${numberWithDot(priceValue.min)} - ${numberWithDot(
               priceValue.max
             )}`}
@@ -602,11 +595,10 @@ export default function SearchListEventHome(props) {
                 fontSize: 14,
                 borderWidth: 1,
               }}
-              value={priceValue.min}
+              // value={priceValue.min}
               onChangeText={(x) => {
                 if (x === null) {
                   setPriceValue({ ...priceValue, min: 0 });
-                  setRenderPriceValues({ ...renderPriceValues, min: 0 });
                 } else {
                   setPriceValue({ ...priceValue, min: x });
                 }
@@ -667,7 +659,7 @@ export default function SearchListEventHome(props) {
                 fontSize: 14,
                 borderWidth: 1,
               }}
-              value={priceValue.max}
+              // value={priceValue.max}
               onChangeText={(x) => {
                 if (x === null) {
                   setPriceValue({ ...priceValue, max: 1000000 });
@@ -1851,7 +1843,7 @@ export default function SearchListEventHome(props) {
             {/* badan B */}
             {filterCheck.category ? categoryFilter() : null}
             {filterCheck.date ? dateFilter() : null}
-            {filterCheck.price ? priceFilter() : null}
+            {filterCheck.price ? PriceFilter() : null}
           </View>
           {/* button */}
           <View
@@ -2151,8 +2143,6 @@ export default function SearchListEventHome(props) {
     },
   });
 
-  console.log(`DATA EVENT: `, data);
-
   const [
     getdataEventPublic,
     { data: dataPublic, loading: loadingPublic, error: errorPublic },
@@ -2200,11 +2190,6 @@ export default function SearchListEventHome(props) {
       },
     }
   );
-
-  console.log(`DATA FILTER: `, dataFillter);
-  console.log(`EVENT FILTER: `, dataFillter.event_filter);
-  console.log(`TYPE FILTER: `, dataFillter.event_filter.type);
-  console.log(`COUNTRY FILTER: `, dataFillter.event_filter.country);
 
   const [Banner, SetDataBanner] = useState();
   const {
@@ -2497,7 +2482,7 @@ export default function SearchListEventHome(props) {
       render_start_date: "",
       render_end_date: "",
     });
-    await setPriceValue({ min: 0, max: 1000000 });
+    await setPriceValue({ min: 0, max: "any" });
     await setshow(false);
     await setmonth(" - ");
   };
@@ -2525,9 +2510,9 @@ export default function SearchListEventHome(props) {
         })
       : null;
     search["date_until"]?.length > 0 ? array.push(date) : null;
-    (search["price_start"] > 0 && search["price_end"] < 1000000) ||
-    (search["price_start"] == 0 && search["price_end"] < 1000000) ||
-    (search["price_start"] > 0 && search["price_end"] == 1000000)
+    (search["price_start"] > 0 && search["price_end"] > 0) ||
+    (search["price_start"] == 0 && search["price_end"] == "any") ||
+    search["price_end"] > 0
       ? array.push(price)
       : null;
 
