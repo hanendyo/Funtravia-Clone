@@ -2515,9 +2515,6 @@ export default function SearchListEventHome(props) {
     search["price_end"] > 0
       ? array.push(price)
       : null;
-    // search["price_start"] == 0 && search["price_end"] == String
-    //   ? null
-    //   : array.push(price);
 
     return array?.length;
   };
