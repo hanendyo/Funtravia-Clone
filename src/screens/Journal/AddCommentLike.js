@@ -65,6 +65,11 @@ export default function AddCommentLike({
     },
   });
 
+  const [ace, setAce] = useState(false);
+  // const autoCorrectEnable =()=>{
+
+  // }
+
   const comment = async (id, text) => {
     Keyboard.dismiss();
     if ((token || token !== "") && text !== "") {
@@ -213,10 +218,10 @@ export default function AddCommentLike({
       return Notch ? 35 : 35;
     }
   };
+  const deviceId = DeviceInfo.getModel();
 
   return (
     <KeyboardAvoidingView
-      onLayout={(e) => console.log("event", e.nativeEvent.layout.y)}
       style={{
         paddingTop: 10,
         paddingBottom: 10,
@@ -232,10 +237,17 @@ export default function AddCommentLike({
         shadowRadius: arrayShadow.shadowRadius,
         elevation: arrayShadow.elevation,
         alignItems: "center",
+        marginBottom: keyboardStatus
+          ? Platform.OS == "ios"
+            ? Notch
+              ? deviceId == "iPhone 12 Pro"
+                ? 30
+                : -40
+              : -45
+            : null
+          : null,
       }}
     >
-      {/* <Loading show={loadingLike} />
-      <Loading show={loadingUnLike} /> */}
       <View
         style={{
           backgroundColor: "#f6f6f6",
@@ -250,14 +262,14 @@ export default function AddCommentLike({
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 10,
-          // paddingVertical: 5,
         }}
       >
         <TextInput
+          autoCorrect={keyboardStatus}
           style={{
             // flex: 1,
-            marginLeft: 15,
-            width: "90%",
+            marginLeft: 10,
+            width: "80%",
             // flexWrap: "wrap",
             color: "#2c2c2c",
             fontSize: 14,
@@ -290,7 +302,17 @@ export default function AddCommentLike({
             height: Dimensions.get("window").width * 0.1,
             borderRadius: 15,
             width: "20%",
-            marginLeft: -30,
+            marginLeft: keyboardStatus
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? 10
+                  : 10
+                : null
+              : Platform.OS == "ios"
+              ? Notch
+                ? -10
+                : 0
+              : -10,
           }}
           onPress={() => comment(dataList.id, text)}
         >
