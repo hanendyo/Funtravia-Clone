@@ -584,9 +584,9 @@ export default function ActivePlan({
                       />
                       <View>
                         {item.isprivate == true ? (
-                          <World width={15} height={15} />
-                        ) : (
                           <Lock width={15} height={15} />
+                        ) : (
+                          <World width={15} height={15} />
                         )}
                       </View>
                     </View>

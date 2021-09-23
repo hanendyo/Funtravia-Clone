@@ -278,6 +278,8 @@ import Lock from "./files/lock.svg";
 import World from "./files/world.svg";
 import Reupload from "./files/reupload.svg";
 import GlobeMap from "./files/globemap.svg";
+import GlobeWorld from "./files/globeworld.svg";
+import Newpadlock from "./files/newpadlock.svg";
 
 export {
   Lock,
@@ -560,4 +562,6 @@ export {
   Kalenderhijau,
   Reupload,
   GlobeMap,
+  GlobeWorld,
+  Newpadlock,
 };

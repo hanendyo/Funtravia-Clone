@@ -12,6 +12,8 @@ import { show_password, hide_password } from "../../../assets/png";
 import { CustomImage } from "../../../component";
 
 export default function AddPassword(props) {
+  const [disable1, setDisable1] = useState("");
+  const [disable2, setDisable2] = useState("");
   const [token, setToken] = useState("");
   const [setting, setSetting] = useState("");
   let { t, i18n } = useTranslation();
@@ -26,16 +28,20 @@ export default function AddPassword(props) {
   const handleError1 = (e) => {
     setText1(e);
     if (e && e.length < 8) {
+      setDisable1(e);
       return setError({ ...error, password1: true });
     } else {
+      setDisable1(e);
       return setError({ ...error, password1: false });
     }
   };
   const handleError2 = (e, text1) => {
     setText2(e);
     if (e !== text1) {
+      setDisable2(e);
       setError({ ...error, password2: true });
     } else {
+      setDisable2(e);
       setError({ ...error, password2: false });
     }
   };
@@ -300,8 +306,12 @@ export default function AddPassword(props) {
       ) : null}
       <View style={{ marginTop: 30 }}>
         <Button
-          disable={false}
-          color="secondary"
+          disabled={disable1.length < 8 || disable2.length < 8 ? true : false}
+          color={
+            disable1.length < 8 || disable2.length < 8
+              ? "tertiary"
+              : "secondary"
+          }
           text={"Submit"}
           onPress={() => onSubmit(text1, text2)}
         ></Button>

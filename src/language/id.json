@@ -371,7 +371,7 @@
   "categories": "Kategori",
   "clearAll": "Bersihkan",
   "apply": "Terapkan",
-  "private": "Private",
+  "private": "Privasi",
   "night": "Malam",
   "photoBy": "Photo oleh",
   "enterAddressMeetup": "Masukan alamat pertemuan",
@@ -395,7 +395,7 @@
   "Searchpeople": "Cari Account",
   "CreateNewPlan": "Buat Rencana Baru",
   "TripPlanning": "Rencana Perjalanan",
-  "public": "Public",
+  "public": "Publik",
   "availableTicket": "Tiket tidak tersedia",
   "Joined": "Bergabung",
   "MyTrip": "Trip Saya",
@@ -570,7 +570,7 @@
   "readAll": "Tandai semua sudah dibaca",
   "leave": "Tinggalkan",
   "Tripdetail": "Detail perjalanan",
-  "privacy": "Pripasi",
+  "privacy": "Privasi",
   "English": "Inggris",
   "hr": "jam",
   "min": "mnt",
@@ -675,5 +675,9 @@
   "price": "Harga",
   "maxCost": "Harga Maksimal",
   "minCost": "Harga Minimal",
-  "inputCost": "Masukkan Harga"
+  "inputCost": "Masukkan Harga",
+  "titleeditprivacy" : "Siapa yang bisa melihat perjalananmu ?",
+  "subtitleeditprivacy" : "Perjalanan Anda akan ditampilkan di Beranda, profil Anda, dan hasil pencarian",
+  "onlyyou" :"Hanya kamu",
+  "everyoneinfuntravia" :"Semua orang di Funtravia"
 }

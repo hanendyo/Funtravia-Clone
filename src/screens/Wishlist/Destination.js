@@ -209,190 +209,189 @@ export default function Destination({
           horizontal={false}
           data={dataDes}
           renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() =>
-                props.navigation.push("DestinationUnescoDetail", {
-                  id: item.id,
-                  name: item.name,
-                  token: token,
-                })
-              }
-              key={"nir" + index}
-              style={{
-                borderWidth: 1,
-                borderColor: "#F3F3F3",
-                borderRadius: 10,
-                // height: 190,
-                height: Dimensions.get("screen").height / 5,
-                marginBottom: 15,
-                width: "100%",
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                shadowColor: "#FFF",
-                shadowOffset: {
-                  width: 0,
-                  height: 5,
-                },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
-              }}
-            >
-              <View style={{ justifyContent: "center" }}>
-                {/* Image */}
-                <FunImage
-                  source={{ uri: item.images.image }}
-                  style={{
-                    // width: 160,
-                    width: Dimensions.get("screen").width / 2.7,
-                    height: "100%",
-                    borderBottomLeftRadius: 10,
-                    borderTopLeftRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    left: 10,
-                    width: "87%",
-                    zIndex: 2,
-                    // borderWidth: 3,
-                    borderColor: "#209fae",
-                  }}
-                >
-                  {item.liked === true ? (
-                    <Pressable
-                      onPress={() => _unlikedAnother(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Love height={15} width={15} />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      onPress={() => _likedAnother(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <LikeEmpty height={15} width={15} />
-                    </Pressable>
-                  )}
-                  {item?.rating != 0 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "#F3F3F3",
-                        borderRadius: 3,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingHorizontal: 5,
-                        height: 20,
-                      }}
-                    >
-                      <Star height={15} width={15} />
-                      <Text size="description" type="bold">
-                        {item.rating.substr(0, 3)}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              </View>
-
-              {/* Keterangan */}
-              {/* rating */}
-              <View
+            console.log("item", item),
+            (
+              <Pressable
+                onPress={() =>
+                  props.navigation.push("DestinationUnescoDetail", {
+                    id: item.id,
+                    name: item.name,
+                    token: token,
+                  })
+                }
+                key={"nir" + index}
                 style={{
-                  flex: 1,
-                  paddingHorizontal: 8,
-                  paddingVertical: 7,
-                  // height: 170,
-                  justifyContent: "space-between",
+                  borderWidth: 1,
+                  borderColor: "#F3F3F3",
+                  borderRadius: 10,
+                  // height: 190,
+                  height: Dimensions.get("screen").height / 5,
+                  marginBottom: 15,
+                  width: "100%",
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  shadowColor: "#FFF",
+                  shadowOffset: {
+                    width: 0,
+                    height: 5,
+                  },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 6.27,
+                  elevation: 6,
                 }}
               >
-                <View style={{ borderWidth: 0 }}>
-                  {/* Title */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 3,
-                      // alignItems: "center",
+                <View style={{ justifyContent: "center" }}>
+                  {/* Image */}
+                  <FunImage
+                    source={{
+                      uri: item.cover ? item.cover : item.images[0].image,
                     }}
-                  >
-                    <BlockDestination
-                      height={16}
-                      width={16}
-                      style={{ marginTop: 5 }}
-                    />
-                    <Text
-                      size="label"
-                      type="bold"
-                      numberOfLines={2}
-                      style={{
-                        marginLeft: 5,
-                        marginBottom: 2,
-                        flexWrap: "wrap",
-                        width: "90%",
-                      }}
-                    >
-                      {item.name}
-                    </Text>
-                  </View>
-
-                  {/* Maps */}
+                    style={{
+                      // width: 160,
+                      width: Dimensions.get("screen").width / 2.7,
+                      height: "100%",
+                      borderBottomLeftRadius: 10,
+                      borderTopLeftRadius: 10,
+                    }}
+                  />
                   <View
                     style={{
                       flexDirection: "row",
+                      justifyContent: "space-between",
                       alignItems: "center",
-                      marginLeft: 5,
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      left: 10,
+                      width: "87%",
+                      zIndex: 2,
+                      // borderWidth: 3,
+                      borderColor: "#209fae",
                     }}
                   >
-                    <PinHijau height={15} width={15} />
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{ marginLeft: 5 }}
-                      numberOfLines={1}
-                    >
-                      {item.cities.name}
-                    </Text>
+                    {item.liked === true ? (
+                      <Pressable
+                        onPress={() => _unlikedAnother(item.id)}
+                        style={{
+                          backgroundColor: "#F3F3F3",
+                          height: 30,
+                          width: 30,
+                          borderRadius: 17,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Love height={15} width={15} />
+                      </Pressable>
+                    ) : (
+                      <Pressable
+                        onPress={() => _likedAnother(item.id)}
+                        style={{
+                          backgroundColor: "#F3F3F3",
+                          height: 30,
+                          width: 30,
+                          borderRadius: 17,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <LikeEmpty height={15} width={15} />
+                      </Pressable>
+                    )}
+                    {item?.rating != 0 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "#F3F3F3",
+                          borderRadius: 3,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 5,
+                          height: 20,
+                        }}
+                      >
+                        <Star height={15} width={15} />
+                        <Text size="description" type="bold">
+                          {item.rating.substr(0, 3)}
+                        </Text>
+                      </View>
+                    ) : null}
                   </View>
                 </View>
-                {/* Great for */}
+
+                {/* Keterangan */}
+                {/* rating */}
                 <View
                   style={{
                     flex: 1,
-                    flexDirection: "row",
-                    marginTop: 5,
+                    paddingHorizontal: 8,
+                    paddingVertical: 7,
+                    // height: 170,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "flex-end",
-                      // borderWidth: 1,
-                      paddingHorizontal: 7,
-                    }}
-                  >
+                  <View style={{ borderWidth: 0 }}>
+                    {/* Title */}
                     <View
                       style={{
                         flexDirection: "row",
+                        paddingHorizontal: 3,
+                        // alignItems: "center",
+                      }}
+                    >
+                      <BlockDestination
+                        height={16}
+                        width={16}
+                        style={{ marginTop: 5 }}
+                      />
+                      <Text
+                        size="label"
+                        type="bold"
+                        numberOfLines={2}
+                        style={{
+                          marginLeft: 5,
+                          marginBottom: 2,
+                          flexWrap: "wrap",
+                          width: "90%",
+                        }}
+                      >
+                        {item.name}
+                      </Text>
+                    </View>
+
+                    {/* Maps */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginLeft: 5,
+                      }}
+                    >
+                      <PinHijau height={15} width={15} />
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{ marginLeft: 5 }}
+                        numberOfLines={1}
+                      >
+                        {item.cities.name}
+                      </Text>
+                    </View>
+                  </View>
+                  {/* Great for */}
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      marginTop: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "flex-end",
+                        // borderWidth: 1,
+                        paddingHorizontal: 7,
                       }}
                     >
                       <View
@@ -400,85 +399,92 @@ export default function Destination({
                           flexDirection: "row",
                         }}
                       >
-                        {item.movie_location?.length > 0 ? (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                          }}
+                        >
+                          {item.movie_location?.length > 0 ? (
+                            <UnescoIcon
+                              height={28}
+                              width={28}
+                              style={{ marginRight: 5 }}
+                            />
+                          ) : null}
+                          {item.type?.name.toLowerCase().substr(0, 6) ==
+                          "unesco" ? (
+                            <MovieIcon height={28} width={28} />
+                          ) : null}
+                        </View>
+                        {dataDes?.destinationById?.movie_location?.length >
+                        0 ? (
                           <UnescoIcon
-                            height={30}
-                            width={30}
+                            height={33}
+                            width={33}
                             style={{ marginRight: 5 }}
                           />
                         ) : null}
-                        {item.type?.name.toLowerCase().substr(0, 6) ==
-                        "unesco" ? (
-                          <MovieIcon height={30} width={30} />
+                        {dataDes?.destinationById?.type?.name
+                          .toLowerCase()
+                          .substr(0, 6) == "unesco" ? (
+                          <MovieIcon height={28} width={28} />
                         ) : null}
                       </View>
-                      {dataDes?.destinationById?.movie_location?.length > 0 ? (
-                        <UnescoIcon
-                          height={33}
-                          width={33}
-                          style={{ marginRight: 5 }}
-                        />
-                      ) : null}
-                      {dataDes?.destinationById?.type?.name
-                        .toLowerCase()
-                        .substr(0, 6) == "unesco" ? (
-                        <MovieIcon height={33} width={33} />
-                      ) : null}
+                      <View
+                        style={{
+                          marginBottom: item.greatfor.length > 0 ? 0 : 7,
+                        }}
+                      >
+                        {item.greatfor.length > 0 ? (
+                          <Text
+                            size="label"
+                            type="bold"
+                            // style={{ marginLeft: 5 }}
+                          >
+                            {t("GreatFor") + " :"}
+                          </Text>
+                        ) : null}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            marginLeft: -5,
+                          }}
+                        >
+                          {item.greatfor.length > 0
+                            ? item.greatfor.map((item, index) => {
+                                return index < 3 ? (
+                                  <FunIcon
+                                    key={"grat" + index}
+                                    icon={item.icon}
+                                    fill="#464646"
+                                    height={37}
+                                    width={37}
+                                  />
+                                ) : null;
+                              })
+                            : null}
+                        </View>
+                      </View>
                     </View>
                     <View
                       style={{
-                        marginBottom: item.greatfor.length > 0 ? 0 : 7,
+                        justifyContent: "flex-end",
+                        width: 65,
+                        paddingBottom: 5,
+                        paddingRight: 5,
                       }}
                     >
-                      {item.greatfor.length > 0 ? (
-                        <Text
-                          size="label"
-                          type="bold"
-                          // style={{ marginLeft: 5 }}
-                        >
-                          {t("GreatFor") + " :"}
-                        </Text>
-                      ) : null}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginLeft: -5,
-                        }}
-                      >
-                        {item.greatfor.length > 0
-                          ? item.greatfor.map((item, index) => {
-                              return index < 3 ? (
-                                <FunIcon
-                                  key={"grat" + index}
-                                  icon={item.icon}
-                                  fill="#464646"
-                                  height={37}
-                                  width={37}
-                                />
-                              ) : null;
-                            })
-                          : null}
-                      </View>
+                      <Button
+                        onPress={() => addToPlan(item)}
+                        size="small"
+                        text={"Add"}
+                        style={{ height: 25 }}
+                        // style={{ marginTop: 15 }}
+                      />
                     </View>
                   </View>
-                  <View
-                    style={{
-                      justifyContent: "flex-end",
-                      width: 65,
-                      paddingBottom: 5,
-                      paddingRight: 5,
-                    }}
-                  >
-                    <Button
-                      onPress={() => addToPlan(item)}
-                      size="small"
-                      text={"Add"}
-                      // style={{ marginTop: 15 }}
-                    />
-                  </View>
-                </View>
 
-                {/* <View
+                  {/* <View
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
@@ -525,8 +531,9 @@ export default function Destination({
                         // style={{ marginTop: 15 }}
                       />
                     </View> */}
-              </View>
-            </Pressable>
+                </View>
+              </Pressable>
+            )
           )}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}

@@ -26,6 +26,7 @@ import {
   Xgray,
   Lock,
   World,
+  GlobeWorld,
 } from "../../../assets/svg";
 import { Truncate, Text, Button, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -802,9 +803,9 @@ export default function ActivePlan({
                     />
                     <View>
                       {item.isprivate == true ? (
-                        <World width={15} height={15} />
-                      ) : (
                         <Lock width={15} height={15} />
+                      ) : (
+                        <GlobeWorld width={15} height={15} />
                       )}
                     </View>
                   </View>

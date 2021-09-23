@@ -669,5 +669,9 @@
   "price": "Price",
   "maxCost": "Max. Cost",
   "minCost": "Min. Cost",
-  "inputCost": "Input Cost"
+  "inputCost": "Input Cost",
+  "titleeditprivacy" : "Who could see your trip ?",
+  "subtitleeditprivacy" : "Your trip will be shown in Beranda, your profile, and search results",
+  "onlyyou" :"Only you",
+  "everyoneinfuntravia" :"Everyone in Funtravia"
 }
