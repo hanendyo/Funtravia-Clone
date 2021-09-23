@@ -91,7 +91,7 @@ export default function ImageSlide({ aler, setClose }) {
               >
                 {aler.judul}
               </Text>
-              {aler.detail.length !== 0 ? (
+              {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
                 <View
                   style={{
                     backgroundColor: "#F6F6F6",
@@ -109,13 +109,13 @@ export default function ImageSlide({ aler, setClose }) {
                       marginHorizontal: 5,
                     }}
                   >
-                    {aler.detail}
+                    {aler?.detail}
                   </Text>
                 </View>
               ) : null}
             </View>
           </View>
-          <TouchableOpacity
+          <Pressable
             onPress={() => setClose()}
             style={{
               width: Dimensions.get("screen").width - 100,
@@ -139,7 +139,7 @@ export default function ImageSlide({ aler, setClose }) {
             >
               {t("understand")}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </Modal>
     </SafeAreaView>

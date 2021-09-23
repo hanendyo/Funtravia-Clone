@@ -88,8 +88,8 @@ export default function Register({ navigation }) {
         showAlert({
           ...aler,
           show: true,
-          judul: "Some Form Field Empty",
-          detail: "" + error,
+          judul: "Some field cannot be empty",
+          detail: error ? "" + error : 0,
         });
         return false;
       }
@@ -241,7 +241,7 @@ export default function Register({ navigation }) {
           <View style={{ flex: 1 }}>
             <FloatingInput
               customTextStyle={{
-                color: itemvalid.first_name === false ? "#464646" : "#D75995",
+                color: "#464646",
               }}
               value={state.first_name}
               onChangeText={onChange("first_name")}

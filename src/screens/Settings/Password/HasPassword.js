@@ -158,6 +158,9 @@ export default function HasPassword(props) {
         }
       } catch (errors) {
         setModalVisible2(true);
+        await setTimeout(() => {
+          setModalVisible2(false);
+        }, 3000);
         return setErrors(errors);
       }
     } else {
@@ -378,7 +381,16 @@ export default function HasPassword(props) {
       ) : null}
       <View style={{ marginTop: 30 }}>
         <Button
-          color="secondary"
+          disabled={
+            text.length < 1 || text1.length < 8 || text2.length < 8
+              ? true
+              : false
+          }
+          color={
+            text.length < 0 || text1.length < 8 || text2.length < 8
+              ? "tertiary"
+              : "secondary"
+          }
           onPress={() => onSubmit(text, text1)}
           text={"Submit"}
         ></Button>
