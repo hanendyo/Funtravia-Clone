@@ -309,7 +309,7 @@ export default function EventDetail(props) {
             </TouchableOpacity>
           </View>
 
-          {dataTiket.length > 0 ? (
+          {dataTiket?.length > 0 ? (
             <FlatList
               contentContainerStyle={{}}
               horizontal={false}

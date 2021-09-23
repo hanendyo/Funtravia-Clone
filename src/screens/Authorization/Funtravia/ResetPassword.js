@@ -16,6 +16,7 @@ import FORGOT from "../../../graphQL/Mutation/Login/forgotverify";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { Arrowbackblack } from "../../../assets/svg";
+import { Label } from "native-base";
 
 export default function ResetPassword(props) {
   const { t, i18n } = useTranslation();
@@ -47,12 +48,41 @@ export default function ResetPassword(props) {
 
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   const [otp] = useState(props.route.params.otp);
+  const [disable1, setDisable1] = useState("");
+  const [disable2, setDisable2] = useState("");
   const [email] = useState(props.route.params.email);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hidePasswd, setHidePasswd] = useState(true);
   const [hidePasswdCnfrm, setHidePasswdCnfrm] = useState(true);
   const [mutation, { loading, data, error }] = useMutation(FORGOT);
+
+  const [errors, setErrors] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+
+  const _HandlePass = (e) => {
+    setPassword(e);
+    if (e && e.length < 8) {
+      setDisable1(e);
+      return setErrors({ ...error, password: true });
+    } else {
+      setDisable1(e);
+      return setErrors({ ...error, password: false });
+    }
+  };
+
+  const _HandleConfPass = (e) => {
+    setConfirmPassword(e);
+    if (e !== password) {
+      setDisable2(e);
+      setErrors({ ...error, confirmPassword: true });
+    } else {
+      setDisable2(e);
+      setErrors({ ...error, confirmPassword: false });
+    }
+  };
 
   const forgot = async () => {
     try {
@@ -164,7 +194,7 @@ export default function ResetPassword(props) {
                 <FloatingInput
                   secureTextEntry={hidePasswd}
                   value={password}
-                  onChangeText={(text) => setPassword(text)}
+                  onChangeText={(text) => _HandlePass(text)}
                   label={t("enterNew")}
                   customTextStyle={styles.inputTextStyle}
                   keyboardType="default"
@@ -182,11 +212,18 @@ export default function ResetPassword(props) {
                   }}
                 />
               </View>
+              {errors["password"] === true ? (
+                <Label style={{ marginTop: 5, alignSelf: "flex-start" }}>
+                  <Text type="light" size="small" style={{ color: "#D75995" }}>
+                    {t("inputWarningPassword")}
+                  </Text>
+                </Label>
+              ) : null}
               <View style={{ flexDirection: "row" }}>
                 <FloatingInput
                   secureTextEntry={hidePasswdCnfrm}
                   value={confirmPassword}
-                  onChangeText={(text) => setConfirmPassword(text)}
+                  onChangeText={(text) => _HandleConfPass(text)}
                   label={t("reenterPass")}
                   customTextStyle={styles.inputTextStyle}
                   keyboardType="default"
@@ -204,6 +241,13 @@ export default function ResetPassword(props) {
                   }}
                 />
               </View>
+              {errors["confirmPassword"] === true ? (
+                <Label style={{ marginTop: 5, alignSelf: "flex-start" }}>
+                  <Text type="light" size="small" style={{ color: "#D75995" }}>
+                    {t("inputWarningRepeatPassword")}
+                  </Text>
+                </Label>
+              ) : null}
             </View>
             <View
               style={{
@@ -212,6 +256,14 @@ export default function ResetPassword(props) {
               }}
             >
               <Button
+                disabled={
+                  disable1.length < 8 || disable2.length < 8 ? true : false
+                }
+                color={
+                  disable1.length < 8 || disable2.length < 8
+                    ? "tertiary"
+                    : "secondary"
+                }
                 onPress={forgot}
                 text={t("submit")}
                 style={{ width: Dimensions.get("window").width / 1.2 }}
