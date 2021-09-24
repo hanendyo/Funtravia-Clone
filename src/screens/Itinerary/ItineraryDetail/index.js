@@ -1142,7 +1142,8 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    props.navigation.goBack();
+    // props.navigation.goBack();
+    props.navigation.navigate("TripBottomPlaning");
   };
 
   const [
@@ -5077,7 +5078,7 @@ export default function ItineraryDetail(props) {
               size="medium"
               type="circle"
               variant="transparent"
-              onPress={() => props.navigation.goBack()}
+              onPress={() => _handlerBack()}
               style={{
                 height: 50,
                 // marginLeft: 8,
