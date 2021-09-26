@@ -532,11 +532,7 @@ export default function Home(props) {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: 13,
-                          }}
-                        >
+                        <Text size="label" type="regular">
                           {data && data.username ? `@${data.username}` : null}
                         </Text>
                         <TouchableOpacity
@@ -549,9 +545,11 @@ export default function Home(props) {
                           }}
                         >
                           <Text
+                            size="label"
+                            type="bold"
                             style={{
                               color: "#209FAE",
-                              fontWeight: "bold",
+                              // fontWeight: "bold",
                               marginRight: 5,
                             }}
                           >
@@ -575,14 +573,8 @@ export default function Home(props) {
                         padding: 3,
                       }}
                     >
-                      <Text
-                        style={{
-                          fontFamily: "Lato",
-                          fontSize: 13,
-                        }}
-                      >
-                        {t("helloTraveler")}
-                        {","}
+                      <Text size="label" type="bold">
+                        {`${t("helloTraveler")},`}
                       </Text>
                       <Text
                         style={{
@@ -688,7 +680,7 @@ export default function Home(props) {
                           {data ? data.count_my_itinerary : "-"}
                         </Text>
                         <Text
-                          size="medium"
+                          size="label"
                           type="regular"
                           style={styles.statLabel}
                         >
@@ -711,7 +703,7 @@ export default function Home(props) {
                           {data ? data.count_follower : "-"}
                         </Text>
                         <Text
-                          size="medium"
+                          size="label"
                           type="regular"
                           style={styles.statLabel}
                         >
@@ -734,7 +726,7 @@ export default function Home(props) {
                           {data ? data.count_following : "-"}
                         </Text>
                         <Text
-                          size="medium"
+                          size="label"
                           type="regular"
                           style={styles.statLabel}
                         >
