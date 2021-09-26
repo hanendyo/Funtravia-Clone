@@ -1841,7 +1841,7 @@ const Index = (props) => {
                     borderColor: "#F3F3F3",
                     borderRadius: 10,
                     // height: 190,
-                    height: Dimensions.get("screen").height / 5,
+                    height: Dimensions.get("screen").height / 4.7,
                     // padding: 10,
                     marginTop: 5,
                     width: "100%",

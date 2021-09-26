@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "react-native-gesture-handler";
 import MainStackNavigator from "./src/navigation";
 import { ApolloProvider } from "@apollo/client";
@@ -14,6 +14,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
+import DeviceInfo from "react-native-device-info";
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();
