@@ -11,7 +11,12 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image, MapIconGrey, CalenderGrey } from "../../assets/png";
 import { Truncate } from "../../component";
-import { LikeRed, LikeEmpty, Arrowbackwhite } from "../../assets/svg";
+import {
+  LikeRed,
+  LikeEmpty,
+  Arrowbackwhite,
+  Arrowbackios,
+} from "../../assets/svg";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
@@ -35,7 +40,7 @@ export default function ListEvent(props) {
     title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Event",
+    headerTitle: t("event"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -44,7 +49,7 @@ export default function ListEvent(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -63,7 +68,11 @@ export default function ListEvent(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

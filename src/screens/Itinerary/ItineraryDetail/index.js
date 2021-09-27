@@ -253,6 +253,7 @@ export default function ItineraryDetail(props) {
   };
   let [Anggota, setAnggota] = useState();
   let [loading, setloading] = useState(false);
+  let [statusUsers, setStatusUsers] = useState("");
 
   const {
     data: datadetail,
@@ -516,6 +517,11 @@ export default function ItineraryDetail(props) {
     setStatus(
       dta.status === "D" ? "edit" : dta.status === "F" ? "finish" : "saved"
     );
+    datadetail.itinerary_detail.buddy.map((item, index) => {
+      if (item.user_id === users?.id) {
+        setStatusUsers(item.isadmin);
+      }
+    });
     let anggota = dta.buddy.findIndex((k) => k["user_id"] === users?.id);
     props.navigation.setOptions({
       headerRight: () => (
@@ -5028,6 +5034,7 @@ export default function ItineraryDetail(props) {
 
           <Button
             text={""}
+            onPress={() => setshowside(true)}
             size="medium"
             type="circle"
             variant="transparent"
@@ -5154,7 +5161,7 @@ export default function ItineraryDetail(props) {
             size="medium"
             type="circle"
             variant="transparent"
-            // onPress={() => setshowside(true)}
+            onPress={() => setshowside(true)}
             style={{
               height: 50,
             }}
@@ -6578,7 +6585,7 @@ export default function ItineraryDetail(props) {
                   </TouchableOpacity>
                 ) : null}
 
-                {Anggota === "true" ? (
+                {Anggota === "true" && statusUsers == true ? (
                   <TouchableOpacity
                     style={{
                       marginVertical: 5,
