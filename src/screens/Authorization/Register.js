@@ -88,7 +88,7 @@ export default function Register({ navigation }) {
         showAlert({
           ...aler,
           show: true,
-          judul: "Some field cannot be empty",
+          judul: "somefieldempty",
           detail: error ? "" + error : 0,
         });
         return false;
@@ -130,7 +130,7 @@ export default function Register({ navigation }) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Register Failed",
+        judul: "registerfailed",
         detail:
           "" +
           error

@@ -251,9 +251,10 @@ export default function SettingCity(props) {
                         width: 0,
                         height: 3,
                       },
-                      shadowOpacity: 0.29,
-                      shadowRadius: 4.65,
-                      // borderWidth: 1,
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2.65,
+                      width: 25,
+
                       elevation: 7,
                     }}
                   >

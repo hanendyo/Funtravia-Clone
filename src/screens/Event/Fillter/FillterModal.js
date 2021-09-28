@@ -176,18 +176,12 @@ export default function FilterModal({
     >
       <View
         style={{
-          height: 10,
-          backgroundColor: "#209fae",
-        }}
-      ></View>
-      <View
-        style={{
           flexDirection: "column",
-          height: Dimensions.get("screen").height * 0.75,
+          height: Dimensions.get("screen").height * 0.6,
           width: Dimensions.get("screen").width,
+          borderTopRightRadius: 15,
+          borderTopLeftRadius: 15,
           backgroundColor: "white",
-          // borderTopLeftRadius: 15,
-          // borderTopRightRadius: 15,
         }}
       >
         <View
@@ -196,7 +190,8 @@ export default function FilterModal({
             justifyContent: "space-between",
             width: "100%",
             paddingHorizontal: 15,
-            paddingVertical: 20,
+            paddingTop: 15,
+            paddingBottom: 15,
           }}
         >
           <Text
@@ -299,7 +294,7 @@ export default function FilterModal({
             >
               <View
                 style={{
-                  backgroundColor: "#daf0f2",
+                  backgroundColor: "#f6f6f6",
                   borderRadius: 5,
                   // flex: 1,
                   flexDirection: "row",
@@ -365,7 +360,11 @@ export default function FilterModal({
                         android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                       }),
                     }}
-                    onValueChange={() => _handleCheck(item["id"], index, item)}
+                    onValueChange={() =>
+                      Platform.OS == "ios"
+                        ? null
+                        : _handleCheck(item["id"], index, item)
+                    }
                     value={item["checked"]}
                   />
 

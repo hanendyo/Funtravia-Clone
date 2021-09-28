@@ -21,6 +21,7 @@ import {
   Image,
   Alert,
   Picker,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -34,7 +35,14 @@ import CreateItinerary from "../../../graphQL/Mutation/Itinerary/CreateItinerary
 import Country from "../../../graphQL/Query/Itinerary/Country";
 import City from "../../../graphQL/Query/Itinerary/City";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
-import { Truncate, Loading, Button, Text, FunIcon } from "../../../component";
+import {
+  Truncate,
+  Loading,
+  Button,
+  Text,
+  FunIcon,
+  Peringatan,
+} from "../../../component";
 import { useTranslation } from "react-i18next";
 import DropDownPicker from "react-native-dropdown-picker";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
@@ -86,11 +94,14 @@ export default function Trip(props) {
     ),
   };
 
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let [country, setCountry] = useState("");
   let [countrys, setCountrys] = useState("");
   let [modalcountry, setModalcountry] = useState(false);
   let [modalcity, setModalcity] = useState(false);
   let [modaltravel, setModaltravel] = useState(false);
+  let [modalalert, setModalAlert] = useState(false);
+  let [textalert, setTextAlert] = useState("");
   let [city, setCity] = useState("");
   let [citys, setCitys] = useState("");
   let [travelWith, setTravelWith] = useState("");
@@ -414,6 +425,17 @@ export default function Trip(props) {
     }
   };
 
+  const _ShowAlert = (text) => {
+    showAlert({
+      ...aler,
+      show: true,
+      judul: text,
+      detail: error ? "" + error : 0,
+    });
+    // setTextAlert(text);
+    // setModalAlert(true);
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : null}
@@ -674,9 +696,10 @@ export default function Trip(props) {
                                       width: 0,
                                       height: 3,
                                     },
-                                    shadowOpacity: 0.29,
-                                    shadowRadius: 4.65,
+                                    shadowOpacity: 0.1,
+                                    shadowRadius: 2.65,
                                     width: 25,
+
                                     elevation: 7,
                                   }}
                                 >
@@ -684,9 +707,6 @@ export default function Trip(props) {
                                     icon={item.flag}
                                     width={25}
                                     height={20}
-                                    style={{
-                                      borderWidth: 1,
-                                    }}
                                   />
                                 </View>
                                 <Text
@@ -773,8 +793,115 @@ export default function Trip(props) {
                     }}
                     onPress={() => setModalcity(true)}
                   ></TouchableOpacity>
-                ) : null}
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      alignContent: "center",
+                      top: 0,
+                      left: 0,
+                      position: "absolute",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                    onPress={() => _ShowAlert("selectcountryfirst")}
+                  ></TouchableOpacity>
+                )}
               </View>
+              {/* modal alert */}
+              <Peringatan
+                aler={aler}
+                setClose={() =>
+                  showAlert({ ...aler, show: false, judul: "", detail: "" })
+                }
+              />
+              {/* <Modal
+                useNativeDriver={true}
+                visible={modalalert}
+                onRequestClose={() => setModalAlert(false)}
+                transparent={true}
+                animationType="fade"
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Pressable
+                  onPress={() => setModalAlert(false)}
+                  style={{
+                    width: Dimensions.get("screen").width,
+
+                    height: Dimensions.get("screen").height,
+                    justifyContent: "center",
+                    opacity: 0.7,
+                    backgroundColor: "#000",
+                    position: "absolute",
+                  }}
+                ></Pressable>
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width - 100,
+                    marginHorizontal: 50,
+                    backgroundColor: "#FFF",
+                    zIndex: 15,
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    borderRadius: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "white",
+                      width: Dimensions.get("screen").width - 100,
+                      // paddingHorizontal: 20,
+                      borderRadius: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        borderBottomWidth: 1,
+                        borderColor: "#d1d1d1",
+                        alignItems: "center",
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        backgroundColor: "#f6f6f6",
+                        // height: 50,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text
+                        size="title"
+                        type="bold"
+                        style={{ marginVertical: 15 }}
+                      >
+                        {t("Oops")}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => setModalAlert(false)}
+                      style={{
+                        position: "absolute",
+                        right: 0,
+                        width: 55,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: 60,
+                      }}
+                    >
+                      <Xgray width={15} height={15} />
+                    </Pressable>
+                    <Text
+                      size="title"
+                      type="regular"
+                      style={{ marginVertical: 20, textAlign: "center" }}
+                    >
+                      {t(textalert)}
+                    </Text>
+                  </View>
+                </View>
+              </Modal> */}
+
               {/* modal city */}
               <Modal
                 onRequestClose={() => setModalcity(false)}
@@ -1161,16 +1288,16 @@ export default function Trip(props) {
                     {t("duration")}
                   </Text>
                   <TouchableOpacity
-                    onPress={() => (startDate ? setModalEnd(true) : null)}
+                    onPress={() =>
+                      startDate ? setModalEnd(true) : _ShowAlert("setstartdate")
+                    }
                   >
                     <Text
                       size="label"
                       type="regular"
-                      style={
-                        {
-                          // color: duration > 0 ? "#464646" : "#E4E4E4",
-                        }
-                      }
+                      style={{
+                        color: startDate ? "#464646" : "#dedede",
+                      }}
                     >
                       {duration} {t("days")}
                     </Text>

@@ -4,19 +4,22 @@ const RegionList_v2 = gql`
     populer_city_destination_v2(key: { keyword: $keyword, type: $type }) {
       id
       name
+      count_destination
       image {
         image
       }
-      cover
-      city {
+      city{
         id
         name
         cover
+        head1
+        head2
         latitude
         longitude
-        count_plan_tour
         count_destination
+        count_plan_tour
         type
+        description_type
       }
     }
   }

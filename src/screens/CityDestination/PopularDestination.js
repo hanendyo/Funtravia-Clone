@@ -112,6 +112,8 @@ export default function AllDestination(props) {
     }
   );
 
+  console.log("data", dataResult);
+
   //Filter Region
   const [filterRegion, setFilterRegion] = useState([]);
 
@@ -212,12 +214,8 @@ export default function AllDestination(props) {
   }, []);
   let [showcity, setShowCity] = useState(null);
   const RenderList = ({ item }) => {
-    let sumdestination = 0;
-
-    //count destination
-    let count = item.city.map((item, index) => {
-      sumdestination = sumdestination + item.count_destination;
-    });
+    console.log("item", item);
+    let sumdestination = item.count_destination;
 
     return item && item.city.length > 0 ? (
       <View
@@ -225,6 +223,15 @@ export default function AllDestination(props) {
           backgroundColor: "#FFF",
           marginVertical: 5,
           borderRadius: 10,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3.62,
+
+          elevation: 4,
           width: Dimensions.get("screen").width - 20,
         }}
       >
@@ -256,7 +263,9 @@ export default function AllDestination(props) {
                 }
               >
                 <FunImage
-                  source={item.cover ? { uri: item.cover } : default_image}
+                  source={
+                    item.image.image ? { uri: item.image.image } : default_image
+                  }
                   style={{
                     width: (Dimensions.get("window").width - 270) / 2,
                     height: (Dimensions.get("window").width - 270) / 2,
@@ -299,7 +308,11 @@ export default function AllDestination(props) {
                   >
                     {item.name}
                   </Text>
-                  <Text size={"title"} type={"regular"} style={{}}>
+                  <Text
+                    size={"label"}
+                    type={"regular"}
+                    style={{ marginTop: 5 }}
+                  >
                     {sumdestination + " " + t("destination")}
                   </Text>
                 </View>
@@ -333,122 +346,119 @@ export default function AllDestination(props) {
         >
           {item.name == showcity && item.city.length
             ? item.city.map((value, i) => {
-                if (i <= 0) {
-                  return (
-                    <View
+                return (
+                  <View
+                    style={{
+                      backgroundColor: "#F6F6F6",
+                      marginLeft: 10,
+                      width: Dimensions.get("window").width - 40,
+                    }}
+                  >
+                    <TouchableOpacity
+                      key={i + item.name}
+                      onPress={() => {
+                        if (value.type == "province") {
+                          props.navigation.navigate("CountryStack", {
+                            screen: "Province",
+                            params: {
+                              data: value,
+                              exParam: true,
+                            },
+                          });
+                        } else {
+                          props.navigation.navigate("CountryStack", {
+                            screen: "CityDetail",
+                            params: {
+                              data: {
+                                city_id: value.id,
+                                city_name: value.name,
+                                latitude: value.latitude,
+                                longitude: value.longitude,
+                              },
+                              exParam: true,
+                            },
+                          });
+                        }
+                      }}
                       style={{
-                        backgroundColor: "#F6F6F6",
-                        marginLeft: 10,
-                        width: Dimensions.get("window").width - 40,
+                        height: Dimensions.get("window").width * 0.24,
+                        width: Dimensions.get("window").width - 20,
+
+                        flex: 1,
+
+                        flexDirection: "row",
                       }}
                     >
-                      <TouchableOpacity
-                        key={i + item.name}
-                        onPress={() => {
-                          if (value.type == "province") {
-                            props.navigation.navigate("CountryStack", {
-                              screen: "Province",
-                              params: {
-                                data: value,
-                                exParam: true,
-                              },
-                            });
-                          } else {
-                            props.navigation.navigate("CountryStack", {
-                              screen: "CityDetail",
-                              params: {
-                                data: {
-                                  city_id: value.id,
-                                  city_name: value.name,
-                                  latitude: value.latitude,
-                                  longitude: value.longitude,
-                                },
-                                exParam: true,
-                              },
-                            });
-                          }
-                        }}
+                      <View
                         style={{
-                          height: Dimensions.get("window").width * 0.24,
-                          width: Dimensions.get("window").width - 20,
-
-                          flex: 1,
-
-                          flexDirection: "row",
+                          justifyContent: "center",
                         }}
                       >
-                        <View
+                        <FunImage
+                          key={value.id}
+                          source={
+                            value.cover ? { uri: value.cover } : default_image
+                          }
                           style={{
-                            justifyContent: "center",
+                            width: (Dimensions.get("window").width - 270) / 2,
+                            height: (Dimensions.get("window").width - 270) / 2,
+                            borderRadius: 5,
+                            marginHorizontal: 10,
+                            marginVertical: 10,
                           }}
-                        >
-                          <FunImage
-                            key={value.id}
-                            source={
-                              value.cover ? { uri: value.cover } : default_image
-                            }
-                            style={{
+                          imageStyle={[
+                            styles.Image,
+                            {
                               width: (Dimensions.get("window").width - 270) / 2,
                               height:
                                 (Dimensions.get("window").width - 270) / 2,
                               borderRadius: 5,
                               marginHorizontal: 10,
                               marginVertical: 10,
-                            }}
-                            imageStyle={[
-                              styles.Image,
-                              {
-                                width:
-                                  (Dimensions.get("window").width - 270) / 2,
-                                height:
-                                  (Dimensions.get("window").width - 270) / 2,
-                                borderRadius: 5,
-                                marginHorizontal: 10,
-                                marginVertical: 10,
-                              },
-                            ]}
-                          ></FunImage>
-                        </View>
+                            },
+                          ]}
+                        ></FunImage>
+                      </View>
 
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            width: "70%",
-                            paddingVertical: 5,
-
-                            paddingHorizontal: 10,
-                          }}
-                        >
-                          <Text
-                            type="bold"
-                            size="title"
-                            style={{ color: "#209FAE" }}
-                          >
-                            <Truncate
-                              text={Capital({
-                                text: value.name,
-                              })}
-                              length={20}
-                            />
-                          </Text>
-                          {/* <Text type="" size="label" style={{}}>
-                          {rupiah(value.count_destination)} {t("destination")}
-                        </Text>
-                        <Text type="" size="label" style={{}}>
-                          {rupiah(value.count_plan_tour)} {t("trip")}
-                        </Text> */}
-                        </View>
-                      </TouchableOpacity>
                       <View
                         style={{
-                          borderBottomColor: "#dedede",
-                          borderBottomWidth: 1,
-                          marginHorizontal: 15,
+                          justifyContent: "center",
+                          width: "70%",
+                          paddingVertical: 5,
+
+                          paddingHorizontal: 10,
                         }}
-                      />
-                    </View>
-                  );
-                }
+                      >
+                        <Text
+                          type="bold"
+                          size="title"
+                          style={{ color: "#209FAE" }}
+                        >
+                          <Truncate
+                            text={Capital({
+                              text: value.name,
+                            })}
+                            length={20}
+                          />
+                        </Text>
+                        <Text
+                          type="regular"
+                          size="label"
+                          style={{ marginTop: 5 }}
+                        >
+                          {value.description_type}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        borderBottomColor: "#dedede",
+                        borderBottomWidth: 1,
+                        marginHorizontal: 15,
+                      }}
+                    />
+                  </View>
+                );
               })
             : null}
         </View>

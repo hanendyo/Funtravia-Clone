@@ -450,7 +450,7 @@
   "Male": "Laki-laki",
   "Female": "Perempuan",
   "atGlance": "Sekilas tentang ",
-  "registerEmail": "Masukkan email Anda yang terdaftar di bawah untuk menerima instruksi perubahan email",
+  " Email": "Masukkan email Anda yang terdaftar di bawah untuk menerima instruksi perubahan email",
   "currentEmail": "Masukkan alamat email saat ini",
   "newEmail": "Masukkan alamat email baru",
   "verifyEmail": "Verifikasi email Anda",
@@ -679,5 +679,9 @@
   "titleeditprivacy" : "Siapa yang bisa melihat perjalananmu ?",
   "subtitleeditprivacy" : "Perjalanan Anda akan ditampilkan di Beranda, profil Anda, dan hasil pencarian",
   "onlyyou" :"Hanya kamu",
-  "everyoneinfuntravia" :"Semua orang di Funtravia"
+  "everyoneinfuntravia" :"Semua orang di Funtravia",
+  "selectcountryfirst" :"Silahkan pilih negara terlebih dulu",
+  "setstartdate" :"Silahkan tentukan tanggal mulai terlebih dulu",
+  "somefieldempty" : "Beberapa bidang tidak boleh kosong",
+  "registerfailed" : "Registrasi gagal"
 }

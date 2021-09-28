@@ -160,10 +160,9 @@ export default function Fillter({ type, country, sendBack, props }) {
           style={{
             alignContent: "center",
             alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 15,
+            paddingHorizontal: 10,
             height: 50,
-            zIndex: 5,
+            justifyContent: "space-between",
             flexDirection: "row",
             width: Dimensions.get("screen").width,
           }}
@@ -178,27 +177,20 @@ export default function Fillter({ type, country, sendBack, props }) {
             }}
             style={{
               marginRight: 5,
-              // width: "10%",
+              borderRadius: 3,
               paddingHorizontal: 10,
+              borderColor: "#209FAE",
+              paddingBottom: 1,
             }}
           >
             <Filternewbiru width={18} height={18} />
-            {/* <Text
-              style={{
-                fontFamily: "Lato-Regular",
-                color: "#0095A7",
-                fontSize: 13,
-                alignSelf: "center",
-                marginRight: 3,
-              }}
-            >
-              {t("filter")}
-            </Text> */}
+
             {dataFillter.length && Filterlenght > 0 ? (
               <View
                 style={{
                   backgroundColor: "#209fae",
-                  marginLeft: 5,
+                  marginLeft: 10,
+                  width: 20,
                   paddingHorizontal: 5,
                   borderRadius: 2,
                 }}
@@ -207,7 +199,7 @@ export default function Fillter({ type, country, sendBack, props }) {
                   style={{
                     fontFamily: "Lato-Regular",
                     color: "white",
-                    fontSize: 13,
+                    fontSize: 15,
                     alignSelf: "center",
                   }}
                 >
@@ -222,16 +214,20 @@ export default function Fillter({ type, country, sendBack, props }) {
               backgroundColor: "#F0F0F0",
               borderRadius: 5,
               flex: 1,
+              paddingHorizontal: 10,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 2,
+              height: 35,
             }}
           >
-            <Search width={15} height={15} />
-
+            <View
+              style={{
+                marginHorizontal: 5,
+              }}
+            >
+              <Search width={15} height={15} />
+            </View>
             <TextInput
               underlineColorAndroid="transparent"
               placeholder={t("search")}
@@ -247,89 +243,6 @@ export default function Fillter({ type, country, sendBack, props }) {
             />
           </View>
         </View>
-
-        {/* <View
-          style={{
-            flexDirection: "row",
-            zIndex: 5,
-            marginHorizontal: 10,
-            marginBottom: 10,
-          }}
-        >
-          <Button
-            size="small"
-            type="icon"
-            variant="bordered"
-            color="primary"
-            onPress={() => {
-              modalTogle();
-            }}
-            style={{
-              marginRight: 5,
-              // paddingHorizontal: 10,
-            }}
-          >
-            <CustomImage
-              customStyle={{
-                width: 14,
-                height: 14,
-                alignSelf: "center",
-                marginRight: 5,
-              }}
-              customImageStyle={{ resizeMode: "contain" }}
-              source={filter_blue2}
-            />
-            <Text
-              style={{
-                fontFamily: "Lato-Regular",
-                color: "#0095A7",
-                fontSize: 13,
-                alignSelf: "center",
-                marginRight: 3,
-              }}
-            >
-              {t("filter")}
-            </Text>
-            {dataFillter.length && Filterlenght > 0 ? (
-              <View
-                style={{
-                  borderRadius: 3,
-                  width: 14,
-                  height: 14,
-                  backgroundColor: "#0095A7",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Lato-Regular",
-                    color: "white",
-                    fontSize: 13,
-                    alignSelf: "center",
-                  }}
-                >
-                  {Filterlenght}
-                </Text>
-              </View>
-            ) : null}
-          </Button>
-
-          <FlatList
-            contentContainerStyle={{
-              justifyContent: "space-evenly",
-              marginHorizontal: 3,
-            }}
-            horizontal={true}
-            data={dataFillter.sort(compare)}
-            renderItem={_renderFilter}
-            showsHorizontalScrollIndicator={false}
-            extraData={selected}
-          ></FlatList>
-       
-        </View> */}
       </View>
       <FillterModal
         props={props}

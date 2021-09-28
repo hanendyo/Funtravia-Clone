@@ -89,7 +89,7 @@ export default function ImageSlide({ aler, setClose }) {
                 type="bold"
                 style={{ marginBottom: 10, textAlign: "center" }}
               >
-                {aler.judul}
+                {t(aler.judul)}
               </Text>
               {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
                 <View
@@ -124,6 +124,7 @@ export default function ImageSlide({ aler, setClose }) {
               justifyContent: "center",
               borderBottomLeftRadius: 5,
               borderBottomRightRadius: 5,
+              paddingBottom: 5,
               // paddingVertical: 15,
               paddingTop: aler.detail.length === 0 ? 5 : 0,
             }}
