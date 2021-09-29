@@ -317,22 +317,13 @@ export default function ItineraryDetail(props) {
         throw new Error("Error Input");
       }
       if (response.data) {
+        props.navigation.navigate("BottomStack", {
+          screen: "TripBottomPlaning",
+          params: { screen: "TripPlaning" },
+        });
         if (response.data.delete_itinerary.code !== 200) {
           throw new Error(response.data.delete_itinerary.message);
         }
-
-        props.navigation.dispatch(
-          StackActions.replace("BottomStack", {
-            screen: "TripPlaning",
-            params: {
-              index: status === "saved" ? 1 : 0,
-            },
-          })
-        );
-
-        // props.navigation.push("TripPlaning", {
-        // 	index: status === "saved" ? 1 : 0,
-        // });
       }
 
       setloading(false);
