@@ -83,8 +83,8 @@ export default function SearchListEventHome(props) {
   const { t, i18n } = useTranslation();
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "All Event" },
-    { key: "tab2", title: "Public Event" },
+    { key: "tab1", title: t("allevent") },
+    { key: "tab2", title: t("publicevent") },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   const [dataEvent, setdataEvent] = useState([]);
@@ -169,7 +169,7 @@ export default function SearchListEventHome(props) {
     title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Event",
+    headerTitle: t("event"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

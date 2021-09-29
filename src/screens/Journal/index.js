@@ -45,7 +45,7 @@ export default function Journal(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("journal"),
+    headerTitle: t("Travel Journal"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

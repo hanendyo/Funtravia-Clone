@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import {
   Arrowbackblack,
+  Arrowbackiosblack,
   GlobeMap,
   Next,
   PinAbu,
@@ -50,23 +51,23 @@ export default function Asia({ navigation }) {
   const subContinentData = [
     {
       id: "035",
-      label: "South-eastern Asia",
+      label: t("southeasternasia"),
     },
     {
       id: "143",
-      label: "Central Asia",
+      label: t("centralasia"),
     },
     {
       id: "034",
-      label: "Southern Asia",
+      label: t("southernasia"),
     },
     {
       id: "030",
-      label: "Eastern Asia",
+      label: t("easternasia"),
     },
     {
       id: "145",
-      label: "Western Asia",
+      label: t("westernasia"),
     },
   ];
 
@@ -254,7 +255,7 @@ export default function Asia({ navigation }) {
                 }}
               >
                 {Platform.OS == "ios" ? (
-                  <Arrowbackblack height={15} width={15}></Arrowbackblack>
+                  <Arrowbackiosblack height={15} width={15}></Arrowbackiosblack>
                 ) : (
                   <Arrowbackblack height={20} width={20}></Arrowbackblack>
                 )}
@@ -277,24 +278,26 @@ export default function Asia({ navigation }) {
                 </Text>
               </View>
             </View>
-            <View
-              style={{
-                justifyContent: "center",
-                paddingRight: 5,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  navigation.goBack();
-                }}
+            {subContinent.id !== "142" ? (
+              <View
                 style={{
-                  // borderWidth: 1,
-                  padding: 5,
+                  justifyContent: "center",
+                  paddingRight: 5,
                 }}
               >
-                <GlobeMap width={25} height={25} />
-              </Pressable>
-            </View>
+                <Pressable
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                  style={{
+                    // borderWidth: 1,
+                    padding: 5,
+                  }}
+                >
+                  <GlobeMap width={25} height={25} />
+                </Pressable>
+              </View>
+            ) : null}
           </View>
 
           {/* FOR MAP VIEW */}
@@ -447,7 +450,7 @@ export default function Asia({ navigation }) {
                           size="readable"
                         >{`${item.label}`}</Text>
                       </View>
-                      <View style={{}}>
+                      <View style={{ justifyContent: "center" }}>
                         <Next width={12} height={12} />
                       </View>
                     </View>
@@ -561,10 +564,26 @@ export default function Asia({ navigation }) {
                           flexDirection: "row",
                         }}
                       >
-                        <Flag
-                          countryid={item["alpha-3"]}
-                          style={{ width: 50, marginRight: 15 }}
-                        />
+                        <View
+                          style={{
+                            shadowColor: "#000",
+                            shadowOffset: {
+                              width: 0,
+                              height: 3,
+                            },
+                            shadowOpacity: 0.1,
+                            shadowRadius: 2.65,
+                            width: 25,
+
+                            elevation: 7,
+                            marginRight: 10,
+                          }}
+                        >
+                          <Flag
+                            countryid={item["alpha-3"]}
+                            style={{ width: 50, marginRight: 15 }}
+                          />
+                        </View>
                         <Text
                           size="label"
                           type="reguler"
