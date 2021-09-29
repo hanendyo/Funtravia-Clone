@@ -65,6 +65,7 @@ export default function ActivePlan({
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
+  const [gobackrefreshing, setgobackRefreshing] = React.useState(true);
 
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
