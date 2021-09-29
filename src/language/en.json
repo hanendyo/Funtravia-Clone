@@ -677,5 +677,21 @@
   "selectcountryfirst" :"Please choose a country first",
   "setstartdate" :"Please set a start date first",
   "somefieldempty" : "Some field cannot be empty",
-  "registerfailed" : "Register failed"
+  "registerfailed" : "Register failed",
+  "chooseyourdestination" : "Choose your destination. Choose the best place for your vacation",
+  "worldtourism" : "World Tourism",
+  "europe" :"Europe",
+  "asia" :"Asia",
+  "australia" :"Australia",
+  "northamerica":"North America",
+  "southamerica" : "South America",
+  "africa" : "Africa",
+  "southeasternasia" :"South-eastern Asia",
+  "centralasia" :"Central Asia",
+  "southernasia" : "Southern Asia",
+  "easternasia" :"Eastern Asia",
+  "westernasia" : "Western Asia",
+  "availablesoon" :"Available Soon",
+  "allevent" :"All Event",
+  "publicevent" :"Public Event"
 }

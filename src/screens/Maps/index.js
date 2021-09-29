@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -39,44 +39,62 @@ export default function World({ navigation }) {
   const ContentHeight = (height * 66) / 100;
   const MapHeight = (ContentHeight * 22) / 150;
   const MapWidth = width / 2 - 20;
+
+  const HeaderComponent = {
+    headerShown: true,
+    // title: "List Event",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: t("destination"),
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+  };
+
+  useEffect(() => {
+    navigation.setOptions(HeaderComponent);
+  }, []);
   const data = [
     {
-      name: "Europe",
+      name: t("europe"),
       screen: "Europe",
       count: 50,
       available: false,
       map: <Europe width={MapWidth} height={MapHeight} />,
     },
     {
-      name: "Asia",
+      name: t("asia"),
       screen: "Asia",
       count: 50,
       available: true,
       map: <Asia width={MapWidth} height={MapHeight} />,
     },
     {
-      name: "Australia",
+      name: t("australia"),
       screen: "Australia",
       count: 6,
       available: false,
       map: <Australia width={MapWidth} height={MapHeight} />,
     },
     {
-      name: "North America",
+      name: t("northamerica"),
       screen: "NorthAmerica",
       count: 31,
       available: false,
       map: <NortAmerica width={MapWidth} height={MapHeight} />,
     },
     {
-      name: "South America",
+      name: t("southamerica"),
       screen: "SouthAmerica",
       count: 21,
       available: false,
       map: <SouthAmerica width={MapWidth} height={MapHeight} />,
     },
     {
-      name: "Africa",
+      name: t("africa"),
       screen: "Africa",
       count: 54,
       available: false,
@@ -96,7 +114,7 @@ export default function World({ navigation }) {
         }}
       >
         <Text type="bold" size="title">
-          World Tourism
+          {t("worldtourism")}
         </Text>
         {/* <Text type="regular" size="label">
           Get closer to your perfect destination
@@ -109,7 +127,7 @@ export default function World({ navigation }) {
           size="label"
           style={{ marginHorizontal: width / 6, textAlign: "center" }}
         >
-          Choose your destination. Pick the best place for your holiday.
+          {t("chooseyourdestination")}
         </Text>
       </View>
       {/* Modal Comming Soon */}
@@ -256,7 +274,10 @@ export default function World({ navigation }) {
                     marginLeft: 23,
                     // textAlign: "center",
                   }}
-                >{`${item.count} Country`}</Text>
+                >
+                  {`${item.count} `}
+                  {t("country")}
+                </Text>
               </View>
             ) : (
               <View>
@@ -296,7 +317,11 @@ export default function World({ navigation }) {
                     marginLeft: 23,
                     // textAlign: "center",
                   }}
-                >{`${item.count} Country`}</Text>
+                >
+                  {" "}
+                  {`${item.count} `}
+                  {t("country")}
+                </Text>
               </View>
             )}
             {!item.available ? (
@@ -323,7 +348,7 @@ export default function World({ navigation }) {
                     textAlign: "center",
                   }}
                 >
-                  Available Soon
+                  {t("availablesoon")}
                 </Text>
               </View>
             ) : null}

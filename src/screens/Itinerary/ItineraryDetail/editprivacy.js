@@ -176,23 +176,23 @@ export default function editprivacy(props) {
                     {item.isprivate == dataPrivate ? (
                       <View
                         style={{
-                          height: 30,
-                          width: 30,
-                          borderRadius: 30,
+                          height: 25,
+                          width: 25,
+                          borderRadius: 25,
                           backgroundColor: "#209FAE",
                           justifyContent: "center",
 
                           alignItems: "center",
                         }}
                       >
-                        <CheckWhite width={20} height={20} />
+                        <CheckWhite width={15} height={15} />
                       </View>
                     ) : (
                       <View
                         style={{
-                          height: 30,
-                          width: 30,
-                          borderRadius: 30,
+                          height: 25,
+                          width: 25,
+                          borderRadius: 25,
                           backgroundColor: "#dedede",
                           justifyContent: "center",
 

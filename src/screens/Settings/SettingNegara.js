@@ -71,7 +71,7 @@ export default function SettingCity(props) {
       </Button>
     ),
   };
-  // let [data, setData] = useState(props.route.params.country);
+
   let [data, setData] = useState([]);
   let [country, setCountry] = useState("");
   let [storage, setStorage] = useState(props.route.params.setting);
@@ -88,12 +88,10 @@ export default function SettingCity(props) {
     }, 1000);
   }, []);
 
-  console.log("data", data);
-
   const pushselected = async () => {
     if (storage?.countries && data) {
       var tempData = [...data];
-      console.log("tempData", tempData);
+
       for (var i of tempData) {
         ({ ...i, selected: false });
       }
@@ -168,7 +166,7 @@ export default function SettingCity(props) {
         }
       } catch (error) {
         RNToasty.Show({
-          title: "Failed To Select City",
+          title: "Failed To Select Country",
           position: "bottom",
         });
       }
@@ -220,78 +218,75 @@ export default function SettingCity(props) {
           })}
           data={data}
           renderItem={({ item, index }) => (
-            console.log("negara", item),
-            (
-              <Ripple
-                onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
-                onPress={() => hasil(item)}
+            <Ripple
+              onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+              onPress={() => hasil(item)}
+              style={{
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                borderBottomWidth: 0.5,
+                borderBottomColor:
+                  storage.countries?.id == item.id ? "#209fae" : "#D1D1D1",
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View
                 style={{
-                  paddingVertical: 15,
-                  paddingHorizontal: 20,
-                  borderBottomWidth: 0.5,
-                  borderBottomColor:
-                    storage.countries?.id == item.id ? "#209fae" : "#D1D1D1",
+                  marginRight: 15,
                   flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  elevation: 1,
                 }}
               >
                 <View
                   style={{
-                    marginRight: 15,
-                    flexDirection: "row",
-                    elevation: 1,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 3,
+                    },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 2.65,
+                    width: 25,
+
+                    elevation: 7,
                   }}
                 >
-                  <View
+                  <FunIcon
+                    icon={item.flag}
+                    width={25}
+                    height={20}
                     style={{
-                      shadowColor: "#000",
-                      shadowOffset: {
-                        width: 0,
-                        height: 3,
-                      },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 2.65,
-                      width: 25,
-
-                      elevation: 7,
+                      borderWidth: 1,
                     }}
-                  >
-                    <FunIcon
-                      icon={item.flag}
-                      width={25}
-                      height={20}
-                      style={{
-                        borderWidth: 1,
-                      }}
-                    />
-                  </View>
+                  />
+                </View>
 
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{
-                      paddingLeft: 15,
-                      color:
-                        storage?.countries.id == item.id ? "#209fae" : "#000",
-                    }}
-                  >
-                    {item.name
-                      .toString()
-                      .toLowerCase()
-                      .replace(/\b[a-z]/g, function(letter) {
-                        return letter.toUpperCase();
-                      })}
-                  </Text>
-                </View>
-                <View>
-                  {storage?.countries.id == item.id ? (
-                    <Check width={20} height={15} />
-                  ) : null}
-                </View>
-              </Ripple>
-            )
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{
+                    paddingLeft: 15,
+                    color:
+                      storage?.countries.id == item.id ? "#209fae" : "#000",
+                  }}
+                >
+                  {item.name
+                    .toString()
+                    .toLowerCase()
+                    .replace(/\b[a-z]/g, function(letter) {
+                      return letter.toUpperCase();
+                    })}
+                </Text>
+              </View>
+              <View>
+                {storage?.countries.id == item.id ? (
+                  <Check width={20} height={15} />
+                ) : null}
+              </View>
+            </Ripple>
           )}
           keyExtractor={(item) => item.id}
         />

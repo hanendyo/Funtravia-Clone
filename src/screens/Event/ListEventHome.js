@@ -92,8 +92,8 @@ export default function ListEventHome(props) {
 
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "All Event" },
-    { key: "tab2", title: "Public Event" },
+    { key: "tab1", title: t("allevent") },
+    { key: "tab2", title: t("publicevent") },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   const [dataEvent, setdataEvent] = useState([]);
@@ -178,7 +178,7 @@ export default function ListEventHome(props) {
     // title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Event",
+    headerTitle: t("event"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -219,7 +219,7 @@ export default function ListEventHome(props) {
         // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
         onPress={() => props.navigation.navigate("searchListEventHome")}
       >
-        <SearchWhite width="25" height="25" />
+        <SearchWhite width="20" height="20" />
       </TouchableOpacity>
     ),
   };
