@@ -98,7 +98,7 @@ export default function Room({ navigation, route }) {
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
   // console.log(message.reverse(), "msg");
-  console.log(message, "msg");
+  // console.log(message, "msg");
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -532,6 +532,16 @@ export default function Room({ navigation, route }) {
     }
   };
 
+  function compare(a, b) {
+    if (a.time > b.time) {
+      return -1;
+    }
+    if (a.time < b.time) {
+      return 1;
+    }
+    return 0;
+  }
+
   const initialHistory = async (access_token) => {
     let response = await fetch(
       `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
@@ -552,6 +562,7 @@ export default function Room({ navigation, route }) {
     if (init_local && init_data) {
       let merge = [...init_local, ...init_data];
       filteredList = [...new Set(merge.map(JSON.stringify))].map(JSON.parse);
+      filteredList.sort(compare);
     } else if (!init_local) {
       filteredList = init_data;
     } else if (!init_data) {
@@ -563,14 +574,6 @@ export default function Room({ navigation, route }) {
         JSON.stringify(filteredList)
       );
       let new_array = [];
-      // let split = filteredList;
-      // while (split.length) {
-      //   if (split.length > 30) {
-      //     new_array.unshift(split.splice(0, 20));
-      //   } else {
-      //     new_array.unshift(split.splice(0, split.length));
-      //   }
-      // }
 
       setMessage(filteredList);
       setBankMessage(new_array);
@@ -617,7 +620,6 @@ export default function Room({ navigation, route }) {
           user_id: user.id,
           time: dateTime,
         };
-
         if (connected) {
           await socket.emit("message", chatData);
         } else {
