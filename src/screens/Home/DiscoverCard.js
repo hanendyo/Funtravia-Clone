@@ -24,7 +24,7 @@ export default function DiscoverCard({ props, token }) {
   let discoverCardsData = [
     {
       id: 1,
-      text: "Travel Ideas",
+      text: t("travelideas"),
       background_image: Travel_Ideas,
     },
     {
@@ -34,7 +34,7 @@ export default function DiscoverCard({ props, token }) {
     },
     {
       id: 3,
-      text: "Travel Journal",
+      text: t("traveljournal"),
       background_image: Travel_Journal,
     },
   ];

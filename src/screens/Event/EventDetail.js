@@ -57,18 +57,33 @@ export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
   const yOffset = useRef(new Animated.Value(0)).current;
   const headerOpacity = yOffset.interpolate({
-    inputRange: [0, 200],
+    inputRange:
+      Platform.OS == "ios"
+        ? Notch
+          ? deviceId === "iPhone 12 Pro"
+            ? [0, 120]
+            : [0, 80]
+          : [0, 80]
+        : [0, 120],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
 
   const headerOpacityCurrent = yOffset.interpolate({
-    inputRange: [0, 200],
+    inputRange:
+      Platform.OS == "ios"
+        ? Notch
+          ? deviceId === "iPhone 12 Pro"
+            ? [0, 120]
+            : [0, 80]
+          : [0, 80]
+        : [0, 120],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
 
   let Notch = DeviceInfo.hasNotch();
+  let deviceId = DeviceInfo.getDeviceId();
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
     android: StatusBar.currentHeight,
@@ -104,6 +119,14 @@ export default function EventDetail(props) {
         onPress={() => props.navigation.goBack()}
         style={{
           height: 55,
+          marginTop:
+            Platform.OS == "ios"
+              ? Notch
+                ? deviceId === "iPhone 12 Pro"
+                  ? 10
+                  : 8
+                : 7
+              : 4,
         }}
       >
         <Animated.View
@@ -112,7 +135,7 @@ export default function EventDetail(props) {
             width: 35,
             // top: SafeStatusBar,
             opacity: headerOpacityCurrent,
-            marginLeft: 15,
+            marginLeft: 17,
             borderRadius: 30,
             backgroundColor: "rgba(0,0,0,0.5)",
             justifyContent: "center",
@@ -309,7 +332,7 @@ export default function EventDetail(props) {
             </TouchableOpacity>
           </View>
 
-          {dataTiket.length > 0 ? (
+          {dataTiket?.length > 0 ? (
             <FlatList
               contentContainerStyle={{}}
               horizontal={false}

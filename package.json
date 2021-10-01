@@ -12,7 +12,6 @@
   "dependencies": {
     "@apollo/client": "^3.3.6",
     "@apollo/react-hooks": "^4.0.0",
-    "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-clipboard/clipboard": "^1.7.0",
     "@react-native-community/cameraroll": "^4.0.1",
@@ -67,6 +66,7 @@
     "react-native-modal": "^11.6.1",
     "react-native-modal-datetime-picker": "^10.2.0",
     "react-native-modern-datepicker": "^1.0.0-beta.91",
+    "react-native-normalize": "^1.0.1",
     "react-native-permissions": "^3.0.0",
     "react-native-popup-menu": "^0.15.10",
     "react-native-progress": "^5.0.0",

@@ -93,6 +93,7 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  console.log("props feed", props);
   // useScrollToTop(ref);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
@@ -1885,7 +1886,7 @@ export default function FeedList({ props, token }) {
                   flexDirection: "row",
                 }}
               >
-                {item.is_single == false && item.itinerary !== null ? (
+                {item.itinerary !== null ? (
                   <View>
                     <View
                       style={{

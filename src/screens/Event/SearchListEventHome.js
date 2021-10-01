@@ -13,7 +13,7 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
-  Pressable
+  Pressable,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DeviceInfo from "react-native-device-info";
@@ -26,7 +26,7 @@ import {
   FunImage,
   StatusBar as StaBar,
   Text,
-  Truncate
+  Truncate,
 } from "../../component";
 import {
   Arrowbackwhite,
@@ -39,7 +39,7 @@ import {
   LikeEmpty,
   LikeRed,
   Search,
-  Xhitam
+  Xhitam,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -54,7 +54,7 @@ import {
   default_image,
   CalenderGrey,
   MapIconGreen,
-  Eventcover
+  Eventcover,
 } from "../../assets/png";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import Modal from "react-native-modal";
@@ -63,7 +63,6 @@ import { Alert } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
 import { RNToasty } from "react-native-toasty";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -71,7 +70,7 @@ const TabBarHeight = 43;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight
+  android: StatusBar.currentHeight,
 });
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
@@ -84,8 +83,8 @@ export default function SearchListEventHome(props) {
   const { t, i18n } = useTranslation();
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "All Event" },
-    { key: "tab2", title: "Public Event" }
+    { key: "tab1", title: t("allevent") },
+    { key: "tab2", title: t("publicevent") },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   const [dataEvent, setdataEvent] = useState([]);
@@ -118,7 +117,7 @@ export default function SearchListEventHome(props) {
       },
       onPanResponderMove: (evt, gestureState) => {
         const curListRef = listRefArr.current.find(
-          ref => ref.key === routes[_tabIndex.current].key
+          (ref) => ref.key === routes[_tabIndex.current].key
         );
         const headerScrollOffset = -gestureState.dy + headerScrollStart.current;
         if (curListRef.value) {
@@ -126,14 +125,14 @@ export default function SearchListEventHome(props) {
           if (headerScrollOffset > 0) {
             curListRef.value.scrollToOffset({
               offset: headerScrollOffset,
-              animated: false
+              animated: false,
             });
             // start pull down
           } else {
             if (Platform.OS === "ios") {
               curListRef.value.scrollToOffset({
                 offset: headerScrollOffset / 3,
-                animated: false
+                animated: false,
               });
             } else if (Platform.OS === "android") {
               if (!refreshStatusRef.current) {
@@ -146,7 +145,7 @@ export default function SearchListEventHome(props) {
       onShouldBlockNativeResponder: () => true,
       onPanResponderGrant: (evt, gestureState) => {
         headerScrollStart.current = scrollY._value;
-      }
+      },
     })
   ).current;
   const listPanResponder = useRef(
@@ -161,7 +160,7 @@ export default function SearchListEventHome(props) {
       onShouldBlockNativeResponder: () => true,
       onPanResponderGrant: (evt, gestureState) => {
         headerScrollY.stopAnimation();
-      }
+      },
     })
   ).current;
 
@@ -170,22 +169,22 @@ export default function SearchListEventHome(props) {
     title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Event",
+    headerTitle: t("event"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
-      borderBottomWidth: 0
+      borderBottomWidth: 0,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
       fontSize: 18,
-      color: "white"
+      color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
 
-      marginLeft: 10
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button
@@ -195,12 +194,12 @@ export default function SearchListEventHome(props) {
         variant="transparent"
         onPress={() => props.navigation.goBack()}
         style={{
-          height: 55
+          height: 55,
         }}
       >
         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
       </Button>
-    )
+    ),
   };
 
   useEffect(() => {
@@ -212,7 +211,7 @@ export default function SearchListEventHome(props) {
     });
 
     headerScrollY.addListener(({ value }) => {
-      listRefArr.current.forEach(item => {
+      listRefArr.current.forEach((item) => {
         if (item.key !== routes[tabIndex].key) {
           return;
         }
@@ -223,7 +222,7 @@ export default function SearchListEventHome(props) {
         if (item.value && value <= HeaderHeight) {
           item.value.scrollToOffset({
             offset: value,
-            animated: false
+            animated: false,
           });
         }
       });
@@ -244,113 +243,433 @@ export default function SearchListEventHome(props) {
 
   let [timeModalDate, setTimeModalDate] = useState({
     start_date: "",
-    end_date: ""
+    end_date: "",
   });
 
-  const [multiSliderValue, setMultiSliderValue] = useState([0, 1000000]);
-  const multiSliderValuesChange = values => {
-    console.log(`multi: `, multiSliderValue);
-    setMultiSliderValue(values);
-    console.log(`multi: `, multiSliderValue);
+  const [keyboardIsUp, setKeyboardIsUp] = useState(false);
+
+  const [priceValue, setPriceValue] = useState({
+    min: 0,
+    max: "any",
+  });
+
+  const [renderPriceValues, setRenderPriceValues] = useState({
+    min: 0,
+    max: 1000000,
+  });
+
+  function numberWithDot(x) {
+    if (x === "" || x === undefined) {
+      if (priceValue.min === "" || priceValue.min === undefined) {
+        setPriceValue({ ...priceValue, min: 0 });
+      } else if (priceValue.max === "" || priceValue.max === undefined) {
+        setPriceValue({ ...priceValue, max: "any" });
+      }
+    } else {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+  }
+
+  const convertNumber = () => {};
+
+  const [scrollStatus, setScrollStatus] = useState({ scrollEnabled: false });
+  const enableScrollFunction = () => setScrollStatus({ scrollEnabled: true });
+  const disableScrollFunction = () => setScrollStatus({ scrollEnabled: false });
+
+  const categoryFilter = () => {
+    return (
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            padding: 15,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#f6f6f6",
+              borderRadius: 5,
+              // flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            }}
+          >
+            <Search width={15} height={15} />
+
+            <TextInput
+              underlineColorAndroid="transparent"
+              placeholder={t("search")}
+              style={{
+                width: "100%",
+                // borderWidth: 1,
+                marginLeft: 5,
+                padding: 0,
+              }}
+              // returnKeyType="search"
+              onChangeText={(x) => searchkategori(x)}
+              onSubmitEditing={(x) => searchkategori(x)}
+            />
+          </View>
+        </View>
+        <ScrollView
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 15,
+          }}
+        >
+          {dataFilterCategoris.map((item, index) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => _handleCheck(item["id"], index, item)}
+              style={{
+                flexDirection: "row",
+                backgroundColor: "white",
+                // borderColor: "#464646",
+                width: "49%",
+                marginRight: 3,
+                marginBottom: 20,
+                justifyContent: "flex-start",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CheckBox
+                onCheckColor="#FFF"
+                lineWidth={4}
+                onFillColor="#209FAE"
+                onTintColor="#209FAE"
+                boxType={"square"}
+                style={{
+                  alignSelf: "center",
+                  width: Platform.select({
+                    ios: 30,
+                    android: 35,
+                  }),
+                  transform: Platform.select({
+                    ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                    android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                  }),
+                }}
+                // onValueChange={() =>
+                //   Platform.OS == "ios"
+                //     ? null
+                //     : _handleCheck(item["id"], index, item)
+                // }
+                value={item["checked"]}
+              />
+
+              <Text
+                size="label"
+                type="regular"
+                style={{
+                  marginLeft: 0,
+                  marginRight: -10,
+                  color: "#464646",
+                  marginTop: Platform.OS == "ios" ? -5 : -2,
+                  // borderWidth: 5,
+                }}
+              >
+                {item["name"]}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
   };
 
-  const slider = () => {
+  const dateFilter = () => {
     return (
-      <View style={styles.ViewContainer}>
-        <View style={styles.SliderWrapper}>
-          <View style={{ marginBottom: 130, marginLeft: -40 }}>
-            <Text>{t("price")}</Text>
-            <Text
-              style={{ fontWeight: "bold" }}
-            >{`IDR ${multiSliderValue[0]} - ${multiSliderValue[1]}`}</Text>
-          </View>
-          <View style={styles.LabelWrapper}>
-            <Text style={styles.LabelTextBot}> {multiSliderValue[0]} </Text>
-            <Text
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+          paddingVertical: 15,
+          flexDirection: "row",
+        }}
+      >
+        {/* start */}
+        <View>
+          <Text
+            style={{
+              paddingTop: 10,
+              // flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 80,
+            }}
+          >
+            {t("From")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <TextInput
+              placeholder={t("pressHere")}
+              autoCorrect={false}
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              value={renderDate.render_start_date}
+            />
+            <TouchableOpacity
+              onPress={() => setTimeModalStartDate(true)}
               style={{
                 position: "absolute",
-                top: Platform.OS == "ios" ? 96 : 95,
-                right: 90,
-                fontSize: 14
+                top: 0,
+                left: 0,
+                align: "center",
+                width: "100%",
+                height: "100%",
               }}
-            >
-              {" "}
-              {`Min. Cost`}{" "}
-            </Text>
-            <Text style={styles.LabelTextTop}> {multiSliderValue[1]} </Text>
-            <Text
+            />
+            <DateTimePickerModal
+              isVisible={timeModalStartDate}
+              mode="date"
+              // display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setTimeModalStartDate(false);
+              }}
+              onCancel={() => setTimeModalStartDate(false)}
+            />
+          </View>
+        </View>
+        {/* DASH */}
+        <View
+          style={{
+            paddingTop: 45,
+            paddingLeft: 10,
+            flexDirection: "row",
+            // justifyContent: "center",
+            // alignContent: "center",
+            // alignItems: "center",
+            // marginBottom: 10,
+            marginRight: 10,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#d3d3d3",
+              width: 10,
+              height: 2,
+              marginTop: Platform.OS == "ios" ? 10 : 15,
+            }}
+          ></View>
+        </View>
+        {/* end */}
+        <View>
+          <Text
+            style={{
+              paddingTop: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 65,
+            }}
+          >
+            {t("until")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <TextInput
+              placeholder={t("pressHere")}
+              autoCorrect={false}
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              value={renderDate.render_end_date}
+            />
+            <TouchableOpacity
+              onPress={() => setTimeModalEndDate(true)}
               style={{
                 position: "absolute",
-                top: -105,
-                right: 90,
-                fontSize: 14
+                top: 0,
+                left: 0,
+                align: "center",
+                width: "100%",
+                height: "100%",
               }}
-            >
-              {" "}
-              {`Max. Cost`}{" "}
-            </Text>
+            />
+            <DateTimePickerModal
+              isVisible={timeModalEndDate}
+              mode="date"
+              // display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setTimeModalEndDate(false);
+              }}
+              onCancel={() => setTimeModalEndDate(false)}
+            />
           </View>
-          <MultiSlider
-            markerStyle={{
-              ...Platform.select({
-                ios: {
-                  height: 15,
-                  width: 15,
-                  backgroundColor: "#209fae",
-                  shadowColor: "#000000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 0
-                  },
-                  shadowRadius: 1,
-                  shadowOpacity: 0
-                },
-                android: {
-                  height: 15,
-                  width: 15,
-                  backgroundColor: "#209fae",
-                  shadowColor: "#000000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 0
-                  },
-                  shadowRadius: 1,
-                  shadowOpacity: 0
+        </View>
+      </View>
+    );
+  };
+
+  const PriceFilter = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+          paddingVertical: 15,
+        }}
+      >
+        <View
+          style={{
+            marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 10) : 10,
+            marginTop: Platform.OS == "ios" ? (Notch ? 15 : 15) : 15,
+          }}
+        >
+          <Text>{t("price")}</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+            {`IDR ${numberWithDot(priceValue.min)} - ${numberWithDot(
+              priceValue.max
+            )}`}
+          </Text>
+        </View>
+        {/* start */}
+        <View
+          keyboardShouldPersistTaps="handled"
+          style={{
+            marginBottom: Platform.OS == "ios" ? (Notch ? 20 : 15) : 20,
+          }}
+        >
+          <Text
+            style={{
+              paddingTop: 10,
+              // flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 80,
+            }}
+          >
+            {t("minCost")}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <TextInput
+              placeholder={t("inputCost")}
+              autoCorrect={false}
+              keyboardType="numeric"
+              type="number"
+              // keyboardType="decimal-pad"
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              // value={priceValue.min}
+              onChangeText={(x) => {
+                if (x === null) {
+                  setPriceValue({ ...priceValue, min: 0 });
+                } else {
+                  setPriceValue({ ...priceValue, min: x });
                 }
-              })
+                setKeyboardIsUp(true);
+              }}
+            />
+          </View>
+        </View>
+        {/* DASH */}
+        <View
+          style={{
+            justifyContent: "center",
+            alignContent: "center",
+            alignItems: "center",
+            marginBottom: Platform.OS == "ios" ? (Notch ? 5 : 0) : 5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#d3d3d3",
+              width: 2,
+              height: Platform.OS == "ios" ? (Notch ? 40 : 20) : 40,
             }}
-            vertical={true}
-            track={{
-              ...Platform.select({
-                android: {
-                  height: 15,
-                  width: 15,
-                  borderRadius: 10,
-                  backgroundColor: "#209fae"
+          ></View>
+        </View>
+        {/* end */}
+        <View>
+          <Text
+            style={{
+              paddingTop: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 65,
+            }}
+          >
+            {t("maxCost")}
+          </Text>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <TextInput
+              placeholder={t("inputCost")}
+              autoCorrect={false}
+              // keyboardVerticalOffset={
+              //   Platform.OS == "ios" ? (Notch ? 100 : 150) : null
+              // }
+              keyboardType="numeric"
+              style={{
+                flex: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                fontFamily: "Lato-Regular",
+                borderColor: "#d3d3d3",
+                fontSize: 14,
+                borderWidth: 1,
+              }}
+              // value={priceValue.max}
+              onChangeText={(x) => {
+                if (x === null) {
+                  setPriceValue({ ...priceValue, max: 1000000 });
+                } else {
+                  setPriceValue({ ...priceValue, max: x });
                 }
-              })
-            }}
-            selectedStyle={{
-              backgroundColor: "#209fae"
-            }}
-            trackStyle={{
-              backgroundColor: "#209fae"
-            }}
-            // touchDimensions={{
-            //   height: 0,
-            //   width: 0,
-            //   borderRadius: 0,
-            //   slipDisplacement: 0
-            // }}
-            showSteps={true}
-            values={[multiSliderValue[0], multiSliderValue[1]]}
-            sliderLength={200}
-            onValuesChange={multiSliderValuesChange}
-            min={0}
-            max={1000000}
-            allowOverlap={false}
-            minMarkerOverlapDistance={20}
-          />
+                setKeyboardIsUp(true);
+              }}
+            />
+          </ScrollView>
         </View>
       </View>
     );
@@ -361,17 +680,17 @@ export default function SearchListEventHome(props) {
 
   const [dateData, setDateData] = useState({
     start_date: "",
-    end_date: ""
+    end_date: "",
   });
 
   const [renderDate, setRenderDate] = useState({
     render_start_date: "",
-    render_end_date: ""
+    render_end_date: "",
   });
 
-  const timeConverter = date => {
+  const timeConverter = (date) => {
     //! Hanendyo's work'
-    const checkTime = time => {
+    const checkTime = (time) => {
       if (time < 10) {
         time = "0" + time;
       }
@@ -431,31 +750,29 @@ export default function SearchListEventHome(props) {
     let formatForScreen = `${day} ${monthStringify} ${year}`;
 
     if (timeModalStartDate) {
-      setDateData(prevCin => {
+      setDateData((prevCin) => {
         return {
           ...prevCin,
-          ["start_date"]: formattedDate
+          ["start_date"]: formattedDate,
         };
       });
 
       // setCheckInCheck(formatForScreen);
-      setRenderDate(prev => {
+      setRenderDate((prev) => {
         return { ...prev, ["render_start_date"]: formatForScreen };
       });
-      console.log(`tessss: `, renderDate.render_date_start);
-      console.log(`4screen: `, formatForScreen);
     }
 
     if (timeModalEndDate) {
-      setDateData(prevCout => {
+      setDateData((prevCout) => {
         return {
           ...prevCout,
-          ["end_date"]: formattedDate
+          ["end_date"]: formattedDate,
         };
       });
 
       // setCheckoutCheck(formatForScreen);
-      setRenderDate(prev => {
+      setRenderDate((prev) => {
         return { ...prev, ["render_end_date"]: formatForScreen };
       });
     }
@@ -464,13 +781,13 @@ export default function SearchListEventHome(props) {
   const syncScrollOffset = () => {
     const curRouteKey = routes[_tabIndex.current].key;
 
-    listRefArr.current.forEach(item => {
+    listRefArr.current.forEach((item) => {
       if (item.key !== curRouteKey) {
         if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
           if (item.value) {
             item.value.scrollToOffset({
               offset: scrollY._value,
-              animated: false
+              animated: false,
             });
             listOffset.current[item.key] = scrollY._value;
           }
@@ -482,7 +799,7 @@ export default function SearchListEventHome(props) {
             if (item.value) {
               item.value.scrollToOffset({
                 offset: HeaderHeight,
-                animated: false
+                animated: false,
               });
               listOffset.current[item.key] = HeaderHeight;
             }
@@ -494,19 +811,19 @@ export default function SearchListEventHome(props) {
 
   const startRefreshAction = () => {
     if (Platform.OS === "ios") {
-      listRefArr.current.forEach(listRef => {
+      listRefArr.current.forEach((listRef) => {
         listRef.value.scrollToOffset({
           offset: -50,
-          animated: true
+          animated: true,
         });
       });
       refresh().finally(() => {
         syncScrollOffset();
         if (scrollY._value < 0) {
-          listRefArr.current.forEach(listRef => {
+          listRefArr.current.forEach((listRef) => {
             listRef.value.scrollToOffset({
               offset: 0,
-              animated: true
+              animated: true,
             });
           });
         }
@@ -515,13 +832,13 @@ export default function SearchListEventHome(props) {
       Animated.timing(headerMoveScrollY, {
         toValue: -150,
         duration: 300,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
       refresh().finally(() => {
         Animated.timing(headerMoveScrollY, {
           toValue: 0,
           duration: 300,
-          useNativeDriver: true
+          useNativeDriver: true,
         }).start();
       });
     }
@@ -535,10 +852,10 @@ export default function SearchListEventHome(props) {
         if (scrollY._value < -PullToRefreshDist && !refreshStatusRef.current) {
           startRefreshAction();
         } else {
-          listRefArr.current.forEach(listRef => {
+          listRefArr.current.forEach((listRef) => {
             listRef.value.scrollToOffset({
               offset: 0,
-              animated: true
+              animated: true,
             });
           });
         }
@@ -548,7 +865,7 @@ export default function SearchListEventHome(props) {
         }
         Animated.decay(headerScrollY, {
           velocity: -gestureState.vy,
-          useNativeDriver: true
+          useNativeDriver: true,
         }).start(() => {
           syncScrollOffset();
         });
@@ -563,7 +880,7 @@ export default function SearchListEventHome(props) {
         Animated.timing(headerMoveScrollY, {
           toValue: 0,
           duration: 100,
-          useNativeDriver: true
+          useNativeDriver: true,
         }).start();
       }
     }
@@ -574,12 +891,12 @@ export default function SearchListEventHome(props) {
   const displays = gerakan.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 100],
-    extrapolate: "clamp"
+    extrapolate: "clamp",
   });
 
   let [y, sety] = useState(0);
 
-  const onMomentumScrollBegin = e => {
+  const onMomentumScrollBegin = (e) => {
     isListGliding.current = true;
   };
 
@@ -588,7 +905,7 @@ export default function SearchListEventHome(props) {
     syncScrollOffset();
   };
 
-  const onScrollEndDrag = e => {
+  const onScrollEndDrag = (e) => {
     const positionX = e.nativeEvent.contentOffset.x;
     const positionY = e.nativeEvent.contentOffset.y;
     if (positionY < y) {
@@ -596,14 +913,14 @@ export default function SearchListEventHome(props) {
       Animated.timing(gerakan, {
         toValue: 0,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     } else if (positionY > y) {
       sety(positionY);
       Animated.timing(gerakan, {
         toValue: 1,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     }
 
@@ -625,7 +942,7 @@ export default function SearchListEventHome(props) {
       setTimeout(() => {
         resolve("done");
       }, 2000);
-    }).then(value => {
+    }).then((value) => {
       refreshStatusRef.current = false;
     });
   };
@@ -634,7 +951,7 @@ export default function SearchListEventHome(props) {
     const y = scrollY.interpolate({
       inputRange: [heightview, HeaderHeight],
       outputRange: [0, -HeaderHeight + heightview],
-      extrapolateRight: "clamp"
+      extrapolateRight: "clamp",
     });
     return (
       <Animated.View
@@ -648,7 +965,7 @@ export default function SearchListEventHome(props) {
           justifyContent: "flex-start",
           position: "absolute",
           backgroundColor: "#fff",
-          marginTop: 0 //! hanendyo's
+          marginTop: 0, //! hanendyo's
           // marginTop: 50,
           // borderWidth: 1,
         }}
@@ -659,7 +976,7 @@ export default function SearchListEventHome(props) {
             style={{
               height: Dimensions.get("screen").height * 0.15,
               width: "100%",
-              resizeMode: "cover"
+              resizeMode: "cover",
             }}
           />
         ) : (
@@ -668,25 +985,25 @@ export default function SearchListEventHome(props) {
             style={{
               height: Dimensions.get("screen").height * 0.15,
               width: "100%",
-              resizeMode: "cover"
+              resizeMode: "cover",
             }}
           />
         )}
         <View
-          onLayout={events => {
+          onLayout={(events) => {
             var { x, y, width, height } = events.nativeEvent.layout;
             setheightjudul(height);
           }}
           style={{
             paddingHorizontal: 15,
-            paddingTop: 15
+            paddingTop: 15,
           }}
         >
           <Text
             size="label"
             type="bold"
             style={{
-              textAlign: "justify"
+              textAlign: "justify",
             }}
           >
             {Banner && Banner.title
@@ -696,7 +1013,7 @@ export default function SearchListEventHome(props) {
           <Text
             style={{
               textAlign: "justify",
-              paddingBottom: Platform.OS == "ios" ? 10 : 8
+              paddingBottom: Platform.OS == "ios" ? 10 : 8,
             }}
           >
             {Banner && Banner.description
@@ -708,7 +1025,7 @@ export default function SearchListEventHome(props) {
     );
   };
 
-  const handlerepeat = date => {
+  const handlerepeat = (date) => {
     let dates = date.split("-");
     return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
   };
@@ -728,7 +1045,7 @@ export default function SearchListEventHome(props) {
           shadowOffset: { width: 2, height: 2 },
           shadowOpacity: 1,
           shadowRadius: 3,
-          elevation: 3
+          elevation: 3,
         }}
       >
         <View
@@ -740,7 +1057,7 @@ export default function SearchListEventHome(props) {
             flexDirection: "row",
             justifyContent: "space-between",
             alignContent: "center",
-            zIndex: 9999
+            zIndex: 9999,
           }}
         >
           <View
@@ -752,13 +1069,13 @@ export default function SearchListEventHome(props) {
               alignSelf: "center",
               justifyContent: "center",
               backgroundColor: "rgba(226, 236, 248, 0.85)",
-              paddingHorizontal: 10
+              paddingHorizontal: 10,
             }}
           >
             <Text
               size="small"
               style={{
-                textAlign: "center"
+                textAlign: "center",
               }}
             >
               {item.category.name}
@@ -773,7 +1090,7 @@ export default function SearchListEventHome(props) {
               alignItems: "center",
               alignContent: "center",
               justifyContent: "center",
-              backgroundColor: "rgba(226, 236, 248, 0.85)"
+              backgroundColor: "rgba(226, 236, 248, 0.85)",
               // zIndex: 999,
             }}
           >
@@ -788,7 +1105,7 @@ export default function SearchListEventHome(props) {
                   alignContent: "center",
                   justifyContent: "center",
 
-                  zIndex: 9999
+                  zIndex: 9999,
                 }}
                 onPress={() => _liked(item.id, item, position)}
               >
@@ -805,7 +1122,7 @@ export default function SearchListEventHome(props) {
                   alignContent: "center",
                   justifyContent: "center",
 
-                  zIndex: 9999
+                  zIndex: 9999,
                 }}
                 onPress={() => _unliked(item.id, item, position)}
               >
@@ -818,7 +1135,7 @@ export default function SearchListEventHome(props) {
         <TouchableOpacity
           onPress={() => eventdetail(item)}
           style={{
-            height: Dimensions.get("window").width * 0.47 - 16
+            height: Dimensions.get("window").width * 0.47 - 16,
           }}
         >
           <FunImageBackground
@@ -841,7 +1158,7 @@ export default function SearchListEventHome(props) {
             justifyContent: "space-around",
             height: 230,
             marginVertical: 5,
-            marginHorizontal: 10
+            marginHorizontal: 10,
           }}
         >
           <Text
@@ -856,7 +1173,7 @@ export default function SearchListEventHome(props) {
             style={{
               height: "50%",
               flexDirection: "column",
-              justifyContent: "space-around"
+              justifyContent: "space-around",
             }}
           >
             <View
@@ -864,26 +1181,26 @@ export default function SearchListEventHome(props) {
                 // flex: 1,
                 flexDirection: "row",
                 width: "100%",
-                borderColor: "grey"
+                borderColor: "grey",
               }}
             >
               <CustomImage
                 customStyle={{
                   width: 15,
                   height: 15,
-                  marginRight: 5
+                  marginRight: 5,
                 }}
                 customImageStyle={{
                   width: 15,
                   height: 15,
-                  resizeMode: "contain"
+                  resizeMode: "contain",
                 }}
                 source={MapIconGreen}
               />
               <Text
                 size="small"
                 style={{
-                  width: "100%"
+                  width: "100%",
                 }}
               >
                 {item.city.name}
@@ -896,19 +1213,19 @@ export default function SearchListEventHome(props) {
                 width: "100%",
                 marginBottom: 3,
                 alignContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <CustomImage
                 customStyle={{
                   width: 15,
                   height: 15,
-                  marginRight: 5
+                  marginRight: 5,
                 }}
                 customImageStyle={{
                   width: 15,
                   height: 15,
-                  resizeMode: "contain"
+                  resizeMode: "contain",
                 }}
                 source={CalenderGrey}
               />
@@ -917,7 +1234,7 @@ export default function SearchListEventHome(props) {
                   size="small"
                   style={{
                     paddingRight: 20,
-                    width: "100%"
+                    width: "100%",
                   }}
                 >
                   {handlerepeat(item.start_date, item.end_date)}
@@ -927,7 +1244,7 @@ export default function SearchListEventHome(props) {
                   size="small"
                   style={{
                     paddingRight: 20,
-                    width: "100%"
+                    width: "100%",
                   }}
                 >
                   {dateFormatBetween(item.start_date, item.end_date)}
@@ -949,13 +1266,13 @@ export default function SearchListEventHome(props) {
       case "tab1":
         numCols = 2;
         data = dataEvent;
-        renderItem = e => rederTab1Item(e, "all");
+        renderItem = (e) => rederTab1Item(e, "all");
         break;
       case "tab2":
         numCols = 2;
         data = dataEvent;
         data = dataEventPublic;
-        renderItem = e => rederTab1Item(e, "public");
+        renderItem = (e) => rederTab1Item(e, "public");
         break;
       default:
         return null;
@@ -966,13 +1283,13 @@ export default function SearchListEventHome(props) {
         // scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
         numColumns={numCols}
-        ref={ref => {
+        ref={(ref) => {
           if (ref) {
-            const found = listRefArr.current.find(e => e.key === route.key);
+            const found = listRefArr.current.find((e) => e.key === route.key);
             if (!found) {
               listRefArr.current.push({
                 key: route.key,
-                value: ref
+                value: ref,
               });
             }
           }
@@ -984,23 +1301,23 @@ export default function SearchListEventHome(props) {
                 [
                   {
                     nativeEvent: {
-                      contentOffset: { y: scrollY }
-                    }
-                  }
+                      contentOffset: { y: scrollY },
+                    },
+                  },
                 ],
                 { useNativeDriver: true }
               )
             : null
         }
-        onMomentumScrollBegin={e => onMomentumScrollBegin(e)}
-        onScrollEndDrag={e => onScrollEndDrag(e)}
+        onMomentumScrollBegin={(e) => onMomentumScrollBegin(e)}
+        onScrollEndDrag={(e) => onScrollEndDrag(e)}
         onMomentumScrollEnd={onMomentumScrollEnd}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: 85,
           paddingHorizontal: 10,
-          minHeight: height - SafeStatusBar + HeaderHeight + heightview
+          minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -1011,11 +1328,11 @@ export default function SearchListEventHome(props) {
     );
   };
 
-  const renderTabBar = props => {
+  const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [heightview, HeaderHeight],
       outputRange: [HeaderHeight, heightview],
-      extrapolateRight: "clamp"
+      extrapolateRight: "clamp",
     });
     return (
       <Animated.View
@@ -1026,7 +1343,7 @@ export default function SearchListEventHome(props) {
           // transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
-          borderBottomColor: "#daf0f2"
+          borderBottomColor: "#daf0f2",
         }}
       >
         <TabBar
@@ -1043,7 +1360,7 @@ export default function SearchListEventHome(props) {
             height: TabBarHeight,
             // borderWidth: 1,
             paddingTop: 0,
-            marginTop: -10 //! hanendyo's
+            marginTop: -10, //! hanendyo's
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -1052,7 +1369,7 @@ export default function SearchListEventHome(props) {
               style={{
                 opacity: focused ? 1 : 0.5,
                 //  borderWidth: 1,
-                paddingBottom: 5
+                paddingBottom: 5,
               }}
             >
               {route.title}
@@ -1069,7 +1386,7 @@ export default function SearchListEventHome(props) {
       <TabView
         onSwipeStart={() => setCanScroll(false)}
         onSwipeEnd={() => setCanScroll(true)}
-        onIndexChange={id => {
+        onIndexChange={(id) => {
           _tabIndex.current = id;
           setIndex(id);
         }}
@@ -1078,7 +1395,7 @@ export default function SearchListEventHome(props) {
         renderTabBar={renderTabBar}
         initialLayout={{
           height: 0,
-          width: width
+          width: width,
         }}
       />
     );
@@ -1087,7 +1404,7 @@ export default function SearchListEventHome(props) {
   const renderFilterAndSearchHeader = () => {
     return (
       <View
-        onLayout={event => {
+        onLayout={(event) => {
           var { x, y, width, height } = event.nativeEvent.layout;
           setheight(height);
         }}
@@ -1099,7 +1416,7 @@ export default function SearchListEventHome(props) {
           paddingBottom: 10,
           backgroundColor: "white",
           position: "absolute",
-          top: 0
+          top: 0,
         }}
       >
         <Button
@@ -1115,7 +1432,7 @@ export default function SearchListEventHome(props) {
             borderRadius: 3,
             paddingHorizontal: 10,
             borderColor: "#209fae",
-            paddingBottom: 0
+            paddingBottom: 0,
           }}
         >
           <Filternewbiru width={18} height={18} />
@@ -1126,14 +1443,14 @@ export default function SearchListEventHome(props) {
                 marginLeft: 10,
                 width: 20,
                 paddingHorizontal: 5,
-                borderRadius: 2
+                borderRadius: 2,
               }}
             >
               <Text
                 style={{
                   fontFamily: "Lato-Regular",
                   color: "#ffff",
-                  fontSize: 15
+                  fontSize: 15,
                 }}
               >
                 {cekData(dataFilterCategori)}
@@ -1150,23 +1467,23 @@ export default function SearchListEventHome(props) {
             alignItems: "center",
             alignContent: "center",
 
-            paddingHorizontal: 10
+            paddingHorizontal: 10,
           }}
         >
           <Search width={15} height={15} />
 
           <TextInput
             underlineColorAndroid="transparent"
-            placeholder={t("search")}
+            placeholder={t("searchs")}
             style={{
               width: "100%",
               // borderWidth: 1,
               marginLeft: 5,
-              padding: 0
+              padding: 0,
             }}
             returnKeyType="search"
-            onChangeText={x => _setSearch(x)}
-            onSubmitEditing={x => _setSearch(x)}
+            onChangeText={(x) => _setSearch(x)}
+            onSubmitEditing={(x) => _setSearch(x)}
           />
         </View>
       </View>
@@ -1187,10 +1504,10 @@ export default function SearchListEventHome(props) {
                 translateY: scrollY.interpolate({
                   inputRange: [-100, 0],
                   outputRange: [120, 0],
-                  extrapolate: "clamp"
-                })
-              }
-            ]
+                  extrapolate: "clamp",
+                }),
+              },
+            ],
           }}
           animating
         />
@@ -1203,9 +1520,9 @@ export default function SearchListEventHome(props) {
                 translateY: headerMoveScrollY.interpolate({
                   inputRange: [-300, 0],
                   outputRange: [150, 0],
-                  extrapolate: "clamp"
-                })
-              }
+                  extrapolate: "clamp",
+                }),
+              },
             ],
             backgroundColor: "#eee",
             height: 38,
@@ -1217,12 +1534,12 @@ export default function SearchListEventHome(props) {
             alignItems: "center",
             alignSelf: "center",
             top: -50,
-            position: "absolute"
+            position: "absolute",
           }}
         >
           <ActivityIndicator animating={true} color="#209fae" size="large" />
         </Animated.View>
-      )
+      ),
     });
   };
 
@@ -1234,14 +1551,14 @@ export default function SearchListEventHome(props) {
           bottom: 0,
           width: "100%",
           alignContent: "center",
-          alignItems: "center"
+          alignItems: "center",
           // transform: [{ translateY: displays }],
         }}
       >
         <View
           style={{
             flexDirection: "row",
-            paddingBottom: 20
+            paddingBottom: 20,
           }}
         >
           <TouchableOpacity
@@ -1259,7 +1576,7 @@ export default function SearchListEventHome(props) {
               alignContent: "center",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3
+              width: Dimensions.get("screen").width * 0.3,
             }}
           >
             <Text
@@ -1267,7 +1584,7 @@ export default function SearchListEventHome(props) {
               numberOfLines={1}
               style={{
                 marginRight: 10,
-                color: "#fff"
+                color: "#fff",
               }}
             >
               {Capital({ text: country?.name })}
@@ -1290,7 +1607,7 @@ export default function SearchListEventHome(props) {
               alignContent: "center",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3
+              width: Dimensions.get("screen").width * 0.3,
             }}
           >
             <Text
@@ -1298,7 +1615,7 @@ export default function SearchListEventHome(props) {
               numberOfLines={1}
               style={{
                 marginRight: 10,
-                color: "#fff"
+                color: "#fff",
               }}
             >
               {month}
@@ -1315,21 +1632,21 @@ export default function SearchListEventHome(props) {
     date: false,
     price: false,
     location: false,
-    region: false
+    region: false,
   });
   const renderFilterCategory = () => {
     return (
       <Modal
-        // onLayout={() => dataCountrySelect()}
         onBackdropPress={() => {
           setshow(false);
         }}
         onRequestClose={() => setshow(false)}
         onDismiss={() => setshow(false)}
         isVisible={show}
+        avoidKeyboard={true}
         style={{
           justifyContent: "flex-end",
-          margin: 0
+          margin: 0,
         }}
       >
         <View
@@ -1341,7 +1658,7 @@ export default function SearchListEventHome(props) {
             // borderTopStartRadius: 15,
             // borderTopEndRadius: 15
             borderTopLeftRadius: 15,
-            borderTopRightRadius: 15
+            borderTopRightRadius: 15,
           }}
         >
           {/* Header */}
@@ -1351,7 +1668,7 @@ export default function SearchListEventHome(props) {
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: 15,
-              paddingVertical: 20
+              paddingVertical: 20,
             }}
           >
             <Text
@@ -1360,7 +1677,7 @@ export default function SearchListEventHome(props) {
               style={{
                 // fontSize: 20,
                 // fontFamily: "Lato-Bold",
-                color: "#464646"
+                color: "#464646",
               }}
             >
               Filter
@@ -1375,7 +1692,7 @@ export default function SearchListEventHome(props) {
                 right: 0,
                 justifyContent: "flex-end",
                 alignContent: "flex-end",
-                alignItems: "flex-start"
+                alignItems: "flex-start",
               }}
               onPress={() => setshow(false)}
             >
@@ -1388,7 +1705,7 @@ export default function SearchListEventHome(props) {
               flexDirection: "row",
               flex: 1,
               borderTopWidth: 0.5,
-              borderColor: "#d1d1d1"
+              borderColor: "#d1d1d1",
             }}
           >
             {/* badan A */}
@@ -1396,13 +1713,13 @@ export default function SearchListEventHome(props) {
               style={{
                 width: "35%",
                 borderRightWidth: 0.5,
-                borderColor: "#d1d1d1"
+                borderColor: "#d1d1d1",
               }}
             >
               <View
                 style={{
                   backgroundColor: "#f6f6f6",
-                  paddingBottom: 5
+                  paddingBottom: 5,
                 }}
               >
                 {/* map */}
@@ -1417,7 +1734,7 @@ export default function SearchListEventHome(props) {
                     justifyContent: "center",
                     paddingVertical: 15,
                     paddingHorizontal: 10,
-                    backgroundColor: filterCheck.category ? "#fff" : "#f6f6f6"
+                    backgroundColor: filterCheck.category ? "#fff" : "#f6f6f6",
                   }}
                 >
                   <Text
@@ -1426,18 +1743,18 @@ export default function SearchListEventHome(props) {
                     style={{
                       // fontSize: 20,
                       // fontFamily: "Lato-Bold",
-                      color: "#464646"
+                      color: "#464646",
                       // marginTop: 10,
                     }}
                     onPress={() => {
-                      setFilterCheck(prev => {
+                      setFilterCheck((prev) => {
                         return {
                           ...prev,
                           category: true,
                           date: false,
                           price: false,
                           location: false,
-                          region: false
+                          region: false,
                         };
                       });
                     }}
@@ -1455,7 +1772,7 @@ export default function SearchListEventHome(props) {
                     justifyContent: "center",
                     paddingVertical: 15,
                     paddingHorizontal: 10,
-                    backgroundColor: filterCheck.date ? "#fff" : "#f6f6f6"
+                    backgroundColor: filterCheck.date ? "#fff" : "#f6f6f6",
                   }}
                 >
                   <Text
@@ -1464,18 +1781,18 @@ export default function SearchListEventHome(props) {
                     style={{
                       // fontSize: 20,
                       // fontFamily: "Lato-Bold",
-                      color: "#464646"
+                      color: "#464646",
                       // marginTop: 10,
                     }}
                     onPress={() => {
-                      setFilterCheck(prev => {
+                      setFilterCheck((prev) => {
                         return {
                           ...prev,
                           category: false,
                           date: true,
                           price: false,
                           location: false,
-                          region: false
+                          region: false,
                         };
                       });
                     }}
@@ -1493,7 +1810,7 @@ export default function SearchListEventHome(props) {
                     justifyContent: "center",
                     paddingVertical: 15,
                     paddingHorizontal: 10,
-                    backgroundColor: filterCheck.price ? "#fff" : "#f6f6f6"
+                    backgroundColor: filterCheck.price ? "#fff" : "#f6f6f6",
                   }}
                 >
                   <Text
@@ -1502,18 +1819,18 @@ export default function SearchListEventHome(props) {
                     style={{
                       // fontSize: 20,
                       // fontFamily: "Lato-Bold",
-                      color: "#464646"
+                      color: "#464646",
                       // marginTop: 10,
                     }}
                     onPress={() => {
-                      setFilterCheck(prev => {
+                      setFilterCheck((prev) => {
                         return {
                           ...prev,
                           category: false,
                           date: false,
                           price: true,
                           location: false,
-                          region: false
+                          region: false,
                         };
                       });
                     }}
@@ -1524,252 +1841,9 @@ export default function SearchListEventHome(props) {
               </View>
             </View>
             {/* badan B */}
-            {filterCheck.category ? (
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    padding: 15
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "#f6f6f6",
-                      borderRadius: 5,
-                      // flex: 1,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignContent: "center",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5
-                    }}
-                  >
-                    <Search width={15} height={15} />
-
-                    <TextInput
-                      underlineColorAndroid="transparent"
-                      placeholder={t("search")}
-                      style={{
-                        width: "100%",
-                        // borderWidth: 1,
-                        marginLeft: 5,
-                        padding: 0
-                      }}
-                      // returnKeyType="search"
-                      onChangeText={x => searchkategori(x)}
-                      onSubmitEditing={x => searchkategori(x)}
-                    />
-                  </View>
-                </View>
-                <ScrollView
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingHorizontal: 15
-                  }}
-                >
-                  {dataFilterCategoris.map((item, index) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      onPress={() => _handleCheck(item["id"], index, item)}
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "white",
-                        // borderColor: "#464646",
-                        width: "49%",
-                        marginRight: 3,
-                        marginBottom: 20,
-                        justifyContent: "flex-start",
-                        alignContent: "center",
-                        alignItems: "center"
-                      }}
-                    >
-                      <CheckBox
-                        onCheckColor="#FFF"
-                        lineWidth={4}
-                        onFillColor="#209FAE"
-                        onTintColor="#209FAE"
-                        boxType={"square"}
-                        style={{
-                          alignSelf: "center",
-                          width: Platform.select({
-                            ios: 30,
-                            android: 35
-                          }),
-                          transform: Platform.select({
-                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }]
-                          })
-                        }}
-                        // onValueChange={() =>
-                        //   Platform.OS == "ios"
-                        //     ? null
-                        //     : _handleCheck(item["id"], index, item)
-                        // }
-                        value={item["checked"]}
-                      />
-
-                      <Text
-                        size="label"
-                        type="regular"
-                        style={{
-                          marginLeft: 0,
-                          marginRight: -10,
-                          color: "#464646",
-                          marginTop: Platform.OS == "ios" ? -5 : -2
-                          // borderWidth: 5,
-                        }}
-                      >
-                        {item["name"]}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            ) : null}
-            {/* badan b date */}
-            {filterCheck.date ? (
-              <View style={{ flex: 1, padding: 10, flexDirection: "row" }}>
-                {/* start */}
-                <View>
-                  <Text
-                    style={{
-                      paddingTop: 10,
-                      // flexDirection: "row",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      marginBottom: 10,
-                      marginRight: 80
-                    }}
-                  >
-                    {t("From")}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row"
-                    }}
-                  >
-                    <TextInput
-                      placeholder={t("pressHere")}
-                      autoCorrect={false}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        fontFamily: "Lato-Regular",
-                        borderColor: "#d3d3d3",
-                        fontSize: 14,
-                        borderWidth: 1
-                      }}
-                      value={renderDate.render_start_date}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setTimeModalStartDate(true)}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        align: "center",
-                        width: "100%",
-                        height: "100%"
-                      }}
-                    />
-                    <DateTimePickerModal
-                      isVisible={timeModalStartDate}
-                      mode="date"
-                      // display="inline"
-                      locale="en_id"
-                      onConfirm={date => {
-                        timeConverter(date);
-                        setTimeModalStartDate(false);
-                      }}
-                      onCancel={() => setTimeModalStartDate(false)}
-                    />
-                  </View>
-                </View>
-                {/* DASH */}
-                <View
-                  style={{
-                    paddingTop: 45,
-                    paddingLeft: 10,
-                    flexDirection: "row",
-                    // justifyContent: "center",
-                    // alignContent: "center",
-                    // alignItems: "center",
-                    // marginBottom: 10,
-                    marginRight: 10
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "#d3d3d3",
-                      width: 10,
-                      height: 2,
-                      marginTop: Platform.OS == "ios" ? 10 : 15
-                    }}
-                  ></View>
-                </View>
-                {/* end */}
-                <View>
-                  <Text
-                    style={{
-                      paddingTop: 10,
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      marginBottom: 10,
-                      marginRight: 65
-                    }}
-                  >
-                    {t("until")}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row"
-                    }}
-                  >
-                    <TextInput
-                      placeholder={t("pressHere")}
-                      autoCorrect={false}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        fontFamily: "Lato-Regular",
-                        borderColor: "#d3d3d3",
-                        fontSize: 14,
-                        borderWidth: 1
-                      }}
-                      value={renderDate.render_end_date}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setTimeModalEndDate(true)}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        align: "center",
-                        width: "100%",
-                        height: "100%"
-                      }}
-                    />
-                    <DateTimePickerModal
-                      isVisible={timeModalEndDate}
-                      mode="date"
-                      // display="inline"
-                      locale="en_id"
-                      onConfirm={date => {
-                        timeConverter(date);
-                        setTimeModalEndDate(false);
-                      }}
-                      onCancel={() => setTimeModalEndDate(false)}
-                    />
-                  </View>
-                </View>
-              </View>
-            ) : null}
-            {filterCheck.price ? slider() : null}
+            {filterCheck.category ? categoryFilter() : null}
+            {filterCheck.date ? dateFilter() : null}
+            {filterCheck.price ? PriceFilter() : null}
           </View>
           {/* button */}
           <View
@@ -1788,13 +1862,13 @@ export default function SearchListEventHome(props) {
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
-                height: 2
+                height: 2,
               },
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
               padding: 10,
-              paddingHorizontal: 10
+              paddingHorizontal: 10,
             }}
           >
             <Button
@@ -1832,14 +1906,14 @@ export default function SearchListEventHome(props) {
           justifyContent: "flex-end",
           alignItems: "center",
           alignSelf: "center",
-          alignContent: "center"
+          alignContent: "center",
         }}
       >
         <View
           style={{
             flex: 1,
             width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height
+            height: Dimensions.get("screen").height,
           }}
         >
           <View
@@ -1851,7 +1925,7 @@ export default function SearchListEventHome(props) {
               backgroundColor: "#209fae",
               height: 55,
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 20 : -20
+              marginTop: Platform.OS === "ios" ? 20 : -20,
             }}
           >
             <Button
@@ -1866,7 +1940,7 @@ export default function SearchListEventHome(props) {
             <Text
               size="label"
               style={{
-                color: "white"
+                color: "white",
               }}
             >
               {t("country")}
@@ -1877,7 +1951,7 @@ export default function SearchListEventHome(props) {
               width: Dimensions.get("screen").width,
               height: Dimensions.get("screen").height,
               backgroundColor: "white",
-              paddingBottom: 20
+              paddingBottom: 20,
             }}
           >
             <FlatList
@@ -1895,12 +1969,12 @@ export default function SearchListEventHome(props) {
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
-                      justifyContent: "space-between"
+                      justifyContent: "space-between",
                     }}
                   >
                     <View
                       style={{
-                        flexDirection: "row"
+                        flexDirection: "row",
                       }}
                     >
                       <View
@@ -1909,7 +1983,7 @@ export default function SearchListEventHome(props) {
                           elevation: 1,
                           height: 30,
                           width: 42,
-                          backgroundColor: "#fff"
+                          backgroundColor: "#fff",
                           // borderWidth: 1,
                         }}
                       >
@@ -1935,7 +2009,7 @@ export default function SearchListEventHome(props) {
                   </Pressable>
                 );
               }}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
             />
           </View>
         </View>
@@ -1963,23 +2037,23 @@ export default function SearchListEventHome(props) {
           justifyContent: "center",
           alignItems: "center",
           alignSelf: "center",
-          alignContent: "center"
+          alignContent: "center",
         }}
       >
         <View
           style={{
             // height: 100,
             width: Dimensions.get("screen").width - 30,
-            borderRadius: 5
+            borderRadius: 5,
           }}
         >
           <DatePicker
             mode="monthYear"
             style={{
-              borderRadius: 5
+              borderRadius: 5,
             }}
             selectorStartingYear={2000}
-            onMonthYearChange={selectedDate => _handledate(selectedDate)}
+            onMonthYearChange={(selectedDate) => _handledate(selectedDate)}
           />
         </View>
       </Modal>
@@ -2003,7 +2077,7 @@ export default function SearchListEventHome(props) {
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ];
 
   const getdate = () => {
@@ -2020,7 +2094,7 @@ export default function SearchListEventHome(props) {
     id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
     name: "Indonesia",
     show: false,
-    sugestion: true
+    sugestion: true,
   });
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
@@ -2033,7 +2107,7 @@ export default function SearchListEventHome(props) {
     date_from: null,
     date_until: null,
     price_start: null,
-    price_end: null
+    price_end: null,
   });
 
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
@@ -2056,24 +2130,22 @@ export default function SearchListEventHome(props) {
       price_start: search.price_start,
       price_end: search.price_end,
       date_from: search.date_from,
-      date_until: search.date_until
+      date_until: search.date_until,
     },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     },
     onCompleted: () => {
       setdataEvent(data.event_list_v2);
-    }
+    },
   });
-
-  console.log(`DATA EVENT: `, data);
 
   const [
     getdataEventPublic,
-    { data: dataPublic, loading: loadingPublic, error: errorPublic }
+    { data: dataPublic, loading: loadingPublic, error: errorPublic },
   ] = useLazyQuery(ListEventPublic, {
     fetchPolicy: "network-only",
     variables: {
@@ -2094,17 +2166,17 @@ export default function SearchListEventHome(props) {
       price_start: search.price_start,
       price_end: search.price_end,
       date_from: search.date_from,
-      date_until: search.date_until
+      date_until: search.date_until,
     },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     },
     onCompleted: () => {
       setdataEventPublic(dataPublic.event_list_public);
-    }
+    },
   });
 
   const { data: dataFillter, loading: loadingcat, error: errorcat } = useQuery(
@@ -2115,31 +2187,26 @@ export default function SearchListEventHome(props) {
         setdataFilterCategori(dataFillter.event_filter.type);
         setdataFilterCategoris(dataFillter.event_filter.type);
         setdatacountry(dataFillter.event_filter.country);
-      }
+      },
     }
   );
-
-  console.log(`DATA FILTER: `, dataFillter);
-  console.log(`EVENT FILTER: `, dataFillter.event_filter);
-  console.log(`TYPE FILTER: `, dataFillter.event_filter.type);
-  console.log(`COUNTRY FILTER: `, dataFillter.event_filter.country);
 
   const [Banner, SetDataBanner] = useState();
   const {
     data: dataBanner,
     loading: loadingBanner,
-    error: errorBanner
+    error: errorBanner,
   } = useQuery(BannerApps, {
     variables: {
-      page_location: "Event"
+      page_location: "Event",
     },
     // fetchPolicy: "network-only",
     onCompleted: () => {
       SetDataBanner(dataBanner.get_banner);
-    }
+    },
   });
 
-  const _setSearch = async txt => {
+  const _setSearch = async (txt) => {
     let data = { ...search };
     data["keyword"] = txt;
     await setSearch(data);
@@ -2147,26 +2214,26 @@ export default function SearchListEventHome(props) {
 
   const [
     mutationliked,
-    { loading: loadingLike, data: dataLike, error: errorLike }
+    { loading: loadingLike, data: dataLike, error: errorLike },
   ] = useMutation(Liked, {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    }
+        Authorization: `Bearer ${token}`,
+      },
+    },
   });
 
   const [
     mutationUnliked,
-    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike }
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
   ] = useMutation(UnLiked, {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    }
+        Authorization: `Bearer ${token}`,
+      },
+    },
   });
 
   const _liked = async (id, item, position) => {
@@ -2176,12 +2243,12 @@ export default function SearchListEventHome(props) {
 
       if (position === "all") {
         var tempData = [...dataEvent];
-        var index = tempData.findIndex(k => k["id"] === id);
+        var index = tempData.findIndex((k) => k["id"] === id);
         tempData.splice(index, 1, items);
         await setdataEvent(tempData);
       } else {
         var tempData = [...dataEventPublic];
-        var index = tempData.findIndex(k => k["id"] === id);
+        var index = tempData.findIndex((k) => k["id"] === id);
         tempData.splice(index, 1, items);
         await setdataEventPublic(tempData);
       }
@@ -2189,8 +2256,8 @@ export default function SearchListEventHome(props) {
       try {
         let response = await mutationliked({
           variables: {
-            event_id: id
-          }
+            event_id: id,
+          },
         });
         if (loadingLike) {
           Alert.alert(t("somethingwrong"));
@@ -2222,11 +2289,11 @@ export default function SearchListEventHome(props) {
       }
     } else {
       props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen"
+        screen: "LoginScreen",
       });
       RNToasty.Show({
         title: t("pleaselogin"),
-        position: "bottom"
+        position: "bottom",
       });
     }
   };
@@ -2238,12 +2305,12 @@ export default function SearchListEventHome(props) {
 
       if (position === "all") {
         var tempData = [...dataEvent];
-        var index = tempData.findIndex(k => k["id"] === id);
+        var index = tempData.findIndex((k) => k["id"] === id);
         tempData.splice(index, 1, items);
         await setdataEvent(tempData);
       } else {
         var tempData = [...dataEventPublic];
-        var index = tempData.findIndex(k => k["id"] === id);
+        var index = tempData.findIndex((k) => k["id"] === id);
         tempData.splice(index, 1, items);
         await setdataEventPublic(tempData);
       }
@@ -2251,8 +2318,8 @@ export default function SearchListEventHome(props) {
         let response = await mutationUnliked({
           variables: {
             id: id,
-            type: "event"
-          }
+            type: "event",
+          },
         });
         if (loadingUnLike) {
           Alert.alert(t("somethingwrong"));
@@ -2283,11 +2350,11 @@ export default function SearchListEventHome(props) {
       }
     } else {
       props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen"
+        screen: "LoginScreen",
       });
       RNToasty.Show({
         title: t("pleaselogin"),
-        position: "bottom"
+        position: "bottom",
       });
     }
   };
@@ -2298,12 +2365,12 @@ export default function SearchListEventHome(props) {
     await refresh();
   };
 
-  const eventdetail = data => {
+  const eventdetail = (data) => {
     props.navigation.navigate("eventdetail", {
       // data: data,
       event_id: data.id,
       name: data.name,
-      token: token
+      token: token,
     });
   };
 
@@ -2314,20 +2381,20 @@ export default function SearchListEventHome(props) {
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [0, 100, 100],
-    extrapolate: "clamp"
+    extrapolate: "clamp",
   });
 
   const _handleCheck = async (id, index, item) => {
     let tempe = [...dataFilterCategori];
     let items = { ...item };
     items.checked = !items.checked;
-    let inde = tempe.findIndex(key => key.id === id);
+    let inde = tempe.findIndex((key) => key.id === id);
     tempe.splice(inde, 1, items);
     await setdataFilterCategori(tempe);
     await setdataFilterCategoris(tempe);
   };
 
-  const handlecountry = async item => {
+  const handlecountry = async (item) => {
     let hasil = [];
 
     let tempe = [...datacountry];
@@ -2364,11 +2431,8 @@ export default function SearchListEventHome(props) {
     data["type"] = hasil;
     data["date_from"] = dateData.start_date;
     data["date_until"] = dateData.end_date;
-    data["price_start"] = multiSliderValue[0];
-    data["price_end"] = multiSliderValue[1];
-
-    console.log(`HASIL HEI: `, hasil);
-    console.log(`data HEI: `, data);
+    data["price_start"] = priceValue.min;
+    data["price_end"] = priceValue.max;
 
     await setSearch(data);
     await setshow(false);
@@ -2376,7 +2440,7 @@ export default function SearchListEventHome(props) {
     getdataEventPublic();
   };
 
-  const _handledate = async selected => {
+  const _handledate = async (selected) => {
     let data = selected.split(" ");
     let month = data[1]; // January
     let awal = new Date(data[0], parseFloat(month) - 1, 1);
@@ -2400,31 +2464,59 @@ export default function SearchListEventHome(props) {
     }
     await setdataFilterCategori(tempes);
     await setdataFilterCategoris(tempes);
-
     await setSearch({
       type: null,
       tag: null,
       keyword: null,
       countries: null,
       date_from: null,
-      date_until: null
+      date_until: null,
+      price_start: null,
+      price_end: null,
     });
+    await setDateData({
+      start_date: "",
+      end_date: "",
+    });
+    await setRenderDate({
+      render_start_date: "",
+      render_end_date: "",
+    });
+    await setPriceValue({ min: 0, max: "any" });
     await setshow(false);
     await setmonth(" - ");
   };
 
-  const searchkategori = async teks => {
+  const searchkategori = async (teks) => {
     let searching = new RegExp(teks, "i");
 
-    let b = dataFilterCategori.filter(item => searching.test(item.name));
+    let b = dataFilterCategori.filter((item) => searching.test(item.name));
 
     setdataFilterCategoris(b);
   };
 
-  const cekData = data => {
+  const cekData = (data) => {
     // let dat = dataFilterCategori.filter((k) => k.checked === true);
 
-    return search["type"]?.length;
+    let array = [];
+
+    let type = search["type"];
+    let date = search["date_until"];
+    let price = search["price_end"];
+
+    search["type"]?.length > 0
+      ? search["type"].map((x) => {
+          array.push(x);
+        })
+      : null;
+    search["date_until"]?.length > 0 ? array.push(date) : null;
+    (search["price_start"] > 0 && search["price_end"] > 0) ||
+    (search["price_start"] == 0 && search["price_end"] == "any") ||
+    search["price_end"] > 0
+      ? array.push(price)
+      : null;
+
+    return array?.length;
   };
 
   return (
@@ -2448,21 +2540,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
   },
   ImageView: {
     height: Dimensions.get("window").width * 0.47 - 16,
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(20,20,20,0.4)"
+    backgroundColor: "rgba(20,20,20,0.4)",
   },
   Image: {
     resizeMode: "cover",
     height: Dimensions.get("window").width * 0.47 - 16,
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   SliderWrapper: {
     marginLeft: 55,
@@ -2470,19 +2562,19 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: "center",
     fontSize: 14,
-    marginBottom: Platform.OS == "ios" ? 250 : 180
+    marginBottom: Platform.OS == "ios" ? (Notch ? 250 : 160) : 180,
   },
   ViewContainer: {
     alignSelf: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   LabelWrapper: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   LabelTextTop: {
     position: "absolute",
-    marginTop: Platform.OS == "ios" ? -105 : -107,
+    marginTop: Platform.OS == "ios" ? (Notch ? -105 : -55) : -107,
     marginLeft: 100,
     fontSize: 14,
     backgroundColor: "#daf0f2",
@@ -2490,7 +2582,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
     paddingHorizontal: 2,
-    paddingVertical: 2
+    paddingVertical: 2,
   },
   LabelTextBot: {
     position: "absolute",
@@ -2502,6 +2594,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
     paddingHorizontal: 2,
-    paddingVertical: 2
-  }
+    paddingVertical: 2,
+  },
 });

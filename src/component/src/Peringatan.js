@@ -90,9 +90,9 @@ export default function ImageSlide({ aler, setClose }) {
                 type="bold"
                 style={{ marginBottom: 10, textAlign: "center" }}
               >
-                {aler.judul}
+                {t(aler.judul)}
               </Text>
-              {aler.detail.length !== 0 ? (
+              {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
                 <View
                   style={{
                     backgroundColor: "#F6F6F6",
@@ -110,13 +110,13 @@ export default function ImageSlide({ aler, setClose }) {
                       marginHorizontal: 5,
                     }}
                   >
-                    {aler.detail}
+                    {aler?.detail}
                   </Text>
                 </View>
               ) : null}
             </View>
           </View>
-          <TouchableHighlight
+          <Pressable
             onPress={() => setClose()}
             underlayColor="#F6F6F6"
             style={{
@@ -126,6 +126,7 @@ export default function ImageSlide({ aler, setClose }) {
               justifyContent: "center",
               borderBottomLeftRadius: 5,
               borderBottomRightRadius: 5,
+              paddingBottom: 5,
               // paddingVertical: 15,
               paddingTop: aler.detail.length === 0 ? 5 : 0,
             }}
@@ -141,7 +142,7 @@ export default function ImageSlide({ aler, setClose }) {
             >
               {t("understand")}
             </Text>
-          </TouchableHighlight>
+          </Pressable>
         </View>
       </Modal>
     </SafeAreaView>

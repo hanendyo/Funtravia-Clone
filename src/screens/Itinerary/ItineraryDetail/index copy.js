@@ -62,10 +62,6 @@ import {
   Errorx,
   Calendargrey,
   CalendarIcon,
-  Arrowbackios,
-  Padlock,
-  Newglobe,
-  Newpadlock,
 } from "../../../assets/svg";
 import {
   Button,
@@ -166,7 +162,6 @@ export default function ItineraryDetail(props) {
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif ? props.route.params.datadayaktif : {}
   );
-
   let [dataalbumaktif, setdataalbumaktif] = useState({});
   const [dataweather, setData] = useState({});
   const [icons, setIcons] = useState({
@@ -249,11 +244,9 @@ export default function ItineraryDetail(props) {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     await setuser(user.user);
-    await _Refresh();
   };
   let [Anggota, setAnggota] = useState();
   let [loading, setloading] = useState(false);
-  let [statusUsers, setStatusUsers] = useState("");
 
   const {
     data: datadetail,
@@ -317,13 +310,22 @@ export default function ItineraryDetail(props) {
         throw new Error("Error Input");
       }
       if (response.data) {
-        props.navigation.navigate("BottomStack", {
-          screen: "TripBottomPlaning",
-          params: { screen: "TripPlaning" },
-        });
         if (response.data.delete_itinerary.code !== 200) {
           throw new Error(response.data.delete_itinerary.message);
         }
+
+        props.navigation.dispatch(
+          StackActions.replace("BottomStack", {
+            screen: "TripPlaning",
+            params: {
+              index: status === "saved" ? 1 : 0,
+            },
+          })
+        );
+
+        // props.navigation.push("TripPlaning", {
+        // 	index: status === "saved" ? 1 : 0,
+        // });
       }
 
       setloading(false);
@@ -508,15 +510,54 @@ export default function ItineraryDetail(props) {
     setStatus(
       dta.status === "D" ? "edit" : dta.status === "F" ? "finish" : "saved"
     );
-    datadetail.itinerary_detail.buddy.map((item, index) => {
-      if (item.user_id === users?.id) {
-        setStatusUsers(item.isadmin);
-      }
-    });
     let anggota = dta.buddy.findIndex((k) => k["user_id"] === users?.id);
     props.navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: "row" }}>
+          {/* <Button
+                      text={""}
+                      size="medium"
+                      type="circle"
+                      variant="transparent"
+                      style={{
+                        height: 55,
+                      }}
+                      onPress={() => Alert.alert("coming soon")}
+                    >
+                      <Book height={20} width={20} />
+                    </Button>
+                    <Button
+                      text={""}
+                      size="medium"
+                      type="circle"
+                      variant="transparent"
+                      style={{ height: 55 }}
+                      onPress={() => Alert.alert("coming soon")}
+                    >
+                      <Expences height={20} width={20} />
+                    </Button> */}
+          {/* {anggota !== -1 ? (
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              style={{ height: 55 }}
+              onPress={() =>
+                props.navigation.navigate("ChatStack", {
+                  screen: "GroupRoom",
+                  params: {
+                    room_id: itineraryId,
+                    name: dta ? dta.name : null,
+                    picture: Cover,
+                    is_itinerary: true,
+                  },
+                })
+              }
+            >
+              <Chat height={20} width={20} />
+            </Button>
+          ) : null} */}
           {anggota !== -1 ? (
             <Button
               text={""}
@@ -1139,8 +1180,7 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    // props.navigation.goBack();
-    props.navigation.navigate("TripBottomPlaning");
+    props.navigation.goBack();
   };
 
   const [
@@ -1526,6 +1566,7 @@ export default function ItineraryDetail(props) {
   }, [routes, tabIndex]);
 
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       // startRefreshAction();
       GetTimelin();
@@ -1701,7 +1742,6 @@ export default function ItineraryDetail(props) {
   /**
    * render Helper
    */
-
   const renderHeader = (rD) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -1709,14 +1749,7 @@ export default function ItineraryDetail(props) {
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
-
-    let statususer = "";
-    datadetail.itinerary_detail.buddy.map((item, index) => {
-      if (item.user_id === users?.id) {
-        statususer = item.isadmin;
-      }
-    });
-
+    console.log("data", datadetail.itinerary_detail);
     return (
       <Animated.View
         onLayout={() => cekAnggota(rD)}
@@ -1731,7 +1764,6 @@ export default function ItineraryDetail(props) {
           backgroundColor: "#209fae",
         }}
       >
-        {/* image animated */}
         <Animated.Image
           source={
             rD.cover
@@ -1742,7 +1774,9 @@ export default function ItineraryDetail(props) {
           }
           style={{
             opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
             width: "100%",
+            // height: HeaderHeight - 110,
             resizeMode: "cover",
             flex: 1,
           }}
@@ -1750,109 +1784,71 @@ export default function ItineraryDetail(props) {
 
         <Animated.View
           style={{
-            width: Dimensions.get("screen").width,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 15,
-            paddingVertical: 15,
-            backgroundColor: "#fff",
-            opacity: textOpacity,
+            position: "absolute",
+            bottom: 65,
+            left: 15,
+            transform: [{ translateY: textTop }, { translateX: textLeft }],
+            zIndex: 9,
+            width: 200,
           }}
         >
-          <Animated.View>
-            {/* title header */}
-            <Animated.View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <Animated.Text
-                onTextLayout={(x) => {
-                  let line = x.nativeEvent.lines.length;
-                  let lines = line - 1;
-                  let hasil = lines * 20 + HeaderHeight;
+          <Animated.Text
+            onTextLayout={(x) => {
+              let line = x.nativeEvent.lines.length;
+              let lines = line - 1;
+              let hasil = lines * 20 + HeaderHeight;
 
-                  setHeaderHeight(hasil);
-                  setTambahan(lines * 20 + 55);
-                }}
-                allowFontScaling={false}
-                style={{
-                  opacity: textOpacity,
-                  fontSize: 18,
-                  fontFamily: "Lato-Black",
+              setHeaderHeight(hasil);
+              setTambahan(lines * 20 + 55);
+            }}
+            allowFontScaling={false}
+            style={{
+              opacity: textOpacity,
+              fontSize: 18,
+              fontFamily: "Lato-Black",
+              top: 5,
+              color: "#464646",
+              textAlign: "left",
+            }}
+            // numberOfLines={1}
+          >
+            {datadetail && datadetail.itinerary_detail
+              ? datadetail.itinerary_detail.name
+              : null}
+          </Animated.Text>
 
-                  justifyContent: "center",
-                  color: "#464646",
-                  textAlign: "left",
-                }}
-                // numberOfLines={1}
-              >
-                {datadetail && datadetail.itinerary_detail
-                  ? datadetail.itinerary_detail.name
-                  : null}
-              </Animated.Text>
-              <View
-                style={{
-                  height: 5,
-                  width: 5,
-                  borderRadius: 5,
-                  backgroundColor: "#000000",
-                  marginHorizontal: 10,
-                  alignSelf: "center",
-                }}
-              />
-              <View
-                style={{
-                  alignSelf: "center",
-                }}
-              >
-                <Ripple
-                  onPress={() =>
-                    statususer
-                      ? props.navigation.push("ItineraryStack", {
-                          screen: "editprivacy",
-                          params: {
-                            isprivate: datadetail.itinerary_detail.isprivate,
-                            id: datadetail.itinerary_detail.id,
-
-                            token: token,
-                          },
-                        })
-                      : Alert.alert(
-                          "Upss, kamu tidak memiliki akses sebagai admin"
-                        )
-                  }
-                >
-                  {datadetail.itinerary_detail.isprivate == false ? (
-                    <Newglobe width={25} height={25} />
-                  ) : (
-                    <View
-                      style={{
-                        height: 30,
-                        width: 30,
-                        borderRadius: 30,
-                        backgroundColor: "#daf0f2",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Newpadlock width={15} height={15} />
-                    </View>
-                  )}
-                </Ripple>
-              </View>
-            </Animated.View>
+          <Animated.Text
+            allowFontScaling={false}
+            style={{
+              opacity: textOpacitys,
+              position: "absolute",
+              bottom: 10,
+              fontFamily: "Lato-Black",
+              color: "#ffff",
+              textAlign: "left",
+            }}
+            numberOfLines={1}
+          >
+            {datadetail && datadetail.itinerary_detail
+              ? datadetail.itinerary_detail.name
+              : null}
+          </Animated.Text>
+          <View>
             <Animated.View
               style={{
                 opacity: textOpacity,
                 flexDirection: "row",
-                top: 2,
+                // position: "absolute",
+                top: 10,
               }}
             >
               {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
                 <Errorr width={15} height={15} style={{ marginRight: 5 }} />
               ) : null}
               <Animated.Text
+                // onLayout={() => {
+                //   cekTanggal(datadetail?.itinerary_detail?.start_date);
+                // }}
                 size="small"
                 type="bold"
                 style={{
@@ -1874,37 +1870,94 @@ export default function ItineraryDetail(props) {
                   : null}
               </Animated.Text>
             </Animated.View>
-          </Animated.View>
-          {/* button share */}
-          <Animated.View>
-            {datadetail &&
-            datadetail.itinerary_detail &&
-            datadetail.itinerary_detail.isprivate === true ? (
-              <Button
-                onPress={() =>
-                  shareAction({
-                    from: "itinerary",
-                    target: itineraryId,
-                  })
-                }
-                type="circle"
-                variant="bordered"
+
+            <Animated.View
+              style={{
+                position: "absolute",
+                top: 10,
+                opacity: textOpacitys,
+                flexDirection: "row",
+              }}
+            >
+              {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
+                <Errorx width={15} height={15} style={{ marginRight: 5 }} />
+              ) : null}
+
+              <Animated.Text
                 size="small"
+                type="bold"
                 style={{
-                  flexDirection: "row",
-                  width: 80,
-                  alignContent: "center",
-                  alignItems: "center",
-                  // paddingHorizontal: 20,
+                  // position: "absolute",
+                  // top: 10,
+
+                  color: "#ffffff",
+                  opacity: textOpacitys,
+                  fontFamily: "Lato-Bold",
+                  fontSize: 12,
+                  // marginTop: 0,
                 }}
               >
-                <Sharegreen height={20} width={20} />
-                <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
-                  {t("share")}
-                </Text>
-              </Button>
-            ) : null}
-          </Animated.View>
+                {/* {t("dates")} :{" "} */}
+                {datadetail && datadetail.itinerary_detail
+                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                    "  -  " +
+                    dateFormatr(datadetail.itinerary_detail.end_date)
+                  : null}
+              </Animated.Text>
+            </Animated.View>
+          </View>
+        </Animated.View>
+        <Animated.View
+          style={{
+            width: "100%",
+            backgroundColor: "white",
+            // transform: [{ translateY: contentTranslate }],
+            height: tambahan,
+            opacity: imageOpacity,
+            paddingHorizontal: 20,
+            // borderWidth: 1,
+            paddingVertical: 20,
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            size="title"
+            type="black"
+            style={{
+              color: "white",
+            }}
+          ></Text>
+          {datadetail &&
+          datadetail.itinerary_detail &&
+          datadetail.itinerary_detail.isprivate === true ? (
+            <Button
+              onPress={() =>
+                shareAction({
+                  from: "itinerary",
+                  target: itineraryId,
+                })
+              }
+              type="circle"
+              variant="bordered"
+              size="small"
+              style={{
+                flexDirection: "row",
+                width: 80,
+                alignContent: "center",
+                alignItems: "center",
+                // paddingHorizontal: 20,
+              }}
+            >
+              <Sharegreen height={20} width={20} />
+              <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
+                {t("share")}
+              </Text>
+            </Button>
+          ) : null}
         </Animated.View>
         <Animated.View
           style={{
@@ -2028,6 +2081,24 @@ export default function ItineraryDetail(props) {
                           ) -
                             1)}{" "}
                       {t("others")}
+                      {/* <Truncate
+                        text={
+                          // " " +
+                          // t("with") +
+                          "   " + */}
+                      {/* {(datadetail?.itinerary_detail?.buddy[1]?.user?.first_name
+                        ? datadetail.itinerary_detail.buddy[1].user.first_name +
+                          " "
+                        : "User funtravia") +
+                        (datadetail.itinerary_detail.buddy.length > 2
+                          ? " + " +
+                            (datadetail.itinerary_detail.buddy.length - 2) +
+                            " " +
+                            t("others")
+                          : " ")} */}
+                      {/* }
+                        length={23}
+                      /> */}
                     </Text>
                   </View>
                 ) : (
@@ -2959,9 +3030,6 @@ export default function ItineraryDetail(props) {
                   if (data.id === "camera") {
                     return (
                       <TouchableOpacity
-                        // onPress={() => {
-                        //   console.log("itineraryId", itineraryId);
-                        // }}
                         onPress={() => {
                           // // setidupload(item.id);
                           // setmodalAlbum(true);
@@ -2995,7 +3063,7 @@ export default function ItineraryDetail(props) {
                           marginBottom: 2.5,
                         }}
                       >
-                        <CameraIcon height={100} width={100} />
+                        <CameraIcon height={30} width={30} />
                       </TouchableOpacity>
                     );
                   } else {
@@ -3346,6 +3414,14 @@ export default function ItineraryDetail(props) {
                       id_album: item.id,
                       id_itin: itineraryId,
                       title_album: item.title,
+                      // token: token,
+                      // ratio: {
+                      //   width: 1,
+                      //   height: 1,
+                      //   index: 0,
+                      //   label: "S",
+                      // },
+                      // type: "image",
                       album: "Itinerary",
                     },
                   });
@@ -4964,7 +5040,6 @@ export default function ItineraryDetail(props) {
 
   if (datadetail) {
     let rData = datadetail.itinerary_detail;
-
     return (
       <View
         style={{
@@ -4972,190 +5047,6 @@ export default function ItineraryDetail(props) {
         }}
       >
         <CustomStatusBar backgroundColor="#209FAE" barStyle="light-content" />
-        <Animated.View
-          style={{
-            position: "absolute",
-            top: SafeStatusBar,
-            zIndex: 9999,
-            opacity: textOpacity,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            // borderWidth: 1,
-            alignContent: "center",
-            alignItems: "center",
-            marginHorizontal: 20,
-            height: 55,
-            width: Dimensions.get("screen").width - 40,
-          }}
-        >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => _handlerBack()}
-            style={{
-              height: 50,
-              // marginLeft: 8,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-
-                borderRadius: 30,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-
-          <Button
-            text={""}
-            onPress={() => setshowside(true)}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            style={{
-              height: 50,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-
-                borderRadius: 30,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-            </Animated.View>
-          </Button>
-        </Animated.View>
-
-        {/* jika scrollheader, animated show */}
-        <Animated.View
-          style={{
-            position: "absolute",
-            top: SafeStatusBar,
-            zIndex: 9999,
-            opacity: textOpacitys,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            // borderWidth: 1,
-            alignContent: "center",
-            alignItems: "center",
-            marginHorizontal: 20,
-            height: 55,
-            width: Dimensions.get("screen").width - 40,
-          }}
-        >
-          <Animated.View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              onPress={() => _handlerBack()}
-              style={{
-                height: 50,
-                // marginLeft: 8,
-              }}
-            >
-              <Animated.View
-                style={{
-                  height: 35,
-                  width: 35,
-
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {Platform.OS == "ios" ? (
-                  <Arrowbackios height={15} width={15}></Arrowbackios>
-                ) : (
-                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-                )}
-              </Animated.View>
-            </Button>
-            <Animated.View
-              style={{
-                top: 10,
-              }}
-            >
-              <Animated.Text
-                allowFontScaling={false}
-                style={{
-                  opacity: textOpacitys,
-                  fontFamily: "Lato-Black",
-                  color: "#ffff",
-                  textAlign: "left",
-                }}
-                numberOfLines={1}
-              >
-                {datadetail && datadetail.itinerary_detail
-                  ? datadetail.itinerary_detail.name
-                  : null}
-              </Animated.Text>
-              <Animated.View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
-                  <Errorx width={15} height={15} style={{ marginRight: 5 }} />
-                ) : null}
-
-                <Animated.Text
-                  size="small"
-                  type="bold"
-                  style={{
-                    color: "#ffffff",
-                    opacity: textOpacitys,
-                    fontFamily: "Lato-Bold",
-                    fontSize: 12,
-                  }}
-                >
-                  {/* {t("dates")} :{" "} */}
-                  {datadetail && datadetail.itinerary_detail
-                    ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                      "  -  " +
-                      dateFormatr(datadetail.itinerary_detail.end_date)
-                    : null}
-                </Animated.Text>
-              </Animated.View>
-            </Animated.View>
-          </Animated.View>
-
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => setshowside(true)}
-            style={{
-              height: 50,
-            }}
-          >
-            <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-          </Button>
-        </Animated.View>
-
         <MenuProvider>
           {renderTabView()}
           {renderHeader(rData)}
@@ -5585,8 +5476,8 @@ export default function ItineraryDetail(props) {
                 marginVertical: 2.5,
                 width: "100%",
                 height: Dimensions.get("screen").width * 0.2,
-                // borderBottomWidth: 1,
-                // borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
                 borderRadius: 5,
                 flexDirection: "row",
                 paddingHorizontal: 20,
@@ -6571,7 +6462,7 @@ export default function ItineraryDetail(props) {
                   </TouchableOpacity>
                 ) : null}
 
-                {Anggota === "true" && statusUsers == true ? (
+                {Anggota === "true" ? (
                   <TouchableOpacity
                     style={{
                       marginVertical: 5,

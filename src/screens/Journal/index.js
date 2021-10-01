@@ -28,6 +28,7 @@ import {
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import normalize from "react-native-normalize";
 
 export default function Journal(props) {
   const { t } = useTranslation();
@@ -45,7 +46,11 @@ export default function Journal(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("journal"),
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("traveljournal")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

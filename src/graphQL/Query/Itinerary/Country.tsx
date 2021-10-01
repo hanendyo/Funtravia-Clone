@@ -4,6 +4,7 @@ const Country = gql`
 		country_search(keyword: $keyword) {
 			id
 			name
+			flag
 			image {
 				image
 			}

@@ -6,12 +6,16 @@ import {
   TextInput,
   SafeAreaView,
   Alert,
+  Modal,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Button,
+  CopyLink,
   CustomImage,
   FunImage,
+  shareAction,
   Text,
   Truncate,
   // StatusBar,
@@ -20,7 +24,12 @@ import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackios, Arrowbackwhite, SharePutih } from "../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  SharePutih,
+  Xgray,
+} from "../../assets/svg";
 import { Image } from "react-native";
 import { ImageBackground } from "react-native";
 import { ScrollView } from "react-native";
@@ -74,6 +83,7 @@ export default function TravelGoalDetail(props) {
   };
   const { t, i18n } = useTranslation();
   let [datadetail, setdatadetail] = useState({});
+  let [modalShare, setModalShare] = useState(false);
   let [datarelated, setdatarelated] = useState([]);
 
   const [
@@ -175,6 +185,133 @@ export default function TravelGoalDetail(props) {
         // padding: 20,
       }}
     >
+      <Modal
+        useNativeDriver={true}
+        visible={modalShare}
+        onRequestClose={() => setModalShare(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalShare(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalShare(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              // onPress={() => {
+              //   setModalShare(false);
+              //   props.navigation.navigate("TravelIdeaStack", {
+              //     screen: "SendMovie",
+              //     params: { movie: movie_byid },
+              //   });
+              // }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("Send")}...
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                shareAction({
+                  from: "travelgoal",
+                  target: datadetail?.id,
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("shareTo")}...
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                CopyLink({
+                  from: "travelgoal",
+                  target: datadetail?.id,
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("copyLink")}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       {/* <StatusBar backgroundColor="#14646E" barStyle="light-content" /> */}
       <ImageBackground
         source={datadetail?.cover ? { uri: datadetail?.cover } : default_image}
@@ -209,7 +346,7 @@ export default function TravelGoalDetail(props) {
             flexDirection: "row",
           }}
           onPress={() => {
-            Alert.alert("coming soon");
+            setModalShare(true);
           }}
         >
           <SharePutih height={20} width={20} />

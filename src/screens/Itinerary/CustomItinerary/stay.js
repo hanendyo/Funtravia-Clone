@@ -496,8 +496,6 @@ export default function detailCustomItinerary(props) {
       });
     }
   };
-
-  console.log(`PROPS: `, props);
   return (
     <SafeAreaView
       style={{

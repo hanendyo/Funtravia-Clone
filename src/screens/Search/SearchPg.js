@@ -43,13 +43,10 @@ import {
 } from "../../assets/png";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { dateFormatBetween } from "../../component/src/dateformatter";
-import SearchUserQuery from "../../graphQL/Query/Search/SearchPeople";
 import SearchUserQueryNew from "../../graphQL/Query/Search/SearchPeopleNew";
 import RekomendasiPeople from "../../graphQL/Query/Search/RekomendasiPeople";
 import SearchDestinationQuery from "../../graphQL/Query/Search/SearchDestination";
-import SearchDestinationQueryNew from "../../graphQL/Query/Search/SearchDestinationNew";
 import SearchEventQuery from "../../graphQL/Query/Search/SearchEvent";
-import SearchEventQueryNew from "../../graphQL/Query/Search/SearchEventNew";
 import SearchLocationQuery from "../../graphQL/Query/Search/SearchLocation";
 import { useTranslation } from "react-i18next";
 import BerandaPopuler from "../../graphQL/Query/Home/BerandaPopuler";
@@ -60,6 +57,7 @@ import UnLikedEvent from "../../graphQL/Mutation/unliked";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 const dataUser = [
   {
@@ -99,8 +97,17 @@ export default function SearchPg(props, { navigation, route }) {
   let { width, height } = Dimensions.get("screen");
 
   const HeaderComponent = {
-    headerTitle: locationname ? t("searchin") + locationname : t("search"),
-    headerTitleStyle: { color: "white" },
+    headerTitle: locationname ? (
+      (
+        <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+          {t("searchin")}
+        </Text>
+      ) + locationname
+    ) : (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("search")}
+      </Text>
+    ),
     headerStyle: {
       elevation: 0,
       borderBottomWidth: 0,
@@ -933,7 +940,7 @@ export default function SearchPg(props, { navigation, route }) {
               width: Dimensions.get("window").width * 0.9,
               paddingLeft: 5,
               textAlign: "left",
-              fontSize: 15,
+              fontSize: normalize(14),
               fontFamily: "Lato-Regular",
             }}
             underlineColorAndroid="transparent"
@@ -1102,7 +1109,6 @@ export default function SearchPg(props, { navigation, route }) {
                   contentContainerStyle={{
                     marginTop: 5,
                     justifyContent: "space-evenly",
-                    paddingEnd: 20,
                     marginHorizontal: 15,
                   }}
                   data={user_search}
@@ -1114,9 +1120,7 @@ export default function SearchPg(props, { navigation, route }) {
                         justifyContent: "space-between",
                         alignItems: "center",
                         alignContent: "center",
-                        // paddingRight: 10,
-                        // paddingLeft: 20,
-                        paddingVertical: 10,
+                        paddingVertical: 15,
                       }}
                     >
                       <TouchableOpacity
@@ -1161,21 +1165,16 @@ export default function SearchPg(props, { navigation, route }) {
                           }}
                         >
                           {item.last_name !== null ? (
-                            <Text size="label" type="regular">
+                            <Text size="label" type="bold">
                               {item.first_name + "" + item.last_name}
                             </Text>
                           ) : (
-                            <Text size="label" type="regular">
+                            <Text size="label" type="bold">
                               {item.first_name}
                             </Text>
                           )}
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontFamily: "lato-light",
-                            }}
-                          >
-                            {`@${item.username}`}
+                          <Text size="label" type="regular">
+                            {`@${item.username}`}test
                           </Text>
                           {/* <Text
                                                         style={{
@@ -1233,7 +1232,9 @@ export default function SearchPg(props, { navigation, route }) {
                           // borderWidth: 1,
                         }}
                       >
-                        <Text>{t("noData")}</Text>
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
                       </View>
                     ) : null
                   }
@@ -1326,7 +1327,9 @@ export default function SearchPg(props, { navigation, route }) {
                           // borderWidth: 1,
                         }}
                       >
-                        <Text>{t("noData")}</Text>
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
                       </View>
                     ) : null
                   }
@@ -1587,7 +1590,9 @@ export default function SearchPg(props, { navigation, route }) {
                         // borderWidth: 1,
                       }}
                     >
-                      <Text>{t("noData")}</Text>
+                      <Text size="label" type="regular">
+                        {t("noData")}
+                      </Text>
                     </View>
                   ) : null
                 }
@@ -1837,7 +1842,9 @@ export default function SearchPg(props, { navigation, route }) {
                           // borderWidth: 1,
                         }}
                       >
-                        <Text>{t("noData")}</Text>
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
                       </View>
                     ) : null
                   }
@@ -2105,8 +2112,7 @@ export default function SearchPg(props, { navigation, route }) {
                   contentContainerStyle={{
                     marginTop: 5,
                     justifyContent: "space-evenly",
-                    paddingEnd: 20,
-                    paddingHorizontal: 10,
+                    paddingHorizontal: 15,
                   }}
                   data={list_rekomendasi_user}
                   renderItem={({ item, index }) => (
@@ -2117,8 +2123,6 @@ export default function SearchPg(props, { navigation, route }) {
                         justifyContent: "space-between",
                         alignItems: "center",
                         alignContent: "center",
-                        // paddingRight: 10,
-                        // paddingLeft: 20,
                         paddingVertical: 10,
                       }}
                     >
@@ -2163,20 +2167,15 @@ export default function SearchPg(props, { navigation, route }) {
                           }}
                         >
                           {item.last_name !== null ? (
-                            <Text size="readable" type="regular">
+                            <Text size="label" type="bold">
                               {item.first_name + "" + item.last_name}
                             </Text>
                           ) : (
-                            <Text size="readable" type="regular">
+                            <Text size="label" type="bold">
                               {item.first_name}
                             </Text>
                           )}
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              fontFamily: "lato-light",
-                            }}
-                          >
+                          <Text size="label" type="regular">
                             {`@${item.username}`}
                           </Text>
                           {/* <Text style={{ fontSize: 10, fontFamily: 'lato-light' }}>

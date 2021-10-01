@@ -130,13 +130,6 @@ export default function SearchFeed({ props }) {
         });
 
         if (response?.data?.like_post?.code == 200) {
-          // let tempData = [...datas];
-          // let index = tempData.findIndex((k) => k["id"] === id);
-          // let tempDatas = { ...tempData[index] };
-          // tempDatas.liked = true;
-          // tempDatas.response_count = tempDatas.response_count + 1;
-          // tempData.splice(index, 1, tempDatas);
-          // setDatas(tempData);
           querySearchPost();
         } else {
           console.log("gagal like");
@@ -172,13 +165,6 @@ export default function SearchFeed({ props }) {
         });
 
         if (response?.data?.unlike_post?.code == 200) {
-          // let tempData = [...datas];
-          // let index = tempData.findIndex((k) => k["id"] === id);
-          // let tempDatas = { ...tempData[index] };
-          // tempDatas.liked = false;
-          // tempDatas.response_count = tempDatas.response_count - 1;
-          // tempData.splice(index, 1, tempDatas);
-          // setDatas(tempData);
           querySearchPost();
           console.log("sukses unlike");
         } else {
@@ -367,16 +353,7 @@ export default function SearchFeed({ props }) {
                 marginLeft: 0,
                 borderRadius: 5,
               }}
-              onPress={
-                () => Ceklogin(item.id, item, index)
-                // props.navigation.navigate("FeedStack", {
-                //   screen: "CommentsById",
-                //   params: {
-                //     post_id: item.id,
-                //     token: token,
-                //   },
-                // })
-              }
+              onPress={() => Ceklogin(item.id, item, index)}
             >
               <RenderPost
                 data={item}

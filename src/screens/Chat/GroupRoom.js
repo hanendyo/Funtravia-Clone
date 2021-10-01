@@ -331,7 +331,6 @@ export default function Room({ navigation, route }) {
       getUserToken();
     }
     socket.on("new_chat_group", (data) => {
-      console.log("data effec", data);
       setChatHistory(data);
     });
     socket.emit("join", room);
@@ -745,7 +744,7 @@ export default function Room({ navigation, route }) {
       });
   };
 
-  console.log("message", message);
+  console.log("meesage", message);
 
   const _uploadimage = async (image, id) => {
     // let chatData = {};
@@ -781,7 +780,10 @@ export default function Room({ navigation, route }) {
           body: formData,
         }
       );
+
+      console.log("response", response);
       let responseJson = await response.json();
+      console.log("responseJson", responseJson);
       if (responseJson.status == true) {
         // getUserAndToken();
         let dateTime = new Date();
@@ -795,6 +797,7 @@ export default function Room({ navigation, route }) {
           time: dateTime,
           is_send: true,
         };
+        console.log("chatData", chatData);
         // if (socket.connected) {
         socket.emit("message", chatData);
         // } else {
@@ -807,7 +810,7 @@ export default function Room({ navigation, route }) {
         });
         setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
-            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+            flatListRef.current.scrollToEnd({ animated: true, offset: 0 });
           }
         }, 2000);
       } else {
@@ -816,7 +819,7 @@ export default function Room({ navigation, route }) {
       }
     } catch (error) {
       console.log(error);
-      // setChatHistory(chatData);
+      setChatHistory(chatData);
       // RNToasty.Show({
       //   duration: 1,
       //   title: "error : someting wrong!",

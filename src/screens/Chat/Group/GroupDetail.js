@@ -287,11 +287,14 @@ export default function GroupDetail(props) {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      getUserAndToken();
-    });
-    return unsubscribe;
+    getUserAndToken();
   }, []);
+  // useEffect(() => {
+  //   const unsubscribe = props.navigation.addListener("focus", () => {
+  //     getUserAndToken();
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   const [layout, setLayout] = useState();
   const goToItinerary = (data) => {

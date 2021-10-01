@@ -79,7 +79,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  console.log("props", props.route.params.file[0].node.image);
+  console.log("props create", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);

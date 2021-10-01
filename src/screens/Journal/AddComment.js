@@ -114,6 +114,7 @@ export default function AddComment({
         justifyContent: "center",
         flexDirection: "row",
         backgroundColor: "white",
+
         borderWidth: 2,
         borderColor: "#F0F0F0",
         shadowOffset: { width: 0, height: 1 },

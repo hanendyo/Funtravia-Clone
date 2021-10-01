@@ -1,4 +1,4 @@
-import React, { ReactChild } from "react";
+import React, { ReactChild, useState, useRef } from "react";
 import {
   Text as TextComponent,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TextStyle,
   TextProps,
 } from "react-native";
+import normalize from "react-native-normalize";
 
 type Props = TextProps & {
   children: ReactChild,
@@ -46,33 +47,37 @@ export default function Text({
 }
 
 const fontSize = StyleSheet.create({
-  small: { fontSize: 10 },
-  description: { fontSize: 12 },
-  readable: { fontSize: 14 },
-  label: { fontSize: 14 },
-  title: { fontSize: 16 },
-  h5: { fontSize: 20 },
-  h4: { fontSize: 26 },
-  h3: { fontSize: 32 },
-  h2: { fontSize: 44 },
-  h1: { fontSize: 60 },
+  small: { fontSize: normalize(10) },
+  description: { fontSize: normalize(12) },
+  readable: { fontSize: normalize(14) },
+  label: { fontSize: normalize(14) },
+  title: { fontSize: normalize(16) },
+  h5: { fontSize: normalize(20) },
+  h4: { fontSize: normalize(26) },
+  h3: { fontSize: normalize(32) },
+  h2: { fontSize: normalize(44) },
+  h1: { fontSize: normalize(60) },
 });
 
 const fontType = StyleSheet.create({
   light: {
     fontFamily: "Lato-Light",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
   regular: {
     fontFamily: "Lato-Regular",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
   bold: {
     fontFamily: "Lato-Bold",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
   black: {
     fontFamily: "Lato-Black",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
 });

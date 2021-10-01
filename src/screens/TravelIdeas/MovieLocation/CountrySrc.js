@@ -520,7 +520,7 @@ export default function CountrySrc({
               >
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
+                    backgroundColor: "#f6f6f6",
                     borderRadius: 5,
                     // flex: 1,
                     flexDirection: "row",

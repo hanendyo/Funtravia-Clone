@@ -27,6 +27,7 @@ import {
 import { Text } from "../../component";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
+import normalize from "react-native-normalize";
 
 const Home = createStackNavigator();
 function HomeStack(props) {
@@ -117,7 +118,7 @@ function MyAccountStackScreen() {
 
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <MainNavigator.Navigator
@@ -128,7 +129,7 @@ export default function BottomNavigationItems(props) {
         headerTransparent: true,
         labelStyle: {
           fontFamily: "Lato-Regular",
-          fontSize: 12,
+          fontSize: normalize(12),
           marginBottom: 2.5,
         },
         style: {
@@ -172,7 +173,7 @@ export default function BottomNavigationItems(props) {
         initialParams={{ token: props.route.params.token }}
         options={{
           tabBarVisible: false,
-          tabBarLabel: t("tripPlanner"),
+          tabBarLabel: t("trip"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Itinerary width="25" height="25" />
@@ -197,7 +198,7 @@ export default function BottomNavigationItems(props) {
         name="ChatBottomScreen"
         component={Chatstackscreen}
         options={{
-          tabBarLabel: t("message"),
+          tabBarLabel: t("Message"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <ChatOn width="20" height="22" />

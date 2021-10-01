@@ -88,8 +88,8 @@ export default function Register({ navigation }) {
         showAlert({
           ...aler,
           show: true,
-          judul: "Some Form Field Empty",
-          detail: "" + error,
+          judul: "somefieldempty",
+          detail: error ? "" + error : 0,
         });
         return false;
       }
@@ -130,7 +130,7 @@ export default function Register({ navigation }) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Register Failed",
+        judul: "registerfailed",
         detail:
           "" +
           error
@@ -165,7 +165,9 @@ export default function Register({ navigation }) {
   };
 
   const externalRegister = (index) => {
-    navigation.navigate(index);
+    setTimeout(() => {
+      navigation.navigate(index);
+    }, 1000);
   };
 
   const NavigationComponent = {
@@ -241,7 +243,7 @@ export default function Register({ navigation }) {
           <View style={{ flex: 1 }}>
             <FloatingInput
               customTextStyle={{
-                color: itemvalid.first_name === false ? "#464646" : "#D75995",
+                color: "#464646",
               }}
               value={state.first_name}
               onChangeText={onChange("first_name")}

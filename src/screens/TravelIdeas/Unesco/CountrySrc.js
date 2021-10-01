@@ -83,8 +83,6 @@ export default function CountrySrc({
     });
   };
 
-  useEffect(() => {}, []);
-
   const selectedContinent = (item, select_continent) => {
     if (item.id == select_continent) {
       setContinentSelected("");
@@ -546,7 +544,7 @@ export default function CountrySrc({
               >
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
+                    backgroundColor: "#f6f6f6",
                     borderRadius: 5,
                     // flex: 1,
 

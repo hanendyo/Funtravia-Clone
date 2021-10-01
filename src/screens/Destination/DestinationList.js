@@ -597,7 +597,7 @@ export default function ItineraryDestination(props) {
     }
   };
 
-  const [filterResults, setfilterResults] = useState(0);
+  const [filterResults, setfilterResults] = useState(2);
   // Count data filter checked//
   const cekData = (data) => {
     let dat = dataFilterCategori.filter((k) => k.checked === true);
@@ -707,7 +707,6 @@ export default function ItineraryDestination(props) {
     await GetListDestination();
   };
 
-  console.log("datafilter", dataDestination);
   return (
     <View
       style={{
@@ -1448,7 +1447,9 @@ export default function ItineraryDestination(props) {
                           }),
                         }}
                         onValueChange={() =>
-                          _handleCheckf(item["id"], index, item)
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheckf(item["id"], index, item)
                         }
                         value={item["checked"]}
                       />
@@ -1513,7 +1514,9 @@ export default function ItineraryDestination(props) {
                           }),
                         }}
                         onValueChange={() =>
-                          _handleCheckC(item["id"], index, item)
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheckC(item["id"], index, item)
                         }
                         value={item["checked"]}
                       />

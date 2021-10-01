@@ -15,6 +15,7 @@ import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
 import AddCommentJournal from "../../graphQL/Mutation/Journal/AddCommentJournal";
 import { useMutation } from "@apollo/react-hooks";
 import Ripple from "react-native-material-ripple";
+import DeviceInfo from "react-native-device-info";
 
 export default function AddCommentLike({
   data,
@@ -26,6 +27,7 @@ export default function AddCommentLike({
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
 
   const [
     mutationliked,
@@ -62,6 +64,11 @@ export default function AddCommentLike({
       },
     },
   });
+
+  const [ace, setAce] = useState(false);
+  // const autoCorrectEnable =()=>{
+
+  // }
 
   const comment = async (id, text) => {
     Keyboard.dismiss();
@@ -203,11 +210,18 @@ export default function AddCommentLike({
     };
   }, []);
 
-  console.log("keyboardStatus", keyboardStatus);
+  const [lineStatus, setLineStatus] = useState(false);
+  const textLength = () => {
+    if (keyboardStatus === false) {
+      return Notch ? 24 : 22;
+    } else {
+      return Notch ? 35 : 35;
+    }
+  };
+  const deviceId = DeviceInfo.getModel();
 
   return (
     <KeyboardAvoidingView
-      onLayout={(e) => console.log("event", e.nativeEvent.layout.y)}
       style={{
         paddingTop: 10,
         paddingBottom: 10,
@@ -223,10 +237,17 @@ export default function AddCommentLike({
         shadowRadius: arrayShadow.shadowRadius,
         elevation: arrayShadow.elevation,
         alignItems: "center",
+        marginBottom: keyboardStatus
+          ? Platform.OS == "ios"
+            ? Notch
+              ? deviceId == "iPhone 12 Pro"
+                ? 30
+                : -40
+              : -45
+            : null
+          : null,
       }}
     >
-      {/* <Loading show={loadingLike} />
-      <Loading show={loadingUnLike} /> */}
       <View
         style={{
           backgroundColor: "#f6f6f6",
@@ -237,27 +258,30 @@ export default function AddCommentLike({
               : Dimensions.get("window").width - 20,
           // height: Dimensions.get("window").width * 0.13,
           minHeight: Dimensions.get("window").width * 0.1,
-          maxHeight: Dimensions.get("window").width * 0.2,
+          maxHeight: Dimensions.get("window").width * 0.3,
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 10,
-          // paddingVertical: 5,
         }}
       >
         <TextInput
+          autoCorrect={keyboardStatus}
           style={{
-            flex: 1,
-            marginLeft: 15,
-            width: "90%",
-            flexWrap: "wrap",
+            // flex: 1,
+            marginLeft: 10,
+            width: "80%",
+            // flexWrap: "wrap",
             color: "#2c2c2c",
-            fontSize: 16,
+            fontSize: 14,
             lineHeight: 16,
             marginVertical: 5,
             marginBottom: Platform.OS == "ios" ? 10 : 0,
+            marginTop: Platform.OS == "ios" ? null : 0,
           }}
           multiline={true}
-          onChangeText={(text) => setText(text)}
+          onChangeText={(text) => {
+            setText(text);
+          }}
           value={text}
           placeholder={Truncate({
             text:
@@ -266,7 +290,8 @@ export default function AddCommentLike({
               setting?.user?.first_name +
               " " +
               setting?.user?.last_name,
-            length: 25,
+            // length: keyboardStatus == false ? (Notch ? 24 : 22) : 22,
+            length: textLength(),
           })}
         />
         <Ripple
@@ -277,6 +302,17 @@ export default function AddCommentLike({
             height: Dimensions.get("window").width * 0.1,
             borderRadius: 15,
             width: "20%",
+            marginLeft: keyboardStatus
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? 10
+                  : 10
+                : null
+              : Platform.OS == "ios"
+              ? Notch
+                ? -10
+                : 0
+              : -10,
           }}
           onPress={() => comment(dataList.id, text)}
         >

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -9,18 +9,9 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  Pressable,
-  Animated,
 } from "react-native";
 import Modal from "react-native-modal";
-import {
-  Search,
-  Filternewbiru,
-  Xhitam,
-  Bottom,
-  Above,
-  Arrowbackios,
-} from "../../assets/svg";
+import { Search, Filternewbiru, Xhitam } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
 import RegionList_v2 from "../../graphQL/Query/Countries/PopularDestination";
@@ -41,8 +32,6 @@ import {
 export default function AllDestination(props) {
   const { t } = useTranslation();
 
-  const scrollY = useRef(new Animated.Value(1));
-
   const HeaderComponent = {
     headerShown: true,
     title: "Popular Destination",
@@ -57,7 +46,7 @@ export default function AllDestination(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 18,
+      fontSize: 14,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -76,11 +65,7 @@ export default function AllDestination(props) {
           height: 55,
         }}
       >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
+        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
       </Button>
     ),
   };
@@ -111,8 +96,6 @@ export default function AllDestination(props) {
       },
     }
   );
-
-  console.log("data", dataResult);
 
   //Filter Region
   const [filterRegion, setFilterRegion] = useState([]);
@@ -212,228 +195,158 @@ export default function AllDestination(props) {
     GetRegionList();
     GetContinent();
   }, []);
-  let [showcity, setShowCity] = useState(null);
+
   const RenderList = ({ item }) => {
-    console.log("item", item);
-    let sumdestination = item.count_destination;
-
     return item && item.city.length > 0 ? (
-      <View
-        style={{
-          backgroundColor: "#FFF",
-          marginVertical: 5,
-          borderRadius: 10,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 3.62,
-
-          elevation: 4,
-          width: Dimensions.get("screen").width - 20,
-        }}
-      >
+      <View>
         {item ? (
           <View
             style={{
               flex: 1,
             }}
           >
-            <View
+            <TouchableOpacity
               style={{
-                backgroundColor: "#FFF",
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-                flexDirection: "row",
+                height: Dimensions.get("window").width * 0.29,
               }}
+              onPress={() =>
+                props.navigation.navigate("CountryStack", {
+                  screen: "Country",
+                  params: {
+                    data: item,
+                    exParam: true,
+                  },
+                })
+              }
             >
-              <TouchableOpacity
-                onPress={() =>
-                  props.navigation.navigate("CountryStack", {
-                    screen: "Country",
-                    params: {
-                      data: item,
-                      exParam: true,
-                    },
-                  })
-                }
+              <ImageBackground
+                source={item.cover ? { uri: item.cover } : default_image}
+                style={{
+                  width: Dimensions.get("window").width - 20,
+                  height: Dimensions.get("window").width * 0.29,
+                }}
+                imageStyle={[
+                  styles.destinationMainImage,
+                  {
+                    height: Dimensions.get("window").width * 0.29,
+                  },
+                ]}
               >
-                <FunImage
-                  source={
-                    item.image.image ? { uri: item.image.image } : default_image
-                  }
-                  style={{
-                    width: (Dimensions.get("window").width - 270) / 2,
-                    height: (Dimensions.get("window").width - 270) / 2,
-                    borderRadius: 5,
-                    marginHorizontal: 10,
-                    marginVertical: 10,
-                  }}
-                  imageStyle={[
-                    styles.Image,
+                <View
+                  style={[
+                    styles.destinationMainImageContainer,
                     {
-                      width: (Dimensions.get("window").width - 270) / 2,
-                      height: (Dimensions.get("window").width - 270) / 2,
-                      borderRadius: 5,
-                      marginHorizontal: 10,
-                      marginVertical: 10,
+                      height: Dimensions.get("window").width * 0.29,
+
+                      flexDirection: "row",
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+                      flexWrap: "wrap",
                     },
                   ]}
-                />
-              </TouchableOpacity>
-              <View
-                style={{
-                  width: "70%",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginLeft: 10,
-                }}
-              >
-                <View
-                  style={{
-                    justifyContent: "center",
-                  }}
                 >
                   <Text
-                    size={"title"}
-                    type={"bold"}
                     style={{
-                      fontSize: 20,
-                      color: "#209FAE",
+                      alignSelf: "center",
+                      color: "#ffffff",
+                      zIndex: 2,
+                      shadowRadius: 2,
+                      shadowColor: "#000",
+                      elevation: 5,
+                      opacity: 1,
+                      fontFamily: "Lato-Bold",
+                      fontSize: 21,
                     }}
                   >
-                    {item.name}
-                  </Text>
-                  <Text
-                    size={"label"}
-                    type={"regular"}
-                    style={{ marginTop: 5 }}
-                  >
-                    {sumdestination + " " + t("destination")}
+                    <Truncate text={Capital({ text: item.name })} length={10} />
                   </Text>
                 </View>
-                <View
-                  style={{
-                    justifyContent: "center",
-                  }}
-                >
-                  {showcity !== item.name ? (
-                    <Pressable onPress={() => setShowCity(item.name)}>
-                      <Bottom height={25} width={25} style={{ marginTop: 5 }} />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      onPress={() =>
-                        setShowCity(item.name == showcity ? null : item.name)
-                      }
-                    >
-                      <Above height={25} width={25} style={{ marginTop: 5 }} />
-                    </Pressable>
-                  )}
-                </View>
-              </View>
-            </View>
+              </ImageBackground>
+            </TouchableOpacity>
           </View>
         ) : null}
         <View
           style={{
-            marginVertical: showcity == item.name ? 10 : 0,
+            marginVertical: 10,
+            borderBottomWidth: 1,
+            borderColor: "#F0F0F0",
           }}
         >
-          {item.name == showcity && item.city.length
+          {item.city && item.city.length
             ? item.city.map((value, i) => {
                 return (
-                  <View
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      if (value.type == "province") {
+                        props.navigation.navigate("CountryStack", {
+                          screen: "Province",
+                          params: {
+                            data: value,
+                            exParam: true,
+                          },
+                        });
+                      } else {
+                        props.navigation.navigate("CountryStack", {
+                          screen: "CityDetail",
+                          params: {
+                            data: {
+                              city_id: value.id,
+                              city_name: value.name,
+                              latitude: value.latitude,
+                              longitude: value.longitude,
+                            },
+                            exParam: true,
+                          },
+                        });
+                      }
+                    }}
                     style={{
-                      backgroundColor: "#F6F6F6",
-                      marginLeft: 10,
-                      width: Dimensions.get("window").width - 40,
+                      height: Dimensions.get("window").width * 0.24,
+                      width: Dimensions.get("window").width - 20,
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      marginBottom: 10,
                     }}
                   >
-                    <TouchableOpacity
-                      key={i + item.name}
-                      onPress={() => {
-                        if (value.type == "province") {
-                          props.navigation.navigate("CountryStack", {
-                            screen: "Province",
-                            params: {
-                              data: value,
-                              exParam: true,
-                            },
-                          });
-                        } else {
-                          props.navigation.navigate("CountryStack", {
-                            screen: "CityDetail",
-                            params: {
-                              data: {
-                                city_id: value.id,
-                                city_name: value.name,
-                                latitude: value.latitude,
-                                longitude: value.longitude,
-                              },
-                              exParam: true,
-                            },
-                          });
-                        }
-                      }}
+                    <View
                       style={{
                         height: Dimensions.get("window").width * 0.24,
-                        width: Dimensions.get("window").width - 20,
 
-                        flex: 1,
-
-                        flexDirection: "row",
+                        width: (Dimensions.get("window").width - 20) / 2,
                       }}
                     >
-                      <View
+                      <FunImage
+                        key={value.id}
+                        source={
+                          value.cover ? { uri: value.cover } : default_image
+                        }
                         style={{
-                          justifyContent: "center",
+                          width: (Dimensions.get("window").width - 20) / 2,
+                          height: Dimensions.get("window").width * 0.24,
                         }}
-                      >
-                        <FunImage
-                          key={value.id}
-                          source={
-                            value.cover ? { uri: value.cover } : default_image
-                          }
-                          style={{
-                            width: (Dimensions.get("window").width - 270) / 2,
-                            height: (Dimensions.get("window").width - 270) / 2,
-                            borderRadius: 5,
-                            marginHorizontal: 10,
-                            marginVertical: 10,
-                          }}
-                          imageStyle={[
-                            styles.Image,
-                            {
-                              width: (Dimensions.get("window").width - 270) / 2,
-                              height:
-                                (Dimensions.get("window").width - 270) / 2,
-                              borderRadius: 5,
-                              marginHorizontal: 10,
-                              marginVertical: 10,
-                            },
-                          ]}
-                        ></FunImage>
-                      </View>
+                        imageStyle={[
+                          styles.Image,
+                          {
+                            width: (Dimensions.get("window").width - 20) / 2,
+                            height: Dimensions.get("window").width * 0.24,
+                          },
+                        ]}
+                      ></FunImage>
+                    </View>
+                    <View
+                      style={{
+                        width: (Dimensions.get("window").width - 20) / 2,
+                        height: Dimensions.get("window").width * 0.24,
 
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          width: "70%",
-                          paddingVertical: 5,
-
-                          paddingHorizontal: 10,
-                        }}
-                      >
-                        <Text
-                          type="bold"
-                          size="title"
-                          style={{ color: "#209FAE" }}
-                        >
+                        paddingVertical: 5,
+                        paddingHorizontal: 10,
+                      }}
+                    >
+                      <View>
+                        <Text type="bold" size="title" style={{}}>
                           <Truncate
                             text={Capital({
                               text: value.name,
@@ -441,23 +354,15 @@ export default function AllDestination(props) {
                             length={20}
                           />
                         </Text>
-                        <Text
-                          type="regular"
-                          size="label"
-                          style={{ marginTop: 5 }}
-                        >
-                          {value.description_type}
+                        <Text type="" size="label" style={{}}>
+                          {rupiah(value.count_destination)} {t("destination")}
+                        </Text>
+                        <Text type="" size="label" style={{}}>
+                          {rupiah(value.count_plan_tour)} {t("trip")}
                         </Text>
                       </View>
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        borderBottomColor: "#dedede",
-                        borderBottomWidth: 1,
-                        marginHorizontal: 15,
-                      }}
-                    />
-                  </View>
+                    </View>
+                  </TouchableOpacity>
                 );
               })
             : null}
@@ -470,7 +375,7 @@ export default function AllDestination(props) {
     <View
       style={{
         flex: 1,
-        // backgroundColor: "white",
+        backgroundColor: "white",
       }}
     >
       <View
@@ -802,10 +707,9 @@ export default function AllDestination(props) {
 
       <FlatList
         contentContainerStyle={{
-          marginVertical: 50,
+          marginTop: 50,
           justifyContent: "space-evenly",
           paddingStart: 10,
-          paddingBottom: Platform.OS === "ios" ? 0 : 60,
         }}
         horizontal={false}
         data={dataResult ? dataResult.populer_city_destination_v2 : null}
