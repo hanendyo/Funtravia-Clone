@@ -185,7 +185,7 @@ export default function ImageSlide({
                 >
                   <Image
                     style={{
-                      resizeMode: "contain",
+                      // resizeMode: "contain",
                       height: 15,
                       width: 15,
                       marginRight: 5,

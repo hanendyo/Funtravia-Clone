@@ -221,7 +221,7 @@ export default function Register({ navigation }) {
           customStyle={{
             height: 180,
             width: 180,
-            marginTop: 30,
+            marginTop: Platform.OS === "ios" ? 30 : 50,
             alignSelf: "flex-start",
           }}
         />

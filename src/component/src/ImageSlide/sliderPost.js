@@ -37,16 +37,18 @@ export default function ImageSlide({
   let [paused, setPaused] = useState(true);
   let [muted, setMuted] = useState(false);
 
-  const handel_select = async (index) => {
-    var tempdata = [...slider];
-    for (var x of tempdata) {
-      x.selected = false;
-    }
-    tempdata[index].selected = true;
-    setSlider([]);
-    await setIn(index);
-    await setSlider(tempdata);
-  };
+  console.log("dataImage :", dataImage);
+  //BUG handel_select
+  // const handel_select = async (index) => {
+  //   var tempdata = [...slider];
+  //   for (var x of tempdata) {
+  //     x.selected = false;
+  //   }
+  //   tempdata[index].selected = true;
+  //   setSlider([]);
+  //   await setIn(index);
+  //   await setSlider(tempdata);
+  // };
 
   const handel_next = async () => {
     if (inde < slider.length - 1) {
@@ -75,6 +77,9 @@ export default function ImageSlide({
         dataImage && dataImage.length > 0 ? setSlider(dataImage) : null;
         index ? setIn(index) : null;
       }}
+      backdropTransitionInTiming={300}
+      backdropTransitionOutTiming={300}
+      disable
       animationIn="slideInRight"
       animationOut="slideOutRight"
       isVisible={show}
@@ -142,7 +147,10 @@ export default function ImageSlide({
         </View>
         {slider.length > 0 ? (
           <ImageViewer
-            renderIndicator={() => <View></View>}
+            enableSwipeDown={true}
+            onSwipeDown={() => {
+              setSlider([]), setClose(), setIn(0);
+            }}
             renderArrowLeft={() => {
               return slider.length > 1 ? (
                 <TouchableOpacity
@@ -201,7 +209,7 @@ export default function ImageSlide({
             }}
             saveToLocalByLongPress={false}
             imageUrls={slider}
-            onChange={(index) => handel_select(index)}
+            // onChange={(index) => handel_select(index)}
             index={inde}
             renderImage={(data) => {
               // console.log("data", data);

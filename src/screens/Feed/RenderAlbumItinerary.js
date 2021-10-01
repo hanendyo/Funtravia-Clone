@@ -177,7 +177,7 @@ export default function RenderAlbum({
                 {
                   position: "absolute",
                   top: 15,
-                  right: 70,
+                  right: 10,
                   backgroundColor: "#040404",
                   opacity: pressed ? 1 : 0.8,
                   //   paddingHorizontal: 15,
@@ -203,10 +203,10 @@ export default function RenderAlbum({
             style={{
               position: "absolute",
               top: 15,
-              right: 10,
+              right: 60,
               backgroundColor: "#040404",
               opacity: 0.8,
-              paddingHorizontal: 15,
+              paddingHorizontal: 10,
               borderRadius: 14,
               height: 28,
               justifyContent: "center",
@@ -214,7 +214,7 @@ export default function RenderAlbum({
               flexDirection: "row",
             }}
           >
-            <AllPostWhite width={13} height={13} />
+            {/* <AllPostWhite width={13} height={13} /> */}
             <Text
               type="bold"
               style={{
@@ -222,7 +222,7 @@ export default function RenderAlbum({
                 marginLeft: 5,
               }}
             >
-              {data.assets.length}
+              {indexAktif + 1} {"/"} {data.assets.length}
             </Text>
           </View>
         </FunImageBackground>

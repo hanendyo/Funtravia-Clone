@@ -50,7 +50,7 @@ const PostEdit = gql`
 export default function EditPost(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
-    title: "New Post",
+    title: t("newPost"),
     headerTintColor: "white",
     headerTitle: "",
     headerTransparent: true,
