@@ -23,6 +23,7 @@ export default function AddCommentLike({
   fetchData,
   listComments,
   setting,
+  setModalShare,
 }) {
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
@@ -323,7 +324,8 @@ export default function AddCommentLike({
       </View>
       {keyboardStatus == false ? (
         <TouchableOpacity
-          onPress={() => shareAction({ from: "journal", target: dataList.id })}
+          // onPress={() => shareAction({ from: "journal", target: dataList.id })}
+          onPress={() => setModalShare(true)}
         >
           <View
             style={{

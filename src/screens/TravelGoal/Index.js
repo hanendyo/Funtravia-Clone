@@ -31,7 +31,7 @@ export default function TravelGoal(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" style={{ fontSize: normalize(18), color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("travelgoals")}
       </Text>
     ),

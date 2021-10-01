@@ -12,9 +12,14 @@ import {
   Animated,
   Platform,
   StatusBar,
+  Modal as ModalRN,
 } from "react-native";
-
-import { CustomImage, Truncate, StatusBar as Satbar } from "../../component";
+import {
+  CustomImage,
+  Truncate,
+  StatusBar as Satbar,
+  CopyLink,
+} from "../../component";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import LinearGradient from "react-native-linear-gradient";
@@ -43,6 +48,7 @@ import {
   Arrowbackios,
   Kalenderhijau,
   Jamhijau,
+  Xgray,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Text, Button, shareAction, FunImageBackground } from "../../component";
@@ -55,6 +61,7 @@ import AutoHeightImage from "react-native-auto-height-image";
 
 export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
+  let [modalShare, setModalShare] = useState(false);
   const yOffset = useRef(new Animated.Value(0)).current;
   const headerOpacity = yOffset.interpolate({
     inputRange:
@@ -770,6 +777,131 @@ export default function EventDetail(props) {
         width: Dimensions.get("screen").width,
       }}
     >
+      <ModalRN
+        useNativeDriver={true}
+        visible={modalShare}
+        onRequestClose={() => setModalShare(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalShare(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalShare(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                props.navigation.navigate("SendEvent", {
+                  params: { dataEvent: dataevent },
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("Send")}...
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                shareAction({
+                  from: "event",
+                  target: dataevent.id,
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("shareTo")}...
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                CopyLink({
+                  from: "event",
+                  target: dataevent.id,
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("copyLink")}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </ModalRN>
       <Satbar backgroundColor="#14646E" />
       <View
         style={{
@@ -851,7 +983,6 @@ export default function EventDetail(props) {
               justifyContent: "space-between",
             }}
           >
-            {/* name & category event */}
             <View
               style={{
                 width: "80%",
@@ -887,7 +1018,6 @@ export default function EventDetail(props) {
                   size="title"
                   type="bold"
                   style={{
-                    // fontFamily: "Lato-Bold",
                     fontSize: 18,
                   }}
                 >
@@ -895,13 +1025,11 @@ export default function EventDetail(props) {
                 </Text>
               </View>
             </View>
-
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 alignContent: "flex-end",
-
                 width: "20%",
               }}
             >
@@ -942,12 +1070,7 @@ export default function EventDetail(props) {
                 }}
               >
                 <Button
-                  onPress={() =>
-                    shareAction({
-                      from: "event",
-                      target: dataevent.id,
-                    })
-                  }
+                  onPress={() => setModalShare(true)}
                   type="circle"
                   size="small"
                   style={{
