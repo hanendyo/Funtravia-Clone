@@ -5,6 +5,7 @@ import {
   Pressable,
   Dimensions,
   TouchableOpacity,
+  TouchableHighlight,
   SafeAreaView,
   Modal,
 } from "react-native";
@@ -117,6 +118,7 @@ export default function ImageSlide({ aler, setClose }) {
           </View>
           <Pressable
             onPress={() => setClose()}
+            underlayColor="#F6F6F6"
             style={{
               width: Dimensions.get("screen").width - 100,
               backgroundColor: "white",

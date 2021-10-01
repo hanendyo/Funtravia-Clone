@@ -613,7 +613,6 @@ export default function ActivePlan({
                       <Text
                         style={{ marginLeft: 3, fontSize: 12 }}
                         type="regular"
-                        style={{ marginLeft: 3 }}
                       >
                         {item?.city?.name}
                       </Text>
@@ -624,6 +623,7 @@ export default function ActivePlan({
                       // borderWidth: 1,
                       width: "100%",
                       flexDirection: "row",
+                      alignItems: "center",
                       justifyContent: "space-between",
                     }}
                   >
@@ -635,8 +635,8 @@ export default function ActivePlan({
                       }}
                     >
                       <Calendargrey
-                        width={13}
-                        height={13}
+                        width={12}
+                        height={12}
                         style={{ marginRight: 5 }}
                       />
                       {item.start_date && item.end_date

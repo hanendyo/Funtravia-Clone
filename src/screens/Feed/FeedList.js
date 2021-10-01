@@ -12,7 +12,6 @@ import {
   Pressable,
   SafeAreaView,
   Modal,
-  ProgressBarAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -24,6 +23,8 @@ import {
   Xgray,
   AcceptNotif,
   Errorr,
+  Errors,
+  Errorx,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -182,6 +183,7 @@ export default function FeedList({ props, token }) {
         },
       });
       console.log("response", response);
+
       // if (errorMutationPost) {
       //   RNToasty({
       //     duration: 1,
@@ -1371,11 +1373,13 @@ export default function FeedList({ props, token }) {
             <>
               <Progress.Circle
                 size={40}
-                indeterminate={true}
+                // indeterminate={true}
                 color={"#209fae"}
-                borderWidth="2"
+                progres={0.4}
+                borderWidth={2}
                 direction="clockwise"
-                style={{ marginVertical: 20 }}
+                showsText={true}
+                // style={{ marginVertical: 20 }}
               />
               <Text style={{ marginLeft: 15 }} size="label" type="regular">
                 {t("uploading")}
@@ -1401,12 +1405,135 @@ export default function FeedList({ props, token }) {
             width: Dimensions.get("screen").width - 20,
             marginHorizontal: 10,
             borderRadius: 5,
+            marginTop: 10,
             paddingHorizontal: 15,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
+          {/* <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                position: "absolute",
+                left: 10,
+                width: 40,
+                height: 40,
+                borderRadius: 40,
+                backgroundColor: "#DAF0F2",
+              }}
+            />
+            <Progress.Circle
+              size={60}
+              color={"#209fae"}
+              progress={0.3}
+              indeterminateAnimationDuration={500}
+              borderWidth={6}
+              thickness={5}
+              borderColor={"#DAF0F2"}
+              direction="clockwise"
+              showsText={true}
+              textStyle={{
+                fontSize: 14,
+                fontFamily: "Lato-Regular",
+                fontWeight: "bold",
+              }}
+              strokeCap={"square"}
+              style={{ marginVertical: 10 }}
+            />
+            <View style={{ marginLeft: 10 }}>
+              <Text type={"bold"} size={"label"}>
+                Uploading photo
+              </Text>
+              <Text>1 / 7 photos</Text>
+            </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: "#F6F6F6",
+              width: 22,
+              height: 22,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 20,
+              borderColor: "#E9E9E9",
+              borderWidth: 1,
+            }}
+          >
+            <Xgray width={12} height={12} />
+          </View> */}
+          {/* //UPLOAD Failed */}
+          {/* <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              position: "absolute",
+              left: 10,
+              width: 40,
+              height: 40,
+              borderRadius: 40,
+              backgroundColor: "#F2DAE6",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Errors width={20} height={20} />
+          </View>
+          <Progress.Circle
+            size={60}
+            color={"#D75995"}
+            progress={0.3}
+            indeterminateAnimationDuration={500}
+            borderWidth={6}
+            thickness={5}
+            borderColor={"#F2DAE6"}
+            direction="clockwise"
+            // showsText={true}
+            textStyle={{
+              fontSize: 14,
+              fontFamily: "Lato-Regular",
+              fontWeight: "bold",
+            }}
+            strokeCap={"square"}
+            style={{ marginVertical: 10 }}
+          />
+          <View style={{ marginLeft: 10 }}>
+            <Text type={"bold"} size={"label"}>
+              Failed uploading photo
+            </Text>
+            <View style={{ flexDirection: "row", marginTop: 3 }}>
+              <Text>1 / 7 photos</Text>
+              <Pressable style={{ marginLeft: 5 }}>
+                <Text style={{ color: "#209FAE" }}>Reupload</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            backgroundColor: "#F6F6F6",
+            width: 22,
+            height: 22,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 20,
+            borderColor: "#E9E9E9",
+            borderWidth: 1,
+          }}
+        >
+          <Xgray width={12} height={12} />
+        </View> */}
           {uploadFailed ? (
             <>
               <View style={{ flexDirection: "row", alignItems: "center" }}>

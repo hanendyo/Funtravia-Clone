@@ -158,7 +158,7 @@ export default function BottomNavigationItems(props) {
         options={{
           // headerShown: false,
           // headerTransparent: true,
-          tabBarLabel: "Feed",
+          tabBarLabel: t("feed"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <FeedOn width="20" height="22" />

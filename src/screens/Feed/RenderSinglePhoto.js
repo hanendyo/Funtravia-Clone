@@ -73,7 +73,7 @@ export default function RenderSinglePhoto({
                   : data.media_orientation == "P"
                   ? P
                   : S,
-              borderRadius: 15,
+              borderRadius: 10,
             }}
             // resizeMode={oriented === "portrait" ? "cover" : "contain"}
             resizeMode={"cover"}

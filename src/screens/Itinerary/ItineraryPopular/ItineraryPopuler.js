@@ -85,8 +85,8 @@ export default function ItineraryPopuler(props) {
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-    shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-    elevation: Platform.OS == "ios" ? 3 : 3.5,
+    shadowRadius: Platform.OS == "ios" ? 2.22 : 1,
+    elevation: Platform.OS == "ios" ? 3 : 2.5,
   };
 
   console.log(token);
@@ -520,33 +520,39 @@ export default function ItineraryPopuler(props) {
           style={{
             flex: 1,
             width: Dimensions.get("screen").width,
-            paddingTop: 15,
+            paddingTop: 5,
           }}
         >
           <FlatList
             data={list_populer}
             keyExtractor={(item) => item.id}
+            contentContainerStyle={{
+              justifyContent: "space-evenly",
+              marginBottom: 10,
+            }}
             renderItem={({ item, index }) => (
               <View
                 style={{
-                  height: 200,
+                  height: 167,
                   paddingHorizontal: 15,
-                  marginTop: 5,
+                  marginTop: 10,
                 }}
               >
                 <View
                   style={{
                     borderRadius: 5,
+                    borderWidth: 1,
+                    borderColor: "#d1d1d1",
                     shadowOffset: { width: 0, height: 1 },
                     shadowOpacity: arrayShadow.shadowOpacity,
                     shadowRadius: arrayShadow.shadowRadius,
                     elevation: arrayShadow.elevation,
                     justifyContent: "space-between",
-                    backgroundColor: "#f6f6f6",
+                    backgroundColor: "#fff",
                     overflow: "hidden",
                   }}
                 >
-                  <Pressable
+                  <Ripple
                     onPress={() =>
                       props.navigation.navigate("ItineraryStack", {
                         screen: "itindetail",
@@ -561,11 +567,13 @@ export default function ItineraryPopuler(props) {
                     }
                     style={{
                       backgroundColor: "#FFFFFF",
-                      height: "77%",
+                      height: "75%",
                       borderTopLeftRadius: 5,
                       borderTopRightRadius: 5,
+                      shadowOpacity: arrayShadow.shadowOpacity,
+                      shadowRadius: arrayShadow.shadowRadius,
+                      elevation: arrayShadow.elevation,
                       flexDirection: "row",
-                      zIndex: -1,
                     }}
                   >
                     <Pressable
@@ -589,7 +597,7 @@ export default function ItineraryPopuler(props) {
                         }
                         style={{
                           height: "100%",
-                          width: Dimensions.get("screen").width * 0.37,
+                          width: Dimensions.get("screen").width * 0.35,
                           borderTopLeftRadius: 5,
                         }}
                       />
@@ -605,11 +613,11 @@ export default function ItineraryPopuler(props) {
                       >
                         <Image
                           style={{
-                            height: 32,
-                            width: 32,
-                            borderRadius: 16,
+                            height: 30,
+                            width: 30,
+                            borderRadius: 15,
                             borderWidth: 1,
-                            borderColor: "rgba(52, 52, 52, 0.75)",
+                            borderColor: "#fff",
                             zIndex: 1,
                           }}
                           source={
@@ -621,11 +629,12 @@ export default function ItineraryPopuler(props) {
                           }
                         />
                         <Text
-                          size="description"
-                          type="bold"
+                          size="small"
+                          type="regular"
                           style={{
                             zIndex: 0,
-                            paddingLeft: 5,
+                            paddingLeft: 10,
+                            paddingRight: 5,
                             backgroundColor: "rgba(0, 0, 0, 0.6)",
                             borderRadius: 2,
                             color: "white",
@@ -675,13 +684,13 @@ export default function ItineraryPopuler(props) {
                                 borderWidth: 1,
                                 borderRadius: 3,
                                 borderColor: "#209FAE",
-                                paddingHorizontal: 5,
+                                paddingHorizontal: 4,
+                                paddingVertical: 1,
                               }}
                             >
                               <Text
                                 type="bold"
-                                size="description"
-                                style={{ color: "#209FAE", paddingBottom: 3 }}
+                                style={{ color: "#209FAE", fontSize: 12 }}
                               >
                                 {item?.categori?.name
                                   ? item?.categori?.name
@@ -690,9 +699,9 @@ export default function ItineraryPopuler(props) {
                             </View>
                             <View
                               style={{
-                                height: 6,
-                                width: 6,
-                                borderRadius: 3,
+                                height: 5,
+                                width: 5,
+                                borderRadius: 5,
                                 marginHorizontal: 10,
                                 backgroundColor: "#000",
                               }}
@@ -728,7 +737,12 @@ export default function ItineraryPopuler(props) {
                         <Text
                           size="title"
                           type="black"
-                          style={{ marginTop: 5 }}
+                          style={{
+                            // marginTop: Platform.OS === "ios" ? 5 : 3,
+                            marginLeft: 2,
+                            // fontSize: 14,
+                            fontWeight: "bold",
+                          }}
                           numberOfLines={2}
                         >
                           {item.name}
@@ -737,22 +751,20 @@ export default function ItineraryPopuler(props) {
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
-                            marginTop: 5,
+                            marginTop: Platform.OS === "ios" ? 5 : 3,
                           }}
                         >
                           <PinHijau width={13} height={13} />
                           <Text
-                            style={{ marginLeft: 5 }}
-                            size="description"
+                            style={{ marginLeft: 5, fontSize: 12 }}
                             type="regular"
                           >
                             {item?.country?.name}
                           </Text>
                           <Text>,</Text>
                           <Text
-                            size="description"
                             type="regular"
-                            style={{ marginLeft: 3 }}
+                            style={{ marginLeft: 3, fontSize: 12 }}
                           >
                             {item?.city?.name}
                           </Text>
@@ -761,13 +773,15 @@ export default function ItineraryPopuler(props) {
                       <View
                         style={{
                           flexDirection: "row",
-                          marginTop: 20,
+                          justifyContent: "space-between",
+                          marginTop: 15,
                         }}
                       >
                         <View
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
+                            justifyContent: "center",
                             marginLeft: 3,
                             marginRight: 10,
                           }}
@@ -775,24 +789,21 @@ export default function ItineraryPopuler(props) {
                           <Calendargrey
                             width={12}
                             height={12}
-                            style={{ marginRight: 5 }}
+                            style={{
+                              marginRight: 5,
+                              // marginBottom: Platform.OS === "ios" ? 5 : 0,
+                            }}
                           />
 
-                          {item.start_date && item.end_date ? (
-                            <Text
-                              // style={{ marginLeft: 3 }}
-                              size="description"
-                              type="regular"
-                            >
-                              {getDN(item.start_date, item.end_date)}
-                            </Text>
-                          ) : null}
+                          {item.start_date && item.end_date
+                            ? getDN(item.start_date, item.end_date)
+                            : null}
                         </View>
                         <View
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
-                            // marginLeft: 10,
+                            marginRight: 10,
                           }}
                         >
                           <User
@@ -839,14 +850,16 @@ export default function ItineraryPopuler(props) {
                             </Text>
                           </View> */}
                     </View>
-                  </Pressable>
+                  </Ripple>
                   <View
                     style={{
-                      height: "20%",
+                      height: "25%",
                       flexDirection: "row",
-                      backgroundColor: "#FFFFFF",
-                      borderBottomLeftRadius: 10,
-                      borderBottomRightRadius: 10,
+                      backgroundColor: "#F6F6F6",
+                      borderBottomLeftRadius: 5,
+                      borderBottomRightRadius: 5,
+                      paddingVertical: 3,
+
                       justifyContent: "space-between",
                     }}
                   >
@@ -1123,6 +1136,7 @@ export default function ItineraryPopuler(props) {
             paddingHorizontal: 15,
             alignContent: "center",
             marginTop: 10,
+            // marginBottom: 5,
           }}
         >
           <FlatList
@@ -1522,14 +1536,14 @@ export default function ItineraryPopuler(props) {
           paddingTop: 15,
         }}
       >
-        {actives == "Itinerary" ? (
+        {actives === "Itinerary" || actives === "Album" ? (
           <Text size="title" type="bold" style={{ marginLeft: 20 }}>
             {t("CategoryItin")}
           </Text>
         ) : null}
 
         <View style={{ backgroundColor: "#fff" }}>
-          {actives == "Itinerary" ? (
+          {actives === "Itinerary" || actives === "Album" ? (
             <FlatList
               data={dataCategory?.category_journal}
               horizontal={true}
@@ -1599,11 +1613,7 @@ export default function ItineraryPopuler(props) {
               showsVerticalScrollIndicator={false}
             />
           ) : null}
-          <View
-            style={{
-              marginTop: actives == "Itinerary" ? 0 : -15,
-            }}
-          >
+          <View>
             <View
               style={{
                 width: Dimensions.get("screen").width,

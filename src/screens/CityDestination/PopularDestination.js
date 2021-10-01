@@ -802,9 +802,10 @@ export default function AllDestination(props) {
 
       <FlatList
         contentContainerStyle={{
-          marginTop: 50,
+          marginVertical: 50,
           justifyContent: "space-evenly",
           paddingStart: 10,
+          paddingBottom: Platform.OS === "ios" ? 0 : 60,
         }}
         horizontal={false}
         data={dataResult ? dataResult.populer_city_destination_v2 : null}

@@ -260,7 +260,10 @@ export default function DetailJournal(props) {
     });
   };
 
+  console.log("data journal:", data?.journal_byid?.created_at);
+
   const duration = (datetime) => {
+    datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
     var datenow = new Date();
     var date2 = datenow.getTime();
