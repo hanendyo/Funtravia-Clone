@@ -46,7 +46,13 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [token, setToken] = useState(null);
-  const socket = io(CHATSERVER);
+  // const socket = io(CHATSERVER);
+  const socket = io(CHATSERVER, {
+    withCredentials: true,
+    extraHeaders: {
+      Authorization: token,
+    },
+  });
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
   let flatListRef = useRef();
