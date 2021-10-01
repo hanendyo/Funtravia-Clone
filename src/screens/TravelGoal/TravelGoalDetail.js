@@ -40,12 +40,19 @@ import Traveldetails from "../../graphQL/Query/TravelGoal/Traveldetail";
 import Travelrelateds from "../../graphQL/Query/TravelGoal/TravelRelated";
 
 export default function TravelGoalDetail(props) {
+  const { t, i18n } = useTranslation();
+  let [datadetail, setdatadetail] = useState({});
+  let [modalShare, setModalShare] = useState(false);
+  let [datarelated, setdatarelated] = useState([]);
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Goal",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Travel Goal",
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        {t("travelgoals")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -81,10 +88,6 @@ export default function TravelGoalDetail(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
-  let [datadetail, setdatadetail] = useState({});
-  let [modalShare, setModalShare] = useState(false);
-  let [datarelated, setdatarelated] = useState([]);
 
   const [
     Traveldetail,
@@ -256,16 +259,14 @@ export default function TravelGoalDetail(props) {
               style={{
                 alignItems: "center",
                 borderBottomWidth: 1,
-                // height: 50,
                 borderColor: "#d1d1d1",
               }}
-              // onPress={() => {
-              //   setModalShare(false);
-              //   props.navigation.navigate("TravelIdeaStack", {
-              //     screen: "SendMovie",
-              //     params: { movie: movie_byid },
-              //   });
-              // }}
+              onPress={() => {
+                setModalShare(false);
+                props.navigation.navigate("SendTravelGoals", {
+                  params: { dataGoal: datadetail },
+                });
+              }}
             >
               <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("Send")}...

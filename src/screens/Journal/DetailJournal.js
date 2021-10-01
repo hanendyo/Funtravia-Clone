@@ -8,9 +8,16 @@ import {
   ActivityIndicator,
   Keyboard,
   StatusBar,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Button, StatusBar as StaBar } from "../../component";
+import {
+  Text,
+  Button,
+  StatusBar as StaBar,
+  shareAction,
+  CopyLink,
+} from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
@@ -18,6 +25,7 @@ import {
   Arrowbackwhite,
   LikeEmpty,
   PanahBulat,
+  Xgray,
 } from "../../assets/svg";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Truncate, Loading } from "../../component";
@@ -40,6 +48,7 @@ const SafeStatusBar = Platform.select({
 });
 
 export default function DetailJournal(props) {
+  let [modalShare, setModalShare] = useState(false);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();
@@ -446,6 +455,132 @@ export default function DetailJournal(props) {
             : 0,
       }}
     >
+      <Modal
+        useNativeDriver={true}
+        visible={modalShare}
+        onRequestClose={() => setModalShare(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalShare(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalShare(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                props.navigation.navigate("JournalStackNavigation", {
+                  screen: "SendJournal",
+                  params: { dataJournal: data?.journal_byid },
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("Send")}...
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                shareAction({
+                  from: "journal",
+                  target: data?.journal_byid?.id,
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("shareTo")}...
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => {
+                setModalShare(false);
+                CopyLink({
+                  from: "journal",
+                  target: data?.journal_byid?.id,
+                });
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("copyLink")}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       {data && data.journal_byid ? (
         <ScrollView ref={slider} showsVerticalScrollIndicator={false}>
           <View
@@ -972,6 +1107,7 @@ export default function DetailJournal(props) {
           fetchData={(e) => fetchData(e)}
           listComments={() => afterComment()}
           setting={setting}
+          setModalShare={(e) => setModalShare(e)}
         />
       ) : null}
     </View>

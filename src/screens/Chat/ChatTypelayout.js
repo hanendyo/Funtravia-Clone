@@ -732,10 +732,201 @@ export default function ChatTypelayout({
       return null;
     }
   }
+  // travel goal layout
+  if (item.type == "tag_travel_goal") {
+    let data = JSON.parse(item.text);
+    console.log("data travel", data);
+    return (
+      <Pressable
+        // onPress={() => {
+        //   navigation.navigate("TravelIdeaStack", {
+        //     screen: "Detail_movie",
+        //     params: {
+        //       movie_id: data.id,
+        //     },
+        //   });
+        // }}
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              // width: Dimensions.get("screen").width - 200,
+              padding: 10,
+              // justifyContent: "center",
+            }}
+          >
+            <Text size="small" type="regular">
+              Movie Location
+            </Text>
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={3}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 18, padding: 10 }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
+  // event layout
+  if (item.type == "tag_travel_goal") {
+    let data = JSON.parse(item.text);
+    console.log("data travel", data);
+    return (
+      <Pressable
+        // onPress={() => {
+        //   navigation.navigate("TravelIdeaStack", {
+        //     screen: "Detail_movie",
+        //     params: {
+        //       movie_id: data.id,
+        //     },
+        //   });
+        // }}
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              // width: Dimensions.get("screen").width - 200,
+              padding: 10,
+              // justifyContent: "center",
+            }}
+          >
+            <Text size="small" type="regular">
+              Movie Location
+            </Text>
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={3}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 18, padding: 10 }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
+  // journal layout
+  if (item.type == "tag_travel_goal") {
+    let data = JSON.parse(item.text);
+    console.log("data travel", data);
+    return (
+      <Pressable
+        // onPress={() => {
+        //   navigation.navigate("TravelIdeaStack", {
+        //     screen: "Detail_movie",
+        //     params: {
+        //       movie_id: data.id,
+        //     },
+        //   });
+        // }}
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              // width: Dimensions.get("screen").width - 200,
+              padding: 10,
+              // justifyContent: "center",
+            }}
+          >
+            <Text size="small" type="regular">
+              Movie Location
+            </Text>
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={3}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 18, padding: 10 }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
   // movie layout
   if (item.type == "tag_movie") {
     let data = JSON.parse(item.text);
-    console.log("data movie", data);
     return (
       <Pressable
         onPress={() => {
