@@ -26,6 +26,8 @@ import {
 } from "../../assets/svg";
 import { Text } from "../../component";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
+import normalize from "react-native-normalize";
 
 const Home = createStackNavigator();
 function HomeStack(props) {
@@ -116,6 +118,8 @@ function MyAccountStackScreen() {
 
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
+  const { t, i18n } = useTranslation();
+
   return (
     <MainNavigator.Navigator
       initialRouteName="HomeBottomScreen"
@@ -125,7 +129,7 @@ export default function BottomNavigationItems(props) {
         headerTransparent: true,
         labelStyle: {
           fontFamily: "Lato-Regular",
-          fontSize: 12,
+          fontSize: normalize(12),
           marginBottom: 2.5,
         },
         style: {
@@ -138,7 +142,7 @@ export default function BottomNavigationItems(props) {
         component={HomeStack}
         initialParams={{ token: props.route.params.token }}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: t("home"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <HomeOn width="20" height="22" />
@@ -169,7 +173,7 @@ export default function BottomNavigationItems(props) {
         initialParams={{ token: props.route.params.token }}
         options={{
           tabBarVisible: false,
-          tabBarLabel: "Trip Planner",
+          tabBarLabel: t("trip"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Itinerary width="25" height="25" />
@@ -194,7 +198,7 @@ export default function BottomNavigationItems(props) {
         name="ChatBottomScreen"
         component={Chatstackscreen}
         options={{
-          tabBarLabel: "Message",
+          tabBarLabel: t("Message"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <ChatOn width="20" height="22" />
@@ -207,7 +211,7 @@ export default function BottomNavigationItems(props) {
         name="AccountBottomScreen"
         component={MyAccountStackScreen}
         options={{
-          tabBarLabel: "Account",
+          tabBarLabel: t("account"),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <ProfileOn width="20" height="22" />

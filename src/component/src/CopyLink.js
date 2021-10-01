@@ -11,6 +11,7 @@ export default async function CopyLink({ from, target }) {
       Accept: "application/json",
       "Content-Type": "application/json",
     });
+    console.log("response", response);
     let dataResponse = await response.json();
     Clipboard.setString(dataResponse.result.link);
     RNToasty.Normal({

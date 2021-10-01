@@ -50,6 +50,7 @@ import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
 
 export default function Post(props) {
+  console.log("props", props);
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
@@ -249,7 +250,6 @@ export default function Post(props) {
           album: props.route.params.album,
         },
       });
-      
 
       // for (var i = 0; i < checklistVideo.length; i++) {
       //   RNFetchBlob.fs
@@ -279,7 +279,6 @@ export default function Post(props) {
     }
   };
 
-  
   useEffect(() => {
     (async () => {
       await getAlbumRoll();

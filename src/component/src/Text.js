@@ -63,17 +63,21 @@ const fontType = StyleSheet.create({
   light: {
     fontFamily: "Lato-Light",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
   regular: {
     fontFamily: "Lato-Regular",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
   bold: {
     fontFamily: "Lato-Bold",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
   black: {
     fontFamily: "Lato-Black",
     color: "#464646",
+    // letterSpacing: 0.4,
   },
 });

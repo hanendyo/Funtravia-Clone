@@ -10,6 +10,7 @@ import { TravelJournal, DestinationHome, EventHome } from "../../assets/svg";
 import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import LinearGradient from "react-native-linear-gradient";
+import normalize from "react-native-normalize";
 
 export default function MenuNew({ props }) {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ export default function MenuNew({ props }) {
     >
       <View
         style={{
-          width: (width - 40) / 3,
+          width: (width - 20) / 3,
           alignItems: "center",
         }}
       >
@@ -37,22 +38,22 @@ export default function MenuNew({ props }) {
           style={styles.menu}
           onPress={() => props.navigation.navigate("DestinationMaps")}
         >
-          <DestinationHome width="55" height="55" />
+          <DestinationHome width={normalize(50)} height={normalize(50)} />
         </TouchableOpacity>
         <Text
-          type="bold"
-          size="description"
+          type="regular"
+          size="label"
           style={{
-            marginTop: Platform.OS === "ios" ? 0 : -4,
+            marginTop: Platform.OS === "ios" ? 5 : -9,
             textAlign: "center",
           }}
         >
-          {t("Destination")}
+          {t("destination")}
         </Text>
       </View>
       <View
         style={{
-          width: (width - 40) / 3,
+          width: (width - 20) / 3,
           alignItems: "center",
         }}
       >
@@ -60,41 +61,40 @@ export default function MenuNew({ props }) {
           style={styles.menu}
           onPress={() => props.navigation.navigate("listEventHome")}
         >
-          <EventHome width="55" height="55" />
+          <EventHome width={normalize(50)} height={normalize(50)} />
         </TouchableOpacity>
         <Text
-          type="bold"
-          size="description"
+          type="regular"
+          size="label"
           style={{
-            marginTop: Platform.OS === "ios" ? 0 : -4,
+            marginTop: Platform.OS === "ios" ? 5 : -9,
             textAlign: "center",
           }}
         >
-          {t("Event")}
+          {t("event")}
         </Text>
       </View>
       <View
         style={{
-          width: (width - 40) / 3,
+          width: (width - 20) / 3,
           alignItems: "center",
-          //   borderWidth: 1,
         }}
       >
         <TouchableOpacity
           style={styles.menu}
           onPress={() => props.navigation.navigate("TravelGoal")}
         >
-          <TravelJournal width="55" height="55" />
+          <TravelJournal width={normalize(50)} height={normalize(50)} />
         </TouchableOpacity>
         <Text
-          type="bold"
-          size="description"
+          type="regular"
+          size="label"
           style={{
-            marginTop: Platform.OS === "ios" ? 0 : -4,
+            marginTop: Platform.OS === "ios" ? 5 : -9,
             textAlign: "center",
           }}
         >
-          {t("Travel Goals")}
+          {t("travelgoals")}
         </Text>
       </View>
     </LinearGradient>

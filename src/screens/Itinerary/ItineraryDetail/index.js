@@ -2959,6 +2959,9 @@ export default function ItineraryDetail(props) {
                   if (data.id === "camera") {
                     return (
                       <TouchableOpacity
+                        // onPress={() => {
+                        //   console.log("itineraryId", itineraryId);
+                        // }}
                         onPress={() => {
                           // // setidupload(item.id);
                           // setmodalAlbum(true);
@@ -2992,7 +2995,7 @@ export default function ItineraryDetail(props) {
                           marginBottom: 2.5,
                         }}
                       >
-                        <CameraIcon height={30} width={30} />
+                        <CameraIcon height={100} width={100} />
                       </TouchableOpacity>
                     );
                   } else {
@@ -3343,14 +3346,6 @@ export default function ItineraryDetail(props) {
                       id_album: item.id,
                       id_itin: itineraryId,
                       title_album: item.title,
-                      // token: token,
-                      // ratio: {
-                      //   width: 1,
-                      //   height: 1,
-                      //   index: 0,
-                      //   label: "S",
-                      // },
-                      // type: "image",
                       album: "Itinerary",
                     },
                   });
@@ -5590,8 +5585,8 @@ export default function ItineraryDetail(props) {
                 marginVertical: 2.5,
                 width: "100%",
                 height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
+                // borderBottomWidth: 1,
+                // borderBottomColor: "#d1d1d1",
                 borderRadius: 5,
                 flexDirection: "row",
                 paddingHorizontal: 20,

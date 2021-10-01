@@ -11,6 +11,8 @@ import {
   TouchableWithoutFeedback,
   TouchableHighlight,
 } from "react-native";
+import normalize from "react-native-normalize";
+
 import Ripple from "react-native-material-ripple";
 
 export default function Button({
@@ -133,25 +135,25 @@ export default function Button({
 
 const buttonSize = StyleSheet.create({
   small: {
-    height: 32,
+    height: normalize(32),
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
   },
   medium: {
-    height: 40,
+    height: normalize(40),
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
   },
   large: {
-    height: 48,
+    height: normalize(48),
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
   },
   small_light: {
-    height: 32,
+    height: normalize(32),
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
@@ -228,8 +230,8 @@ const fontColor = {
 };
 
 const fontSize = StyleSheet.create({
-  small: { fontSize: 10, fontFamily: "Lato-Bold" },
-  medium: { fontSize: 12, fontFamily: "Lato-Bold" },
-  large: { fontSize: 14, fontFamily: "Lato-Bold" },
-  small_light: { fontSize: 10, fontFamily: "Lato-Light" },
+  small: { fontSize: normalize(10), fontFamily: "Lato-Bold" },
+  medium: { fontSize: normalize(12), fontFamily: "Lato-Bold" },
+  large: { fontSize: normalize(14), fontFamily: "Lato-Bold" },
+  small_light: { fontSize: normalize(10), fontFamily: "Lato-Light" },
 });
