@@ -22,14 +22,19 @@ import TravelTops from "../../graphQL/Query/TravelGoal/TravelTop";
 import TravelPopulars from "../../graphQL/Query/TravelGoal/TravelPopular";
 import TravelNews from "../../graphQL/Query/TravelGoal/TravelNew";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import normalize from "react-native-normalize";
 
 export default function TravelGoal(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Goal",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Travel Goal",
+    headerTitle: (
+      <Text type="bold" style={{ fontSize: normalize(18), color: "#fff" }}>
+        {t("travelgoals")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -65,7 +70,6 @@ export default function TravelGoal(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

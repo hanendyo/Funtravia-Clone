@@ -165,7 +165,9 @@ export default function Register({ navigation }) {
   };
 
   const externalRegister = (index) => {
-    navigation.navigate(index);
+    setTimeout(() => {
+      navigation.navigate(index);
+    }, 1000);
   };
 
   const NavigationComponent = {

@@ -36,6 +36,7 @@ import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 import User_Post from "../../graphQL/Query/Profile/post";
 import { NotificationBlue, ArrowRightHome, SearchHome } from "../../assets/svg";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
@@ -189,7 +190,7 @@ export default function Home(props) {
     return (
       <View
         style={{
-          marginTop: 20,
+          marginTop: normalize(20),
           marginHorizontal: 20,
           flexDirection: "row",
           justifyContent: "space-between",
@@ -214,7 +215,7 @@ export default function Home(props) {
             ></View>
             <Text
               type="bold"
-              size="label"
+              size="title"
               style={{
                 alignSelf: "flex-start",
                 padding: 0,
@@ -226,9 +227,10 @@ export default function Home(props) {
           </View>
           <Text
             type="regular"
-            size="small"
+            size="description"
             style={{
               marginLeft: 10,
+              marginTop: 1,
             }}
           >
             {label}
@@ -242,7 +244,7 @@ export default function Home(props) {
               })
             }
             type="bold"
-            size="small"
+            size="description"
             style={{ color: "#209FAE" }}
           >
             {t("viewAll")}
@@ -255,24 +257,24 @@ export default function Home(props) {
   let [scrollY] = useState(new Animated.Value(0));
 
   const shadowBG = scrollY.interpolate({
-    inputRange: [0, height / 2],
+    inputRange: [0, height / 4],
     outputRange: [0, 0.5],
     extrapolate: "clamp",
   });
 
   const elevationBG = scrollY.interpolate({
-    inputRange: [0, height / 2],
+    inputRange: [0, height / 4],
     outputRange: [0, 3],
     extrapolate: "clamp",
   });
 
   const colorBG = scrollY.interpolate({
-    inputRange: [0, height / 2],
+    inputRange: [0, height / 4],
     outputRange: ["rgba(231, 247, 247, 255)", "rgba(255, 255, 255, 1)"],
   });
 
   const searchBG = scrollY.interpolate({
-    inputRange: [0, height / 2],
+    inputRange: [0, height / 4],
     outputRange: ["#FFF", "#F6F6F6"],
   });
 
@@ -313,14 +315,17 @@ export default function Home(props) {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingHorizontal: 20,
+              // paddingHorizontal: 20,
+              paddingLeft: 20,
+              paddingRight: 15,
               paddingTop: 10,
-              paddingBottom: 5,
+              paddingBottom: 10,
               backgroundColor: colorBG,
               shadowColor: "#464646",
               shadowOffset: { width: 1, height: 1 },
               shadowOpacity: shadowBG,
               elevation: elevationBG,
+              // borderWidth: 3,
             }}
           >
             <Animated.View
@@ -369,7 +374,11 @@ export default function Home(props) {
 
             <Pressable
               onPress={() => props.navigation.navigate("Notification")}
-              style={{ paddingLeft: Platform.OS === "ios" ? 10 : 5 }}
+              style={{
+                alignItems: "flex-end",
+                flex: 1,
+                // borderWidth: 1,
+              }}
             >
               <NotificationBlue
                 height={29}
@@ -439,8 +448,9 @@ export default function Home(props) {
         >
           <View
             style={{
-              width: width,
-              height: Platform.OS === "ios" ? ukuran + 25 : ukuran + 7,
+              width: Dimensions.get("screen").width,
+              // height: Platform.OS === "ios" ? ukuran + 25 : ukuran + 7,
+              height: Platform.OS === "ios" ? ukuran + 18 : ukuran,
               alignSelf: "flex-start",
               justifyContent: "flex-end",
               alignContent: "center",
@@ -451,7 +461,6 @@ export default function Home(props) {
           >
             <View
               style={{
-                position: "absolute",
                 bottom: -15,
               }}
             >
@@ -463,7 +472,7 @@ export default function Home(props) {
                   alignItems: "center",
                   alignSelf: "center",
                   justifyContent: "center",
-                  paddingVertical: 10,
+                  // paddingVertical: normalize(10),
                   marginBottom: Platform.OS === "ios" ? 15 : 5,
                 }}
               >
@@ -471,7 +480,7 @@ export default function Home(props) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    justifyContent: "flex-start",
+                    justifyContent: "center",
                     flexWrap: "wrap",
                   }}
                 >
@@ -493,9 +502,13 @@ export default function Home(props) {
                         <FunImage
                           style={{
                             width:
-                              Platform.OS === "ios" ? ukuran - 55 : ukuran - 60,
+                              Platform.OS === "ios"
+                                ? normalize(ukuran - 50)
+                                : normalize(ukuran - 55),
                             height:
-                              Platform.OS === "ios" ? ukuran - 55 : ukuran - 60,
+                              Platform.OS === "ios"
+                                ? normalize(ukuran - 50)
+                                : normalize(ukuran - 55),
                             borderRadius: 50,
                             resizeMode: "cover",
                           }}
@@ -532,7 +545,7 @@ export default function Home(props) {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text size="label" type="regular">
+                        <Text size="description" type="regular">
                           {data && data.username ? `@${data.username}` : null}
                         </Text>
                         <TouchableOpacity
@@ -545,7 +558,7 @@ export default function Home(props) {
                           }}
                         >
                           <Text
-                            size="label"
+                            size="description"
                             type="bold"
                             style={{
                               color: "#209FAE",
@@ -571,28 +584,22 @@ export default function Home(props) {
                         width: Dimensions.get("window").width - 35,
                         height: "100%",
                         padding: 3,
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <Text size="label" type="bold">
-                        {`${t("helloTraveler")},`}
-                      </Text>
-                      <Text
-                        style={{
-                          fontFamily: "Lato",
-                          fontSize: 18,
-                          fontWeight: "bold",
-                          color: "black",
-                          marginTop: 3,
-                        }}
-                      >
-                        {t("welcomeToFuntravia")}
-                      </Text>
+                      <View>
+                        <Text size="description" type="regular">
+                          {`${t("helloTraveler")},`}
+                        </Text>
+                        <Text size="title" type="bold">
+                          {t("welcomeToFuntravia")}
+                        </Text>
+                      </View>
                       <TouchableOpacity
                         onPress={() => login()}
                         style={{
-                          position: "absolute",
-                          right: 10,
-                          top: 10,
                           borderWidth: 1,
                           borderColor: "#209fae",
                           borderRadius: 3,
@@ -618,7 +625,7 @@ export default function Home(props) {
               <View
                 style={{
                   width: Dimensions.get("window").width - 40,
-                  height: Platform.OS === "ios" ? ukuran - 50 : ukuran - 53,
+                  height: Platform.OS === "ios" ? ukuran - 54 : ukuran - 57,
                   borderRadius: 3,
                   borderColor: "#209FAE",
                   borderWidth: 0.5,
@@ -674,7 +681,7 @@ export default function Home(props) {
                       >
                         <Text
                           size="label"
-                          type="black"
+                          type="bold"
                           style={styles.statNumber}
                         >
                           {data ? data.count_my_itinerary : "-"}
@@ -697,7 +704,7 @@ export default function Home(props) {
                       >
                         <Text
                           size="label"
-                          type="black"
+                          type="bold"
                           style={styles.statNumber}
                         >
                           {data ? data.count_follower : "-"}
@@ -720,7 +727,7 @@ export default function Home(props) {
                       >
                         <Text
                           size="label"
-                          type="black"
+                          type="bold"
                           style={styles.statNumber}
                         >
                           {data ? data.count_following : "-"}
