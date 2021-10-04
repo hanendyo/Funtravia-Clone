@@ -42,7 +42,11 @@ export default function MyAccount(props) {
     tabBarVisble: false,
     tabBarLabel: "My Account",
     headerTintColor: "white",
-    headerTitle: t("myaccount"),
+    headerTitle: (
+      <Text style={{ color: "#fff" }} size="header" type="bold">
+        {t("myaccount")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

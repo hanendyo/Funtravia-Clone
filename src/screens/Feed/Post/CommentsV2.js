@@ -63,6 +63,7 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
+import normalize from "react-native-normalize";
 
 export default function Comments(props) {
   let { width, height } = Dimensions.get("screen");
@@ -105,7 +106,11 @@ export default function Comments(props) {
     headerShown: true,
     transparent: false,
     headerTintColor: "white",
-    headerTitle: t("comments"),
+    headerTitle: (
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
+        {t("comments")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -368,7 +373,7 @@ export default function Comments(props) {
               style={{
                 height: 35,
                 width: 35,
-                borderRadius: 18,
+                borderRadius: 20,
                 alignSelf: "center",
                 resizeMode: "cover",
               }}
@@ -380,13 +385,7 @@ export default function Comments(props) {
                 marginHorizontal: 10,
               }}
             >
-              <Text
-                allowFontScaling={false}
-                style={{
-                  fontFamily: "Lato-Bold",
-                  fontSize: 14,
-                }}
-              >
+              <Text size="label" type="bold">
                 {dataComment?.user?.first_name} {dataComment?.user?.last_name}
               </Text>
               {dataComment?.is_send == false ? (
@@ -1337,7 +1336,7 @@ export default function Comments(props) {
                   width: Dimensions.get("window").width - 40,
                   flexDirection: "row",
                   marginVertical: 10,
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 15,
                   alignContent: "center",
                 }}
               >
@@ -1363,8 +1362,8 @@ export default function Comments(props) {
                     size="xs"
                     isTouchable
                     style={{
-                      height: 35,
-                      width: 35,
+                      height: 40,
+                      width: 40,
                       borderRadius: 18,
                       alignSelf: "center",
                       resizeMode: "cover",
@@ -1379,7 +1378,7 @@ export default function Comments(props) {
                       marginHorizontal: 10,
                     }}
                   >
-                    <Text type={"bold"} style={{}}>
+                    <Text type={"bold"} size="title" style={{}}>
                       {dataPost?.user?.first_name}{" "}
                       {dataPost?.user?.first_name
                         ? dataPost?.user?.last_name
@@ -1454,7 +1453,7 @@ export default function Comments(props) {
                     flexDirection: "row",
                     backgroundColor: "white",
                     justifyContent: "space-between",
-                    paddingHorizontal: 10,
+                    paddingLeft: 10,
                   }}
                 >
                   <View
@@ -1556,7 +1555,7 @@ export default function Comments(props) {
                     }
                     type="icon"
                     variant="transparent"
-                    position="left"
+                    // position="left"
                     size="small"
                   >
                     <Send_to height={17} width={17} />
@@ -1687,13 +1686,14 @@ export default function Comments(props) {
                 " " +
                 setting?.user?.first_name +
                 " " +
-                setting?.user?.last_name +
+                // setting?.user?.last_name +
                 "..."
               }
               maxLength={1000}
               style={{
                 width: Dimensions.get("screen").width - 150,
                 // textAlignVertical: "top",
+                fontSize: normalize(16),
                 marginLeft: 40,
                 fontFamily: "Lato-Regular",
                 maxHeight: 100,

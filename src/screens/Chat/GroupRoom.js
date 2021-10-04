@@ -904,6 +904,7 @@ export default function Room({ navigation, route }) {
             navigation={navigation}
             dataMember={dataDetail}
             index={index}
+            token={token}
             datas={message}
             _uploadimage={(image, id) => _uploadimage(image, id)}
           />

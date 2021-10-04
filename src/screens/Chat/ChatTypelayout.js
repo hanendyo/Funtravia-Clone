@@ -15,6 +15,7 @@ import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import normalize from "react-native-normalize";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -24,10 +25,9 @@ export default function ChatTypelayout({
   tmpRChat,
   socket,
   _uploadimage,
-  dataMember,
   index,
-  length,
   datas,
+  token,
 }) {
   // useEffect(() => {
   //   if (item.chat == "group") {
@@ -94,8 +94,6 @@ export default function ChatTypelayout({
       );
     }
   };
-
-  console.log("item type layour", item);
 
   // useEffect(() => {
   if (item.is_send == false && item.type !== "att_image") {
@@ -735,17 +733,13 @@ export default function ChatTypelayout({
   // travel goal layout
   if (item.type == "tag_travel_goal") {
     let data = JSON.parse(item.text);
-    console.log("data travel", data);
     return (
       <Pressable
-        // onPress={() => {
-        //   navigation.navigate("TravelIdeaStack", {
-        //     screen: "Detail_movie",
-        //     params: {
-        //       movie_id: data.id,
-        //     },
-        //   });
-        // }}
+        onPress={() => {
+          navigation.navigate("TravelGoalDetail", {
+            article_id: data.id,
+          });
+        }}
         style={{
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
@@ -770,8 +764,8 @@ export default function ChatTypelayout({
               // justifyContent: "center",
             }}
           >
-            <Text size="small" type="regular">
-              Movie Location
+            <Text size="small" type="regular" style={{ marginBottom: 5 }}>
+              {t("travelgoals")}
             </Text>
             <Text
               size="label"
@@ -797,19 +791,17 @@ export default function ChatTypelayout({
     );
   }
   // event layout
-  if (item.type == "tag_travel_goal") {
+  if (item.type == "tag_event") {
     let data = JSON.parse(item.text);
-    console.log("data travel", data);
     return (
       <Pressable
-        // onPress={() => {
-        //   navigation.navigate("TravelIdeaStack", {
-        //     screen: "Detail_movie",
-        //     params: {
-        //       movie_id: data.id,
-        //     },
-        //   });
-        // }}
+        onPress={() => {
+          navigation.navigate("eventdetail", {
+            event_id: data.id,
+            name: data.name,
+            token: token,
+          });
+        }}
         style={{
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
@@ -819,28 +811,28 @@ export default function ChatTypelayout({
           marginBottom: 5,
         }}
       >
-        <View style={{ flexDirection: "row" }}>
+        <View style={{}}>
           <FunImage
             source={{ uri: data.cover }}
-            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+            style={{
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              height: normalize(150),
+              width: "100%",
+            }}
           ></FunImage>
           <View
             style={{
               flex: 1,
               backgroundColor: "#f6f6f6",
               borderTopRightRadius: 10,
-              // width: Dimensions.get("screen").width - 200,
-              padding: 10,
-              // justifyContent: "center",
+              padding: 5,
             }}
           >
-            <Text size="small" type="regular">
-              Movie Location
-            </Text>
             <Text
               size="label"
               type="bold"
-              numberOfLines={3}
+              numberOfLines={1}
               style={{ lineHeight: 18 }}
             >
               {data.name}
@@ -851,7 +843,7 @@ export default function ChatTypelayout({
           <Text
             size="description"
             type="regular"
-            style={{ lineHeight: 18, padding: 10 }}
+            style={{ lineHeight: 16, padding: 10, textAlign: "left" }}
             numberOfLines={2}
           >
             {data.description}
@@ -861,19 +853,16 @@ export default function ChatTypelayout({
     );
   }
   // journal layout
-  if (item.type == "tag_travel_goal") {
+  if (item.type == "tag_journal") {
     let data = JSON.parse(item.text);
-    console.log("data travel", data);
     return (
       <Pressable
-        // onPress={() => {
-        //   navigation.navigate("TravelIdeaStack", {
-        //     screen: "Detail_movie",
-        //     params: {
-        //       movie_id: data.id,
-        //     },
-        //   });
-        // }}
+        onPress={() => {
+          navigation.navigate("JournalStackNavigation", {
+            screen: "DetailJournal",
+            params: { dataPopuler: data },
+          });
+        }}
         style={{
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
@@ -898,8 +887,8 @@ export default function ChatTypelayout({
               // justifyContent: "center",
             }}
           >
-            <Text size="small" type="regular">
-              Movie Location
+            <Text size="small" type="regular" style={{ marginBottom: 5 }}>
+              {t("traveljournal")}
             </Text>
             <Text
               size="label"

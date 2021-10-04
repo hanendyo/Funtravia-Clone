@@ -25,7 +25,6 @@ import io from "socket.io-client";
 import normalize from "react-native-normalize";
 
 export default function SendTravelGoals({ navigation, route }) {
-  console.log("route send travel", route);
   const socket = io(CHATSERVER, {
     withCredentials: true,
     extraHeaders: {
@@ -140,7 +139,6 @@ export default function SendTravelGoals({ navigation, route }) {
       await setToken(token);
       await _setSearch(null);
       await querywith();
-      // console.log(token);
     }
 
     let data = await AsyncStorage.getItem("setting");
@@ -155,7 +153,6 @@ export default function SendTravelGoals({ navigation, route }) {
 
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
-  // console.log(dataGroupRes);
   const getRoomGroup = async () => {
     setloading(true);
     let token = await AsyncStorage.getItem("access_token");
@@ -212,7 +209,6 @@ export default function SendTravelGoals({ navigation, route }) {
   }
 
   const _sendMessage = async (id, index) => {
-    console.log("id", id);
     setloadingsend(true);
     setIndexUser(index);
     try {
@@ -229,14 +225,10 @@ export default function SendTravelGoals({ navigation, route }) {
       );
 
       let responseJson = await response.json();
-      // console.log(responseJson);
       if (responseJson) {
         socket.emit("join", responseJson.id);
-        socket.on("connection", (socket) => {
-          // console.log(socket);
-          // console.log("socket");
-        });
-        let dataTravelGoal = route.params.dataGoal;
+        socket.on("connection", (socket) => {});
+        let dataTravelGoal = route.params.params.dataGoal;
         let constain = {
           id: dataTravelGoal?.id,
           cover: dataTravelGoal?.cover,
@@ -313,7 +305,7 @@ export default function SendTravelGoals({ navigation, route }) {
       await socket.emit("join", value.group_id);
       await socket.on("connection", (socket) => {});
       let from = value.itinerary ? "itinerary" : "group";
-      let dataTravelGoal = route.params.dataGoal;
+      let dataTravelGoal = route.params.params.dataGoal;
       let constain = {
         id: dataTravelGoal?.id,
         cover: dataTravelGoal?.cover,

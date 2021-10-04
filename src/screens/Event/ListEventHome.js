@@ -176,7 +176,6 @@ export default function ListEventHome(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    // title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
@@ -2040,7 +2039,6 @@ export default function ListEventHome(props) {
 
   const eventdetail = (data) => {
     props.navigation.navigate("eventdetail", {
-      // data: data,
       event_id: data.id,
       name: data.name,
       token: token,

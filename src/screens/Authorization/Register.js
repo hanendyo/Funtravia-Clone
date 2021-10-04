@@ -224,7 +224,7 @@ export default function Register({ navigation }) {
             height: 180,
             width: 180,
             marginTop: Platform.OS === "ios" ? 30 : 50,
-            alignSelf: "flex-start",
+            alignSelf: "center",
           }}
         />
 

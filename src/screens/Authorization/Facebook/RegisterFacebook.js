@@ -26,10 +26,13 @@ export default function RegisterFacebook({ navigation }) {
   let [message, setMessage] = useState("");
   const [mutation, { loading, data, error }] = useMutation(Facebookgql);
   const facebookLogIn = async () => {
-    console.log("test");
     try {
-      let FB = await LoginManager.logInWithPermissions(["public_profile"]);
-      let FB_Data = false;
+      let FB = await LoginManager.logInWithPermissions([
+        "email",
+        "public_profile",
+        "user_likes",
+      ]);
+      let FB_Data;
       if (!FB.isCancelled) {
         FB_Data = await AccessToken.getCurrentAccessToken();
       }
