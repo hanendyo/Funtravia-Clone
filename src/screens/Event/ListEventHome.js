@@ -65,6 +65,7 @@ import { Alert } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
 import { RNToasty } from "react-native-toasty";
 import { color } from "react-native-reanimated";
+import normalize from "react-native-normalize";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -178,7 +179,11 @@ export default function ListEventHome(props) {
     // title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("event"),
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("event")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -497,7 +502,7 @@ export default function ListEventHome(props) {
           }}
         >
           <Text
-            size="label"
+            size="title"
             type="bold"
             style={{
               textAlign: "justify",
@@ -509,6 +514,8 @@ export default function ListEventHome(props) {
               : "Thousands of Events Worldwide Tailored to Your Passion. Discover experiences."}
           </Text>
           <Text
+            size="label"
+            type="regular"
             style={{
               textAlign: "justify",
               marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,

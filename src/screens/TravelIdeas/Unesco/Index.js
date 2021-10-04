@@ -47,6 +47,7 @@ import CountrySrc from "./CountrySrc";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
 import DeviceInfo from "react-native-device-info";
 import BannerApps from "../../../graphQL/Query/Home/BannerApps";
+import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -991,7 +992,9 @@ export default function Unesco({ navigation, route }) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight - 3, 0],
+      // outputRange: [HeaderHeight - 6, 0],
+      outputRange:
+        Platform.OS == "ios" ? [HeaderHeight, 0] : [HeaderHeight - 6, 0],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -1128,13 +1131,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Bold" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
+  labelActive: {
+    fontSize: normalize(14),
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
   tab: {
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
-    height: TabBarHeight + 5,
+    // height: TabBarHeight + 5,
+    height: Platform.OS == "ios" ? TabBarHeight + 5 : TabBarHeight,
 
     // borderWidth: 2,
   },
