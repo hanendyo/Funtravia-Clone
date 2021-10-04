@@ -204,7 +204,7 @@ export default function Invitation({ navigation, token }) {
           if (response.data.read_all_notif.code == 200) {
             GetListInvitation();
             RNToasty.Show({
-              title: "Success Mark All Notification",
+              title: t("successMarkAllNotification"),
               position: "bottom",
             });
             setreadall(false);

@@ -15,14 +15,14 @@ export default async function CopyLink({ from, target }) {
     let dataResponse = await response.json();
     Clipboard.setString(dataResponse.result.link);
     RNToasty.Normal({
-      title: "link copied to clipboard",
+      title: t("linkCopiedToClipboard"),
       position: "bottom",
       // tintColor: rgb(32, 159, 174),
     });
   } catch (error) {
     console.log(error);
     RNToasty.Show({
-      title: "failed to link copied to clipboard",
+      title: t("failedToLinkCopiedToClipboard"),
       position: "bottom",
     });
   }

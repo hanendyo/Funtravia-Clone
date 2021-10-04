@@ -254,6 +254,7 @@ export default function ItineraryDetail(props) {
   let [Anggota, setAnggota] = useState();
   let [loading, setloading] = useState(false);
   let [statusUsers, setStatusUsers] = useState("");
+  let [backStatus, setBackStatus] = useState(true);
 
   const {
     data: datadetail,
@@ -287,6 +288,7 @@ export default function ItineraryDetail(props) {
   });
 
   // console.log("album", dataAlbum);
+  // console.log("detail", datadetail);
 
   const GetTimeline = async (id) => {
     await setidDay(id ? id : idDay);
@@ -1139,8 +1141,10 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    // props.navigation.goBack();
-    props.navigation.navigate("TripBottomPlaning");
+    // backStatus
+    //   ? props.navigation.navigate("TripBottomPlaning")
+    //   : props.navigation.goBack();
+    props.navigation.goBack();
   };
 
   const [
@@ -1320,7 +1324,9 @@ export default function ItineraryDetail(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => _handlerBack()}
+        onPress={() => {
+          _handlerBack();
+        }}
         style={{
           height: 55,
         }}

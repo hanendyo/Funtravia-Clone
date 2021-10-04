@@ -114,7 +114,7 @@ export default function Notification(props) {
     transparent: false,
     tabBarVisble: false,
     headerTintColor: "white",
-    headerTitle: "Inbox",
+    headerTitle: t("inbox"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -164,8 +164,6 @@ export default function Notification(props) {
       BackHandler.addEventListener(props.navigation.goBack());
       return true;
     };
-
- 
   }, []);
   const [
     GetListNotif,
@@ -195,8 +193,8 @@ export default function Notification(props) {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "personal", title: "Notification" },
-    { key: "group", title: "Information" },
+    { key: "personal", title: t("notification") },
+    { key: "group", title: t("information") },
   ]);
 
   const renderScene = ({ route }) => {
