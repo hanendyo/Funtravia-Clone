@@ -324,7 +324,7 @@ export default function SendJournal({ navigation, route }) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: `user_id=${user.id}&type=tag_travel_goal&chat=group&room=${
+        body: `user_id=${user.id}&type=tag_journal&chat=group&room=${
           value.group_id
         }&from=${from}&text=${JSON.stringify(constain)}&name=${
           user.first_name

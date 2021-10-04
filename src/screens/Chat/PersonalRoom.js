@@ -75,7 +75,6 @@ const keyboards = [
 ];
 
 export default function Room({ navigation, route }) {
-  // console.log("route", route);
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
@@ -97,8 +96,6 @@ export default function Room({ navigation, route }) {
   });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
-  // console.log(message.reverse(), "msg");
-  // console.log(message, "msg");
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -480,7 +477,6 @@ export default function Room({ navigation, route }) {
       getUserToken();
     }
     socket.on("new_chat_personal", (data) => {
-      console.log("data useeffcet", data);
       setChatHistory(data);
     });
 
@@ -513,7 +509,6 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistory = async (data) => {
-    console.log("data history", data);
     let history = await AsyncStorage.getItem("history_" + room);
     let recent = JSON.parse(history);
     if (recent) {
@@ -523,7 +518,6 @@ export default function Room({ navigation, route }) {
       } else {
         recent.unshift(data);
       }
-      console.log("Recent", recent);
       setMessage(recent);
       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
     } else {
@@ -687,7 +681,6 @@ export default function Room({ navigation, route }) {
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
-    // console.log("item render", item);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
@@ -771,6 +764,7 @@ export default function Room({ navigation, route }) {
             user_id={user.id}
             tmpRChat={tmpRChat}
             navigation={navigation}
+            token={token}
             socket={socket}
             _uploadimage={(image, id) => _uploadimage(image, id)}
           />

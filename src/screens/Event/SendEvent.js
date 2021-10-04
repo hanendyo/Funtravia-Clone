@@ -140,7 +140,6 @@ export default function SendTravelGoals({ navigation, route }) {
       await setToken(token);
       await _setSearch(null);
       await querywith();
-      // console.log(token);
     }
 
     let data = await AsyncStorage.getItem("setting");
@@ -155,7 +154,6 @@ export default function SendTravelGoals({ navigation, route }) {
 
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
-  // console.log(dataGroupRes);
   const getRoomGroup = async () => {
     setloading(true);
     let token = await AsyncStorage.getItem("access_token");
@@ -228,20 +226,18 @@ export default function SendTravelGoals({ navigation, route }) {
       );
 
       let responseJson = await response.json();
-      // console.log(responseJson);
       if (responseJson) {
         socket.emit("join", responseJson.id);
-        socket.on("connection", (socket) => {
-          // console.log(socket);
-          // console.log("socket");
-        });
-        let dataEvent = route.params.dataevent;
+        socket.on("connection", (socket) => {});
+        console.log("routesssss", route.params.dataEvent);
+        let dataEvent = route.params.params.dataEvent;
         let constain = {
           id: dataEvent?.id,
           cover: dataEvent?.cover,
           name: dataEvent?.name,
           description: dataEvent?.description,
         };
+        console.log("constain", constain);
         let uuid = create_UUID();
         let chatData = {
           id: uuid,
@@ -251,6 +247,7 @@ export default function SendTravelGoals({ navigation, route }) {
           text: JSON.stringify(constain),
           user_id: user.id,
         };
+        console.log("chatData", chatData);
         // await fetch(`${CHATSERVER}/api/personal/send`, {
         //   method: "POST",
         //   headers: {
@@ -302,7 +299,6 @@ export default function SendTravelGoals({ navigation, route }) {
         position: "bottom",
       });
       setloadingsend(false);
-      console.error(error);
     }
   };
   const _sendMessageGroup = async (value, index) => {
@@ -312,7 +308,7 @@ export default function SendTravelGoals({ navigation, route }) {
       await socket.emit("join", value.group_id);
       await socket.on("connection", (socket) => {});
       let from = value.itinerary ? "itinerary" : "group";
-      let dataEvent = route.params.dataevent;
+      let dataEvent = route.params.params.dataevent;
       let constain = {
         id: dataEvent?.id,
         cover: dataEvent?.cover,
@@ -332,14 +328,13 @@ export default function SendTravelGoals({ navigation, route }) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: `user_id=${user.id}&type=tag_travel_goal&chat=group&room=${
+        body: `user_id=${user.id}&type=tag_event&chat=group&room=${
           value.group_id
         }&from=${from}&text=${JSON.stringify(constain)}&name=${
           user.first_name
         } ${user.last_name}`,
       });
       await socket.emit("message", chatData);
-      // console.log("kal", value);
       RNToasty.Show({
         duration: 1,
         title: t("successfullySent"),
@@ -365,7 +360,6 @@ export default function SendTravelGoals({ navigation, route }) {
         position: "bottom",
       });
       setloadingsend(false);
-      console.error(error);
     }
   };
 
@@ -461,7 +455,6 @@ export default function SendTravelGoals({ navigation, route }) {
   };
 
   const RenderBuddy = (value, index) => {
-    // console.log(value);
     return (
       <View style={{ borderBottomWidth: 0.5, borderBottomColor: "#D1D1D1" }}>
         <TouchableOpacity
@@ -534,9 +527,7 @@ export default function SendTravelGoals({ navigation, route }) {
           </View>
           <Button
             onPress={() => {
-              !loadingsend
-                ? _sendMessage(value.id, index)
-                : console.log("loading");
+              !loadingsend ? _sendMessage(value.id, index) : null;
             }}
             text={loadingsend && index == indexUser ? "" : t("Send")}
             size="small"
@@ -556,7 +547,6 @@ export default function SendTravelGoals({ navigation, route }) {
     );
   };
   const RenderGroup = (value, index) => {
-    // console.log(value);
     return (
       <View style={{ borderBottomWidth: 0.5, borderBottomColor: "#D1D1D1" }}>
         <TouchableOpacity
@@ -611,9 +601,7 @@ export default function SendTravelGoals({ navigation, route }) {
 
           <Button
             onPress={() => {
-              !loadingsend
-                ? _sendMessageGroup(value, index)
-                : console.log("loading");
+              !loadingsend ? _sendMessageGroup(value, index) : null;
             }}
             text={loadingsend && index == indexGroup ? "" : t("Send")}
             size="small"

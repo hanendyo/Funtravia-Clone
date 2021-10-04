@@ -71,7 +71,11 @@ export default function Message({ navigation, route }) {
     tabBarBadge: null,
     tabBarLabel: "Message",
     // headerTintColor: "white",
-    headerTitle: t("Message"),
+    headerTitle: (
+      <Text style={{ color: "#fff" }} size="header" type="bold">
+        {t("Message")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

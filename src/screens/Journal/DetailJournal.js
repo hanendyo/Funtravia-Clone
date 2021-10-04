@@ -112,7 +112,7 @@ export default function DetailJournal(props) {
         numberOfLines={1}
         style={{ color: "#FFF", flex: 1 }}
       >
-        {dataPopuler?.title}
+        {dataPopuler?.title ? dataPopuler?.title : dataPopuler?.name}
       </Text>
     </View>
   );

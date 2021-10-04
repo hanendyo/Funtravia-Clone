@@ -172,8 +172,6 @@ export default function TravelGoal(props) {
     }
   };
 
-  console.log("image", dataTop?.travelgoal_first?.cover);
-
   return (
     <ScrollView
       contentContainerStyle={
@@ -230,7 +228,6 @@ export default function TravelGoal(props) {
                 justifyContent: "space-between",
               }}
               onPress={() => {
-                // console.log(dataTop?.travelgoal_first?.id)
                 props.navigation.push("TravelGoalDetail", {
                   article_id: dataTop?.travelgoal_first?.id,
                 });
