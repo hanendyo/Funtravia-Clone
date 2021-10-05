@@ -705,5 +705,8 @@
   "account": "Akun",
   "successMarkAllNotification": "Sukses Tandai Semua Notifikasi",
   "linkCopiedToClipboard": "Tautan Disalin Ke Papan Klip",
-  "failedToLinkCopiedToClipboard": "Tautan Gagal Disalin Ke Papan Klip"
+  "failedToLinkCopiedToClipboard": "Tautan Gagal Disalin Ke Papan Klip",
+  "you" :"Kamu",
+  "travelpicture" :"Album",
+  "diary" : "Cerita"
 }

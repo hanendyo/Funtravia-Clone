@@ -702,5 +702,9 @@
   "travelgoals": "Travel Goals",
   "successMarkAllNotification": "Success Mark All Notification",
   "linkCopiedToClipboard": "Link Copied to Clipboard",
-  "failedToLinkCopiedToClipboard": "Failed To Copied The Link To Clipboard"
+  "failedToLinkCopiedToClipboard": "Failed To Copied The Link To Clipboard",
+  "you" :"You",
+  "travelpicture" :"Travel Picture",
+  "diary" : "Diary"
+
 }
