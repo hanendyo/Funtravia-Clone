@@ -281,6 +281,7 @@ import GlobeMap from "./files/globemap.svg";
 import GlobeWorld from "./files/globeworld.svg";
 import Newpadlock from "./files/newpadlock.svg";
 import Arrowbackiosblack from "./files/arrowbackiosblack.svg";
+import ItineraryIcon from "./files/ItineraryIcon.svg";
 
 export {
   Lock,
@@ -566,4 +567,5 @@ export {
   GlobeWorld,
   Newpadlock,
   Arrowbackiosblack,
+  ItineraryIcon,
 };
