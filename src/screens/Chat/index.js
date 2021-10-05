@@ -207,6 +207,7 @@ export default function Message({ navigation, route }) {
 
   const getRoom = async () => {
     let token = await AsyncStorage.getItem("access_token");
+    console.log("🚀 ~ file: index.js ~ line 206 ~ getRoom ~ token", token);
     let response = await fetch(`${CHATSERVER}/api/personal/list`, {
       method: "GET",
       headers: {
@@ -215,6 +216,10 @@ export default function Message({ navigation, route }) {
         "Content-Type": "application/json",
       },
     });
+    console.log(
+      "🚀 ~ file: index.js ~ line 214 ~ getRoom ~ response",
+      response
+    );
     let dataResponse = await response.json();
     for (let i of dataResponse) {
       socket.emit("join", i.id);
