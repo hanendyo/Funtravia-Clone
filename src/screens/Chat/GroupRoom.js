@@ -23,7 +23,9 @@ import {
   CameraChat,
   Xgray,
 } from "../../assets/svg";
-import { Button, Text, FunImage, StickerModal } from "../../component";
+import NetInfo from "@react-native-community/netinfo";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { Button, Text, FunImage, StickerModal, Uuid } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,13 +48,7 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [token, setToken] = useState(null);
-  // const socket = io(CHATSERVER);
-  const socket = io(CHATSERVER, {
-    withCredentials: true,
-    extraHeaders: {
-      Authorization: token,
-    },
-  });
+
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
   let flatListRef = useRef();
@@ -172,6 +168,20 @@ export default function Room({ navigation, route }) {
       paddingRight: 20,
     },
   };
+
+  const [socket_connect, setSocketConnect] = useState(false);
+  const [connected, SetConnection] = useState(false);
+  const connection_check = useNetInfo();
+  useEffect(() => {
+    const cek_koneksi = NetInfo.addEventListener((state) => {
+      if (state.isConnected) {
+        SetConnection(true);
+      } else {
+        SetConnection(false);
+      }
+    });
+    cek_koneksi();
+  }, [connection_check]);
   const dismissKeyboard = () => {
     KeyboardUtils.dismiss();
   };
@@ -333,15 +343,42 @@ export default function Room({ navigation, route }) {
 
   useEffect(() => {
     navigation.setOptions(headerOptions);
+    // if (init) {
+    //   getUserToken();
+    // }
+    // socket.on("new_chat_group", (data) => {
+    //   setChatHistory(data);
+    // });
+    // socket.emit("join", room);
+    // return () => socket.disconnect();
+  }, []);
+  const socket = useRef(null);
+  useEffect(() => {
+    socket.current = io(CHATSERVER, {
+      withCredentials: true,
+      extraHeaders: {
+        Authorization: token,
+      },
+    });
+    socket.current.emit("join", room);
+    socket.current.on("connect", () => {
+      console.log("isConnect");
+      setSocketConnect(true);
+    });
+
+    socket.current.on("disconnect", () => {
+      console.log("isDisConnect");
+      setSocketConnect(false);
+    });
     if (init) {
       getUserToken();
     }
-    socket.on("new_chat_group", (data) => {
+    socket.current.on("new_chat_group", (data) => {
       setChatHistory(data);
     });
-    socket.emit("join", room);
-    return () => socket.disconnect();
-  }, []);
+
+    return () => socket.current.disconnect();
+  }, [connected, token]);
 
   const setConnection = () => {
     socket.emit("join", room);
@@ -363,23 +400,51 @@ export default function Room({ navigation, route }) {
     }
   };
 
+  // const setChatHistory = async (data) => {
+  //   console.log("data hist", data);
+  //   let history = await AsyncStorage.getItem("history_" + room);
+  //   if (data) {
+  //     if (history) {
+  //       console.log("ada");
+  //       let recent = JSON.parse(history);
+  //       recent.push(data);
+  //       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
+  //       setMessage(recent);
+  //     } else {
+  //       console.log("tidak ada");
+  //       await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
+  //       setMessage([data]);
+  //     }
+  //   }
+  // };
+
   const setChatHistory = async (data) => {
-    console.log("data hist", data);
     let history = await AsyncStorage.getItem("history_" + room);
-    if (data) {
-      if (history) {
-        console.log("ada");
-        let recent = JSON.parse(history);
-        recent.push(data);
-        await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
-        setMessage(recent);
+    let recent = JSON.parse(history);
+    if (recent) {
+      let findInd = recent.findIndex((x) => x.id === data.id);
+      if (findInd >= 0) {
+        recent[findInd] = data;
       } else {
-        console.log("tidak ada");
-        await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
-        setMessage([data]);
+        recent.unshift(data);
       }
+      setMessage(recent);
+      await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
+    } else {
+      await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
+      setMessage([data]);
     }
   };
+
+  function compare(a, b) {
+    if (a.time > b.time) {
+      return -1;
+    }
+    if (a.time < b.time) {
+      return 1;
+    }
+    return 0;
+  }
 
   const initialHistory = async (access_token) => {
     let response = await fetch(
@@ -394,26 +459,37 @@ export default function Room({ navigation, route }) {
       }
     );
     let responseJson = await response.json();
-    console.log("responseJson", responseJson);
-    if (responseJson.data) {
+    let history = await AsyncStorage.getItem("history_" + room);
+    let init_local = await JSON.parse(history);
+    let init_data = await responseJson.data;
+    let filteredList = [];
+    if (init_local && init_data) {
+      let merge = [...init_local, ...init_data];
+      filteredList = [...new Set(merge.map(JSON.stringify))].map(JSON.parse);
+      filteredList.sort(compare);
+    } else if (!init_local) {
+      filteredList = init_data;
+    } else if (!init_data) {
+      filteredList = init_local;
+    }
+    if (filteredList && filteredList.length > 0) {
       await AsyncStorage.setItem(
         "history_" + room,
-        JSON.stringify(responseJson.data)
+        JSON.stringify(filteredList)
       );
-      await setMessage(responseJson.data);
-      //   await setTimeout(function() {
-      //     if (flatListRef !== null && flatListRef.current) {
-      //       flatListRef.current.scrollToEnd({ animated: true });
-      //     }
-      //   }, 250);
+      let new_array = [];
+
+      setMessage(filteredList);
     }
   };
 
   const submitChatMessage = async () => {
+    let uuid = Uuid();
     if (button) {
       if (chat && chat.replace(/\s/g, "").length) {
         await setButton(false);
         let chatData = {
+          id: uuid,
           room: room,
           chat: "group",
           type: "text",
@@ -421,19 +497,15 @@ export default function Room({ navigation, route }) {
           user_id: user.id,
           name: `${user.first_name} ${user.last_name}`,
         };
-        // await fetch(`${CHATSERVER}/api/group/send`, {
-        //   method: "POST",
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //     "Content-Type": "application/x-www-form-urlencoded",
-        //   },
-        //   body: `user_id=${user.id}&type=text&chat=group&room=${room}&from=${from}&text=${chat}&name=${user.first_name} ${user.last_name}`,
-        // });
-        await socket.emit("message", chatData);
+        if (connected) {
+          await socket.current.emit("message", chatData);
+        } else {
+          sendOffline(chatData);
+        }
         await setChat("");
         await setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
-            flatListRef.current.scrollToEnd({ animated: true });
+            flatListRef.current.scrollToOffset({ animated: true });
           }
         }, 250);
         await setButton(true);
@@ -459,6 +531,7 @@ export default function Room({ navigation, route }) {
         type: "sticker",
         text: x,
         user_id: user.id,
+        name: `${user.first_name} ${user.last_name}`,
       };
       await fetch(`${CHATSERVER}/api/group/send`, {
         method: "POST",
@@ -468,7 +541,7 @@ export default function Room({ navigation, route }) {
         },
         body: `user_id=${user.id}&type=sticker&chat=group&room=${room}&from=${from}&text=${x}&name=${user.first_name} ${user.last_name}`,
       });
-      await socket.emit("message", chatData);
+      await socket.current.emit("message", chatData);
       await setChat("");
       await setTimeout(function() {
         if (flatListRef !== null && flatListRef.current) {
@@ -488,176 +561,6 @@ export default function Room({ navigation, route }) {
     }
     // }
   };
-
-  //   let tmpRChat = null;
-  //   const RenderChat = ({ item, index }) => {
-  //     let timeChat = new Date(item.time).toTimeString();
-  //     if (item.user_id !== tmpRChat) {
-  //       tmpRChat = item.user_id;
-  //       return (
-  //         <View style={{ marginTop: 20 }}>
-  //           {user.id !== item.user_id ? (
-  //             <Text
-  //               size="description"
-  //               type="bold"
-  //               style={{
-  //                 paddingBottom: 5,
-  //                 paddingLeft: 20,
-  //                 color: "#464646",
-  //               }}
-  //             >
-  //               {item.name}
-  //             </Text>
-  //           ) : null}
-  //           <View
-  //             key={`chat_${index}`}
-  //             style={[
-  //               styles.item,
-  //               user.id == item.user_id ? styles.itemOut : styles.itemIn,
-  //             ]}
-  //           >
-  //             {user.id == item.user_id ? (
-  //               <Text size="small" style={{ marginRight: 5 }}>
-  //                 {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-  //               </Text>
-  //             ) : null}
-  //             <View
-  //               style={[
-  //                 styles.balloon,
-  //                 user.id == item.user_id
-  //                   ? {
-  //                       backgroundColor: "#DAF0F2",
-  //                       borderTopRightRadius: 0,
-  //                     }
-  //                   : {
-  //                       backgroundColor: "#FFFFFF",
-  //                       borderTopLeftRadius: 0,
-  //                     },
-  //               ]}
-  //             >
-  //               <Text
-  //                 size="description"
-  //                 style={{
-  //                   color: "#464646",
-  //                   lineHeight: 18,
-  //                 }}
-  //               >
-  //                 {item.text}
-  //               </Text>
-  //               <View
-  //                 style={[
-  //                   styles.arrowContainer,
-  //                   user.id == item.user_id
-  //                     ? styles.arrowRightContainer
-  //                     : styles.arrowLeftContainer,
-  //                 ]}
-  //               >
-  //                 <Svg
-  //                   style={
-  //                     user.id == item.user_id
-  //                       ? styles.arrowRight
-  //                       : styles.arrowLeft
-  //                   }
-  //                   height="50"
-  //                   width="50"
-  //                 >
-  //                   <Polygon
-  //                     points={
-  //                       user.id == item.user_id
-  //                         ? "0,01 15,01 5,12"
-  //                         : "20,01 0,01 12,12"
-  //                     }
-  //                     fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-  //                     stroke="#209FAE"
-  //                     strokeWidth={0.7}
-  //                   />
-  //                 </Svg>
-  //                 <Svg
-  //                   style={[
-  //                     { position: "absolute" },
-  //                     user.id == item.user_id
-  //                       ? { right: moderateScale(-5, 0.5) }
-  //                       : { left: moderateScale(-5, 0.5) },
-  //                   ]}
-  //                   height="50"
-  //                   width="50"
-  //                 >
-  //                   <Polygon
-  //                     points={
-  //                       user.id == item.user_id
-  //                         ? "0,1.3 15,1.1 5,12"
-  //                         : "20,01 0,01 12,13"
-  //                     }
-  //                     fill={user.id == item.user_id ? "#DAF0F2" : "#FFFFFF"}
-  //                   />
-  //                 </Svg>
-  //               </View>
-  //             </View>
-  //             {user.id !== item.user_id ? (
-  //               <Text size="small" style={{ marginLeft: 5 }}>
-  //                 {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-  //               </Text>
-  //             ) : null}
-  //           </View>
-  //         </View>
-  //       );
-  //     } else {
-  //       return (
-  //         <View>
-  //           <View
-  //             key={`chat_${index}`}
-  //             style={[
-  //               styles.item,
-  //               user.id == item.user_id ? styles.itemOut : styles.itemIn,
-  //             ]}
-  //           >
-  //             {user.id == item.user_id ? (
-  //               <Text size="small" style={{ marginRight: 5 }}>
-  //                 {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-  //               </Text>
-  //             ) : null}
-  //             <View
-  //               style={[
-  //                 styles.balloon,
-  //                 user.id == item.user_id
-  //                   ? {
-  //                       backgroundColor: "#DAF0F2",
-  //                       borderTopRightRadius: 0,
-  //                     }
-  //                   : {
-  //                       backgroundColor: "#FFFFFF",
-  //                       borderTopLeftRadius: 0,
-  //                     },
-  //               ]}
-  //             >
-  //               <Text
-  //                 size="description"
-  //                 style={{
-  //                   color: "#464646",
-  //                   lineHeight: 18,
-  //                 }}
-  //               >
-  //                 {item.text}
-  //               </Text>
-  //               <View
-  //                 style={[
-  //                   styles.arrowContainer,
-  //                   user.id == item.user_id
-  //                     ? styles.arrowRightContainer
-  //                     : styles.arrowLeftContainer,
-  //                 ]}
-  //               ></View>
-  //             </View>
-  //             {user.id !== item.user_id ? (
-  //               <Text size="small" style={{ marginLeft: 5 }}>
-  //                 {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-  //               </Text>
-  //             ) : null}
-  //           </View>
-  //         </View>
-  //       );
-  //     }
-  //   };
 
   function create_UUID() {
     var dt = new Date().getTime();
@@ -750,10 +653,7 @@ export default function Room({ navigation, route }) {
       });
   };
 
-  console.log("meesage", message);
-
   const _uploadimage = async (image, id) => {
-    // let chatData = {};
     try {
       image = JSON.parse(image);
       var today = new Date();
@@ -786,26 +686,22 @@ export default function Room({ navigation, route }) {
           body: formData,
         }
       );
-
-      console.log("response", response);
       let responseJson = await response.json();
-      console.log("responseJson", responseJson);
       if (responseJson.status == true) {
         // getUserAndToken();
         let dateTime = new Date();
         let chatData = {
           id: id,
           room: room,
-          chat: "personal",
+          chat: "group",
           type: "att_image",
           text: responseJson.filepath,
           user_id: user.id,
           time: dateTime,
           is_send: true,
         };
-        console.log("chatData", chatData);
         // if (socket.connected) {
-        socket.emit("message", chatData);
+        socket.current.emit("message", chatData);
         // } else {
         //   sendOffline(chatData);
         // }
@@ -816,7 +712,7 @@ export default function Room({ navigation, route }) {
         });
         setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
-            flatListRef.current.scrollToEnd({ animated: true, offset: 0 });
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
           }
         }, 2000);
       } else {
@@ -824,30 +720,31 @@ export default function Room({ navigation, route }) {
         throw new Error(responseJson.message);
       }
     } catch (error) {
-      console.log(error);
-      setChatHistory(chatData);
       // RNToasty.Show({
       //   duration: 1,
       //   title: "error : someting wrong!",
       //   position: "bottom",
       // });
-      // console.log(error);
     }
   };
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
+    // console.log("item render", item);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
 
     let date = null;
-    if (index == 0) {
-      date = timeStateChat;
-    }
-    if (
-      message[index - 1] &&
-      new Date(message[index - 1].time).toLocaleDateString() !== timeStateChat
+    if (index == message.length - 1) {
+      if (timeStateChat === timeState) {
+        date = t("toDay");
+      } else {
+        date = timeStateChat;
+      }
+    } else if (
+      message[index] &&
+      new Date(message[index + 1].time).toLocaleDateString() !== timeStateChat
     ) {
       if (timeStateChat === timeState) {
         date = t("toDay");
@@ -856,7 +753,7 @@ export default function Room({ navigation, route }) {
       }
     }
 
-    if (message[index - 1] && message[index - 1].user_id == item.user_id) {
+    if (message[index + 1] && message[index + 1].user_id == item.user_id) {
       if (date) {
         tmpRChat = true;
       } else {
@@ -865,7 +762,6 @@ export default function Room({ navigation, route }) {
     } else {
       tmpRChat = true;
     }
-
     return (
       <View>
         {date ? (
@@ -884,7 +780,6 @@ export default function Room({ navigation, route }) {
             </Text>
           </View>
         ) : null}
-
         <View
           key={`chat_${index}`}
           style={[
@@ -893,9 +788,26 @@ export default function Room({ navigation, route }) {
           ]}
         >
           {user.id == item.user_id ? (
-            <Text size="small" style={{ marginRight: 5 }}>
-              {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                // borderWidth: 1,
+                alignItems: "center",
+              }}
+            >
+              {item.is_send == false ? <Errorr height={15} width={15} /> : null}
+              <Text
+                size="small"
+                style={{
+                  marginRight: 5,
+                  // color: item.is_send == false ? "#D75995" : "#464646",
+                  color: "#464646",
+                  marginLeft: 5,
+                }}
+              >
+                {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
+              </Text>
+            </View>
           ) : null}
           <ChatTypelayout
             item={item}
@@ -906,7 +818,10 @@ export default function Room({ navigation, route }) {
             index={index}
             token={token}
             datas={message}
+            socket={socket}
             _uploadimage={(image, id) => _uploadimage(image, id)}
+            connected={connected}
+            socket_connect={socket_connect}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>
@@ -1030,6 +945,13 @@ export default function Room({ navigation, route }) {
         <FlatList
           ref={flatListRef}
           data={message}
+          // inverted={true}
+          // onContentSizeChange={() => {
+          //   // if (flatListRef !== null && flatListRef.current) {
+          //   //   flatListRef.current.scrollToEnd({ animated: false });
+          //   // }
+          // }}
+          // initialScrollIndex={message.length - 1}
           renderItem={RenderChat}
           keyExtractor={(item, index) => `render_${index}`}
           showsVerticalScrollIndicator={false}
@@ -1041,11 +963,10 @@ export default function Room({ navigation, route }) {
             borderRadius: 10,
             // borderWidth: 1,
           }}
-          onContentSizeChange={() => {
-            if (flatListRef !== null && flatListRef.current) {
-              flatListRef.current.scrollToEnd({ animated: false });
-            }
-          }}
+          enableAutoscrollToTop={false}
+          // onStartReached={handleOnStartReached}
+          // onStartReachedThreshold={1}
+          inverted
         />
       </View>
       {keyboardOpenState ? (

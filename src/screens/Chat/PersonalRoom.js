@@ -16,11 +16,11 @@ import {
   Switch,
   BackHandler,
   ScrollView,
-  // FlatList,
+  FlatList,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
-import { FlatList } from "react-native-bidirectional-infinite-scroll";
+// import { FlatList } from "react-native-bidirectional-infinite-scroll";
 import {
   Arrowbackwhite,
   Send,
@@ -88,12 +88,13 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [token, setToken] = useState("");
-  const socket = io(CHATSERVER, {
-    withCredentials: true,
-    extraHeaders: {
-      Authorization: token,
-    },
-  });
+  const [socket_connect, setSocketConnect] = useState(false);
+  // const socket = io(CHATSERVER, {
+  //   withCredentials: true,
+  //   extraHeaders: {
+  //     Authorization: token,
+  //   },
+  // });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
   const [bank_message, setBankMessage] = useState([]);
@@ -164,13 +165,42 @@ export default function Room({ navigation, route }) {
     const cek_koneksi = NetInfo.addEventListener((state) => {
       if (state.isConnected) {
         SetConnection(true);
-        setConnectionMessage();
       } else {
         SetConnection(false);
       }
     });
     cek_koneksi();
   }, [connection_check]);
+
+  const socket = useRef(null);
+
+  useEffect(() => {
+    socket.current = io(CHATSERVER, {
+      withCredentials: true,
+      extraHeaders: {
+        Authorization: token,
+      },
+    });
+    socket.current.emit("join", room);
+    socket.current.on("connect", () => {
+      console.log("isConnect");
+      setSocketConnect(true);
+    });
+
+    socket.current.on("disconnect", () => {
+      console.log("isDisConnect");
+      setSocketConnect(false);
+    });
+    navigation.setOptions(navigationOptions);
+    if (init) {
+      getUserToken();
+    }
+    socket.current.on("new_chat_personal", (data) => {
+      setChatHistory(data);
+    });
+
+    return () => socket.current.disconnect();
+  }, [connected, token]);
 
   const onHeightChanged = (keyboardAccessoryViewHeight) => {
     if (Platform.OS == "ios") {
@@ -305,7 +335,6 @@ export default function Room({ navigation, route }) {
   };
 
   const _uploadimage = async (image, id) => {
-    let chatData = {};
     try {
       image = JSON.parse(image);
       var today = new Date();
@@ -353,7 +382,7 @@ export default function Room({ navigation, route }) {
           is_send: true,
         };
         // if (socket.connected) {
-        socket.emit("message", chatData);
+        socket.current.emit("message", chatData);
         // } else {
         //   sendOffline(chatData);
         // }
@@ -372,7 +401,6 @@ export default function Room({ navigation, route }) {
         throw new Error(responseJson.message);
       }
     } catch (error) {
-      setChatHistory(chatData);
       // RNToasty.Show({
       //   duration: 1,
       //   title: "error : someting wrong!",
@@ -465,28 +493,6 @@ export default function Room({ navigation, route }) {
     headerRightStyle: {
       paddingRight: 20,
     },
-  };
-
-  useEffect(() => {
-    socket.emit("join", room);
-    // socket.on("connect", () => {
-    //   console.log("socket_connect");
-    // });
-    navigation.setOptions(navigationOptions);
-    if (init) {
-      getUserToken();
-    }
-    socket.on("new_chat_personal", (data) => {
-      setChatHistory(data);
-    });
-
-    return () => socket.disconnect();
-  }, []);
-
-  useEffect(() => {}, []);
-
-  const setConnectionMessage = () => {
-    socket.emit("join", room);
   };
 
   const getUserToken = async () => {
@@ -615,7 +621,7 @@ export default function Room({ navigation, route }) {
           time: dateTime,
         };
         if (connected) {
-          await socket.emit("message", chatData);
+          await socket.current.emit("message", chatData);
         } else {
           sendOffline(chatData);
         }
@@ -658,7 +664,7 @@ export default function Room({ navigation, route }) {
         },
         body: `room=${room}&type=sticker&chat=personal&text=${x}&user_id=${user.id}`,
       });
-      await socket.emit("message", chatData);
+      await socket.current.emit("message", chatData);
       await setChat("");
       await setTimeout(function() {
         if (flatListRef !== null && flatListRef.current) {
@@ -767,6 +773,8 @@ export default function Room({ navigation, route }) {
             token={token}
             socket={socket}
             _uploadimage={(image, id) => _uploadimage(image, id)}
+            connected={connected}
+            socket_connect={socket_connect}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>

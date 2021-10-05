@@ -28,6 +28,8 @@ export default function ChatTypelayout({
   index,
   datas,
   token,
+  connected,
+  socket_connect,
 }) {
   // useEffect(() => {
   //   if (item.chat == "group") {
@@ -42,7 +44,7 @@ export default function ChatTypelayout({
   const Loadingkirim = () => {
     setTimeout(() => {
       setloading(false);
-    }, 10000);
+    }, 5000);
     if (loading) {
       return <ActivityIndicator size="large" color="#209fae" />;
     } else {
@@ -95,14 +97,15 @@ export default function ChatTypelayout({
     }
   };
 
-  // useEffect(() => {
-  if (item.is_send == false && item.type !== "att_image") {
-    if (socket.connected) {
-      socket.emit("message", item);
+  useEffect(() => {
+    if (item.is_send == false && item.type !== "att_image") {
+      socket.current.emit("message", item);
     }
-  }
-
-  // }, []);
+    if (item.is_send == false && item.type == "att_image") {
+      setloading(true);
+      _uploadimage(item.text, item.id);
+    }
+  }, [connected, socket_connect]);
   // sticker layout
   if (item.type == "sticker") {
     return (
@@ -1017,7 +1020,8 @@ export default function ChatTypelayout({
               width: moderateScale(200, 2),
               height: moderateScale(170, 2),
               // maxHeight: 400,
-              borderRadius: 10,
+              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
               alignSelf: "center",
               flexDirection: "row",
               // marginVertical: 10,
@@ -1040,11 +1044,11 @@ export default function ChatTypelayout({
 
   return (
     <View>
-      {item.chat == "group" ? (
+      {/* {item.chat == "group" ? (
         item.user_id == user_id ? null : (
           <Text style={{ marginBottom: 5 }}>{datas[index].name}</Text>
         )
-      ) : null}
+      ) : null} */}
       <View
         style={[
           styles.balloon,
