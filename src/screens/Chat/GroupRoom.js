@@ -22,6 +22,7 @@ import {
   Emoticon,
   CameraChat,
   Xgray,
+  Errorr,
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -492,6 +493,7 @@ export default function Room({ navigation, route }) {
           id: uuid,
           room: room,
           chat: "group",
+          from: from,
           type: "text",
           text: chat,
           user_id: user.id,
@@ -530,22 +532,23 @@ export default function Room({ navigation, route }) {
         chat: "group",
         type: "sticker",
         text: x,
+        from: from,
         user_id: user.id,
-        name: `${user.first_name} ${user.last_name}`,
+        name: `${user.first_name} ${user.last_name ? user.last_name : ""}`,
       };
-      await fetch(`${CHATSERVER}/api/group/send`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `user_id=${user.id}&type=sticker&chat=group&room=${room}&from=${from}&text=${x}&name=${user.first_name} ${user.last_name}`,
-      });
+      // await fetch(`${CHATSERVER}/api/group/send`, {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     "Content-Type": "application/x-www-form-urlencoded",
+      //   },
+      //   body: `user_id=${user.id}&type=sticker&chat=group&room=${room}&from=${from}&text=${x}&name=${user.first_name} ${user.last_name}`,
+      // });
       await socket.current.emit("message", chatData);
       await setChat("");
       await setTimeout(function() {
         if (flatListRef !== null && flatListRef.current) {
-          flatListRef.current.scrollToEnd({ animated: true });
+          flatListRef.current.scrollToOffset({ animated: true });
         }
       }, 250);
       await setButton(true);
@@ -562,56 +565,36 @@ export default function Room({ navigation, route }) {
     // }
   };
 
-  function create_UUID() {
-    var dt = new Date().getTime();
-    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
-      c
-    ) {
-      var r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
-    return uuid;
-  }
-
   const pickcamera = async () => {
-    let chatData = {};
     ImagePicker.openCamera({
       // width: 500,
       // height: 500,
       cropping: true,
       // cropperCircleOverlay: true,
       // includeBase64: true,
-    })
-      .then((image) => {
-        let id = create_UUID();
-        let dateTime = new Date();
-        image = JSON.stringify(image);
-        let chatData = {
-          id: id,
-          room: room,
-          chat: "gorup",
-          type: "att_image",
-          text: image,
-          user_id: user.id,
-          time: dateTime,
-          is_send: false,
-        };
-        setChatHistory(chatData);
-        // setTimeout(function() {
-        //   _uploadimage(image, id);
-        //   if (flatListRef !== null && flatListRef.current) {
-        //     flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-        //   }
-        // }, 1000);
-        // setmodalCamera(false);
-      })
-      .catch((err) => {
-        RNToasty.Show({
-          title: "",
-          position: "bottom",
-        });
-      });
+    }).then((image) => {
+      let id = Uuid();
+      let dateTime = new Date();
+      image = JSON.stringify(image);
+      let chatData = {
+        id: id,
+        room: room,
+        chat: "personal",
+        type: "att_image",
+        text: image,
+        user_id: user.id,
+        time: dateTime,
+        is_send: false,
+      };
+      setChatHistory(chatData);
+      setTimeout(function() {
+        _uploadimage(image, id);
+        if (flatListRef !== null && flatListRef.current) {
+          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+        }
+      }, 1000);
+      setmodalCamera(false);
+    });
   };
 
   const pickGallery = async () => {
@@ -623,13 +606,13 @@ export default function Room({ navigation, route }) {
       // includeBase64: true,
     })
       .then((image) => {
-        let id = create_UUID();
+        let id = Uuid();
         let dateTime = new Date();
         image = JSON.stringify(image);
         let chatData = {
           id: id,
           room: room,
-          chat: "group",
+          chat: "personal",
           type: "att_image",
           text: image,
           user_id: user.id,
@@ -640,19 +623,15 @@ export default function Room({ navigation, route }) {
         setTimeout(function() {
           _uploadimage(image, id);
           if (flatListRef !== null && flatListRef.current) {
-            flatListRef.current.scrollToEnd({ animated: true, offset: 0 });
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
           }
         }, 1000);
         setmodalCamera(false);
       })
       .catch((err) => {
-        RNToasty.Show({
-          title: "",
-          position: "bottom",
-        });
+        console.log(err);
       });
   };
-
   const _uploadimage = async (image, id) => {
     try {
       image = JSON.parse(image);
@@ -694,6 +673,7 @@ export default function Room({ navigation, route }) {
           id: id,
           room: room,
           chat: "group",
+          from: from,
           type: "att_image",
           text: responseJson.filepath,
           user_id: user.id,
