@@ -1031,7 +1031,8 @@ export default function ChatTypelayout({
               alignContent: "center",
             }}
             imageStyle={{
-              borderRadius: 10,
+              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
             }}
             blurRadius={3}
           >
@@ -1044,11 +1045,11 @@ export default function ChatTypelayout({
 
   return (
     <View>
-      {/* {item.chat == "group" ? (
-        item.user_id == user_id ? null : (
-          <Text style={{ marginBottom: 5 }}>{datas[index].name}</Text>
-        )
-      ) : null} */}
+      {item.chat == "group" ? (
+        item.user_id !== user_id && tmpRChat ? (
+          <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+        ) : null
+      ) : null}
       <View
         style={[
           styles.balloon,

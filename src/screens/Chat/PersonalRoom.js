@@ -42,6 +42,7 @@ import {
   FunImage,
   StickerModal,
   FunImageAutoSize,
+  Uuid,
 } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -274,7 +275,7 @@ export default function Room({ navigation, route }) {
       // cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
-      let id = create_UUID();
+      let id = Uuid();
       let dateTime = new Date();
       image = JSON.stringify(image);
       let chatData = {
@@ -307,7 +308,7 @@ export default function Room({ navigation, route }) {
       // includeBase64: true,
     })
       .then((image) => {
-        let id = create_UUID();
+        let id = Uuid();
         let dateTime = new Date();
         image = JSON.stringify(image);
         let chatData = {
@@ -592,20 +593,8 @@ export default function Room({ navigation, route }) {
     setChatHistory(data);
   };
 
-  function create_UUID() {
-    var dt = new Date().getTime();
-    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
-      c
-    ) {
-      var r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
-    return uuid;
-  }
-
   const submitChatMessage = async () => {
-    let uuid = create_UUID();
+    let uuid = Uuid();
     if (button) {
       SetkeyboardOpenState(false);
       if (chat && chat.replace(/\s/g, "").length) {
