@@ -19,7 +19,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
-import { PlusBlack, GridAll, GridDay } from "../../../assets/svg";
+import { PlusBlack, GridAll, GridDay, Bottom } from "../../../assets/svg";
 import { Item, Input, Label } from "native-base";
 import CreateAlbum from "../../../graphQL/Mutation/Itinerary/CreateNewAlbum";
 import { useMutation } from "@apollo/client";
@@ -120,16 +120,24 @@ export default function Albumheader({
                 borderWidth: 1,
                 borderColor: "#d3d3d3",
                 backgroundColor: "#f6f6f6",
+                marginRight: 5,
                 marginHorizontal: 2.5,
                 borderRadius: 5,
                 flexDirection: "row",
               }}
             >
               {grid === 1 ? (
-                <GridDay width={15} height={15} />
+                <GridDay width={20} height={20} />
               ) : (
-                <GridAll width={15} height={15} />
+                <GridAll width={20} height={20} />
               )}
+              <View
+                style={{
+                  marginLeft: 5,
+                }}
+              >
+                <Bottom height={20} width={20} />
+              </View>
             </MenuTrigger>
             <MenuOptions>
               <MenuOption
@@ -157,17 +165,34 @@ export default function Albumheader({
               }}
               style={{
                 paddingVertical: 10,
-                paddingHorizontal: 25,
+                paddingHorizontal: 20,
                 alignContent: "center",
                 justifyContent: "center",
-                borderWidth: 1,
-                borderColor: "#d3d3d3",
-                borderStyle: "dashed",
+
+                flexDirection: "row",
+                backgroundColor: "#daf0f2",
+
                 marginHorizontal: 2.5,
                 borderRadius: 5,
               }}
             >
-              <PlusBlack width={10} height={10} />
+              <View
+                style={{
+                  justifyContent: "center",
+                  marginRight: 5,
+                }}
+              >
+                <PlusBlack width={10} height={10} />
+              </View>
+              <View
+                style={{
+                  justifyContent: "center",
+                }}
+              >
+                <Text size={"description"} type={"regular"}>
+                  {"Create New"}
+                </Text>
+              </View>
             </Pressable>
           ) : null
         }

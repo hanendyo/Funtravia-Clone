@@ -37,6 +37,7 @@ import {
   FunImageBackground,
   FunImage,
 } from "../../component";
+import normalize from "react-native-normalize";
 
 export default function AllDestination(props) {
   const { t } = useTranslation();
@@ -45,10 +46,13 @@ export default function AllDestination(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: "Popular Destination",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("popularDestination"),
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("popularDestination")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -62,8 +66,11 @@ export default function AllDestination(props) {
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
