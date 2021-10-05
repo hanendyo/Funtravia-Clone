@@ -38,6 +38,7 @@ import Ripple from "react-native-material-ripple";
 import LinearGradient from "react-native-linear-gradient";
 import Traveldetails from "../../graphQL/Query/TravelGoal/Traveldetail";
 import Travelrelateds from "../../graphQL/Query/TravelGoal/TravelRelated";
+import normalize from "react-native-normalize";
 
 export default function TravelGoalDetail(props) {
   const { t, i18n } = useTranslation();
@@ -393,8 +394,13 @@ export default function TravelGoalDetail(props) {
         {datadetail?.description ? (
           <Text
             size="readable"
-            numberOfLines={2}
-            style={{ textAlign: "justify" }}
+            // numberOfLines={2}
+            type="regular"
+            style={{
+              textAlign: "left",
+              lineHeight: normalize(20),
+              marginBottom: 5,
+            }}
           >
             {datadetail?.description}
           </Text>
@@ -410,7 +416,7 @@ export default function TravelGoalDetail(props) {
             Source :{" "}
           </Text> */}
           {datadetail?.created_at ? (
-            <Text type="light" size="small" style={{ fontStyle: "italic" }}>
+            <Text type="light" size="small">
               {getdate(datadetail?.created_at)}
             </Text>
           ) : null}
@@ -449,7 +455,6 @@ export default function TravelGoalDetail(props) {
                     resizeMode={"cover"}
                     style={{
                       borderWidth: 0.4,
-                      marginTop: i.title ? 5 : 0,
                       borderColor: "#d3d3d3",
                       height: Dimensions.get("screen").width * 0.4,
                       width: "100%",
@@ -547,7 +552,7 @@ export default function TravelGoalDetail(props) {
 
       {/* more related */}
       {datarelated.length > 0 ? (
-        <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+        <View style={{ paddingHorizontal: 20 }}>
           <View
             style={{
               flexDirection: "row",
@@ -613,7 +618,6 @@ export default function TravelGoalDetail(props) {
                   style={{
                     paddingLeft: 10,
                     width: (Dimensions.get("screen").width - 60) * 0.75,
-                    // borderWidth: 1,
                   }}
                 >
                   <View
@@ -621,19 +625,35 @@ export default function TravelGoalDetail(props) {
                       flexDirection: "row",
                       width: "100%",
                       justifyContent: "space-between",
+                      marginBottom: 3,
                     }}
                   >
-                    <Text size="small">{item?.category?.name}</Text>
-                    <Text size="small">{getdate(item.created_at)}</Text>
+                    <Text
+                      size="small"
+                      style={{ color: "#209fae" }}
+                      type="regular"
+                    >
+                      {item?.category?.name}
+                    </Text>
+                    <Text size="small" type="regular">
+                      {getdate(item.created_at)}
+                    </Text>
                   </View>
-                  <Text size="desription" type="bold">
+                  <Text
+                    size="desription"
+                    type="bold"
+                    numberOfLines={1}
+                    style={{ marginBottom: 2 }}
+                  >
                     {item.title}
                   </Text>
                   <Text
                     numberOfLines={2}
-                    size="readable"
+                    size="description"
+                    type="light"
                     style={{
-                      textAlign: "justify",
+                      textAlign: "left",
+                      lineHeight: normalize(16),
                     }}
                   >
                     {item.description}
