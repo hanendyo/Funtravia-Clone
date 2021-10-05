@@ -33,6 +33,7 @@ import {
   Padlock,
   Bottom,
   Above,
+  ItineraryIcon,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -1554,11 +1555,17 @@ export default function ItinerarySearchCategory(props) {
                       actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
                     paddingTop: 10,
                     paddingBottom: 15,
+                    flexDirection: "row",
                   }}
                 >
+                  <ItineraryIcon
+                    style={{ marginRight: 5 }}
+                    height={20}
+                    width={20}
+                  />
                   <Text
                     size="title"
-                    type={actives == "Itinerary" ? "bold" : "regular"}
+                    type={actives == "Itinerary" ? "bold" : "light"}
                     style={{
                       color: actives == "Itinerary" ? "#209FAE" : "#464646",
                       paddingBottom: 3,
@@ -1578,11 +1585,17 @@ export default function ItinerarySearchCategory(props) {
                       actives == "Album" ? "#249FAE" : "#EEEEEE",
                     paddingTop: 10,
                     paddingBottom: 15,
+                    flexDirection: "row",
                   }}
                 >
+                  <TravelAlbum
+                    style={{ marginRight: 5 }}
+                    height={20}
+                    width={20}
+                  />
                   <Text
                     size="title"
-                    type={actives == "Album" ? "bold" : "regular"}
+                    type={actives == "Album" ? "bold" : "light"}
                     style={{
                       color: actives == "Album" ? "#209FAE" : "#464646",
                     }}
@@ -1601,8 +1614,14 @@ export default function ItinerarySearchCategory(props) {
                       actives == "Stories" ? "#249FAE" : "#EEEEEE",
                     paddingTop: 10,
                     paddingBottom: 15,
+                    flexDirection: "row",
                   }}
                 >
+                  <TravelStoriesdis
+                    style={{ marginRight: 5 }}
+                    height={20}
+                    width={20}
+                  />
                   <Text
                     size="title"
                     // type={actives == "Stories" ? "bold" : "reguler"}
