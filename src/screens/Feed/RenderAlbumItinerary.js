@@ -170,35 +170,36 @@ export default function RenderAlbum({
           size="f"
           source={{ uri: data.assets[indexAktif].filepath }}
         >
-          {data.itinerary !== null ? (
-            <Pressable
-              onPress={() => goToItinerary(data)}
-              style={({ pressed }) => [
-                {
-                  position: "absolute",
-                  top: 15,
-                  right: 10,
-                  backgroundColor: "#040404",
-                  opacity: pressed ? 1 : 0.8,
-                  //   paddingHorizontal: 15,
-                  borderRadius: 14,
-                  height: 28,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                },
-              ]}
-            >
-              <AlbumFeed
-                height={17}
-                width={17}
-                style={{
-                  marginHorizontal: 15,
-                  marginVertical: 10,
-                }}
-              />
-            </Pressable>
-          ) : null}
+          <Pressable
+            onPress={() =>
+              data.itinerary !== null ? goToItinerary(data) : null
+            }
+            style={({ pressed }) => [
+              {
+                position: "absolute",
+                top: 15,
+                right: 10,
+                backgroundColor: "#040404",
+                opacity: pressed ? 1 : 0.8,
+                //   paddingHorizontal: 15,
+                borderRadius: 14,
+                height: 28,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              },
+            ]}
+          >
+            <AlbumFeed
+              height={17}
+              width={17}
+              style={{
+                marginHorizontal: 15,
+                marginVertical: 10,
+              }}
+            />
+          </Pressable>
+
           <View
             style={{
               position: "absolute",

@@ -554,7 +554,7 @@ export default function Home(props) {
                             flexDirection: "row",
                             justifyContent: "flex-end",
                             alignItems: "center",
-                            width: 75,
+                            width: 85,
                           }}
                         >
                           <Text

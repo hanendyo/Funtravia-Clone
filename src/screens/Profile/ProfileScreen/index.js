@@ -1187,7 +1187,7 @@ export default function OtherProfile(props) {
       >
         <Text
           type={focused ? "bold" : "regular"}
-          size="label"
+          size="title"
           style={{
             color: focused ? "#209FAE" : "#464646",
           }}
@@ -1296,6 +1296,7 @@ export default function OtherProfile(props) {
           paddingHorizontal: paddingHorizontal,
           minHeight: height - SafeStatusBar + HeaderHeight,
           paddingBottom: 10,
+          // margin: Platform.OS === "ios" ? 10 : 5,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -1342,12 +1343,14 @@ export default function OtherProfile(props) {
             shadowOpacity: 0,
             backgroundColor: "white",
             height: TabBarHeight,
-            borderBottomWidth: 2,
-            borderBottomColor: "#daf0f2",
+            borderBottomWidth: 1,
+            borderBottomColor: "#d1d1d1",
           }}
           renderLabel={renderLabel}
           indicatorStyle={{
             backgroundColor: "#209fae",
+            height: "5%",
+            bottom: "-3%",
           }}
         />
         {tabIndex === 0 ? (
@@ -1377,8 +1380,9 @@ export default function OtherProfile(props) {
               )}
               <Text
                 style={{
-                  marginTop: 3,
+                  marginTop: 6,
                   color: tabPost === 0 ? "#209fae" : "#464646",
+                  fontWeight: tabPost === 0 ? "bold" : "normal",
                 }}
               >
                 All Post
@@ -1401,8 +1405,9 @@ export default function OtherProfile(props) {
               )}
               <Text
                 style={{
-                  marginTop: 3,
+                  marginTop: 6,
                   color: tabPost === 1 ? "#209fae" : "#464646",
+                  fontWeight: tabPost === 1 ? "bold" : "normal",
                 }}
               >
                 Album
@@ -1425,8 +1430,9 @@ export default function OtherProfile(props) {
               )}
               <Text
                 style={{
-                  marginTop: 3,
+                  marginTop: 6,
                   color: tabPost === 2 ? "#209fae" : "#464646",
+                  fontWeight: tabPost === 2 ? "bold" : "normal",
                 }}
               >
                 Tag
