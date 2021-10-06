@@ -705,6 +705,10 @@
   "failedToLinkCopiedToClipboard": "Failed To Copied The Link To Clipboard",
   "you" :"You",
   "travelpicture" :"Travel Picture",
-  "diary" : "Diary"
+  "diary" : "Diary",
+  "TripnotStarted" : "Your Trip is not started yet",
+  "waittripongoing" :"Please wait until this trip ongoing",
+  "addphotototrip" : "Add photo to album only available when you trip is on going",
+  "alreadyexist" : "Email already exist"
 
 }
