@@ -671,7 +671,7 @@ export default function Post(props) {
       <View
         style={{
           backgroundColor: "#209FAE",
-          height: 55,
+          height: Platform.OS === "ios" ? 44 : 55,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
