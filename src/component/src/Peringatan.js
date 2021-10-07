@@ -110,7 +110,7 @@ export default function ImageSlide({ aler, setClose }) {
                       marginHorizontal: 5,
                     }}
                   >
-                    {aler?.detail}
+                    {t(aler?.detail)}
                   </Text>
                 </View>
               ) : null}

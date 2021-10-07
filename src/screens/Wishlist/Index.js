@@ -274,7 +274,7 @@ export default function Wishlist(props) {
             placeholder={t("search")}
             placeholderTextColor="#464646"
             returnKeyType="search"
-            autoFocus={true}
+            autoFocus={false}
             fontSize={16}
           />
         </View>

@@ -244,6 +244,7 @@ export default function ItineraryDetail(props) {
   let [showside, setshowside] = useState(false);
   let [modalcover, setmodalcover] = useState(false);
   let [modalAlbum, setmodalAlbum] = useState(false);
+  let [modalTrip, setmodalTrip] = useState(false);
   let [users, setuser] = useState(null);
   const loadasync = async () => {
     let user = await AsyncStorage.getItem("setting");
@@ -1825,9 +1826,7 @@ export default function ItineraryDetail(props) {
                             token: token,
                           },
                         })
-                      : Alert.alert(
-                          "Upss, kamu tidak memiliki akses sebagai admin"
-                        )
+                      : null
                   }
                 >
                   {datadetail.itinerary_detail.isprivate == false ? (
@@ -3862,7 +3861,7 @@ export default function ItineraryDetail(props) {
           onTabPress={({ route, preventDefault }) => {
             console.log("route", route),
               status === "edit"
-                ? Alert.alert(t("Tripbelumaktif"))
+                ? setmodalTrip(true)
                 : route.title === "Cerita" || route.title === "Diary"
                 ? Alert.alert(t("comingsoon"))
                 : null;
@@ -6014,6 +6013,29 @@ export default function ItineraryDetail(props) {
           >
             <View
               style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "#F6F6F6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginTop: 13,
+                  marginBottom: 15,
+                }}
+              >
+                Oops
+              </Text>
+            </View>
+            <View
+              style={{
                 backgroundColor: "white",
                 alignItems: "center",
                 alignContent: "center",
@@ -6077,6 +6099,125 @@ export default function ItineraryDetail(props) {
           </Pressable>
         </Modalss>
 
+        {/* modal alert trip belum aktif */}
+        <Modalss
+          onBackdropPress={() => {
+            setmodalerrors(false);
+          }}
+          onRequestClose={() => setmodalTrip(false)}
+          onDismiss={() => setmodalTrip(false)}
+          visible={modalTrip}
+          transparent={true}
+        >
+          <Pressable
+            onPress={() => {
+              setmodalTrip(false);
+            }}
+            style={{
+              height: Dimensions.get("screen").height,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+              // opacity: 0.7,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
+            }}
+          >
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "#F6F6F6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginTop: 13,
+                  marginBottom: 15,
+                }}
+              >
+                Oops
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                alignContent: "center",
+                // height: 100,
+                width: Dimensions.get("screen").width - 100,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
+                paddingVertical: 20,
+                paddingHorizontal: 15,
+              }}
+            >
+              <Errors height={80} width={80} />
+              <Text
+                type="bold"
+                size="title"
+                style={{
+                  marginTop: 20,
+                }}
+              >
+                {t("TripnotStarted")}
+              </Text>
+              <Text
+                // textAlign={"center"}
+                size="label"
+                style={{
+                  textAlign: "center",
+                  width: "100%",
+                }}
+              >
+                {t("waittripongoing")}
+              </Text>
+              <View
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "#f3f3f3",
+                  padding: 20,
+                }}
+              >
+                <Text
+                  size="label"
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {t("addphotototrip")}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setmodalTrip(false);
+                }}
+                style={{
+                  paddingTop: 20,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="label"
+                  style={{
+                    color: "#209fae",
+                  }}
+                >
+                  {t("understand")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modalss>
+
         <Sidebar
           props={props}
           show={showside}
@@ -6089,7 +6230,7 @@ export default function ItineraryDetail(props) {
                   justifyContent: "flex-start",
                 }}
               >
-                {Anggota === "true" ? (
+                {Anggota === "true" && statusUsers == true ? (
                   <TouchableOpacity
                     style={{
                       flexDirection: "row",
