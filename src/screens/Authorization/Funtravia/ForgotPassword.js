@@ -10,18 +10,17 @@ import {
 } from "react-native";
 import { CustomImage, FloatingInput } from "../../../component";
 import { lupass_satu } from "../../../assets/png";
-import { Arrowbackblack } from "../../../assets/svg";
+import { Arrowbackblack, Arrowbackiosblack } from "../../../assets/svg";
 import { Text, Button } from "../../../component";
 import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
 import { Peringatan } from "../../../component";
 import FORGOT from "../../../graphQL/Mutation/Login/forgot";
 import { useTranslation } from "react-i18next";
 
 export default function ForgotPassword(props) {
   const NavigationComponent = {
-    title: "",
     headerShown: true,
+    headerTitle: "",
     headerMode: "screen",
     headerTransparent: true,
     headerLeft: () => (
@@ -37,19 +36,21 @@ export default function ForgotPassword(props) {
           marginLeft: 15,
         }}
       >
-        <Arrowbackblack height={20} width={20}></Arrowbackblack>
+        {Platform.OS == "ios" ? (
+          <Arrowbackiosblack height={15} width={15}></Arrowbackiosblack>
+        ) : (
+          <Arrowbackblack height={20} width={20}></Arrowbackblack>
+        )}
       </Button>
     ),
   };
   useEffect(() => {
     props.navigation.setOptions(NavigationComponent);
-    t();
   }, []);
   const { t, i18n } = useTranslation();
 
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let [email, setEmail] = useState("");
-  let [modalVisible, setModalVisible] = useState(false);
   let [sendForgot] = useMutation(FORGOT);
   const requestForgot = async () => {
     try {
@@ -83,11 +84,13 @@ export default function ForgotPassword(props) {
       });
     }
   };
+
   return (
     <KeyboardAvoidingView
       style={{
         flex: 1,
         backgroundColor: "#fff",
+        flexDirection: "column",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
       // keyboardVerticalOffset={30}
@@ -108,8 +111,6 @@ export default function ForgotPassword(props) {
       >
         <View
           style={{
-            // flex: 1,
-            // flexDirection: 'row',
             justifyContent: "center",
             alignItems: "center",
             alignContent: "center",
@@ -154,6 +155,7 @@ export default function ForgotPassword(props) {
                 customTextStyle={styles.inputTextStyle}
                 keyboardType="email-address"
                 label="Email"
+                autoCapitalize="none"
               />
             </View>
             <View
@@ -163,12 +165,6 @@ export default function ForgotPassword(props) {
             >
               <Button
                 onPress={() => Forgot()}
-                // onPress={() => {
-                //   props.navigation.navigate("resetpwd", {
-                //     email: "ganjar@funtravia.com",
-                //     otp: 615685,
-                //   });
-                // }}
                 text={t("submit")}
                 color="secondary"
                 style={{

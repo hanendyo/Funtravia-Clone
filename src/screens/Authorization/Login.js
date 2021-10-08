@@ -34,6 +34,7 @@ import {
 } from "../../component";
 import { Keyboard, KeyboardEvent } from "react-native";
 import { StackActions } from "@react-navigation/native";
+import normalize from "react-native-normalize";
 
 export default function Login({ navigation, route }) {
   const { t } = useTranslation();
@@ -119,8 +120,6 @@ export default function Login({ navigation, route }) {
       keyboardDidHideListener.current.remove();
     };
   }, []);
-
-  console.log("keyboard", keyboardOffset);
 
   const signUp = () => {
     navigation.navigate("RegisterScreen");
@@ -243,6 +242,7 @@ export default function Login({ navigation, route }) {
                 customTextStyle={styles.inputTextStyle}
                 keyboardType="email-address"
                 label="Email"
+                autoCapitalize="none"
               />
               <View style={{ flexDirection: "row" }}>
                 <FloatingInput
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   },
   inputTextStyle: {
     width: Dimensions.get("window").width / 1.2,
-    fontSize: 14,
+    fontSize: normalize(14),
     padding: 0,
   },
 });

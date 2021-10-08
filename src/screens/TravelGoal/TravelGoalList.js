@@ -82,6 +82,7 @@ export default function TravelGoalList(props) {
   let [dataFillter, setdataFillter] = useState([]);
   let [dataFillters, setdataFillters] = useState([]);
   let [texts, setText] = useState(null);
+  let [textCategory, setTextCategory] = useState("");
   let [modal, setModal] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
@@ -96,6 +97,7 @@ export default function TravelGoalList(props) {
     data: datacategorys,
     error: errorcategory,
   } = useQuery(Travelcategorys, {
+    variables: { keyword: textCategory },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -111,6 +113,7 @@ export default function TravelGoalList(props) {
       await setdataFillter(filter);
       await setdataFillter(filter);
       await setdatacategory(datacategorys?.category_travelgoal);
+      await setdatacategoryFilter(datacategorys?.category_travelgoal);
     },
   });
 
@@ -237,9 +240,6 @@ export default function TravelGoalList(props) {
     }
   };
 
-  console.log("datacategory", datacategory);
-  console.log("datacategoryfilter", datacategoryFilter);
-
   const _handleCheck = async (item, index, datas) => {
     let dataCheck = [...datacategory];
     let temp_idCategory = [...idCategory];
@@ -271,6 +271,7 @@ export default function TravelGoalList(props) {
     await setIdFilterCategory(idCategory);
     await setdatacategoryFilter(datacategory);
     await setModal(false);
+    await setTextCategory("");
   };
 
   const ClearAllFilter = async () => {
@@ -288,7 +289,6 @@ export default function TravelGoalList(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     if (modal == true) {
-      console.log("masuk");
       setdatacategory(datacategoryFilter);
     }
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -296,7 +296,7 @@ export default function TravelGoalList(props) {
       // Getdatacategory();
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, modal]);
 
   return (
     <View
@@ -394,7 +394,6 @@ export default function TravelGoalList(props) {
 
       <FlatList
         data={dataList}
-        style={{}}
         keyExtractor={(item) => item.id}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
@@ -411,6 +410,7 @@ export default function TravelGoalList(props) {
         onEndThreshold={3000}
         renderItem={({ item, index }) => (
           <Pressable
+            key={index}
             onPress={() => {
               props.navigation.push("TravelGoalDetail", {
                 article_id: item.id,
@@ -490,11 +490,19 @@ export default function TravelGoalList(props) {
 
       <Modal
         keyboardShouldPersistTaps={"always"}
-        onBackdropPress={() => {
-          setModal(false);
+        avoidKeyboard={true}
+        onBackdropPress={async () => {
+          await setTextCategory("");
+          await setModal(false);
         }}
-        onRequestClose={() => setModal(false)}
-        onDismiss={() => setModal(false)}
+        onRequestClose={async () => {
+          await setTextCategory("");
+          await setModal(false);
+        }}
+        onDismiss={async () => {
+          await setTextCategory("");
+          await setModal(false);
+        }}
         isVisible={modal}
         avoidKeyboard={true}
         style={{
@@ -505,7 +513,7 @@ export default function TravelGoalList(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height: Dimensions.get("screen").height * 0.43,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopLeftRadius: 15,
@@ -545,7 +553,9 @@ export default function TravelGoalList(props) {
                 alignContent: "flex-end",
                 alignItems: "flex-start",
               }}
-              onPress={() => setModal(false)}
+              onPress={() => {
+                setModal(false);
+              }}
             >
               <Xhitam height={15} width={15} />
             </TouchableOpacity>
@@ -604,8 +614,8 @@ export default function TravelGoalList(props) {
                     fontFamily: "Lato-Regular",
                     fontSize: normalize(14),
                   }}
-                  onChange={() => null}
-                  value={null}
+                  onChangeText={(e) => setTextCategory(e)}
+                  value={textCategory}
                   placeholder={t("search")}
                 ></TextInput>
               </View>

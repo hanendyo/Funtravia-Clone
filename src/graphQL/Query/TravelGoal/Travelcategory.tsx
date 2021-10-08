@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const travelgoal_firsts = gql`
-  query {
-    category_travelgoal {
+  query($keyword: String) {
+    category_travelgoal(keyword: $keyword) {
       id
       name
       icon

@@ -325,6 +325,7 @@ export default function TravelGoal(props) {
         {dataPopular.map((item, index) => {
           return (
             <Ripple
+              key={index}
               onPress={() => {
                 props.navigation.push("TravelGoalDetail", {
                   article_id: item.id,

@@ -112,7 +112,6 @@ export default function TravelGoalDetail(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     Traveldetail();
-    // console.log(props.route?.params?.article_id);
   }, []);
 
   const [
@@ -130,7 +129,6 @@ export default function TravelGoalDetail(props) {
       },
     },
     onCompleted: () => {
-      // console.log(datarelateds);
       setdatarelated(datarelateds.related_travelgoal);
     },
   });
@@ -139,7 +137,6 @@ export default function TravelGoalDetail(props) {
     props.navigation.setOptions(HeaderComponent);
     Traveldetail();
     Travelrelated();
-    // console.log(props.route?.params?.article_id);
   }, []);
 
   const getdate = (date) => {
@@ -429,7 +426,10 @@ export default function TravelGoalDetail(props) {
       {/* detail */}
       {datadetail?.content?.map((i, index) => {
         return (
-          <View style={{ paddingHorizontal: 15, width: "100%" }}>
+          <View
+            style={{ paddingHorizontal: 15, width: "100%" }}
+            key={`image ${index}`}
+          >
             {i.type === "image" ? (
               <View>
                 {i.title ? (
@@ -467,7 +467,7 @@ export default function TravelGoalDetail(props) {
                   style={{
                     textAlign: "left",
                     marginTop: 5,
-                    marginBottom: 15,
+                    marginBottom: 10,
                     color: "#616161",
                     paddingHorizontal: 5,
                   }}
@@ -484,7 +484,6 @@ export default function TravelGoalDetail(props) {
                     style={{
                       marginBottom: 5,
                       paddingHorizontal: 5,
-
                       color: "#464646",
                     }}
                   >
@@ -498,8 +497,7 @@ export default function TravelGoalDetail(props) {
                     lineHeight: 22,
                     textAlign: "left",
                     color: "#464646",
-                    marginBottom: 15,
-
+                    // marginBottom: 15,
                     paddingHorizontal: 5,
                   }}
                 >
@@ -579,7 +577,7 @@ export default function TravelGoalDetail(props) {
                 }}
               ></View>
               <Text type="bold" size="title">
-                {t("More Related Articles")}
+                {t("morearticle")}
               </Text>
             </View>
             <View></View>
@@ -588,6 +586,7 @@ export default function TravelGoalDetail(props) {
           {datarelated?.map((item, index) => {
             return (
               <Ripple
+                key={`description ${index}`}
                 onPress={() => {
                   props.navigation.push("TravelGoalDetail", {
                     article_id: item.id,
