@@ -27,15 +27,15 @@ PushNotification.configure({
     console.log("TOKEN:", token);
   },
   onNotification: function(notification) {
-    console.log("NOTIFICATION:", notification);
+    // console.log("NOTIFICATION:", notification);
     notification.finish(PushNotificationIOS.FetchResult.NoData);
   },
   onAction: function(notification) {
-    console.log("ACTION:", notification.action);
-    console.log("NOTIFICATION:", notification);
+    // console.log("ACTION:", notification.action);
+    // console.log("NOTIFICATION:", notification);
   },
   onRegistrationError: function(err) {
-    console.error(err.message, err);
+    // console.error(err.message, err);
   },
   permissions: {
     alert: true,
@@ -43,7 +43,7 @@ PushNotification.configure({
     sound: true,
   },
   onMessage: function(notification) {
-    console.log("onmessage:", notification);
+    // console.log("onmessage:", notification);
   },
   popInitialNotification: true,
   requestPermissions: true,
@@ -144,7 +144,7 @@ function App() {
       });
     });
     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-      console.log("BG_NF", remoteMessage);
+      // console.log("BG_NF", remoteMessage);
       setDataNotifikasi(remoteMessage);
     });
     SplashScreen.hide();
@@ -153,7 +153,7 @@ function App() {
   useEffect(() => {
     astor();
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      console.log("foregroundmsg", remoteMessage);
+      // console.log("foregroundmsg", remoteMessage);
     });
 
     return unsubscribe;

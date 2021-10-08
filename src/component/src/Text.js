@@ -17,6 +17,7 @@ type Props = TextProps & {
     | "description"
     | "label"
     | "title"
+    | "header"
     | "h5"
     | "h4"
     | "h3"
@@ -52,6 +53,7 @@ const fontSize = StyleSheet.create({
   readable: { fontSize: normalize(14) },
   label: { fontSize: normalize(14) },
   title: { fontSize: normalize(16) },
+  header: { fontSize: normalize(18) },
   h5: { fontSize: normalize(20) },
   h4: { fontSize: normalize(26) },
   h3: { fontSize: normalize(32) },

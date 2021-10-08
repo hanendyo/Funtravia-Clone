@@ -29,6 +29,7 @@ import FunVideo from "./src/FunVideo";
 import StickerModal from "./src/Sticker/StickerModal";
 import FunMaps from "./src/FunMaps";
 import PagenotFound from "./src/PagenotFound";
+import Uuid from "./src/Uuid";
 
 export {
   Text,
@@ -62,4 +63,5 @@ export {
   StickerModal,
   FunMaps,
   PagenotFound,
+  Uuid,
 };

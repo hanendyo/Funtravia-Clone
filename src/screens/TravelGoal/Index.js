@@ -31,7 +31,7 @@ export default function TravelGoal(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" style={{ fontSize: normalize(18), color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("travelgoals")}
       </Text>
     ),
@@ -172,8 +172,6 @@ export default function TravelGoal(props) {
     }
   };
 
-  console.log("image", dataTop?.travelgoal_first?.cover);
-
   return (
     <ScrollView
       contentContainerStyle={
@@ -203,9 +201,6 @@ export default function TravelGoal(props) {
                 : null
             }
             style={{
-              // shadowOpacity: 0.5,
-              // shadowColor: "#d3d3d3",
-              // elevation: 3,
               height: Dimensions.get("screen").width * 0.35,
               width: "100%",
               borderRadius: 5,
@@ -225,12 +220,11 @@ export default function TravelGoal(props) {
                 justifyContent: "flex-end",
                 alignContent: "flex-start",
                 alignItems: "flex-start",
-                backgroundColor: "rgba(0,0,0,0.2)",
+                // backgroundColor: "rgba(0,0,0,0.2)",
                 borderRadius: 5,
                 justifyContent: "space-between",
               }}
               onPress={() => {
-                // console.log(dataTop?.travelgoal_first?.id)
                 props.navigation.push("TravelGoalDetail", {
                   article_id: dataTop?.travelgoal_first?.id,
                 });
@@ -243,7 +237,6 @@ export default function TravelGoal(props) {
                   paddingVertical: 3,
                   borderRadius: 20,
                   marginVertical: 10,
-                  // borderWidth: 1,
                 }}
               >
                 <Text size="small" style={{ color: "#209fae" }}>
@@ -251,11 +244,11 @@ export default function TravelGoal(props) {
                 </Text>
               </View>
               <View>
-                <Text type={"bold"} size="label" style={{ color: "white" }}>
+                <Text type="bold" size="title" style={{ color: "white" }}>
                   {dataTop?.travelgoal_first?.title}
                 </Text>
                 <Text
-                  size="readable"
+                  size="description"
                   numberOfLines={1}
                   style={{ color: "white" }}
                 >
@@ -269,7 +262,11 @@ export default function TravelGoal(props) {
                   }}
                 >
                   {dataTop?.travelgoal_first?.created_at ? (
-                    <Text type="light" size="small" style={{ color: "white" }}>
+                    <Text
+                      type="light"
+                      size="description"
+                      style={{ color: "white" }}
+                    >
                       {getdate(dataTop?.travelgoal_first?.created_at)}
                     </Text>
                   ) : null}
@@ -328,6 +325,7 @@ export default function TravelGoal(props) {
         {dataPopular.map((item, index) => {
           return (
             <Ripple
+              key={index}
               onPress={() => {
                 props.navigation.push("TravelGoalDetail", {
                   article_id: item.id,
@@ -368,18 +366,25 @@ export default function TravelGoal(props) {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Text size="small">{item?.category?.name}</Text>
-                  <Text size="small">{getdate(item?.created_at)}</Text>
+                  <Text size="small" type="light">
+                    {item?.category?.name}
+                  </Text>
+                  <Text size="small" type="light">
+                    {getdate(item?.created_at)}
+                  </Text>
                 </View>
-                <Text size="label" type="bold">
+                <Text size="label" type="bold" style={{ marginTop: 3 }}>
                   {item?.title}
                 </Text>
                 {item?.description ? (
                   <Text
-                    size="readable"
+                    size="description"
+                    type="light"
                     numberOfLines={2}
                     style={{
                       textAlign: "left",
+                      marginTop: 3,
+                      lineHeight: normalize(14),
                     }}
                   >
                     {item?.description}
@@ -430,7 +435,13 @@ export default function TravelGoal(props) {
                 props.navigation.push("TravelGoalList");
               }}
             >
-              <Text style={{ color: "#209fae" }}>{t("Seemore")}</Text>
+              <Text
+                style={{ color: "#209fae" }}
+                size="description"
+                type="light"
+              >
+                {t("Seemore")}
+              </Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -440,7 +451,6 @@ export default function TravelGoal(props) {
           paddingStart: 20,
           paddingEnd: 10,
           paddingBottom: 15,
-          // borderWidth: 1,
         }}
         horizontal
         nestedScrollEnabled
@@ -461,7 +471,7 @@ export default function TravelGoal(props) {
               shadowColor: "#d3d3d3",
               elevation: 3,
               backgroundColor: "#fff",
-              width: (Dimensions.get("screen").width - 60) / 3,
+              width: (Dimensions.get("screen").width - 80) / 2,
               borderRadius: 5,
             }}
           >
@@ -470,8 +480,8 @@ export default function TravelGoal(props) {
               style={{
                 borderTopLeftRadius: 5,
                 borderTopRightRadius: 5,
-                width: (Dimensions.get("screen").width - 60) / 3,
-                height: (Dimensions.get("screen").width - 60) / 3,
+                width: (Dimensions.get("screen").width - 80) / 2,
+                height: (Dimensions.get("screen").height - 180) / 6,
               }}
             ></Image>
             <View
@@ -480,10 +490,15 @@ export default function TravelGoal(props) {
                 padding: 10,
               }}
             >
-              <Text type="regular" size="small">
+              <Text type="light" size="small" style={{ marginBottom: 2 }}>
                 {item?.category?.name}
               </Text>
-              <Text type="bold" size="label" numberOfLines={1}>
+              <Text
+                type="bold"
+                size="label"
+                numberOfLines={1}
+                style={{ marginBottom: 3 }}
+              >
                 {item?.title}
               </Text>
               {/* <Text

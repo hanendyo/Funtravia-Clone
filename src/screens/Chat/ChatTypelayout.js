@@ -15,6 +15,7 @@ import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import normalize from "react-native-normalize";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -24,10 +25,11 @@ export default function ChatTypelayout({
   tmpRChat,
   socket,
   _uploadimage,
-  dataMember,
   index,
-  length,
   datas,
+  token,
+  connected,
+  socket_connect,
 }) {
   // useEffect(() => {
   //   if (item.chat == "group") {
@@ -42,7 +44,7 @@ export default function ChatTypelayout({
   const Loadingkirim = () => {
     setTimeout(() => {
       setloading(false);
-    }, 10000);
+    }, 5000);
     if (loading) {
       return <ActivityIndicator size="large" color="#209fae" />;
     } else {
@@ -95,16 +97,15 @@ export default function ChatTypelayout({
     }
   };
 
-  console.log("item type layour", item);
-
-  // useEffect(() => {
-  if (item.is_send == false && item.type !== "att_image") {
-    if (socket.connected) {
-      socket.emit("message", item);
+  useEffect(() => {
+    if (item.is_send == false && item.type !== "att_image") {
+      socket.current.emit("message", item);
     }
-  }
-
-  // }, []);
+    if (item.is_send == false && item.type == "att_image") {
+      setloading(true);
+      _uploadimage(item.text, item.id);
+    }
+  }, [connected, socket_connect]);
   // sticker layout
   if (item.type == "sticker") {
     return (
@@ -732,10 +733,192 @@ export default function ChatTypelayout({
       return null;
     }
   }
+  // travel goal layout
+  if (item.type == "tag_travel_goal") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate("TravelGoalDetail", {
+            article_id: data.id,
+          });
+        }}
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              // width: Dimensions.get("screen").width - 200,
+              padding: 10,
+              // justifyContent: "center",
+            }}
+          >
+            <Text size="small" type="regular" style={{ marginBottom: 5 }}>
+              {t("travelgoals")}
+            </Text>
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={3}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 18, padding: 10 }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
+  // event layout
+  if (item.type == "tag_event") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate("eventdetail", {
+            event_id: data.id,
+            name: data.name,
+            token: token,
+          });
+        }}
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{}}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              height: normalize(150),
+              width: "100%",
+            }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              padding: 5,
+            }}
+          >
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={1}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 16, padding: 10, textAlign: "left" }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
+  // journal layout
+  if (item.type == "tag_journal") {
+    let data = JSON.parse(item.text);
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate("JournalStackNavigation", {
+            screen: "DetailJournal",
+            params: { dataPopuler: data },
+          });
+        }}
+        style={{
+          width: Dimensions.get("screen").width - 100,
+          borderWidth: 1,
+          borderColor: "#209fae",
+          borderRadius: 10,
+          backgroundColor: "#fff",
+          marginBottom: 5,
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <FunImage
+            source={{ uri: data.cover }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+          ></FunImage>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#f6f6f6",
+              borderTopRightRadius: 10,
+              // width: Dimensions.get("screen").width - 200,
+              padding: 10,
+              // justifyContent: "center",
+            }}
+          >
+            <Text size="small" type="regular" style={{ marginBottom: 5 }}>
+              {t("traveljournal")}
+            </Text>
+            <Text
+              size="label"
+              type="bold"
+              numberOfLines={3}
+              style={{ lineHeight: 18 }}
+            >
+              {data.name}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
+            size="description"
+            type="regular"
+            style={{ lineHeight: 18, padding: 10 }}
+            numberOfLines={2}
+          >
+            {data.description}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
   // movie layout
   if (item.type == "tag_movie") {
     let data = JSON.parse(item.text);
-    console.log("data movie", data);
     return (
       <Pressable
         onPress={() => {
@@ -837,7 +1020,8 @@ export default function ChatTypelayout({
               width: moderateScale(200, 2),
               height: moderateScale(170, 2),
               // maxHeight: 400,
-              borderRadius: 10,
+              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
               alignSelf: "center",
               flexDirection: "row",
               // marginVertical: 10,
@@ -847,7 +1031,8 @@ export default function ChatTypelayout({
               alignContent: "center",
             }}
             imageStyle={{
-              borderRadius: 10,
+              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
             }}
             blurRadius={3}
           >
@@ -861,9 +1046,9 @@ export default function ChatTypelayout({
   return (
     <View>
       {item.chat == "group" ? (
-        item.user_id == user_id ? null : (
-          <Text style={{ marginBottom: 5 }}>{datas[index].name}</Text>
-        )
+        item.user_id !== user_id && tmpRChat ? (
+          <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+        ) : null
       ) : null}
       <View
         style={[

@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import {
   Arrowbackios,
   Arrowbackwhite,
-  FilterIcon,
+  Filternewbiru,
   Search,
   Xhitam,
   Xblue,
@@ -28,14 +28,20 @@ import Modal from "react-native-modal";
 import DropDownPicker from "react-native-dropdown-picker";
 import { default_image } from "../../assets/png";
 import CheckBox from "@react-native-community/checkbox";
+import normalize from "react-native-normalize";
 
 export default function TravelGoalList(props) {
+  const { t, i18n } = useTranslation();
+  const [heights, setHeights] = useState(0);
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Goal",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Travel Goal",
+    headerTitle: (
+      <Text style={{ color: "#fff" }} size="header" type="bold">
+        {t("travelgoals")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -71,45 +77,56 @@ export default function TravelGoalList(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
 
   let dataList = [];
   let dataListx = {};
   let [dataFillter, setdataFillter] = useState([]);
   let [dataFillters, setdataFillters] = useState([]);
   let [texts, setText] = useState(null);
+  let [textCategory, setTextCategory] = useState("");
   let [modal, setModal] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
-  let [datacategory, setdatacategory] = useState([]);
 
-  let [filtercategory, setfiltercategory] = useState([]);
+  let [idCategory, setIdCategory] = useState([]);
+  let [idFilterCategory, setIdFilterCategory] = useState([]);
+  let [datacategory, setdatacategory] = useState([]);
+  let [datacategoryFilter, setdatacategoryFilter] = useState([]);
 
   const {
     loading: loadingcategory,
     data: datacategorys,
     error: errorcategory,
   } = useQuery(Travelcategorys, {
-    // fetchPolicy: "network-only",
+    variables: { keyword: textCategory },
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${token}`,
       },
     },
     onCompleted: async () => {
-      console.log("get data a =======================");
       let filter = [];
       for (var x of datacategorys?.category_travelgoal) {
-        if (x.sugestion === true) {
+        if (x.checked === true) {
           filter.push(x);
         }
       }
       await setdataFillter(filter);
       await setdataFillter(filter);
       await setdatacategory(datacategorys?.category_travelgoal);
+      await setdatacategoryFilter(datacategorys?.category_travelgoal);
     },
   });
+
+  // const cekData = () => {
+  //   let dataLength = [];
+  //   for (var x of datacategory) {
+  //     if (x.checked === true) {
+  //       dataLength.push(x);
+  //     }
+  //   }
+  //   return dataLength.length;
+  // };
 
   const {
     loading: loadingList,
@@ -122,13 +139,14 @@ export default function TravelGoalList(props) {
     variables: {
       limit: 5,
       offset: 0,
-      category_id: filtercategory,
+      // category_id: filtercategory,
+      category_id: idFilterCategory,
       keyword: texts,
     },
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     },
   });
@@ -224,98 +242,62 @@ export default function TravelGoalList(props) {
   };
 
   const _handleCheck = async (item, index, datas) => {
-    let filter = [...dataFillters];
-    let items = { ...item };
-    let temp = [...datas];
-    items["checked"] = !items["checked"];
-    if (items["checked"] === true || items["sugestion"] === true) {
-      items["show"] = true;
+    let dataCheck = [...datacategory];
+    let temp_idCategory = [...idCategory];
+    let indexCategory = temp_idCategory.findIndex((k) => k == item);
+    if (indexCategory == -1) {
+      temp_idCategory.push(item);
+      await setIdCategory(temp_idCategory);
     } else {
-      items["show"] = false;
+      temp_idCategory.splice(indexCategory, 1);
+      await setIdCategory(temp_idCategory);
     }
-    temp.splice(index, 1, items);
-    await setdatacategory(temp);
-    let indexfilter = filter.findIndex((k) => k["id"] === items.id);
-    if (indexfilter !== -1) {
-      filter.splice(indexfilter, 1, items);
-      await setdataFillters(filter);
-    } else {
-      filter.push(items);
-      await setdataFillters(filter);
+    for (var x of dataCheck) {
+      let data = { ...x };
+      if (data.id == item) {
+        if (data.checked == true) {
+          data.checked = false;
+          await dataCheck.splice(index, 1, data);
+          await setdatacategory(dataCheck);
+        } else {
+          data.checked = true;
+          await dataCheck.splice(index, 1, data);
+          await setdatacategory(dataCheck);
+        }
+      }
     }
   };
 
   const UpdateFilter = async () => {
-    await setdataFillter(dataFillters);
+    await setIdFilterCategory(idCategory);
+    await setdatacategoryFilter(datacategory);
     await setModal(false);
-    let x = [];
-    for (var y of dataFillters) {
-      x.push(y.id);
-    }
-    // await console.log(x);
-    await setfiltercategory(x);
-    // await console.log("hasil... ", filtercategory);
+    await setTextCategory("");
   };
 
   const ClearAllFilter = async () => {
-    {
-      datacategorys?.category_travelgoal
-        ? setdatacategory(datacategorys?.category_travelgoal)
-        : null;
+    let temp_category = [...datacategory];
+    let temp_category_push = [];
+    for (var y of temp_category) {
+      let data = { ...y };
+      data.checked = false;
+      temp_category_push.push(data);
     }
-    await setdataFillters([]);
-    await setdataFillter([]);
-    await setfiltercategory([]);
-    await setModal(false);
-  };
-
-  const onSelectFilter = async (item, index) => {
-    let items = { ...item };
-    let fill = [...filtercategory];
-    let indexfil = fill.findIndex((k) => k === items.id);
-    if (items["checked"] === true && indexfil !== -1) {
-      fill.splice(indexfil, 1);
-    } else {
-      fill.push(items.id);
-    }
-
-    // await console.log(fill);
-    await setfiltercategory(fill);
-
-    items["checked"] = !items["checked"];
-    let filter = [...dataFillter];
-    let indexfilter = filter.findIndex((k) => k["id"] === items.id);
-    if (indexfilter !== -1) {
-      filter.splice(indexfilter, 1, items);
-      await setdataFillters(filter);
-      await setdataFillter(filter);
-    } else {
-      filter.push(items);
-      await setdataFillters(filter);
-      await setdataFillter(filter);
-    }
-
-    let temp = [...datacategory];
-    let indextemp = temp.findIndex((k) => k["id"] === items.id);
-    temp.splice(indextemp, 1, items);
-    await setdatacategory(temp);
+    await setdatacategory(temp_category_push);
+    await setIdCategory([]);
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    if (modal == true) {
+      setdatacategory(datacategoryFilter);
+    }
     const unsubscribe = props.navigation.addListener("focus", () => {
+      setIdCategory(idFilterCategory);
       // Getdatacategory();
     });
     return unsubscribe;
-  }, [props.navigation]);
-
-  // useEffect(() => {
-  //   props.navigation.setOptions(HeaderComponent);
-  //   const unsubscribe = props.navigation.addListener("focus", () => {
-  //     fetchCategory();
-  //   });
-  //   return unsubscribe;
-  // }, [props.navigation]);
+  }, [props.navigation, modal]);
 
   return (
     <View
@@ -323,174 +305,107 @@ export default function TravelGoalList(props) {
         flex: 1,
       }}
     >
+      {/* mulai filter search */}
       <View
+        onLayout={(event) => {
+          var { x, y, width, height } = event.nativeEvent.layout;
+          setHeights(height);
+        }}
         style={{
-          backgroundColor: "white",
-          width: Dimensions.get("screen").width,
+          flexDirection: "row",
           zIndex: 5,
+          paddingHorizontal: 15,
+          paddingTop: 10,
+          paddingBottom: 10,
+          backgroundColor: "white",
+          position: "absolute",
+          top: 0,
         }}
       >
-        <View
+        <Button
+          size="small"
+          type="icon"
+          variant="bordered"
+          color="primary"
+          onPress={() => {
+            setModal(true);
+          }}
           style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingVertical: 10,
-            height: 55,
-            zIndex: 5,
+            marginRight: 5,
+            borderRadius: 3,
+            paddingHorizontal: 10,
+            borderColor: "#209fae",
+            paddingBottom: 0,
           }}
         >
-          <View
-            style={{
-              backgroundColor: "#F0F0F0",
-              borderRadius: 5,
-              width: Dimensions.get("window").width - 30,
-              // height: 100,
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <View>
-              <Search width={15} height={15} style={{ marginHorizontal: 10 }} />
-            </View>
-
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={t("search")}
+          <Filternewbiru width={18} height={18} />
+          {idFilterCategory.length > 0 ? (
+            <View
               style={{
-                width: "83%",
-                // borderWidth: 1,
-                padding: 0,
-              }}
-              returnKeyType="search"
-              autoCorrect={false}
-              onChangeText={(x) => setText(x)}
-              onSubmitEditing={(x) => setText(x)}
-            />
-            {texts !== null ? (
-              <TouchableOpacity onPress={() => setText(null)}>
-                <Xblue
-                  width="20"
-                  height="20"
-                  style={{
-                    alignSelf: "center",
-                  }}
-                />
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            zIndex: 5,
-            marginHorizontal: 15,
-            marginBottom: 10,
-          }}
-        >
-          <Button
-            size="small"
-            type="icon"
-            variant="bordered"
-            color="primary"
-            onPress={() => {
-              setModal(true);
-            }}
-            style={{
-              marginRight: 5,
-              // paddingHorizontal: 10,
-            }}
-          >
-            <FilterIcon height={15} width={15} style={{ marginRight: 5 }} />
-            <Text
-              style={{
-                fontFamily: "Lato-Regular",
-                color: "#0095A7",
-                fontSize: 13,
-                alignSelf: "center",
-                marginRight: 3,
+                backgroundColor: "#209fae",
+                marginLeft: 10,
+                width: 20,
+                paddingHorizontal: 5,
+                borderRadius: 2,
               }}
             >
-              {t("filter")}
-            </Text>
-            {dataFillter.length > 0 ? (
-              <View
+              <Text
                 style={{
-                  borderRadius: 3,
-                  width: 14,
-                  height: 14,
-                  backgroundColor: "#0095A7",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center",
+                  fontFamily: "Lato-Regular",
+                  color: "#ffff",
+                  fontSize: 15,
                 }}
               >
-                <Text
-                  style={{
-                    fontFamily: "Lato-Regular",
-                    color: "white",
-                    fontSize: 13,
-                    alignSelf: "center",
-                  }}
-                >
-                  {filtercategory.length}
-                </Text>
-              </View>
-            ) : null}
-          </Button>
+                {idFilterCategory.length}
+              </Text>
+            </View>
+          ) : null}
+        </Button>
+        <View
+          style={{
+            backgroundColor: "#F0F0F0",
+            borderRadius: 3,
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Search width={15} height={15} />
 
-          <FlatList
-            contentContainerStyle={{
-              justifyContent: "space-evenly",
-              marginHorizontal: 3,
+          <TextInput
+            underlineColorAndroid="transparent"
+            placeholder={t("search")}
+            style={{
+              width: "85%",
+              marginLeft: 5,
+              padding: 0,
             }}
-            horizontal={true}
-            data={dataFillter.sort(compare)}
-            renderItem={({ item, index }) => {
-              // console.log("item", item);
-              if (item.checked == true) {
-                return (
-                  <Button
-                    type="box"
-                    size="small"
-                    color="primary"
-                    text={Capital({ text: item.name })}
-                    onPress={() => onSelectFilter(item, index)}
-                    style={{
-                      marginRight: 3,
-                      flexDirection: "row",
-                    }}
-                  ></Button>
-                );
-              } else if (item.sugestion == true || item.show == true) {
-                return (
-                  <Button
-                    type="box"
-                    size="small"
-                    color="primary"
-                    variant="bordered"
-                    text={Capital({ text: item.name })}
-                    onPress={() => onSelectFilter(item, index)}
-                    style={{
-                      marginRight: 3,
-                      flexDirection: "row",
-                    }}
-                  ></Button>
-                );
-              }
-            }}
-            showsHorizontalScrollIndicator={false}
-          ></FlatList>
+            returnKeyType="search"
+            // onChangeText={(x) => _setSearch(x)}
+            // onSubmitEditing={(x) => _setSearch(x)}
+            onChangeText={(x) => setText(x)}
+            onSubmitEditing={(x) => setText(x)}
+          />
+          {texts !== null ? (
+            <TouchableOpacity onPress={() => setText(null)}>
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
 
+      {/* end filter search */}
+
       <FlatList
         data={dataList}
-        style={{}}
         keyExtractor={(item) => item.id}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
@@ -500,12 +415,14 @@ export default function TravelGoalList(props) {
         contentContainerStyle={{
           paddingBottom: 2,
           paddingHorizontal: 15,
+          paddingTop: heights + 10,
         }}
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
         onEndThreshold={3000}
         renderItem={({ item, index }) => (
           <Pressable
+            key={index}
             onPress={() => {
               props.navigation.push("TravelGoalDetail", {
                 article_id: item.id,
@@ -522,7 +439,6 @@ export default function TravelGoalList(props) {
               justifyContent: "flex-start",
               padding: 10,
               marginVertical: 5,
-              // height: 700,
             }}
           >
             <Image
@@ -537,7 +453,6 @@ export default function TravelGoalList(props) {
               style={{
                 paddingLeft: 10,
                 width: (Dimensions.get("screen").width - 60) * 0.75,
-                // borderWidth: 1,
               }}
             >
               <View
@@ -545,14 +460,24 @@ export default function TravelGoalList(props) {
                   flexDirection: "row",
                   width: "100%",
                   justifyContent: "space-between",
+                  marginBottom: 2,
                 }}
               >
-                <Text size="small">{item?.category?.name}</Text>
+                <Text size="small" type="light">
+                  {item?.category?.name}
+                </Text>
                 {item?.created_at ? (
-                  <Text size="small">{getdate(item?.created_at)}</Text>
+                  <Text size="small" type="light">
+                    {getdate(item?.created_at)}
+                  </Text>
                 ) : null}
               </View>
-              <Text size="label" type="bold">
+              <Text
+                size="label"
+                type="bold"
+                numberOfLines={1}
+                style={{ marginBottom: 3 }}
+              >
                 {item?.title}
               </Text>
               {item?.description ? (
@@ -560,7 +485,8 @@ export default function TravelGoalList(props) {
                   size="description"
                   numberOfLines={2}
                   style={{
-                    textAlign: "justify",
+                    textAlign: "left",
+                    lineHeight: normalize(18),
                   }}
                 >
                   {item?.description}
@@ -575,8 +501,22 @@ export default function TravelGoalList(props) {
       />
 
       <Modal
-        // onLayout={() => dataCountrySelect()}
+        keyboardShouldPersistTaps={"always"}
+        avoidKeyboard={true}
+        onBackdropPress={async () => {
+          await setTextCategory("");
+          await setModal(false);
+        }}
+        onRequestClose={async () => {
+          await setTextCategory("");
+          await setModal(false);
+        }}
+        onDismiss={async () => {
+          await setTextCategory("");
+          await setModal(false);
+        }}
         isVisible={modal}
+        avoidKeyboard={true}
         style={{
           justifyContent: "flex-end",
           margin: 0,
@@ -584,21 +524,15 @@ export default function TravelGoalList(props) {
       >
         <View
           style={{
-            height: 10,
-
-            backgroundColor: "#209fae",
-          }}
-        ></View>
-        <View
-          style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.75,
+            height: Dimensions.get("screen").height * 0.43,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
-            // borderTopLeftRadius: 15,
-            // borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
           }}
         >
+          {/* Header */}
           <View
             style={{
               flexDirection: "row",
@@ -606,14 +540,14 @@ export default function TravelGoalList(props) {
               width: "100%",
               paddingHorizontal: 15,
               paddingVertical: 20,
+              borderBottomWidth: 1,
+              borderBottomColor: "#d1d1d1",
             }}
           >
             <Text
               type="bold"
               size="title"
               style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
                 color: "#464646",
               }}
             >
@@ -631,212 +565,176 @@ export default function TravelGoalList(props) {
                 alignContent: "flex-end",
                 alignItems: "flex-start",
               }}
-              onPress={() => setModal(false)}
-            >
-              <Xhitam width={15} height={15} />
-            </TouchableOpacity>
-          </View>
-          {/* ==================garis========================= */}
-          <View
-            style={{
-              borderBottomColor: "#D1D1D1",
-              borderBottomWidth: 1,
-            }}
-          />
-          {/* ==================garis========================= */}
-          <ScrollView>
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "space-between",
-                width: "100%",
-                paddingHorizontal: 15,
-                paddingVertical: 20,
+              onPress={() => {
+                setModal(false);
               }}
             >
-              <Text
-                type="bold"
-                size="title"
+              <Xhitam height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+
+          {/* end of header */}
+
+          <View style={{ flexDirection: "row", height: "100%" }}>
+            <View
+              style={{
+                width: "40%",
+                borderRightWidth: 1,
+                borderRightColor: "#d1d1d1",
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Pressable
                 style={{
-                  // fontSize: 20,
-                  // fontFamily: "Lato-Bold",
-                  color: "#464646",
+                  borderLeftColor: "#209fae",
+                  borderLeftWidth: 3,
+                  backgroundColor: "#fff",
                 }}
               >
-                {t("categories")}
-              </Text>
-
-              <FlatList
-                contentContainerStyle={{
-                  marginHorizontal: 3,
-                  paddingVertical: 15,
-                  paddingRight: 10,
-                  width: screenWidth - 40,
-                }}
-                data={datacategory}
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity
-                    onPress={() => _handleCheck(item, index, datacategory)}
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      borderColor: "#464646",
-                      width: "49%",
-                      marginRight: 3,
-                      marginBottom: 20,
-                      justifyContent: "flex-start",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CheckBox
-                      onCheckColor="#FFF"
-                      lineWidth={3}
-                      onFillColor="#209FAE"
-                      onTintColor="#209FAE"
-                      boxType={"square"}
-                      style={{
-                        alignSelf: "center",
-                        width: Platform.select({
-                          ios: 30,
-                          android: 35,
-                        }),
-                        transform: Platform.select({
-                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                        }),
-                      }}
-                      onValueChange={() =>
-                        _handleCheck(item, index, datacategory)
-                      }
-                      value={item["checked"]}
-                    />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        // fontFamily: "Lato-Regular",
-                        // fontSize: 16,
-                        // alignContent:'center',
-                        // textAlign: "center",
-
-                        marginLeft: 0,
-                        color: "#464646",
-                      }}
-                    >
-                      {item["name"]}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                numColumns={2}
-                showsHorizontalScrollIndicator={false}
-                scrollEnabled={false}
-              ></FlatList>
-
-              {/* <Text
-                type="bold"
-                size="title"
-                style={{
-                  // fontSize: 20,
-                  // fontFamily: "Lato-Bold",
-                  color: "#464646",
-                }}
-              >
-                {t("location")}
-              </Text>
+                <Text
+                  type="bold"
+                  size="label"
+                  style={{
+                    marginBottom: 18,
+                    marginTop: 15,
+                    marginLeft: 10,
+                  }}
+                >
+                  {t("Category")}
+                </Text>
+              </Pressable>
+            </View>
+            <View style={{ height: "100%", flex: 1, padding: 10 }}>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: 5,
-                  borderColor: "#d3d3d3",
-                  marginVertical: 10,
-                  paddingBottom: opens,
-                  // height: 200,
+                  borderRadius: 3,
                   width: "100%",
+                  height: 35,
+                  paddingHorizontal: 10,
+                  backgroundColor: "#f6f6f6",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 20,
                 }}
               >
-                <DropDownPicker
-                  scrollViewProps={{
-                    nestedScrollEnabled: true,
-                    persistentScrollbar: true,
+                <Search width={18} height={18} />
+                <TextInput
+                  style={{
+                    flex: 1,
+                    padding: 0,
+                    marginLeft: 2,
+                    fontFamily: "Lato-Regular",
+                    fontSize: normalize(14),
                   }}
-                  onOpen={() => setOpens(150)}
-                  onClose={() => setOpens(10)}
-                  items={[]}
-                  defaultValue={null}
-                  containerStyle={{ height: 40 }}
-                  style={{ backgroundColor: "#fafafa" }}
-                  itemStyle={{
-                    justifyContent: "flex-start",
-                  }}
-                  showArrow={false}
-                  dropDownStyle={{
-                    backgroundColor: "#fafafa",
-                    height: 150,
-                  }}
-                  placeholder="Pilih Negara"
-                  onChangeItem={(item, index) =>
-                    _handleCheckc(item.value, index)
-                  }
-                />
+                  onChangeText={(e) => setTextCategory(e)}
+                  value={textCategory}
+                  placeholder={t("search")}
+                ></TextInput>
               </View>
-               */}
-              {/* {datacity &&
-              datacity.get_filter_city &&
-              datacity.get_filter_city.length > 0 ? (
-                <RenderCity
-                  data={datacity}
-                  dataFilterCity={dataFilterCity}
-                  setFilterCity={(x) => setFilterCity(x)}
-                  props={props}
-                />
-              ) : (
-                () => {
-                  setFilterCity([]);
-                }
-              )} */}
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{ marginBottom: 50 }}
+              >
+                {datacategory && datacategory.length > 0
+                  ? datacategory.map((item, index) => {
+                      return (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginBottom: 15,
+                            height: 30,
+                          }}
+                          key={index}
+                        >
+                          <CheckBox
+                            onCheckColor="#FFF"
+                            lineWidth={4}
+                            onFillColor="#209FAE"
+                            onTintColor="#209FAE"
+                            boxType={"square"}
+                            style={{
+                              alignSelf: "center",
+                              width: Platform.select({
+                                ios: 30,
+                                android: 35,
+                              }),
+                              transform: Platform.select({
+                                ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                                android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                              }),
+                            }}
+                            // value={item.idtoogle}
+                            // onValueChange={(newValue) =>
+                            //   Platform.OS == "ios" ? null : setToogle(newValue)
+                            // }
+                            value={item["checked"]}
+                            onValueChange={(newValue) =>
+                              Platform.OS == "ios"
+                                ? null
+                                : _handleCheck(item["id"], index, item)
+                            }
+                          />
+                          <Pressable
+                            onPress={() =>
+                              _handleCheck(item["id"], index, item)
+                            }
+                            style={{
+                              // borderWidth: 1,
+                              width: "80%",
+                              height: "100%",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Text
+                              size="label"
+                              type="regular"
+                              style={{
+                                marginLeft: 0,
+                                marginRight: -10,
+                                color: "#464646",
+                                marginTop: Platform.OS == "ios" ? -5 : -2,
+                                // borderWidth: 5,
+                              }}
+                            >
+                              {item["name"]}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      );
+                    })
+                  : null}
+              </ScrollView>
             </View>
-          </ScrollView>
-          <View
-            style={{
-              flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 80,
-              position: "absolute",
-              bottom: 0,
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
-              width: Dimensions.get("screen").width,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-              padding: 10,
-              paddingHorizontal: 10,
-            }}
-          >
-            <Button
-              variant="bordered"
-              color="secondary"
-              onPress={() => ClearAllFilter()}
-              style={{ width: Dimensions.get("screen").width / 2 - 20 }}
-              text={t("clearAll")}
-            ></Button>
-            <Button
-              onPress={() => UpdateFilter()}
-              style={{ width: Dimensions.get("screen").width / 2 - 20 }}
-              text={t("apply")}
-            ></Button>
           </View>
+        </View>
+        <View
+          style={{
+            // borderWidth: 1,
+            height: 50,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#fff",
+            flexDirection: "row",
+            paddingHorizontal: 10,
+            paddingTop: 5,
+            // paddingBottom: 10,
+            justifyContent: "space-between",
+            borderWidth: 1,
+            borderColor: "#f6f6f6",
+          }}
+        >
+          <Button
+            variant="bordered"
+            color="secondary"
+            onPress={() => ClearAllFilter()}
+            style={{ width: "30%", borderColor: "#ffff" }}
+            text={t("clearAll")}
+          ></Button>
+          <Button
+            onPress={() => UpdateFilter()}
+            style={{ width: "65%", marginBottom: 10 }}
+            text={t("apply")}
+          ></Button>
         </View>
       </Modal>
     </View>

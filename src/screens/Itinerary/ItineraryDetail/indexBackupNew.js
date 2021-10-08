@@ -148,8 +148,8 @@ export default function ItineraryDetail(props) {
   );
   const [routes] = useState([
     { key: "tab1", title: "Itinerary" },
-    { key: "tab2", title: t("travelpicture") },
-    { key: "tab3", title: t("diary") },
+    { key: "tab2", title: "Travel Picture" },
+    { key: "tab3", title: "Diary" },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let [dataList, setDataListItem] = useState([]);
@@ -244,7 +244,6 @@ export default function ItineraryDetail(props) {
   let [showside, setshowside] = useState(false);
   let [modalcover, setmodalcover] = useState(false);
   let [modalAlbum, setmodalAlbum] = useState(false);
-  let [modalTrip, setmodalTrip] = useState(false);
   let [users, setuser] = useState(null);
   const loadasync = async () => {
     let user = await AsyncStorage.getItem("setting");
@@ -1798,7 +1797,7 @@ export default function ItineraryDetail(props) {
                   ? datadetail.itinerary_detail.name
                   : null}
               </Animated.Text>
-              {/* <View
+              <View
                 style={{
                   height: 5,
                   width: 5,
@@ -1807,11 +1806,10 @@ export default function ItineraryDetail(props) {
                   marginHorizontal: 10,
                   alignSelf: "center",
                 }}
-              /> */}
+              />
               <View
                 style={{
                   alignSelf: "center",
-                  marginLeft: 10,
                 }}
               >
                 <Ripple
@@ -1826,7 +1824,9 @@ export default function ItineraryDetail(props) {
                             token: token,
                           },
                         })
-                      : null
+                      : Alert.alert(
+                          "Upss, kamu tidak memiliki akses sebagai admin"
+                        )
                   }
                 >
                   {datadetail.itinerary_detail.isprivate == false ? (
@@ -1885,7 +1885,7 @@ export default function ItineraryDetail(props) {
           <Animated.View>
             {datadetail &&
             datadetail.itinerary_detail &&
-            datadetail.itinerary_detail.isprivate === false ? (
+            datadetail.itinerary_detail.isprivate === true ? (
               <Button
                 onPress={() =>
                   shareAction({
@@ -1962,7 +1962,7 @@ export default function ItineraryDetail(props) {
                 style={{
                   backgroundColor: "#209fae",
                   width: 5,
-                  height: 15,
+                  height: 30,
                   borderRadius: 5,
                   marginRight: 5,
                 }}
@@ -2021,8 +2021,7 @@ export default function ItineraryDetail(props) {
                   >
                     <Text size="small" type="bold" numberOfLines={1}>
                       {Anggota === "true"
-                        ? t("you") +
-                          " + " +
+                        ? "You + " +
                           (parseFloat(
                             datadetail.itinerary_detail.buddy.length
                           ) -
@@ -2694,6 +2693,44 @@ export default function ItineraryDetail(props) {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
               >
+                {/* <View
+									style={{
+										marginRight: 5,
+										borderRadius: 5,
+										elevation: 3,
+										marginVertical: 2,
+										marginLeft: 1,
+										backgroundColor: "#fff",
+										flexDirection: "row",
+										paddingHorizontal: 10,
+										paddingVertical: 10,
+										alignItems: "center",
+									}}
+								>
+									<Jalan height={15} width={15} style={{ marginRight: 10 }} />
+									<Text>
+										<Distance
+											lat1={dataList[index].latitude}
+											lon1={dataList[index].longitude}
+											lat2={dataList[index + 1].latitude}
+											lon2={dataList[index + 1].longitude}
+											unit={"km"}
+										/>{" "}
+										Km
+									</Text>
+									<Text> - </Text>
+									<Text>
+										<HitungWaktu
+											lat1={dataList[index].latitude}
+											lon1={dataList[index].longitude}
+											lat2={dataList[index + 1].latitude}
+											lon2={dataList[index + 1].longitude}
+											unit={"km"}
+											kecepatan={10}
+										/>
+										{" Jam"}
+									</Text>
+								</View> */}
                 <View
                   style={{
                     marginRight: 5,
@@ -2713,7 +2750,7 @@ export default function ItineraryDetail(props) {
                   }}
                 >
                   <Mobil height={15} width={15} style={{ marginRight: 10 }} />
-
+                  {/* <Text>{"60Km/h "}</Text> */}
                   <Text type="bold">
                     {rupiah(
                       Distance({
@@ -2737,6 +2774,10 @@ export default function ItineraryDetail(props) {
                       kecepatan={50}
                     />
                   </Text>
+                  {/* <Text>{t("hours")}</Text> */}
+                  {/* <Text>{" in "}</Text>
+									<Text type="bold">{"50"}</Text>
+									<Text>{"km/h"}</Text> */}
                 </View>
               </ScrollView>
             </View>
@@ -2747,6 +2788,7 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
+    // console.log("item", itineraryId);
     return grid !== 1 ? (
       item.id === dataalbumaktif?.id ? (
         <View
@@ -2764,14 +2806,27 @@ export default function ItineraryDetail(props) {
               }}
             >
               <TouchableOpacity
+                // onPress={() => {
+                //   console.log("itineraryId", itineraryId);
+                // }}
                 onPress={() => {
+                  // // setidupload(item.id);
+                  // setmodalAlbum(true);
+                  // setdataalbumaktif({ id: item.id });
                   props.navigation.navigate("FeedStack", {
                     screen: "Post",
                     params: {
                       id_album: item.id,
                       id_itin: itineraryId,
                       title_album: item.title,
-
+                      // token: token,
+                      // ratio: {
+                      //   width: 1,
+                      //   height: 1,
+                      //   index: 0,
+                      //   label: "S",
+                      // },
+                      // type: "image",
                       album: "Itinerary",
                     },
                   });
@@ -2779,26 +2834,212 @@ export default function ItineraryDetail(props) {
                 style={{
                   alignContent: "center",
                   justifyContent: "center",
-                  backgroundColor: "#f6f6f6",
+                  backgroundColor: "#d0d0d0",
                   alignItems: "center",
                   width: tab2ItemSize,
                   height: tab2ItemSize,
-                  borderWidth: item.posted.length < 1 ? 1 : 0,
-                  borderColor: "#d1d1d1",
-
                   marginRight: 2.5,
                   marginBottom: 2.5,
                 }}
               >
-                <CameraIcon height={35} width={35} />
+                <CameraIcon height={80} width={80} />
               </TouchableOpacity>
-              {item.posted.length > 0
-                ? item.posted.map((data, i) => {
-                    return data.is_posted === true ? (
+              {item.posted.length > 0 ? (
+                item.posted.map((data, i) => {
+                  return data.is_posted === true ? (
+                    data.type === "video" ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setdataimagepost(item.posted, i);
+                        }}
+                      >
+                        <FunVideo
+                          poster={data.filepath.replace(
+                            "output.m3u8",
+                            "thumbnail.png"
+                          )}
+                          paused={true}
+                          key={"posted" + data.id}
+                          source={data.filepath ? { uri: data.filepath } : null}
+                          muted={true}
+                          // defaultSource={default_image}
+                          style={{
+                            width: tab2ItemSize,
+                            height: tab2ItemSize,
+                            marginRight: 2.5,
+                            marginBottom: 2.5,
+                            backgroundColor: "#f6f6f6",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            resizeMode: "cover",
+                          }}
+                        />
+                        <View
+                          style={{
+                            // flexDirection: "row",
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "rgba(0,0,0,0.6)",
+                            justifyContent: "flex-end",
+                            // borderRadius: 5,
+
+                            // bottom: "35%",
+                            // left: "35%",
+                          }}
+                        >
+                          <PlayVideo
+                            width={15}
+                            height={15}
+                            style={{ margin: 10 }}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setdataimagepost(item.posted, i);
+                        }}
+                      >
+                        <FunImage
+                          key={"posted" + data.id}
+                          source={
+                            data.filepath
+                              ? { uri: data.filepath }
+                              : default_image
+                          }
+                          // defaultSource={default_image}
+                          style={{
+                            width: tab2ItemSize,
+                            height: tab2ItemSize,
+                            marginRight: 2.5,
+                            marginBottom: 2.5,
+                            backgroundColor: "#f6f6f6",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            resizeMode: "cover",
+                          }}
+                        />
+                      </TouchableOpacity>
+                    )
+                  ) : // <ImageBackground
+                  //   key={"posted" + data.id}
+                  //   source={
+                  //     data.assets ? { uri: data.assets } : default_image
+                  //   }
+                  //   defaultSource={default_image}
+                  //   style={{
+                  //     width: tab2ItemSize,
+                  //     height: tab2ItemSize,
+                  //     marginRight: 2.5,
+                  //     marginBottom: 2.5,
+                  //     backgroundColor: "#f6f6f6",
+                  //     justifyContent: "center",
+                  //     alignItems: "center",
+                  //     resizeMode: "cover",
+                  //   }}
+                  // >
+                  //   <Ripple
+                  //     onPress={() => {
+                  //       setdataimage(item.posted, i);
+                  //     }}
+                  //     style={{
+                  //       height: "100%",
+                  //       width: "100%",
+                  //     }}
+                  //   ></Ripple>
+                  // </>
+                  null;
+                })
+              ) : (
+                <View>{/* <Text>Kosong</Text> */}</View>
+              )}
+            </View>
+            {/* {Anggota === "true" ? (
+                <Text type="bold" style={{ paddingVertical: 10 }}>
+                  Unposted on Fun Feed
+                </Text>
+              ) : null} */}
+          </>
+
+          {/* <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              width: "102%",
+              paddingBottom: 10,
+            }}
+          >
+            {Anggota === "true" ? (
+              loadinguploadAlbum === true ? (
+                <View
+                  style={{
+                    alignContent: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#d0d0d0",
+                    alignItems: "center",
+                    width: tab2ItemSize,
+                    height: tab2ItemSize,
+                    marginRight: 2.5,
+                    marginBottom: 2.5,
+                  }}
+                >
+                  <ActivityIndicator
+                    animating={true}
+                    color="#209fae"
+                    size="small"
+                  />
+                </View>
+              ) : item.unposted.length > 1 ? (
+                item.unposted.map((data, i) => {
+                  if (data.id === "camera") {
+                    return (
+                      <TouchableOpacity
+                        // onPress={() => {
+                        //   console.log("itineraryId", itineraryId);
+                        // }}
+                        onPress={() => {
+                          // // setidupload(item.id);
+                          // setmodalAlbum(true);
+                          // setdataalbumaktif({ id: item.id });
+                          props.navigation.navigate("FeedStack", {
+                            screen: "Post",
+                            params: {
+                              id_album: item.id,
+                              id_itin: itineraryId,
+                              title_album: item.title,
+                              // token: token,
+                              // ratio: {
+                              //   width: 1,
+                              //   height: 1,
+                              //   index: 0,
+                              //   label: "S",
+                              // },
+                              // type: "image",
+                              album: "Itinerary",
+                            },
+                          });
+                        }}
+                        style={{
+                          alignContent: "center",
+                          justifyContent: "center",
+                          backgroundColor: "#d0d0d0",
+                          alignItems: "center",
+                          width: tab2ItemSize,
+                          height: tab2ItemSize,
+                          marginRight: 2.5,
+                          marginBottom: 2.5,
+                        }}
+                      >
+                        <CameraIcon height={100} width={100} />
+                      </TouchableOpacity>
+                    );
+                  } else {
+                    return data.is_posted !== true ? (
                       data.type === "video" ? (
                         <TouchableOpacity
                           onPress={() => {
-                            setdataimagepost(item.posted, i);
+                            setdataimage(item.unposted, i - 1);
                           }}
                         >
                           <FunVideo
@@ -2807,7 +3048,7 @@ export default function ItineraryDetail(props) {
                               "thumbnail.png"
                             )}
                             paused={true}
-                            key={"posted" + data.id}
+                            key={"unposted" + data.id}
                             source={
                               data.filepath ? { uri: data.filepath } : null
                             }
@@ -2848,11 +3089,11 @@ export default function ItineraryDetail(props) {
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
-                            setdataimagepost(item.posted, i);
+                            setdataimage(item.unposted, i - 1);
                           }}
                         >
                           <FunImage
-                            key={"posted" + data.id}
+                            key={"unposted" + data.id}
                             source={
                               data.filepath
                                 ? { uri: data.filepath }
@@ -2871,12 +3112,78 @@ export default function ItineraryDetail(props) {
                             }}
                           />
                         </TouchableOpacity>
-                      )
-                    ) : null;
-                  })
-                : null}
-            </View>
-          </>
+                      ) // <ImageBackground
+                    ) : //   key={"posted" + data.id}
+                    //   source={
+                    //     data.assets ? { uri: data.assets } : default_image
+                    //   }
+                    //   defaultSource={default_image}
+                    //   style={{
+                    //     width: tab2ItemSize,
+                    //     height: tab2ItemSize,
+                    //     marginRight: 2.5,
+                    //     marginBottom: 2.5,
+                    //     backgroundColor: "#f6f6f6",
+                    //     justifyContent: "center",
+                    //     alignItems: "center",
+                    //     resizeMode: "cover",
+                    //   }}
+                    // >
+                    //   <Ripple
+                    //     onPress={() => {
+                    //       setdataimage(item.unposted, i - 1);
+                    //     }}
+                    //     style={{
+                    //       height: "100%",
+                    //       width: "100%",
+                    //     }}
+                    //   ></Ripple>
+                    // </ImageBackground>
+                    null;
+                  }
+                })
+              ) : (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // setidupload(item.id);
+                      props.navigation.navigate("FeedStack", {
+                        screen: "Post",
+                        params: {
+                          id_album: item.id,
+                          id_itin: itineraryId,
+                          title_album: item.title,
+                          // token: token,
+                          // ratio: {
+                          //   width: 1,
+                          //   height: 1,
+                          //   index: 0,
+                          //   label: "S",
+                          // },
+                          // type: "image",
+                          album: "Itinerary",
+                        },
+                      });
+                      // setmodalAlbum(true);
+                      // setdataalbumaktif({ id: item.id });
+                    }}
+                    style={{
+                      alignContent: "center",
+                      justifyContent: "center",
+                      backgroundColor: "#d0d0d0",
+                      alignItems: "center",
+                      width: tab2ItemSize,
+                      height: tab2ItemSize,
+                      marginRight: 2.5,
+                      marginBottom: 2.5,
+                    }}
+                  >
+                    <CameraIcon height={30} width={30} />
+                  </TouchableOpacity>
+                </View>
+              )
+            ) : null}
+          </View> */}
         </View>
       ) : null
     ) : (
@@ -2923,13 +3230,23 @@ export default function ItineraryDetail(props) {
                   return (
                     <TouchableOpacity
                       onPress={() => {
+                        // setidupload(item.id);
+                        // setmodalAlbum(true);
+                        // setdataalbumaktif({ id: item.id });
                         props.navigation.navigate("FeedStack", {
                           screen: "Post",
                           params: {
                             id_album: item.id,
                             id_itin: itineraryId,
                             title_album: item.title,
-
+                            // token: token,
+                            // ratio: {
+                            //   width: 1,
+                            //   height: 1,
+                            //   index: 0,
+                            //   label: "S",
+                            // },
+                            // type: "image",
                             album: "Itinerary",
                           },
                         });
@@ -2966,6 +3283,7 @@ export default function ItineraryDetail(props) {
                       paused={true}
                       key={"album" + data.id}
                       source={data.filepath ? { uri: data.filepath } : null}
+                      // defaultSource={default_image}
                       muted={true}
                       style={{
                         width: tab2ItemSize,
@@ -2980,11 +3298,16 @@ export default function ItineraryDetail(props) {
                     />
                     <View
                       style={{
+                        // flexDirection: "row",
                         position: "absolute",
                         width: "100%",
                         height: "100%",
                         backgroundColor: "rgba(0,0,0,0.6)",
                         justifyContent: "flex-end",
+                        // borderRadius: 5,
+
+                        // bottom: "35%",
+                        // left: "35%",
                       }}
                     >
                       <PlayVideo
@@ -3019,12 +3342,40 @@ export default function ItineraryDetail(props) {
                     />
                   </TouchableOpacity>
                 );
+                // <ImageBackground
+                //   key={"perday" + data.id}
+                //   source={data.assets ? { uri: data.assets } : default_image}
+                //   defaultSource={default_image}
+                //   style={{
+                //     width: tab2ItemSize,
+                //     height: tab2ItemSize,
+                //     marginRight: 2.5,
+                //     marginBottom: 2.5,
+                //     backgroundColor: "#f6f6f6",
+                //     justifyContent: "center",
+                //     alignItems: "center",
+                //     resizeMode: "cover",
+                //   }}
+                // >
+                //   <Ripple
+                //     onPress={() => {
+                //       setdataimage(item.album, i - 1);
+                //     }}
+                //     style={{
+                //       height: "100%",
+                //       width: "100%",
+                //     }}
+                //   ></Ripple>
+                // </ImageBackground>
               }
             })
           ) : (
             <View>
               <TouchableOpacity
                 onPress={() => {
+                  // setidupload(item.id);
+                  // setmodalAlbum(true);
+                  // setdataalbumaktif({ id: item.id });
                   props.navigation.navigate("FeedStack", {
                     screen: "Post",
                     params: {
@@ -3090,8 +3441,6 @@ export default function ItineraryDetail(props) {
             color: focused
               ? "#209FAE"
               : status === "edit"
-              ? "#d3d3d3"
-              : route.title === "Cerita" || route.title === "Diary"
               ? "#d3d3d3"
               : "#464646",
           }}
@@ -3230,10 +3579,16 @@ export default function ItineraryDetail(props) {
           ListFooterComponent={() => (
             <View>
               {loadingtimeline ? (
+                // <ActivityIndicator
+                //   animating={true}
+                //   color="#209fae"
+                //   size="large"
+                // />
                 tabIndex === 0 ? (
                   <SkeletonPlaceholder>
                     <View
                       style={{
+                        // paddingHorizontal: 15,
                         justifyContent: "space-around",
                         flexDirection: "row",
                       }}
@@ -3859,12 +4214,7 @@ export default function ItineraryDetail(props) {
         <TabBar
           {...props}
           onTabPress={({ route, preventDefault }) => {
-            console.log("route", route),
-              status === "edit"
-                ? setmodalTrip(true)
-                : route.title === "Cerita" || route.title === "Diary"
-                ? Alert.alert(t("comingsoon"))
-                : null;
+            status === "edit" ? Alert.alert(t("Tripbelumaktif")) : null;
             if (isListGliding.current) {
               preventDefault();
             }
@@ -3873,8 +4223,6 @@ export default function ItineraryDetail(props) {
             elevation: 0,
             shadowOpacity: 0,
             backgroundColor: "white",
-            borderBottomWidth: 1,
-            borderBottomColor: "#d1d1d1",
             height: TabBarHeight,
           }}
           renderLabel={renderLabel}
@@ -4171,7 +4519,47 @@ export default function ItineraryDetail(props) {
               </View>
             </View>
           ) : null
-        ) : status == "edit" ? (
+        ) : // tabIndex == 1 && grid != 1 ? (
+        //   // POSTALBUM
+        //   <View
+        //     style={{
+        //       zIndex: 999999,
+        //       position: "absolute",
+        //       left: 0,
+        //       bottom: 10,
+        //       width: Dimensions.get("window").width,
+        //       // backgroundColor: "white",
+        //       flexDirection: "row",
+        //       justifyContent: "center",
+        //     }}
+        //   >
+        //     <Pressable
+        //       onPress={() => {
+        //         goToSelectPhoto(dataAlbum, dataalbumaktif, token);
+        //       }}
+        //       style={({ pressed }) => [
+        //         {
+        //           paddingHorizontal: 40,
+        //           borderRadius: 30,
+        //           height: 48,
+        //           backgroundColor: pressed ? "#f6f6f6" : "#FFFFFF",
+        //           shadowColor: "#F0F0F0",
+        //           shadowOffset: { width: 2, height: 2 },
+        //           shadowOpacity: 1,
+        //           shadowRadius: 2,
+        //           elevation: 3,
+        //           alignItems: "center",
+        //           justifyContent: "center",
+        //         },
+        //       ]}
+        //     >
+        //       <Text size="title" type="bold">
+        //         {t("postToFeed")}
+        //       </Text>
+        //     </Pressable>
+        //   </View>
+        // ) : null //tab bukan 0 status saved
+        status == "edit" ? (
           tabIndex == 0 ? (
             <View
               style={{
@@ -6013,29 +6401,6 @@ export default function ItineraryDetail(props) {
           >
             <View
               style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "#F6F6F6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginTop: 13,
-                  marginBottom: 15,
-                }}
-              >
-                Oops
-              </Text>
-            </View>
-            <View
-              style={{
                 backgroundColor: "white",
                 alignItems: "center",
                 alignContent: "center",
@@ -6099,125 +6464,6 @@ export default function ItineraryDetail(props) {
           </Pressable>
         </Modalss>
 
-        {/* modal alert trip belum aktif */}
-        <Modalss
-          onBackdropPress={() => {
-            setmodalerrors(false);
-          }}
-          onRequestClose={() => setmodalTrip(false)}
-          onDismiss={() => setmodalTrip(false)}
-          visible={modalTrip}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => {
-              setmodalTrip(false);
-            }}
-            style={{
-              height: Dimensions.get("screen").height,
-              width: Dimensions.get("screen").width,
-              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
-              // opacity: 0.7,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "#F6F6F6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginTop: 13,
-                  marginBottom: 15,
-                }}
-              >
-                Oops
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                alignItems: "center",
-                alignContent: "center",
-                // height: 100,
-                width: Dimensions.get("screen").width - 100,
-                borderBottomLeftRadius: 5,
-                borderBottomRightRadius: 5,
-                paddingVertical: 20,
-                paddingHorizontal: 15,
-              }}
-            >
-              <Errors height={80} width={80} />
-              <Text
-                type="bold"
-                size="title"
-                style={{
-                  marginTop: 20,
-                }}
-              >
-                {t("TripnotStarted")}
-              </Text>
-              <Text
-                // textAlign={"center"}
-                size="label"
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
-                {t("waittripongoing")}
-              </Text>
-              <View
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#f3f3f3",
-                  padding: 20,
-                }}
-              >
-                <Text
-                  size="label"
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  {t("addphotototrip")}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setmodalTrip(false);
-                }}
-                style={{
-                  paddingTop: 20,
-                }}
-              >
-                <Text
-                  type="bold"
-                  size="label"
-                  style={{
-                    color: "#209fae",
-                  }}
-                >
-                  {t("understand")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Modalss>
-
         <Sidebar
           props={props}
           show={showside}
@@ -6230,7 +6476,7 @@ export default function ItineraryDetail(props) {
                   justifyContent: "flex-start",
                 }}
               >
-                {Anggota === "true" && statusUsers == true ? (
+                {Anggota === "true" ? (
                   <TouchableOpacity
                     style={{
                       flexDirection: "row",

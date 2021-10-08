@@ -19,13 +19,15 @@ export default function TravelIdeas(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Ideas",
+    title: t("travelideas"),
     headerTransparent: false,
-    headerTintColor: "white",
-    headerTitle: "Travel Ideas",
-    headerMode: "none",
+    headerTitle: t("travelideas"),
+    // headerMode: "none",
     headerStyle: {
       backgroundColor: "#209FAE",
+      elevation: 0, // remove shadow on Android
+      shadowOpacity: 0, // remove shadow on iOS
+      borderBottomWidth: 0, // Just in case.
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -108,7 +110,7 @@ export default function TravelIdeas(props) {
             width: width - 40,
             // height: 430,
             padding: 30,
-            paddingTop: 50,
+            paddingTop: 40,
             borderRadius: 10,
             backgroundColor: "#FFFFFF",
             position: "absolute",
@@ -136,7 +138,7 @@ export default function TravelIdeas(props) {
             }}
           >
             <Text size="title" style={{}}>
-              {t("Discover")}
+              {t("DiscoverThe")}
             </Text>
             <Text size="title" type="bold">
               {t("BestTravelIdea")}

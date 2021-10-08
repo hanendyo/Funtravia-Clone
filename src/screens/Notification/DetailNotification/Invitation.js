@@ -204,7 +204,7 @@ export default function Invitation({ navigation, token }) {
           if (response.data.read_all_notif.code == 200) {
             GetListInvitation();
             RNToasty.Show({
-              title: "Success Mark All Notification",
+              title: t("successMarkAllNotification"),
               position: "bottom",
             });
             setreadall(false);
@@ -872,7 +872,7 @@ export default function Invitation({ navigation, token }) {
                   size="label"
                   style={{
                     color: "#464646",
-                    // marginBottom: 5,
+                    marginBottom: 2,
                   }}
                 >
                   {t("hi")} {item.itinerary_buddy.myuser?.first_name},{" "}
@@ -893,7 +893,7 @@ export default function Invitation({ navigation, token }) {
                   size="description"
                   style={{
                     color: "#464646",
-                    marginBottom: 7,
+                    marginBottom: 2,
                     marginRight: 5,
                   }}
                 >
@@ -909,7 +909,8 @@ export default function Invitation({ navigation, token }) {
 
                     // width: '30%',
                     // fontSize: 15,
-                    marginBottom: 5,
+                    marginBottom: 10,
+                    marginTop: -5,
                   }}
                 >
                   {duration(item.tgl_buat)}
@@ -958,7 +959,7 @@ export default function Invitation({ navigation, token }) {
               ) : item.itinerary_buddy.isconfrim == true &&
                 item.itinerary_buddy.accepted_at != null &&
                 item.itinerary_buddy.rejected_at == null ? (
-                <View style={{ flexDirection: "row" }}>
+                <View style={{ flexDirection: "row", marginTop: 10 }}>
                   <AcceptNotif width="14" height="14" />
                   <Text
                     size="description"

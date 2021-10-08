@@ -15,6 +15,8 @@ import Invitation from "./DetailNotification/Invitation";
 import { TabBar, TabView } from "react-native-tab-view";
 import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
+import { Tab, Tabs, ScrollableTab, TabHeading } from "native-base";
+import Ripple from "react-native-material-ripple";
 
 const ListNotifikasi_ = gql`
   query {
@@ -114,7 +116,7 @@ export default function Notification(props) {
     transparent: false,
     tabBarVisble: false,
     headerTintColor: "white",
-    headerTitle: "Inbox",
+    headerTitle: t("inbox"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -164,8 +166,6 @@ export default function Notification(props) {
       BackHandler.addEventListener(props.navigation.goBack());
       return true;
     };
-
- 
   }, []);
   const [
     GetListNotif,
@@ -180,60 +180,89 @@ export default function Notification(props) {
     },
   });
 
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <Text
-        style={[
-          focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
-        ]}
-      >
-        {route.title}
-      </Text>
-    );
+  const [index, setIndex] = useState(0);
+  console.log("index", index);
+  const GetNotif = () => {
+    setIndex(0);
+    return <Invitation navigation={props.navigation} token={token} />;
   };
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: "personal", title: "Notification" },
-    { key: "group", title: "Information" },
-  ]);
-
-  const renderScene = ({ route }) => {
-    if (route.key == "personal") {
-      return token ? (
-        <Invitation navigation={props.navigation} token={token} />
-      ) : null;
-    } else if (route.key == "group") {
-      return token ? (
-        <View>
-          <Text>{""}</Text>
-        </View>
-      ) : null;
-      // return <Information navigation={props.navigation} />;
-    }
+  const GetInformation = () => {
+    setIndex(1);
+    return null;
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <TabView
-        lazy={true}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={(props) => {
-          return (
-            <TabBar
-              {...props}
+      <Tabs
+        tabBarUnderlineStyle={{ backgroundColor: "#209FAE", height: 2 }}
+        tab
+        tabContainerStyle={{ borderWidth: 0 }}
+        locked={false}
+        style={{ borderColor: "#d1d1d1" }}
+        renderTabBar={() => (
+          <ScrollableTab style={{ backgroundColor: "#fff" }} />
+        )}
+      >
+        <Tab
+          heading={
+            <TabHeading
               style={{
-                backgroundColor: "white",
+                width: Dimensions.get("screen").width / 2,
+                backgroundColor: "#fff",
               }}
-              renderLabel={renderLabel}
-              indicatorStyle={styles.indicator}
-            />
-          );
-        }}
-      />
+            >
+              <Text
+                size="title"
+                type={index == 0 ? "bold" : "regular"}
+                style={{ color: index == 0 ? "#209fae" : "#464646" }}
+              >
+                {t("notification")}
+              </Text>
+            </TabHeading>
+          }
+          tabStyle={{
+            backgroundColor: "#fff",
+            width: Dimensions.get("screen").width / 2,
+          }}
+          activeTabStyle={{
+            backgroundColor: "#fff",
+            width: Dimensions.get("screen").width / 2,
+          }}
+        >
+          <GetNotif />
+        </Tab>
+        <Tab
+          heading={
+            <TabHeading
+              style={{
+                width: Dimensions.get("screen").width / 2,
+                backgroundColor: "#fff",
+                marginBottom: 5,
+              }}
+            >
+              <Text
+                size="title"
+                type={index == 1 ? "bold" : "regular"}
+                style={{ color: index == 1 ? "#209fae" : "#464646" }}
+              >
+                {t("information")}
+              </Text>
+            </TabHeading>
+          }
+          tabStyle={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width / 2,
+          }}
+          activeTabStyle={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width / 2,
+          }}
+        >
+          {/* <GetEvent /> */}
+          <GetInformation />
+          {/* <Text size="title">Information</Text> */}
+        </Tab>
+      </Tabs>
     </SafeAreaView>
   );
 }

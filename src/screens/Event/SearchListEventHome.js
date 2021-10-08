@@ -170,7 +170,11 @@ export default function SearchListEventHome(props) {
     title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("event"),
+    headerTitle: (
+      <Text style={{ color: "#fff" }} size="header" type="bold">
+        {t("event")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -1505,7 +1509,6 @@ export default function SearchListEventHome(props) {
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
-
             paddingHorizontal: 10,
           }}
         >

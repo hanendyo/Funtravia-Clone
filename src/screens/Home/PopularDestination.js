@@ -175,10 +175,8 @@ export default function PopularDestination({ props }) {
             <FlatList
               contentContainerStyle={{
                 marginTop: 10,
-                // paddingBottom: 15,
                 paddingHorizontal: 10,
                 marginLeft: 10,
-                // borderWidth: 1,
               }}
               horizontal={true}
               data={data.beranda_popularV2}

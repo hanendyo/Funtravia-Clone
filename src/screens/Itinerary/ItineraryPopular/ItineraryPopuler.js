@@ -28,6 +28,8 @@ import {
   itinerary_2,
   Bg_soon,
   empty_image,
+  NewItineraryImage,
+  PopularItineraryImage,
 } from "../../../assets/png";
 import {
   Arrowbackwhite,
@@ -44,6 +46,7 @@ import {
   Itinerary_2,
   Newglobe,
   Padlock,
+  ItineraryIcon,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -998,8 +1001,8 @@ export default function ItineraryPopuler(props) {
                   });
                 }}
                 style={{
-                  height: 250,
-                  width: "49%",
+                  height: 230,
+                  width: "48.5%",
                   marginBottom: 10,
                   borderRadius: 5,
                   // borderWidth: 1,
@@ -1014,13 +1017,13 @@ export default function ItineraryPopuler(props) {
                   elevation: 5,
                 }}
               >
-                <View style={{ width: "100%", height: "58%" }}>
+                <View style={{ width: "100%", height: "63%" }}>
                   <Image
                     style={{
                       borderTopLeftRadius: 5,
                       borderTopRightRadius: 5,
                       width: "100%",
-                      height: "100%",
+                      height: "110%",
                     }}
                     source={item?.cover ? { uri: item?.cover } : empty_image}
                   />
@@ -1028,7 +1031,7 @@ export default function ItineraryPopuler(props) {
                     style={{
                       position: "absolute",
                       borderRadius: 2,
-                      bottom: 10,
+                      bottom: 112,
                       left: 10,
                     }}
                   >
@@ -1063,11 +1066,11 @@ export default function ItineraryPopuler(props) {
                     flex: 1,
                     paddingHorizontal: 15,
                     justifyContent: "space-between",
-                    paddingTop: 10,
-                    paddingBottom: 13,
+                    paddingTop: 18,
+                    paddingBottom: 5,
                   }}
                 >
-                  <Text size={"label"} type="bold" numberOfLines={2}>
+                  <Text size={"title"} type="bold" numberOfLines={2}>
                     {item.title}
                   </Text>
                   <Pressable
@@ -1408,7 +1411,7 @@ export default function ItineraryPopuler(props) {
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View
             style={{
-              height: Dimensions.get("screen").width * 0.3,
+              height: Dimensions.get("screen").width * 0.32,
               paddingHorizontal: 15,
               flexDirection: "row",
               // borderWidth: 1,
@@ -1436,7 +1439,7 @@ export default function ItineraryPopuler(props) {
               }
             >
               <FunImageBackground
-                source={itinerary_1 ? itinerary_1 : default_image}
+                source={NewItineraryImage ? NewItineraryImage : default_image}
                 style={{ width: "100%", height: "100%" }}
                 imageStyle={{ borderRadius: 10 }}
               ></FunImageBackground>
@@ -1488,7 +1491,9 @@ export default function ItineraryPopuler(props) {
               }
             >
               <FunImageBackground
-                source={itinerary_2 ? itinerary_2 : default_image}
+                source={
+                  PopularItineraryImage ? PopularItineraryImage : default_image
+                }
                 style={{ width: "100%", height: "100%" }}
                 imageStyle={{ borderRadius: 10 }}
               ></FunImageBackground>
@@ -1521,7 +1526,7 @@ export default function ItineraryPopuler(props) {
                     marginVertical: 3,
                   }}
                 >
-                  Populer Itinerary
+                  Popular Itinerary
                 </Text>
               </View>
             </Ripple>
@@ -1639,11 +1644,17 @@ export default function ItineraryPopuler(props) {
                     actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
                   paddingTop: 10,
                   paddingBottom: 15,
+                  flexDirection: "row",
                 }}
               >
+                <ItineraryIcon
+                  style={{ marginRight: 5 }}
+                  height={20}
+                  width={20}
+                />
                 <Text
                   size="title"
-                  type={actives == "Itinerary" ? "bold" : "regular"}
+                  type={actives == "Itinerary" ? "bold" : "light"}
                   style={{
                     color: actives == "Itinerary" ? "#209FAE" : "#464646",
                   }}
@@ -1661,11 +1672,17 @@ export default function ItineraryPopuler(props) {
                   borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
                   paddingTop: 10,
                   paddingBottom: 15,
+                  flexDirection: "row",
                 }}
               >
+                <TravelAlbum
+                  style={{ marginRight: 5 }}
+                  height={20}
+                  width={20}
+                />
                 <Text
                   size="title"
-                  type={actives == "Album" ? "bold" : "regular"}
+                  type={actives == "Album" ? "bold" : "light"}
                   style={{
                     color: actives == "Album" ? "#209FAE" : "#464646",
                   }}
@@ -1684,11 +1701,17 @@ export default function ItineraryPopuler(props) {
                     actives == "Stories" ? "#249FAE" : "#EEEEEE",
                   paddingTop: 10,
                   paddingBottom: 15,
+                  flexDirection: "row",
                 }}
               >
+                <TravelStoriesdis
+                  style={{ marginRight: 5 }}
+                  height={20}
+                  width={20}
+                />
                 <Text
                   size="title"
-                  // type={actives == "Stories" ? "bold" : "reguler"}
+                  // type={actives == "Stories" ? "bold" : "light"}
                   // style={{
                   //   color: actives == "Stories" ? "#209FAE" : "#464646",
                   // }}

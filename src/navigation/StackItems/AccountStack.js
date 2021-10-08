@@ -1,5 +1,8 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import {
   NotificationSettings,
   FAQ,
@@ -17,7 +20,7 @@ import {
   HasPassword,
   AddPasswordEmail,
   SettingCity,
-  SettingCountry
+  SettingCountry,
 } from "../../screens/Settings";
 import Wishlist from "../../screens/Wishlist/Index";
 
@@ -201,6 +204,8 @@ export default function AccountStackNavigation() {
           headerTransparent: false,
           headerTintColor: "white",
           headerBackTitleVisible: false,
+          gestureDirection: "horizontal",
+          ...TransitionPresets.SlideFromRightIOS,
         }}
       />
     </AccountStack.Navigator>

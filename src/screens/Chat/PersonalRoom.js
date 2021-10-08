@@ -16,11 +16,11 @@ import {
   Switch,
   BackHandler,
   ScrollView,
-  // FlatList,
+  FlatList,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
-import { FlatList } from "react-native-bidirectional-infinite-scroll";
+// import { FlatList } from "react-native-bidirectional-infinite-scroll";
 import {
   Arrowbackwhite,
   Send,
@@ -42,6 +42,7 @@ import {
   FunImage,
   StickerModal,
   FunImageAutoSize,
+  Uuid,
 } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -75,7 +76,6 @@ const keyboards = [
 ];
 
 export default function Room({ navigation, route }) {
-  // console.log("route", route);
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
@@ -89,16 +89,15 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [token, setToken] = useState("");
-  const socket = io(CHATSERVER, {
-    withCredentials: true,
-    extraHeaders: {
-      Authorization: token,
-    },
-  });
+  const [socket_connect, setSocketConnect] = useState(false);
+  // const socket = io(CHATSERVER, {
+  //   withCredentials: true,
+  //   extraHeaders: {
+  //     Authorization: token,
+  //   },
+  // });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
-  // console.log(message.reverse(), "msg");
-  console.log(message, "msg");
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -167,13 +166,42 @@ export default function Room({ navigation, route }) {
     const cek_koneksi = NetInfo.addEventListener((state) => {
       if (state.isConnected) {
         SetConnection(true);
-        setConnectionMessage();
       } else {
         SetConnection(false);
       }
     });
     cek_koneksi();
   }, [connection_check]);
+
+  const socket = useRef(null);
+
+  useEffect(() => {
+    socket.current = io(CHATSERVER, {
+      withCredentials: true,
+      extraHeaders: {
+        Authorization: token,
+      },
+    });
+    socket.current.emit("join", room);
+    socket.current.on("connect", () => {
+      console.log("isConnect");
+      setSocketConnect(true);
+    });
+
+    socket.current.on("disconnect", () => {
+      console.log("isDisConnect");
+      setSocketConnect(false);
+    });
+    navigation.setOptions(navigationOptions);
+    if (init) {
+      getUserToken();
+    }
+    socket.current.on("new_chat_personal", (data) => {
+      setChatHistory(data);
+    });
+
+    return () => socket.current.disconnect();
+  }, [connected, token]);
 
   const onHeightChanged = (keyboardAccessoryViewHeight) => {
     if (Platform.OS == "ios") {
@@ -247,7 +275,7 @@ export default function Room({ navigation, route }) {
       // cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
-      let id = create_UUID();
+      let id = Uuid();
       let dateTime = new Date();
       image = JSON.stringify(image);
       let chatData = {
@@ -280,7 +308,7 @@ export default function Room({ navigation, route }) {
       // includeBase64: true,
     })
       .then((image) => {
-        let id = create_UUID();
+        let id = Uuid();
         let dateTime = new Date();
         image = JSON.stringify(image);
         let chatData = {
@@ -308,7 +336,6 @@ export default function Room({ navigation, route }) {
   };
 
   const _uploadimage = async (image, id) => {
-    let chatData = {};
     try {
       image = JSON.parse(image);
       var today = new Date();
@@ -356,7 +383,7 @@ export default function Room({ navigation, route }) {
           is_send: true,
         };
         // if (socket.connected) {
-        socket.emit("message", chatData);
+        socket.current.emit("message", chatData);
         // } else {
         //   sendOffline(chatData);
         // }
@@ -375,7 +402,6 @@ export default function Room({ navigation, route }) {
         throw new Error(responseJson.message);
       }
     } catch (error) {
-      setChatHistory(chatData);
       // RNToasty.Show({
       //   duration: 1,
       //   title: "error : someting wrong!",
@@ -470,29 +496,6 @@ export default function Room({ navigation, route }) {
     },
   };
 
-  useEffect(() => {
-    socket.emit("join", room);
-    // socket.on("connect", () => {
-    //   console.log("socket_connect");
-    // });
-    navigation.setOptions(navigationOptions);
-    if (init) {
-      getUserToken();
-    }
-    socket.on("new_chat_personal", (data) => {
-      console.log("data useeffcet", data);
-      setChatHistory(data);
-    });
-
-    return () => socket.disconnect();
-  }, []);
-
-  useEffect(() => {}, []);
-
-  const setConnectionMessage = () => {
-    socket.emit("join", room);
-  };
-
   const getUserToken = async () => {
     let data = await AsyncStorage.getItem("setting");
     setUser(JSON.parse(data).user);
@@ -513,7 +516,6 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistory = async (data) => {
-    console.log("data history", data);
     let history = await AsyncStorage.getItem("history_" + room);
     let recent = JSON.parse(history);
     if (recent) {
@@ -523,7 +525,6 @@ export default function Room({ navigation, route }) {
       } else {
         recent.unshift(data);
       }
-      console.log("Recent", recent);
       setMessage(recent);
       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
     } else {
@@ -531,6 +532,16 @@ export default function Room({ navigation, route }) {
       setMessage([data]);
     }
   };
+
+  function compare(a, b) {
+    if (a.time > b.time) {
+      return -1;
+    }
+    if (a.time < b.time) {
+      return 1;
+    }
+    return 0;
+  }
 
   const initialHistory = async (access_token) => {
     let response = await fetch(
@@ -552,6 +563,7 @@ export default function Room({ navigation, route }) {
     if (init_local && init_data) {
       let merge = [...init_local, ...init_data];
       filteredList = [...new Set(merge.map(JSON.stringify))].map(JSON.parse);
+      filteredList.sort(compare);
     } else if (!init_local) {
       filteredList = init_data;
     } else if (!init_data) {
@@ -563,14 +575,6 @@ export default function Room({ navigation, route }) {
         JSON.stringify(filteredList)
       );
       let new_array = [];
-      // let split = filteredList;
-      // while (split.length) {
-      //   if (split.length > 30) {
-      //     new_array.unshift(split.splice(0, 20));
-      //   } else {
-      //     new_array.unshift(split.splice(0, split.length));
-      //   }
-      // }
 
       setMessage(filteredList);
       setBankMessage(new_array);
@@ -589,20 +593,8 @@ export default function Room({ navigation, route }) {
     setChatHistory(data);
   };
 
-  function create_UUID() {
-    var dt = new Date().getTime();
-    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
-      c
-    ) {
-      var r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
-    return uuid;
-  }
-
   const submitChatMessage = async () => {
-    let uuid = create_UUID();
+    let uuid = Uuid();
     if (button) {
       SetkeyboardOpenState(false);
       if (chat && chat.replace(/\s/g, "").length) {
@@ -617,9 +609,8 @@ export default function Room({ navigation, route }) {
           user_id: user.id,
           time: dateTime,
         };
-
         if (connected) {
-          await socket.emit("message", chatData);
+          await socket.current.emit("message", chatData);
         } else {
           sendOffline(chatData);
         }
@@ -662,7 +653,7 @@ export default function Room({ navigation, route }) {
         },
         body: `room=${room}&type=sticker&chat=personal&text=${x}&user_id=${user.id}`,
       });
-      await socket.emit("message", chatData);
+      await socket.current.emit("message", chatData);
       await setChat("");
       await setTimeout(function() {
         if (flatListRef !== null && flatListRef.current) {
@@ -685,7 +676,6 @@ export default function Room({ navigation, route }) {
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
-    // console.log("item render", item);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
@@ -769,8 +759,11 @@ export default function Room({ navigation, route }) {
             user_id={user.id}
             tmpRChat={tmpRChat}
             navigation={navigation}
+            token={token}
             socket={socket}
             _uploadimage={(image, id) => _uploadimage(image, id)}
+            connected={connected}
+            socket_connect={socket_connect}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>

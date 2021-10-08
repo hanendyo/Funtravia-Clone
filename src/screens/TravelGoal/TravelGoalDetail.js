@@ -38,14 +38,22 @@ import Ripple from "react-native-material-ripple";
 import LinearGradient from "react-native-linear-gradient";
 import Traveldetails from "../../graphQL/Query/TravelGoal/Traveldetail";
 import Travelrelateds from "../../graphQL/Query/TravelGoal/TravelRelated";
+import normalize from "react-native-normalize";
 
 export default function TravelGoalDetail(props) {
+  const { t, i18n } = useTranslation();
+  let [datadetail, setdatadetail] = useState({});
+  let [modalShare, setModalShare] = useState(false);
+  let [datarelated, setdatarelated] = useState([]);
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Goal",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Travel Goal",
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        {t("travelgoals")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -81,10 +89,6 @@ export default function TravelGoalDetail(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
-  let [datadetail, setdatadetail] = useState({});
-  let [modalShare, setModalShare] = useState(false);
-  let [datarelated, setdatarelated] = useState([]);
 
   const [
     Traveldetail,
@@ -108,7 +112,6 @@ export default function TravelGoalDetail(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     Traveldetail();
-    // console.log(props.route?.params?.article_id);
   }, []);
 
   const [
@@ -126,7 +129,6 @@ export default function TravelGoalDetail(props) {
       },
     },
     onCompleted: () => {
-      // console.log(datarelateds);
       setdatarelated(datarelateds.related_travelgoal);
     },
   });
@@ -135,7 +137,6 @@ export default function TravelGoalDetail(props) {
     props.navigation.setOptions(HeaderComponent);
     Traveldetail();
     Travelrelated();
-    // console.log(props.route?.params?.article_id);
   }, []);
 
   const getdate = (date) => {
@@ -256,16 +257,14 @@ export default function TravelGoalDetail(props) {
               style={{
                 alignItems: "center",
                 borderBottomWidth: 1,
-                // height: 50,
                 borderColor: "#d1d1d1",
               }}
-              // onPress={() => {
-              //   setModalShare(false);
-              //   props.navigation.navigate("TravelIdeaStack", {
-              //     screen: "SendMovie",
-              //     params: { movie: movie_byid },
-              //   });
-              // }}
+              onPress={() => {
+                setModalShare(false);
+                props.navigation.navigate("SendTravelGoals", {
+                  params: { dataGoal: datadetail },
+                });
+              }}
             >
               <Text size="label" type="regular" style={{ marginVertical: 15 }}>
                 {t("Send")}...
@@ -392,8 +391,13 @@ export default function TravelGoalDetail(props) {
         {datadetail?.description ? (
           <Text
             size="readable"
-            numberOfLines={2}
-            style={{ textAlign: "justify" }}
+            // numberOfLines={2}
+            type="regular"
+            style={{
+              textAlign: "left",
+              lineHeight: normalize(20),
+              marginBottom: 5,
+            }}
           >
             {datadetail?.description}
           </Text>
@@ -409,7 +413,7 @@ export default function TravelGoalDetail(props) {
             Source :{" "}
           </Text> */}
           {datadetail?.created_at ? (
-            <Text type="light" size="small" style={{ fontStyle: "italic" }}>
+            <Text type="light" size="small">
               {getdate(datadetail?.created_at)}
             </Text>
           ) : null}
@@ -422,7 +426,10 @@ export default function TravelGoalDetail(props) {
       {/* detail */}
       {datadetail?.content?.map((i, index) => {
         return (
-          <View style={{ paddingHorizontal: 15, width: "100%" }}>
+          <View
+            style={{ paddingHorizontal: 15, width: "100%" }}
+            key={`image ${index}`}
+          >
             {i.type === "image" ? (
               <View>
                 {i.title ? (
@@ -448,7 +455,6 @@ export default function TravelGoalDetail(props) {
                     resizeMode={"cover"}
                     style={{
                       borderWidth: 0.4,
-                      marginTop: i.title ? 5 : 0,
                       borderColor: "#d3d3d3",
                       height: Dimensions.get("screen").width * 0.4,
                       width: "100%",
@@ -461,7 +467,7 @@ export default function TravelGoalDetail(props) {
                   style={{
                     textAlign: "left",
                     marginTop: 5,
-                    marginBottom: 15,
+                    marginBottom: 10,
                     color: "#616161",
                     paddingHorizontal: 5,
                   }}
@@ -478,7 +484,6 @@ export default function TravelGoalDetail(props) {
                     style={{
                       marginBottom: 5,
                       paddingHorizontal: 5,
-
                       color: "#464646",
                     }}
                   >
@@ -492,8 +497,7 @@ export default function TravelGoalDetail(props) {
                     lineHeight: 22,
                     textAlign: "left",
                     color: "#464646",
-                    marginBottom: 15,
-
+                    // marginBottom: 15,
                     paddingHorizontal: 5,
                   }}
                 >
@@ -546,7 +550,7 @@ export default function TravelGoalDetail(props) {
 
       {/* more related */}
       {datarelated.length > 0 ? (
-        <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+        <View style={{ paddingHorizontal: 20 }}>
           <View
             style={{
               flexDirection: "row",
@@ -573,7 +577,7 @@ export default function TravelGoalDetail(props) {
                 }}
               ></View>
               <Text type="bold" size="title">
-                {t("More Related Articles")}
+                {t("morearticle")}
               </Text>
             </View>
             <View></View>
@@ -582,6 +586,7 @@ export default function TravelGoalDetail(props) {
           {datarelated?.map((item, index) => {
             return (
               <Ripple
+                key={`description ${index}`}
                 onPress={() => {
                   props.navigation.push("TravelGoalDetail", {
                     article_id: item.id,
@@ -612,7 +617,6 @@ export default function TravelGoalDetail(props) {
                   style={{
                     paddingLeft: 10,
                     width: (Dimensions.get("screen").width - 60) * 0.75,
-                    // borderWidth: 1,
                   }}
                 >
                   <View
@@ -620,19 +624,35 @@ export default function TravelGoalDetail(props) {
                       flexDirection: "row",
                       width: "100%",
                       justifyContent: "space-between",
+                      marginBottom: 3,
                     }}
                   >
-                    <Text size="small">{item?.category?.name}</Text>
-                    <Text size="small">{getdate(item.created_at)}</Text>
+                    <Text
+                      size="small"
+                      style={{ color: "#209fae" }}
+                      type="regular"
+                    >
+                      {item?.category?.name}
+                    </Text>
+                    <Text size="small" type="regular">
+                      {getdate(item.created_at)}
+                    </Text>
                   </View>
-                  <Text size="desription" type="bold">
+                  <Text
+                    size="desription"
+                    type="bold"
+                    numberOfLines={1}
+                    style={{ marginBottom: 2 }}
+                  >
                     {item.title}
                   </Text>
                   <Text
                     numberOfLines={2}
-                    size="readable"
+                    size="description"
+                    type="light"
                     style={{
-                      textAlign: "justify",
+                      textAlign: "left",
+                      lineHeight: normalize(16),
                     }}
                   >
                     {item.description}

@@ -131,12 +131,7 @@ export default function Register({ navigation }) {
         ...aler,
         show: true,
         judul: "registerfailed",
-        detail:
-          "" +
-          error
-            .toString()
-            .replace("Error", "")
-            .replace(":", ""),
+        detail: "" + error ? "alreadyexist" : "",
       });
     }
   };
@@ -224,7 +219,7 @@ export default function Register({ navigation }) {
             height: 180,
             width: 180,
             marginTop: Platform.OS === "ios" ? 30 : 50,
-            alignSelf: "flex-start",
+            alignSelf: "center",
           }}
         />
 
@@ -276,6 +271,7 @@ export default function Register({ navigation }) {
           <FloatingInput
             value={state.email}
             keyboardType="email-address"
+            autoCapitalize="none"
             onChangeText={onChange("email")}
             label="Email"
             // customTextStyle={{

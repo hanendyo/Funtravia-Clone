@@ -56,7 +56,11 @@ export default function myfeed(props) {
     headerTransparent: false,
     // title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
     headerTintColor: "white",
-    headerTitle: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
+    headerTitle: () => (
+      <Text size="header" type="bold" style={{ color: "white" }}>
+        {t("posts")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -758,6 +762,7 @@ export default function myfeed(props) {
               // flex: 1,
               marginHorizontal: 10,
               marginVertical: 5,
+              marginTop: 15,
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
@@ -825,11 +830,8 @@ export default function myfeed(props) {
                           },
                         });
                   }}
-                  size="description"
-                  style={{
-                    fontFamily: "Lato-Bold",
-                    // marginTop: 7,
-                  }}
+                  size="title"
+                  style={{}}
                 >
                   {datauser.first_name}{" "}
                   {datauser.first_name ? datauser.last_name : null}

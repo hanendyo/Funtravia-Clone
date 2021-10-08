@@ -29,6 +29,7 @@ import { Button, Text, Truncate } from "../../component";
 import Account from "../../graphQL/Query/Home/Account";
 import Toast from "react-native-fast-toast";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 export default function MyAccount(props) {
   const toastRef = useRef();
@@ -42,7 +43,11 @@ export default function MyAccount(props) {
     tabBarVisble: false,
     tabBarLabel: "My Account",
     headerTintColor: "white",
-    headerTitle: t("myaccount"),
+    headerTitle: (
+      <Text style={{ color: "#fff" }} size="header" type="bold">
+        {t("myaccount")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -316,11 +321,11 @@ export default function MyAccount(props) {
               style={{
                 zIndex: 999,
                 borderColor: "white",
-                borderRadius: 60,
+                borderRadius: 50,
                 borderWidth: 3,
                 backgroundColor: "#B8E0E5",
-                height: 100,
-                width: 100,
+                height: normalize(100),
+                width: normalize(100),
               }}
             >
               <Image
