@@ -44,37 +44,37 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
 
     return dateChat;
   };
-  if (dataGroupRes && dataGroupRes.length < 1) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          borderBottomLeftRadius: 15,
-          borderBottomRightRadius: 15,
-          backgroundColor: "#FFFFFF",
-        }}
-      >
-        <Kosong width={width} height={width} />
-        <Button
-          onPress={() => {
-            navigation.navigate("ChatStack", {
-              screen: "NewGroup",
-            });
-          }}
-          type="circle"
-          size="medium"
-          style={{
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-            elevation: 5,
-          }}
-        >
-          <NewGroup width="20" height="20" />
-        </Button>
-      </View>
-    );
-  }
+  // if (dataGroupRes && dataGroupRes.length < 1) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         borderBottomLeftRadius: 15,
+  //         borderBottomRightRadius: 15,
+  //         backgroundColor: "#FFFFFF",
+  //       }}
+  //     >
+  //       <Kosong width={width} height={width} />
+  //       <Button
+  //         onPress={() => {
+  //           navigation.navigate("ChatStack", {
+  //             screen: "NewGroup",
+  //           });
+  //         }}
+  //         type="circle"
+  //         size="medium"
+  //         style={{
+  //           position: "absolute",
+  //           bottom: 20,
+  //           right: 20,
+  //           elevation: 5,
+  //         }}
+  //       >
+  //         <NewGroup width="20" height="20" />
+  //       </Button>
+  //     </View>
+  //   );
+  // }
 
   const RecentView = ({ data, style }) => {
     if (data.type == "sticker") {

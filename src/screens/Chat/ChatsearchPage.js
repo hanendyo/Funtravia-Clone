@@ -20,7 +20,7 @@ import {
   SearchWhite,
   Arrowbackwhite,
   Xgray,
-  Xblue,
+  Arrowbackios,
 } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import {
@@ -37,8 +37,6 @@ import { CHATSERVER } from "../../config";
 import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import ChatGroupList from "./RenderChatGroupList";
 import ChatList from "./RenderChatList";
-import NetInfo from "@react-native-community/netinfo";
-import { useNetInfo } from "@react-native-community/netinfo";
 
 //TRY SOCKET
 import io from "socket.io-client";
@@ -50,20 +48,29 @@ import io from "socket.io-client";
 //   android: StatusBar.currentHeight,
 // });
 
-export default function Message({ navigation, route }) {
+export default function ChatsearchPage({ navigation, route }) {
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
   const [data, setData] = useState([]);
+  // console.log(
+  //   "🚀 ~ file: ChatsearchPage.js ~ line 57 ~ ChatsearchPage ~ data",
+  //   data
+  // );
   const [dataRes, setDataRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
+  // console.log(
+  //   "🚀 ~ file: ChatsearchPage.js ~ line 60 ~ ChatsearchPage ~ dataGroup",
+  //   dataGroup
+  // );
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchAktif, setSearchAktif] = useState(false);
   const [searchtext, SetSearchtext] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   //TRY SOCKET
+  // const socket = io(CHATSERVER);
   // TRY SOCKET
 
   const HeaderComponent = {
@@ -73,71 +80,54 @@ export default function Message({ navigation, route }) {
     tabBarBadge: null,
     tabBarLabel: "Message",
     // headerTintColor: "white",
-    headerTitle: (
-      <Text style={{ color: "#fff" }} size="header" type="bold">
-        {t("Message")}
-      </Text>
-    ),
+    headerTitle: t("search"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 18,
+      color: "white",
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      marginLeft: 10,
     },
-    headerLeft: "",
-    headerRight: () => (
-      <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity
-          style={{ marginRight: 20 }}
-          onPress={() =>
-            navigation.navigate("ChatStack", {
-              screen: "ChatsearchPage",
-            })
-          }
-        >
-          <SearchWhite height={20} width={20} />
-        </TouchableOpacity>
-      </View>
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
     ),
   };
 
-  const [connected, SetConnection] = useState(false);
-  const connection_check = useNetInfo();
   useEffect(() => {
-    const cek_koneksi = NetInfo.addEventListener((state) => {
-      if (state.isConnected) {
-        SetConnection(true);
-      } else {
-        SetConnection(false);
-      }
-    });
-    cek_koneksi();
-  }, [connection_check]);
-
-  const socket = useRef(null);
-  useEffect(() => {
-    socket.current = io(CHATSERVER);
-
-    socket.current.on("new_chat_group", (data) => {
-      getRoomGroup();
-    });
-    socket.current.on("new_chat_personal", (data) => {
-      getRoom();
-    });
-    return () => socket.current.disconnect();
-  }, [connected]);
-
-  useEffect(() => {
-    getUserAndToken();
-    navigation.addListener("focus", () => {
-      if (dataRes.length == 0 || dataRes.length == 0) {
-        getUserAndToken();
-      }
-    });
     navigation.setOptions(HeaderComponent);
+    navigation.addListener("focus", () => {
+      getUserAndToken();
+    });
+    // socket.on("new_chat_group", (data) => {
+    //   getRoomGroup();
+    // });
+    // socket.on("new_chat_personal", (data) => {
+    //   getRoom();
+    // });
+    // return () => socket.disconnect();
   }, []);
 
   const getRoom = async () => {
@@ -150,12 +140,13 @@ export default function Message({ navigation, route }) {
         "Content-Type": "application/json",
       },
     });
+
     let dataResponse = await response.json();
-    for (let i of dataResponse) {
-      socket.current.emit("join", i.id);
-    }
+    // for (let i of dataResponse) {
+    //   socket.emit("join", i.id);
+    // }
     await setData(dataResponse);
-    await setDataRes(dataResponse);
+    // await setDataRes(dataResponse);
     await setLoading(false);
   };
 
@@ -171,11 +162,11 @@ export default function Message({ navigation, route }) {
       },
     });
     let dataResponse = await response.json();
-    for (let i of dataResponse) {
-      socket.current.emit("join", i.group);
-    }
+    // for (let i of dataResponse) {
+    //   socket.emit("join", i.group);
+    // }
     await setDataGroup(dataResponse);
-    await setDataGroupRes(dataResponse);
+    // await setDataGroupRes(dataResponse);
   };
 
   const getUserAndToken = async () => {
@@ -232,6 +223,8 @@ export default function Message({ navigation, route }) {
   };
 
   const _searchHandle = (text) => {
+    // if (active == "personal") {
+    // console.log(text);
     SetSearchtext(text);
     if (text !== "") {
       let newData = data.filter(function(str) {
@@ -248,9 +241,10 @@ export default function Message({ navigation, route }) {
       setDataGroupRes(newDataGroup);
     } else {
       // console.log("res");
-      setDataRes(data);
-      setDataGroupRes(dataGroup);
+      setDataRes([]);
+      setDataGroupRes([]);
     }
+    // }
   };
 
   const HeaderHeight = width + 5;
@@ -455,87 +449,62 @@ export default function Message({ navigation, route }) {
         setModals={(e) => setModalError(e)}
         message={messages}
       />
-      {searchAktif ? (
+      <View
+        style={{
+          backgroundColor: "#FFFFFF",
+          // borderTopLeftRadius: 15,
+          // borderTopRightRadius: 15,
+        }}
+      >
         <View
           style={{
-            backgroundColor: "#FFFFFF",
-            // borderTopLeftRadius: 15,
-            // borderTopRightRadius: 15,
+            marginHorizontal: 15,
+            marginTop: 15,
+            backgroundColor: "#f6f6f6",
+            flexDirection: "row",
+            borderRadius: 3,
+            alignContent: "center",
+            alignItems: "center",
           }}
         >
-          <View
+          <Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
+          <TextInput
+            ref={srcinpt}
+            onChangeText={(e) => _searchHandle(e)}
+            value={searchtext}
+            placeholder="Search"
+            placeholderTextColor="#464646"
             style={{
-              marginHorizontal: 15,
-              marginTop: 15,
-              backgroundColor: "#f6f6f6",
-              flexDirection: "row",
-              borderRadius: 3,
-              alignContent: "center",
-              alignItems: "center",
+              color: "#464646",
+              fontFamily: "Lato-Regular",
+              height: 40,
+              width: "100%",
             }}
-          >
-            <Magnifying
-              width="20"
-              height="20"
-              style={{ marginHorizontal: 10 }}
-            />
-            <TextInput
-              ref={srcinpt}
-              onChangeText={(e) => _searchHandle(e)}
-              value={searchtext}
-              placeholder="Search"
-              placeholderTextColor="#464646"
+          />
+        </View>
+      </View>
+
+      <TabView
+        lazy={true}
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={(props) => {
+          return (
+            <TabBar
+              {...props}
               style={{
-                color: "#464646",
-                fontFamily: "Lato-Regular",
-                height: 40,
-                width: "80%",
+                backgroundColor: "white",
+                // borderTopLeftRadius: searchAktif ? 0 : 15,
+                // borderTopRightRadius: searchAktif ? 0 : 15,
               }}
+              renderLabel={renderLabel}
+              indicatorStyle={styles.indicator}
             />
-            {searchtext.length !== 0 ? (
-              <TouchableOpacity
-                onPress={() => {
-                  SetSearchtext("");
-                }}
-              >
-                <Xblue
-                  width="20"
-                  height="20"
-                  style={{
-                    alignSelf: "center",
-                  }}
-                />
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </View>
-      ) : null}
-      {loading ? (
-        <View style={{ height: 50, justifyContent: "center" }}>
-          <ActivityIndicator size="small" color="#209fae" />
-        </View>
-      ) : (
-        <TabView
-          lazy={true}
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={(props) => {
-            return (
-              <TabBar
-                {...props}
-                style={{
-                  backgroundColor: "white",
-                  // borderTopLeftRadius: searchAktif ? 0 : 15,
-                  // borderTopRightRadius: searchAktif ? 0 : 15,
-                }}
-                renderLabel={renderLabel}
-                indicatorStyle={styles.indicator}
-              />
-            );
-          }}
-        />
-      )}
+          );
+        }}
+      />
+
       {/* </View> */}
     </View>
   );

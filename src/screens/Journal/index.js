@@ -47,7 +47,7 @@ export default function Journal(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("traveljournal")}
       </Text>
     ),
@@ -62,13 +62,13 @@ export default function Journal(props) {
       fontSize: 18,
       color: "white",
     },
-    headerLeftContainerStyle: {
-      background: "#FFF",
-      marginLeft: 10,
-    },
     headerLRightContainerStyle: {
       background: "#FFF",
       marginRight: 10,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button

@@ -101,10 +101,10 @@ export default function ChatTypelayout({
     if (item.is_send == false && item.type !== "att_image") {
       socket.current.emit("message", item);
     }
-    if (item.is_send == false && item.type == "att_image") {
-      setloading(true);
-      _uploadimage(item.text, item.id);
-    }
+    // if (item.is_send == false && item.type == "att_image") {
+    //   setloading(true);
+    //   _uploadimage(item.text, item.id);
+    // }
   }, [connected, socket_connect]);
   // sticker layout
   if (item.type == "sticker") {

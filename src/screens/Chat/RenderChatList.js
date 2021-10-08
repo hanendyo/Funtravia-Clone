@@ -31,6 +31,8 @@ import {
 import { DefaultProfile, default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 
+import RecentChat from "./RecentChat";
+
 const { width, height } = Dimensions.get("screen");
 export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
   // console.log(dataRes);
@@ -67,39 +69,39 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
     return dateChat;
   };
 
-  if (dataRes && dataRes.length < 1) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          borderBottomLeftRadius: 15,
-          borderBottomRightRadius: 15,
-          backgroundColor: "#FFFFFF",
-        }}
-      >
-        <Kosong width={width} height={width} />
-        <Button
-          onPress={() => {
-            navigation.navigate("ChatStack", {
-              screen: "NewChat",
-            });
-          }}
-          type="circle"
-          size="medium"
-          style={{
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-            elevation: 5,
-          }}
-        >
-          <NewChat width="20" height="20" />
-        </Button>
-      </View>
-    );
-  }
+  // if (dataRes && dataRes.length < 1) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         borderBottomLeftRadius: 15,
+  //         borderBottomRightRadius: 15,
+  //         backgroundColor: "#FFFFFF",
+  //       }}
+  //     >
+  //       <Kosong width={width} height={width} />
+  //       <Button
+  //         onPress={() => {
+  //           navigation.navigate("ChatStack", {
+  //             screen: "NewChat",
+  //           });
+  //         }}
+  //         type="circle"
+  //         size="medium"
+  //         style={{
+  //           position: "absolute",
+  //           bottom: 20,
+  //           right: 20,
+  //           elevation: 5,
+  //         }}
+  //       >
+  //         <NewChat width="20" height="20" />
+  //       </Button>
+  //     </View>
+  //   );
+  // }
 
-  const RecentView = ({ data, style }) => {
+  const RecentView = ({ data, style, room }) => {
     if (data.type == "sticker") {
       return (
         <View
@@ -318,11 +320,12 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                   </Text>
 
                   {item.recent ? (
-                    <RecentView
+                    <RecentChat
                       style={{
                         marginTop: -5,
                       }}
                       data={item.recent}
+                      room={item.id}
                     />
                   ) : null}
                 </View>
