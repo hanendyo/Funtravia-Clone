@@ -173,6 +173,11 @@ export default function Room({ navigation, route }) {
     cek_koneksi();
   }, [connection_check]);
 
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      getUserToken();
+    });
+  }, []);
   const socket = useRef(null);
 
   useEffect(() => {
@@ -194,7 +199,6 @@ export default function Room({ navigation, route }) {
     });
     navigation.setOptions(navigationOptions);
     if (init) {
-      getUserToken();
     }
     socket.current.on("new_chat_personal", (data) => {
       setChatHistory(data);
@@ -383,7 +387,7 @@ export default function Room({ navigation, route }) {
           is_send: true,
         };
         // if (socket.connected) {
-        socket.current.emit("message", chatData);
+        await await socket.current.emit("message", chatData);
         // } else {
         //   sendOffline(chatData);
         // }
@@ -544,40 +548,46 @@ export default function Room({ navigation, route }) {
   }
 
   const initialHistory = async (access_token) => {
-    let response = await fetch(
-      `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + access_token,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    let responseJson = await response.json();
-    let history = await AsyncStorage.getItem("history_" + room);
-    let init_local = await JSON.parse(history);
-    let init_data = await responseJson.data;
-    let filteredList = [];
-    if (init_local && init_data) {
-      let merge = [...init_local, ...init_data];
-      filteredList = [...new Set(merge.map(JSON.stringify))].map(JSON.parse);
-      filteredList.sort(compare);
-    } else if (!init_local) {
-      filteredList = init_data;
-    } else if (!init_data) {
-      filteredList = init_local;
-    }
-    if (filteredList && filteredList.length > 0) {
-      await AsyncStorage.setItem(
-        "history_" + room,
-        JSON.stringify(filteredList)
+    try {
+      let response = await fetch(
+        `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + access_token,
+            "Content-Type": "application/json",
+          },
+        }
       );
-      let new_array = [];
+      let responseJson = await response.json();
+      let history = await AsyncStorage.getItem("history_" + room);
+      let init_local = await JSON.parse(history);
+      let init_data = await responseJson.data;
+      let filteredList = [];
+      if (init_local && init_data) {
+        let merge = [...init_data, ...init_local];
+        filteredList = [...new Set(merge.map(JSON.stringify))].map(JSON.parse);
+        filteredList.sort(compare);
+      } else if (!init_local) {
+        filteredList = init_data;
+      } else if (!init_data) {
+        filteredList = init_local;
+      }
+      if (filteredList && filteredList.length > 0) {
+        await AsyncStorage.setItem(
+          "history_" + room,
+          JSON.stringify(filteredList)
+        );
+        let new_array = [];
 
-      setMessage(filteredList);
-      setBankMessage(new_array);
+        setMessage(filteredList);
+        setBankMessage(new_array);
+      }
+    } catch (error) {
+      let history = await AsyncStorage.getItem("history_" + room);
+      let init_local = await JSON.parse(history);
+      setMessage(init_local);
     }
   };
   const handleOnStartReached = () => {
@@ -609,7 +619,7 @@ export default function Room({ navigation, route }) {
           user_id: user.id,
           time: dateTime,
         };
-        if (connected) {
+        if (socket_connect) {
           await socket.current.emit("message", chatData);
         } else {
           sendOffline(chatData);

@@ -81,6 +81,7 @@ function Feedstackscreen(props) {
 
 const Chatstack = createStackNavigator();
 function Chatstackscreen(props) {
+  const { t } = useTranslation();
   return (
     <Feedstack.Navigator initialRouteName={"ChatScreen"}>
       <Feedstack.Screen
@@ -93,6 +94,11 @@ function Chatstackscreen(props) {
             elevation: 0,
             borderBottomWidth: 0,
           },
+          headerTitle: (
+            <Text style={{ color: "#fff" }} size="header" type="bold">
+              {t("Message")}
+            </Text>
+          ),
         }}
       />
     </Feedstack.Navigator>
