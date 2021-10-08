@@ -10,6 +10,7 @@ import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdateKataSandi";
 import { useMutation } from "@apollo/react-hooks";
 import Modal from "react-native-modal";
 import { show_password, hide_password } from "../../../assets/png";
+import normalize from "react-native-normalize";
 
 export default function HasPassword(props) {
   const [token, setToken] = useState("");
@@ -45,7 +46,11 @@ export default function HasPassword(props) {
   };
 
   const HeaderComponent = {
-    headerTitle: t("UpdatePassword"),
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("UpdatePassword")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -56,6 +61,14 @@ export default function HasPassword(props) {
       fontFamily: "Lato-Bold",
       fontSize: 18,
       color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -388,7 +401,7 @@ export default function HasPassword(props) {
           }
           color={
             text.length < 0 || text1.length < 8 || text2.length < 8
-              ? "tertiary"
+              ? "disabled"
               : "secondary"
           }
           onPress={() => onSubmit(text, text1)}

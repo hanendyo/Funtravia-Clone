@@ -12,19 +12,30 @@ import { Text } from "../../../component";
 import { Button, Truncate, Loading } from "../../../component";
 import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { Arrowbackwhite, WhiteCheck } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  Search,
+  WhiteCheck,
+} from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 import saveBuddy from "../../../graphQL/Mutation/Itinerary/AddBuddy";
 import { useTranslation } from "react-i18next";
+import normalize from "react-native-normalize";
 
 export default function AddBuddy(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     title: "Travel Buddy",
     headerTransparent: false,
     headerTintColor: "#f0f0f0",
-    headerTitle: "Travel Buddy",
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("addtravelBuddy")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -33,13 +44,16 @@ export default function AddBuddy(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "#f0f0f0",
+      fontSize: 18,
+      color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -52,7 +66,11 @@ export default function AddBuddy(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -66,7 +84,6 @@ export default function AddBuddy(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const { t, i18n } = useTranslation();
   let [search, setSearch] = useState(" ");
   let [dataFilter, setFilter] = useState(props.route.params.dataBuddy);
   let [dataFiltersave, setFiltersave] = useState(props.route.params.dataBuddy);
@@ -154,12 +171,26 @@ export default function AddBuddy(props) {
 
   const AddtoBuddy = async (value) => {
     var dataNews = [...dataNew];
-    dataNews.push(value.id);
-    setNew(dataNews);
-
     var filterdata = [...dataFilter];
-    filterdata.push(value);
-    setFilter(filterdata);
+    var inde = dataNews.findIndex((x) => x === value.id);
+    var indeFilter = filterdata.findIndex((y) => y["id"] === value.id);
+
+    if (inde !== -1) {
+      dataNews.splice(inde, 1);
+      setNew(dataNews);
+
+      filterdata.splice(indeFilter, 1);
+      setFilter(filterdata);
+    } else if (indeFilter !== -1) {
+      filterdata.splice(indeFilter, 1);
+      setFilter(filterdata);
+    } else {
+      dataNews.push(value.id);
+      setNew(dataNews);
+
+      filterdata.push(value);
+      setFilter(filterdata);
+    }
   };
 
   const DeleteBuddy = (value) => {
@@ -211,92 +242,89 @@ export default function AddBuddy(props) {
               (e.user_id ? e.user_id : e.id).includes(value.id)
             );
             if (datafilters && datafilters.length) {
-              return (
-                <View
-                  style={{
-                    opacity: 0.5,
-                    flexDirection: "row",
-                    width: Dimensions.get("screen").width,
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignContent: "center",
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      alignContent: "center",
-                    }}
-                  >
-                    <Image
-                      source={
-                        value && value.picture
-                          ? { uri: value.picture }
-                          : default_image
-                      }
-                      style={{
-                        resizeMode: "cover",
-                        height: 50,
-                        width: 50,
-                        borderRadius: 25,
-                      }}
-                    />
+              return null;
+              // <View
+              //   style={{
+              //     flexDirection: "row",
+              //     width: Dimensions.get("screen").width,
+              //     borderBottomWidth: 1,
+              //     borderBottomColor: "#F6F6F6",
+              //     paddingHorizontal: 20,
+              //     paddingVertical: 20,
+              //     justifyContent: "space-between",
+              //     alignItems: "center",
+              //     alignContent: "center",
+              //   }}
+              // >
+              //   <View
+              //     style={{
+              //       flexDirection: "row",
+              //       alignItems: "center",
+              //       alignContent: "center",
+              //     }}
+              //   >
+              //     <Image
+              //       source={
+              //         value && value.picture
+              //           ? { uri: value.picture }
+              //           : default_image
+              //       }
+              //       style={{
+              //         resizeMode: "cover",
+              //         height: 50,
+              //         width: 50,
+              //         borderRadius: 25,
+              //       }}
+              //     />
 
-                    <View>
-                      <Text
-                        size="label"
-                        type="bold"
-                        style={{
-                          // fontSize: 14,
-                          // fontFamily: "Lato-Bold",
-                          marginLeft: 20,
-                          width: "100%",
-                        }}
-                        numberOfLines={1}
-                      >
-                        {/* <Truncate text={value.first_name} length={17} /> */}
-                        {value?.first_name} {value?.last_name}
-                        {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
-                      </Text>
+              //     <View
+              //       style={{
+              //         marginLeft: 20,
+              //         width: Dimensions.get("screen").width * 0.46,
+              //       }}
+              //     >
+              //       <Text size="description" type="bold">
+              //         {value?.first_name} {value?.last_name}
+              //       </Text>
 
-                      <Text
-                        size="small"
-                        type="regular"
-                        style={{
-                          marginLeft: 20,
-                        }}
-                      >
-                        {value.username}
-                      </Text>
-                    </View>
-                  </View>
-                  <Button
-                    text=""
-                    size="small"
-                    color="primary"
-                    type="circle"
-                    disabled
-                    style={{
-                      width: Dimensions.get("screen").width * 0.25,
-                    }}
-                  >
-                    <WhiteCheck width={20} height={20} />
-                  </Button>
-                </View>
-              );
+              //       <Text size="description" type="regular">
+              //         {"@" + value.username}
+              //       </Text>
+              //       {value?.bio ? (
+              //         <Text size="description" type="regular">
+              //           <Truncate
+              //             text={value?.bio ? value?.bio : ""}
+              //             length={30}
+              //           />
+              //         </Text>
+              //       ) : null}
+              //     </View>
+              //   </View>
+              //   <Button
+              //     text=""
+              //     size="small"
+              //     color="primary"
+              //     type="circle"
+              //     disabled
+              //     style={{
+              //       width: 80,
+              //       height: 30,
+              //     }}
+              //   >
+              //     <WhiteCheck width={20} height={20} />
+              //   </Button>
+              // </View>
             } else {
               return (
                 <View
                   style={{
                     flexDirection: "row",
                     width: Dimensions.get("screen").width,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#F6F6F6",
                     paddingHorizontal: 20,
-                    paddingVertical: 10,
+                    paddingVertical: 20,
                     justifyContent: "space-between",
-                    // borderWidth: 1,
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -322,30 +350,27 @@ export default function AddBuddy(props) {
                       }}
                     />
 
-                    <View>
-                      <Text
-                        size="label"
-                        type="bold"
-                        style={{
-                          marginLeft: 20,
-                          width: "100%",
-                        }}
-                        numberOfLines={1}
-                      >
-                        {/* <Truncate text={value.first_name} length={17} /> */}
+                    <View
+                      style={{
+                        marginLeft: 20,
+                        width: Dimensions.get("screen").width * 0.46,
+                      }}
+                    >
+                      <Text size="description" type="bold">
                         {value?.first_name} {value?.last_name}
-                        {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
-                      <Text
-                        size="small"
-                        type="regular"
-                        style={{
-                          marginLeft: 20,
-                        }}
-                      >
-                        {value.username}
+                      <Text size="description" type="regular">
+                        {"@" + value.username}
                       </Text>
+                      {value?.bio ? (
+                        <Text size="description" type="regular">
+                          <Truncate
+                            text={value?.bio ? value?.bio : ""}
+                            length={30}
+                          />
+                        </Text>
+                      ) : null}
                     </View>
                   </View>
                   <Button
@@ -353,9 +378,11 @@ export default function AddBuddy(props) {
                     size="small"
                     color="primary"
                     type="circle"
-                    onPress={() => DeleteBuddy(value)}
+                    onPress={() => AddtoBuddy(value)}
+                    // disabled
                     style={{
-                      width: Dimensions.get("screen").width * 0.25,
+                      width: 80,
+                      height: 30,
                     }}
                   >
                     <WhiteCheck width={20} height={20} />
@@ -369,8 +396,10 @@ export default function AddBuddy(props) {
                 style={{
                   flexDirection: "row",
                   width: Dimensions.get("screen").width,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#F6F6F6",
                   paddingHorizontal: 20,
-                  paddingVertical: 10,
+                  paddingVertical: 20,
                   justifyContent: "space-between",
                   alignItems: "center",
                   alignContent: "center",
@@ -397,30 +426,27 @@ export default function AddBuddy(props) {
                     }}
                   />
 
-                  <View>
-                    <Text
-                      size="label"
-                      type="bold"
-                      style={{
-                        marginLeft: 20,
-                        width: "100%",
-                      }}
-                      numberOfLines={1}
-                    >
-                      {/* <Truncate text={value.first_name} length={17} /> */}
+                  <View
+                    style={{
+                      marginLeft: 20,
+                      width: Dimensions.get("screen").width * 0.46,
+                    }}
+                  >
+                    <Text size="description" type="bold">
                       {value?.first_name} {value?.last_name}
-                      {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                     </Text>
 
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{
-                        marginLeft: 20,
-                      }}
-                    >
-                      {value.username}
+                    <Text size="description" type="regular">
+                      {"@" + value.username}
                     </Text>
+                    {value?.bio ? (
+                      <Text size="description" type="regular">
+                        <Truncate
+                          text={value?.bio ? value?.bio : ""}
+                          length={30}
+                        />
+                      </Text>
+                    ) : null}
                   </View>
                 </View>
                 <Button
@@ -431,7 +457,8 @@ export default function AddBuddy(props) {
                   variant="bordered"
                   onPress={() => AddtoBuddy(value)}
                   style={{
-                    width: Dimensions.get("screen").width * 0.25,
+                    width: 80,
+                    height: 30,
                   }}
                 ></Button>
               </View>
@@ -446,14 +473,14 @@ export default function AddBuddy(props) {
     <View
       style={{
         flex: 1,
+        backgroundColor: "#FFFFFF",
       }}
     >
       <Loading show={loading} />
 
       <View
         style={{
-          backgroundColor: "#f0f0f0",
-          paddingVertical: 10,
+          paddingTop: 15,
         }}
       >
         <View
@@ -470,30 +497,18 @@ export default function AddBuddy(props) {
         >
           <View
             style={{
-              backgroundColor: "#daf0f2",
+              backgroundColor: "#F6F6F6",
               borderRadius: 5,
               width: "100%",
-              height: 40,
+              height: 35,
+              paddingHorizontal: 15,
 
-              borderWidth: 0.3,
-              borderColor: "#209fae",
-              // flex: 1,
               flexDirection: "row",
               alignItems: "center",
             }}
           >
             <View>
-              <CustomImage
-                source={search_button}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
-                }}
-              />
+              <Search width={15} height={15} />
             </View>
 
             <TextInput
@@ -502,6 +517,7 @@ export default function AddBuddy(props) {
               style={{
                 width: "100%",
                 fontFamily: "Lato-Regular",
+                marginLeft: 5,
                 fontSize: 14,
                 color: "#464646",
               }}
@@ -512,7 +528,10 @@ export default function AddBuddy(props) {
         </View>
       </View>
       {/* ========== */}
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         {DataBuddy && DataBuddy.search_travelwith ? (
           <RenderBuddy databuddy={DataBuddy.search_travelwith} />
         ) : null}
@@ -526,11 +545,11 @@ export default function AddBuddy(props) {
           bottom: 0,
           height: 60,
           width: Dimensions.get("window").width,
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "#FFFFFF",
           paddingVertical: 10,
-          borderTopWidth: 1,
-          borderColor: "#F0F0F0",
-          shadowColor: "#F0F0F0",
+          borderTopWidth: 1.5,
+          borderColor: "#f6f6f6",
+          shadowColor: "#FFFFFF",
           shadowOffset: { width: 2, height: 2 },
           shadowOpacity: 1,
           shadowRadius: 2,
@@ -542,9 +561,9 @@ export default function AddBuddy(props) {
         <Button
           text={t("save")}
           size="medium"
-          color="primary"
+          color={dataNew.length > 0 ? "primary" : "disabled"}
           type="box"
-          onPress={() => _save()}
+          onPress={() => (dataNew.length > 0 ? _save() : null)}
           style={{
             width: Dimensions.get("window").width - 40,
           }}

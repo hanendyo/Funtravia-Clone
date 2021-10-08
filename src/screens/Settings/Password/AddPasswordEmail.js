@@ -17,6 +17,7 @@ import { useMutation } from "@apollo/react-hooks";
 import Modal from "react-native-modal";
 import { show_password, hide_password } from "../../../assets/png";
 import { CustomImage } from "../../../component";
+import normalize from "react-native-normalize";
 
 export default function AddPasswordEmail(props) {
   const [token, setToken] = useState("");
@@ -48,7 +49,11 @@ export default function AddPasswordEmail(props) {
   };
 
   const HeaderComponent = {
-    headerTitle: t("SetPassword"),
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("SetPassword")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -57,8 +62,16 @@ export default function AddPasswordEmail(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 16,
+      fontSize: 18,
       color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button

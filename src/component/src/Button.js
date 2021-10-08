@@ -167,6 +167,7 @@ const buttonColor = StyleSheet.create({
   black: { backgroundColor: "#464646" },
   green: { backgroundColor: "#daf0f2" },
   pink: { backgroundColor: "#f2dae6" },
+  disabled: { backgroundColor: "#EAEAEA" },
 });
 
 const buttonVariant = {
@@ -197,12 +198,18 @@ const buttonVariant = {
       borderColor: "#d3d3d3",
       borderWidth: 1,
     },
+    disabled: {
+      backgroundColor: "transparent",
+      borderColor: "#EAEAEA",
+      borderWidth: 1,
+    },
   },
   transparent: {
     primary: { backgroundColor: "transparent" },
     secondary: { backgroundColor: "transparent" },
     tertiary: { backgroundColor: "transparent" },
     black: { backgroundColor: "transparent" },
+    disabled: { backgroundColor: "transparent" },
   },
 };
 
@@ -214,6 +221,7 @@ const fontColor = {
     black: { color: "#FFFFFF" },
     green: { color: "#464646" },
     pink: { color: "#ffffff" },
+    disabled: { color: "#D1D1D1" },
   },
   bordered: {
     primary: { color: "#209FAE" },

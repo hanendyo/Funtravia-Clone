@@ -10,6 +10,7 @@ import UpdatePassword from "../../../graphQL/Mutation/Setting/UpdatePassword";
 import { useMutation } from "@apollo/react-hooks";
 import { show_password, hide_password } from "../../../assets/png";
 import { CustomImage } from "../../../component";
+import normalize from "react-native-normalize";
 
 export default function AddPassword(props) {
   const [disable1, setDisable1] = useState("");
@@ -47,7 +48,11 @@ export default function AddPassword(props) {
   };
 
   const HeaderComponent = {
-    headerTitle: t("AddPassword"),
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("AddPassword")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -56,8 +61,16 @@ export default function AddPassword(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 16,
+      fontSize: 18,
       color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -308,9 +321,7 @@ export default function AddPassword(props) {
         <Button
           disabled={disable1.length < 8 || disable2.length < 8 ? true : false}
           color={
-            disable1.length < 8 || disable2.length < 8
-              ? "tertiary"
-              : "secondary"
+            disable1.length < 8 || disable2.length < 8 ? "tertiary" : "disabled"
           }
           text={"Submit"}
           onPress={() => onSubmit(text1, text2)}
