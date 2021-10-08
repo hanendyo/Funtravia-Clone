@@ -132,6 +132,7 @@ const childrenWidth = width - 40;
 const childrenHeight = 60;
 
 export default function ItineraryDetail(props) {
+  console.log("pros", props);
   let [tambahan, setTambahan] = useState(55);
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * 0.3
@@ -1142,10 +1143,10 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    // backStatus
-    //   ? props.navigation.navigate("TripBottomPlaning")
-    //   : props.navigation.goBack();
-    props.navigation.goBack();
+    props.route.params.onbackhandler == "list"
+      ? props.navigation.navigate("TripBottomPlaning")
+      : props.navigation.goBack();
+    // props.navigation.goBack();
   };
 
   const [

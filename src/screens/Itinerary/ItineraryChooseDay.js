@@ -287,6 +287,7 @@ export default function ItineraryChooseday(props) {
                             token: token,
                             datadayaktif: dataSelected[0],
                             status: "edit",
+                            onbackhandler: "list",
                           },
                         })
                       )
@@ -332,6 +333,7 @@ export default function ItineraryChooseday(props) {
                                     datadayaktif: dataSelected[0],
                                     status: "edit",
                                     index: 0,
+                                    onbackhandler: "list",
                                   },
                                 },
                               ],

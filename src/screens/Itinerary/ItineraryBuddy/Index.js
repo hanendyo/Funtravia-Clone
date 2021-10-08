@@ -22,24 +22,35 @@ import MakeAdmin from "../../../graphQL/Mutation/Itinerary/MakeAdmin";
 import RemovAdmin from "../../../graphQL/Mutation/Itinerary/RemoveAdmin";
 import { Truncate } from "../../../component";
 import {
+  Arrowbackios,
   Arrowbackwhite,
+  Check,
   Delete,
   Member,
   Memberblue,
   PlusCircle,
+  Search,
+  Xhitam,
 } from "../../../assets/svg";
 import Swipeout from "react-native-swipeout";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/listbuddy";
 import { Input } from "native-base";
 import { useTranslation } from "react-i18next";
+import normalize from "react-native-normalize";
 
 export default function ItineraryBuddy(props) {
+  const { t, i18n } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     title: "Travel Buddy",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Travel Buddy",
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("travelBuddy")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -48,13 +59,16 @@ export default function ItineraryBuddy(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -67,12 +81,15 @@ export default function ItineraryBuddy(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let iditinerary = props.route.params.iditin;
   let token = props.route.params.token;
   let created_by = props.route.params.created_by;
@@ -234,11 +251,15 @@ export default function ItineraryBuddy(props) {
               alignItems: "center",
             }}
           >
-            <Memberblue height={20} width={20} />
+            <Check height={20} width={20} />
             <Text
               size="small"
               type="regular"
-              style={{ textAlign: "center", paddingHorizontal: 2 }}
+              style={{
+                textAlign: "center",
+                paddingHorizontal: 2,
+                color: "#209FAE",
+              }}
             >
               {t("SetasAdmin")}
             </Text>
@@ -322,8 +343,12 @@ export default function ItineraryBuddy(props) {
               alignItems: "center",
             }}
           >
-            <Member height={20} width={20} />
-            <Text size="small" type="regular" style={{ textAlign: "center" }}>
+            <Xhitam height={13} width={13} />
+            <Text
+              size="small"
+              type="regular"
+              style={{ textAlign: "center", marginTop: 3 }}
+            >
               {t("removeadmin")}
             </Text>
           </TouchableOpacity>
@@ -366,19 +391,13 @@ export default function ItineraryBuddy(props) {
   };
 
   const RenderBuddy = ({ databuddy }) => {
-    // var inde = databuddy.findIndex((k) => k['user_id'] === created_by);
-    // var index = databuddy.findIndex((k) => k['user_id'] === created_by);
-    // // if (inde > -1 && created_by == users.id) {
-    // databuddy = array_move(databuddy, inde, 0);
-    // // }
     var inde = databuddy.findIndex((k) => k["user_id"] === users.id);
 
     return (
       <SafeAreaView
         style={{
-          // width: Dimensions.get("screen").width,
           flex: 1,
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "#FFFFFF",
         }}
       >
         {databuddy.map((value, i) => {
@@ -391,7 +410,8 @@ export default function ItineraryBuddy(props) {
                   paddingHorizontal: 20,
                   paddingVertical: 10,
                   justifyContent: "space-between",
-                  // borderWidth: 1,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#f6f6f6",
                   alignItems: "center",
                   alignContent: "center",
                 }}
@@ -400,14 +420,10 @@ export default function ItineraryBuddy(props) {
                   style={{
                     flexDirection: "row",
                     flex: 1,
-                    // width: '100%',
-                    // paddingHorizontal: 20,
-                    // paddingVertical: 10,
                     alignItems: "center",
                     alignContent: "center",
                   }}
                 >
-                  {/* {console.log(value)} */}
                   <Image
                     source={
                       value.picture ? { uri: value.picture } : default_image
@@ -419,32 +435,19 @@ export default function ItineraryBuddy(props) {
                       borderRadius: 25,
                     }}
                   />
-
-                  <Text
-                    size="label"
-                    type="bold"
+                  <View
                     style={{
                       marginLeft: 20,
-                      // width: "60%",
                       flex: 1,
-                      // borderWidth: 1,
                     }}
-                    numberOfLines={1}
                   >
-                    {/* <Truncate text={value.first_name} length={17} /> */}
-                    {value?.first_name} {value?.last_name}
-                    {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
-                  </Text>
-
-                  {/* <Text
-										style={{
-											fontSize: 12,
-											fontFamily: "Lato-Bold",
-											marginLeft: 20,
-											color: '#209fae',
-										}}>
-										Status
-									</Text> */}
+                    <Text size="label" type="bold">
+                      {value?.first_name} {value?.last_name}
+                    </Text>
+                    <Text size="label" type="light">
+                      {"@" + value?.username}
+                    </Text>
+                  </View>
                 </View>
 
                 {value.user_id === created_by ? (
@@ -453,20 +456,16 @@ export default function ItineraryBuddy(props) {
                       alignContent: "center",
                       justifyContent: "center",
                       alignItems: "center",
-                      borderWidth: 1,
-                      borderColor: "#209fae",
                       borderRadius: 5,
                       marginLeft: 5,
                       paddingHorizontal: 15,
-                      // paddingVertical: 5,
                       height: 30,
                     }}
                   >
                     <Text
-                      size="small"
+                      size="description"
                       type="bold"
                       style={{
-                        // marginLeft: 20,
                         color: "#209fae",
                       }}
                     >
@@ -474,13 +473,21 @@ export default function ItineraryBuddy(props) {
                     </Text>
                   </View>
                 ) : value.isadmin === true ? (
-                  <View style={{ marginRight: 5 }}>
+                  <View
+                    style={{
+                      alignContent: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 5,
+                      marginLeft: 5,
+                      paddingHorizontal: 15,
+                      height: 30,
+                    }}
+                  >
                     <Text
-                      size="small"
+                      size="description"
                       type="bold"
                       style={{
-                        // fontFamily: "Lato-Bold",
-                        // fontSize: 12,
                         color: "#209fae",
                       }}
                     >
@@ -505,13 +512,14 @@ export default function ItineraryBuddy(props) {
               >
                 <View
                   style={{
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "#FFFFFF",
                     flexDirection: "row",
                     width: Dimensions.get("screen").width,
                     paddingHorizontal: 20,
                     paddingVertical: 10,
                     justifyContent: "space-between",
-                    // borderWidth: 1,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#f6f6f6",
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -519,10 +527,7 @@ export default function ItineraryBuddy(props) {
                   <View
                     style={{
                       flexDirection: "row",
-                      // borderWidth: 1,
-                      // width: '100%',
-                      // paddingHorizontal: 20,
-                      // paddingVertical: 10,
+
                       alignItems: "center",
                       alignContent: "center",
                     }}
@@ -541,41 +546,24 @@ export default function ItineraryBuddy(props) {
                     />
                     <View
                       style={{
+                        marginLeft: 20,
                         flex: 1,
-                        justifyContent: "flex-start",
                       }}
                     >
                       <View
                         style={{
-                          // flex: 1,
                           flexDirection: "row",
-                          justifyContent: "flex-start",
+                          opacity: value.isconfrim !== true ? 0.3 : 1,
                         }}
                       >
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={{
-                            // fontSize: 14,
-                            // fontFamily: "Lato-Bold",
-                            marginLeft: 20,
-                            opacity: value.isconfrim !== true ? 0.3 : 1,
-                            // width: "60%",
-                            flex: 1,
-                          }}
-                          numberOfLines={1}
-                        >
-                          {/* <Truncate text={value.first_name} length={17} /> */}
+                        <Text size="label" type="bold">
                           {value?.first_name} {value?.last_name}
-                          {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                         </Text>
                         {value.isconfrim !== true ? (
                           <Text
                             size="small"
                             type="bold"
                             style={{
-                              // fontSize: 12,
-                              // fontFamily: "Lato-Bold",
                               marginHorizontal: 10,
                               color: "#D75995",
                             }}
@@ -587,8 +575,6 @@ export default function ItineraryBuddy(props) {
                             size="small"
                             type="bold"
                             style={{
-                              // fontSize: 12,
-                              // fontFamily: "Lato-Bold",
                               marginHorizontal: 10,
                               color: "#D75995",
                             }}
@@ -597,17 +583,15 @@ export default function ItineraryBuddy(props) {
                           </Text>
                         )}
                       </View>
+
                       <Text
-                        size="small"
-                        type="regular"
+                        size="label"
+                        type="light"
                         style={{
-                          // fontSize: 14,
-                          // fontFamily: 'Lato-Regular',
-                          marginLeft: 20,
                           opacity: value.isconfrim !== true ? 0.3 : 1,
                         }}
                       >
-                        {value.username}
+                        {"@" + value?.username}
                       </Text>
                     </View>
                   </View>
@@ -616,12 +600,7 @@ export default function ItineraryBuddy(props) {
                 </View>
               </Swipeout>
             );
-          } else if (
-            // value.isadmin === true &&
-            value.user_id === created_by
-            // &&
-            // databuddy[inde].isadmin === true
-          ) {
+          } else if (value.user_id === created_by) {
             return (
               <View
                 style={{
@@ -630,7 +609,7 @@ export default function ItineraryBuddy(props) {
                   paddingHorizontal: 20,
                   paddingVertical: 10,
                   justifyContent: "space-between",
-                  // borderWidth: 1,
+
                   alignItems: "center",
                   alignContent: "center",
                 }}
@@ -639,9 +618,7 @@ export default function ItineraryBuddy(props) {
                   style={{
                     flex: 1,
                     flexDirection: "row",
-                    // width: '100%',
-                    // paddingHorizontal: 20,
-                    // paddingVertical: 10,
+
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -662,28 +639,14 @@ export default function ItineraryBuddy(props) {
                     size="label"
                     type="bold"
                     style={{
-                      // fontSize: 14,
-                      // fontFamily: "Lato-Bold",
                       marginLeft: 20,
-                      // width: "60%",
+
                       flex: 1,
                     }}
                     numberOfLines={1}
                   >
-                    {/* <Truncate text={value.first_name} length={17} /> */}
                     {value?.first_name} {value?.last_name}
-                    {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                   </Text>
-
-                  {/* <Text
-										style={{
-											fontSize: 12,
-											fontFamily: "Lato-Bold",
-											marginLeft: 20,
-											color: '#209fae',
-										}}>
-										Status
-									</Text> */}
                 </View>
                 <View
                   style={{
@@ -703,9 +666,6 @@ export default function ItineraryBuddy(props) {
                     size="label"
                     type="bold"
                     style={{
-                      // fontSize: 14,
-                      // fontFamily: "Lato-Bold",
-                      // marginLeft: 20,
                       color: "#209fae",
                     }}
                   >
@@ -723,13 +683,14 @@ export default function ItineraryBuddy(props) {
               <Swipeout right={swipeoutBtn(value.id, iditinerary)}>
                 <View
                   style={{
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "#FFFFFF",
                     flexDirection: "row",
                     width: Dimensions.get("screen").width,
                     paddingHorizontal: 20,
                     paddingVertical: 10,
                     justifyContent: "space-between",
-                    // borderWidth: 1,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#F6F6F6",
                     alignItems: "center",
                     alignContent: "center",
                   }}
@@ -738,9 +699,6 @@ export default function ItineraryBuddy(props) {
                     style={{
                       flex: 1,
                       flexDirection: "row",
-                      // width: '100%',
-                      // paddingHorizontal: 20,
-                      // paddingVertical: 10,
                       alignItems: "center",
                       alignContent: "center",
                     }}
@@ -757,82 +715,66 @@ export default function ItineraryBuddy(props) {
                         opacity: value.isconfrim !== true ? 0.3 : 1,
                       }}
                     />
-                    <View style={{ flex: 1 }}>
-                      <View style={{ flexDirection: "row" }}>
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={{
-                            // fontSize: 14,
-                            // fontFamily: "Lato-Bold",
-                            marginLeft: 20,
-                            opacity: value.isconfrim !== true ? 0.3 : 1,
-                            // width: "60%",
-                            flex: 1,
-                          }}
-                          numberOfLines={1}
-                        >
-                          {/* <Truncate text={value.first_name} length={17} /> */}
-                          {value?.first_name} {value?.last_name}
-                          {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
-                        </Text>
-                        {/* {value.isconfrim !== true ? (
-													<Text
-														style={{
-															fontSize: 12,
-															fontFamily: "Lato-Bold",
-															marginHorizontal: 10,
-															color: '#D75995',
-														}}>
-														Pending
-													</Text>
-												) : null} */}
-                      </View>
-                      <Text
-                        size="small"
-                        type="regular"
-                        style={{
-                          // fontSize: 14,
-                          // fontFamily: 'Lato-Regular',
-                          marginLeft: 20,
-                          opacity: value.isconfrim !== true ? 0.3 : 1,
-                        }}
-                      >
-                        {value.username}
+                    <View
+                      style={{
+                        marginLeft: 20,
+                        flex: 1,
+                      }}
+                    >
+                      <Text size="label" type="bold">
+                        {value?.first_name} {value?.last_name}
+                      </Text>
+                      <Text size="label" type="light">
+                        {"@" + value?.username}
                       </Text>
                     </View>
                   </View>
-                  {/* {console.log(value.user_id)}
-									{console.log(created_by)} */}
+
                   {value.user_id === created_by ? (
-                    <View style={{ marginRight: 5 }}>
+                    <View
+                      style={{
+                        alignContent: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        marginLeft: 5,
+                        paddingHorizontal: 15,
+                        height: 30,
+                      }}
+                    >
                       <Text
-                        size="small"
+                        size="description"
                         type="bold"
                         style={{
-                          // fontFamily: "Lato-Bold",
-                          // fontSize: 12,
                           color: "#209fae",
                         }}
                       >
                         {t("TripOwner")}
                       </Text>
                     </View>
-                  ) : (
-                    <View style={{ marginRight: 5 }}>
+                  ) : value.isadmin === true ? (
+                    <View
+                      style={{
+                        alignContent: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 5,
+                        marginLeft: 5,
+                        paddingHorizontal: 15,
+                        height: 30,
+                      }}
+                    >
                       <Text
-                        size="small"
+                        size="description"
                         type="bold"
                         style={{
-                          // fontFamily: "Lato-Bold",
-                          // fontSize: 12,
                           color: "#209fae",
                         }}
                       >
                         {t("admin")}
                       </Text>
                     </View>
-                  )}
+                  ) : null}
                 </View>
               </Swipeout>
             );
@@ -998,7 +940,6 @@ export default function ItineraryBuddy(props) {
             paddingHorizontal: 20,
             paddingVertical: 10,
             justifyContent: "space-between",
-            // borderWidth: 1,
             alignItems: "center",
             alignContent: "center",
           }}
@@ -1006,9 +947,6 @@ export default function ItineraryBuddy(props) {
           <View
             style={{
               flexDirection: "row",
-              // width: '100%',
-              // paddingHorizontal: 20,
-              // paddingVertical: 10,
               alignItems: "center",
               alignContent: "center",
             }}
@@ -1017,10 +955,8 @@ export default function ItineraryBuddy(props) {
 
             <Text
               size="label"
-              type="bold"
+              type="regular"
               style={{
-                // fontSize: 14,
-                // fontFamily: "Lato-Bold",
                 marginLeft: 20,
               }}
             >
@@ -1051,12 +987,12 @@ export default function ItineraryBuddy(props) {
     <View
       style={{
         flex: 1,
+        backgroundColor: "#FFFFFF",
       }}
     >
       <View
         style={{
-          backgroundColor: "#f0f0f0",
-          paddingVertical: 5,
+          paddingTop: 15,
         }}
       >
         <View
@@ -1068,7 +1004,7 @@ export default function ItineraryBuddy(props) {
             marginVertical: 5,
           }}
         >
-          <Member height={10} width={10} />
+          <Member height={15} width={15} />
           <Text
             size="label"
             type="regular"
@@ -1096,29 +1032,17 @@ export default function ItineraryBuddy(props) {
         >
           <View
             style={{
-              backgroundColor: "#daf0f2",
+              backgroundColor: "#F6F6F6",
               borderRadius: 5,
               width: "100%",
-              height: 40,
-              borderWidth: 0.3,
-              borderColor: "#209fae",
-              // flex: 1,
+              height: 35,
+              paddingHorizontal: 15,
               flexDirection: "row",
               alignItems: "center",
             }}
           >
             <View>
-              <CustomImage
-                source={search_button}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
-                }}
-              />
+              <Search width={15} height={15} />
             </View>
 
             <Input
