@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  CardStyleInterpolators,
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
@@ -27,7 +28,9 @@ export default function FeedStackNavigation() {
       screenOptions={{
         gestureEnabled: true,
         gestureDirection: "horizontal",
-        ...TransitionPresets.FadeFromBottomAndroid,
+        // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        // ...TransitionPresets.FadeFromBottomAndroid,
+        ...TransitionPresets.SlideFromRightIOS,
       }}
     >
       <FeedStack.Screen

@@ -37,7 +37,7 @@ export default function AuthStackNavigation(props) {
           : "OnBoardScreen"
       }
       screenOptions={{
-        gestureEnabled: true,
+        // gestureEnabled: true,
         gestureDirection: "horizontal",
         ...TransitionPresets.SlideFromRightIOS,
       }}
