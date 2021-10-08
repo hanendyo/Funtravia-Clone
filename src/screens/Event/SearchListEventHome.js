@@ -40,6 +40,7 @@ import {
   LikeRed,
   Search,
   Xhitam,
+  Xblue,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -306,7 +307,7 @@ export default function SearchListEventHome(props) {
               underlineColorAndroid="transparent"
               placeholder={t("search")}
               style={{
-                width: "100%",
+                width: "85%",
                 // borderWidth: 1,
                 marginLeft: 5,
                 padding: 0,
@@ -315,6 +316,17 @@ export default function SearchListEventHome(props) {
               onChangeText={(x) => searchkategori(x)}
               onSubmitEditing={(x) => searchkategori(x)}
             />
+            {dataFilterCategori.length !== dataFilterCategoris.length ? (
+              <TouchableOpacity onPress={() => searchkategori("")}>
+                <Xblue
+                  width="15"
+                  height="15"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
         <ScrollView
@@ -582,6 +594,10 @@ export default function SearchListEventHome(props) {
           <View
             style={{
               flexDirection: "row",
+              paddingVertical: 10,
+              paddingHorizontal: 10,
+              borderWidth: 1,
+              borderColor: "#d3d3d3",
             }}
           >
             <TextInput
@@ -592,12 +608,8 @@ export default function SearchListEventHome(props) {
               // keyboardType="decimal-pad"
               style={{
                 flex: 1,
-                paddingVertical: 10,
-                paddingHorizontal: 10,
                 fontFamily: "Lato-Regular",
-                borderColor: "#d3d3d3",
                 fontSize: 14,
-                borderWidth: 1,
               }}
               // value={priceValue.min}
               onChangeText={(x) => {
@@ -609,6 +621,19 @@ export default function SearchListEventHome(props) {
                 setKeyboardIsUp(true);
               }}
             />
+            {priceValue.min !== 0 ? (
+              <TouchableOpacity
+                onPress={() => setPriceValue({ ...priceValue, min: 0 })}
+              >
+                <Xblue
+                  width="15"
+                  height="15"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
         {/* DASH */}
@@ -643,9 +668,14 @@ export default function SearchListEventHome(props) {
           >
             {t("maxCost")}
           </Text>
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
+          <View
+            style={{
+              flexDirection: "row",
+              paddingVertical: 10,
+              paddingHorizontal: 10,
+              borderWidth: 1,
+              borderColor: "#d3d3d3",
+            }}
           >
             <TextInput
               placeholder={t("inputCost")}
@@ -656,12 +686,8 @@ export default function SearchListEventHome(props) {
               keyboardType="numeric"
               style={{
                 flex: 1,
-                paddingVertical: 10,
-                paddingHorizontal: 10,
                 fontFamily: "Lato-Regular",
-                borderColor: "#d3d3d3",
                 fontSize: 14,
-                borderWidth: 1,
               }}
               // value={priceValue.max}
               onChangeText={(x) => {
@@ -673,7 +699,20 @@ export default function SearchListEventHome(props) {
                 setKeyboardIsUp(true);
               }}
             />
-          </ScrollView>
+            {priceValue.max !== "any" ? (
+              <TouchableOpacity
+                onPress={() => setPriceValue({ ...priceValue, max: "any" })}
+              >
+                <Xblue
+                  width="15"
+                  height="15"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
       </View>
     );
@@ -1479,15 +1518,36 @@ export default function SearchListEventHome(props) {
             underlineColorAndroid="transparent"
             placeholder={t("searchs")}
             style={{
-              width: "100%",
+              width: "88%",
               // borderWidth: 1,
               marginLeft: 5,
               padding: 0,
             }}
             returnKeyType="search"
-            onChangeText={(x) => _setSearch(x)}
-            onSubmitEditing={(x) => _setSearch(x)}
+            onKeyPress={(e) => {
+              e.key === "Backspace"
+                ? setSearch({ ...search, ["keyword"]: e })
+                : null;
+            }}
+            onChangeText={(x) => setSearch({ ...search, ["keyword"]: x })}
+            onSubmitEditing={(x) => setSearch({ ...search, ["keyword"]: x })}
           />
+          {search["keyword"] !== null ? (
+            <TouchableOpacity
+              onPress={() => {
+                // _setSearch(null);
+                setSearch({ ...search, ["keyword"]: null });
+              }}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
     );
@@ -2214,6 +2274,7 @@ export default function SearchListEventHome(props) {
     data["keyword"] = txt;
     await setSearch(data);
   };
+  console.log("keyword :", search["keyword"]);
 
   const [
     mutationliked,

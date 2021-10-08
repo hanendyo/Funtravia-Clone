@@ -32,6 +32,10 @@ import {
   PinHijau,
   Calendargrey,
   Xhitam,
+  Xblue,
+  Xgrey,
+  Xgray,
+  Xwhite,
   Love,
   Arrowbackwhite,
   Arrowbackios,
@@ -94,6 +98,7 @@ export default function SearchPg(props, { navigation, route }) {
   let [aktifsearch, setAktifSearch] = useState(
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
   );
+
   let { width, height } = Dimensions.get("screen");
 
   const HeaderComponent = {
@@ -933,11 +938,12 @@ export default function SearchPg(props, { navigation, route }) {
               zIndex: 100,
             }}
           />
+
           <TextInput
             value={searchtext}
             style={{
               height: 38,
-              width: Dimensions.get("window").width * 0.9,
+              width: Dimensions.get("window").width * 0.83,
               paddingLeft: 5,
               textAlign: "left",
               fontSize: normalize(14),
@@ -952,6 +958,18 @@ export default function SearchPg(props, { navigation, route }) {
             enablesReturnKeyAutomatically={true}
             placeholder={t("searchHome")}
           />
+          {searchtext.length > 0 ? (
+            <TouchableOpacity onPress={() => SetSearchtext("")}>
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                  marginTop: 10,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
         {aktifsearch == true ? (
           <>

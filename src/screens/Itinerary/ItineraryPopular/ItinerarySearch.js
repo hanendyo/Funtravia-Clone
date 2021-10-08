@@ -33,6 +33,7 @@ import {
   Padlock,
   Bottom,
   Above,
+  Xblue,
   ItineraryIcon,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
@@ -1400,6 +1401,22 @@ export default function ItinerarySearchCategory(props) {
               onSubmitEditing={(x) => setTextSearch(x)}
               style={{ marginHorizontal: 10, flex: 1 }}
             />
+            {textSearch.length !== 0 ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setTextSearch("");
+                }}
+              >
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                    marginRight: 10,
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
           <Pressable
             focusable={true}

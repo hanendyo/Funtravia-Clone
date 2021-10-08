@@ -12,6 +12,7 @@ import {
   Pressable,
   SafeAreaView,
   Modal,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -163,6 +164,8 @@ export default function FeedList({ props, token }) {
 
   const SubmitData = async () => {
     setLoaded(true);
+    setCount(0);
+
     setTimeout(() => {
       if (ref) {
         ref?.current.scrollToIndex({ animated: true, index: 0 });
@@ -222,6 +225,15 @@ export default function FeedList({ props, token }) {
       // });
     }
   };
+
+  const [count, setCount] = useState(0);
+  const countLeft =
+    props?.route?.params?.assets?.length === undefined
+      ? 10
+      : props?.route?.params?.assets?.length;
+  const timePercentage = count / countLeft;
+
+  console.log("props.route.params: ", props.route.params);
 
   const _liked = async (id, index) => {
     let tempData = [...dataFeed];
@@ -468,6 +480,7 @@ export default function FeedList({ props, token }) {
   };
 
   useEffect(() => {
+    count < countLeft && setTimeout(() => setCount(count + 1), 1000);
     refetch();
     loadAsync();
     if (props.route.params) {
@@ -504,7 +517,7 @@ export default function FeedList({ props, token }) {
     }
     const unsubscribe = props.navigation.addListener("focus", () => {});
     return unsubscribe;
-  }, [props.route.params?.isPost]);
+  }, [props.route.params?.isPost, count]);
 
   // console.log("async storage : ", AsyncStorage.getItem("userUpload"));
 
@@ -1360,47 +1373,6 @@ export default function FeedList({ props, token }) {
       {loaded ? (
         <View
           style={{
-            backgroundColor: "#fff",
-            width: Dimensions.get("screen").width - 20,
-            marginHorizontal: 10,
-            borderRadius: 5,
-            paddingHorizontal: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          {loadingMutationPost ? (
-            <>
-              <Progress.Circle
-                size={40}
-                // indeterminate={true}
-                color={"#209fae"}
-                progres={0.4}
-                borderWidth={2}
-                direction="clockwise"
-                showsText={true}
-                // style={{ marginVertical: 20 }}
-              />
-              <Text style={{ marginLeft: 15 }} size="label" type="regular">
-                {t("uploading")}
-              </Text>
-            </>
-          ) : (
-            <>
-              <AcceptNotif
-                height="40"
-                width="40"
-                style={{ marginVertical: 20 }}
-              />
-              <Text style={{ marginLeft: 15 }} size="label" type="regular">
-                {t("uploaded")}
-              </Text>
-            </>
-          )}
-        </View>
-      ) : (
-        <View
-          style={{
             backgroundColor: "#FFF",
             width: Dimensions.get("screen").width - 20,
             marginHorizontal: 10,
@@ -1412,167 +1384,134 @@ export default function FeedList({ props, token }) {
             justifyContent: "space-between",
           }}
         >
-          {/* <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                position: "absolute",
-                left: 10,
-                width: 40,
-                height: 40,
-                borderRadius: 40,
-                backgroundColor: "#DAF0F2",
-              }}
-            />
-            <Progress.Circle
-              size={60}
-              color={"#209fae"}
-              progress={0.3}
-              indeterminateAnimationDuration={500}
-              borderWidth={6}
-              thickness={5}
-              borderColor={"#DAF0F2"}
-              direction="clockwise"
-              showsText={true}
-              textStyle={{
-                fontSize: 14,
-                fontFamily: "Lato-Regular",
-                fontWeight: "bold",
-              }}
-              strokeCap={"square"}
-              style={{ marginVertical: 10 }}
-            />
-            <View style={{ marginLeft: 10 }}>
-              <Text type={"bold"} size={"label"}>
-                Uploading photo
-              </Text>
-              <Text>1 / 7 photos</Text>
-            </View>
-          </View>
-          <View
-            style={{
-              backgroundColor: "#F6F6F6",
-              width: 22,
-              height: 22,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 20,
-              borderColor: "#E9E9E9",
-              borderWidth: 1,
-            }}
-          >
-            <Xgray width={12} height={12} />
-          </View> */}
-          {/* //UPLOAD Failed */}
-          {/* <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              position: "absolute",
-              left: 10,
-              width: 40,
-              height: 40,
-              borderRadius: 40,
-              backgroundColor: "#F2DAE6",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Errors width={20} height={20} />
-          </View>
-          <Progress.Circle
-            size={60}
-            color={"#D75995"}
-            progress={0.3}
-            indeterminateAnimationDuration={500}
-            borderWidth={6}
-            thickness={5}
-            borderColor={"#F2DAE6"}
-            direction="clockwise"
-            // showsText={true}
-            textStyle={{
-              fontSize: 14,
-              fontFamily: "Lato-Regular",
-              fontWeight: "bold",
-            }}
-            strokeCap={"square"}
-            style={{ marginVertical: 10 }}
-          />
-          <View style={{ marginLeft: 10 }}>
-            <Text type={"bold"} size={"label"}>
-              Failed uploading photo
-            </Text>
-            <View style={{ flexDirection: "row", marginTop: 3 }}>
-              <Text>1 / 7 photos</Text>
-              <Pressable style={{ marginLeft: 5 }}>
-                <Text style={{ color: "#209FAE" }}>Reupload</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-            backgroundColor: "#F6F6F6",
-            width: 22,
-            height: 22,
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 20,
-            borderColor: "#E9E9E9",
-            borderWidth: 1,
-          }}
-        >
-          <Xgray width={12} height={12} />
-        </View> */}
-          {uploadFailed ? (
+          {loadingMutationPost ? (
             <>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Errorr height="40" width="40" style={{ marginVertical: 20 }} />
-                <Text style={{ marginLeft: 15 }} size="label" type="regular">
-                  {t("uploadFailed")}
-                </Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={() => createPost()}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
                   style={{
-                    backgroundColor: "#209FAE",
-                    padding: 7,
-                    borderRadius: 5,
+                    position: "absolute",
+                    left: 10,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 40,
+                    backgroundColor: "#DAF0F2",
                   }}
-                >
-                  <Text style={{ color: "#FFF" }} size="label" type="regular">
-                    {t("reupload")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setUploadFailed(false)}
-                  style={{
-                    backgroundColor: "#d1d1d1",
-                    padding: 7,
-                    borderRadius: 5,
-                    marginLeft: 10,
+                />
+                <Progress.Circle
+                  size={60}
+                  color={"#209fae"}
+                  progress={timePercentage}
+                  indeterminateAnimationDuration={500}
+                  borderWidth={6}
+                  thickness={5}
+                  borderColor={"#DAF0F2"}
+                  direction="clockwise"
+                  showsText={true}
+                  textStyle={{
+                    fontSize: 14,
+                    fontFamily: "Lato-Regular",
+                    fontWeight: "bold",
                   }}
-                >
-                  <Text style={{ color: "#FFF" }} size="label" type="regular">
-                    {t("cancel")}
+                  strokeCap={"square"}
+                  style={{ marginVertical: 10 }}
+                />
+                <View style={{ marginLeft: 10 }}>
+                  <Text type={"bold"} size={"label"}>
+                    Uploading photo
                   </Text>
-                </TouchableOpacity>
+                  <Text>
+                    {count}/{countLeft} photos
+                  </Text>
+                </View>
               </View>
+              <View
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  width: 22,
+                  height: 22,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 20,
+                  borderColor: "#E9E9E9",
+                  borderWidth: 1,
+                }}
+              >
+                <Xgray width={12} height={12} />
+              </View>
+              {uploadFailed ? (
+                <>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Errorr
+                      height="40"
+                      width="40"
+                      style={{ marginVertical: 20 }}
+                    />
+                    <Text
+                      style={{ marginLeft: 15 }}
+                      size="label"
+                      type="regular"
+                    >
+                      {t("uploadFailed")}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                      onPress={() => createPost()}
+                      style={{
+                        backgroundColor: "#209FAE",
+                        padding: 7,
+                        borderRadius: 5,
+                      }}
+                    >
+                      <Text
+                        style={{ color: "#FFF" }}
+                        size="label"
+                        type="regular"
+                      >
+                        {t("reupload")}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setUploadFailed(false)}
+                      style={{
+                        backgroundColor: "#d1d1d1",
+                        padding: 7,
+                        borderRadius: 5,
+                        marginLeft: 10,
+                      }}
+                    >
+                      <Text
+                        style={{ color: "#FFF" }}
+                        size="label"
+                        type="regular"
+                      >
+                        {t("cancel")}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : null}
             </>
-          ) : null}
+          ) : (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <AcceptNotif
+                height="40"
+                width="40"
+                style={{ marginVertical: 20 }}
+              />
+              <Text style={{ marginLeft: 15 }} size="label" type="regular">
+                {t("uploaded")}
+              </Text>
+            </View>
+          )}
         </View>
-      )}
+      ) : null}
 
       <FlatList
         ref={ref}
@@ -1584,13 +1523,12 @@ export default function FeedList({ props, token }) {
             style={{
               width: Dimensions.get("window").width - 20,
               backgroundColor: "#FFFFFF",
-              // flex: 1,
               marginHorizontal: 10,
+              marginTop: Platform.OS === "ios" ? 0 : -5,
               marginVertical: 5,
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
-              // paddingBottom: 5,
             }}
             key={index}
           >
@@ -1652,7 +1590,7 @@ export default function FeedList({ props, token }) {
                           },
                         });
                   }}
-                  size="label"
+                  size="title"
                   style={{
                     fontFamily: "Lato-Bold",
                     // marginTop: 7,

@@ -42,6 +42,7 @@ import {
   Search,
   SearchWhite,
   Xhitam,
+  Xblue,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -1340,12 +1341,11 @@ export default function ListEventHome(props) {
                   }}
                 >
                   <Search width={15} height={15} />
-
                   <TextInput
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
                     style={{
-                      width: "100%",
+                      width: "85%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
@@ -1354,6 +1354,18 @@ export default function ListEventHome(props) {
                     onChangeText={(x) => searchkategori(x)}
                     onSubmitEditing={(x) => searchkategori(x)}
                   />
+                  {/* {dataFilterCategoris.length !== filterCategory.length ? ( */}
+                  <TouchableOpacity onPress={() => searchkategori("")}>
+                    <Xblue
+                      width="20"
+                      height="20"
+                      style={{
+                        alignSelf: "center",
+                        marginTop: 10,
+                      }}
+                    />
+                  </TouchableOpacity>
+                  // ) : null}
                 </View>
               </View>
               <ScrollView
@@ -1567,17 +1579,27 @@ export default function ListEventHome(props) {
 
                 <TextInput
                   underlineColorAndroid="transparent"
+                  enablesReturnKeyAutomatically={true}
                   placeholder={t("search")}
                   style={{
-                    width: "100%",
+                    width: "80%",
                     // borderWidth: 1,
                     marginLeft: 5,
                     padding: 0,
                   }}
                   returnKeyType="search"
-                  onChangeText={(x) => searchCountry(x)}
-                  onSubmitEditing={(x) => searchCountry(x)}
+                  onChangeText={(x) => {
+                    searchCountry(x);
+                  }}
+                  onSubmitEditing={(x) => {
+                    searchCountry(x);
+                  }}
                 />
+                {filterCountry.length !== 0 ? (
+                  <TouchableOpacity onPress={() => searchCountry("")}>
+                    <Xblue width="10" height="10" />
+                  </TouchableOpacity>
+                ) : null}
               </View>
             </View>
             {filterCountry.length > 0
@@ -2152,6 +2174,7 @@ export default function ListEventHome(props) {
 
     setdataFilterCategoris(b);
   };
+  const [filterCategory, setFilterCategory] = useState(dataFilterCategoris);
 
   const [filterCountry, setFilterCountry] = useState([]);
   const searchCountry = async (teks) => {
@@ -2159,6 +2182,13 @@ export default function ListEventHome(props) {
     let b = datacountry.filter((item) => searching.test(item.name));
 
     setFilterCountry(b);
+  };
+
+  const [findCountry, setFindCountry] = useState("");
+  const clearSearchCountry = async (teks) => {
+    console.log(datacountry);
+    let searching = new RegExp(teks, "i");
+    let b = datacountry.filter((item) => searching.test(item.name));
   };
 
   const cekData = (data) => {
