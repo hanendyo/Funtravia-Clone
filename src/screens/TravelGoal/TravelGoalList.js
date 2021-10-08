@@ -19,6 +19,7 @@ import {
   FilterIcon,
   Search,
   Xhitam,
+  Xblue,
 } from "../../assets/svg";
 import TravelLists from "../../graphQL/Query/TravelGoal/TravelList";
 import Travelcategorys from "../../graphQL/Query/TravelGoal/Travelcategory";
@@ -359,14 +360,26 @@ export default function TravelGoalList(props) {
               underlineColorAndroid="transparent"
               placeholder={t("search")}
               style={{
-                width: "100%",
+                width: "83%",
                 // borderWidth: 1,
                 padding: 0,
               }}
               returnKeyType="search"
+              autoCorrect={false}
               onChangeText={(x) => setText(x)}
               onSubmitEditing={(x) => setText(x)}
             />
+            {texts !== null ? (
+              <TouchableOpacity onPress={() => setText(null)}>
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
 

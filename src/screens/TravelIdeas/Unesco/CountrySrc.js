@@ -19,6 +19,7 @@ import {
   Filternewbiru,
   Xhitam,
   Arrowbackios,
+  Xblue,
 } from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, FunIcon } from "../../../component";
@@ -99,9 +100,8 @@ export default function CountrySrc({
   };
 
   // set filter
-
+  const [continent, setContinent] = useState("");
   const searchcontinentfilter = async (teks) => {
-    setKeyword(teks);
     let searching = new RegExp(teks, "i");
     let Continent = continent_list.filter((item) => searching.test(item.name));
     setDatacontinentfilter(Continent);
@@ -309,7 +309,7 @@ export default function CountrySrc({
                   // placeholder={t("search")}
                   placeholder={t("country")}
                   style={{
-                    width: "100%",
+                    width: "85%",
                     // borderWidth: 1,
                     padding: 0,
                   }}
@@ -318,6 +318,21 @@ export default function CountrySrc({
                   onChangeText={(x) => setKeyword(x)}
                   onSubmitEditing={(x) => setKeyword(x)}
                 />
+                {keyword.length !== 0 ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setKeyword("");
+                    }}
+                  >
+                    <Xblue
+                      width="20"
+                      height="20"
+                      style={{
+                        alignSelf: "center",
+                      }}
+                    />
+                  </TouchableOpacity>
+                ) : null}
               </View>
             </View>
             {/* 
@@ -561,15 +576,37 @@ export default function CountrySrc({
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
                     style={{
-                      width: "100%",
+                      width: "85%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
                     returnKeyType="search"
-                    onChangeText={(x) => searchcontinentfilter(x)}
-                    onSubmitEditing={(x) => searchcontinentfilter(x)}
+                    onChangeText={(x) => {
+                      searchcontinentfilter(x);
+                      setContinent(x);
+                    }}
+                    onSubmitEditing={(x) => {
+                      searchcontinentfilter(x);
+                      setContinent(x);
+                    }}
                   />
+                  {continent.length !== 0 ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        searchcontinentfilter("");
+                        setContinent("");
+                      }}
+                    >
+                      <Xblue
+                        width="20"
+                        height="20"
+                        style={{
+                          alignSelf: "center",
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
               <ScrollView

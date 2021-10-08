@@ -30,6 +30,7 @@ import {
   Search,
   Newglobe,
   Padlock,
+  Xblue,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -350,6 +351,22 @@ export default function ItineraryFavorite(props) {
             autoFocus={true}
             fontSize={16}
           />
+          {textInput.length !== 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                setTextInput("");
+              }}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                  marginRight: 10,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       {data?.itinerary_list_favorite.length > 0 ? (

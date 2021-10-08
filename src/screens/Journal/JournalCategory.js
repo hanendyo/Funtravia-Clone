@@ -7,6 +7,7 @@ import {
   Pressable,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image } from "../../assets/png";
@@ -16,6 +17,7 @@ import {
   LikeEmpty,
   Search,
   SearchWhite,
+  Xblue,
 } from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
@@ -257,6 +259,22 @@ export default function JournalCategory(props) {
               onChangeText={(x) => setSearch(x)}
               style={{ marginHorizontal: 10, flex: 1 }}
             />
+            {search.length !== 0 ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setSearch("");
+                }}
+              >
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                    marginRight: 10,
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
           <Pressable
             style={{

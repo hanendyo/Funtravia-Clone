@@ -22,6 +22,7 @@ import {
   Arrowbackwhite,
   Pinloc,
   Arrowbackios,
+  Xblue,
 } from "../../assets/svg";
 import { useQuery } from "@apollo/react-hooks";
 import FeedPopulerPageing from "../../graphQL/Query/Home/FeedPopulerPageing";
@@ -359,9 +360,24 @@ export default function Feed(props) {
                 color: "#000",
                 height: 40,
                 // width: "70%",
-                width: "90%",
+                width: "80%",
               }}
             />
+            {searchtext.length !== 0 ? (
+              <TouchableOpacity
+                onPress={() => {
+                  SetSearchtext("");
+                }}
+              >
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
           <Pressable
             onPress={() => {

@@ -6,10 +6,12 @@ import {
   TextInput,
   SafeAreaView,
   Platform,
+  TouchableOpacity,
 } from "react-native";
+import { Xblue } from "../../assets/svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "../../component";
-import { useLazyQuery } from "@apollo/client";
+import { fromPromise, useLazyQuery } from "@apollo/client";
 import { Tab, Tabs, ScrollableTab, TabHeading } from "native-base";
 import Destination from "./Destination";
 import Event from "./Event";
@@ -277,6 +279,22 @@ export default function Wishlist(props) {
             autoFocus={true}
             fontSize={16}
           />
+          {texts.length !== 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                setText("");
+              }}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                  marginRight: 10,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       <Tabs

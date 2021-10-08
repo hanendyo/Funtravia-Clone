@@ -98,6 +98,7 @@ export default function SearchPg(props, { navigation, route }) {
   let [aktifsearch, setAktifSearch] = useState(
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
   );
+
   let { width, height } = Dimensions.get("screen");
 
   const HeaderComponent = {

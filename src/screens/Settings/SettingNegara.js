@@ -16,6 +16,7 @@ import {
   Arrowbackwhite,
   Check,
   Search,
+  Xblue,
 } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, StatusBar as StaBar } from "../../component";
@@ -86,6 +87,15 @@ export default function SettingCity(props) {
         });
       }
     }, 1000);
+  }, []);
+
+  const clearFilter = () => {
+    setCountry("");
+    document.getElementById("inputData").reset();
+  };
+
+  useEffect(() => {
+    clearFilter();
   }, []);
 
   const pushselected = async () => {
@@ -195,14 +205,31 @@ export default function SettingCity(props) {
       >
         <Search height={15} width={15} style={{ marginLeft: 10 }} />
         <TextInput
+          id={"inputData"}
           style={{
             flex: 1,
             paddingLeft: 10,
           }}
-          onChangeText={(e) => setCountry(e)}
+          onChangeText={(e) => {
+            setCountry(e);
+            console.log(e);
+          }}
           onSubmitEditing={(e) => setCountry(e)}
+          autoCorrect={false}
+          autoCompleteType={false}
           placeholder={t("Search")}
         />
+        {country.length !== 0 ? (
+          <TouchableOpacity onPress={() => clearFilter()}>
+            <Xblue
+              width="20"
+              height="20"
+              style={{
+                alignSelf: "center",
+              }}
+            />
+          </TouchableOpacity>
+        ) : null}
       </View>
       {loadingNegara ? (
         <View style={{ paddingVertical: 20 }}>

@@ -20,6 +20,7 @@ import {
   Bottom,
   Above,
   Arrowbackios,
+  Xblue,
 } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
@@ -123,6 +124,12 @@ export default function AllDestination(props) {
     setRegionName(result);
   };
 
+  const clearSearchRegion = async (input) => {
+    let search = new RegExp(input, "i");
+    let result = filterRegion.filter((item) => search.test(item.name));
+    setRegionName(result);
+  };
+
   //Filter Search City
   const searchCity = async (input) => {
     let data = { ...search };
@@ -144,7 +151,7 @@ export default function AllDestination(props) {
 
     let dataSearch = {
       type: null,
-      keyword: null,
+      keyword: "",
     };
     setSearch(dataSearch);
     setShow(false);
@@ -546,7 +553,7 @@ export default function AllDestination(props) {
             underlineColorAndroid="transparent"
             placeholder={t("search")}
             style={{
-              width: "100%",
+              width: "85%",
               // borderWidth: 1,
               marginLeft: 5,
               padding: 0,
@@ -555,6 +562,19 @@ export default function AllDestination(props) {
             onChangeText={(x) => searchCity(x)}
             onSubmitEditing={(x) => searchCity(x)}
           />
+          {search["keyword"] !== 0 ? (
+            <TouchableOpacity
+              onPress={() => setSearch({ ...search, ["keyword"]: "" })}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
 
@@ -681,8 +701,11 @@ export default function AllDestination(props) {
                   <TextInput
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
+                    autoCorrect={false}
+                    enablesReturnKeyAutomatically={true}
+                    underlineColorAndroid="transparent"
                     style={{
-                      width: "100%",
+                      width: "85%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
@@ -691,6 +714,19 @@ export default function AllDestination(props) {
                     onChangeText={(x) => searchRegion(x)}
                     onSubmitEditing={(x) => searchRegion(x)}
                   />
+                  <TouchableOpacity
+                    onPress={() => {
+                      clearSearchRegion("");
+                    }}
+                  >
+                    <Xblue
+                      width="20"
+                      height="20"
+                      style={{
+                        alignSelf: "center",
+                      }}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
               <ScrollView
