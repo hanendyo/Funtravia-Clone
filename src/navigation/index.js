@@ -259,6 +259,7 @@ export default function MainStackNavigator({
           options={{
             headerTitle: "",
             headerTransparent: false,
+            headerShown: false,
           }}
         />
         <Tab.Screen
