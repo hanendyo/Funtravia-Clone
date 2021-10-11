@@ -31,6 +31,7 @@ import {
   Xhitam,
   Select,
   Filternewbiru,
+  Arrowbackios,
 } from "../../../assets/svg";
 // import FilterItin from "./FillterItin";
 import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
@@ -47,14 +48,19 @@ import Searching from "../../../graphQL/Query/Itinerary/SearchDestination";
 import Continent from "../../../graphQL/Query/Countries/Continent";
 import Countryss from "../../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 export default function ItineraryDestination(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
-    title: "Destination",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Destination",
+    headerTitle: (
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("Destination")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -63,13 +69,16 @@ export default function ItineraryDestination(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 18,
       color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
+    },
+    headerLRightContainerStyle: {
+      background: "#FFF",
+      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -82,13 +91,14 @@ export default function ItineraryDestination(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
-
-  console.log(props.route.params.idcity);
 
   let [show, setshow] = useState(false);
   let [showCountry, setshowCountry] = useState(false);
@@ -633,7 +643,7 @@ export default function ItineraryDestination(props) {
             }}
             style={{
               marginRight: 5,
-              // width: "10%",
+
               paddingHorizontal: 10,
             }}
           >
@@ -666,12 +676,12 @@ export default function ItineraryDestination(props) {
               backgroundColor: "#F0F0F0",
               borderRadius: 5,
               flex: 1,
+              paddingHorizontal: 10,
+              marginLeft: 5,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 5,
+              height: 35,
             }}
           >
             <Search width={15} height={15} />
