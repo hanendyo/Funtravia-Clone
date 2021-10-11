@@ -37,15 +37,8 @@ import {
   Arrowbackwhite,
   PinHijau,
   Arrowbackios,
-  OptionsVertWhite,
 } from "../../../assets/svg";
-import {
-  Button,
-  Text,
-  Truncate,
-  FunImageBackground,
-  StatusBar as StaBar,
-} from "../../../component";
+import { Button, Text, Truncate, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
@@ -70,7 +63,7 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 const HeaderHeight = Platform.select({
-  ios: Notch ? 420 - 48 : 360 - 20,
+  ios: Notch ? 360 - 48 : 360 - 20,
   // android: 305 - StatusBar.currentHeight,
   // android: 320 - StatusBar.currentHeight,
   android: 340 - StatusBar.currentHeight,
@@ -242,13 +235,13 @@ export default function Unesco({ navigation, route }) {
   });
   const { t } = useTranslation();
   const HeaderComponent = {
-    headerShown: false,
+    headerShown: true,
     transparent: false,
     tabBarVisble: false,
     tabBarLabel: "Unesco",
     headerTintColor: "white",
     headerTitle: "UNESCO World Heritage",
-    headerMode: "none",
+    headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
@@ -284,9 +277,9 @@ export default function Unesco({ navigation, route }) {
    */
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "culture", title: t("Culture") },
-    { key: "natural", title: t("NaturalSite") },
-    { key: "mix", title: t("Mix") },
+    { key: "culture", title: "Culture" },
+    { key: "natural", title: "Natural site" },
+    { key: "mix", title: "Mix" },
   ]);
 
   const {
@@ -324,40 +317,9 @@ export default function Unesco({ navigation, route }) {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
-  let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
+  let HEADER_MAX_HEIGHT = HeaderHeight;
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
-  let hides = React.useRef(
-    scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [1, 0],
-      extrapolate: "clamp",
-    })
-  );
-
-  let hide = React.useRef(
-    scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 1],
-      extrapolate: "clamp",
-    })
-  );
-
-  const imageOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0.5, 0],
-    extrapolate: "clamp",
-  });
-  const imageTranslate = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -50],
-    extrapolate: "clamp",
-  });
-
-  // let HEADER_MAX_HEIGHT = HeaderHeight;
-  // let HEADER_MIN_HEIGHT = 55;
-  // let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
   const PosisiCountry = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
@@ -481,7 +443,6 @@ export default function Unesco({ navigation, route }) {
    */
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
-    // navigation.setOptions(HeaderComponentCustom);
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
@@ -662,7 +623,7 @@ export default function Unesco({ navigation, route }) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 55],
+      outputRange: [0, -HeaderHeight - 5],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -670,98 +631,62 @@ export default function Unesco({ navigation, route }) {
       <Animated.View
         {...headerPanResponder.panHandlers}
         style={[styles.header, { transform: [{ translateY: y }] }]}
-        style={{
-          transform: [{ translateY: y }],
-          top: SafeStatusBar,
-          height: HeaderHeight,
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          backgroundColor: "#209fae",
-        }}
       >
         <View
           style={{
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - 135,
+            height: HeaderHeight - 150,
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
-            // <FunImageBackground
-            //   source={{ uri: Banner.banner_asset[0].filepath }}
-            //   style={{
-            //     width: width,
-            //     height: HeaderHeight - 130,
-            //   }}
-            //   resizeMode="cover"
-            // />
-            <Animated.Image
-              style={{
-                width: "100%",
-                height: "100%",
-                resizeMode: "cover",
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-              }}
+            <FunImageBackground
               source={{ uri: Banner.banner_asset[0].filepath }}
+              style={{
+                width: width,
+                height: HeaderHeight - 120,
+              }}
+              resizeMode="cover"
             />
           ) : (
-            // <ImageBackground
-            //   source={unesco}
-            //   style={{
-            //     width: width,
-            //     height: HeaderHeight - 125,
-            //   }}
-            //   resizeMode="cover"
-            // />
-            <Animated.Image
-              style={{
-                width: "100%",
-                height: "100%",
-                resizeMode: "cover",
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-              }}
+            <ImageBackground
               source={unesco}
+              style={{
+                width: width,
+                height: HeaderHeight - 120,
+              }}
+              resizeMode="cover"
             />
           )}
         </View>
-        <Animated.View
+        <View
           style={{
             flex: 1,
-            marginTop: 0,
-            paddingTop: Platform.OS == "ios" ? 35 : 45,
+            marginTop: 55,
             paddingHorizontal: 20,
             zIndex: -10,
-            backgroundColor: "#fff",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
           }}
         >
-          <Text size="title" type="bold" style={{ marginBottom: 0 }}>
-            {/* {Banner && Banner.title ? Banner.title : t("UnescoTitle")} */}
-            {t("UnescoTitle")}
+          <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+            {Banner && Banner.title
+              ? Banner.title
+              : "UNESCO World Heritage Centre"}
           </Text>
           <Text
             size="label"
-            // size={Platform.OS == "ios" ? "description" : "label"}
             style={{
-              textAlign: "justify",
-              lineHeight: 20,
-              paddingBottom: 10,
+              textAlign: "left",
+              lineHeight: 22,
             }}
           >
-            {/* {Banner && Banner.description
+            {Banner && Banner.description
               ? Banner.description
-              : t("UnescoDescription")}{" "}
-            {selectedCountry?.name}. */}
-            {t("UnescoDescription")} {selectedCountry?.name}.
+              : "The UNESCO (United Nations Educational, Scientific and Cultural Organization) has designated nine World Heritage Sites in"}{" "}
+            {selectedCountry?.name}.
           </Text>
-        </Animated.View>
-        <Animated.View
+        </View>
+        <View
           style={{
             position: "absolute",
             top: HeaderHeight - 160,
@@ -772,8 +697,6 @@ export default function Unesco({ navigation, route }) {
             height: 44,
             // backgroundColor: "#FFFFFF",
             zIndex: 100,
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
@@ -801,7 +724,6 @@ export default function Unesco({ navigation, route }) {
                 shadowRadius: 1.46,
                 elevation: 3,
                 flexDirection: "row",
-
                 // position: "absolute",
                 // transform: [{ translateY: PosisiCountry }],
                 // alignItems: "center",
@@ -833,7 +755,7 @@ export default function Unesco({ navigation, route }) {
             )}
             <Select height={10} width={10} />
           </Pressable>
-        </Animated.View>
+        </View>
       </Animated.View>
     );
   };
@@ -909,7 +831,7 @@ export default function Unesco({ navigation, route }) {
             </Text> */}
             <Text
               numberOfLines={2}
-              style={{ lineHeight: 26 }}
+              style={{ lineHeight: 16 }}
               size="label"
               type="regular"
             >
@@ -933,7 +855,7 @@ export default function Unesco({ navigation, route }) {
         style={[
           focused ? styles.labelActive : styles.label,
           {
-            opacity: focused ? 1 : 0.8,
+            opacity: focused ? 1 : 0.7,
           },
         ]}
       >
@@ -1044,9 +966,7 @@ export default function Unesco({ navigation, route }) {
               }}
             >
               <Text size="title" type="bold">
-                {dataR.length > 1 && dataR.length != 0
-                  ? `${dataR.length} sites`
-                  : `${dataR.length} site`}
+                {dataR.length} sites
               </Text>
             </View>
           }
@@ -1074,7 +994,7 @@ export default function Unesco({ navigation, route }) {
       inputRange: [0, HeaderHeight],
       // outputRange: [HeaderHeight - 6, 0],
       outputRange:
-        Platform.OS == "ios" ? [HeaderHeight, 55] : [HeaderHeight, 55],
+        Platform.OS == "ios" ? [HeaderHeight, 0] : [HeaderHeight - 6, 0],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -1183,8 +1103,7 @@ export default function Unesco({ navigation, route }) {
   }
 
   return (
-    <View style={styles.container}>
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+    <SafeAreaView style={styles.container}>
       <CountrySrc
         selectedCountry={selectedCountry}
         SetselectedCountry={(e) => SetselectedCountry(e)}
@@ -1192,104 +1111,10 @@ export default function Unesco({ navigation, route }) {
         setModelCountry={(e) => setModelCountry(e)}
       />
 
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
-      {/* {renderNavigation()} */}
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -1317,7 +1142,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
     // height: TabBarHeight + 5,
-    height: Platform.OS == "ios" ? TabBarHeight : TabBarHeight,
+    height: Platform.OS == "ios" ? TabBarHeight + 5 : TabBarHeight,
 
     // borderWidth: 2,
   },

@@ -90,7 +90,7 @@ export default function EventDetail(props) {
   });
 
   let Notch = DeviceInfo.hasNotch();
-  let deviceId = DeviceInfo.getDeviceId();
+  let deviceId = DeviceInfo.getModel();
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
     android: StatusBar.currentHeight,

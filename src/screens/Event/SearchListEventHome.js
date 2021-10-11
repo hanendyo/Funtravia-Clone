@@ -417,7 +417,8 @@ export default function SearchListEventHome(props) {
               alignContent: "center",
               alignItems: "center",
               marginBottom: 10,
-              marginRight: 80,
+              // marginRight: 70,
+              width: 100,
             }}
           >
             {t("From")}
@@ -497,7 +498,8 @@ export default function SearchListEventHome(props) {
               alignContent: "center",
               alignItems: "center",
               marginBottom: 10,
-              marginRight: 65,
+              // marginRight: 65,
+              width: 102,
             }}
           >
             {t("until")}
@@ -1224,36 +1226,6 @@ export default function SearchListEventHome(props) {
                 // flex: 1,
                 flexDirection: "row",
                 width: "100%",
-                borderColor: "grey",
-              }}
-            >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={MapIconGreen}
-              />
-              <Text
-                size="small"
-                style={{
-                  width: "100%",
-                }}
-              >
-                {item.city.name}
-              </Text>
-            </View>
-            <View
-              style={{
-                // flex: 1,
-                flexDirection: "row",
-                width: "100%",
                 marginBottom: 3,
                 alignContent: "center",
                 alignItems: "center",
@@ -1293,6 +1265,36 @@ export default function SearchListEventHome(props) {
                   {dateFormatBetween(item.start_date, item.end_date)}
                 </Text>
               )}
+            </View>
+            <View
+              style={{
+                // flex: 1,
+                flexDirection: "row",
+                width: "100%",
+                borderColor: "grey",
+              }}
+            >
+              <CustomImage
+                customStyle={{
+                  width: 15,
+                  height: 15,
+                  marginRight: 5,
+                }}
+                customImageStyle={{
+                  width: 15,
+                  height: 15,
+                  resizeMode: "contain",
+                }}
+                source={MapIconGreen}
+              />
+              <Text
+                size="small"
+                style={{
+                  width: "100%",
+                }}
+              >
+                {item.city.name}
+              </Text>
             </View>
           </View>
         </View>
@@ -1471,7 +1473,7 @@ export default function SearchListEventHome(props) {
             setshow(true);
           }}
           style={{
-            marginRight: 5,
+            marginRight: 13,
             borderRadius: 3,
             paddingHorizontal: 10,
             borderColor: "#209fae",
@@ -1516,7 +1518,7 @@ export default function SearchListEventHome(props) {
 
           <TextInput
             underlineColorAndroid="transparent"
-            placeholder={t("searchs")}
+            placeholder={t("search")}
             style={{
               width: "88%",
               // borderWidth: 1,
@@ -1715,7 +1717,13 @@ export default function SearchListEventHome(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            // height: Dimensions.get("screen").height * 0.5,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.57
+                  : Dimensions.get("screen").height * 0.6
+                : Dimensions.get("screen").height * 0.589,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopStartRadius: 15,

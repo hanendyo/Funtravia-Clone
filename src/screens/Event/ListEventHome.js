@@ -72,6 +72,7 @@ const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 60;
 const Notch = DeviceInfo.hasNotch();
+const deviceId = DeviceInfo.getModel();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
@@ -509,9 +510,8 @@ export default function ListEventHome(props) {
               paddingBottom: 5,
             }}
           >
-            {Banner && Banner.title
-              ? Banner.title
-              : "Thousands of Events Worldwide Tailored to Your Passion. Discover experiences."}
+            {// Banner && Banner.title ? Banner.title : t("EventTitle")
+            t("EventTitle")}
           </Text>
           <Text
             size="label"
@@ -521,9 +521,10 @@ export default function ListEventHome(props) {
               marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
             }}
           >
-            {Banner && Banner.description
-              ? Banner.description
-              : "From concerts to films to spa to theme parks to tours and various other enriching activities, discover experiences that suit your passions easily!"}
+            {// Banner && Banner.description
+            //   ? Banner.description
+            //   : t("EventDescription")
+            t("EventDescription")}
           </Text>
         </View>
         <View
@@ -531,12 +532,17 @@ export default function ListEventHome(props) {
             position: "absolute",
             flexDirection: "row",
             // top: HeaderHeightCustom - 160,
+            // top:
+            //   HeaderHeightCustom -
+            //   (Platform.OS == "ios" ? (Notch ? 155 : 215) : 183),
             top:
-              HeaderHeightCustom -
-              (Platform.OS == "ios" ? (Notch ? 155 : 215) : 183),
-            // paddingBottom: 20,
-            // marginTop: Platform.OS == "ios" ? 158 : 135,
-            // marginTop: Platform.OS == "ios" ? 158 : 160,
+              Platform.OS == "ios"
+                ? Notch
+                  ? deviceId === "iPhone 12 Pro"
+                    ? Dimensions.get("screen").height - 698
+                    : Dimensions.get("screen").height - 740
+                  : Dimensions.get("screen").height - 540
+                : Dimensions.get("screen").height - 650,
 
             // zIndex: 1
           }}
@@ -764,36 +770,6 @@ export default function ListEventHome(props) {
                 // flex: 1,
                 flexDirection: "row",
                 width: "100%",
-                borderColor: "grey",
-              }}
-            >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={MapIconGreen}
-              />
-              <Text
-                size="small"
-                style={{
-                  width: "100%",
-                }}
-              >
-                {item.city.name}
-              </Text>
-            </View>
-            <View
-              style={{
-                // flex: 1,
-                flexDirection: "row",
-                width: "100%",
                 marginBottom: 3,
                 alignContent: "center",
                 alignItems: "center",
@@ -834,12 +810,43 @@ export default function ListEventHome(props) {
                 </Text>
               )}
             </View>
+            <View
+              style={{
+                // flex: 1,
+                flexDirection: "row",
+                width: "100%",
+                borderColor: "grey",
+              }}
+            >
+              <CustomImage
+                customStyle={{
+                  width: 15,
+                  height: 15,
+                  marginRight: 5,
+                }}
+                customImageStyle={{
+                  width: 15,
+                  height: 15,
+                  resizeMode: "contain",
+                }}
+                source={MapIconGreen}
+              />
+              <Text
+                size="small"
+                style={{
+                  width: "100%",
+                }}
+              >
+                {item.city.name}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
     );
   };
 
+  // const [tab1, set]
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
     let numCols;
@@ -912,6 +919,7 @@ export default function ListEventHome(props) {
   };
 
   const renderTabBar = (props) => {
+    console.log(`PROP RENDER: `, props);
     const y = scrollY.interpolate({
       inputRange: [heightview - 10, HeaderHeight],
       outputRange: [HeaderHeight, heightview - 40],
@@ -924,7 +932,7 @@ export default function ListEventHome(props) {
           transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
-          borderBottomColor: "#daf0f2",
+          borderBottomColor: "#d1d1d1",
           marginTop: Platform.OS == "ios" ? (Notch ? 40 : 35) : 30,
           marginBottom: Platform.OS == "ios" ? -45 : -45,
           // paddingTop: 3,
@@ -949,7 +957,7 @@ export default function ListEventHome(props) {
           renderLabel={({ route, focused }) => (
             <Text
               size="label"
-              type="bold"
+              type="regular"
               style={{
                 opacity: focused ? 1 : 0.5,
                 marginTop: 12,
@@ -1365,7 +1373,7 @@ export default function ListEventHome(props) {
                       }}
                     />
                   </TouchableOpacity>
-                  // ) : null}
+                  {/* // ) : null} */}
                 </View>
               </View>
               <ScrollView

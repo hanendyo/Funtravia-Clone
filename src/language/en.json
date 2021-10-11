@@ -711,6 +711,13 @@
   "addphotototrip" : "Add photo to album only available when you trip is on going",
   "alreadyexist" : "Email already exist",
   "addtravelBuddy" : "Add Travel Buddy",
-  "morearticle": "More Related Articles"
-
+  "morearticle": "More Related Articles",
+  "explore" : "Explore",
+  "EventTitle": "Thousands of Events Worldwide Tailored to Your Passion. Discover experiences.",
+  "EventDescription": "From concerts to films to spa to theme parks to tours and various other enriching activities, discover experiences that suit your passions easily!",
+  "UnescoTitle": "UNESCO World Heritage Centre",
+  "UnescoDescription": "The UNESCO (United Nations Educational, Scientific and Cultural Organization) has designated nine World Heritage Sites in",
+  "Culture": "Culture",
+  "NaturalSite": "Natural site",
+  "Mix": "Mix"
 }
