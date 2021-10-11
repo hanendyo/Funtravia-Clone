@@ -403,9 +403,10 @@ export default function myfeed(props) {
     return (
       <Text
         onPress={handlePress}
-        type="bold"
+        type="normal"
         style={{
           color: "#209fae",
+          marginTop: 5,
         }}
       >
         Read More
@@ -414,17 +415,7 @@ export default function myfeed(props) {
   };
 
   const ReadLesshendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read Less
-      </Text>
-    );
+    return <View />;
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -766,7 +757,7 @@ export default function myfeed(props) {
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
-              paddingBottom: 25,
+              paddingBottom: 12,
             }}
           >
             <View
@@ -895,7 +886,7 @@ export default function myfeed(props) {
                 // alignItems: "center",
                 width: Dimensions.get("window").width - 40,
                 // height: Dimensions.get("window").width - 40,
-                minHeight: Dimensions.get("window").width - 155,
+                // minHeight: Dimensions.get("window").width - 155,
                 // borderWidth: 0.5,
                 borderColor: "#EEEEEE",
                 borderRadius: 15,

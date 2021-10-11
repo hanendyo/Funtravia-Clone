@@ -580,9 +580,10 @@ export default function FeedList({ props, token }) {
     return (
       <Text
         onPress={handlePress}
-        type="bold"
+        type="normal"
         style={{
           color: "#209fae",
+          marginTop: 5,
         }}
       >
         Read More
@@ -591,17 +592,7 @@ export default function FeedList({ props, token }) {
   };
 
   const ReadLesshendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read Less
-      </Text>
-    );
+    return <View />;
   };
 
   const goToItinerary = (data) => {
