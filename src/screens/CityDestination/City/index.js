@@ -3641,7 +3641,7 @@ export default function CityDetail(props) {
             })
           }
           style={{
-            width: Dimensions.get("screen").width - 130,
+            width: Dimensions.get("screen").width - 90,
             backgroundColor: "rgba(0,0,0,0.5)",
             flexDirection: "row",
             alignContent: "center",
@@ -3671,7 +3671,7 @@ export default function CityDetail(props) {
             </Text>
           </View>
         </TouchableOpacity>
-        <Button
+        {/* <Button
           text={""}
           size="medium"
           type="circle"
@@ -3694,7 +3694,7 @@ export default function CityDetail(props) {
           >
             <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
           </Animated.View>
-        </Button>
+        </Button> */}
       </Animated.View>
 
       {/* jika scrollheader, animated show */}
@@ -3751,7 +3751,7 @@ export default function CityDetail(props) {
             })
           }
           style={{
-            width: Dimensions.get("screen").width - 130,
+            width: Dimensions.get("screen").width - 90,
             backgroundColor: "rgba(0,0,0,0.3)",
             flexDirection: "row",
             alignContent: "center",
@@ -3781,7 +3781,7 @@ export default function CityDetail(props) {
             </Text>
           </View>
         </TouchableOpacity>
-        <Button
+        {/* <Button
           text={""}
           size="medium"
           type="circle"
@@ -3792,7 +3792,7 @@ export default function CityDetail(props) {
           }}
         >
           <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-        </Button>
+        </Button> */}
       </Animated.View>
 
       {renderTabView()}

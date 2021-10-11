@@ -91,7 +91,6 @@ export default function SettingCity(props) {
 
   const clearFilter = () => {
     setCountry("");
-    document.getElementById("inputData").reset();
   };
 
   useEffect(() => {
