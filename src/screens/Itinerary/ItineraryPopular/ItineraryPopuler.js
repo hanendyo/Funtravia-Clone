@@ -1653,7 +1653,7 @@ export default function ItineraryPopuler(props) {
                   width={20}
                 />
                 <Text
-                  size="title"
+                  size="label"
                   type={actives == "Itinerary" ? "bold" : "light"}
                   style={{
                     color: actives == "Itinerary" ? "#209FAE" : "#464646",
@@ -1681,7 +1681,7 @@ export default function ItineraryPopuler(props) {
                   width={20}
                 />
                 <Text
-                  size="title"
+                  size="label"
                   type={actives == "Album" ? "bold" : "light"}
                   style={{
                     color: actives == "Album" ? "#209FAE" : "#464646",
@@ -1710,7 +1710,7 @@ export default function ItineraryPopuler(props) {
                   width={20}
                 />
                 <Text
-                  size="title"
+                  size="label"
                   // type={actives == "Stories" ? "bold" : "light"}
                   // style={{
                   //   color: actives == "Stories" ? "#209FAE" : "#464646",
