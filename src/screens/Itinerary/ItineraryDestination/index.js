@@ -549,6 +549,7 @@ export default function ItineraryDestination(props) {
     setdataFilterCountrys(datafilter?.destination_filter.country);
     setdataFilterCity(datasearchlocation?.searchlocation_populer);
     setdataFilterCitys(datasearchlocation?.searchlocation_populer);
+    setdatafilterAll([]);
   };
 
   const _setSearch = async (teks) => {
@@ -820,7 +821,6 @@ export default function ItineraryDestination(props) {
       </View>
 
       <Modal
-        // onLayout={() => dataCountrySelect()}
         onBackdropPress={() => {
           setshow(false);
         }}
@@ -837,9 +837,9 @@ export default function ItineraryDestination(props) {
             flexDirection: "column",
             height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
+            borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
             backgroundColor: "white",
-            // borderTopLeftRadius: 15,
-            // borderTopRightRadius: 15,
           }}
         >
           {/* bagian atas */}
@@ -849,15 +849,14 @@ export default function ItineraryDestination(props) {
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: 15,
-              paddingVertical: 20,
+              paddingTop: 15,
+              paddingBottom: 15,
             }}
           >
             <Text
               type="bold"
               size="title"
               style={{
-                // fontSize: 20,
-                // fontFamily: "Lato-Bold",
                 color: "#464646",
               }}
             >
@@ -877,7 +876,7 @@ export default function ItineraryDestination(props) {
               }}
               onPress={() => setshow(false)}
             >
-              <Xhitam height={15} width={15} />
+              <Xhitam height={13} width={13} />
             </TouchableOpacity>
           </View>
           {/* bagian side */}
@@ -970,78 +969,6 @@ export default function ItineraryDestination(props) {
                   </Text>
                 </View>
               </Pressable>
-              {/* 
-              <Pressable
-                onPress={() => {
-                  setaktif("country");
-                }}
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  paddingBottom: 5,
-                }}
-              >
-                <View
-                  style={{
-                    borderLeftColor:
-                      aktif === "country" ? "#209fae" : "#f6f6f6",
-                    borderLeftWidth: aktif === "country" ? 5 : 0,
-                    marginLeft: aktif === "country" ? 5 : 10,
-                    justifyContent: "center",
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    backgroundColor: aktif === "country" ? "#ffff" : "#f6f6f6",
-                  }}
-                >
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      // fontSize: 20,
-                      // fontFamily: "Lato-Bold",
-                      color: "#464646",
-                      // marginTop: 10,
-                    }}
-                  >
-                    {t("country")}
-                  </Text>
-                </View>
-              </Pressable> */}
-              {/* 
-              <Pressable
-                onPress={() => {
-                  setaktif("City");
-                }}
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  paddingBottom: 5,
-                }}
-              >
-                <View
-                  style={{
-                    borderLeftColor: aktif === "City" ? "#209fae" : "#f6f6f6",
-                    borderLeftWidth: aktif === "City" ? 5 : 0,
-                    marginLeft: aktif === "City" ? 5 : 10,
-                    justifyContent: "center",
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    backgroundColor: aktif === "City" ? "#ffff" : "#f6f6f6",
-                  }}
-                >
-                  <Text
-                    type="bold"
-                    size="title"
-                    style={{
-                      // fontSize: 20,
-                      // fontFamily: "Lato-Bold",
-                      color: "#464646",
-                      // marginTop: 10,
-                    }}
-                  >
-                    {t("location")}
-                  </Text>
-                </View>
-              </Pressable>
-             */}
             </View>
             {/* kanan................................................................ */}
             <View style={{ flex: 1 }}>
@@ -1052,7 +979,7 @@ export default function ItineraryDestination(props) {
               >
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
+                    backgroundColor: "#f6f6f6",
                     borderRadius: 5,
                     // flex: 1,
                     flexDirection: "row",
@@ -1123,7 +1050,9 @@ export default function ItineraryDestination(props) {
                         }}
                         onChange={() => _handleCheck(item["id"], index, item)}
                         onValueChange={() =>
-                          _handleCheck(item["id"], index, item)
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheck(item["id"], index, item)
                         }
                         value={item["checked"]}
                       />
@@ -1189,7 +1118,9 @@ export default function ItineraryDestination(props) {
                         }}
                         onChange={() => _handleCheckf(item["id"], index, item)}
                         onValueChange={() =>
-                          _handleCheckf(item["id"], index, item)
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheckf(item["id"], index, item)
                         }
                         value={item["checked"]}
                       />
@@ -1207,14 +1138,9 @@ export default function ItineraryDestination(props) {
                       </Text>
                     </TouchableOpacity>
                   ))}
-
-                  {/* <View
-              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
-            ></View> */}
                 </ScrollView>
               ) : aktif === "country" ? (
                 <ScrollView
-                  // style={{ borderWidth: 1, height: 100 }}
                   nestedScrollEnabled={true}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{
@@ -1273,14 +1199,9 @@ export default function ItineraryDestination(props) {
                       </Text>
                     </TouchableOpacity>
                   ))}
-
-                  {/* <View
-              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
-            ></View> */}
                 </ScrollView>
               ) : aktif === "City" ? (
                 <ScrollView
-                  // style={{ borderWidth: 1, height: 100 }}
                   nestedScrollEnabled={true}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{
@@ -1293,7 +1214,7 @@ export default function ItineraryDestination(props) {
                       style={{
                         flexDirection: "row",
                         backgroundColor: "white",
-                        // borderColor: "#464646",
+
                         width: "49%",
                         marginRight: 3,
                         marginBottom: 20,
@@ -1341,10 +1262,6 @@ export default function ItineraryDestination(props) {
                       </Text>
                     </TouchableOpacity>
                   ))}
-
-                  {/* <View
-              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
-            ></View> */}
                 </ScrollView>
               ) : null}
             </View>
@@ -1356,9 +1273,7 @@ export default function ItineraryDestination(props) {
               zIndex: 6,
               flexDirection: "row",
               height: 70,
-              // borderWidth: 1,
-              // position: "absolute",
-              // bottom: 0,
+
               justifyContent: "space-around",
               alignContent: "center",
               alignItems: "center",
@@ -1617,7 +1532,6 @@ export default function ItineraryDestination(props) {
       {/* // modalcountry */}
 
       <Modal
-        // onLayout={() => dataCountrySelect()}
         onBackdropPress={() => {
           setshowCountry(false);
         }}
@@ -1634,9 +1548,9 @@ export default function ItineraryDestination(props) {
             flexDirection: "column",
             height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
+            borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
             backgroundColor: "white",
-            // borderTopLeftRadius: 15,
-            // borderTopRightRadius: 15,
           }}
         >
           {/* bagian atas */}
@@ -1646,9 +1560,8 @@ export default function ItineraryDestination(props) {
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: 15,
-              paddingVertical: 20,
-              borderBottomWidth: 0.5,
-              borderBottomColor: "#d3d3d3",
+              paddingTop: 15,
+              paddingBottom: 15,
             }}
           >
             <Text
@@ -1660,7 +1573,7 @@ export default function ItineraryDestination(props) {
                 color: "#464646",
               }}
             >
-              {t("country")}
+              {"Filter"} {t("country")}
             </Text>
             <TouchableOpacity
               style={{
@@ -1680,41 +1593,6 @@ export default function ItineraryDestination(props) {
             </TouchableOpacity>
           </View>
 
-          <View
-            style={{
-              padding: 15,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#F0F0F0",
-                borderRadius: 5,
-                // flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-              }}
-            >
-              <Search width={15} height={15} />
-
-              <TextInput
-                underlineColorAndroid="transparent"
-                placeholder={t("search")}
-                Text={keyword}
-                style={{
-                  width: "100%",
-                  // borderWidth: 1,
-                  marginLeft: 5,
-                  padding: 0,
-                }}
-                // returnKeyType="search"
-                onChangeText={(x) => searchs(x)}
-                onSubmitEditing={(x) => searchs(x)}
-              />
-            </View>
-          </View>
           {/* bagian side */}
 
           <View
@@ -1776,13 +1654,47 @@ export default function ItineraryDestination(props) {
             </View>
             {/* kanan................................................................ */}
             <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  padding: 15,
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#F0F0F0",
+                    borderRadius: 5,
+                    // flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Search width={15} height={15} />
+
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    placeholder={t("search")}
+                    Text={keyword}
+                    style={{
+                      width: "100%",
+                      // borderWidth: 1,
+                      marginLeft: 5,
+                      padding: 0,
+                    }}
+                    // returnKeyType="search"
+                    onChangeText={(x) => searchs(x)}
+                    onSubmitEditing={(x) => searchs(x)}
+                  />
+                </View>
+              </View>
               <ScrollView
                 // style={{ borderWidth: 1, height: 100 }}
                 nestedScrollEnabled={true}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                   paddingHorizontal: 15,
-                  paddingTop: 10,
                 }}
               >
                 {dataCountrys.map((item, index) => (
@@ -1863,7 +1775,6 @@ export default function ItineraryDestination(props) {
       {/* modalcity */}
 
       <Modal
-        // onLayout={() => dataCountrySelect()}
         onBackdropPress={() => {
           setshowCity(false);
         }}
@@ -1880,9 +1791,9 @@ export default function ItineraryDestination(props) {
             flexDirection: "column",
             height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
+            borderTopRightRadius: 15,
+            borderTopLeftRadius: 15,
             backgroundColor: "white",
-            // borderTopLeftRadius: 15,
-            // borderTopRightRadius: 15,
           }}
         >
           {/* bagian atas */}
@@ -1906,7 +1817,7 @@ export default function ItineraryDestination(props) {
                 color: "#464646",
               }}
             >
-              <Capital text={t("city")} />
+              {"Filter"} <Capital text={t("city")} />
             </Text>
             <TouchableOpacity
               style={{
@@ -1926,41 +1837,6 @@ export default function ItineraryDestination(props) {
             </TouchableOpacity>
           </View>
 
-          <View
-            style={{
-              padding: 15,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#F0F0F0",
-                borderRadius: 5,
-                // flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-              }}
-            >
-              <Search width={15} height={15} />
-
-              <TextInput
-                underlineColorAndroid="transparent"
-                placeholder={t("search")}
-                Text={keyword}
-                style={{
-                  width: "100%",
-                  // borderWidth: 1,
-                  marginLeft: 5,
-                  padding: 0,
-                }}
-                // returnKeyType="search"
-                onChangeText={(x) => searchs(x)}
-                onSubmitEditing={(x) => searchs(x)}
-              />
-            </View>
-          </View>
           {/* bagian side */}
 
           <View
@@ -2015,6 +1891,41 @@ export default function ItineraryDestination(props) {
             </View>
             {/* kanan................................................................ */}
             <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  padding: 15,
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "#F0F0F0",
+                    borderRadius: 5,
+                    // flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Search width={15} height={15} />
+
+                  <TextInput
+                    underlineColorAndroid="transparent"
+                    placeholder={t("search")}
+                    Text={keyword}
+                    style={{
+                      width: "100%",
+                      // borderWidth: 1,
+                      marginLeft: 5,
+                      padding: 0,
+                    }}
+                    // returnKeyType="search"
+                    onChangeText={(x) => searchs(x)}
+                    onSubmitEditing={(x) => searchs(x)}
+                  />
+                </View>
+              </View>
               <ScrollView
                 // style={{ borderWidth: 1, height: 100 }}
                 nestedScrollEnabled={true}
