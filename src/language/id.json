@@ -715,7 +715,14 @@
   "alreadyexist": "Email sudah ada",
   "addtravelBuddy": "Tambah teman perjalanan",
   "morearticle": "Artikel Terkait Lainnya",
-  "explore": "Jelajahi",
+  "explore" : "Jelajahi",
+  "EventTitle": "Ribuan Acara di Seluruh Dunia Disesuaikan dengan Gairah Anda. Temukan Pengalaman Anda.",
+  "EventDescription": "Dari konser, film, spa, taman hiburan, tur, dan berbagai aktivitas yang memperkaya lainnya, temukan pengalaman yang sesuai dengan minat Anda dengan mudah!",
+  "UnescoTitle": "Pusat Warisan Dunia UNESCO",
+  "UnescoDescription": "UNESCO (Organisasi Pendidikan, Ilmu Pengetahuan dan Kebudayaan Perserikatan Bangsa-Bangsa) telah menetapkan sembilan Situs Warisan Dunia di",
+  "Culture": "Kultur",
+  "NaturalSite": "Situs alam",
+  "Mix": "Campuran",
   "SuccessfullySetGender": "Berhasil mengatur jenis kelamin",
   "SuccessfullySetDateofBirth": "Berhasil mengatur tanggal lahir"
 }
