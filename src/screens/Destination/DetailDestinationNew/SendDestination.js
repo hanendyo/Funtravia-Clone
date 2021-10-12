@@ -67,7 +67,11 @@ export default function SendDestination({ navigation, route }) {
   });
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "Send Destination",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        Send Destination
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
