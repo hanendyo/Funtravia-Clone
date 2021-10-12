@@ -719,5 +719,7 @@
   "UnescoDescription": "The UNESCO (United Nations Educational, Scientific and Cultural Organization) has designated nine World Heritage Sites in",
   "Culture": "Culture",
   "NaturalSite": "Natural site",
-  "Mix": "Mix"
+  "Mix": "Mix",
+  "SuccessfullySetGender": "Successfully set gender",
+  "SuccessfullySetDateofBirth": "Successfully set date of birth"
 }

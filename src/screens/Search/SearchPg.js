@@ -103,11 +103,10 @@ export default function SearchPg(props, { navigation, route }) {
 
   const HeaderComponent = {
     headerTitle: locationname ? (
-      (
-        <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
-          {t("searchin")}
-        </Text>
-      ) + locationname
+      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+        {t("searchin")}
+        {locationname}
+      </Text>
     ) : (
       <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
         {t("search")}

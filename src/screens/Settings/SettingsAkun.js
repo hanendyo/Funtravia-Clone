@@ -216,9 +216,9 @@ export default function SettingsAkun(props) {
         }
         setModalGender(false);
         if (Platform.OS === "android") {
-          ToastAndroid.show("Successfully set gender", ToastAndroid.LONG);
+          ToastAndroid.show(t("SuccessfullySetGender"), ToastAndroid.LONG);
         } else {
-          Alert.alert("Successfully set gender");
+          Alert.alert(t("SuccessfullySetGender"));
         }
         let tmp_data = { ...setting };
         tmp_data.user.gender = x;
@@ -247,12 +247,9 @@ export default function SettingsAkun(props) {
         }
         setModalBirth(false);
         if (Platform.OS === "android") {
-          ToastAndroid.show(
-            "Successfully set date of birth",
-            ToastAndroid.LONG
-          );
+          ToastAndroid.show(t("SuccessfullySetDateofBirth"), ToastAndroid.LONG);
         } else {
-          Alert.alert("Successfully set date of birth");
+          Alert.alert(t("SuccessfullySetDateofBirth"));
         }
         let tmp_data = { ...setting };
         tmp_data.user.birth_date = format;
