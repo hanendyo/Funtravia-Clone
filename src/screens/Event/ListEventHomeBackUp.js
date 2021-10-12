@@ -83,14 +83,7 @@ const PullToRefreshDist = 150;
 
 export default function ListEventHome(props) {
   let [heightjudul, setheightjudul] = useState(150);
-  let HeaderHeight =
-    Platform.OS == "ios"
-      ? Notch
-        ? deviceId === "iPhone 12 Pro"
-          ? Dimensions.get("screen").height * 0.275 + heightjudul
-          : Dimensions.get("screen").height * 0.29 + heightjudul
-        : Dimensions.get("screen").height * 0.29 + heightjudul
-      : Dimensions.get("screen").height * 0.23 + heightjudul;
+  let HeaderHeight = Dimensions.get("screen").height * 0.15 + heightjudul;
   const HeaderHeightCustom = Platform.select({
     ios: Notch ? 360 - 48 : 360 - 20,
     // android: 305 - StatusBar.currentHeight,
@@ -184,7 +177,7 @@ export default function ListEventHome(props) {
   ).current;
 
   const HeaderComponent = {
-    headerShown: false,
+    headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
@@ -236,10 +229,6 @@ export default function ListEventHome(props) {
       </TouchableOpacity>
     ),
   };
-
-  // let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
-  // let HEADER_MIN_HEIGHT = 55;
-  // let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -451,101 +440,66 @@ export default function ListEventHome(props) {
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 55],
+      inputRange: [heightview, HeaderHeight],
+      outputRange:
+        Platform.OS == "ios"
+          ? [heightview, -HeaderHeight - 40]
+          : [heightview, -HeaderHeight - 40],
       extrapolateRight: "clamp",
-      // extrapolate: 'clamp',
     });
     return (
       <Animated.View
-        pointerEvents={"none"}
         {...headerPanResponder.panHandlers}
-        // style={{
-        //   position: "absolute",
-        //   transform: [{ translateY: y }],
-        //   // height: Platform.OS == "ios" ? 270 : 222,
-        //   height: HeaderHeight,
-        //   width: "100%",
-        //   alignItems: "center",
-        //   justifyContent: "flex-start",
-        //   backgroundColor: "white",
-        //   zIndex: Platform.OS == "ios" ? 1 : 0,
-        // }}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
+          position: "absolute",
           transform: [{ translateY: y }],
-          top: deviceId === "iPhone 12 Pro" ? SafeStatusBar - 5 : SafeStatusBar,
+          // height: Platform.OS == "ios" ? 270 : 222,
           height: HeaderHeight,
           width: "100%",
           alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          backgroundColor: "#209fae",
+          justifyContent: "flex-start",
+          backgroundColor: "white",
+          zIndex: Platform.OS == "ios" ? 1 : 0,
         }}
       >
         {Banner && Banner.banner_asset.length > 0 ? (
-          <Animated.Image
+          <FunImage
             source={{ uri: Banner.banner_asset[0].filepath }}
-            // source={Eventcover}
             style={{
               height:
                 Platform.OS == "ios"
                   ? Notch
-                    ? Dimensions.get("screen").height * 0.26
-                    : Dimensions.get("screen").height * 0.26
-                  : Dimensions.get("screen").height * 0.26,
+                    ? Dimensions.get("screen").height * 0.2
+                    : Dimensions.get("screen").height * 0.22
+                  : Dimensions.get("screen").height * 0.2,
               // height: 0.1,
-              // height: "100%",
               width: "100%",
               resizeMode: "cover",
-              // marginBottom: 0,
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
+              marginBottom: 0,
             }}
           />
         ) : (
-          <Animated.Image
+          <Image
             source={Eventcover}
             style={{
-              // height: Dimensions.get("screen").height * 0.2,
-              height: "100%",
+              height: Dimensions.get("screen").height * 0.2,
               width: "100%",
               resizeMode: "cover",
               position: "absolute",
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
             }}
           />
         )}
-        <Animated.View
-          // onLayout={(events) => {
-          //   var { x, y, width, height } = events.nativeEvent.layout;
-          //   setheightjudul(height);
-          // }}
-          // style={{
-          //   paddingHorizontal: 20,
-          //   paddingTop: 35,
-          //   backgroundColor: "white",
-          //   // borderWidth: 2,
-          //   // height: Platform.OS == "ios" ? 120 : 125
-          // }}
+        <View
+          onLayout={(events) => {
+            var { x, y, width, height } = events.nativeEvent.layout;
+            setheightjudul(height);
+          }}
           style={{
-            flex: 1,
-            marginTop: 0,
-            paddingTop:
-              Platform.OS == "ios"
-                ? Notch
-                  ? deviceId === "iPhone 12 Pro"
-                    ? 30
-                    : 30
-                  : 30
-                : 30,
-
             paddingHorizontal: 20,
-            zIndex: -10,
-            backgroundColor: "#fff",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            paddingTop: 35,
+            backgroundColor: "white",
+            // borderWidth: 2,
+            // height: Platform.OS == "ios" ? 120 : 125
           }}
         >
           <Text
@@ -564,8 +518,7 @@ export default function ListEventHome(props) {
             type="regular"
             style={{
               textAlign: "justify",
-              // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
-              // backgroundColor: "red",
+              marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
             }}
           >
             {// Banner && Banner.description
@@ -573,8 +526,8 @@ export default function ListEventHome(props) {
             //   : t("EventDescription")
             t("EventDescription")}
           </Text>
-        </Animated.View>
-        <Animated.View
+        </View>
+        <View
           style={{
             position: "absolute",
             flexDirection: "row",
@@ -586,14 +539,12 @@ export default function ListEventHome(props) {
               Platform.OS == "ios"
                 ? Notch
                   ? deviceId === "iPhone 12 Pro"
-                    ? Dimensions.get("screen").height - 645
-                    : Dimensions.get("screen").height - 685
-                  : Dimensions.get("screen").height - 515
-                : Dimensions.get("screen").height - 602,
+                    ? Dimensions.get("screen").height - 698
+                    : Dimensions.get("screen").height - 740
+                  : Dimensions.get("screen").height - 540
+                : Dimensions.get("screen").height - 650,
 
             // zIndex: 1
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
           }}
         >
           <TouchableOpacity
@@ -658,7 +609,7 @@ export default function ListEventHome(props) {
             </Text>
             <Down width={10} height={10} style={{ marginTop: 5 }} />
           </TouchableOpacity>
-        </Animated.View>
+        </View>
       </Animated.View>
     );
   };
@@ -954,7 +905,7 @@ export default function ListEventHome(props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         // ListHeaderComponent={() => <View style={{ height: -100 }} />}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight,
+          paddingTop: HeaderHeight + TabBarHeight - 15,
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -968,39 +919,23 @@ export default function ListEventHome(props) {
   };
 
   const renderTabBar = (props) => {
-    // const y = scrollY.interpolate({
-    //   inputRange: [heightview - 10, HeaderHeight],
-    //   outputRange: [HeaderHeight, heightview - 40],
-    //   extrapolateRight: "clamp",
-    // });
+    console.log(`PROP RENDER: `, props);
     const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      // outputRange: [HeaderHeight - 6, 0],
-      outputRange:
-        Platform.OS == "ios" ? [HeaderHeight, 50] : [HeaderHeight, 50],
-      // extrapolate: 'clamp',
+      inputRange: [heightview - 10, HeaderHeight],
+      outputRange: [HeaderHeight, heightview - 40],
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
-        // style={{
-        //   zIndex: Platform.OS == "ios" ? 1 : 1,
-        //   transform: [{ translateY: y }],
-        //   width: "100%",
-        //   borderBottomWidth: 2,
-        //   borderBottomColor: "#d1d1d1",
-        //   // marginTop: Platform.OS == "ios" ? (Notch ? 40 : 35) : 30,
-        //   marginBottom: Platform.OS == "ios" ? -35 : -35,
-        //   // paddingTop: 3,
-        // }}
         style={{
-          top: 0,
-          zIndex: 1,
-          position: "absolute",
+          zIndex: Platform.OS == "ios" ? 1 : 1,
           transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
           borderBottomColor: "#d1d1d1",
+          marginTop: Platform.OS == "ios" ? (Notch ? 40 : 35) : 30,
+          marginBottom: Platform.OS == "ios" ? -45 : -45,
+          // paddingTop: 3,
         }}
       >
         <TabBar
@@ -1013,18 +948,20 @@ export default function ListEventHome(props) {
           style={{
             elevation: 0,
             shadowOpacity: 0,
-            backgroundColor: "#fff",
-            // backgroundColor: "red",
-            height: TabBarHeight - 10,
+            // backgroundColor: "#fff",
+            backgroundColor: "white",
+            height: TabBarHeight,
+
+            // marginBottom: Platform.OS == "ios" ? -40 : 0
           }}
           renderLabel={({ route, focused }) => (
             <Text
-              style={[
-                focused ? styles.labelActive : styles.label,
-                {
-                  opacity: focused ? 1 : 0.8,
-                },
-              ]}
+              size="label"
+              type="regular"
+              style={{
+                opacity: focused ? 1 : 0.5,
+                marginTop: 12,
+              }}
             >
               {route.title}
             </Text>
@@ -2142,31 +2079,9 @@ export default function ListEventHome(props) {
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-  let hides = React.useRef(
-    scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [1, 0],
-      extrapolate: "clamp",
-    })
-  );
-
-  let hide = React.useRef(
-    scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 1],
-      extrapolate: "clamp",
-    })
-  );
-
-  const imageTranslate = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -50],
-    extrapolate: "clamp",
-  });
-
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0.5, 0],
+    outputRange: [0, 100, 100],
     extrapolate: "clamp",
   });
 
@@ -2279,6 +2194,7 @@ export default function ListEventHome(props) {
 
   const [findCountry, setFindCountry] = useState("");
   const clearSearchCountry = async (teks) => {
+    console.log(datacountry);
     let searching = new RegExp(teks, "i");
     let b = datacountry.filter((item) => searching.test(item.name));
   };
@@ -2290,198 +2206,8 @@ export default function ListEventHome(props) {
   };
 
   return (
-    // <View style={{ flex: 1 }}>
-    //   {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
-    //   {renderTabView()}
-    //   {/* {renderFilterAndSearchHeader()} */}
-    //   {renderHeader()}
-    //   {renderCustomRefresh()}
-    //   {/* {renderCountryAndMonthModal()} */}
-    //   {renderFilterCategory()}
-    //   {renderCountryFilter()}
-    //   {renderMonthFilter()}
-    // </View>
-    <View style={styles.container}>
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
-      {/* <CountrySrc
-        selectedCountry={selectedCountry}
-        SetselectedCountry={(e) => SetselectedCountry(e)}
-        modalshown={modalcountry}
-        setModelCountry={(e) => setModelCountry(e)}
-      /> */}
-
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.navigate("searchListEventHome")}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          {/* <TouchableOpacity
-            style={styles.searchWhite}
-            // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-            onPress={() => props.navigation.navigate("searchListEventHome")}
-          >
-            <SearchWhite width="20" height="20" />
-          </TouchableOpacity> */}
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SearchWhite width="20" height="20" />
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <View
-          style={{
-            // width: Dimensions.get("screen").width - 100,
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            padding: 10,
-          }}
-        >
-          <Text
-            size="title"
-            type="bold"
-            style={{
-              color: "#FFFFFF",
-            }}
-          >
-            {t("event")}
-          </Text>
-        </View>
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.navigate("searchListEventHome")}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          {/* <TouchableOpacity
-            style={styles.searchWhite}
-            // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-            onPress={() => props.navigation.navigate("searchListEventHome")}
-          >
-            <SearchWhite width="20" height="20" />
-          </TouchableOpacity> */}
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SearchWhite width="20" height="20" />
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
+    <View style={{ flex: 1 }}>
+      {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
       {renderTabView()}
       {/* {renderFilterAndSearchHeader()} */}
       {renderHeader()}
@@ -2502,20 +2228,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFF",
   },
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-  },
   searchWhite: {
     marginRight: 25,
     marginTop: Platform.OS == "ios" ? 0 : 5,
-    height: 35,
-    width: 35,
-
-    borderRadius: 30,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
   },
   ImageView: {
     height: Dimensions.get("window").width * 0.47 - 16,
@@ -2530,11 +2245,5 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
     overflow: "hidden",
-  },
-  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
-  labelActive: {
-    fontSize: normalize(14),
-    color: "#209FAE",
-    fontFamily: "Lato-Bold",
   },
 });
