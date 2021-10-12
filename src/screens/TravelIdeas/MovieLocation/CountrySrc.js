@@ -139,14 +139,12 @@ export default function CountrySrc({
       data.checked = false;
       tempData.push(data);
     }
-    // setfilterContinent([]);
+
     setDatacontinent(tempData);
     setContinentSelected(null);
     setfilterResults([]);
     setmodalFilter(false);
   };
-
-  // useEffect(() => {}, []);
 
   return (
     <Modal
