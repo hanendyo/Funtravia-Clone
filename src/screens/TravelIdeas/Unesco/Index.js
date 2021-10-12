@@ -668,6 +668,7 @@ export default function Unesco({ navigation, route }) {
     });
     return (
       <Animated.View
+        pointerEvents={"none"}
         {...headerPanResponder.panHandlers}
         style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
@@ -1283,6 +1284,25 @@ export default function Unesco({ navigation, route }) {
             )}
           </Animated.View>
         </Button>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 95,
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Text
+            size="title"
+            type="bold"
+            style={{
+              color: "#FFFFFF",
+            }}
+          >
+            {t("UnescoTitle")}
+          </Text>
+        </View>
       </Animated.View>
 
       {/* {renderNavigation()} */}

@@ -1360,7 +1360,7 @@ export default function SearchListEventHome(props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
-          paddingTop: 85,
+          paddingTop: 100,
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -1388,7 +1388,7 @@ export default function SearchListEventHome(props) {
           // transform: [{ translateY: y }],
           width: "100%",
           borderBottomWidth: 2,
-          borderBottomColor: "#daf0f2",
+          borderBottomColor: "#d1d1d1",
         }}
       >
         <TabBar
@@ -1402,10 +1402,10 @@ export default function SearchListEventHome(props) {
             elevation: 0,
             shadowOpacity: 0,
             backgroundColor: "#fff",
-            height: TabBarHeight,
+            height: TabBarHeight + 5,
             // borderWidth: 1,
-            paddingTop: 0,
-            marginTop: -10, //! hanendyo's
+            // paddingTop: 0,
+            // marginTop: -10,
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -2282,7 +2282,7 @@ export default function SearchListEventHome(props) {
     data["keyword"] = txt;
     await setSearch(data);
   };
-  console.log("keyword :", search["keyword"]);
+  console.log("props :", props.route);
 
   const [
     mutationliked,
@@ -2505,6 +2505,8 @@ export default function SearchListEventHome(props) {
     data["date_until"] = dateData.end_date;
     data["price_start"] = priceValue.min;
     data["price_end"] = priceValue.max;
+
+    console.log(`DATA: `, data);
 
     await setSearch(data);
     await setshow(false);

@@ -2679,6 +2679,7 @@ export default function CityDetail(props) {
     });
     return (
       <Animated.View
+        pointerEvents={"none"}
         {...headerPanResponder.panHandlers}
         style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
