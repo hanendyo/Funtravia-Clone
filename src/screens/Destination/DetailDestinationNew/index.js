@@ -754,7 +754,7 @@ const Index = (props) => {
                 <View
                   style={{
                     borderRadius: 2,
-                    height: 30,
+                    height: 25,
                     justifyContent: "center",
                   }}
                 >
@@ -858,7 +858,7 @@ const Index = (props) => {
                   borderRadius: 5,
                   marginRight: 5,
                   backgroundColor: "#DAF0F2",
-                  paddingVertical: 10,
+                  paddingVertical: 8,
                   paddingHorizontal: 15,
                 }}
               >
@@ -875,7 +875,7 @@ const Index = (props) => {
                     alignItems: "center",
                     borderRadius: 5,
                     backgroundColor: "#DAF0F2",
-                    paddingVertical: 10,
+                    paddingVertical: 8,
                     paddingHorizontal: 15,
                   }}
                 >
@@ -927,7 +927,7 @@ const Index = (props) => {
                 style={{
                   flexDirection: "row",
                   width: Dimensions.get("screen").width * 0.75,
-                  marginVertical: 15,
+                  marginVertical: 8,
                 }}
               >
                 <PinHijau
@@ -1007,7 +1007,7 @@ const Index = (props) => {
               <View
                 style={{
                   flexDirection: "row",
-                  marginVertical: 15,
+                  marginVertical: 8,
                   width: Dimensions.get("screen").width * 0.75,
                 }}
               >
@@ -1080,7 +1080,7 @@ const Index = (props) => {
                 style={{
                   flexDirection: "row",
                   width: Dimensions.get("screen").width * 0.75,
-                  marginVertical: 15,
+                  marginVertical: 8,
                 }}
               >
                 <Globe
