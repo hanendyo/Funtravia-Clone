@@ -1045,7 +1045,7 @@ const Index = (props) => {
                     type="regular"
                     style={{
                       color: "#209FAE",
-                      marginVertical: 15,
+                      marginVertical: 8,
                       marginLeft: 10,
                     }}
                   >
@@ -1118,7 +1118,7 @@ const Index = (props) => {
                     type="regular"
                     style={{
                       color: "#209FAE",
-                      marginVertical: 15,
+                      marginVertical: 8,
                       marginLeft: 10,
                     }}
                   >
