@@ -88,7 +88,7 @@ export default function Register({ navigation }) {
         showAlert({
           ...aler,
           show: true,
-          judul: "somefieldempty",
+          judul: t("somefieldempty"),
           detail: error ? "" + error : 0,
         });
         return false;
@@ -130,7 +130,7 @@ export default function Register({ navigation }) {
       showAlert({
         ...aler,
         show: true,
-        judul: "registerfailed",
+        judul: t("registerfailed"),
         detail: "" + error ? "alreadyexist" : "",
       });
     }

@@ -2805,6 +2805,7 @@ export default function CityDetail(props) {
           position: "absolute",
           backgroundColor: "#209fae",
         }}
+        pointerEvents="none"
       >
         <Sidebar
           props={props}
@@ -2942,7 +2943,7 @@ export default function CityDetail(props) {
                 </View>
               </View>
             </View>
-            <View
+            {/* <View
               style={{
                 justifyContent: "center",
                 display: "flex",
@@ -2962,8 +2963,58 @@ export default function CityDetail(props) {
               >
                 <ShareBlack height={20} width={20} />
               </Pressable>
-            </View>
+            </View> */}
           </View>
+        </Animated.View>
+      </Animated.View>
+    );
+  };
+
+  const renderShare = () => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, -HeaderHeight + 55],
+      extrapolateRight: "clamp",
+      // extrapolate: 'clamp',
+    });
+    return (
+      <Animated.View
+        {...headerPanResponder.panHandlers}
+        style={[styles.header, { transform: [{ translateY: y }] }]}
+        style={{
+          transform: [{ translateY: y }],
+          top: SafeStatusBar + 255,
+          left: 350,
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+        }}
+      >
+        <Animated.View
+          style={{
+            height: 41,
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            alignContent: "center",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
+          }}
+        >
+          <Pressable
+            onPress={() => SetShareModal(true)}
+            style={{
+              backgroundColor: "#F6F6F6",
+              marginRight: 2,
+              height: 30,
+              width: 30,
+              borderRadius: 17,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ShareBlack height={20} width={20} />
+          </Pressable>
         </Animated.View>
       </Animated.View>
     );
@@ -3797,6 +3848,7 @@ export default function CityDetail(props) {
 
       {renderTabView()}
       {renderHeader()}
+      {renderShare()}
       {renderCustomRefresh()}
 
       {/* modal share */}

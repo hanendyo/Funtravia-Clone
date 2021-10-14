@@ -21,6 +21,7 @@ import {
   Arrowbackwhite,
   Xgray,
   Arrowbackios,
+  Xblue,
 } from "../../assets/svg";
 import { DefaultProfile, default_image } from "../../assets/png";
 import {
@@ -478,9 +479,24 @@ export default function ChatsearchPage({ navigation, route }) {
               color: "#464646",
               fontFamily: "Lato-Regular",
               height: 40,
-              width: "100%",
+              width: "80%",
             }}
           />
+          {searchtext.length !== 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                SetSearchtext("");
+              }}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
 

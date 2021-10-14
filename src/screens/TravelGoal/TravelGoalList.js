@@ -383,6 +383,7 @@ export default function TravelGoalList(props) {
               padding: 0,
             }}
             returnKeyType="search"
+            value={texts}
             // onChangeText={(x) => _setSearch(x)}
             // onSubmitEditing={(x) => _setSearch(x)}
             onChangeText={(x) => setText(x)}
@@ -630,6 +631,17 @@ export default function TravelGoalList(props) {
                   value={textCategory}
                   placeholder={t("search")}
                 ></TextInput>
+                {textCategory.length !== 0 ? (
+                  <TouchableOpacity onPress={() => setTextCategory("")}>
+                    <Xblue
+                      width="20"
+                      height="20"
+                      style={{
+                        alignSelf: "center",
+                      }}
+                    />
+                  </TouchableOpacity>
+                ) : null}
               </View>
               <ScrollView
                 showsVerticalScrollIndicator={false}

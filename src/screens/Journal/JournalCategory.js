@@ -256,6 +256,7 @@ export default function JournalCategory(props) {
             <TextInput
               fontSize={16}
               placeholder={t("search")}
+              value={search}
               onChangeText={(x) => setSearch(x)}
               style={{ marginHorizontal: 10, flex: 1 }}
             />

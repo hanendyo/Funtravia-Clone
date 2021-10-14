@@ -682,6 +682,7 @@
   "setstartdate": "Please set a start date first",
   "somefieldempty": "Some field cannot be empty",
   "registerfailed": "Register failed",
+  "understand": "Understand",
   "chooseyourdestination": "Choose your destination. Choose the best place for your vacation",
   "worldtourism": "World Tourism",
   "europe": "Europe",
@@ -721,5 +722,15 @@
   "NaturalSite": "Natural site",
   "Mix": "Mix",
   "SuccessfullySetGender": "Successfully set gender",
-  "SuccessfullySetDateofBirth": "Successfully set date of birth"
+  "SuccessfullySetDateofBirth": "Successfully set date of birth",
+  "emailPasswordRequired": "Email and password is required",
+  "loginFaild": "Login failed",
+  "FailedToLogin": "Failed to Login",
+  "cantSaveData": "Can't save data",
+  "PleaseCheckYourEmailorPassword": "Please check your email or password",
+  "PleasecheckyourOTPCode": "Please check your OTP code",
+  "VerificationError": "Verification Error",
+  "VerificationFailed": "Verification Failed",
+  "NumberAlreadyExist": "Number Already Exist",
+  "CheckYourNumber": "Please check your number"
 }

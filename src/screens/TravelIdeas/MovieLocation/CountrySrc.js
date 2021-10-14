@@ -556,6 +556,7 @@ export default function CountrySrc({
                       padding: 0,
                     }}
                     returnKeyType="search"
+                    value={continent}
                     onChangeText={(x) => {
                       searchContinent(x);
                       setContinent(x);
@@ -568,8 +569,8 @@ export default function CountrySrc({
                   {continent.length !== 0 ? (
                     <TouchableOpacity
                       onPress={() => {
-                        searchContinent(x);
-                        setContinent(x);
+                        searchContinent("");
+                        setContinent("");
                       }}
                     >
                       <Xblue

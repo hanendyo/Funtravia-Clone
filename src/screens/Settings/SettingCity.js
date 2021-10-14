@@ -18,6 +18,7 @@ import {
   Arrowbackwhite,
   Check,
   Search,
+  Xblue,
 } from "../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, StatusBar as StaBar } from "../../component";
@@ -205,7 +206,20 @@ export default function SettingCity(props) {
           onChangeText={(e) => setCity(e)}
           onSubmitEditing={(e) => setCity(e)}
           placeholder={t("Search")}
+          value={city}
         />
+        {city.length !== 0 ? (
+          <TouchableOpacity onPress={() => setCity("")}>
+            <Xblue
+              width="20"
+              height="20"
+              style={{
+                alignSelf: "center",
+                marginRight: 5,
+              }}
+            />
+          </TouchableOpacity>
+        ) : null}
       </KeyboardAvoidingView>
       {loadingKota ? (
         <View style={{ paddingVertical: 20 }}>

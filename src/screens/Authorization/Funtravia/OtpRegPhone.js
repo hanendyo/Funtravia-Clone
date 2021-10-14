@@ -126,7 +126,7 @@ export default function OtpRegPhone(props) {
           showAlert({
             ...aler,
             show: true,
-            judul: "Failed to login",
+            judul: t("FailedToLogin"),
             detail: "",
           });
           // Alert.alert('Failed', 'failed to login');
@@ -135,16 +135,16 @@ export default function OtpRegPhone(props) {
         showAlert({
           ...aler,
           show: true,
-          judul: "Failed to login",
-          detail: "Please check your OTP code",
+          judul: t("FailedToLogin"),
+          detail: t("PleasecheckyourOTPCode"),
         });
       }
     } catch (error) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Failed to login",
-        detail: "verification error",
+        judul: t("FailedToLogin"),
+        detail: t("verificationError"),
       });
       // Alert.alert('Failed', 'verification error');
     }
@@ -153,7 +153,7 @@ export default function OtpRegPhone(props) {
   let [Timer, setTimer] = useState(0);
   const hitungMundur = () => {
     var timeleft = 30;
-    var downloadTimer = setInterval(function () {
+    var downloadTimer = setInterval(function() {
       timeleft -= 1;
       setTimer(timeleft);
       if (timeleft === 0) {
