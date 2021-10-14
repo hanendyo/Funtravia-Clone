@@ -253,14 +253,16 @@ export default function SearchListEventHome(props) {
 
   const [keyboardIsUp, setKeyboardIsUp] = useState(false);
 
+  const [categoryName, setCategoryName] = useState("");
+
   const [priceValue, setPriceValue] = useState({
     min: 0,
-    max: "any",
+    max: 1000000,
   });
 
-  const [renderPriceValues, setRenderPriceValues] = useState({
+  const [customPriceValues, setCustomPriceValues] = useState({
     min: 0,
-    max: 1000000,
+    max: "any",
   });
 
   function numberWithDot(x) {
@@ -268,7 +270,7 @@ export default function SearchListEventHome(props) {
       if (priceValue.min === "" || priceValue.min === undefined) {
         setPriceValue({ ...priceValue, min: 0 });
       } else if (priceValue.max === "" || priceValue.max === undefined) {
-        setPriceValue({ ...priceValue, max: "any" });
+        setPriceValue({ ...priceValue, max: 1000000 });
       }
     } else {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -304,6 +306,7 @@ export default function SearchListEventHome(props) {
             <Search width={15} height={15} />
 
             <TextInput
+              value={categoryName}
               underlineColorAndroid="transparent"
               placeholder={t("search")}
               style={{
@@ -313,11 +316,19 @@ export default function SearchListEventHome(props) {
                 padding: 0,
               }}
               // returnKeyType="search"
-              onChangeText={(x) => searchkategori(x)}
+              onChangeText={(x) => {
+                searchkategori(x);
+                setCategoryName(x);
+              }}
               onSubmitEditing={(x) => searchkategori(x)}
             />
             {dataFilterCategori.length !== dataFilterCategoris.length ? (
-              <TouchableOpacity onPress={() => searchkategori("")}>
+              <TouchableOpacity
+                onPress={() => {
+                  searchkategori("");
+                  setCategoryName("");
+                }}
+              >
                 <Xblue
                   width="15"
                   height="15"
@@ -551,6 +562,20 @@ export default function SearchListEventHome(props) {
     );
   };
 
+  // const changeValue =(x)=>{
+  //   if (x === null) {
+  //     setPriceValue({ ...priceValue, max: 1000000 });
+  //     setCustomPriceValues({ ...customPriceValues, max: 'any' });
+  //     return customPriceValues.max;
+  //   } else {
+  //     setPriceValue({ ...priceValue, max: x });
+  //     etCustomPriceValues({ ...customPriceValues, max: x });
+  //     return customPriceValues.max;
+  //   }
+
+  //   // setKeyboardIsUp(true);
+  // }
+
   const PriceFilter = () => {
     return (
       <View
@@ -569,7 +594,7 @@ export default function SearchListEventHome(props) {
           <Text>{t("price")}</Text>
           <Text style={{ fontWeight: "bold", fontSize: 16 }}>
             {`IDR ${numberWithDot(priceValue.min)} - ${numberWithDot(
-              priceValue.max
+              customPriceValues.max
             )}`}
           </Text>
         </View>
@@ -603,6 +628,7 @@ export default function SearchListEventHome(props) {
             }}
           >
             <TextInput
+              value={priceValue.min}
               placeholder={t("inputCost")}
               autoCorrect={false}
               keyboardType="numeric"
@@ -617,15 +643,20 @@ export default function SearchListEventHome(props) {
               onChangeText={(x) => {
                 if (x === null) {
                   setPriceValue({ ...priceValue, min: 0 });
+                  setCustomPriceValues({ ...customPriceValues, min: 0 });
                 } else {
                   setPriceValue({ ...priceValue, min: x });
+                  setCustomPriceValues({ ...customPriceValues, min: x });
                 }
                 setKeyboardIsUp(true);
               }}
             />
             {priceValue.min !== 0 ? (
               <TouchableOpacity
-                onPress={() => setPriceValue({ ...priceValue, min: 0 })}
+                onPress={() => {
+                  setPriceValue({ ...priceValue, min: 0 });
+                  setCustomPriceValues({ ...customPriceValues, min: 0 });
+                }}
               >
                 <Xblue
                   width="15"
@@ -680,6 +711,7 @@ export default function SearchListEventHome(props) {
             }}
           >
             <TextInput
+              value={priceValue.max}
               placeholder={t("inputCost")}
               autoCorrect={false}
               // keyboardVerticalOffset={
@@ -693,17 +725,22 @@ export default function SearchListEventHome(props) {
               }}
               // value={priceValue.max}
               onChangeText={(x) => {
-                if (x === null) {
+                if (x === null || x === undefined) {
                   setPriceValue({ ...priceValue, max: 1000000 });
+                  setCustomPriceValues({ ...customPriceValues, max: "any" });
                 } else {
                   setPriceValue({ ...priceValue, max: x });
+                  setCustomPriceValues({ ...customPriceValues, max: x });
                 }
                 setKeyboardIsUp(true);
               }}
             />
-            {priceValue.max !== "any" ? (
+            {priceValue.max !== 1000000 ? (
               <TouchableOpacity
-                onPress={() => setPriceValue({ ...priceValue, max: "any" })}
+                onPress={() => {
+                  setPriceValue({ ...priceValue, max: 1000000 });
+                  setCustomPriceValues({ ...customPriceValues, max: "any" });
+                }}
               >
                 <Xblue
                   width="15"
@@ -2506,8 +2543,6 @@ export default function SearchListEventHome(props) {
     data["price_start"] = priceValue.min;
     data["price_end"] = priceValue.max;
 
-    console.log(`DATA: `, data);
-
     await setSearch(data);
     await setshow(false);
     getdataEvent();
@@ -2556,7 +2591,8 @@ export default function SearchListEventHome(props) {
       render_start_date: "",
       render_end_date: "",
     });
-    await setPriceValue({ min: 0, max: "any" });
+    await setPriceValue({ min: 0, max: 1000000 });
+    await setCustomPriceValues({ ...customPriceValues, max: "any" });
     await setshow(false);
     await setmonth(" - ");
   };
@@ -2565,7 +2601,6 @@ export default function SearchListEventHome(props) {
     let searching = new RegExp(teks, "i");
 
     let b = dataFilterCategori.filter((item) => searching.test(item.name));
-
     setdataFilterCategoris(b);
   };
 

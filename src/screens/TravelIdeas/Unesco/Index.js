@@ -668,7 +668,7 @@ export default function Unesco({ navigation, route }) {
     });
     return (
       <Animated.View
-        pointerEvents={"none"}
+        // pointerEvents={"none"}
         {...headerPanResponder.panHandlers}
         style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
@@ -772,7 +772,7 @@ export default function Unesco({ navigation, route }) {
             width: "100%",
             height: 44,
             // backgroundColor: "#FFFFFF",
-            zIndex: 100,
+            // zIndex: 100,
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
           }}
