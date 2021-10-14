@@ -145,6 +145,7 @@ export default function AllDestination(props) {
   };
 
   const [regionName, setRegionName] = useState([]);
+  const [region, setRegion] = useState("");
 
   const ClearAllFilter = () => {
     let temp = [...regionName];
@@ -566,12 +567,22 @@ export default function AllDestination(props) {
               padding: 0,
             }}
             returnKeyType="search"
-            onChangeText={(x) => searchCity(x)}
-            onSubmitEditing={(x) => searchCity(x)}
+            value={search["keyword"]}
+            onChangeText={(x) => {
+              searchCity(x);
+              setSearch({ ...search, ["keyword"]: x });
+            }}
+            onSubmitEditing={(x) => {
+              searchCity(x);
+              setSearch({ ...search, ["keyword"]: x });
+            }}
           />
-          {search["keyword"] !== 0 ? (
+          {search["keyword"] !== null ? (
             <TouchableOpacity
-              onPress={() => setSearch({ ...search, ["keyword"]: "" })}
+              onPress={() => {
+                searchCity("");
+                setSearch({ ...search, ["keyword"]: null });
+              }}
             >
               <Xblue
                 width="20"
@@ -718,22 +729,32 @@ export default function AllDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
-                    onChangeText={(x) => searchRegion(x)}
-                    onSubmitEditing={(x) => searchRegion(x)}
-                  />
-                  <TouchableOpacity
-                    onPress={() => {
-                      clearSearchRegion("");
+                    value={region}
+                    onChangeText={(x) => {
+                      searchRegion(x);
+                      setRegion(x);
                     }}
-                  >
-                    <Xblue
-                      width="20"
-                      height="20"
-                      style={{
-                        alignSelf: "center",
+                    onSubmitEditing={(x) => {
+                      searchRegion(x);
+                      setRegion(x);
+                    }}
+                  />
+                  {region.length !== 0 ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        searchRegion("");
+                        setRegion("");
                       }}
-                    />
-                  </TouchableOpacity>
+                    >
+                      <Xblue
+                        width="15"
+                        height="15"
+                        style={{
+                          alignSelf: "center",
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
               <ScrollView

@@ -12,6 +12,7 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Button,
@@ -362,6 +363,7 @@ export default function TravelGoalDetail(props) {
         </View>
       </Modal>
       <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingTop: HEADER_MAX_HEIGHT + 60,
           backgroundColor: "#fff",
@@ -792,14 +794,15 @@ export default function TravelGoalDetail(props) {
         style={{
           transform: [{ translateY: titleTranslateY }],
           height: 50,
-          alignItems: Platform.OS == "ios" ? "center" : null,
-          // justifyContent: "center",
+          flex: 1,
+          alignItems: Platform.OS == "ios" ? "flex-start" : null,
+          justifyContent: "center",
           position: "absolute",
-          left: 0,
+          left: 60,
           right: 0,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 10,
+          top: SafeStatusBar + 5,
         }}
       >
         <Text
@@ -807,10 +810,12 @@ export default function TravelGoalDetail(props) {
           style={{
             color: "#fff",
             marginLeft: Platform.OS == "ios" ? 0 : 60,
-            marginTop: 5,
           }}
         >
-          {datadetail?.title}
+          <Truncate
+            text={datadetail.title ? datadetail.title : ""}
+            length={35}
+          />
         </Text>
       </Animated.View>
       <Animated.View

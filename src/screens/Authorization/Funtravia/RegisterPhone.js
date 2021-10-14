@@ -29,8 +29,8 @@ export default function RegisterPhone(props) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Register Failed",
-        detail: "Check your Number",
+        judul: t("registerfailed"),
+        detail: t("CheckYourNumber"),
       });
       return false;
     }

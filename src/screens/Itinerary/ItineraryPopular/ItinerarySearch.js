@@ -1396,6 +1396,7 @@ export default function ItinerarySearchCategory(props) {
             </View>
             <TextInput
               fontSize={16}
+              value={textSearch}
               placeholder={t("search")}
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}

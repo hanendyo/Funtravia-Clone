@@ -204,6 +204,7 @@ export default function SettingCity(props) {
       >
         <Search height={15} width={15} style={{ marginLeft: 10 }} />
         <TextInput
+          value={country}
           id={"inputData"}
           style={{
             flex: 1,
@@ -225,6 +226,7 @@ export default function SettingCity(props) {
               height="20"
               style={{
                 alignSelf: "center",
+                marginRight: 5,
               }}
             />
           </TouchableOpacity>

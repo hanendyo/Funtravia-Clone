@@ -724,5 +724,14 @@
   "NaturalSite": "Situs alam",
   "Mix": "Campuran",
   "SuccessfullySetGender": "Berhasil mengatur jenis kelamin",
-  "SuccessfullySetDateofBirth": "Berhasil mengatur tanggal lahir"
+  "SuccessfullySetDateofBirth": "Berhasil mengatur tanggal lahir",
+  "emailPasswordRequired": "Email dan kata sandi diperlukan",
+  "loginFaild": "Gagal masuk",
+  "cantSaveData": "Tidak bisa menyimpan data",
+  "PleaseCheckYourEmailorPassword": "Silakan periksa email atau kata sandi Anda",
+  "PleasecheckyourOTPCode": "Mohon cek kode OTP Anda",
+  "VerificationError": "Verifikasi bermasalah",
+  "VerificationFailed": "Verifikasi gagal",
+  "NumberAlreadyExist": "Nomor sudah ada",
+  "CheckYourNumber": "Mohon cek nomor Anda"
 }

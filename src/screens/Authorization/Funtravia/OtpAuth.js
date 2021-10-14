@@ -199,7 +199,7 @@ export default function OtpAuth(props) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Verification Failed",
+        judul: t("VerificationFailed"),
         detail: "",
       });
       // Alert.alert('verification error');
@@ -209,7 +209,7 @@ export default function OtpAuth(props) {
   let [Timer, setTimer] = useState(0);
   const hitungMundur = () => {
     var timeleft = 30;
-    var downloadTimer = setInterval(function () {
+    var downloadTimer = setInterval(function() {
       timeleft -= 1;
       setTimer(timeleft);
       if (timeleft === 0) {

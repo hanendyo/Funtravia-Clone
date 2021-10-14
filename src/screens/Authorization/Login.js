@@ -49,7 +49,7 @@ export default function Login({ navigation, route }) {
   const login = async () => {
     if (email === "" || password === "") {
       setModalError(true);
-      return setMessage("Email and password is required");
+      return setMessage(t("emailPasswordRequired"));
     }
     try {
       let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
@@ -83,8 +83,8 @@ export default function Login({ navigation, route }) {
           showAlert({
             ...aler,
             show: true,
-            judul: "Login Failed",
-            detail: "can't save data",
+            judul: t("loginFaild"),
+            detail: t("cantSaveData"),
           });
         }
       }
@@ -92,8 +92,8 @@ export default function Login({ navigation, route }) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Login failed",
-        detail: "Please check your email or password",
+        judul: t("loginFaild"),
+        detail: t("PleaseCheckYourEmailorPassword"),
       });
     }
   };

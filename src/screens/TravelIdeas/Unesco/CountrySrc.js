@@ -582,6 +582,7 @@ export default function CountrySrc({
                       padding: 0,
                     }}
                     returnKeyType="search"
+                    value={continent}
                     onChangeText={(x) => {
                       searchcontinentfilter(x);
                       setContinent(x);
