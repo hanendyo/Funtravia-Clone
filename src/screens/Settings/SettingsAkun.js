@@ -632,6 +632,7 @@ export default function SettingsAkun(props) {
               <View
                 style={{
                   marginHorizontal: 20,
+                  marginTop: 20,
                   borderBottomColor: "#464646",
                   borderBottomWidth: 1,
                 }}
@@ -640,7 +641,8 @@ export default function SettingsAkun(props) {
                   note
                   mode="dropdown"
                   style={{
-                    width: "110%",
+                    width: "107%",
+                    height: Platform.OS === "ios" ? 200 : 40,
                     fontSize: 14,
                     fontFamily: "Lato-Regular",
                     marginLeft: -8,

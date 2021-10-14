@@ -308,6 +308,7 @@ export default function Comments(props) {
         type="bold"
         style={{
           color: "#209fae",
+          marginTop: 5,
         }}
       >
         Read More
@@ -316,17 +317,7 @@ export default function Comments(props) {
   };
 
   const ReadLesshendle = (handlePress) => {
-    return (
-      <Text
-        onPress={handlePress}
-        type="bold"
-        style={{
-          color: "#209fae",
-        }}
-      >
-        Read Less
-      </Text>
-    );
+    return <View />;
   };
 
   const Item = ({ dataComment }) => {
@@ -1286,7 +1277,7 @@ export default function Comments(props) {
                   _deletepost(selectedOption);
                 }}
                 color="secondary"
-                text={t("delete")}
+                text={t("delete_posting")}
               ></Button>
               <Button
                 onPress={() => {
@@ -1295,7 +1286,7 @@ export default function Comments(props) {
                 }}
                 style={{ marginVertical: 5 }}
                 variant="transparent"
-                text={t("cancel")}
+                text={t("discard")}
               ></Button>
             </View>
           </View>
@@ -1694,9 +1685,10 @@ export default function Comments(props) {
                 width: Dimensions.get("screen").width - 150,
                 // textAlignVertical: "top",
                 fontSize: normalize(16),
-                marginLeft: 40,
+                marginLeft: 20,
                 fontFamily: "Lato-Regular",
                 maxHeight: 100,
+                // backgroundColor: "red",
                 marginBottom: Platform.OS == "ios" ? 5 : 0,
               }}
               onChangeText={(text) => setStatusText(text)}
@@ -1715,7 +1707,6 @@ export default function Comments(props) {
                 height: 50,
                 alignItems: "center",
                 justifyContent: "center",
-                paddingRight: 10,
               }}
             >
               <Text
@@ -1727,7 +1718,7 @@ export default function Comments(props) {
                   color: "#209fae",
                 }}
               >
-                Post
+                {t("Post")}
               </Text>
             </Pressable>
           </View>
