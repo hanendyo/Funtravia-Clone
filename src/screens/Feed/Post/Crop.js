@@ -10,7 +10,7 @@ import {
   Pressable,
   BackHandler,
 } from "react-native";
-import { Arrowbackwhite } from "../../../assets/svg";
+import { Arrowbackwhite, Check } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import { Text, Button } from "../../../component";
 import Video from "react-native-video";
@@ -22,13 +22,14 @@ export default function Crop(props) {
   const [ratio, setRatio] = useState(props?.route?.params?.ratio);
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
+  const [croped, setCroped] = useState(0);
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="title" type="bold" style={{ color: "#FFF" }}>
-        New Post
+      <Text size="header" type="bold" style={{ color: "#FFF" }}>
+        New Post Crop
       </Text>
     ),
     headerMode: "screen",
@@ -112,6 +113,30 @@ export default function Crop(props) {
       if (datas[index].node.type.substr(0, 5) == "video") {
         setNewRatio(ratio);
         setIndexAktive(datas.length - 1 > index ? indexAktif + 1 : 0);
+        setCroped((e) => e + 1);
+        if (indexAktif + 1 == datas.length) {
+          // console.log("index", index);
+          props.navigation.dispatch(
+            StackActions.replace("FeedStack", {
+              screen: "CreatePostScreen",
+              params: {
+                location: props.route.params.location,
+                type: "multi",
+                file: data,
+                token: token,
+                id_album: props.route.params.id_album,
+                id_itin: props.route.params.id_itin,
+                title_album: props.route.params.title_album,
+                album: props.route.params.album,
+                ratio: {
+                  width: ratio == "L" ? 3 : 4,
+                  height: ratio == "L" ? 2.2 : 5,
+                  label: ratio,
+                },
+              },
+            })
+          );
+        }
       } else {
         ImagePicker.openCropper({
           path: data[index].node.image.uri,
@@ -125,7 +150,10 @@ export default function Crop(props) {
             tempp.uri = tempp.path;
             datas[index].node.image = tempp;
             setNewRatio(ratio);
-            setIndexAktive(datas.length - 1 > index ? indexAktif + 1 : 0);
+            setCroped((e) => e + 1);
+            if (indexAktif + 1 < datas.length) {
+              setIndexAktive(datas.length - 1 > index ? indexAktif + 1 : 0);
+            }
             setData(datas);
           })
           .catch((error) => console.log(error));
@@ -204,6 +232,18 @@ export default function Crop(props) {
                 marginRight: data.length == index + 1 ? 0 : 5,
               }}
             >
+              {croped > index ? (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: 20,
+                    right: 20,
+                    zIndex: 99,
+                  }}
+                >
+                  <Check width={30} height={30} />
+                </View>
+              ) : null}
               {item.type === "video" ? (
                 <Video
                   // poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
