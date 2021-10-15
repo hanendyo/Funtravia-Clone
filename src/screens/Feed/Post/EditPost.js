@@ -67,19 +67,34 @@ export default function EditPost(props) {
       color: "white",
     },
     headerLeft: () => (
-      <Button
+      <TouchableOpacity
         text={""}
         size="medium"
         type="circle"
         variant="transparent"
         onPress={() => props.navigation.goBack()}
         style={{
-          height: 55,
-          marginLeft: 5,
+          width: 90,
+          marginLeft: 25,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          <Text
+            type="bold"
+            size="title"
+            style={{ color: "#fff", marginLeft: 15 }}
+          >
+            {t("edit")}
+          </Text>
+        </View>
+      </TouchableOpacity>
     ),
     headerRight: () => (
       <TouchableOpacity
@@ -87,7 +102,7 @@ export default function EditPost(props) {
           SubmitData(statusText);
         }}
         style={{
-          paddingRight: 10,
+          marginRight: 25,
           flexDirection: "row",
           alignContent: "center",
           alignItems: "center",
@@ -95,16 +110,11 @@ export default function EditPost(props) {
       >
         <Text
           allowFontScaling={false}
-          style={{
-            color: "#FFF",
-            // fontWeight: 'bold',
-            fontFamily: "Lato-Bold",
-            fontSize: 14,
-            marginHorizontal: 10,
-            marginVertical: 10,
-          }}
+          type="bold"
+          size="title"
+          style={{ color: "#fff", marginHorizontal: 10, marginVertical: 10 }}
         >
-          SAVE
+          {t("save")}
         </Text>
         <CheckWhite width={20} height={20} />
       </TouchableOpacity>
@@ -301,7 +311,7 @@ export default function EditPost(props) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : null}
-      style={{ flex: 1, backgroundColor: "#FFF" }}
+      style={{ flex: 1, backgroundColor: "#F6F6F6" }}
     >
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
 
@@ -344,17 +354,18 @@ export default function EditPost(props) {
           </TouchableOpacity> */}
         </View>
       </View>
-      <ScrollView style={{}}>
+      <ScrollView
+        style={{
+          backgroundColor: "white",
+          marginHorizontal: 10,
+          marginTop: 10,
+
+          borderTopStartRadius: 15,
+          borderTopEndRadius: 15,
+          minHeight: Dimensions.get("window").height,
+        }}
+      >
         <Loading show={loadingok} />
-        {/* <NavigationEvents
-					onDidFocus={() =>
-						props.navigation.setParams({
-							SubmitData: SubmitData,
-							location: Location,
-							text: statusText,
-						})
-					}
-				/> */}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
             style={
@@ -455,7 +466,7 @@ export default function EditPost(props) {
             </View>
             <View
               style={{
-                width: Dimensions.get("screen").width,
+                width: Dimensions.get("screen").width - 20,
                 paddingHorizontal: 20,
               }}
             >

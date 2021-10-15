@@ -1344,7 +1344,7 @@ export default function FeedList({ props, token }) {
                     _deletepost(selectedOption);
                   }}
                   color="secondary"
-                  text={t("delete")}
+                  text={t("delete_posting")}
                 ></Button>
                 <Button
                   onPress={() => {
@@ -1353,7 +1353,7 @@ export default function FeedList({ props, token }) {
                   }}
                   style={{ marginVertical: 5 }}
                   variant="transparent"
-                  text={t("cancel")}
+                  text={t("discard")}
                 ></Button>
               </View>
             </View>

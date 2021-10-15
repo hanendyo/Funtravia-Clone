@@ -216,7 +216,7 @@ export default function SettingCity(props) {
           }}
           onSubmitEditing={(e) => setCountry(e)}
           autoCorrect={false}
-          autoCompleteType={false}
+          // autoCompleteType={false}
           placeholder={t("Search")}
         />
         {country.length !== 0 ? (
